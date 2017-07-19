@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>tec.units</groupId>
 	<artifactId>indriya</artifactId>
-	<name>Units of Measurement Implementation for Java SE</name>
+	<name>Next Generation Units of Measurement Implementation</name>
 	<url>https://github.com/unitsofmeasurement/indriya</url>
 	<description>Units of Measurement Implementation for Java SE - JDK Integration of Unit-API</description>
 	<organization>
@@ -216,8 +216,8 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-						<Export-Package>tec.uom.se.*</Export-Package>
-						<Private-Package>tec.uom.se.internal.*</Private-Package>
+						<Export-Package>tec.units.indriya.*</Export-Package>
+						<Private-Package>tec.units.indriya.internal.*</Private-Package>
 					</instructions>
 				</configuration>
 			</plugin>
