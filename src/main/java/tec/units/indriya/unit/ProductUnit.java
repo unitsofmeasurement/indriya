@@ -303,7 +303,7 @@ public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
 
   @SuppressWarnings("unchecked")
   @Override
-  public AbstractUnit<Q> toSystemUnit() {
+  public Unit<Q> toSystemUnit() {
     Unit<?> systemUnit = AbstractUnit.ONE;
     for (Element element : elements) {
       Unit<?> unit = element.unit.getSystemUnit();
