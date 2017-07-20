@@ -58,13 +58,14 @@ import java.util.Objects;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 0.3, June 10, 2014
+ * @version 1.3, July 20, 2017
+ * @since 1.0
  */
 public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
 
   /**
-	 *
-	 */
+   *
+   */
   private static final long serialVersionUID = 962983585531030093L;
 
   /**
@@ -120,7 +121,7 @@ public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
    *          the right unit operand.
    * @return <code>left * right</code>
    */
-  public static Unit<?> getProductInstance(Unit<?> left, Unit<?> right) {
+  public static Unit<?> ofProduct(Unit<?> left, Unit<?> right) {
     Element[] leftElems;
     if (left instanceof ProductUnit<?>) {
       leftElems = ((ProductUnit<?>) left).elements;
@@ -145,7 +146,7 @@ public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
    *          the divisor unit operand.
    * @return <code>dividend / divisor</code>
    */
-  public static Unit<?> getQuotientInstance(Unit<?> left, Unit<?> right) {
+  public static Unit<?> ofQuotient(Unit<?> left, Unit<?> right) {
     Element[] leftElems;
     if (left instanceof ProductUnit<?>)
       leftElems = ((ProductUnit<?>) left).elements;
@@ -174,7 +175,7 @@ public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
    * @throws ArithmeticException
    *           if <code>n == 0</code>.
    */
-  public static Unit<?> getRootInstance(Unit<?> unit, int n) {
+  public static Unit<?> ofRoot(Unit<?> unit, int n) {
     Element[] unitElems;
     if (unit instanceof ProductUnit<?>) {
       Element[] elems = ((ProductUnit<?>) unit).elements;
@@ -261,7 +262,7 @@ public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
 
   @Override
   public Map<Unit<?>, Integer> getBaseUnits() {
-    final Map<Unit<?>, Integer> units = new HashMap<>(); // Diamond (Java7+)
+    final Map<Unit<?>, Integer> units = new HashMap<>();
     for (int i = 0; i < getUnitCount(); i++) {
       units.put(getUnit(i), getUnitPow(i));
     }
@@ -434,8 +435,8 @@ public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
   private final static class Element implements Serializable {
 
     /**
-		 *
-		 */
+     *
+     */
     private static final long serialVersionUID = 452938412398890507L;
 
     /**

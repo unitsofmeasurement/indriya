@@ -46,13 +46,13 @@ import java.util.Objects;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 0.3, June 09, 2014
+ * @version 1.3, July 20, 2017
  */
 public final class AlternateUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
 
   /**
-     * 
-     */
+   * 
+   */
   private static final long serialVersionUID = 4696690756456282705L;
 
   /**

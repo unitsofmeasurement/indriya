@@ -53,13 +53,14 @@ import java.util.Map;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.0, Jan 21, 2017
+ * @version 1.1, July 20, 2017
+ * @since 1.0
  */
 public final class BaseUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
 
   /**
-     * 
-     */
+   * 
+   */
   private static final long serialVersionUID = 1721629233768215930L;
 
   /**

@@ -53,13 +53,14 @@ import java.util.Objects;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 0.3, June 09, 2014
+ * @version 1.3, July 20, 2017
+ * @since 1.0
  */
 public final class AnnotatedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
 
   /**
-	 * 
-	 */
+   * 
+   */
   private static final long serialVersionUID = -5676462045106887728L;
 
   /**

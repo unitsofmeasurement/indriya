@@ -46,24 +46,29 @@ import javax.measure.Unit;
  * </p>
  * 
  * <p>
- * Examples of compound units:[code] Unit<Duration> HOUR_MINUTE_SECOND = HOUR.compound(MINUTE).compound(SECOND); Unit<Angle> DEGREE_MINUTE_ANGLE =
- * DEGREE_ANGLE.compound(MINUTE_ANGLE); [/code]
+ * Examples of compound units:<code> Unit<Duration> HOUR_MINUTE_SECOND = HOUR.compound(MINUTE).compound(SECOND); Unit<Angle> DEGREE_MINUTE_ANGLE =
+ * DEGREE_ANGLE.compound(MINUTE_ANGLE); </code>
  * </p>
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
- * @version 4.0, July 20, 2017
+ * @version 1.4.1, July 20, 2017
  */
 public final class CompoundUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
 
   /**
+   * 
+   */
+  private static final long serialVersionUID = -6588505921476784171L;
+
+  /**
    * Holds the higher unit.
    */
-  private final Unit<Q> _high;
+  private final Unit<Q> higher;
 
   /**
    * Holds the lower unit.
    */
-  private final Unit<Q> _low;
+  private final Unit<Q> lower;
 
   /**
    * Creates a compound unit from the specified units.
@@ -78,9 +83,8 @@ public final class CompoundUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
   CompoundUnit(Unit<Q> high, Unit<Q> low) {
     if (!high.getSystemUnit().equals(low.getSystemUnit()))
       throw new IllegalArgumentException("Both units do not have the same system unit");
-    _high = high;
-    _low = low;
-
+    higher = high;
+    lower = low;
   }
 
   /**
@@ -89,7 +93,7 @@ public final class CompoundUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
    * @return the lower unit.
    */
   public Unit<Q> getLower() {
-    return _low;
+    return lower;
   }
 
   /**
@@ -98,7 +102,7 @@ public final class CompoundUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
    * @return the higher unit.
    */
   public Unit<Q> getHigher() {
-    return _high;
+    return higher;
   }
 
   /**
@@ -115,42 +119,31 @@ public final class CompoundUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
     if (!(that instanceof CompoundUnit))
       return false;
     CompoundUnit<?> thatUnit = (CompoundUnit<?>) that;
-    return this._high.equals(thatUnit._high) && this._low.equals(thatUnit._low);
+    return this.higher.equals(thatUnit.higher) && this.lower.equals(thatUnit.lower);
   }
 
   @Override
   public int hashCode() {
-    return _high.hashCode() ^ _low.hashCode();
+    return higher.hashCode() ^ lower.hashCode();
   }
-
-  // @Override
-  // public final Unit<Q> getSystemUnit() {
-  // return _low.getSystemUnit();
-  // }
 
   @Override
   public UnitConverter getSystemConverter() {
-    return ((AbstractUnit) _low).getSystemConverter();
+    return ((AbstractUnit) lower).getSystemConverter();
   }
-
-  private static final long serialVersionUID = 1L;
 
   @Override
   protected Unit<Q> toSystemUnit() {
-    // return ((AbstractUnit)_low).getConverterTo(getSystemUnit());
-    // TODO Auto-generated method stub
-    return null;
+    return lower.getSystemUnit();
   }
 
   @Override
   public Map<? extends Unit<?>, Integer> getBaseUnits() {
-    // TODO Auto-generated method stub
-    return null;
+    return lower.getBaseUnits();
   }
 
   @Override
   public Dimension getDimension() {
-    // TODO Auto-generated method stub
-    return null;
+    return lower.getDimension();
   }
 }

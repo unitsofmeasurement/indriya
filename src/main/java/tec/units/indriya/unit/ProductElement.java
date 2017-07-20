@@ -34,6 +34,8 @@ import javax.measure.Unit;
 
 /**
  * Inner product element represents a rational power of a single unit.
+ * 
+ * @deprecated Seems unused
  */
 final class ElementProduct<T extends Quantity<T>> {
 
