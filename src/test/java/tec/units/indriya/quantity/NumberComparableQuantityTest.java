@@ -190,7 +190,6 @@ public class NumberComparableQuantityTest {
 
   @Test
   public void isGreaterThanOrEqualToTest() {
-
     ComparableQuantity<Time> day = Quantities.getQuantity(1, Units.DAY);
     ComparableQuantity<Time> hours = Quantities.getQuantity(12, Units.HOUR);
     ComparableQuantity<Time> dayInHour = Quantities.getQuantity(24, Units.HOUR);
@@ -203,7 +202,6 @@ public class NumberComparableQuantityTest {
 
   @Test
   public void isLessThanTest() {
-
     ComparableQuantity<Time> day = Quantities.getQuantity(1, Units.DAY);
     ComparableQuantity<Time> hours = Quantities.getQuantity(12, Units.HOUR);
     ComparableQuantity<Time> dayInHour = Quantities.getQuantity(24, Units.HOUR);
@@ -217,7 +215,6 @@ public class NumberComparableQuantityTest {
 
   @Test
   public void isLessThanOrEqualToTest() {
-
     ComparableQuantity<Time> day = Quantities.getQuantity(1, Units.DAY);
     ComparableQuantity<Time> hours = Quantities.getQuantity(12, Units.HOUR);
     ComparableQuantity<Time> dayInHour = Quantities.getQuantity(24, Units.HOUR);
@@ -227,12 +224,10 @@ public class NumberComparableQuantityTest {
     Assert.assertFalse(day.isLessThanOrEqualTo(hours));
     Assert.assertTrue(day.isLessThanOrEqualTo(dayInHour));
     Assert.assertTrue(day.isLessThanOrEqualTo(daysInHour));
-
   }
 
   @Test
   public void isEquivalentOfTest() {
-
     ComparableQuantity<Time> day = Quantities.getQuantity(1, Units.DAY);
     ComparableQuantity<Time> hours = Quantities.getQuantity(12, Units.HOUR);
     ComparableQuantity<Time> dayInHour = Quantities.getQuantity(24, Units.HOUR);
