@@ -159,9 +159,9 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
     /**
      * Annotates the specified unit. Annotation does not change the unit
      * semantic. Annotations are often written between curly braces behind
-     * units. For example:
-     * <code> AbstractUnit<Volume> PERCENT_VOL = Units.PERCENT.annotate("vol"); // "%{vol}" AbstractUnit<Mass> KG_TOTAL =
-     * Units.KILOGRAM.annotate("total"); // "kg{total}" AbstractUnit<Dimensionless> RED_BLOOD_CELLS = Units.ONE.annotate("RBC"); // "{RBC}" </code>
+     * units. For example:<br>
+     * <code> Unit<Volume> PERCENT_VOL = ((AbstractUnit)Units.PERCENT).annotate("vol"); // "%{vol}" Unit<Mass> KG_TOTAL =
+     * ((AbstractUnit)Units.KILOGRAM).annotate("total"); // "kg{total}" Unit<Dimensionless> RED_BLOOD_CELLS = ((AbstractUnit)Units.ONE).annotate("RBC"); // "{RBC}" </code>
      *
      * Note: Annotation of system units are not considered themselves as system
      * units.
@@ -170,7 +170,7 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
      *            the unit annotation.
      * @return the annotated unit.
      */
-    public AnnotatedUnit<Q> annotate(String annotation) {
+    public Unit<Q> annotate(String annotation) {
 	return new AnnotatedUnit<>(this, annotation);
     }
 
