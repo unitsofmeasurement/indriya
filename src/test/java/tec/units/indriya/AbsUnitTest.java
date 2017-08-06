@@ -56,7 +56,9 @@ public class AbsUnitTest {
 
   @Test
   public void testReturnedClass() {
-    // assertEquals("Q", String.valueOf(sut.getActualType())); // TODO we hope to get better type information like <Length> in future Java versions
+    // assertEquals("Q", String.valueOf(sut.getActualType())); // TODO we
+    // hope to get better type information like <Length> in future Java
+    // versions
     assertEquals("java.lang.reflect.TypeVariable<D>", String.valueOf(sut.getActualType()));
   }
 
@@ -68,5 +70,15 @@ public class AbsUnitTest {
   @Test
   public void testParse2() {
     assertEquals(MetricPrefix.MILLI(Units.CELSIUS), AbstractUnit.parse("m°C"));
+  }
+
+  @Test
+  public void testCompareTo() {
+    assertEquals(0, ((AbstractUnit) Units.KILOGRAM).compareTo(Units.KILOGRAM));
+  }
+
+  @Test
+  public void testCompareToOther() {
+    assertEquals(-1, ((AbstractUnit) Units.KILOGRAM).compareTo(MetricPrefix.KILO(Units.GRAM)));
   }
 }

@@ -42,6 +42,7 @@ import javax.measure.quantity.Temperature;
 import org.junit.Test;
 
 import tec.units.indriya.quantity.Quantities;
+import tec.units.indriya.unit.MetricPrefix;
 import tec.units.indriya.unit.Units;
 
 public class UnitConverterTest {
@@ -62,7 +63,8 @@ public class UnitConverterTest {
   @Test
   public void testQuantity() {
     Quantity<Length> quantLength1 = Quantities.getQuantity(4.0, sourceUnit);
-    // Quantity<Length> quantLength2 = Quantities.getQuantity(6.0, targetUnit);
+    // Quantity<Length> quantLength2 = Quantities.getQuantity(6.0,
+    // targetUnit);
     Quantity<Length> quantResult1 = quantLength1.to(targetUnit);
     assertNotNull(quantResult1);
     assertEquals(400.0, quantResult1.getValue());
@@ -75,5 +77,10 @@ public class UnitConverterTest {
     assertNotNull(sut);
     assertEquals(Units.CELSIUS, sut.getUnit());
     assertEquals(0d, sut.getValue());
+  }
+
+  @Test
+  public void testConverterTo() {
+    assertEquals(Units.KILOGRAM.getConverterTo(MetricPrefix.KILO(Units.GRAM)), MetricPrefix.KILO(Units.GRAM).getConverterTo(Units.KILOGRAM));
   }
 }
