@@ -51,8 +51,8 @@ import tec.uom.lib.common.function.ValueSupplier;
 public final class AddConverter extends AbstractConverter implements ValueSupplier<Double> {
 
   /**
-	 * 
-	 */
+     * 
+     */
   private static final long serialVersionUID = -2981335308595652284L;
   /**
    * Holds the offset.
@@ -137,4 +137,14 @@ public final class AddConverter extends AbstractConverter implements ValueSuppli
     return offset;
   }
 
+  @Override
+  public int compareTo(UnitConverter o) {
+    if (this == o) {
+      return 0;
+    }
+    if (o instanceof AddConverter) {
+      return getValue().compareTo(((AddConverter) o).getValue());
+    }
+    return -1;
+  }
 }

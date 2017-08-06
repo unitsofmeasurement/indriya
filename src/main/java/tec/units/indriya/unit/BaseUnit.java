@@ -53,14 +53,14 @@ import java.util.Map;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.1, July 20, 2017
+ * @version 1.2, August 06, 2017
  * @since 1.0
  */
 public final class BaseUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
 
   /**
-   * 
-   */
+     * 
+     */
   private static final long serialVersionUID = 1721629233768215930L;
 
   /**
@@ -131,13 +131,18 @@ public final class BaseUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
   }
 
   @Override
-  public final boolean equals(Object that) {
-    if (this == that)
+  public final boolean equals(Object obj) {
+    if (this == obj)
       return true;
-    if (!(that instanceof BaseUnit))
+    if (obj instanceof BaseUnit) {
+      BaseUnit<?> thatUnit = (BaseUnit<?>) obj;
+      return this.symbol.equals(thatUnit.symbol) && this.dimension.equals(thatUnit.dimension);
+    }
+    if (obj instanceof AbstractUnit) {
+      return AbstractUnit.Equalizer.areEqual(this, (AbstractUnit) obj);
+    } else {
       return false;
-    BaseUnit<?> thatUnit = (BaseUnit<?>) that;
-    return this.symbol.equals(thatUnit.symbol) && this.dimension.equals(thatUnit.dimension);
+    }
   }
 
   @Override

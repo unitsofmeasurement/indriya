@@ -53,14 +53,14 @@ import java.util.Objects;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.3, July 20, 2017
+ * @version 1.3.1, August 06, 2017
  * @since 1.0
  */
 public final class AnnotatedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
 
   /**
-   * 
-   */
+     * 
+     */
   private static final long serialVersionUID = -5676462045106887728L;
 
   /**
@@ -135,6 +135,7 @@ public final class AnnotatedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> 
     return Objects.hash(actualUnit, annotation);
   }
 
+  @SuppressWarnings("rawtypes")
   @Override
   public boolean equals(Object obj) {
     if (this == obj) {
@@ -144,6 +145,10 @@ public final class AnnotatedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> 
       AnnotatedUnit<?> other = (AnnotatedUnit<?>) obj;
       return Objects.equals(actualUnit, other.actualUnit) && Objects.equals(annotation, other.annotation);
     }
-    return false;
+    if (obj instanceof AbstractUnit) {
+      return AbstractUnit.Equalizer.areEqual(this, (AbstractUnit) obj);
+    } else {
+      return false;
+    }
   }
 }

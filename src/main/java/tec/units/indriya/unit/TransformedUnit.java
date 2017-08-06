@@ -67,14 +67,14 @@ import tec.uom.lib.common.function.UnitConverterSupplier;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.1, July 20, 2017
+ * @version 1.2, August 06, 2017
  * @since 1.0
  */
 public final class TransformedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> implements UnitConverterSupplier {
 
   /**
-   *
-   */
+     *
+     */
   private static final long serialVersionUID = 1L;
 
   /**
@@ -195,7 +195,11 @@ public final class TransformedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q
       TransformedUnit<?> other = (TransformedUnit<?>) obj;
       return Objects.equals(parentUnit, other.parentUnit) && Objects.equals(converter, other.converter);
     }
-    return false;
+    if (obj instanceof AbstractUnit) {
+      return AbstractUnit.Equalizer.areEqual(this, (AbstractUnit) obj);
+    } else {
+      return false;
+    }
   }
 
   @Override

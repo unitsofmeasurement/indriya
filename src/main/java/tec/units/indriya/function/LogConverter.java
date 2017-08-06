@@ -34,6 +34,8 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.Objects;
 
+import javax.measure.UnitConverter;
+
 import tec.units.indriya.AbstractConverter;
 import tec.uom.lib.common.function.ValueSupplier;
 
@@ -47,11 +49,13 @@ import tec.uom.lib.common.function.ValueSupplier;
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
  * @version 1.0, October 10, 2016
  */
-public final class LogConverter extends AbstractConverter implements ValueSupplier<String> { // implements Immutable<String> {
+public final class LogConverter extends AbstractConverter implements ValueSupplier<String> { // implements
+  // Immutable<String>
+  // {
 
   /**
-	 * 
-	 */
+     * 
+     */
   private static final long serialVersionUID = -7584688290961460870L;
 
   /**
@@ -134,5 +138,16 @@ public final class LogConverter extends AbstractConverter implements ValueSuppli
   @Override
   public String getValue() {
     return toString();
+  }
+
+  @Override
+  public int compareTo(UnitConverter o) {
+    if (this == o) {
+      return 0;
+    }
+    if (o instanceof ValueSupplier) {
+      return getValue().compareTo(String.valueOf(((ValueSupplier) o).getValue()));
+    }
+    return -1;
   }
 }

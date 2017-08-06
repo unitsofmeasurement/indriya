@@ -50,11 +50,11 @@ import java.util.Objects;
  * @version 1.0, August 9, 2016
  * @since 1.0
  */
-public abstract class AbstractConverter implements UnitConverter, Converter<Number, Number>, Serializable {
+public abstract class AbstractConverter implements UnitConverter, Converter<Number, Number>, Serializable, Comparable<UnitConverter> {
 
   /**
-   *
-   */
+     *
+     */
   private static final long serialVersionUID = 5790242858468427131L;
 
   /**
@@ -137,8 +137,8 @@ public abstract class AbstractConverter implements UnitConverter, Converter<Numb
   private static final class Identity extends AbstractConverter {
 
     /**
-		 * 
-		 */
+	 * 
+	 */
     private static final long serialVersionUID = -4460463244427587361L;
 
     @Override
@@ -180,6 +180,14 @@ public abstract class AbstractConverter implements UnitConverter, Converter<Numb
     public boolean isLinear() {
       return true;
     }
+
+    @Override
+    public int compareTo(UnitConverter o) {
+      if (o instanceof Identity) {
+        return 0;
+      }
+      return -1;
+    }
   }
 
   /**
@@ -188,8 +196,8 @@ public abstract class AbstractConverter implements UnitConverter, Converter<Numb
   public static final class Pair extends AbstractConverter implements Serializable {
 
     /**
-     * 
-     */
+	 * 
+	 */
     private static final long serialVersionUID = -123063827821728331L;
 
     /**
@@ -282,6 +290,14 @@ public abstract class AbstractConverter implements UnitConverter, Converter<Numb
 
     public UnitConverter getRight() {
       return right;
+    }
+
+    @Override
+    public int compareTo(UnitConverter o) {
+      if (this == o) {
+        return 0;
+      }
+      return -1;
     }
   }
 }

@@ -46,13 +46,14 @@ import java.util.Objects;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.3, July 20, 2017
+ * @version 1.3.1, August 06, 2017
+ * @since 1.0
  */
 public final class AlternateUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
 
   /**
-   * 
-   */
+     * 
+     */
   private static final long serialVersionUID = 4696690756456282705L;
 
   /**
@@ -121,6 +122,7 @@ public final class AlternateUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> 
     return Objects.hashCode(symbol);
   }
 
+  @SuppressWarnings("rawtypes")
   @Override
   public boolean equals(Object obj) {
     if (this == obj) {
@@ -130,6 +132,10 @@ public final class AlternateUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> 
       AlternateUnit that = (AlternateUnit) obj;
       return Objects.equals(parentUnit, that.parentUnit) && Objects.equals(symbol, that.symbol);
     }
-    return false;
+    if (obj instanceof AbstractUnit) {
+      return AbstractUnit.Equalizer.areEqual(this, (AbstractUnit) obj);
+    } else {
+      return false;
+    }
   }
 }

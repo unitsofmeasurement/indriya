@@ -32,6 +32,8 @@ package tec.units.indriya.function;
 import java.math.BigDecimal;
 import java.math.MathContext;
 
+import javax.measure.UnitConverter;
+
 import tec.units.indriya.AbstractConverter;
 import tec.uom.lib.common.function.ValueSupplier;
 
@@ -52,8 +54,8 @@ import tec.uom.lib.common.function.ValueSupplier;
 final class PiDivisorConverter extends AbstractConverter implements ValueSupplier<String> {
 
   /**
-   * 
-   */
+     * 
+     */
   private static final long serialVersionUID = 5052794216568914141L;
 
   /**
@@ -104,5 +106,16 @@ final class PiDivisorConverter extends AbstractConverter implements ValueSupplie
   @Override
   public String getValue() {
     return toString();
+  }
+
+  @Override
+  public int compareTo(UnitConverter o) {
+    if (this == o) {
+      return 0;
+    }
+    if (o instanceof ValueSupplier) {
+      return getValue().compareTo(String.valueOf(((ValueSupplier) o).getValue()));
+    }
+    return -1;
   }
 }

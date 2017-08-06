@@ -252,4 +252,15 @@ public final class RationalConverter extends AbstractConverter implements ValueS
   public Double get() {
     return getValue();
   }
+
+  @Override
+  public int compareTo(UnitConverter o) {
+    if (this == o) {
+      return 0;
+    }
+    if (o instanceof RationalConverter) {
+      return getValue().compareTo(((RationalConverter) o).getValue());
+    }
+    return -1;
+  }
 }

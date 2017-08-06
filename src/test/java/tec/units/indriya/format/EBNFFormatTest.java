@@ -108,7 +108,7 @@ public class EBNFFormatTest {
 
   @Test
   // TODO address https://github.com/unitsofmeasurement/uom-se/issues/145
-  public void testFormatm() {
+  public void testFormatmm() {
     String s = format.format(MILLI(METRE));
     assertEquals("mm", s);
   }

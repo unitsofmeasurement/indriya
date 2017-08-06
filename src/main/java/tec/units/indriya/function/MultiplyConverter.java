@@ -138,4 +138,15 @@ public final class MultiplyConverter extends AbstractConverter implements ValueS
   public Double getValue() {
     return factor;
   }
+
+  @Override
+  public int compareTo(UnitConverter o) {
+    if (this == o) {
+      return 0;
+    }
+    if (o instanceof MultiplyConverter) {
+      return getValue().compareTo(((MultiplyConverter) o).getValue());
+    }
+    return -1;
+  }
 }

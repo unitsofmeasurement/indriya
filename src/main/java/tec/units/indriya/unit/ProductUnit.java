@@ -58,14 +58,14 @@ import java.util.Objects;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.3, July 20, 2017
+ * @version 1.4, August 06, 2017
  * @since 1.0
  */
 public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
 
   /**
-   *
-   */
+     *
+     */
   private static final long serialVersionUID = 962983585531030093L;
 
   /**
@@ -294,7 +294,11 @@ public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
       }
       return true;
     }
-    return false;
+    if (obj instanceof AbstractUnit) {
+      return AbstractUnit.Equalizer.areEqual(this, (AbstractUnit) obj);
+    } else {
+      return false;
+    }
   }
 
   @Override
@@ -435,8 +439,8 @@ public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
   private final static class Element implements Serializable {
 
     /**
-     *
-     */
+	 *
+	 */
     private static final long serialVersionUID = 452938412398890507L;
 
     /**

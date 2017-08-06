@@ -51,13 +51,13 @@ import javax.measure.Unit;
  * </p>
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
- * @version 1.4.1, July 20, 2017
+ * @version 1.4.2, August 06, 2017
  */
 public final class CompoundUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
 
   /**
-   * 
-   */
+     * 
+     */
   private static final long serialVersionUID = -6588505921476784171L;
 
   /**
@@ -109,17 +109,23 @@ public final class CompoundUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
    * Indicates if this compound unit is considered equals to the specified object (both are compound units with same composing units in the same
    * order).
    *
-   * @param that
+   * @param obj
    *          the object to compare for equality.
-   * @return <code>true</code> if <code>this</code> and <code>that</code> are considered equals; <code>false</code>otherwise.
+   * @return <code>true</code> if <code>this</code> and <code>obj</code> are considered equal; <code>false</code>otherwise.
    */
-  public boolean equals(Object that) {
-    if (this == that)
+  public boolean equals(Object obj) {
+    if (this == obj) {
       return true;
-    if (!(that instanceof CompoundUnit))
+    }
+    if (obj instanceof CompoundUnit) {
+      CompoundUnit<?> thatUnit = (CompoundUnit<?>) obj;
+      return this.higher.equals(thatUnit.higher) && this.lower.equals(thatUnit.lower);
+    }
+    if (obj instanceof AbstractUnit) {
+      return AbstractUnit.Equalizer.areEqual(this, (AbstractUnit) obj);
+    } else {
       return false;
-    CompoundUnit<?> thatUnit = (CompoundUnit<?>) that;
-    return this.higher.equals(thatUnit.higher) && this.lower.equals(thatUnit.lower);
+    }
   }
 
   @Override

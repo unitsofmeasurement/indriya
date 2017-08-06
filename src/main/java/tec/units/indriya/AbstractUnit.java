@@ -64,7 +64,7 @@ import java.lang.reflect.Type;
  * @see <a href= "http://en.wikipedia.org/wiki/International_System_of_Units">Wikipedia: International System of Units</a>
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.0.6, April 24, 2017
+ * @version 1.1, August 8, 2017
  * @since 1.0
  */
 public abstract class AbstractUnit<Q extends Quantity<Q>> implements Unit<Q>, Comparable<Unit<Q>>, Serializable {
@@ -218,8 +218,20 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements Unit<Q>, Co
    */
   @Override
   public final boolean isCompatible(Unit<?> that) {
-    if ((this == that) || this.equals(that))
-      return true;
+    return internalIsCompatible(that, true);
+  }
+
+  /**
+   * Internal helper for isCompatible
+   */
+  private final boolean internalIsCompatible(Unit<?> that, boolean checkEquals) {
+    if (checkEquals) {
+      if ((this == that) || this.equals(that))
+        return true;
+    } else {
+      if (this == that)
+        return true;
+    }
     if (!(that instanceof AbstractUnit))
       return false;
     Dimension thisDimension = this.getDimension();
@@ -500,17 +512,55 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements Unit<Q>, Co
         return -1;
       }
     } else {
+      UnitConverter conv = getConverterTo(that);
+      if (conv instanceof AbstractConverter) {
+        return ((AbstractConverter) conv).compareTo(that.getConverterTo(this));
+      }
       return -1;
     }
   }
 
+  public boolean isEquivalentTo(Unit<Q> that) {
+    return this.compareTo(that) == 0;
+  }
+
   // //////////////////////////////////////////////////////////////
-  // Ensures that sub-classes implements hashCode/equals method.
+  // Ensures that sub-classes implement the hashCode method.
   // //////////////////////////////////////////////////////////////
+
+  @Override
+  public abstract boolean equals(Object obj);
 
   @Override
   public abstract int hashCode();
 
-  @Override
-  public abstract boolean equals(Object that);
+  /**
+   * Utility class for number comparison and equality
+   */
+  protected static final class Equalizer {
+    /**
+     * Indicates if this unit is considered equals to the specified object. order).
+     *
+     * @param obj
+     *          the object to compare for equality.
+     * @return <code>true</code> if <code>this</code> and <code>obj</code> are considered equal; <code>false</code>otherwise.
+     */
+    public static boolean areEqual(AbstractUnit u1, AbstractUnit u2) {
+      /*if (u1 != null && u2 != null) {
+      if (u1.getName() != null && u1.getSymbol() != null) {
+        return u1.getName().equals(u2.getName()) && u1.getSymbol().equals(u2.getSymbol())
+          && u1.internalIsCompatible(u2, false);
+      } else if (u1.getSymbol() != null) {
+        return u1.getSymbol().equals(u2.getSymbol()) && u1.internalIsCompatible(u2, false);
+      } else {
+        return u1.toString().equals(u2.toString()) && u1.internalIsCompatible(u2, false);
+      }
+      } else { */
+      if (u1 == u2)
+        return true;
+      return false;
+      // }
+    }
+  }
+
 }
