@@ -41,6 +41,7 @@ import javax.measure.Unit;
  * @author otaviojava
  * @author werner
  * @param <Q>
+ * @version 1.0.1, August 7, 2017
  * @since 1.0
  */
 public interface ComparableQuantity<Q extends Quantity<Q>> extends Quantity<Q>, Comparable<Quantity<Q>>, Serializable {
@@ -153,7 +154,7 @@ public interface ComparableQuantity<Q extends Quantity<Q>> extends Quantity<Q>, 
    * @throws NullPointerException
    *           if the quantity is null
    */
-  boolean isEquivalentTo(Quantity<Q> that);
+  boolean isEquivalentOf(Quantity<Q> that);
 
   /**
    * Multiply and cast the {@link ComparableQuantity}

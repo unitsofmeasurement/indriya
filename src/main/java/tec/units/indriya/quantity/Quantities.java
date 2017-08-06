@@ -48,6 +48,7 @@ import tec.units.indriya.format.QuantityFormat;
  * 
  * @author werner
  * @author otaviojava
+ * @since 1.0
  */
 public final class Quantities {
   /**
@@ -57,15 +58,14 @@ public final class Quantities {
   }
 
   /**
-   * Returns the {@link #valueOf(java.math.BigDecimal, javax.measure.unit.Unit) decimal} measure of unknown type corresponding to the specified
+   * Returns the {@link #valueOf(java.math.BigDecimal, javax.measure.unit.Unit) decimal} quantity of unknown type corresponding to the specified
    * representation. This method can be used to parse dimensionless quantities.<br/>
    * <code>
    *     Quantity<Dimensionless> proportion = Quantities.getQuantity("0.234").asType(Dimensionless.class);
    * </code>
    *
    * <p>
-   * Note: This method handles only {@link javax.measure.unit.UnitFormat#getStandard standard} unit format (<a
-   * href="http://unitsofmeasure.org/">UCUM</a> based). Locale-sensitive measure formatting and parsing are handled by the {@link MeasurementFormat}
+   * Note: This method handles only Locale-neutral quantity formatting and parsing are handled by the {@link QuantityFormat}
    * class and its subclasses.
    * </p>
    *
@@ -94,7 +94,6 @@ public final class Quantities {
    *           when value or unit were null
    */
   public static <Q extends Quantity<Q>> ComparableQuantity<Q> getQuantity(Number value, Unit<Q> unit) {
-
     Objects.requireNonNull(value);
     Objects.requireNonNull(unit);
     if (Double.class.isInstance(value)) {
