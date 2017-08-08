@@ -41,7 +41,7 @@ import javax.measure.Unit;
  * @see {@link Unit}
  * @author werner
  * @param <Q>
- * @since 1.1
+ * @since 1.0.9
  */
 public interface ComparableUnit<Q extends Quantity<Q>> extends Unit<Q>, Comparable<Unit<Q>>, Serializable {
 
@@ -56,19 +56,6 @@ public interface ComparableUnit<Q extends Quantity<Q>> extends Unit<Q>, Comparab
      *             if the unit is null
      */
     boolean isEquivalentOf(Unit<Q> that);
-
-    /**
-     * Indicates if this unit is compatible with the unit specified. To be
-     * compatible both units must be physics units having the same fundamental
-     * dimension.
-     *
-     * @param that
-     *            the other unit.
-     * @return <code>true</code> if this unit and that unit have equals
-     *         fundamental dimension according to the current physics model;
-     *         <code>false</code> otherwise.
-     */
-    boolean isCompatible(Unit<?> that);
 
     /**
      * Indicates if this unit belongs to the set of coherent SI units (unscaled
