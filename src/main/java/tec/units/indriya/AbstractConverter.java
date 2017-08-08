@@ -47,14 +47,14 @@ import java.util.Objects;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.0, August 9, 2016
+ * @version 1.1, August 7, 2017
  * @since 1.0
  */
 public abstract class AbstractConverter implements UnitConverter, Converter<Number, Number>, Serializable, Comparable<UnitConverter> {
 
   /**
-     *
-     */
+    *
+    */
   private static final long serialVersionUID = 5790242858468427131L;
 
   /**
@@ -293,10 +293,14 @@ public abstract class AbstractConverter implements UnitConverter, Converter<Numb
     }
 
     @Override
-    public int compareTo(UnitConverter o) {
-      if (this == o) {
+    public int compareTo(UnitConverter obj) {
+      if (this == obj) {
         return 0;
       }
+      if (obj instanceof Pair) {
+		Pair that = (Pair) obj;
+        return Objects.compare(left, that.left) + Objects.compare(right, that.right);
+	  }
       return -1;
     }
   }
