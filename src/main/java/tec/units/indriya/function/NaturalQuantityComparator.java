@@ -34,11 +34,11 @@ import java.util.Comparator;
 import javax.measure.Quantity;
 
 /**
- * Comparator to sort by natural order, looking both the unit and the value.
+ * Comparator to sort quantities by natural order, looking both the unit and the value.
  * 
  * @author <a href="mailto:werner@uom.technology">Werner Keil</a>
  * @author <a href="mailto:otaviopolianasantana@gmail.com">Otavio Santana</a>
- * @version 1.0
+ * @version 1.0.1
  * @return <b>Given:</b>
  *         <p>
  *         Quantity<Time> day = timeFactory.create(1, Units.DAY);
@@ -55,7 +55,7 @@ import javax.measure.Quantity;
  *         will return: seconds, minutes, hours, day
  * @since 1.0
  */
-public class NaturalOrder<T extends Quantity<T>> implements Comparator<Quantity<T>> {
+public class NaturalQuantityComparator<T extends Quantity<T>> implements Comparator<Quantity<T>> {
 
   @Override
   public int compare(Quantity<T> q1, Quantity<T> q2) {

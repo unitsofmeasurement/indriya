@@ -158,7 +158,7 @@ public final class QuantityFunctions {
    */
   @SuppressWarnings("unchecked")
   public static <Q extends Quantity<Q>> Comparator<Quantity<Q>> sortNatural() {
-    return new NaturalOrder();
+    return new NaturalQuantityComparator();
   }
 
   /**

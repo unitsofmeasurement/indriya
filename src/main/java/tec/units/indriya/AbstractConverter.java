@@ -32,11 +32,13 @@ package tec.units.indriya;
 import javax.measure.UnitConverter;
 
 import tec.units.indriya.function.Converter;
+import tec.units.indriya.function.UnitComparator;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -299,7 +301,8 @@ public abstract class AbstractConverter implements UnitConverter, Converter<Numb
       }
       if (obj instanceof Pair) {
 		Pair that = (Pair) obj;
-        return Objects.compare(left, that.left) + Objects.compare(right, that.right);
+		Comparator c = new UnitComparator();
+        return Objects.compare(left, that.left, c) + Objects.compare(right, that.right, c);
 	  }
       return -1;
     }

@@ -41,7 +41,7 @@ import javax.measure.UnitConverter;
 import javax.measure.quantity.Dimensionless;
 
 import tec.units.indriya.format.QuantityFormat;
-import tec.units.indriya.function.NaturalOrder;
+import tec.units.indriya.function.NaturalQuantityComparator;
 import tec.units.indriya.quantity.Quantities;
 import tec.uom.lib.common.function.UnitSupplier;
 import tec.uom.lib.common.function.ValueSupplier;
@@ -235,11 +235,11 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
    *
    * @return a negative integer, zero, or a positive integer as this measure is less than, equal to, or greater than the specified Measurement
    *         quantity.
-   * @see {@link NaturalOrder}
+   * @see {@link NaturalQuantityComparator}
    */
   @Override
   public int compareTo(Quantity<Q> that) {
-    final Comparator<Quantity<Q>> comparator = new NaturalOrder<>();
+    final Comparator<Quantity<Q>> comparator = new NaturalQuantityComparator<>();
     return comparator.compare(this, that);
   }
 
