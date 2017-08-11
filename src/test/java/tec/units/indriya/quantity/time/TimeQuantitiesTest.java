@@ -210,7 +210,7 @@ public class TimeQuantitiesTest {
     public void inverseTemporalTest() {
 	TemporalQuantity tenSeconds = TemporalQuantity.of(10, SECONDS);
 	Quantity<Frequency> perTenSeconds = tenSeconds.inverse();
-	Assert.assertEquals(Double.valueOf(0.1d), perTenSeconds.getValue());
+	Assert.assertEquals(0.1d, perTenSeconds.getValue());
 	Assert.assertEquals(HERTZ.getConverterTo(perTenSeconds.getUnit()), 
 		perTenSeconds.getUnit().getConverterTo(HERTZ));
     }
