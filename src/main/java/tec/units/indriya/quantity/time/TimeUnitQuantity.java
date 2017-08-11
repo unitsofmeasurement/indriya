@@ -44,6 +44,7 @@ import javax.measure.Quantity;
 import javax.measure.UnconvertibleException;
 import javax.measure.Unit;
 import javax.measure.UnitConverter;
+import javax.measure.quantity.Frequency;
 import javax.measure.quantity.Time;
 
 import tec.units.indriya.AbstractQuantity;
@@ -90,12 +91,27 @@ public final class TimeUnitQuantity extends AbstractQuantity<Time> {
    *          - time to be used
    * @param value
    *          - value to be used
+   * @since 1.0.9
+   */
+  public static TimeUnitQuantity of(Integer number, TimeUnit timeUnit) {
+    return new TimeUnitQuantity(Objects.requireNonNull(timeUnit), Objects.requireNonNull(number));
+  }
+
+  
+  /**
+   * creates the {@link TimeUnitQuantity} using {@link TimeUnit} and {@link Integer}
+   * 
+   * @param timeUnit
+   *          - time to be used
+   * @param value
+   *          - value to be used
    * @since 1.0
+   * @deprecated use #of(Integer, TimeUnit)
    */
   public static TimeUnitQuantity of(TimeUnit timeUnit, Integer number) {
     return new TimeUnitQuantity(Objects.requireNonNull(timeUnit), Objects.requireNonNull(number));
   }
-
+  
   /**
    * Creates a {@link TimeUnitQuantity} based a {@link Quantity<Time>} converted to {@link SI#SECOND}.
    * 
@@ -299,8 +315,8 @@ public final class TimeUnitQuantity extends AbstractQuantity<Time> {
    * @since 1.0.1
    */
   @Override
-  public ComparableQuantity<?> inverse() {
-    return TimeQuantities.getQuantity(1 / value, timeUnit);
+  public ComparableQuantity<Frequency> inverse() {
+    return (Quantities.getQuantity(1.0 / value, toUnit(timeUnit).inverse())).asType(Frequency.class);
   }
 
   /**
