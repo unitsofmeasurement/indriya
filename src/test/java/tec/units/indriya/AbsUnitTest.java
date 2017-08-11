@@ -45,49 +45,49 @@ import tec.units.indriya.unit.MetricPrefix;
 import tec.units.indriya.unit.Units;
 
 public class AbsUnitTest {
-    private static final AbstractUnit<Length> sut = new BaseUnit<>("m");
+  private static final AbstractUnit<Length> sut = new BaseUnit<>("m");
 
-    @BeforeClass
-    public static void init() {
-	sut.setName("Test");
-    }
+  @BeforeClass
+  public static void init() {
+    sut.setName("Test");
+  }
 
-    @Test
-    public void testName() {
-	assertEquals("Test", sut.getName());
-    }
+  @Test
+  public void testName() {
+    assertEquals("Test", sut.getName());
+  }
 
-    @Test
-    public void testReturnedClass() {
-	// assertEquals("Q", String.valueOf(sut.getActualType())); // TODO we
-	// hope to get better type information like <Length> in future Java
-	// versions
-	assertEquals("java.lang.reflect.TypeVariable<D>", String.valueOf(sut.getActualType()));
-    }
+  @Test
+  public void testReturnedClass() {
+    // assertEquals("Q", String.valueOf(sut.getActualType())); // TODO we
+    // hope to get better type information like <Length> in future Java
+    // versions
+    assertEquals("java.lang.reflect.TypeVariable<D>", String.valueOf(sut.getActualType()));
+  }
 
-    @Test
-    public void testParse() {
-	assertEquals(MetricPrefix.KILO(Units.WATT), AbstractUnit.parse("kW"));
-    }
+  @Test
+  public void testParse() {
+    assertEquals(MetricPrefix.KILO(Units.WATT), AbstractUnit.parse("kW"));
+  }
 
-    @Test
-    public void testParse2() {
-	assertEquals(MetricPrefix.MILLI(Units.CELSIUS), AbstractUnit.parse("m°C"));
-    }
+  @Test
+  public void testParse2() {
+    assertEquals(MetricPrefix.MILLI(Units.CELSIUS), AbstractUnit.parse("m°C"));
+  }
 
-    @Test
-    public void testCompareTo() {
-	assertEquals(0, ((AbstractUnit) Units.KILOGRAM).compareTo(Units.KILOGRAM));
-    }
+  @Test
+  public void testCompareTo() {
+    assertEquals(0, ((AbstractUnit) Units.KILOGRAM).compareTo(Units.KILOGRAM));
+  }
 
-    @Test
-    public void testCompareToOther() {
-	assertEquals(-1, ((AbstractUnit) Units.KILOGRAM).compareTo(MetricPrefix.KILO(Units.GRAM)));
-    }
+  @Test
+  public void testCompareToOther() {
+    assertEquals(-1, ((AbstractUnit) Units.KILOGRAM).compareTo(MetricPrefix.KILO(Units.GRAM)));
+  }
 
   @Test
   public void testEquivalent() {
-	assertTrue((((AbstractUnit)MICRO(GRAM))).isEquivalentOf(GRAM.divide(1000).divide(1000)));
+    assertTrue((((AbstractUnit) MICRO(GRAM))).isEquivalentOf(GRAM.divide(1000).divide(1000)));
   }
 
 }

@@ -300,10 +300,10 @@ public abstract class AbstractConverter implements UnitConverter, Converter<Numb
         return 0;
       }
       if (obj instanceof Pair) {
-		Pair that = (Pair) obj;
-		Comparator c = new UnitComparator();
+        Pair that = (Pair) obj;
+        Comparator c = new UnitComparator();
         return Objects.compare(left, that.left, c) + Objects.compare(right, that.right, c);
-	  }
+      }
       return -1;
     }
   }

@@ -35,8 +35,7 @@ import javax.measure.Quantity;
 import javax.measure.Unit;
 
 /**
- * Unit specialized for the Java SE platform. It extends {@link Unit} with
- * {@linkplain Comparable} and {@linkplain Serializable }
+ * Unit specialized for the Java SE platform. It extends {@link Unit} with {@linkplain Comparable} and {@linkplain Serializable }
  * 
  * @see {@link Unit}
  * @author werner
@@ -45,31 +44,25 @@ import javax.measure.Unit;
  */
 public interface ComparableUnit<Q extends Quantity<Q>> extends Unit<Q>, Comparable<Unit<Q>>, Serializable {
 
-    /**
-     * Compares two instances of {@link Unit
-     * <Q>}, doing the conversion of unit if necessary.
-     *
-     * @param that
-     *            the {@code Unit<Q>} to be compared with this instance.
-     * @return {@code true} if {@code that < this}.
-     * @throws NullPointerException
-     *             if the unit is null
-     */
-    boolean isEquivalentOf(Unit<Q> that);
+  /**
+   * Compares two instances of {@link Unit <Q>}, doing the conversion of unit if necessary.
+   *
+   * @param that
+   *          the {@code Unit<Q>} to be compared with this instance.
+   * @return {@code true} if {@code that < this}.
+   * @throws NullPointerException
+   *           if the unit is null
+   */
+  boolean isEquivalentOf(Unit<Q> that);
 
-    /**
-     * Indicates if this unit belongs to the set of coherent SI units (unscaled
-     * SI units).
-     * 
-     * The base and coherent derived units of the SI form a coherent set,
-     * designated the set of coherent SI units. The word coherent is used here
-     * in the following sense: when coherent units are used, equations between
-     * the numerical values of quantities take exactly the same form as the
-     * equations between the quantities themselves. Thus if only units from a
-     * coherent set are used, conversion factors between units are never
-     * required.
-     * 
-     * @return <code>equals(toSystemUnit())</code>
-     */
-    boolean isSystemUnit();
+  /**
+   * Indicates if this unit belongs to the set of coherent SI units (unscaled SI units).
+   * 
+   * The base and coherent derived units of the SI form a coherent set, designated the set of coherent SI units. The word coherent is used here in the
+   * following sense: when coherent units are used, equations between the numerical values of quantities take exactly the same form as the equations
+   * between the quantities themselves. Thus if only units from a coherent set are used, conversion factors between units are never required.
+   * 
+   * @return <code>equals(toSystemUnit())</code>
+   */
+  boolean isSystemUnit();
 }

@@ -46,48 +46,46 @@ import tec.units.indriya.unit.MetricPrefix;
 import tec.units.indriya.unit.Units;
 
 public class UnitConverterTest {
-    private final Unit<Length> sourceUnit = METRE;
-    private final Unit<Length> targetUnit = CENTI(METRE);
+  private final Unit<Length> sourceUnit = METRE;
+  private final Unit<Length> targetUnit = CENTI(METRE);
 
-    @Test
-    public void testDouble() {
-	UnitConverter converter = sourceUnit.getConverterTo(targetUnit);
-	double length1 = 4.0;
-	double length2 = 6.0;
-	double result1 = converter.convert(length1);
-	double result2 = converter.convert(length2);
-	assertEquals(400, result1, 0);
-	assertEquals(600, result2, 0);
-    }
+  @Test
+  public void testDouble() {
+    UnitConverter converter = sourceUnit.getConverterTo(targetUnit);
+    double length1 = 4.0;
+    double length2 = 6.0;
+    double result1 = converter.convert(length1);
+    double result2 = converter.convert(length2);
+    assertEquals(400, result1, 0);
+    assertEquals(600, result2, 0);
+  }
 
-    @Test
-    public void testQuantity() {
-	Quantity<Length> quantLength1 = Quantities.getQuantity(4.0, sourceUnit);
-	// Quantity<Length> quantLength2 = Quantities.getQuantity(6.0,
-	// targetUnit);
-	Quantity<Length> quantResult1 = quantLength1.to(targetUnit);
-	assertNotNull(quantResult1);
-	assertEquals(400.0, quantResult1.getValue());
-	assertEquals(targetUnit, quantResult1.getUnit());
-    }
+  @Test
+  public void testQuantity() {
+    Quantity<Length> quantLength1 = Quantities.getQuantity(4.0, sourceUnit);
+    // Quantity<Length> quantLength2 = Quantities.getQuantity(6.0,
+    // targetUnit);
+    Quantity<Length> quantResult1 = quantLength1.to(targetUnit);
+    assertNotNull(quantResult1);
+    assertEquals(400.0, quantResult1.getValue());
+    assertEquals(targetUnit, quantResult1.getUnit());
+  }
 
-    @Test
-    public void testKelvinToCelsius() {
-	Quantity<Temperature> sut = Quantities.getQuantity(273.15d, Units.KELVIN).to(Units.CELSIUS);
-	assertNotNull(sut);
-	assertEquals(Units.CELSIUS, sut.getUnit());
-	assertEquals(0d, sut.getValue());
-    }
+  @Test
+  public void testKelvinToCelsius() {
+    Quantity<Temperature> sut = Quantities.getQuantity(273.15d, Units.KELVIN).to(Units.CELSIUS);
+    assertNotNull(sut);
+    assertEquals(Units.CELSIUS, sut.getUnit());
+    assertEquals(0d, sut.getValue());
+  }
 
-    @Test
-    public void testConverterTo() {
-	assertEquals(Units.KILOGRAM.getConverterTo(MetricPrefix.KILO(Units.GRAM)),
-		MetricPrefix.KILO(Units.GRAM).getConverterTo(Units.KILOGRAM));
-    }
+  @Test
+  public void testConverterTo() {
+    assertEquals(Units.KILOGRAM.getConverterTo(MetricPrefix.KILO(Units.GRAM)), MetricPrefix.KILO(Units.GRAM).getConverterTo(Units.KILOGRAM));
+  }
 
-    @Test
-    public void testChainedOps() {
-	assertEquals(MICRO(GRAM).getConverterTo(GRAM.divide(1000).divide(1000)),
-		GRAM.divide(1000).divide(1000).getConverterTo(MICRO(GRAM)));
-    }
+  @Test
+  public void testChainedOps() {
+    assertEquals(MICRO(GRAM).getConverterTo(GRAM.divide(1000).divide(1000)), GRAM.divide(1000).divide(1000).getConverterTo(MICRO(GRAM)));
+  }
 }

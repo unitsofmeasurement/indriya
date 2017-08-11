@@ -65,8 +65,7 @@ public final class Quantities {
    * </code>
    *
    * <p>
-   * Note: This method handles only Locale-neutral quantity formatting and parsing are handled by the {@link QuantityFormat}
-   * class and its subclasses.
+   * Note: This method handles only Locale-neutral quantity formatting and parsing are handled by the {@link QuantityFormat} class and its subclasses.
    * </p>
    *
    * @param csq
