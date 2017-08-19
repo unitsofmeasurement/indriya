@@ -97,7 +97,6 @@ public final class TimeUnitQuantity extends AbstractQuantity<Time> {
     return new TimeUnitQuantity(Objects.requireNonNull(timeUnit), Objects.requireNonNull(number));
   }
 
-  
   /**
    * creates the {@link TimeUnitQuantity} using {@link TimeUnit} and {@link Integer}
    * 
@@ -111,7 +110,7 @@ public final class TimeUnitQuantity extends AbstractQuantity<Time> {
   public static TimeUnitQuantity of(TimeUnit timeUnit, Integer number) {
     return new TimeUnitQuantity(Objects.requireNonNull(timeUnit), Objects.requireNonNull(number));
   }
-  
+
   /**
    * Creates a {@link TimeUnitQuantity} based a {@link Quantity<Time>} converted to {@link SI#SECOND}.
    * 
