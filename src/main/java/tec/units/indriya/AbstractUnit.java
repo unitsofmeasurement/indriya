@@ -69,8 +69,8 @@ import java.lang.reflect.Type;
 public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableUnit<Q> {
 
   /**
-     * 
-     */
+   * 
+   */
   private static final long serialVersionUID = -4344589505537030204L;
 
   /**
