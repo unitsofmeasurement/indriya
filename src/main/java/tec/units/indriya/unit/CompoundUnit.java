@@ -41,7 +41,7 @@ import javax.measure.Unit;
 
 /**
  * <p>
- * This class represents the multi-radix units (such as "hour:min:sec"). Instances of this class are created using the {@link Unit#compound
+ * This class represents the multi-radix units (such as "hour:min:sec" or "ft, in"). Instances of this class are created using the {@link Unit#compound
  * Unit.compound} method.
  * </p>
  * 
@@ -51,13 +51,14 @@ import javax.measure.Unit;
  * </p>
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
- * @version 1.4.2, August 06, 2017
+ * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
+ * @version 1.4.3, August 23, 2017
  */
 public final class CompoundUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
 
   /**
-     * 
-     */
+   * 
+   */
   private static final long serialVersionUID = -6588505921476784171L;
 
   /**
