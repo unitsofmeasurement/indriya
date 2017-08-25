@@ -79,6 +79,17 @@ public final class BaseUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
    * @param symbol
    *          the symbol of this base unit.
    */
+  public BaseUnit(String symbol, Dimension dimension, Q quant) {
+    this.symbol = symbol;
+    this.dimension = dimension;
+  }
+  
+  /**
+   * Creates a base unit having the specified symbol and dimension.
+   *
+   * @param symbol
+   *          the symbol of this base unit.
+   */
   public BaseUnit(String symbol, Dimension dimension) {
     this.symbol = symbol;
     this.dimension = dimension;
