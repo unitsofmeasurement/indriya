@@ -41,8 +41,8 @@ import javax.measure.Unit;
 
 /**
  * <p>
- * This class represents the multi-radix units (such as "hour:min:sec" or "ft, in"). Instances of this class are created using the {@link Unit#compound
- * Unit.compound} method.
+ * This class represents the multi-radix units (such as "hour:min:sec" or "ft, in"). Instances of this class are created using the
+ * {@link Unit#compound Unit.compound} method.
  * </p>
  * 
  * <p>
@@ -52,7 +52,7 @@ import javax.measure.Unit;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.4.3, August 23, 2017
+ * @version 1.4.4, September 19, 2017
  */
 public final class CompoundUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
 
@@ -123,7 +123,7 @@ public final class CompoundUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
       return this.higher.equals(thatUnit.higher) && this.lower.equals(thatUnit.lower);
     }
     if (obj instanceof AbstractUnit) {
-      return AbstractUnit.Equalizer.areEqual(this, (AbstractUnit) obj);
+      return AbstractUnit.Equalizer.areEqual(this, (AbstractUnit<?>) obj);
     } else {
       return false;
     }
@@ -136,7 +136,7 @@ public final class CompoundUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
 
   @Override
   public UnitConverter getSystemConverter() {
-    return ((AbstractUnit) lower).getSystemConverter();
+    return ((AbstractUnit<?>) lower).getSystemConverter();
   }
 
   @Override
