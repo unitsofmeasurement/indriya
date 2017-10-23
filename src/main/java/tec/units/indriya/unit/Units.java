@@ -81,7 +81,7 @@ import javax.measure.spi.SystemOfUnits;
  * This class defines commonly used units.
  *
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.0.4, June 6, 2017
+ * @version 1.0.5, October 23, 2017
  * @since 1.0
  */
 public class Units extends AbstractSystemOfUnits implements Nameable {
@@ -382,7 +382,7 @@ public class Units extends AbstractSystemOfUnits implements Nameable {
   /**
    * A time unit accepted for use with SI units (standard name <code>y</code> ).
    */
-  public static final Unit<Time> YEAR = addUnit(Units.DAY.multiply(365.2525));
+  public static final Unit<Time> YEAR = addUnit(Units.DAY.multiply(365.2425));
 
   /**
    * An angle unit accepted for use with SI units (standard name <code>deg</code>).

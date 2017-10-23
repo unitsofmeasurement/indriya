@@ -101,8 +101,7 @@ public class QuantitiesTest {
     Quantity<Time> second = minute.to(Units.SECOND);
     BigDecimal value = (BigDecimal) second.getValue();
     value.setScale(4, RoundingMode.HALF_EVEN);
-    BigDecimal expected = BigDecimal.valueOf(31557816);
+    BigDecimal expected = BigDecimal.valueOf(31556952);
     Assert.assertEquals(expected.setScale(4, RoundingMode.HALF_EVEN), value.setScale(4, RoundingMode.HALF_EVEN));
   }
-
 }
