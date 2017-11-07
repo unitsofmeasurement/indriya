@@ -25,9 +25,9 @@
  */
 package tec.units.indriya.model;
 
-import org.unitsofmeasurement.ri.AbstractDimension;
-import org.unitsofmeasurement.ri.function.AbstractConverter;
-import org.unitsofmeasurement.ri.function.RationalConverter;
+import tec.units.indriya.AbstractDimension;
+import tec.units.indriya.function.AbstractConverter;
+import tec.units.indriya.function.RationalConverter;
 
 /**
  * This class represents the relativistic model.
