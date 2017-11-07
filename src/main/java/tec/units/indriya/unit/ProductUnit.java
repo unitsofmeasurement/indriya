@@ -107,7 +107,7 @@ public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
    */
   private ProductUnit(Element[] elements) {
     this.elements = elements;
-    // this.symbol = elements[0].getUnit().getSymbol(); // FIXME this should contain ALL
+    // this.symbol = elements[0].getUnit().getSymbol(); // FIXME this should contain ALL elements
     this.symbol = null;
   }
 
