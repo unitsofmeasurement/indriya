@@ -10,7 +10,7 @@
 		<name>Units of Measurement project</name>
 		<url>http://unitsofmeasurement.github.io</url>
 	</organization>
-	<version>1.1-SNAPSHOT</version>
+	<version>1.0-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 	<parent>
 		<groupId>tec.uom</groupId>
