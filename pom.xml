@@ -15,7 +15,7 @@
 	<parent>
 		<groupId>tec.uom</groupId>
 		<artifactId>uom-parent</artifactId>
-		<version>1.0.4</version>
+		<version>1.0.5-SNAPSHOT</version>
 	</parent>
 	<scm>
 		<url>https://github.com/unitsofmeasurement/indriya.git</url>
