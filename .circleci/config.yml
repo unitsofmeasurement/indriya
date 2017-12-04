@@ -4,7 +4,7 @@
 #
 version: 2
 jobs:
-  build:
+  clean:
     docker:
       # specify the version you desire here
       - image: circleci/openjdk:8-jdk
@@ -38,8 +38,8 @@ jobs:
           key: v1-dependencies-{{ checksum "pom.xml" }}
         
       # run coverage!
-      - run: mvn cobertura:cobertura
-  test:
+      - run: mvn clean
+  build:
     docker:
       # specify the version you desire here
       - image: circleci/openjdk:8-jdk
@@ -73,7 +73,7 @@ jobs:
           key: v1-dependencies-{{ checksum "pom.xml" }}
         
       # run tests!
-      - run: mvn integration-test
+      - run: mvn cobertura:cobertura
       
       - run: bash <(curl -s https://codecov.io/bash)
   coverage:
@@ -113,9 +113,9 @@ jobs:
       - run: bash <(curl -s https://codecov.io/bash)
 workflows:
   version: 2
-  build_and_test_withCoverage:
+  clean_build:
     jobs:
-      - build
-      - test:
+      - clean
+      - build:
           requires:
-            - build
+            - clean
