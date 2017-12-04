@@ -114,9 +114,9 @@ workflows:
   build_and_test_withCoverage:
     jobs:
       - build
-      - test
+      - test:
           requires:
             - build
-      - coverage
+      - coverage:
           requires:
             - test
