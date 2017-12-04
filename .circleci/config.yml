@@ -74,6 +74,8 @@ jobs:
         
       # run tests!
       - run: mvn integration-test
+      
+      - run: bash <(curl -s https://codecov.io/bash)
   coverage:
     docker:
       # specify the version you desire here
@@ -117,6 +119,3 @@ workflows:
       - test:
           requires:
             - build
-      - coverage:
-          requires:
-            - test
