@@ -41,7 +41,7 @@ import javax.measure.Unit;
 
 /**
  * <p>
- * This class represents the multi-radix units (such as "hour:min:sec" or "ft, in"). Instances of this class are created using the
+ * This class represents multi-radix units (such as "hour:min:sec" or "ft, in"). Instances of this class are created using the
  * {@link Unit#compound Unit.compound} method.
  * </p>
  * 
