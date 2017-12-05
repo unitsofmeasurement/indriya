@@ -285,6 +285,7 @@
 					<excludes>
 						<exclude>**/README</exclude>
 						<exclude>**/pom.xml</exclude>
+						<exclude>**/.circleci/**</exclude>
 						<exclude>**/settings.xml</exclude>
 						<exclude>src/test/resources/**</exclude>
 						<exclude>src/main/resources/**</exclude>
