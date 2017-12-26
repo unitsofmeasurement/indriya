@@ -33,11 +33,12 @@ import javax.measure.UnitConverter;
 
 /**
  * <p>
- * This interface defines a prefix for units.
+ * A unit prefix is a specifier or mnemonic that is prepended to units of measurement to indicate multiples or fractions of the units.
  * 
+ * @see <a href="https://en.wikipedia.org/wiki/Unit_prefix">Wikipedia: Unit Prefix</a>
  * @see <a href="http://en.wikipedia.org/wiki/Metric_prefix">Wikipedia: Metric Prefix</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 0.1, 2017-12-24
+ * @version 0.2, 2017-12-26
  */
 interface Prefix {
   // TODO consider pulling SymbolSupplier and maybe UnitFormatSupplier into the API
