@@ -1,6 +1,6 @@
 /*
  * Next Generation Units of Measurement Implementation
- * Copyright (c) 2005-2017, Jean-Marie Dautelle, Werner Keil, V2COM.
+ * Copyright (c) 2005-2017, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
  *
  * All rights reserved.
  *
@@ -52,7 +52,7 @@ import tec.uom.lib.common.function.Parser;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.0.1, $Date: 2017-07-10 $
+ * @version 1.0.2, $Date: 2017-12-25 $
  * @since 1.0
  * 
  */
@@ -162,7 +162,7 @@ public abstract class QuantityFormat extends Format implements Parser<CharSequen
    *           if any problem occurs while parsing the specified character sequence (e.g. illegal syntax).
    */
   @Override
-  public abstract ComparableQuantity<?> parse(CharSequence csq) throws IllegalArgumentException, ParserException;
+  public abstract ComparableQuantity<?> parse(CharSequence csq) throws ParserException;
 
   /**
    * Parses a portion of the specified <code>CharSequence</code> from the specified position to produce an object. If parsing succeeds, then the index

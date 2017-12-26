@@ -1,6 +1,6 @@
 /*
  * Next Generation Units of Measurement Implementation
- * Copyright (c) 2005-2017, Jean-Marie Dautelle, Werner Keil, V2COM.
+ * Copyright (c) 2005-2017, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
  *
  * All rights reserved.
  *
@@ -60,9 +60,10 @@ import java.math.BigInteger;
  * @see <a href="http://en.wikipedia.org/wiki/Metric_prefix">Wikipedia: Metric Prefix</a>
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 0.9, 2015-12-30
+ * @version 1.0, 2017-12-25
+ * @since 1.0
  */
-public enum MetricPrefix implements SymbolSupplier, UnitConverterSupplier {
+public enum MetricPrefix implements SymbolSupplier, UnitConverterSupplier, Prefix {
   YOTTA("Y", new RationalConverter(BigInteger.TEN.pow(24), BigInteger.ONE)), ZETTA("Z", new RationalConverter(BigInteger.TEN.pow(21), BigInteger.ONE)), EXA(
       "E", new RationalConverter(BigInteger.TEN.pow(18), BigInteger.ONE)), PETA("P", new RationalConverter(BigInteger.TEN.pow(15), BigInteger.ONE)), TERA(
       "T", new RationalConverter(BigInteger.TEN.pow(12), BigInteger.ONE)), GIGA("G", new RationalConverter(BigInteger.TEN.pow(9), BigInteger.ONE)), MEGA(

@@ -27,60 +27,32 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package tec.units.indriya.function;
+package tec.units.indriya.unit;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
+import javax.measure.UnitConverter;
 
-import tec.units.indriya.function.ExpConverter;
-import tec.units.indriya.function.LogConverter;
+/**
+ * <p>
+ * This interface defines a prefix for units.
+ * 
+ * @see <a href="http://en.wikipedia.org/wiki/Metric_prefix">Wikipedia: Metric Prefix</a>
+ * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
+ * @version 0.1, 2017-12-24
+ */
+interface Prefix {
+  // TODO consider pulling SymbolSupplier and maybe UnitFormatSupplier into the API
 
-public class LogConverterTest {
+  /**
+   * Returns the symbol of this prefix.
+   *
+   * @return this prefix symbol, not {@code null}.
+   */
+  public String getSymbol();
 
-  private LogConverter logConverterBase10;
-
-  @Before
-  public void setUp() throws Exception {
-    logConverterBase10 = new LogConverter(10.);
-  }
-
-  @Test
-  public void testBaseUnmodified() {
-    assertEquals(10., logConverterBase10.getBase(), 0.);
-  }
-
-  @Test
-  public void testEqualityOfTwoLogConverter() {
-    LogConverter logConverter = new LogConverter(10.);
-    assertTrue(logConverter.equals(logConverterBase10));
-    assertTrue(!logConverter.equals(null));
-  }
-
-  @Test
-  public void testGetValueLogConverter() {
-    LogConverter logConverter = new LogConverter(Math.E);
-    assertEquals("Log(10.0)", logConverterBase10.getValue());
-    assertEquals("ln", logConverter.getValue());
-  }
-
-  @Test
-  public void isLinearOfLogConverterTest() {
-    assertTrue(!logConverterBase10.isLinear());
-  }
-
-  @Test
-  public void convertLogTest() {
-    assertEquals(1, logConverterBase10.convert(10), 0.);
-    assertEquals(Double.NaN, logConverterBase10.convert(-10), 0.);
-    assertTrue(Double.isInfinite(logConverterBase10.convert(0)));
-  }
-
-  @Test
-  public void inverseLogTest() {
-    LogConverter logConverter = new LogConverter(Math.E);
-    assertEquals(new ExpConverter(10.), logConverterBase10.inverse());
-    assertEquals(new ExpConverter(Math.E), logConverter.inverse());
-  }
+  /**
+   * Returns the corresponding unit converter.
+   *
+   * @return the unit converter.
+   */
+  public UnitConverter getConverter();
 }

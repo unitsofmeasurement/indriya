@@ -1,6 +1,6 @@
 /*
  * Next Generation Units of Measurement Implementation
- * Copyright (c) 2005-2017, Jean-Marie Dautelle, Werner Keil, V2COM.
+ * Copyright (c) 2005-2017, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
  *
  * All rights reserved.
  *

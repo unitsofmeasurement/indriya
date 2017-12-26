@@ -1,6 +1,6 @@
 /*
  * Next Generation Units of Measurement Implementation
- * Copyright (c) 2005-2017, Jean-Marie Dautelle, Werner Keil, V2COM.
+ * Copyright (c) 2005-2017, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
  *
  * All rights reserved.
  *
@@ -49,7 +49,7 @@ import java.util.Objects;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.1, August 7, 2017
+ * @version 1.2, Decmber 25, 2017
  * @since 1.0
  */
 public abstract class AbstractConverter implements UnitConverter, Converter<Number, Number>, Serializable, Comparable<UnitConverter> {
@@ -294,6 +294,7 @@ public abstract class AbstractConverter implements UnitConverter, Converter<Numb
       return right;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public int compareTo(UnitConverter obj) {
       if (this == obj) {
@@ -301,7 +302,8 @@ public abstract class AbstractConverter implements UnitConverter, Converter<Numb
       }
       if (obj instanceof Pair) {
         Pair that = (Pair) obj;
-        Comparator c = new UnitComparator();
+        @SuppressWarnings("rawtypes")
+        Comparator c = new UnitComparator<>();
         return Objects.compare(left, that.left, c) + Objects.compare(right, that.right, c);
       }
       return -1;
