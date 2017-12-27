@@ -53,7 +53,7 @@ import java.util.Objects;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.3.1, August 06, 2017
+ * @version 1.3.2, Dezember 27, 2017
  * @since 1.0
  */
 public final class AnnotatedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
@@ -97,7 +97,7 @@ public final class AnnotatedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> 
   }
 
   /**
-   * Returns the annotqtion of this annotated unit.
+   * Returns the annotation of this annotated unit.
    *
    * @return the annotation.
    */

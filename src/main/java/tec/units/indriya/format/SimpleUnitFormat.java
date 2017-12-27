@@ -49,7 +49,9 @@ import tec.units.indriya.function.AddConverter;
 import tec.units.indriya.function.MultiplyConverter;
 import tec.units.indriya.function.RationalConverter;
 import tec.units.indriya.unit.AlternateUnit;
+import tec.units.indriya.unit.AnnotatedUnit;
 import tec.units.indriya.unit.BaseUnit;
+import tec.units.indriya.unit.CompoundUnit;
 import tec.units.indriya.unit.MetricPrefix;
 import tec.units.indriya.unit.ProductUnit;
 import tec.units.indriya.unit.TransformedUnit;
@@ -72,7 +74,7 @@ import tec.units.indriya.unit.Units;
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
  * @author Eric Russell
- * @version 1.0.3, June 7, 2017
+ * @version 1.1, December 27, 2017
  * @since 1.0
  */
 public abstract class SimpleUnitFormat extends AbstractUnitFormat {
@@ -227,10 +229,10 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
    */
   public final StringBuffer format(Object unit, final StringBuffer toAppendTo, FieldPosition pos) {
     try {
-      Object dest = toAppendTo;
+      final Object dest = toAppendTo;
       if (dest instanceof Appendable) {
         format((Unit<?>) unit, (Appendable) dest);
-      } else { // When retroweaver is used to produce 1.4 binaries.
+      } else { // When retroweaver is used to produce 1.4 binaries. TODO is this still relevant?
         format((Unit<?>) unit, new Appendable() {
 
           public Appendable append(char arg0) throws IOException {
@@ -391,12 +393,25 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
         }
         return result.toString();
       }
+      if (unit instanceof AnnotatedUnit<?>) {
+        AnnotatedUnit<?> annotatedUnit = (AnnotatedUnit<?>) unit;
+        final StringBuilder annotable = new StringBuilder(nameFor(annotatedUnit.getActualUnit()));
+        if (annotatedUnit.getAnnotation() != null) {
+          annotable.append('{'); // TODO maybe also configure this one similar to Compound separator
+          annotable.append(annotatedUnit.getAnnotation());
+          annotable.append('}');
+        }
+        return annotable.toString();
+      }
       // Compound unit.
-      // if (unit instanceof CompoundUnit) {
-      // CompoundUnit<?> cpdUnit = (CompoundUnit<?>) unit;
-      // return nameFor(cpdUnit.getHigher()).toString() + ":"
-      // + nameFor(cpdUnit.getLower());
-      // }
+      if (unit instanceof CompoundUnit) {
+        CompoundUnit<?> cpdUnit = (CompoundUnit<?>) unit;
+        final StringBuilder compoundable = new StringBuilder();
+        compoundable.append(nameFor(cpdUnit.getUpper()));
+        compoundable.append(":"); // FIXME we need a more flexible pattern here
+        compoundable.append(nameFor(cpdUnit.getLower()));
+        return compoundable.toString();
+      }
       return null; // Product unit.
     }
 

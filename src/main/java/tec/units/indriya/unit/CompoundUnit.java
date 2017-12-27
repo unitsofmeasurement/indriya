@@ -52,7 +52,8 @@ import javax.measure.Unit;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.4.5, December 5, 2017
+ * @version 1.5, December 27, 2017
+ * @deprecated This class may be subject to change with the next version of the API.
  */
 // TODO will update @since after 1.0. This class is considered a preview until 2.0.
 public final class CompoundUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
@@ -63,9 +64,9 @@ public final class CompoundUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
   private static final long serialVersionUID = -6588505921476784171L;
 
   /**
-   * Holds the higher unit.
+   * Holds the upper unit.
    */
-  private final Unit<Q> higher;
+  private final Unit<Q> upper;
 
   /**
    * Holds the lower unit.
@@ -75,17 +76,17 @@ public final class CompoundUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
   /**
    * Creates a compound unit from the specified units.
    *
-   * @param high
-   *          the high unit.
+   * @param up
+   *          the upper unit.
    * @param low
    *          the lower unit(s)
    * @throws IllegalArgumentException
    *           if both units do not the same system unit.
    */
-  CompoundUnit(Unit<Q> high, Unit<Q> low) {
-    if (!high.getSystemUnit().equals(low.getSystemUnit()))
+  public CompoundUnit(Unit<Q> up, Unit<Q> low) {
+    if (!up.getSystemUnit().equals(low.getSystemUnit()))
       throw new IllegalArgumentException("Both units do not have the same system unit");
-    higher = high;
+    upper = up;
     lower = low;
   }
 
@@ -99,12 +100,12 @@ public final class CompoundUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
   }
 
   /**
-   * Returns the higher unit of this compound unit.
+   * Returns the upper unit of this compound unit.
    *
-   * @return the higher unit.
+   * @return the upper unit.
    */
-  public Unit<Q> getHigher() {
-    return higher;
+  public Unit<Q> getUpper() {
+    return upper;
   }
 
   /**
@@ -121,7 +122,7 @@ public final class CompoundUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
     }
     if (obj instanceof CompoundUnit) {
       CompoundUnit<?> thatUnit = (CompoundUnit<?>) obj;
-      return this.higher.equals(thatUnit.higher) && this.lower.equals(thatUnit.lower);
+      return this.upper.equals(thatUnit.upper) && this.lower.equals(thatUnit.lower);
     }
     if (obj instanceof AbstractUnit) {
       return AbstractUnit.Equalizer.areEqual(this, (AbstractUnit<?>) obj);
@@ -132,7 +133,7 @@ public final class CompoundUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
 
   @Override
   public int hashCode() {
-    return higher.hashCode() ^ lower.hashCode();
+    return upper.hashCode() ^ lower.hashCode();
   }
 
   @Override

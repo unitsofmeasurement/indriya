@@ -145,7 +145,7 @@ import java.util.ResourceBundle;
  * 
  * @author <a href="mailto:eric-r@northwestern.edu">Eric Russell</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.0.3, $Date: 2017-03-18 $
+ * @version 1.0.4, $Date: 2017-12-27 $
  * @since 1.0
  */
 public class EBNFUnitFormat extends AbstractUnitFormat {
@@ -236,6 +236,7 @@ public class EBNFUnitFormat extends AbstractUnitFormat {
         appendable.append('}');
       }
     }
+    // TODO add support for CompoundUnit similar to AnnotatedUnit
     return appendable;
   }
 

@@ -33,6 +33,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static tec.units.indriya.unit.MetricPrefix.MICRO;
 import static tec.units.indriya.unit.Units.GRAM;
+import static tec.units.indriya.unit.Units.KILOGRAM;
 
 import javax.measure.quantity.Length;
 
@@ -88,6 +89,26 @@ public class AbsUnitTest {
   @Test
   public void testEquivalent() {
     assertTrue((((AbstractUnit) MICRO(GRAM))).isEquivalentOf(GRAM.divide(1000).divide(1000)));
+  }
+
+  @Test
+  public void testAnnotate() {
+    assertEquals("g{Gr}", (((AbstractUnit) GRAM).annotate("Gr")).toString());
+  }
+
+  @Test
+  public void testAnnotateClass() {
+    assertEquals("tec.units.indriya.unit.AnnotatedUnit", (((AbstractUnit) GRAM).annotate("Gr")).getClass().getName());
+  }
+
+  @Test
+  public void testCompound() {
+    assertEquals("kg:g", (((AbstractUnit) KILOGRAM).compound(GRAM)).toString());
+  }
+
+  @Test
+  public void testCompoundClass() {
+    assertEquals("tec.units.indriya.unit.CompoundUnit", (((AbstractUnit) KILOGRAM).compound(GRAM)).getClass().getName());
   }
 
 }

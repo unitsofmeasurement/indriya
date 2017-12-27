@@ -40,6 +40,7 @@ import tec.units.indriya.quantity.QuantityDimension;
 import tec.units.indriya.spi.DimensionalModel;
 import tec.units.indriya.unit.AlternateUnit;
 import tec.units.indriya.unit.AnnotatedUnit;
+import tec.units.indriya.unit.CompoundUnit;
 import tec.units.indriya.unit.ProductUnit;
 import tec.units.indriya.unit.TransformedUnit;
 
@@ -155,6 +156,21 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
    */
   public Unit<Q> annotate(String annotation) {
     return new AnnotatedUnit<>(this, annotation);
+  }
+
+  /**
+   * Returns the combination of this unit with the specified sub-unit. Compound units are typically used for formatting purpose. Examples of compound
+   * units:<code> 
+   *     Unit<Length> FOOT_INCH = FOOT.compound(INCH);
+   *     Unit<Time> HOUR_MINUTE_SECOND = HOUR.compound(MINUTE).compound(SECOND);
+   * </code>
+   * 
+   * @param that
+   *          the least significant unit to combine with this unit.
+   * @return the corresponding compound unit.
+   */
+  public final Unit<Q> compound(Unit<Q> that) {
+    return new CompoundUnit<Q>(this, that);
   }
 
   /**

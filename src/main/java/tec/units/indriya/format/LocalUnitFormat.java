@@ -367,6 +367,7 @@ public class LocalUnitFormat extends AbstractUnitFormat {
       // } else if (unit instanceof ProductUnit<?>) {
       // ProductUnit<?> p = (ProductUnit<?>)unit;
     }
+    // TODO is the behavior similar to EBNFUnitFormat for AnnotatedUnit?
     String symbol = symbolMap.getSymbol((AbstractUnit<?>) unit);
     if (symbol != null) {
       buffer.append(symbol);
