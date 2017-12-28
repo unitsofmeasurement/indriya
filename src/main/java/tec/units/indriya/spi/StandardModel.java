@@ -39,11 +39,6 @@ package tec.units.indriya.spi;
  * </p>
  * 
  * <p>
- * Models are {@link javolution.context.LocalContext context-local}, allowing multiple models to be used concurrently. For example:[code]
- * LocalContext.enter(); try { RelativisticModel.select(); // Affects the current thread only. ... } finally { LocalContext.exit(); }[/code]
- * </p>
- * 
- * <p>
  * The names and characteristics of the models are presented in the following table:
  * </p>
  * 
@@ -123,7 +118,8 @@ package tec.units.indriya.spi;
  * This class represents the standard model.
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
- * @version 0.7.1, November 7, 2017
+ * @version 1.0, December 28, 2017
+ * @since 1.0
  */
 class StandardModel extends DimensionalModel {
 
