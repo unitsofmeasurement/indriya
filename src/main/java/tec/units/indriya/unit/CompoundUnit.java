@@ -53,7 +53,7 @@ import javax.measure.Unit;
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
  * @version 1.5, December 27, 2017
- * @deprecated This class may be subject to change with the next version of the API.
+ * @deprecated This class may be subject to change with the next version of the API/RI.
  */
 // TODO will update @since after 1.0. This class is considered a preview until 2.0.
 public final class CompoundUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {

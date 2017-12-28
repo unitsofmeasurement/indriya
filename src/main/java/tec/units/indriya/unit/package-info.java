@@ -76,7 +76,7 @@
  *
  * <h3>Unit Parameterization</h3>
  *
- *     CommonUnits are parameterized enforce compile-time checks of units/measures consistency, for example:[code]
+ *     CommonUnits are parameterized enforce compile-time checks of units/measures consistency, for example:<code>
  *
  *     Unit<Time> MINUTE = SECOND.times(60); // Ok.
  *     tUnit<Time> MINUTE = METRE.times(60); // Compile error.
@@ -89,7 +89,7 @@
  *
  *     long milliseconds = duration.longValue(MILLI(SECOND)); // Ok.
  *     long milliseconds = duration.longValue(POUND); // Compile error.
- *     [/code]
+ *     </code>
  *
  *     Runtime checks of dimension consistency can be done for more complex cases.
  *

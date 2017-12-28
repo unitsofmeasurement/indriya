@@ -76,7 +76,7 @@
  *
  * <h3>Unit Parameterization</h3>
  *
- *     CommonUnits are parameterized enforce compile-time checks of units/measures consistency, for example:[code]
+ *     CommonUnits are parameterized enforce compile-time checks of units/measures consistency, for example:<code>
  *
  *     AbstractUnit<Time> MINUTE = SECOND.times(60); // Ok.
  *     AbstractUnit<Time> MINUTE = METRE.times(60); // Compile error.
@@ -89,22 +89,23 @@
  *
  *     long milliseconds = duration.longValue(MILLI(SECOND)); // Ok.
  *     long milliseconds = duration.longValue(POUND); // Compile error.
- *     [/code]
+ *     </code>
  *
  *     Runtime checks of dimension consistency can be done for more complex cases.
  *
- *     [code]
+ *     <code>
  *     AbstractUnit<Area> SQUARE_FOOT = FOOT.times(FOOT).asType(Area.class); // Ok.
  *     AbstractUnit<Area> SQUARE_FOOT = FOOT.times(KELVIN).asType(Area.class); // Runtime error.
  *
  *     AbstractUnit<Temperature> KELVIN = AbstractUnit.of("K").asType(Temperature.class); // Ok.
  *     AbstractUnit<Temperature> KELVIN = AbstractUnit.of("kg").asType(Temperature.class); // Runtime error.
- *     [/code]
+ *     </code>
  *     </p>
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 0.2
+ * @version 1.0
+ * @since 1.0
  */
 package tec.units.indriya;
 

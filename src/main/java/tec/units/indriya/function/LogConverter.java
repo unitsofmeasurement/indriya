@@ -29,7 +29,6 @@
  */
 package tec.units.indriya.function;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.Objects;
@@ -41,13 +40,13 @@ import tec.uom.lib.common.function.ValueSupplier;
 
 /**
  * <p>
- * This class represents a logarithmic converter of limited precision. Such converter is typically used to create logarithmic unit. For example:[code]
- * Unit<Dimensionless> BEL = Unit.ONE.transform(new LogConverter(10).inverse()); [/code]
- * </p>
+ * This class represents a logarithmic converter of limited precision. Such converter is typically used to create logarithmic unit. For example:<code>
+ * Unit<Dimensionless> BEL = Unit.ONE.transform(new LogConverter(10).inverse()); </code>
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.0, October 10, 2016
+ * @version 1.0.1, December 28, 2017
+ * @since 1.0
  */
 public final class LogConverter extends AbstractConverter implements ValueSupplier<String> { // implements
   // Immutable<String>

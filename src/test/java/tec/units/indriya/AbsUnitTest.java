@@ -34,6 +34,9 @@ import static org.junit.Assert.assertTrue;
 import static tec.units.indriya.unit.MetricPrefix.MICRO;
 import static tec.units.indriya.unit.Units.GRAM;
 import static tec.units.indriya.unit.Units.KILOGRAM;
+import static tec.units.indriya.unit.Units.HOUR;
+import static tec.units.indriya.unit.Units.MINUTE;
+import static tec.units.indriya.unit.Units.SECOND;
 
 import javax.measure.quantity.Length;
 
@@ -101,14 +104,23 @@ public class AbsUnitTest {
     assertEquals("tec.units.indriya.unit.AnnotatedUnit", (((AbstractUnit) GRAM).annotate("Gr")).getClass().getName());
   }
 
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   @Test
   public void testCompound() {
     assertEquals("kg:g", (((AbstractUnit) KILOGRAM).compound(GRAM)).toString());
   }
 
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   @Test
   public void testCompoundClass() {
     assertEquals("tec.units.indriya.unit.CompoundUnit", (((AbstractUnit) KILOGRAM).compound(GRAM)).getClass().getName());
   }
 
+  @SuppressWarnings("unchecked")
+  @Test
+  public void testCompound2() {
+    @SuppressWarnings("rawtypes")
+    final AbstractUnit hourMin = (AbstractUnit) ((AbstractUnit) HOUR).compound(MINUTE);
+    assertEquals("h:min:s", hourMin.compound(SECOND).toString());
+  }
 }
