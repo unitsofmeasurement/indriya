@@ -57,7 +57,7 @@
  *         System.out.println(KILO(METRE).getConverterTo(MILE).convert(10));
  *
  *         // Retrieval of the SI unit (identifies the measurement type).
- *         System.out.println(REVOLUTION.divide(MINUTE).toSI());
+ *         System.out.println(REVOLUTION.divide(MINUTE).toSystemUnit());
  *
  *         // Dimension checking (allows/disallows conversions)
  *         System.out.println(ELECTRON_VOLT.isCompatible(WATT.times(HOUR)));
@@ -104,7 +104,7 @@
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 0.3
+ * @version 0.4
  */
 package tec.units.indriya.unit;
 
