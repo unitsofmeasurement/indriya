@@ -36,7 +36,7 @@
 	<!-- ======================================================= -->
 	<properties>
 		<jsr.version>1.0</jsr.version>
-		<lib.version>1.0.2</lib.version>
+		<lib.version>1.0.3-SNAPSHOT</lib.version>
 		<sourceEncoding>UTF-8</sourceEncoding> <!-- in Maven 3. -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>${sourceEncoding}</project.reporting.outputEncoding>
@@ -161,7 +161,7 @@
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <configuration>
                     <!-- this does not work for packages <excludes>
-                        <exclude>tec.units.ri.internal.*</exclude>
+                        <exclude>tec.units.indriya.internal.*</exclude>
                     </excludes --> 
                 </configuration>
                 <executions>
@@ -248,7 +248,7 @@
 							<Specification-Title>Next Generation Units of Measurement Implementation</Specification-Title>
 							<Specification-Version>${project.version}</Specification-Version>
 							<Specification-Vendor>${project.organization.name}</Specification-Vendor>
-							<Implementation-Vendor>Unit-API contributors</Implementation-Vendor>
+							<Implementation-Vendor>Units of Measurement contributors</Implementation-Vendor>
 							<Implementation-URL>${project.organization.url}</Implementation-URL>
 						</manifestEntries>
 					</archive>

@@ -35,17 +35,17 @@ import tec.uom.lib.common.function.MaximumSupplier;
 import tec.uom.lib.common.function.MinimumSupplier;
 
 /**
- * A Measurement Range is a pair of <code>T</code> items that represent a range of values.
+ * A Range is a pair of <code>T</code> items that represent a range of values.
  * <p>
- * Range limits MUST be presented in the same scale and have the same unit as measured data values.<br/>
  * Subclasses of Range should be immutable.
  * 
  * @param <T>
  *          The value of the range.
  * 
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 0.9, June 30, 2017
- * @see <a href="http://www.botts-inc.com/SensorML_1.0.1/schemaBrowser/SensorML_QuantityRange.html"> SensorML: QuantityRange</a>
+ * @version 1.0, December 29, 2017
+ * @since 1.0
+ * @see <a href="http://en.wikipedia.org/wiki/Range">Wikipedia: Range</a>
  */
 public abstract class Range<T> implements MinimumSupplier<T>, MaximumSupplier<T> {
   // XXX do we keep null for min and max to represent infinity?
@@ -59,11 +59,11 @@ public abstract class Range<T> implements MinimumSupplier<T>, MaximumSupplier<T>
    * Construct an instance of Range with a min, max and res value.
    *
    * @param min
-   *          The minimum value for the measurement range.
+   *          The minimum value for the range.
    * @param max
-   *          The maximum value for the measurement range.
+   *          The maximum value for the range.
    * @param res
-   *          The resolution of the measurement range.
+   *          The resolution of the range.
    */
   protected Range(T min, T max, T res) {
     this.min = min;
@@ -75,9 +75,9 @@ public abstract class Range<T> implements MinimumSupplier<T>, MaximumSupplier<T>
    * Construct an instance of Range with a min and max value.
    *
    * @param min
-   *          The minimum value for the measurement range.
+   *          The minimum value for the range.
    * @param max
-   *          The maximum value for the measurement range.
+   *          The maximum value for the range.
    */
   protected Range(T min, T max) {
     this.min = min;
@@ -94,7 +94,7 @@ public abstract class Range<T> implements MinimumSupplier<T>, MaximumSupplier<T>
   }
 
   /**
-   * Returns the largest value of the measurement range. The value is the same as that given as the constructor parameter for the largest value.
+   * Returns the largest value of the range. The value is the same as that given as the constructor parameter for the largest value.
    * 
    * @return the maximum value
    */
@@ -103,7 +103,7 @@ public abstract class Range<T> implements MinimumSupplier<T>, MaximumSupplier<T>
   }
 
   /**
-   * Returns the resolution of the measurement range. The value is the same as that given as the constructor parameter for the largest value.
+   * Returns the resolution of the range. The value is the same as that given as the constructor parameter for the largest value.
    * 
    * @return resolution of the range, the value is the same as that given as the constructor parameter for the resolution
    */

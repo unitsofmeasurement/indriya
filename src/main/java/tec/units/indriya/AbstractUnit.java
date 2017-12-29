@@ -64,7 +64,7 @@ import java.lang.reflect.Type;
  * @see <a href= "http://en.wikipedia.org/wiki/International_System_of_Units">Wikipedia: International System of Units</a>
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.1.2, November 7, 2017
+ * @version 1.1.3, December 29, 2017
  * @since 1.0
  */
 public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableUnit<Q> {
@@ -138,7 +138,7 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
    * Returns the converter from this unit to its unscaled {@link #toSysemUnit System Unit} unit.
    *
    * @return <code>getConverterTo(this.toSystemUnit())</code>
-   * @see #toSI
+   * @see #toSystemUnit
    */
   public abstract UnitConverter getSystemConverter();
 

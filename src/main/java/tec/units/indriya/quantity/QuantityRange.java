@@ -40,13 +40,13 @@ import tec.units.indriya.spi.Range;
  * A Quantity Range is a pair of {@link Quantity} items that represent a range of values.
  * <p>
  * Range limits MUST be presented in the same scale and have the same unit as measured data values.<br/>
- * Subclasses of Range should be immutable.
+ * Subclasses of QuantityRange should be immutable.
  * 
- * @param <T>
+ * @param <Q>
  *          The value of the range.
  * 
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 0.4, June 30, 2017
+ * @version 0.5, December 29, 2017
  * @see <a href= "http://www.botts-inc.com/SensorML_1.0.1/schemaBrowser/SensorML_QuantityRange.html"> SensorML: QuantityRange</a>
  */
 public class QuantityRange<Q extends Quantity<Q>> extends Range<Quantity<Q>> {
@@ -63,12 +63,12 @@ public class QuantityRange<Q extends Quantity<Q>> extends Range<Quantity<Q>> {
    * Returns an {@code QuantityRange} with the specified values.
    *
    * @param minimum
-   *          The minimum value for the measurement range.
+   *          The minimum value for the quantity range.
    * @param maximum
-   *          The maximum value for the measurement range.
+   *          The maximum value for the quantity range.
    * @param resolution
-   *          The resolution of the measurement range.
-   * @return an {@code MeasurementRange} with the given values
+   *          The resolution of the quantity range.
+   * @return an {@code QuantityRange} with the given values
    */
   @SuppressWarnings({ "rawtypes", "unchecked" })
   public static QuantityRange of(Quantity minimum, Quantity maximum, Quantity resolution) {
@@ -79,10 +79,10 @@ public class QuantityRange<Q extends Quantity<Q>> extends Range<Quantity<Q>> {
    * Returns an {@code QuantityRange} with the specified values.
    *
    * @param minimum
-   *          The minimum value for the measurement range.
+   *          The minimum value for the quantity range.
    * @param maximum
-   *          The maximum value for the measurement range.
-   * @return an {@code MeasurementRange} with the given values
+   *          The maximum value for the quantity range.
+   * @return a {@code QuantityRange} with the given values
    */
   @SuppressWarnings({ "rawtypes", "unchecked" })
   public static QuantityRange of(Quantity minimum, Quantity maximum) {

@@ -34,6 +34,8 @@ import java.io.Serializable;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 
+import tec.uom.lib.common.function.QuantityConverter;
+
 /**
  * Quantity specialized for the Java SE platform. It extends {@link Quantity} with {@linkplain Comparable} and {@linkplain Serializable }
  * 
@@ -41,10 +43,10 @@ import javax.measure.Unit;
  * @author otaviojava
  * @author werner
  * @param <Q>
- * @version 1.0.1, August 7, 2017
+ * @version 1.0.2, December 29, 2017
  * @since 1.0
  */
-public interface ComparableQuantity<Q extends Quantity<Q>> extends Quantity<Q>, Comparable<Quantity<Q>>, Serializable {
+public interface ComparableQuantity<Q extends Quantity<Q>> extends Quantity<Q>, Comparable<Quantity<Q>>, QuantityConverter<Q>, Serializable {
 
   /**
    * @see Quantity#add(Quantity)

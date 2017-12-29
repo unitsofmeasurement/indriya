@@ -93,7 +93,7 @@ import tec.uom.lib.common.function.ValueSupplier;
  * ...<br>
  * }<br>
  * <br>
- * // Specializations of complex numbers measurements.<br>
+ * // Specializations of complex numbers quantities.<br>
  * public final class Current extends ComplexQuantity&lt;ElectricCurrent&gt; {...}<br>
  * public final class Tension extends ComplexQuantity&lt;ElectricPotential&gt; {...} <br>
  * </code>
@@ -104,7 +104,7 @@ import tec.uom.lib.common.function.ValueSupplier;
  * </p>
  *
  * @author <a href="mailto:werner@uom.technology">Werner Keil</a>
- * @version 1.0.5, May 31, 2017
+ * @version 1.0.6, December 29, 2017
  * @since 1.0
  */
 @SuppressWarnings("unchecked")
@@ -153,23 +153,24 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
   }
 
   /**
-   * Convenient method equivalent to {@link #to(javax.measure.unit.Unit) to(this.getUnit().toSI())}.
+   * Convenient method equivalent to {@link #to(javax.measure.Unit) to(this.getUnit().toSystemUnit())}.
    *
-   * @return this measure or a new measure equivalent to this measure but stated in SI units.
+   * @return this quantity or a new quantity equivalent to this quantity stated in SI units.
    * @throws ArithmeticException
    *           if the result is inexact and the quotient has a non-terminating decimal expansion.
    */
-  public Quantity<Q> toSI() {
+  public Quantity<Q> toSystemUnit() {
     return to(this.getUnit().getSystemUnit());
   }
 
   /**
-   * Returns this measure after conversion to specified unit. The default implementation returns <code>Measure.valueOf(doubleValue(unit), unit)</code>
-   * . If this measure is already stated in the specified unit, then this measure is returned and no conversion is performed.
+   * Returns this quantity after conversion to specified unit. The default implementation returns
+   * <code>Measure.valueOf(doubleValue(unit), unit)</code> . If this quantity is already stated in the specified unit, then this quantity is returned
+   * and no conversion is performed.
    *
    * @param unit
    *          the unit in which the returned measure is stated.
-   * @return this measure or a new measure equivalent to this measure but stated in the specified unit.
+   * @return this quantity or a new quantity equivalent to this quantity stated in the specified unit.
    * @throws ArithmeticException
    *           if the result is inexact and the quotient has a non-terminating decimal expansion.
    */
