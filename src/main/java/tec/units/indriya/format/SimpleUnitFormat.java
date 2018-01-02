@@ -1,6 +1,6 @@
 /*
  * Next Generation Units of Measurement Implementation
- * Copyright (c) 2005-2017, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+ * Copyright (c) 2005-2018, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
  *
  * All rights reserved.
  *
@@ -79,8 +79,8 @@ import tec.units.indriya.unit.Units;
  */
 public abstract class SimpleUnitFormat extends AbstractUnitFormat {
   /**
-     * 
-     */
+    * 
+    */
   // private static final long serialVersionUID = 4149424034841739785L;
 
   /**
@@ -894,8 +894,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
     return prefix == "µ" ? "micro" : prefix;
   }
 
-  // to check if a string only contains US-ASCII characters
-  //
+  /** to check if a string only contains US-ASCII characters */
   protected static boolean isAllASCII(String input) {
     boolean isASCII = true;
     for (int i = 0; i < input.length(); i++) {

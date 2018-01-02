@@ -47,6 +47,7 @@
 		<additionalparam>-Xdoclint:none</additionalparam>
 		<hamcrest.version>1.3</hamcrest.version>
 		<maven.source.version>3.0.1</maven.source.version>
+		<thisYear>2018</thisYear>
 	</properties>
 
 	<dependencies>
@@ -280,7 +281,7 @@
 					<header>src/main/config/header.txt</header>
 					<properties>
 						<owner>Jean-Marie Dautelle, Werner Keil, Otavio Santana</owner>
-						<currentYear>2017</currentYear>
+						<currentYear>${thisYear}</currentYear>
 					</properties>
 					<excludes>
 						<exclude>**/README</exclude>
