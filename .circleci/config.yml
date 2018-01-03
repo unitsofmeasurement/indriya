@@ -119,3 +119,6 @@ workflows:
       - build:
           requires:
             - clean
+      - deployment:
+          requires:
+            - build
