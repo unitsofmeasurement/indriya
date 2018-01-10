@@ -35,7 +35,7 @@
 	<!-- Build Settings -->
 	<!-- ======================================================= -->
 	<properties>
-		<jsr.version>1.0</jsr.version>
+		<jsr.version>2.0-SNAPSHOT</jsr.version>
 		<lib.version>1.0.3-SNAPSHOT</lib.version>
 		<sourceEncoding>UTF-8</sourceEncoding> <!-- in Maven 3. -->
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
