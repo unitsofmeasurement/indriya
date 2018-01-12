@@ -42,7 +42,6 @@ import javax.measure.UnitConverter;
  */
 interface Prefix {
   // FIXME move to unit-api
-  // TODO consider pulling SymbolSupplier and maybe UnitConverterSupplier into the API
 
   /**
    * Returns the symbol of this prefix.
