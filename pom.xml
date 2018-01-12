@@ -3,9 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>tec.units</groupId>
 	<artifactId>indriya</artifactId>
-	<name>Next Generation Units of Measurement Implementation</name>
 	<url>https://github.com/unitsofmeasurement/indriya</url>
-	<description>Units of Measurement Implementation for Java SE - JDK Integration of Unit-API</description>
 	<organization>
 		<name>Units of Measurement project</name>
 		<url>http://unitsofmeasurement.github.io</url>
@@ -537,4 +535,6 @@
 			</pluginRepositories>
 		</profile>
 	</profiles>
+	<name>Units of Measurement Reference Implementation</name>
+	<description>Unit Standard (JSR 385) Reference Implementation.</description>
 </project>
