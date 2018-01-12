@@ -36,6 +36,7 @@ import tec.uom.lib.common.function.UnitConverterSupplier;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.UnitConverter;
+import javax.measure.spi.Prefix;
 
 import java.math.BigInteger;
 
@@ -60,7 +61,7 @@ import java.math.BigInteger;
  * @see <a href="http://en.wikipedia.org/wiki/Metric_prefix">Wikipedia: Metric Prefix</a>
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.0, 2017-12-25
+ * @version 1.1, 2018-01-13
  * @since 1.0
  */
 public enum MetricPrefix implements SymbolSupplier, UnitConverterSupplier, Prefix {
