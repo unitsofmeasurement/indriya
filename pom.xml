@@ -244,9 +244,10 @@
 							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
 						</manifest>
 						<manifestEntries>
-							<Specification-Title>Next Generation Units of Measurement Implementation</Specification-Title>
+							<Specification-Title>Units of Measurement API</Specification-Title>
 							<Specification-Version>${project.version}</Specification-Version>
 							<Specification-Vendor>${project.organization.name}</Specification-Vendor>
+							<Implementation-Title>Units of Measurement Reference Implementation</Implementation-Title>
 							<Implementation-Vendor>Units of Measurement contributors</Implementation-Vendor>
 							<Implementation-URL>${project.organization.url}</Implementation-URL>
 						</manifestEntries>
