@@ -40,7 +40,7 @@ import javax.measure.Unit;
 import javax.measure.UnitConverter;
 import javax.measure.quantity.Dimensionless;
 
-import tec.units.indriya.format.QuantityFormat;
+import tec.units.indriya.format.AbstractQuantityFormat;
 import tec.units.indriya.function.NaturalQuantityComparator;
 import tec.units.indriya.quantity.Quantities;
 import tec.uom.lib.common.function.UnitSupplier;
@@ -394,7 +394,7 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
    * @return <code>QuantityFormat.getInstance().parse(csq)</code>
    */
   public static Quantity<?> parse(CharSequence csq) {
-    return QuantityFormat.getInstance().parse(csq);
+    return AbstractQuantityFormat.getInstance().parse(csq);
   }
 
   /**

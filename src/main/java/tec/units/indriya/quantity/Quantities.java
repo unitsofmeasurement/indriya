@@ -41,7 +41,7 @@ import javax.measure.Unit;
 import javax.measure.format.ParserException;
 
 import tec.units.indriya.ComparableQuantity;
-import tec.units.indriya.format.QuantityFormat;
+import tec.units.indriya.format.AbstractQuantityFormat;
 
 /**
  * Singleton class for accessing {@link Quantity} instances.
@@ -65,7 +65,8 @@ public final class Quantities {
    * </code>
    *
    * <p>
-   * Note: This method handles only Locale-neutral quantity formatting and parsing are handled by the {@link QuantityFormat} class and its subclasses.
+   * Note: This method handles only Locale-neutral quantity formatting and parsing are handled by the {@link AbstractQuantityFormat} class and its
+   * subclasses.
    * </p>
    *
    * @param csq
@@ -74,7 +75,7 @@ public final class Quantities {
    */
   public static ComparableQuantity<?> getQuantity(CharSequence csq) {
     try {
-      return QuantityFormat.getInstance(LOCALE_NEUTRAL).parse(csq, new ParsePosition(0));
+      return AbstractQuantityFormat.getInstance(LOCALE_NEUTRAL).parse(csq, new ParsePosition(0));
     } catch (ParserException e) {
       throw new IllegalArgumentException(e.getParsedString());
     }

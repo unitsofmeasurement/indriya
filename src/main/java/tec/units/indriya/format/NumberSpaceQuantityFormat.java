@@ -43,7 +43,7 @@ import tec.units.indriya.ComparableQuantity;
 import tec.units.indriya.quantity.Quantities;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
-class NumberSpaceQuantityFormat extends QuantityFormat {
+class NumberSpaceQuantityFormat extends AbstractQuantityFormat {
 
   private final NumberFormat numberFormat;
 

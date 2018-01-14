@@ -52,13 +52,13 @@ import tec.uom.lib.common.function.Parser;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.0.2, $Date: 2017-12-25 $
+ * @version 1.0.3, $Date: 2018-01-14 $
  * @since 1.0
  * 
  */
 @SuppressWarnings("rawtypes")
-public abstract class QuantityFormat extends Format implements Parser<CharSequence, ComparableQuantity> {
-  // TODO for later, see https://github.com/unitsofmeasurement/uom-se/issues/162
+public abstract class AbstractQuantityFormat extends Format implements Parser<CharSequence, ComparableQuantity> {
+  // TODO for later, see https://github.com/unitsofmeasurement/indriya/issues/17
   // * <p>
   // * Instances of this class should be able to format quantities stated in {@link CompoundUnit}. See {@link #formatCompound formatCompound(...)}.
   // * </p>
@@ -84,7 +84,7 @@ public abstract class QuantityFormat extends Format implements Parser<CharSequen
    *
    * @return <code>MeasureFormat.getInstance(NumberFormat.getInstance(), UnitFormat.getInstance())</code>
    */
-  public static QuantityFormat getInstance() {
+  public static AbstractQuantityFormat getInstance() {
     return DEFAULT;
   }
 
@@ -97,7 +97,7 @@ public abstract class QuantityFormat extends Format implements Parser<CharSequen
    *          the unit format.
    * @return the corresponding format.
    */
-  public static QuantityFormat getInstance(NumberFormat numberFormat, UnitFormat unitFormat) {
+  public static AbstractQuantityFormat getInstance(NumberFormat numberFormat, UnitFormat unitFormat) {
     return new NumberSpaceQuantityFormat(numberFormat, unitFormat);
   }
 
@@ -111,7 +111,7 @@ public abstract class QuantityFormat extends Format implements Parser<CharSequen
    *          the format style to apply.
    * @return the desired format.
    */
-  public static QuantityFormat getInstance(FormatBehavior style) {
+  public static AbstractQuantityFormat getInstance(FormatBehavior style) {
     switch (style) {
       case LOCALE_NEUTRAL:
         return DEFAULT;
