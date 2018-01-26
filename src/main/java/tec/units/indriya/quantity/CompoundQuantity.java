@@ -49,15 +49,15 @@ import tec.uom.lib.common.function.QuantityConverter;
  *          The type of the quantity.
  * 
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 0.3, January 3, 2017
+ * @version 0.4, January 26, 2018
  * @see <a href="http://www.thefreedictionary.com/Compound+quantity">Free Dictionary: Compound Quantity</a>
  * @deprecated This class may be subject to change with the next version of the API/RI.
  */
 public class CompoundQuantity<Q extends Quantity<Q>> implements QuantityConverter<Q>, Serializable {
   // TODO could it be final?
   /**
-	 * 
-	 */
+	* 
+	*/
   private static final long serialVersionUID = 5863961588282485676L;
 
   private final Map<Unit<Q>, Quantity<Q>> quantMap = new LinkedHashMap<>();
