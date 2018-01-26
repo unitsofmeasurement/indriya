@@ -39,6 +39,7 @@ import java.text.ParsePosition;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.format.ParserException;
+import javax.measure.format.QuantityFormat;
 import javax.measure.format.UnitFormat;
 
 import tec.units.indriya.AbstractQuantity;
@@ -57,7 +58,7 @@ import tec.uom.lib.common.function.Parser;
  * 
  */
 @SuppressWarnings("rawtypes")
-public abstract class AbstractQuantityFormat extends Format implements Parser<CharSequence, ComparableQuantity> {
+public abstract class AbstractQuantityFormat extends Format implements QuantityFormat, Parser<CharSequence, ComparableQuantity> {
   // TODO for later, see https://github.com/unitsofmeasurement/indriya/issues/17
   // * <p>
   // * Instances of this class should be able to format quantities stated in {@link CompoundUnit}. See {@link #formatCompound formatCompound(...)}.

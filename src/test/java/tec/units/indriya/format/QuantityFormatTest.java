@@ -39,6 +39,7 @@ import java.math.BigDecimal;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.format.ParserException;
+import javax.measure.format.QuantityFormat;
 import javax.measure.quantity.Frequency;
 import javax.measure.quantity.Length;
 
@@ -55,7 +56,7 @@ import tec.units.indriya.unit.Units;
  */
 public class QuantityFormatTest {
   private Quantity<Length> sut;
-  private AbstractQuantityFormat format;
+  private QuantityFormat format;
 
   @Before
   public void init() {
