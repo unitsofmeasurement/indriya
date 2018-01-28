@@ -74,7 +74,7 @@ import tec.units.indriya.unit.Units;
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
  * @author Eric Russell
- * @version 1.1, December 27, 2017
+ * @version 1.2, January 28, 2018
  * @since 1.0
  */
 public abstract class SimpleUnitFormat extends AbstractUnitFormat {
@@ -187,10 +187,6 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
    */
   public abstract void label(Unit<?> unit, String label);
 
-  public boolean isLocaleSensitive() {
-    return false;
-  }
-
   /**
    * Attaches a system-wide alias to this unit. Multiple aliases may be attached to the same unit. Aliases are used during parsing to recognize
    * different variants of the same unit. For example: <code> SimpleUnitFormat.getInstance().alias(METER.multiply(0.3048), "foot");
@@ -267,12 +263,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
    * @return the corresponding unit or <code>null</code> if the string cannot be parsed.
    */
   public final Unit<?> parseObject(String source, ParsePosition pos) throws ParserException {
-    // int start = pos.getIndex();
     return parseProductUnit(source, pos);
-    /*
-     * } catch (ParserException e) { pos.setIndex(start);
-     * pos.setErrorIndex(e.getPosition()); return null; }
-     */
   }
 
   /**
