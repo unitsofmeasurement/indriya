@@ -32,8 +32,8 @@ package tec.units.indriya.format;
 import java.io.IOException;
 import java.text.ParsePosition;
 
+import javax.measure.MeasurementException;
 import javax.measure.Unit;
-import javax.measure.format.ParserException;
 import javax.measure.format.UnitFormat;
 
 import tec.units.indriya.AbstractUnit;
@@ -51,7 +51,7 @@ import tec.units.indriya.AbstractUnit;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.0.2, $Date: 2017-02-25 $
+ * @version 1.0.3, $Date: 2018-01-28 $
  * @since 1.0
  * 
  */
@@ -94,7 +94,7 @@ public abstract class AbstractUnitFormat implements UnitFormat {
       try {
         return (this.format(unit, new StringBuilder())).toString();
       } catch (IOException ex) {
-        throw new ParserException(ex); // Should never happen.
+        throw new MeasurementException(ex); // Should never happen.
       }
     }
   }
