@@ -56,79 +56,79 @@ import tec.units.indriya.unit.Units;
  *
  */
 public class EBNFFormatTest {
-	private static final Logger logger = Logger.getLogger(EBNFFormatTest.class.getName());
+  private static final Logger logger = Logger.getLogger(EBNFFormatTest.class.getName());
 
-	private UnitFormat format;
+  private UnitFormat format;
 
-	@Before
-	public void init() {
-		format = EBNFUnitFormat.getInstance();
-	}
+  @Before
+  public void init() {
+    format = EBNFUnitFormat.getInstance();
+  }
 
-	@Test
-	public void testParseKm() {
-		Unit<?> u = format.parse("km");
-		assertEquals(KILO(METRE), u);
-		assertEquals("km", u.toString());
-	}
+  @Test
+  public void testParseKm() {
+    Unit<?> u = format.parse("km");
+    assertEquals(KILO(METRE), u);
+    assertEquals("km", u.toString());
+  }
 
-	@Test
-	public void testParseInverseM() {
-		Unit<?> u = format.parse("1/m");
-		assertEquals("1/m", u.toString());
-	}
+  @Test
+  public void testParseInverseM() {
+    Unit<?> u = format.parse("1/m");
+    assertEquals("1/m", u.toString());
+  }
 
-	@Test
-	public void testParseInverseKg() {
-		Unit<?> u = format.parse("1/kg");
-		assertEquals("1/kg", u.toString());
-	}
+  @Test
+  public void testParseInverseKg() {
+    Unit<?> u = format.parse("1/kg");
+    assertEquals("1/kg", u.toString());
+  }
 
-	@Test
-	public void testParseInverseL() {
-		Unit<?> u = format.parse("1/l");
-		assertEquals("1/l", u.toString());
-	}
+  @Test
+  public void testParseInverseL() {
+    Unit<?> u = format.parse("1/l");
+    assertEquals("1/l", u.toString());
+  }
 
-	@Test
-	public void testParseInverses() {
-		for (Unit<?> u : Units.getInstance().getUnits()) {
-			try {
-				Unit<?> v = format.parse("1/" + u.toString());
-				assertNotNull(v);
-				logger.log(Level.FINER, v.toString());
-			} catch (ParserException pex) {
-				logger.log(Level.WARNING, String.format(" %s parsing %s", pex, u));
-			}
-		}
-	}
+  @Test
+  public void testParseInverses() {
+    for (Unit<?> u : Units.getInstance().getUnits()) {
+      try {
+        Unit<?> v = format.parse("1/" + u.toString());
+        assertNotNull(v);
+        logger.log(Level.FINER, v.toString());
+      } catch (ParserException pex) {
+        logger.log(Level.WARNING, String.format(" %s parsing %s", pex, u));
+      }
+    }
+  }
 
-	@Test
-	// TODO address https://github.com/unitsofmeasurement/uom-se/issues/145
-	public void testFormatKm() {
-		String s = format.format(KILO(METRE));
-		assertEquals("km", s);
-	}
+  @Test
+  // TODO address https://github.com/unitsofmeasurement/uom-se/issues/145
+  public void testFormatKm() {
+    String s = format.format(KILO(METRE));
+    assertEquals("km", s);
+  }
 
-	@Test
-	// TODO address https://github.com/unitsofmeasurement/uom-se/issues/145
-	public void testFormatmm() {
-		String s = format.format(MILLI(METRE));
-		assertEquals("mm", s);
-	}
+  @Test
+  // TODO address https://github.com/unitsofmeasurement/uom-se/issues/145
+  public void testFormatmm() {
+    String s = format.format(MILLI(METRE));
+    assertEquals("mm", s);
+  }
 
-	@Test(expected = ParserException.class)
-	public void testParseIrregularStringEBNF() {
-		Unit<?> u = format.parse("bl//^--1a");
-		// System.out.println(u);
-	}
+  @Test(expected = ParserException.class)
+  public void testParseIrregularStringEBNF() {
+    Unit<?> u = format.parse("bl//^--1a");
+    // System.out.println(u);
+  }
 
-	@Test
-	public void testTransformed() {
-		final String ANGSTROEM_SYM = "\u212B";
-		final Unit<Length> ANGSTROEM = new TransformedUnit<Length>(ANGSTROEM_SYM, METRE, METRE,
-				new RationalConverter(BigInteger.ONE, BigInteger.TEN.pow(10)));
-		final String s = format.format(ANGSTROEM);
-		assertEquals(ANGSTROEM_SYM, s);
-	}
+  @Test
+  public void testTransformed() {
+    final String ANGSTROEM_SYM = "\u212B";
+    final Unit<Length> ANGSTROEM = new TransformedUnit<Length>(ANGSTROEM_SYM, METRE, METRE, new RationalConverter(BigInteger.ONE,
+        BigInteger.TEN.pow(10)));
+    final String s = format.format(ANGSTROEM);
+    assertEquals(ANGSTROEM_SYM, s);
+  }
 }
