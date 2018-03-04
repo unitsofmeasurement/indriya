@@ -40,6 +40,7 @@ import org.junit.Test;
 
 import tec.units.indriya.quantity.IntegerQuantity;
 import tec.units.indriya.quantity.Quantities;
+import tec.units.indriya.unit.MetricPrefix;
 import tec.units.indriya.unit.Units;
 
 public class IntegerQuantityTest {
@@ -110,4 +111,15 @@ public class IntegerQuantityTest {
     Quantity<Length> anotherValue = Quantities.getQuantity(new Integer(10), Units.METRE);
     assertEquals(value, anotherValue);
   }
+  
+  @Test
+  public void milliOhmTest() {
+	  final IntegerQuantity<ElectricResistance> ONE_OHM = new IntegerQuantity<ElectricResistance>(Long.valueOf(1).intValue(), Units.OHM);
+	  final IntegerQuantity<ElectricResistance> ONE_MILLIOHM = new IntegerQuantity<ElectricResistance>(Long.valueOf(1).intValue(), MetricPrefix.MILLI(Units.OHM));
+
+	  assertEquals(ONE_OHM, ONE_OHM.add(ONE_MILLIOHM));
+	  final IntegerQuantity<ElectricResistance> ONEOONE_MILLIOHM = new IntegerQuantity<ElectricResistance>(Integer.valueOf(1001), MetricPrefix.MILLI(Units.OHM));
+	  assertEquals(ONEOONE_MILLIOHM, ONE_MILLIOHM.add(ONE_OHM));
+  }
+  
 }
