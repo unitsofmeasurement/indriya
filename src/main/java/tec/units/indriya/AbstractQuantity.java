@@ -417,6 +417,22 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
       }
       return BigDecimal.valueOf(value.doubleValue());
     }
+    
+    /**
+     * Converts a number to {@link BigInteger}
+     *
+     * @param value
+     *          the value to be converted
+     * @return the value converted
+     */
+    public static BigInteger toBigInteger(Number value) {
+      if (BigInteger.class.isInstance(value)) {
+        return BigInteger.class.cast(value);
+      } else if (BigDecimal.class.isInstance(value)) {
+        return (BigDecimal.class.cast(value)).toBigInteger();
+      }
+      return BigInteger.valueOf(value.longValue());
+    }
 
     /**
      * Check if the both value has equality number, in other words, 1 is equals to 1.0000 and 1.0.
