@@ -29,6 +29,8 @@
  */
 package tec.units.indriya.quantity;
 
+import static org.junit.Assert.assertEquals;
+
 import java.math.BigDecimal;
 
 import javax.measure.Quantity;
@@ -139,4 +141,17 @@ public class DecimalQuantityTest {
     Assert.assertEquals(value, anotherValue);
   }
 
+  @Test
+  public void longValueTest() {
+    final DecimalQuantity<Time> day = new DecimalQuantity<Time>(Double.valueOf(3), Units.DAY);
+    long hours = day.longValue(Units.HOUR);
+    assertEquals(72L, hours);
+  }
+
+  @Test
+  public void doubleValueTest() {
+    DecimalQuantity<Time> day = new DecimalQuantity<Time>(Double.valueOf(3), Units.DAY);
+    double hours = day.doubleValue(Units.HOUR);
+    assertEquals(72D, hours, 0);
+  }
 }

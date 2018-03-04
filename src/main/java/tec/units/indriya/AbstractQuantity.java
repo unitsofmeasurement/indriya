@@ -417,7 +417,7 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
       }
       return BigDecimal.valueOf(value.doubleValue());
     }
-    
+
     /**
      * Converts a number to {@link BigInteger}
      *

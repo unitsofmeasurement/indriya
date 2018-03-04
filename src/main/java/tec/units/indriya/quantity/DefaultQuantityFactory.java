@@ -46,9 +46,9 @@ import javax.measure.spi.QuantityFactory;
 import tec.units.indriya.AbstractUnit;
 
 /**
- * A factory producing simple quantities instances (tuples {@link Number}/ {@link Unit}).
+ * A factory producing simple quantities instances (tuples {@link Number}/ {@link Unit}).<br>
  *
- * For example:<br/>
+ * For example:<br>
  * <code>
  *      Mass m = DefaultQuantityFactory.getInstance(Mass.class).create(23.0, KILOGRAM); // 23.0 kg<br/>
  *      Time m = DefaultQuantityFactory.getInstance(Time.class).create(124, MILLI(SECOND)); // 124 ms
@@ -61,7 +61,8 @@ import tec.units.indriya.AbstractUnit;
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:otaviojava@java.net">Otavio Santana</a>
- * @version 1.0.3, $Date: 2017-02-12 $
+ * @version 1.1, $Date: 2018-03-04 $
+ * @since 1.0
  */
 public class DefaultQuantityFactory<Q extends Quantity<Q>> implements QuantityFactory<Q> {
   @SuppressWarnings("rawtypes")

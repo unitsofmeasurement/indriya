@@ -49,9 +49,11 @@ import tec.units.indriya.AbstractQuantity;
 import tec.units.indriya.AbstractUnit;
 
 /**
- * A factory producing simple quantities instances (tuples {@link Number}/{@link Unit}).
+ * A factory producing simple quantities instances (tuples {@link Number}/{@link Unit}). This implementation of {@link QuantityFactory} uses the
+ * DynamicProxy features of Java reflection API.<br>
+ * <br>
  *
- * For example:<br/>
+ * For example:<br>
  * <code>
  *      Quantity<Mass> m = ProxyQuantityFactory.getInstance(Mass.class).create(23.0, KILOGRAM); // 23.0 kg<br/>
  *      Quantity<Time> t = ProxyQuantityFactory.getInstance(Time.class).create(124, MILLI(SECOND)); // 124 ms
@@ -63,7 +65,8 @@ import tec.units.indriya.AbstractUnit;
  * @author <a href="mailto:martin.desruisseaux@geomatys.com">Martin Desruisseaux</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
- * @version 1.0.1, $Date: 2017-02-12 $
+ * @version 1.1, $Date: 2018-03-04 $
+ * @since 1.0
  */
 public abstract class ProxyQuantityFactory<Q extends Quantity<Q>> implements QuantityFactory<Q> {
 

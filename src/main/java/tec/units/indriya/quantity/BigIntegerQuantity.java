@@ -52,21 +52,26 @@ import tec.units.indriya.ComparableQuantity;
  * @see AbstractQuantity
  * @see Quantity
  * @see ComparableQuantity
- * @version 0.1
+ * @version 0.2
  * @since 2.0
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
 final class BigIntegerQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> implements Serializable {
 
   /**
-   * 
-   */
-private static final long serialVersionUID = -593014349777834846L;
-private final BigInteger value;
+	 * 
+	 */
+  private static final long serialVersionUID = -593014349777834846L;
+  private final BigInteger value;
 
   public BigIntegerQuantity(BigInteger value, Unit<Q> unit) {
     super(unit);
     this.value = value;
+  }
+
+  public BigIntegerQuantity(long value, Unit<Q> unit) {
+    super(unit);
+    this.value = BigInteger.valueOf(value);
   }
 
   @Override
@@ -76,22 +81,26 @@ private final BigInteger value;
 
   @Override
   public double doubleValue(Unit<Q> unit) {
-    return (unit.equals(unit)) ? value.doubleValue() : unit.getConverterTo(unit).convert(value.doubleValue());
+    if (getUnit().equals(unit)) {
+      return value.doubleValue();
+    } else {
+      return getUnit().getConverterTo(unit).convert(value.doubleValue());
+    }
   }
 
   @Override
   public BigDecimal decimalValue(Unit<Q> unit, MathContext ctx) throws ArithmeticException {
-    if (super.getUnit().equals(unit)) {
-    	return  new BigDecimal(value);
+    if (getUnit().equals(unit)) {
+      return new BigDecimal(value);
     } else {
-    	final Number converted = ((AbstractConverter) unit.getConverterTo(unit)).convert(value);
-    	if (converted instanceof BigDecimal) {
-    		return BigDecimal.class.cast(converted);
-    	} else if (converted instanceof BigInteger) {
-    		return new BigDecimal(BigInteger.class.cast(converted));
-    	} else {
-    		return BigDecimal.valueOf(converted.doubleValue());
-    	}
+      final Number converted = ((AbstractConverter) unit.getConverterTo(unit)).convert(value);
+      if (converted instanceof BigDecimal) {
+        return BigDecimal.class.cast(converted);
+      } else if (converted instanceof BigInteger) {
+        return new BigDecimal(BigInteger.class.cast(converted));
+      } else {
+        return BigDecimal.valueOf(converted.doubleValue());
+      }
     }
   }
 

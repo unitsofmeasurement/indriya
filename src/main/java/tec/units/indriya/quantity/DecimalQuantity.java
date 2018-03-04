@@ -53,7 +53,7 @@ import tec.units.indriya.ComparableQuantity;
  * @see AbstractQuantity
  * @see Quantity
  * @see ComparableQuantity
- * @version 1.0.1
+ * @version 1.0.2
  * @since 1.0
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -68,6 +68,11 @@ final class DecimalQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> i
     this.value = value;
   }
 
+  public DecimalQuantity(double value, Unit<Q> unit) {
+    super(unit);
+    this.value = BigDecimal.valueOf(value);
+  }
+
   @Override
   public BigDecimal getValue() {
     return value;
@@ -75,7 +80,7 @@ final class DecimalQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> i
 
   @Override
   public double doubleValue(Unit<Q> unit) {
-    return (unit.equals(unit)) ? value.doubleValue() : unit.getConverterTo(unit).convert(value.doubleValue());
+    return (getUnit().equals(unit)) ? value.doubleValue() : getUnit().getConverterTo(unit).convert(value.doubleValue());
   }
 
   @Override
