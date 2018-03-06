@@ -54,8 +54,8 @@ import tec.units.indriya.ComparableQuantity;
 final class IntegerQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
 
   /**
-     * 
-     */
+	 * 
+	 */
   private static final long serialVersionUID = 1405915111744728289L;
 
   final int value;
@@ -71,26 +71,33 @@ final class IntegerQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
   }
 
   public double doubleValue(Unit<Q> unit) {
-    return (super.getUnit().equals(unit)) ? value : super.getUnit().getConverterTo(unit).convert(value);
+    return super.getUnit().equals(unit) ? value : super.getUnit().getConverterTo(unit).convert(value);
   }
 
   @Override
   public long longValue(Unit<Q> unit) {
     double result = doubleValue(unit);
-    if ((result < Long.MIN_VALUE) || (result > Long.MAX_VALUE)) {
+    if (result < Long.MIN_VALUE || result > Long.MAX_VALUE) {
       throw new ArithmeticException("Overflow (" + result + ")");
     }
     return (long) result;
   }
 
   public ComparableQuantity<Q> add(Quantity<Q> that) {
-    final Quantity<Q> converted = that.to(getUnit());
-    return NumberQuantity.of(value + converted.getValue().intValue(), getUnit());
+    final ComparableQuantity<Q> thatConverted = (ComparableQuantity<Q>) that.to(getUnit());
+    final ComparableQuantity<Q> thisConverted = (ComparableQuantity<Q>) this.to(that.getUnit());
+    boolean thisConvertedOverflowing = thisConverted.getValue().doubleValue() > Integer.MAX_VALUE;
+    boolean thatConvertedTruncating = Math.round(thatConverted.getValue().doubleValue()) == thatConverted.getValue().doubleValue();
+    if (thisConvertedOverflowing || thatConvertedTruncating) {
+      return NumberQuantity.of(value + thatConverted.getValue().intValue(), getUnit());
+    } else {
+      return NumberQuantity.of(thisConverted.getValue().intValue() + that.getValue().intValue(), that.getUnit());
+    }
   }
 
   public ComparableQuantity<Q> subtract(Quantity<Q> that) {
-    final Quantity<Q> converted = that.to(getUnit());
-    return NumberQuantity.of(value - converted.getValue().intValue(), getUnit());
+    final Quantity<Q> thatNegated = NumberQuantity.of(-that.getValue().intValue(), that.getUnit());
+    return add(thatNegated);
   }
 
   @SuppressWarnings({ "rawtypes", "unchecked" })
