@@ -91,23 +91,29 @@ final class IntegerQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
     return Math.round(value) != value;
   }
 
+  private ComparableQuantity<Q> addRaw(Number a, Number b, Unit<Q> unit) {
+    return NumberQuantity.of(a.intValue() + b.intValue(), unit);
+  }
+
   public ComparableQuantity<Q> add(Quantity<Q> that) {
     final Quantity<Q> thatConverted = that.to(getUnit());
     final Quantity<Q> thisConverted = this.to(that.getUnit());
-    final double resultInThisUnit = getValue().doubleValue() + thatConverted.getValue().doubleValue();
-    final double resultInThatUnit = thisConverted.getValue().doubleValue() + that.getValue().doubleValue();
-    if (isOverflowing(resultInThisUnit)) {
-      if (isOverflowing(resultInThatUnit)) {
+    final double resultValueInThisUnit = getValue().doubleValue() + thatConverted.getValue().doubleValue();
+    final double resultValueInThatUnit = thisConverted.getValue().doubleValue() + that.getValue().doubleValue();
+    final ComparableQuantity<Q> resultInThisUnit = addRaw(getValue(), thatConverted.getValue(), getUnit());
+    final ComparableQuantity<Q> resultInThatUnit = addRaw(thisConverted.getValue(), that.getValue(), that.getUnit());
+    if (isOverflowing(resultValueInThisUnit)) {
+      if (isOverflowing(resultValueInThatUnit)) {
         throw new ArithmeticException();
       } else {
-        return NumberQuantity.of(thisConverted.getValue().intValue() + that.getValue().intValue(), that.getUnit());
+        return resultInThatUnit;
       }
-    } else if (isOverflowing(resultInThatUnit)) {
-      return NumberQuantity.of(getValue().intValue() + thatConverted.getValue().intValue(), getUnit());
-    } else if (hasFraction(resultInThisUnit)) {
-      return NumberQuantity.of(thisConverted.getValue().intValue() + that.getValue().intValue(), that.getUnit());
+    } else if (isOverflowing(resultValueInThatUnit)) {
+      return resultInThisUnit;
+    } else if (hasFraction(resultValueInThisUnit)) {
+      return resultInThatUnit;
     } else {
-      return NumberQuantity.of(getValue().intValue() + thatConverted.getValue().intValue(), getUnit());
+      return resultInThisUnit;
     }
   }
 
