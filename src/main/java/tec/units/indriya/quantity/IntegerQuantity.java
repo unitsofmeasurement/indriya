@@ -83,15 +83,31 @@ final class IntegerQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
     return (long) result;
   }
 
+  private boolean isOverflowing(double value) {
+    return value > Integer.MAX_VALUE;
+  }
+
+  private boolean hasFraction(double value) {
+    return Math.round(value) != value;
+  }
+
   public ComparableQuantity<Q> add(Quantity<Q> that) {
-    final ComparableQuantity<Q> thatConverted = (ComparableQuantity<Q>) that.to(getUnit());
-    final ComparableQuantity<Q> thisConverted = (ComparableQuantity<Q>) this.to(that.getUnit());
-    boolean thisConvertedOverflowing = thisConverted.getValue().doubleValue() > Integer.MAX_VALUE;
-    boolean thatConvertedTruncating = Math.round(thatConverted.getValue().doubleValue()) == thatConverted.getValue().doubleValue();
-    if (thisConvertedOverflowing || thatConvertedTruncating) {
-      return NumberQuantity.of(value + thatConverted.getValue().intValue(), getUnit());
-    } else {
+    final Quantity<Q> thatConverted = that.to(getUnit());
+    final Quantity<Q> thisConverted = this.to(that.getUnit());
+    final double resultInThisUnit = getValue().doubleValue() + thatConverted.getValue().doubleValue();
+    final double resultInThatUnit = thisConverted.getValue().doubleValue() + that.getValue().doubleValue();
+    if (isOverflowing(resultInThisUnit)) {
+      if (isOverflowing(resultInThatUnit)) {
+        throw new ArithmeticException();
+      } else {
+        return NumberQuantity.of(thisConverted.getValue().intValue() + that.getValue().intValue(), that.getUnit());
+      }
+    } else if (isOverflowing(resultInThatUnit)) {
+      return NumberQuantity.of(getValue().intValue() + thatConverted.getValue().intValue(), getUnit());
+    } else if (hasFraction(resultInThisUnit)) {
       return NumberQuantity.of(thisConverted.getValue().intValue() + that.getValue().intValue(), that.getUnit());
+    } else {
+      return NumberQuantity.of(getValue().intValue() + thatConverted.getValue().intValue(), getUnit());
     }
   }
 

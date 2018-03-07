@@ -48,7 +48,9 @@ public class IntegerQuantityTest {
 
   final IntegerQuantity<ElectricResistance> ONE_OHM = createQuantity(1, Units.OHM);
   final IntegerQuantity<ElectricResistance> TWO_OHM = createQuantity(2, Units.OHM);
+  final IntegerQuantity<ElectricResistance> MAX_VALUE_OHM = createQuantity(Integer.MAX_VALUE, Units.OHM);
   final IntegerQuantity<ElectricResistance> ONE_MILLIOHM = createQuantity(1, MetricPrefix.MILLI(Units.OHM));
+  final IntegerQuantity<ElectricResistance> ONE_KILOOHM = createQuantity(1, MetricPrefix.KILO(Units.OHM));
   final IntegerQuantity<ElectricResistance> ONE_YOTTAOHM = createQuantity(1, MetricPrefix.YOTTA(Units.OHM));
 
   private <Q extends Quantity<Q>> IntegerQuantity<Q> createQuantity(int i, Unit<Q> unit) {
@@ -64,6 +66,14 @@ public class IntegerQuantityTest {
     Quantity<ElectricResistance> actual = ONE_OHM.add(TWO_OHM);
     IntegerQuantity<ElectricResistance> expected = createQuantity(3, Units.OHM);
     assertEquals(expected, actual);
+  }
+
+  /**
+   * Verifies that the addition of two quantities with the same multiples resulting in an overflow throws an exception.
+   */
+  @Test(expected = ArithmeticException.class)
+  public void additionWithSameMultipleResultingInOverflowThrowsException() {
+    ONE_OHM.add(MAX_VALUE_OHM);
   }
 
   /**
@@ -93,6 +103,27 @@ public class IntegerQuantityTest {
   public void additionWithLargerOverflowingMultipleCastsToLargerMultiple() {
     Quantity<ElectricResistance> actual = ONE_OHM.add(ONE_YOTTAOHM);
     assertEquals(ONE_YOTTAOHM, actual);
+  }
+
+  /**
+   * Verifies that adding a quantity with a larger multiple resulting in an overflowing sum casts the result to the larger multiple.
+   */
+  @Test
+  public void additionWithLargerMultipleAndOverflowingResultCastsToLargerMultiple() {
+    IntegerQuantity<ElectricResistance> almost_max_value_ohm = createQuantity(Integer.MAX_VALUE - 999, Units.OHM);
+    Quantity<ElectricResistance> actual = almost_max_value_ohm.add(ONE_KILOOHM);
+    IntegerQuantity<ElectricResistance> expected = createQuantity(Integer.MAX_VALUE / 1000, MetricPrefix.KILO(Units.OHM));
+    assertEquals(expected, actual);
+  }
+
+  /**
+   * Verifies that adding a quantity with a larger multiple resulting in an overflowing sum casts the result to the larger multiple.
+   */
+  @Test
+  public void additionWithLargerMultipleButNotOverflowingResultKeepsSmallerMultiple() {
+    IntegerQuantity<ElectricResistance> almost_max_value_ohm = createQuantity(Integer.MAX_VALUE - 1000, Units.OHM);
+    Quantity<ElectricResistance> actual = almost_max_value_ohm.add(ONE_KILOOHM);
+    assertEquals(MAX_VALUE_OHM, actual);
   }
 
   /**
