@@ -1,9 +1,7 @@
 Indriya
 ============
 
-Next Generation Units of Measurement Implementation
-
-JDK Integration of Unit-API
+JSR 385 - Reference Implementation
 
 This implementation aims at **Java SE 8** and above.
 
