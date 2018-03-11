@@ -1,19 +1,18 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>tec.units</groupId>
+	<groupId>tech.units</groupId>
 	<artifactId>indriya</artifactId>
 	<url>https://github.com/unitsofmeasurement/indriya</url>
 	<organization>
 		<name>Units of Measurement project</name>
 		<url>http://unitsofmeasurement.github.io</url>
 	</organization>
-	<version>2.0-SNAPSHOT</version>
 	<packaging>bundle</packaging>
 	<parent>
-		<groupId>tec.uom</groupId>
+		<groupId>tech.uom</groupId>
 		<artifactId>uom-parent</artifactId>
-		<version>1.0.6-SNAPSHOT</version>
+		<version>1.1</version>
 	</parent>
 	<scm>
 		<url>https://github.com/unitsofmeasurement/indriya.git</url>
@@ -35,7 +34,7 @@
 	<properties>
 		<jsr.version>2.0-SNAPSHOT</jsr.version>
 		<lib.version>1.0.3-SNAPSHOT</lib.version>
-		<sourceEncoding>UTF-8</sourceEncoding> <!-- in Maven 3. -->
+		<sourceEncoding>UTF-8</sourceEncoding>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>${sourceEncoding}</project.reporting.outputEncoding>
 		<jdkVersion>1.8</jdkVersion>
