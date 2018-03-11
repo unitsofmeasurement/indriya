@@ -31,6 +31,7 @@ package tec.units.indriya.quantity;
 
 import static org.junit.Assert.assertEquals;
 import javax.measure.Quantity;
+import javax.measure.Unit;
 import javax.measure.quantity.ElectricResistance;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Time;
@@ -45,38 +46,116 @@ import tec.units.indriya.unit.Units;
 
 public class IntegerQuantityTest {
 
-  @Test
-  public void divideTest() {
-    IntegerQuantity<ElectricResistance> quantity1 = new IntegerQuantity<ElectricResistance>(Long.valueOf(3).intValue(), Units.OHM);
-    IntegerQuantity<ElectricResistance> quantity2 = new IntegerQuantity<ElectricResistance>(Long.valueOf(2).intValue(), Units.OHM);
-    Quantity<?> result = quantity1.divide(quantity2);
-    assertEquals(Double.valueOf(1.5d), result.getValue());
+  final IntegerQuantity<ElectricResistance> ONE_OHM = createQuantity(1, Units.OHM);
+  final IntegerQuantity<ElectricResistance> TWO_OHM = createQuantity(2, Units.OHM);
+  final IntegerQuantity<ElectricResistance> MAX_VALUE_OHM = createQuantity(Integer.MAX_VALUE, Units.OHM);
+  final IntegerQuantity<ElectricResistance> ONE_MILLIOHM = createQuantity(1, MetricPrefix.MILLI(Units.OHM));
+  final IntegerQuantity<ElectricResistance> ONE_KILOOHM = createQuantity(1, MetricPrefix.KILO(Units.OHM));
+  final IntegerQuantity<ElectricResistance> ONE_YOTTAOHM = createQuantity(1, MetricPrefix.YOTTA(Units.OHM));
+
+  private <Q extends Quantity<Q>> IntegerQuantity<Q> createQuantity(int i, Unit<Q> unit) {
+    return new IntegerQuantity<Q>(Integer.valueOf(i).intValue(), unit);
   }
 
-  @SuppressWarnings({ "unchecked", "rawtypes" })
+  /**
+   * Verifies that the addition of two quantities with the same multiples results in a new quantity with the same multiple and the value holding the
+   * sum.
+   */
   @Test
-  public void addTest() {
-    IntegerQuantity quantity1 = new IntegerQuantity(Long.valueOf(1).intValue(), Units.OHM);
-    IntegerQuantity quantity2 = new IntegerQuantity(Long.valueOf(2).intValue(), Units.OHM);
-    Quantity<ElectricResistance> result = quantity1.add(quantity2);
-    assertEquals(Short.valueOf("3").intValue(), result.getValue().intValue());
+  public void additionWithSameMultipleKeepsMultiple() {
+    Quantity<ElectricResistance> actual = ONE_OHM.add(TWO_OHM);
+    IntegerQuantity<ElectricResistance> expected = createQuantity(3, Units.OHM);
+    assertEquals(expected, actual);
   }
 
+  /**
+   * Verifies that the addition of two quantities with the same multiples resulting in an overflow throws an exception.
+   */
+  @Test(expected = ArithmeticException.class)
+  public void additionWithSameMultipleResultingInOverflowThrowsException() {
+    ONE_OHM.add(MAX_VALUE_OHM);
+  }
+
+  /**
+   * Verifies that adding a quantity with a larger multiple keeps the result to the smaller multiple.
+   */
   @Test
-  public void subtractTest() {
-    IntegerQuantity<ElectricResistance> quantity1 = new IntegerQuantity<ElectricResistance>(Long.valueOf(1).intValue(), Units.OHM);
-    IntegerQuantity<ElectricResistance> quantity2 = new IntegerQuantity<ElectricResistance>(Long.valueOf(2).intValue(), Units.OHM);
-    Quantity<ElectricResistance> result = quantity2.subtract(quantity1);
-    assertEquals(Short.valueOf("1").intValue(), result.getValue().intValue());
-    assertEquals(Units.OHM, result.getUnit());
+  public void additionWithLargerMultipleKeepsSmallerMultiple() {
+    Quantity<ElectricResistance> actual = ONE_MILLIOHM.add(ONE_OHM);
+    IntegerQuantity<ElectricResistance> expected = createQuantity(1001, MetricPrefix.MILLI(Units.OHM));
+    assertEquals(expected, actual);
+  }
+
+  /**
+   * Verifies that adding a quantity with a smaller multiple casts the result to the smaller multiple.
+   */
+  @Test
+  public void additionWithSmallerMultipleCastsToSmallerMultipleIfNeeded() {
+    Quantity<ElectricResistance> actual = ONE_OHM.add(ONE_MILLIOHM);
+    IntegerQuantity<ElectricResistance> expected = createQuantity(1001, MetricPrefix.MILLI(Units.OHM));
+    assertEquals(expected, actual);
+  }
+
+  /**
+   * Verifies that adding a quantity with a larger overflowing multiple casts the result to the larger multiple.
+   */
+  @Test
+  public void additionWithLargerOverflowingMultipleCastsToLargerMultiple() {
+    Quantity<ElectricResistance> actual = ONE_OHM.add(ONE_YOTTAOHM);
+    assertEquals(ONE_YOTTAOHM, actual);
+  }
+
+  /**
+   * Verifies that adding a quantity with a larger multiple resulting in an overflowing sum casts the result to the larger multiple.
+   */
+  @Test
+  public void additionWithLargerMultipleAndOverflowingResultCastsToLargerMultiple() {
+    IntegerQuantity<ElectricResistance> almost_max_value_ohm = createQuantity(Integer.MAX_VALUE - 999, Units.OHM);
+    Quantity<ElectricResistance> actual = almost_max_value_ohm.add(ONE_KILOOHM);
+    IntegerQuantity<ElectricResistance> expected = createQuantity(Integer.MAX_VALUE / 1000, MetricPrefix.KILO(Units.OHM));
+    assertEquals(expected, actual);
+  }
+
+  /**
+   * Verifies that adding a quantity with a larger multiple resulting in an overflowing sum casts the result to the larger multiple.
+   */
+  @Test
+  public void additionWithLargerMultipleButNotOverflowingResultKeepsSmallerMultiple() {
+    IntegerQuantity<ElectricResistance> almost_max_value_ohm = createQuantity(Integer.MAX_VALUE - 1000, Units.OHM);
+    Quantity<ElectricResistance> actual = almost_max_value_ohm.add(ONE_KILOOHM);
+    assertEquals(MAX_VALUE_OHM, actual);
+  }
+
+  /**
+   * Verifies that adding a quantity with a smaller underflowing multiple keeps the result at the larger multiple.
+   */
+  @Test
+  public void additionWithSmallerUnderflowingMultipleKeepsAtLargerMultiple() {
+    Quantity<ElectricResistance> actual = ONE_YOTTAOHM.add(ONE_OHM);
+    assertEquals(ONE_YOTTAOHM, actual);
+  }
+
+  /**
+   * Verifies that subtraction subtracts the argument from the target object.
+   */
+  @Test
+  public void subtractionSubtractsArgumentFromTargetObject() {
+    Quantity<ElectricResistance> actual = TWO_OHM.subtract(ONE_OHM);
+    assertEquals(ONE_OHM, actual);
   }
 
   @Test
   public void multiplyQuantityTest() {
     IntegerQuantity<ElectricResistance> quantity1 = new IntegerQuantity<ElectricResistance>(Long.valueOf(3).intValue(), Units.OHM);
-    IntegerQuantity<ElectricResistance> quantity2 = new IntegerQuantity<ElectricResistance>(Long.valueOf(2).intValue(), Units.OHM);
-    Quantity<?> result = quantity1.multiply(quantity2);
+    Quantity<?> result = quantity1.multiply(TWO_OHM);
     assertEquals(Integer.valueOf(6), result.getValue());
+  }
+
+  @Test
+  public void divideTest() {
+    IntegerQuantity<ElectricResistance> quantity1 = new IntegerQuantity<ElectricResistance>(Long.valueOf(3).intValue(), Units.OHM);
+    Quantity<?> result = quantity1.divide(TWO_OHM);
+    assertEquals(Double.valueOf(1.5d), result.getValue());
   }
 
   @Test
@@ -110,31 +189,6 @@ public class IntegerQuantityTest {
     Quantity<Length> value = Quantities.getQuantity(new Integer(10), Units.METRE);
     Quantity<Length> anotherValue = Quantities.getQuantity(new Integer(10), Units.METRE);
     assertEquals(value, anotherValue);
-  }
-
-  @Test
-  public void milliOhmTest() {
-    final IntegerQuantity<ElectricResistance> ONE_OHM = new IntegerQuantity<ElectricResistance>(Integer.valueOf(1).intValue(), Units.OHM);
-    final IntegerQuantity<ElectricResistance> ONE_MILLIOHM = new IntegerQuantity<ElectricResistance>(Integer.valueOf(1).intValue(),
-        MetricPrefix.MILLI(Units.OHM));
-
-    assertEquals(ONE_OHM, ONE_OHM.add(ONE_MILLIOHM));
-    final IntegerQuantity<ElectricResistance> ONEOONE_MILLIOHM = new IntegerQuantity<ElectricResistance>(Integer.valueOf(1001),
-        MetricPrefix.MILLI(Units.OHM));
-    assertEquals(ONEOONE_MILLIOHM, ONE_MILLIOHM.add(ONE_OHM));
-  }
-
-  @Test
-  public void yottaOhmTest() {
-    final IntegerQuantity<ElectricResistance> ONE_OHM = new IntegerQuantity<ElectricResistance>(Integer.valueOf(1).intValue(), Units.OHM);
-    final IntegerQuantity<ElectricResistance> ONE_YOTTAOHM = new IntegerQuantity<ElectricResistance>(Integer.valueOf(1).intValue(),
-        MetricPrefix.YOTTA(Units.OHM));
-    final IntegerQuantity<ElectricResistance> INT_MIN_OHM = new IntegerQuantity<ElectricResistance>(Integer.MIN_VALUE, Units.OHM);
-
-    assertEquals(INT_MIN_OHM, ONE_OHM.add(ONE_YOTTAOHM));
-    final IntegerQuantity<ElectricResistance> ONEOONE_MILLIOHM = new IntegerQuantity<ElectricResistance>(Integer.valueOf(1001),
-        MetricPrefix.MILLI(Units.OHM));
-    // assertEquals(ONEOONE_MILLIOHM, ONE_MILLIOHM.add(ONE_OHM));
   }
 
 }

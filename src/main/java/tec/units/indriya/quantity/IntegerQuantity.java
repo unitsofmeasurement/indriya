@@ -54,8 +54,8 @@ import tec.units.indriya.ComparableQuantity;
 final class IntegerQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
 
   /**
-     * 
-     */
+	 * 
+	 */
   private static final long serialVersionUID = 1405915111744728289L;
 
   final int value;
@@ -71,26 +71,55 @@ final class IntegerQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
   }
 
   public double doubleValue(Unit<Q> unit) {
-    return (super.getUnit().equals(unit)) ? value : super.getUnit().getConverterTo(unit).convert(value);
+    return super.getUnit().equals(unit) ? value : super.getUnit().getConverterTo(unit).convert(value);
   }
 
   @Override
   public long longValue(Unit<Q> unit) {
     double result = doubleValue(unit);
-    if ((result < Long.MIN_VALUE) || (result > Long.MAX_VALUE)) {
+    if (result < Long.MIN_VALUE || result > Long.MAX_VALUE) {
       throw new ArithmeticException("Overflow (" + result + ")");
     }
     return (long) result;
   }
 
+  private boolean isOverflowing(double value) {
+    return value > Integer.MAX_VALUE;
+  }
+
+  private boolean hasFraction(double value) {
+    return Math.round(value) != value;
+  }
+
+  private ComparableQuantity<Q> addRaw(Number a, Number b, Unit<Q> unit) {
+    return NumberQuantity.of(a.intValue() + b.intValue(), unit);
+  }
+
   public ComparableQuantity<Q> add(Quantity<Q> that) {
-    final Quantity<Q> converted = that.to(getUnit());
-    return NumberQuantity.of(value + converted.getValue().intValue(), getUnit());
+    final Quantity<Q> thatConverted = that.to(getUnit());
+    final Quantity<Q> thisConverted = this.to(that.getUnit());
+    final double resultValueInThisUnit = getValue().doubleValue() + thatConverted.getValue().doubleValue();
+    final double resultValueInThatUnit = thisConverted.getValue().doubleValue() + that.getValue().doubleValue();
+    final ComparableQuantity<Q> resultInThisUnit = addRaw(getValue(), thatConverted.getValue(), getUnit());
+    final ComparableQuantity<Q> resultInThatUnit = addRaw(thisConverted.getValue(), that.getValue(), that.getUnit());
+    if (isOverflowing(resultValueInThisUnit)) {
+      if (isOverflowing(resultValueInThatUnit)) {
+        throw new ArithmeticException();
+      } else {
+        return resultInThatUnit;
+      }
+    } else if (isOverflowing(resultValueInThatUnit)) {
+      return resultInThisUnit;
+    } else if (hasFraction(resultValueInThisUnit)) {
+      return resultInThatUnit;
+    } else {
+      return resultInThisUnit;
+    }
   }
 
   public ComparableQuantity<Q> subtract(Quantity<Q> that) {
-    final Quantity<Q> converted = that.to(getUnit());
-    return NumberQuantity.of(value - converted.getValue().intValue(), getUnit());
+    final Quantity<Q> thatNegated = NumberQuantity.of(-that.getValue().intValue(), that.getUnit());
+    return add(thatNegated);
   }
 
   @SuppressWarnings({ "rawtypes", "unchecked" })
