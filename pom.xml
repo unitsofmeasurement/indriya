@@ -35,7 +35,7 @@
 	<!-- ======================================================= -->
 	<properties>
 		<jsr.version>2.0-SNAPSHOT</jsr.version>
-		<lib.version>1.0.3-SNAPSHOT</lib.version>
+		<lib.version>2.0-SNAPSHOT</lib.version>
 		<sourceEncoding>UTF-8</sourceEncoding>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>${sourceEncoding}</project.reporting.outputEncoding>
@@ -56,7 +56,7 @@
 			<artifactId>unit-api</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>tec.uom.lib</groupId>
+			<groupId>tech.uom.lib</groupId>
 			<artifactId>uom-lib-common</artifactId>
 		</dependency>
 		<dependency>
@@ -74,7 +74,7 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>tec.uom.lib</groupId>
+				<groupId>tech.uom.lib</groupId>
 				<artifactId>uom-lib-common</artifactId>
 				<version>${lib.version}</version>
 			</dependency>
@@ -164,7 +164,7 @@
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<configuration>
-					<!-- this does not work for packages <excludes> <exclude>tec.units.indriya.internal.*</exclude> 
+					<!-- this does not work for packages <excludes> <exclude>tech.units.indriya.internal.*</exclude> 
 						</excludes -->
 				</configuration>
 				<executions>
@@ -269,8 +269,8 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-						<Export-Package>tec.units.indriya.*</Export-Package>
-						<Private-Package>tec.units.indriya.internal.*</Private-Package>
+						<Export-Package>tech.units.indriya.*</Export-Package>
+						<Private-Package>tech.units.indriya.internal.*</Private-Package>
 					</instructions>
 				</configuration>
 			</plugin>
@@ -514,10 +514,10 @@
 											<id>javax.measure:unit-api:${jsr.version}</id>
 										</artifact>
 										<artifact>
-											<id>tec.uom.lib:uom-lib-common:${lib.version}</id>
+											<id>tech.uom.lib:uom-lib-common:${lib.version}</id>
 										</artifact>
 										<artifact>
-											<id>tec.units:indriya:${project.version}</id>
+											<id>tech.units:indriya:${project.version}</id>
 										</artifact>
 									</artifacts>
 								</configuration>
