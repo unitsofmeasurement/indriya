@@ -87,10 +87,6 @@ final class IntegerQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
     return value > Integer.MAX_VALUE;
   }
 
-  private boolean hasFraction(double value) {
-    return Math.round(value) != value;
-  }
-
   private ComparableQuantity<Q> addRaw(Number a, Number b, Unit<Q> unit) {
     return NumberQuantity.of(a.intValue() + b.intValue(), unit);
   }

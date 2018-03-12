@@ -31,6 +31,7 @@ package tech.units.indriya.quantity;
 
 import static org.junit.Assert.assertEquals;
 import javax.measure.Quantity;
+import javax.measure.Unit;
 import javax.measure.quantity.ElectricResistance;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Time;
@@ -40,40 +41,121 @@ import org.junit.Test;
 
 import tech.units.indriya.quantity.LongQuantity;
 import tech.units.indriya.quantity.Quantities;
+import tech.units.indriya.unit.MetricPrefix;
 import tech.units.indriya.unit.Units;
 
 public class LongQuantityTest {
 
+  final LongQuantity<ElectricResistance> ONE_OHM = createQuantity(1L, Units.OHM);
+  final LongQuantity<ElectricResistance> TWO_OHM = createQuantity(2L, Units.OHM);
+  final LongQuantity<ElectricResistance> MAX_VALUE_OHM = createQuantity(Long.MAX_VALUE, Units.OHM);
+  final LongQuantity<ElectricResistance> ONE_MILLIOHM = createQuantity(1L, MetricPrefix.MILLI(Units.OHM));
+  final LongQuantity<ElectricResistance> ONE_KILOOHM = createQuantity(1L, MetricPrefix.KILO(Units.OHM));
+  final LongQuantity<ElectricResistance> ONE_YOTTAOHM = createQuantity(1L, MetricPrefix.YOTTA(Units.OHM));
+
+  private <Q extends Quantity<Q>> LongQuantity<Q> createQuantity(long l, Unit<Q> unit) {
+    return new LongQuantity<Q>(Long.valueOf(l).longValue(), unit);
+  }
+
+  /**
+   * Verifies that the addition of two quantities with the same multiples results in a new quantity with the same multiple and the value holding the
+   * sum.
+   */
+  @Test
+  public void additionWithSameMultipleKeepsMultiple() {
+    Quantity<ElectricResistance> actual = ONE_OHM.add(TWO_OHM);
+    LongQuantity<ElectricResistance> expected = createQuantity(3, Units.OHM);
+    assertEquals(expected, actual);
+  }
+
+  /**
+   * Verifies that the addition of two quantities with the same multiples resulting in an overflow throws an exception.
+   */
+  @Test(expected = ArithmeticException.class)
+  public void additionWithSameMultipleResultingInOverflowThrowsException() {
+    ONE_OHM.add(MAX_VALUE_OHM);
+  }
+
+  /**
+   * Verifies that adding a quantity with a larger multiple keeps the result to the smaller multiple.
+   */
+  @Test
+  public void additionWithLargerMultipleKeepsSmallerMultiple() {
+    Quantity<ElectricResistance> actual = ONE_MILLIOHM.add(ONE_OHM);
+    LongQuantity<ElectricResistance> expected = createQuantity(1001, MetricPrefix.MILLI(Units.OHM));
+    assertEquals(expected, actual);
+  }
+
+  /**
+   * Verifies that adding a quantity with a smaller multiple casts the result to the smaller multiple.
+   */
+  @Test
+  public void additionWithSmallerMultipleCastsToSmallerMultipleIfNeeded() {
+    Quantity<ElectricResistance> actual = ONE_OHM.add(ONE_MILLIOHM);
+    LongQuantity<ElectricResistance> expected = createQuantity(1001, MetricPrefix.MILLI(Units.OHM));
+    assertEquals(expected, actual);
+  }
+
+  /**
+   * Verifies that adding a quantity with a larger overflowing multiple casts the result to the larger multiple.
+   */
+  @Test
+  public void additionWithLargerOverflowingMultipleCastsToLargerMultiple() {
+    Quantity<ElectricResistance> actual = ONE_OHM.add(ONE_YOTTAOHM);
+    assertEquals(ONE_YOTTAOHM, actual);
+  }
+
+  /**
+   * Verifies that adding a quantity with a larger multiple resulting in an overflowing sum casts the result to the larger multiple.
+   */
+  @Test
+  public void additionWithLargerMultipleAndOverflowingResultCastsToLargerMultiple() {
+    LongQuantity<ElectricResistance> almost_max_value_ohm = createQuantity(Long.MAX_VALUE - 1534, Units.OHM);
+    Quantity<ElectricResistance> actual = almost_max_value_ohm.add(ONE_KILOOHM);
+    LongQuantity<ElectricResistance> expected = createQuantity(Long.MAX_VALUE / 1000, MetricPrefix.KILO(Units.OHM));
+    assertEquals(expected, actual);
+  }
+
+  /**
+   * Verifies that adding a quantity with a larger multiple resulting in an overflowing sum casts the result to the larger multiple.
+   */
+  @Test
+  public void additionWithLargerMultipleButNotOverflowingResultKeepsSmallerMultiple() {
+    LongQuantity<ElectricResistance> almost_max_value_ohm = createQuantity(Long.MAX_VALUE - 1535, Units.OHM);
+    Quantity<ElectricResistance> actual = almost_max_value_ohm.add(ONE_KILOOHM);
+    LongQuantity<ElectricResistance> expected = createQuantity(Long.MAX_VALUE - 535, Units.OHM);
+    assertEquals(expected, actual);
+  }
+
+  /**
+   * Verifies that adding a quantity with a smaller underflowing multiple keeps the result at the larger multiple.
+   */
+  @Test
+  public void additionWithSmallerUnderflowingMultipleKeepsAtLargerMultiple() {
+    Quantity<ElectricResistance> actual = ONE_YOTTAOHM.add(ONE_OHM);
+    assertEquals(ONE_YOTTAOHM, actual);
+  }
+
+  /**
+   * Verifies that subtraction subtracts the argument from the target object.
+   */
+  @Test
+  public void subtractionSubtractsArgumentFromTargetObject() {
+    Quantity<ElectricResistance> actual = TWO_OHM.subtract(ONE_OHM);
+    assertEquals(ONE_OHM, actual);
+  }
+
   @Test
   public void divideTest() {
     LongQuantity<ElectricResistance> quantity1 = new LongQuantity<ElectricResistance>(Long.valueOf(3).longValue(), Units.OHM);
-    LongQuantity<ElectricResistance> quantity2 = new LongQuantity<ElectricResistance>(Long.valueOf(2).longValue(), Units.OHM);
-    Quantity<?> result = quantity1.divide(quantity2);
+    Quantity<?> result = quantity1.divide(TWO_OHM);
     assertEquals(Double.valueOf(1.5d), result.getValue());
-  }
-
-  @Test
-  public void addTest() {
-    LongQuantity quantity1 = new LongQuantity(Long.valueOf(1).longValue(), Units.OHM);
-    LongQuantity quantity2 = new LongQuantity(Long.valueOf(2).longValue(), Units.OHM);
-    Quantity<ElectricResistance> result = quantity1.add(quantity2);
-    assertEquals(Short.valueOf("3").longValue(), result.getValue().longValue());
-  }
-
-  @Test
-  public void subtractTest() {
-    LongQuantity<ElectricResistance> quantity1 = new LongQuantity<ElectricResistance>(Long.valueOf(1).longValue(), Units.OHM);
-    LongQuantity<ElectricResistance> quantity2 = new LongQuantity<ElectricResistance>(Long.valueOf(2).longValue(), Units.OHM);
-    Quantity<ElectricResistance> result = quantity2.subtract(quantity1);
-    assertEquals(Short.valueOf("1").longValue(), result.getValue().longValue());
-    assertEquals(Units.OHM, result.getUnit());
   }
 
   @Test
   public void multiplyQuantityTest() {
     LongQuantity<ElectricResistance> quantity1 = new LongQuantity<ElectricResistance>(Long.valueOf(3).longValue(), Units.OHM);
-    LongQuantity<ElectricResistance> quantity2 = new LongQuantity<ElectricResistance>(Long.valueOf(2).longValue(), Units.OHM);
-    Quantity<?> result = quantity1.multiply(quantity2);
+    Quantity<?> result = quantity1.multiply(TWO_OHM);
     assertEquals(Long.valueOf(6L), result.getValue());
   }
 
