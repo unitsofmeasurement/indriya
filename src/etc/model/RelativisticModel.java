@@ -23,11 +23,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package tec.units.indriya.model;
+package tech.units.indriya.model;
 
-import tec.units.indriya.AbstractDimension;
-import tec.units.indriya.function.AbstractConverter;
-import tec.units.indriya.function.RationalConverter;
+import tech.units.indriya.AbstractDimension;
+import tech.units.indriya.function.AbstractConverter;
+import tech.units.indriya.function.RationalConverter;
 
 /**
  * This class represents the relativistic model.
