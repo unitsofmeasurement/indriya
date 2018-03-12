@@ -397,6 +397,10 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
     return AbstractQuantityFormat.getInstance().parse(csq);
   }
 
+  protected boolean hasFraction(double value) {
+    return Math.round(value) != value;
+  }
+
   /**
    * Utility class for number comparison and equality
    */
