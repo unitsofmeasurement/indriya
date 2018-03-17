@@ -5,6 +5,7 @@ JSR 385 - Reference Implementation
 
 This implementation aims at **Java SE 8** and above.
 
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/tech.units/indriya/badge.svg)](https://maven-badges.herokuapp.com/maven-central/tech.units/indriya)
 [![CircleCI](https://circleci.com/gh/unitsofmeasurement/indriya.svg?style=svg)](https://circleci.com/gh/unitsofmeasurement/indriya)
 [![codecov](https://codecov.io/gh/unitsofmeasurement/indriya/branch/master/graph/badge.svg)](https://codecov.io/gh/unitsofmeasurement/indriya)
 [![License](http://img.shields.io/badge/license-BSD3-blue.svg)](http://opensource.org/licenses/BSD-3-Clause)
