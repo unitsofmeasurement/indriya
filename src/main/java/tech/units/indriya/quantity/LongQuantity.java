@@ -52,6 +52,8 @@ import tech.units.indriya.ComparableQuantity;
  */
 final class LongQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
 
+  private static final BigDecimal LONG_MAX_VALUE_AS_BIG_DECIMAL = new BigDecimal(Long.MAX_VALUE);
+
   /**
      * 
      */
@@ -82,9 +84,8 @@ final class LongQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
     return (long) result;
   }
 
-  private boolean isOverflowing(double value) {
-
-    return value >= Long.MAX_VALUE;
+  private boolean isOverflowing(BigDecimal value) {
+    return value.compareTo(LONG_MAX_VALUE_AS_BIG_DECIMAL) > 0;
   }
 
   private ComparableQuantity<Q> addRaw(Number a, Number b, Unit<Q> unit) {
@@ -94,8 +95,9 @@ final class LongQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
   public ComparableQuantity<Q> add(Quantity<Q> that) {
     final Quantity<Q> thatConverted = that.to(getUnit());
     final Quantity<Q> thisConverted = this.to(that.getUnit());
-    final double resultValueInThisUnit = getValue().doubleValue() + thatConverted.getValue().doubleValue();
-    final double resultValueInThatUnit = thisConverted.getValue().doubleValue() + that.getValue().doubleValue();
+    final BigDecimal resultValueInThisUnit = new BigDecimal(getValue()).add(new BigDecimal(thatConverted.getValue().doubleValue()));
+    final BigDecimal resultValueInThatUnit = new BigDecimal(thisConverted.getValue().doubleValue())
+        .add(new BigDecimal(that.getValue().doubleValue()));
     final ComparableQuantity<Q> resultInThisUnit = addRaw(getValue(), thatConverted.getValue(), getUnit());
     final ComparableQuantity<Q> resultInThatUnit = addRaw(thisConverted.getValue(), that.getValue(), that.getUnit());
     if (isOverflowing(resultValueInThisUnit)) {

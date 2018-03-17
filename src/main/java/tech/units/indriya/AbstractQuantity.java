@@ -401,6 +401,10 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
     return Math.round(value) != value;
   }
 
+  protected boolean hasFraction(BigDecimal value) {
+    return value.remainder(BigDecimal.ONE).compareTo(BigDecimal.ZERO) != 0;
+  }
+
   /**
    * Utility class for number comparison and equality
    */

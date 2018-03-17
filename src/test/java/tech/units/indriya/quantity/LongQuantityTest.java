@@ -110,7 +110,7 @@ public class LongQuantityTest {
    */
   @Test
   public void additionWithLargerMultipleAndOverflowingResultCastsToLargerMultiple() {
-    LongQuantity<ElectricResistance> almost_max_value_ohm = createQuantity(Long.MAX_VALUE - 1534, Units.OHM);
+    LongQuantity<ElectricResistance> almost_max_value_ohm = createQuantity(Long.MAX_VALUE - 999, Units.OHM);
     Quantity<ElectricResistance> actual = almost_max_value_ohm.add(ONE_KILOOHM);
     LongQuantity<ElectricResistance> expected = createQuantity(Long.MAX_VALUE / 1000, MetricPrefix.KILO(Units.OHM));
     assertEquals(expected, actual);
@@ -121,10 +121,9 @@ public class LongQuantityTest {
    */
   @Test
   public void additionWithLargerMultipleButNotOverflowingResultKeepsSmallerMultiple() {
-    LongQuantity<ElectricResistance> almost_max_value_ohm = createQuantity(Long.MAX_VALUE - 1535, Units.OHM);
+    LongQuantity<ElectricResistance> almost_max_value_ohm = createQuantity(Long.MAX_VALUE - 1000L, Units.OHM);
     Quantity<ElectricResistance> actual = almost_max_value_ohm.add(ONE_KILOOHM);
-    LongQuantity<ElectricResistance> expected = createQuantity(Long.MAX_VALUE - 535, Units.OHM);
-    assertEquals(expected, actual);
+    assertEquals(MAX_VALUE_OHM, actual);
   }
 
   /**
