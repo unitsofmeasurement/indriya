@@ -13,6 +13,6 @@ This implementation aims at **Java SE 8** and above.
 
 ## Planning
 [![Issue Stats](http://issuestats.com/github/unitsofmeasurement/indriya/badge/issue?style=flat)](http://issuestats.com/github/unitsofmeasurement/indriya) 
-[![Issue Stats](http://issuestats.com/github/unitsofmeasurement/indriya/badge/pr?style=flat)](http://issuestats.com/github/unitsofmeasurement/indriya)
+[![Issue Stats](http://issuestats.com/github/unitsofmeasurement/indriya/badge/pr)](http://issuestats.com/github/unitsofmeasurement/indriya)
 
 [![Waffle.io - Columns and their card count](https://badge.waffle.io/unitsofmeasurement/indriya.png?columns=all)](https://waffle.io/unitsofmeasurement/indriya?utm_source=badge)
