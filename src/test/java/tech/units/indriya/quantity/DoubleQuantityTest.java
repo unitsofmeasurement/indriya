@@ -48,10 +48,10 @@ import tech.units.indriya.unit.Units;
 
 public class DoubleQuantityTest {
 
-  final DoubleQuantity<ElectricResistance> ONE_OHM = createQuantity(1, Units.OHM);
-  final DoubleQuantity<ElectricResistance> TWO_OHM = createQuantity(2, Units.OHM);
-  final DoubleQuantity<ElectricResistance> MAX_VALUE_OHM = createQuantity(Double.MAX_VALUE, Units.OHM);
-  final DoubleQuantity<ElectricResistance> ONE_MILLIOHM = createQuantity(1, MetricPrefix.MILLI(Units.OHM));
+  private final DoubleQuantity<ElectricResistance> ONE_OHM = createQuantity(1, Units.OHM);
+  private final DoubleQuantity<ElectricResistance> TWO_OHM = createQuantity(2, Units.OHM);
+  private final DoubleQuantity<ElectricResistance> MAX_VALUE_OHM = createQuantity(Double.MAX_VALUE, Units.OHM);
+  private final DoubleQuantity<ElectricResistance> ONE_MILLIOHM = createQuantity(1, MetricPrefix.MILLI(Units.OHM));
 
   private <Q extends Quantity<Q>> DoubleQuantity<Q> createQuantity(double d, Unit<Q> unit) {
     return new DoubleQuantity<Q>(Double.valueOf(d).doubleValue(), unit);
