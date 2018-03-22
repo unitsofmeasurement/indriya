@@ -119,12 +119,12 @@ public class DoubleQuantityTest {
     Quantity<Length> metre = Quantities.getQuantity(10D, Units.METRE);
     Quantity<Length> result = metre.divide(10D);
     Assert.assertTrue(result.getValue().intValue() == 1);
-    Assert.assertEquals(result.getUnit(), Units.METRE);
+    assertEquals(result.getUnit(), Units.METRE);
 
     Quantity<Time> day = Quantities.getQuantity(10D, Units.DAY);
     Quantity<Time> dayResult = day.divide(BigDecimal.valueOf(2.5D));
     Assert.assertTrue(dayResult.getValue().intValue() == 4);
-    Assert.assertEquals(dayResult.getUnit(), Units.DAY);
+    assertEquals(dayResult.getUnit(), Units.DAY);
   }
 
   @Test
@@ -132,7 +132,7 @@ public class DoubleQuantityTest {
     Quantity<Length> metre = Quantities.getQuantity(10D, Units.METRE);
     Quantity<Length> result = metre.multiply(10D);
     Assert.assertTrue(result.getValue().intValue() == 100);
-    Assert.assertEquals(result.getUnit(), Units.METRE);
+    assertEquals(result.getUnit(), Units.METRE);
     @SuppressWarnings("unchecked")
     Quantity<Length> result2 = (Quantity<Length>) metre.multiply(Quantities.getQuantity(10D, Units.HOUR));
     Assert.assertTrue(result2.getValue().intValue() == 100);
@@ -144,33 +144,33 @@ public class DoubleQuantityTest {
     Quantity<Time> day = Quantities.getQuantity(1D, Units.DAY);
     Quantity<Time> hour = day.to(Units.HOUR);
     Assert.assertEquals(hour.getValue().intValue(), 24);
-    Assert.assertEquals(hour.getUnit(), Units.HOUR);
+    assertEquals(hour.getUnit(), Units.HOUR);
 
     Quantity<Time> dayResult = hour.to(Units.DAY);
-    Assert.assertEquals(dayResult.getValue().intValue(), day.getValue().intValue());
-    Assert.assertEquals(dayResult.getValue().intValue(), day.getValue().intValue());
+    assertEquals(dayResult.getValue().intValue(), day.getValue().intValue());
+    assertEquals(dayResult.getValue().intValue(), day.getValue().intValue());
   }
 
   @Test
   public void inverseTestLength() {
     @SuppressWarnings("unchecked")
     Quantity<Length> metre = (Quantity<Length>) Quantities.getQuantity(10d, Units.METRE).inverse();
-    Assert.assertEquals(0.1d, metre.getValue());
-    Assert.assertEquals("1/m", String.valueOf(metre.getUnit()));
+    assertEquals(0.1d, metre.getValue());
+    assertEquals("1/m", String.valueOf(metre.getUnit()));
   }
 
   @Test
   public void inverseTestTime() {
     Quantity<?> secInv = Quantities.getQuantity(2d, Units.SECOND).inverse();
-    Assert.assertEquals(0.5d, secInv.getValue());
-    Assert.assertEquals("1/s", String.valueOf(secInv.getUnit()));
+    assertEquals(0.5d, secInv.getValue());
+    assertEquals("1/s", String.valueOf(secInv.getUnit()));
   }
 
   @Test
   public void testEquality() throws Exception {
     Quantity<Length> value = Quantities.getQuantity(10D, Units.METRE);
     Quantity<Length> anotherValue = Quantities.getQuantity(10.00D, Units.METRE);
-    Assert.assertEquals(value, anotherValue);
+    assertEquals(value, anotherValue);
   }
 
   @Test
