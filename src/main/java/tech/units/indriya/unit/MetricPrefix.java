@@ -61,11 +61,11 @@ import java.math.BigInteger;
  * @see <a href="http://en.wikipedia.org/wiki/Metric_prefix">Wikipedia: Metric Prefix</a>
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.1, 2018-01-13
+ * @version 1.2, 2018-03-24
  * @since 1.0
  */
 public enum MetricPrefix implements SymbolSupplier, UnitConverterSupplier, Prefix {
-  YOTTA("Y", new RationalConverter(BigInteger.TEN.pow(24), BigInteger.ONE)), ZETTA("Z", new RationalConverter(BigInteger.TEN.pow(21), BigInteger.ONE)), EXA(
+  YOTTA("Y", RationalConverter.of(BigInteger.TEN.pow(24), BigInteger.ONE)), ZETTA("Z", new RationalConverter(BigInteger.TEN.pow(21), BigInteger.ONE)), EXA(
       "E", new RationalConverter(BigInteger.TEN.pow(18), BigInteger.ONE)), PETA("P", new RationalConverter(BigInteger.TEN.pow(15), BigInteger.ONE)), TERA(
       "T", new RationalConverter(BigInteger.TEN.pow(12), BigInteger.ONE)), GIGA("G", new RationalConverter(BigInteger.TEN.pow(9), BigInteger.ONE)), MEGA(
       "M", new RationalConverter(BigInteger.TEN.pow(6), BigInteger.ONE)), KILO("k", new RationalConverter(BigInteger.TEN.pow(3), BigInteger.ONE)), HECTO(
@@ -101,7 +101,7 @@ public enum MetricPrefix implements SymbolSupplier, UnitConverterSupplier, Prefi
    * @param converter
    *          the associated unit converter.
    */
-  MetricPrefix(String symbol, RationalConverter converter) {
+  private MetricPrefix(String symbol, RationalConverter converter) {
     this.symbol = symbol;
     this.converter = converter;
   }
