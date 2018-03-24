@@ -14,5 +14,8 @@ This implementation aims at **Java SE 8** and above.
 ## Planning
 [![Issue Stats](http://issuestats.com/github/unitsofmeasurement/indriya/badge/issue)](http://issuestats.com/github/unitsofmeasurement/indriya) 
 [![Issue Stats](http://issuestats.com/github/unitsofmeasurement/indriya/badge/pr)](http://issuestats.com/github/unitsofmeasurement/indriya)
+[![GitHub issues open](https://img.shields.io/github/issues/Manu343726/siplasplas.svg?maxAge=2592000)]() 
+
+[![GitHub pull requests](https://img.shields.io/github/issues-pr-raw/unitsofmeasurement/indriya.svg)](https://github.com/unitsofmeasurement/indriya/pulls)
 
 [![Waffle.io - Columns and their card count](https://badge.waffle.io/unitsofmeasurement/indriya.png?columns=all)](https://waffle.io/unitsofmeasurement/indriya?utm_source=badge)
