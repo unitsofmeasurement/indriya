@@ -60,8 +60,6 @@ class EBNFHelper {
   /** Operator precedence for the exponentiation and logarithm operations */
   static final int EXPONENT_PRECEDENCE = PRODUCT_PRECEDENCE + 2;
 
-  // private static final String LOCAL_FORMAT_PATTERN = "%s";
-
   static final char MIDDLE_DOT = '\u00b7'; // $NON-NLS-1$
 
   /** Exponent 1 character */
@@ -89,8 +87,6 @@ class EBNFHelper {
   static int formatInternal(Unit<?> unit, Appendable buffer, SymbolMap symbolMap) throws IOException {
     if (unit instanceof AnnotatedUnit<?>) {
       unit = ((AnnotatedUnit<?>) unit).getActualUnit();
-      // } else if (unit instanceof ProductUnit<?>) {
-      // ProductUnit<?> p = (ProductUnit<?>)unit;
     }
     final String symbol = symbolMap.getSymbol(unit);
     if (symbol != null) {
@@ -102,8 +98,6 @@ class EBNFHelper {
     } else if (unit.getSymbol() != null) { // Alternate unit.
       return noopPrecedenceInternal(buffer, unit.getSymbol());
     } else { // A transformed unit or new unit type!
-      // return newUnitPrecedenceInternal(unit, buffer, symbolMap);
-      // }
       UnitConverter converter = null;
       boolean printSeparator = false;
       StringBuilder temp = new StringBuilder();
@@ -112,7 +106,7 @@ class EBNFHelper {
       converter = ((AbstractUnit<?>) unit).getSystemConverter();
       if (KILOGRAM.equals(parentUnit)) {
         // More special-case hackery to work around gram/kilogram
-        // incosistency
+        // inconsistency
         if (unit.equals(GRAM)) {
           buffer.append(symbolMap.getSymbol(GRAM));
           return NOOP_PRECEDENCE;
@@ -133,8 +127,6 @@ class EBNFHelper {
         TransformedUnit<?> transUnit = (TransformedUnit<?>) unit;
         if (parentUnit == null)
           parentUnit = transUnit.getSystemUnit();
-        // parentUnit = transUnit.getParentUnit();
-        // String x = parentUnit.toString();
         converter = transUnit.getConverter();
       }
 
@@ -174,9 +166,9 @@ class EBNFHelper {
       temp.append(')'); // $NON-NLS-1$
     }
     buffer.append(temp);
-    if ((root == 1) && (pow == 1)) {
+    if (root == 1 && pow == 1) {
       // do nothing
-    } else if ((root == 1) && (pow > 1)) {
+    } else if (root == 1 && pow > 1) {
       String powStr = Integer.toString(pow);
       for (int i = 0; i < powStr.length(); i += 1) {
         char c = powStr.charAt(i);
@@ -267,52 +259,5 @@ class EBNFHelper {
       }
     }
     return PRODUCT_PRECEDENCE;
-  }
-
-  private static int newUnitPrecedenceInternal(Unit<?> unit, Appendable buffer, SymbolMap symbolMap) throws IOException {
-    UnitConverter converter = null;
-    boolean printSeparator = false;
-    StringBuilder temp = new StringBuilder();
-    int unitPrecedence = NOOP_PRECEDENCE;
-    Unit<?> parentUnit = unit.getSystemUnit();
-    converter = ((AbstractUnit<?>) unit).getSystemConverter();
-    if (KILOGRAM.equals(parentUnit)) {
-      if (unit instanceof TransformedUnit<?>) {
-        // converter = ((TransformedUnit<?>) unit).getConverter();
-
-        // More special-case hackery to work around gram/kilogram
-        // incosistency
-        if (unit.equals(GRAM)) {
-          return noopPrecedenceInternal(buffer, symbolMap.getSymbol(GRAM));
-        } else {
-          // parentUnit = GRAM;
-          // converter = unit.getConverterTo((Unit) KILOGRAM);
-          converter = ((TransformedUnit) unit).getConverter();
-        }
-        // parentUnit = GRAM;
-      } else {
-        converter = unit.getConverterTo((Unit) GRAM);
-      }
-    } else if (CUBIC_METRE.equals(parentUnit)) {
-      if (converter != null) {
-        parentUnit = LITRE;
-      }
-    }
-
-    // TODO this may need to be in an else clause, could be related to
-    // https://github.com/unitsofmeasurement/si-units/issues/4
-    if (unit instanceof TransformedUnit) {
-      TransformedUnit transUnit = (TransformedUnit) unit;
-      if (parentUnit == null)
-        parentUnit = transUnit.getParentUnit();
-      // String x = parentUnit.toString();
-      converter = transUnit.getConverter();
-    }
-
-    unitPrecedence = formatInternal(parentUnit, temp, symbolMap);
-    printSeparator = !parentUnit.equals(AbstractUnit.ONE);
-    int result = ConverterFormatter.formatConverter(converter, printSeparator, unitPrecedence, temp, symbolMap);
-    buffer.append(temp);
-    return result;
   }
 }
