@@ -14,7 +14,8 @@ This implementation aims at **Java SE 8** and above.
 ## Planning
 [![Issue Stats](http://issuestats.com/github/unitsofmeasurement/indriya/badge/issue)](http://issuestats.com/github/unitsofmeasurement/indriya) 
 [![Issue Stats](http://issuestats.com/github/unitsofmeasurement/indriya/badge/pr)](http://issuestats.com/github/unitsofmeasurement/indriya)
-[![GitHub issues open](https://img.shields.io/github/issues/unitsofmeasurement/indriya/siplasplas.svg?maxAge=2592000)]() 
+
+[![GitHub issue age](https://img.shields.io/github/issues/detail/age/unitsofmeasurement/indriya/979.svg)](https://github.com/unitsofmeasurement/indriya/issues)
 
 [![GitHub pull requests](https://img.shields.io/github/issues-pr-raw/unitsofmeasurement/indriya.svg)](https://github.com/unitsofmeasurement/indriya/pulls)
 [![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed-raw/unitsofmeasurement/indriya.svg)](https://github.com/unitsofmeasurement/indriya/pulls)
