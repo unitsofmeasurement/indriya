@@ -17,6 +17,10 @@ This implementation aims at **Java SE 8** and above.
 
 [![GitHub issue age](https://img.shields.io/github/issues/detail/age/unitsofmeasurement/indriya/979.svg)](https://github.com/unitsofmeasurement/indriya/issues)
 
+
+[![GitHub issues](https://img.shields.io/github/issues-raw/unitsofmeasurement/indriya.svg)](https://github.com/unitsofmeasurement/indriya/issues) 
+[![GitHub issues](https://img.shields.io/github/issues-closed-raw/unitsofmeasurement/indriya.svg)](https://github.com/unitsofmeasurement/indriya/issues?q=is%3Aissue+is%3Aclosed)
+
 [![GitHub pull requests](https://img.shields.io/github/issues-pr-raw/unitsofmeasurement/indriya.svg)](https://github.com/unitsofmeasurement/indriya/pulls)
 [![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed-raw/unitsofmeasurement/indriya.svg)](https://github.com/unitsofmeasurement/indriya/pulls)
 
