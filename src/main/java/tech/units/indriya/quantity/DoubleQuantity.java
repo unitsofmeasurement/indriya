@@ -76,7 +76,7 @@ final class DoubleQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> im
 
   @Override
   public double doubleValue(Unit<Q> unit) {
-    return (super.getUnit().equals(unit)) ? value : super.getUnit().getConverterTo(unit).convert(value);
+    return super.getUnit().equals(unit) ? value : super.getUnit().getConverterTo(unit).convert(value);
   }
 
   @Override
@@ -85,34 +85,43 @@ final class DoubleQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> im
     // it is a BD, otherwise
     // use different
     // converter
-    return (super.getUnit().equals(unit)) ? decimal : ((AbstractConverter) super.getUnit().getConverterTo(unit)).convert(decimal, ctx);
+    return super.getUnit().equals(unit) ? decimal : ((AbstractConverter) super.getUnit().getConverterTo(unit)).convert(decimal, ctx);
   }
 
   @Override
   public long longValue(Unit<Q> unit) {
     double result = doubleValue(unit);
-    if ((result < Long.MIN_VALUE) || (result > Long.MAX_VALUE)) {
+    if (result < Long.MIN_VALUE || result > Long.MAX_VALUE) {
       throw new ArithmeticException("Overflow (" + result + ")");
     }
     return (long) result;
   }
 
+  private ComparableQuantity<Q> addRaw(Number a, Number b, Unit<Q> unit) {
+    return NumberQuantity.of(a.doubleValue() + b.doubleValue(), unit);
+  }
+
   @Override
   public ComparableQuantity<Q> add(Quantity<Q> that) {
-    if (getUnit().equals(that.getUnit())) {
-      return Quantities.getQuantity(value + that.getValue().doubleValue(), getUnit());
+    final Quantity<Q> thatConverted = that.to(getUnit());
+    final Quantity<Q> thisConverted = this.to(that.getUnit());
+    final double resultValueInThisUnit = getValue().doubleValue() + thatConverted.getValue().doubleValue();
+    final double resultValueInThatUnit = thisConverted.getValue().doubleValue() + that.getValue().doubleValue();
+    final ComparableQuantity<Q> resultInThisUnit = addRaw(getValue(), thatConverted.getValue(), getUnit());
+    final ComparableQuantity<Q> resultInThatUnit = addRaw(thisConverted.getValue(), that.getValue(), that.getUnit());
+    if (Double.isInfinite(resultValueInThisUnit) && Double.isInfinite(resultValueInThatUnit)) {
+      throw new ArithmeticException();
+    } else if (Double.isInfinite(resultValueInThisUnit)) {
+      return resultInThatUnit;
+    } else {
+      return resultInThisUnit;
     }
-    Quantity<Q> converted = that.to(getUnit());
-    return Quantities.getQuantity(value + converted.getValue().doubleValue(), getUnit());
   }
 
   @Override
   public ComparableQuantity<Q> subtract(Quantity<Q> that) {
-    if (getUnit().equals(that.getUnit())) {
-      return Quantities.getQuantity(value - that.getValue().doubleValue(), getUnit());
-    }
-    Quantity<Q> converted = that.to(getUnit());
-    return Quantities.getQuantity(value - converted.getValue().doubleValue(), getUnit());
+    final Quantity<Q> thatNegated = NumberQuantity.of(-that.getValue().doubleValue(), that.getUnit());
+    return add(thatNegated);
   }
 
   @Override

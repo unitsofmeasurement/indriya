@@ -32,10 +32,10 @@ package tech.units.indriya.quantity;
 import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
 
 import javax.measure.Quantity;
+import javax.measure.Unit;
+import javax.measure.quantity.ElectricResistance;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Time;
 
@@ -43,59 +43,88 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import tech.units.indriya.quantity.Quantities;
+import tech.units.indriya.unit.MetricPrefix;
 import tech.units.indriya.unit.Units;
 
 public class DoubleQuantityTest {
+
+  private final DoubleQuantity<ElectricResistance> ONE_OHM = createQuantity(1, Units.OHM);
+  private final DoubleQuantity<ElectricResistance> TWO_OHM = createQuantity(2, Units.OHM);
+  private final DoubleQuantity<ElectricResistance> MAX_VALUE_OHM = createQuantity(Double.MAX_VALUE, Units.OHM);
+  private final DoubleQuantity<ElectricResistance> ONE_MILLIOHM = createQuantity(1, MetricPrefix.MILLI(Units.OHM));
+
+  private <Q extends Quantity<Q>> DoubleQuantity<Q> createQuantity(double d, Unit<Q> unit) {
+    return new DoubleQuantity<Q>(Double.valueOf(d).doubleValue(), unit);
+  }
+
+  /**
+   * Verifies that the addition of two quantities with the same multiples results in a new quantity with the same multiple and the value holding the
+   * sum.
+   */
+  @Test
+  public void additionWithSameMultipleKeepsMultiple() {
+    Quantity<ElectricResistance> actual = ONE_OHM.add(TWO_OHM);
+    DoubleQuantity<ElectricResistance> expected = createQuantity(3, Units.OHM);
+    assertEquals(expected, actual);
+  }
+
+  /**
+   * Verifies that adding a quantity with a larger multiple keeps the result to the smaller multiple.
+   */
+  @Test
+  public void additionWithLargerMultipleKeepsSmallerMultiple() {
+    Quantity<ElectricResistance> actual = ONE_MILLIOHM.add(ONE_OHM);
+    DoubleQuantity<ElectricResistance> expected = createQuantity(1001, MetricPrefix.MILLI(Units.OHM));
+    assertEquals(expected, actual);
+  }
+
+  /**
+   * Verifies that adding a quantity with a smaller multiple keeps the result to the larger multiple.
+   */
+  @Test
+  public void additionWithSmallerMultipleKeepsLargerMultiple() {
+    Quantity<ElectricResistance> actual = ONE_OHM.add(ONE_MILLIOHM);
+    DoubleQuantity<ElectricResistance> expected = createQuantity(1.001, Units.OHM);
+    assertEquals(expected, actual);
+  }
+
+  /**
+   * Verifies that the addition of two quantities with the same multiples resulting in an overflow throws an exception.
+   */
+  @Test(expected = ArithmeticException.class)
+  public void additionWithSameMultipleResultingInOverflowThrowsException() {
+    MAX_VALUE_OHM.add(MAX_VALUE_OHM);
+  }
+
+  /**
+   * Verifies that adding a quantity with a larger overflowing multiple casts the result to the larger multiple.
+   */
+  @Test
+  public void additionWithLargerOverflowingMultipleCastsToLargerMultiple() {
+    Quantity<ElectricResistance> actual = ONE_MILLIOHM.add(MAX_VALUE_OHM);
+    assertEquals(MAX_VALUE_OHM, actual);
+  }
+
+  /**
+   * Verifies that subtraction subtracts the argument from the target object.
+   */
+  @Test
+  public void subtractionSubtractsArgumentFromTargetObject() {
+    Quantity<ElectricResistance> actual = TWO_OHM.subtract(ONE_OHM);
+    assertEquals(ONE_OHM, actual);
+  }
 
   @Test
   public void divideTest() {
     Quantity<Length> metre = Quantities.getQuantity(10D, Units.METRE);
     Quantity<Length> result = metre.divide(10D);
     Assert.assertTrue(result.getValue().intValue() == 1);
-    Assert.assertEquals(result.getUnit(), Units.METRE);
+    assertEquals(result.getUnit(), Units.METRE);
 
     Quantity<Time> day = Quantities.getQuantity(10D, Units.DAY);
     Quantity<Time> dayResult = day.divide(BigDecimal.valueOf(2.5D));
     Assert.assertTrue(dayResult.getValue().intValue() == 4);
-    Assert.assertEquals(dayResult.getUnit(), Units.DAY);
-  }
-
-  @Test
-  public void addTest() {
-    Quantity<Length> m = Quantities.getQuantity(10D, Units.METRE);
-    Quantity<Length> m2 = Quantities.getQuantity(BigDecimal.valueOf(12.5), Units.METRE);
-    Quantity<Length> m3 = Quantities.getQuantity(2.5, Units.METRE);
-    Quantity<Length> m4 = Quantities.getQuantity(5L, Units.METRE);
-    Quantity<Length> result = m.add(m2).add(m3).add(m4);
-    Assert.assertTrue(result.getValue().doubleValue() == 30.0);
-    Assert.assertEquals(result.getUnit(), Units.METRE);
-  }
-
-  @Test
-  public void addQuantityTest() {
-    Quantity<Time> day = Quantities.getQuantity(1, Units.DAY);
-    Quantity<Time> hours = Quantities.getQuantity(12D, Units.HOUR);
-    Quantity<Time> result = day.add(hours);
-    Assert.assertTrue(result.getValue().doubleValue() == 1.5);
-    Assert.assertEquals(result.getUnit(), Units.DAY);
-  }
-
-  @Test
-  public void subtractTest() {
-    Quantity<Length> m = Quantities.getQuantity(10D, Units.METRE);
-    Quantity<Length> m2 = Quantities.getQuantity(12.5, Units.METRE);
-    Quantity<Length> result = m.subtract(m2);
-    Assert.assertTrue(result.getValue().doubleValue() == -2.5);
-    Assert.assertEquals(result.getUnit(), Units.METRE);
-  }
-
-  @Test
-  public void subtractQuantityTest() {
-    Quantity<Time> day = Quantities.getQuantity(1, Units.DAY);
-    Quantity<Time> hours = Quantities.getQuantity(12F, Units.HOUR);
-    Quantity<Time> result = day.subtract(hours);
-    Assert.assertTrue(result.getValue().doubleValue() == 0.5);
-    Assert.assertEquals(result.getUnit(), Units.DAY);
+    assertEquals(dayResult.getUnit(), Units.DAY);
   }
 
   @Test
@@ -103,7 +132,7 @@ public class DoubleQuantityTest {
     Quantity<Length> metre = Quantities.getQuantity(10D, Units.METRE);
     Quantity<Length> result = metre.multiply(10D);
     Assert.assertTrue(result.getValue().intValue() == 100);
-    Assert.assertEquals(result.getUnit(), Units.METRE);
+    assertEquals(result.getUnit(), Units.METRE);
     @SuppressWarnings("unchecked")
     Quantity<Length> result2 = (Quantity<Length>) metre.multiply(Quantities.getQuantity(10D, Units.HOUR));
     Assert.assertTrue(result2.getValue().intValue() == 100);
@@ -115,33 +144,33 @@ public class DoubleQuantityTest {
     Quantity<Time> day = Quantities.getQuantity(1D, Units.DAY);
     Quantity<Time> hour = day.to(Units.HOUR);
     Assert.assertEquals(hour.getValue().intValue(), 24);
-    Assert.assertEquals(hour.getUnit(), Units.HOUR);
+    assertEquals(hour.getUnit(), Units.HOUR);
 
     Quantity<Time> dayResult = hour.to(Units.DAY);
-    Assert.assertEquals(dayResult.getValue().intValue(), day.getValue().intValue());
-    Assert.assertEquals(dayResult.getValue().intValue(), day.getValue().intValue());
+    assertEquals(dayResult.getValue().intValue(), day.getValue().intValue());
+    assertEquals(dayResult.getValue().intValue(), day.getValue().intValue());
   }
 
   @Test
   public void inverseTestLength() {
     @SuppressWarnings("unchecked")
     Quantity<Length> metre = (Quantity<Length>) Quantities.getQuantity(10d, Units.METRE).inverse();
-    Assert.assertEquals(0.1d, metre.getValue());
-    Assert.assertEquals("1/m", String.valueOf(metre.getUnit()));
+    assertEquals(0.1d, metre.getValue());
+    assertEquals("1/m", String.valueOf(metre.getUnit()));
   }
 
   @Test
   public void inverseTestTime() {
     Quantity<?> secInv = Quantities.getQuantity(2d, Units.SECOND).inverse();
-    Assert.assertEquals(0.5d, secInv.getValue());
-    Assert.assertEquals("1/s", String.valueOf(secInv.getUnit()));
+    assertEquals(0.5d, secInv.getValue());
+    assertEquals("1/s", String.valueOf(secInv.getUnit()));
   }
 
   @Test
   public void testEquality() throws Exception {
     Quantity<Length> value = Quantities.getQuantity(10D, Units.METRE);
     Quantity<Length> anotherValue = Quantities.getQuantity(10.00D, Units.METRE);
-    Assert.assertEquals(value, anotherValue);
+    assertEquals(value, anotherValue);
   }
 
   @Test
