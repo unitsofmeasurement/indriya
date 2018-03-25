@@ -29,8 +29,8 @@
  */
 package tech.units.indriya;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static tech.units.indriya.unit.MetricPrefix.MICRO;
 import static tech.units.indriya.unit.Units.GRAM;
 import static tech.units.indriya.unit.Units.HOUR;
@@ -40,8 +40,8 @@ import static tech.units.indriya.unit.Units.SECOND;
 
 import javax.measure.quantity.Length;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.unit.BaseUnit;
@@ -51,7 +51,7 @@ import tech.units.indriya.unit.Units;
 public class AbsUnitTest {
   private static final AbstractUnit<Length> sut = new BaseUnit<>("m");
 
-  @BeforeClass
+  @BeforeAll
   public static void init() {
     sut.setName("Test");
   }

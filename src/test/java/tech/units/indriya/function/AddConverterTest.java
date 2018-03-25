@@ -29,10 +29,10 @@
  */
 package tech.units.indriya.function;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.function.AddConverter;
 
@@ -40,7 +40,7 @@ public class AddConverterTest {
 
   private AddConverter converter;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     converter = new AddConverter(10);
   }
@@ -64,7 +64,7 @@ public class AddConverterTest {
 
   @Test
   public void offsetTest() {
-    assertEquals(10d, converter.getOffset(), 0);
+    assertEquals(10d, converter.getOffset());
   }
 
   @Test

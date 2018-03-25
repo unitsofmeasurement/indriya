@@ -29,6 +29,11 @@
  */
 package tech.units.indriya.quantity;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.math.BigDecimal;
 
 import javax.measure.quantity.Area;
@@ -36,8 +41,7 @@ import javax.measure.quantity.Length;
 import javax.measure.quantity.Speed;
 import javax.measure.quantity.Time;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.Quantities;
@@ -51,16 +55,18 @@ public class NumberComparableQuantityTest {
     ComparableQuantity<Time> time = Quantities.getQuantity(10, Units.SECOND);
     ComparableQuantity<Speed> speed = metre.divide(time, Speed.class);
 
-    Assert.assertEquals(Integer.valueOf(speed.getValue().intValue()), Integer.valueOf(1));
-    Assert.assertEquals(Units.METRE_PER_SECOND, speed.getUnit());
+    assertEquals(Integer.valueOf(speed.getValue().intValue()), Integer.valueOf(1));
+    assertEquals(Units.METRE_PER_SECOND, speed.getUnit());
   }
 
-  @Test(expected = ClassCastException.class)
+  @Test
   public void divideOperationsExceptionTest() {
-    ComparableQuantity<Length> metre = Quantities.getQuantity(10, Units.METRE);
-    ComparableQuantity<Time> time = Quantities.getQuantity(10, Units.SECOND);
-    @SuppressWarnings("unused")
-    ComparableQuantity<Area> area = metre.divide(time, Area.class);
+    final ComparableQuantity<Length> metre = Quantities.getQuantity(10, Units.METRE);
+    final ComparableQuantity<Time> time = Quantities.getQuantity(10, Units.SECOND);
+    assertThrows(ClassCastException.class, () -> {
+    	@SuppressWarnings("unused")
+    	ComparableQuantity<Area> area = metre.divide(time, Area.class);
+    });
   }
 
   @Test
@@ -68,28 +74,30 @@ public class NumberComparableQuantityTest {
     ComparableQuantity<Length> metre = Quantities.getQuantity(10, Units.METRE);
     ComparableQuantity<Area> area = metre.multiply(metre, Area.class);
 
-    Assert.assertEquals(Integer.valueOf(area.getValue().intValue()), Integer.valueOf(100));
-    Assert.assertEquals(Units.SQUARE_METRE, area.getUnit());
+    assertEquals(Integer.valueOf(area.getValue().intValue()), Integer.valueOf(100));
+    assertEquals(Units.SQUARE_METRE, area.getUnit());
   }
 
-  @Test(expected = ClassCastException.class)
+  @Test
   public void multiplyOperationsExceptionTest() {
     ComparableQuantity<Length> metre = Quantities.getQuantity(10, Units.METRE);
-    @SuppressWarnings("unused")
-    ComparableQuantity<Speed> speed = metre.multiply(metre, Speed.class);
+    assertThrows(ClassCastException.class, () -> {
+    	@SuppressWarnings("unused")
+    	ComparableQuantity<Speed> speed = metre.multiply(metre, Speed.class);
+    });
   }
 
   @Test
   public void divideTest() {
     ComparableQuantity<Length> metre = Quantities.getQuantity(10, Units.METRE);
     ComparableQuantity<Length> result = metre.divide(10D);
-    Assert.assertTrue(result.getValue().intValue() == 1);
-    Assert.assertEquals(result.getUnit(), Units.METRE);
+    assertTrue(result.getValue().intValue() == 1);
+    assertEquals(result.getUnit(), Units.METRE);
 
     ComparableQuantity<Time> day = Quantities.getQuantity(10, Units.DAY);
     ComparableQuantity<Time> dayResult = day.divide(BigDecimal.valueOf(2.5D));
-    Assert.assertTrue(dayResult.getValue().intValue() == 4);
-    Assert.assertEquals(dayResult.getUnit(), Units.DAY);
+    assertTrue(dayResult.getValue().intValue() == 4);
+    assertEquals(dayResult.getUnit(), Units.DAY);
   }
 
   @Test
@@ -99,8 +107,8 @@ public class NumberComparableQuantityTest {
     ComparableQuantity<Length> m3 = Quantities.getQuantity(2.5F, Units.METRE);
     ComparableQuantity<Length> m4 = Quantities.getQuantity(5L, Units.METRE);
     ComparableQuantity<Length> result = m.add(m2).add(m3).add(m4);
-    Assert.assertTrue(result.getValue().doubleValue() == 30.0);
-    Assert.assertEquals(result.getUnit(), Units.METRE);
+    assertTrue(result.getValue().doubleValue() == 30.0);
+    assertEquals(result.getUnit(), Units.METRE);
   }
 
   @Test
@@ -108,8 +116,8 @@ public class NumberComparableQuantityTest {
     ComparableQuantity<Time> day = Quantities.getQuantity(1, Units.DAY);
     ComparableQuantity<Time> hours = Quantities.getQuantity(12, Units.HOUR);
     ComparableQuantity<Time> result = day.add(hours);
-    Assert.assertTrue(result.getValue().doubleValue() == 1.5);
-    Assert.assertEquals(result.getUnit(), Units.DAY);
+    assertTrue(result.getValue().doubleValue() == 1.5);
+    assertEquals(result.getUnit(), Units.DAY);
   }
 
   @Test
@@ -117,8 +125,8 @@ public class NumberComparableQuantityTest {
     ComparableQuantity<Length> m = Quantities.getQuantity(10, Units.METRE);
     ComparableQuantity<Length> m2 = Quantities.getQuantity(12.5, Units.METRE);
     ComparableQuantity<Length> result = m.subtract(m2);
-    Assert.assertTrue(result.getValue().doubleValue() == -2.5);
-    Assert.assertEquals(result.getUnit(), Units.METRE);
+    assertTrue(result.getValue().doubleValue() == -2.5);
+    assertEquals(result.getUnit(), Units.METRE);
   }
 
   @Test
@@ -126,46 +134,46 @@ public class NumberComparableQuantityTest {
     ComparableQuantity<Time> day = Quantities.getQuantity(1, Units.DAY);
     ComparableQuantity<Time> hours = Quantities.getQuantity(12, Units.HOUR);
     ComparableQuantity<Time> result = day.subtract(hours);
-    Assert.assertTrue(result.getValue().doubleValue() == 0.5);
-    Assert.assertEquals(result.getUnit(), Units.DAY);
+    assertTrue(result.getValue().doubleValue() == 0.5);
+    assertEquals(result.getUnit(), Units.DAY);
   }
 
   @Test
   public void multiplyTest() {
     ComparableQuantity<Length> metre = Quantities.getQuantity(10, Units.METRE);
     ComparableQuantity<Length> result = metre.multiply(10D);
-    Assert.assertTrue(result.getValue().intValue() == 100);
-    Assert.assertEquals(result.getUnit(), Units.METRE);
+    assertTrue(result.getValue().intValue() == 100);
+    assertEquals(result.getUnit(), Units.METRE);
     @SuppressWarnings("unchecked")
     ComparableQuantity<Length> result2 = (ComparableQuantity<Length>) metre.multiply(Quantities.getQuantity(10, Units.METRE));
-    Assert.assertTrue(result2.getValue().intValue() == 100);
+    assertTrue(result2.getValue().intValue() == 100);
   }
 
   @Test
   public void toTest() {
     ComparableQuantity<Time> day = Quantities.getQuantity(1, Units.DAY);
     ComparableQuantity<Time> hour = day.to(Units.HOUR);
-    Assert.assertEquals(hour.getValue().intValue(), 24);
-    Assert.assertEquals(hour.getUnit(), Units.HOUR);
+    assertEquals(hour.getValue().intValue(), 24);
+    assertEquals(hour.getUnit(), Units.HOUR);
 
     ComparableQuantity<Time> dayResult = hour.to(Units.DAY);
-    Assert.assertEquals(dayResult.getValue().intValue(), day.getValue().intValue());
-    Assert.assertEquals(dayResult.getValue().intValue(), day.getValue().intValue());
+    assertEquals(dayResult.getValue().intValue(), day.getValue().intValue());
+    assertEquals(dayResult.getValue().intValue(), day.getValue().intValue());
   }
 
   @Test
   public void inverseTestLength() {
     @SuppressWarnings("unchecked")
     ComparableQuantity<Length> metre = (ComparableQuantity<Length>) Quantities.getQuantity(10, Units.METRE).inverse();
-    Assert.assertEquals(Float.valueOf(0.1F), Float.valueOf(metre.getValue().floatValue()));
-    Assert.assertEquals("1/m", String.valueOf(metre.getUnit()));
+    assertEquals(Float.valueOf(0.1F), Float.valueOf(metre.getValue().floatValue()));
+    assertEquals("1/m", String.valueOf(metre.getUnit()));
   }
 
   @Test
   public void inverseTestTime() {
     ComparableQuantity<?> secInv = Quantities.getQuantity(2, Units.SECOND).inverse();
-    Assert.assertEquals(Float.valueOf(0.5F), Float.valueOf(secInv.getValue().floatValue()));
-    Assert.assertEquals("1/s", String.valueOf(secInv.getUnit()));
+    assertEquals(Float.valueOf(0.5F), Float.valueOf(secInv.getValue().floatValue()));
+    assertEquals("1/s", String.valueOf(secInv.getUnit()));
   }
 
   @Test
@@ -179,12 +187,12 @@ public class NumberComparableQuantityTest {
 
     ComparableQuantity<Time> daysInHour = Quantities.getQuantity(48, Units.HOUR);
 
-    Assert.assertTrue(day.isGreaterThan(hours));
-    Assert.assertTrue(day.isGreaterThan(minutes));
+    assertTrue(day.isGreaterThan(hours));
+    assertTrue(day.isGreaterThan(minutes));
 
-    Assert.assertFalse(day.isGreaterThan(dayInHour));
-    Assert.assertFalse(day.isGreaterThan(daysInHour));
-    Assert.assertFalse(day.isGreaterThan(dayInMinutes));
+    assertFalse(day.isGreaterThan(dayInHour));
+    assertFalse(day.isGreaterThan(daysInHour));
+    assertFalse(day.isGreaterThan(dayInMinutes));
 
   }
 
@@ -195,9 +203,9 @@ public class NumberComparableQuantityTest {
     ComparableQuantity<Time> dayInHour = Quantities.getQuantity(24, Units.HOUR);
     ComparableQuantity<Time> daysInHour = Quantities.getQuantity(48, Units.HOUR);
 
-    Assert.assertTrue(day.isGreaterThanOrEqualTo(hours));
-    Assert.assertTrue(day.isGreaterThanOrEqualTo(dayInHour));
-    Assert.assertFalse(day.isGreaterThanOrEqualTo(daysInHour));
+    assertTrue(day.isGreaterThanOrEqualTo(hours));
+    assertTrue(day.isGreaterThanOrEqualTo(dayInHour));
+    assertFalse(day.isGreaterThanOrEqualTo(daysInHour));
   }
 
   @Test
@@ -207,10 +215,10 @@ public class NumberComparableQuantityTest {
     ComparableQuantity<Time> dayInHour = Quantities.getQuantity(24, Units.HOUR);
     ComparableQuantity<Time> daysInHour = Quantities.getQuantity(48, Units.HOUR);
 
-    Assert.assertFalse(day.isLessThan(day));
-    Assert.assertFalse(day.isLessThan(hours));
-    Assert.assertFalse(day.isLessThan(dayInHour));
-    Assert.assertTrue(day.isLessThan(daysInHour));
+    assertFalse(day.isLessThan(day));
+    assertFalse(day.isLessThan(hours));
+    assertFalse(day.isLessThan(dayInHour));
+    assertTrue(day.isLessThan(daysInHour));
   }
 
   @Test
@@ -220,10 +228,10 @@ public class NumberComparableQuantityTest {
     ComparableQuantity<Time> dayInHour = Quantities.getQuantity(24, Units.HOUR);
     ComparableQuantity<Time> daysInHour = Quantities.getQuantity(48, Units.HOUR);
 
-    Assert.assertTrue(day.isLessThanOrEqualTo(day));
-    Assert.assertFalse(day.isLessThanOrEqualTo(hours));
-    Assert.assertTrue(day.isLessThanOrEqualTo(dayInHour));
-    Assert.assertTrue(day.isLessThanOrEqualTo(daysInHour));
+    assertTrue(day.isLessThanOrEqualTo(day));
+    assertFalse(day.isLessThanOrEqualTo(hours));
+    assertTrue(day.isLessThanOrEqualTo(dayInHour));
+    assertTrue(day.isLessThanOrEqualTo(daysInHour));
   }
 
   @Test
@@ -233,9 +241,9 @@ public class NumberComparableQuantityTest {
     ComparableQuantity<Time> dayInHour = Quantities.getQuantity(24, Units.HOUR);
     ComparableQuantity<Time> daysInHour = Quantities.getQuantity(48, Units.HOUR);
 
-    Assert.assertTrue(day.isLessThanOrEqualTo(day));
-    Assert.assertFalse(day.isEquivalentOf(hours));
-    Assert.assertTrue(day.isEquivalentOf(dayInHour));
-    Assert.assertFalse(day.isEquivalentOf(daysInHour));
+    assertTrue(day.isLessThanOrEqualTo(day));
+    assertFalse(day.isEquivalentOf(hours));
+    assertTrue(day.isEquivalentOf(dayInHour));
+    assertFalse(day.isEquivalentOf(daysInHour));
   }
 }

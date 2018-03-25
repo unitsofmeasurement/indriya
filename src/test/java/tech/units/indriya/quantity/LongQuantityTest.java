@@ -29,15 +29,16 @@
  */
 package tech.units.indriya.quantity;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.quantity.ElectricResistance;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Time;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.quantity.LongQuantity;
 import tech.units.indriya.quantity.Quantities;
@@ -71,9 +72,11 @@ public class LongQuantityTest {
   /**
    * Verifies that the addition of two quantities with the same multiples resulting in an overflow throws an exception.
    */
-  @Test(expected = ArithmeticException.class)
+  @Test
   public void additionWithSameMultipleResultingInOverflowThrowsException() {
-    ONE_OHM.add(MAX_VALUE_OHM);
+	assertThrows(ArithmeticException.class, () -> {
+		ONE_OHM.add(MAX_VALUE_OHM);
+	});
   }
 
   /**
@@ -176,11 +179,11 @@ public class LongQuantityTest {
   public void toTest() {
     Quantity<Time> day = Quantities.getQuantity(1D, Units.DAY);
     Quantity<Time> hour = day.to(Units.HOUR);
-    Assert.assertEquals(hour.getValue().intValue(), 24);
-    Assert.assertEquals(hour.getUnit(), Units.HOUR);
+    assertEquals(hour.getValue().intValue(), 24);
+    assertEquals(hour.getUnit(), Units.HOUR);
 
     Quantity<Time> dayResult = hour.to(Units.DAY);
-    Assert.assertEquals(dayResult.getValue().intValue(), day.getValue().intValue());
-    Assert.assertEquals(dayResult.getValue().intValue(), day.getValue().intValue());
+    assertEquals(dayResult.getValue().intValue(), day.getValue().intValue());
+    assertEquals(dayResult.getValue().intValue(), day.getValue().intValue());
   }
 }

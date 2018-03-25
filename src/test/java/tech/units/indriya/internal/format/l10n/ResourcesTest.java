@@ -29,11 +29,11 @@
  */
 package tech.units.indriya.internal.format.l10n;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ResourceBundle;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.internal.format.l10n.MultiPropertyResourceBundle;
 

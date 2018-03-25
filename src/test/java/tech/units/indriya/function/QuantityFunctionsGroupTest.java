@@ -29,6 +29,9 @@
  */
 package tech.units.indriya.function;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,9 +44,8 @@ import javax.measure.quantity.Time;
 import javax.measure.spi.QuantityFactory;
 import javax.measure.spi.ServiceProvider;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.function.QuantityFunctions;
 import tech.units.indriya.function.QuantitySummaryStatistics;
@@ -57,7 +59,7 @@ public class QuantityFunctionsGroupTest {
   private Quantity<Time> minutes;
   private Quantity<Time> seconds;
 
-  @Before
+  @BeforeEach
   public void init() {
     ServiceProvider provider = ServiceProvider.current();
     timeFactory = provider.getQuantityFactory(Time.class);
@@ -72,11 +74,11 @@ public class QuantityFunctionsGroupTest {
     List<Quantity<Time>> times = createTimes();
     Map<Unit<Time>, List<Quantity<Time>>> timeMap = times.stream().collect(Collectors.groupingBy(QuantityFunctions.groupByUnit()));
 
-    Assert.assertEquals(4, timeMap.keySet().size());
-    Assert.assertEquals(1, timeMap.get(Units.MINUTE).size());
-    Assert.assertEquals(1, timeMap.get(Units.HOUR).size());
-    Assert.assertEquals(1, timeMap.get(Units.DAY).size());
-    Assert.assertEquals(1, timeMap.get(Units.SECOND).size());
+    assertEquals(4, timeMap.keySet().size());
+    assertEquals(1, timeMap.get(Units.MINUTE).size());
+    assertEquals(1, timeMap.get(Units.HOUR).size());
+    assertEquals(1, timeMap.get(Units.DAY).size());
+    assertEquals(1, timeMap.get(Units.SECOND).size());
 
   }
 
@@ -85,9 +87,9 @@ public class QuantityFunctionsGroupTest {
     List<Quantity<Time>> times = createTimes();
     Map<Boolean, List<Quantity<Time>>> timeMap = times.stream().collect(Collectors.partitioningBy(QuantityFunctions.fiterByUnit(Units.MINUTE)));
 
-    Assert.assertEquals(2, timeMap.keySet().size());
-    Assert.assertEquals(1, timeMap.get(Boolean.TRUE).size());
-    Assert.assertEquals(3, timeMap.get(Boolean.FALSE).size());
+    assertEquals(2, timeMap.keySet().size());
+    assertEquals(1, timeMap.get(Boolean.TRUE).size());
+    assertEquals(3, timeMap.get(Boolean.FALSE).size());
   }
 
   @Test
@@ -95,12 +97,12 @@ public class QuantityFunctionsGroupTest {
     List<Quantity<Time>> times = createTimes();
     QuantitySummaryStatistics<Time> summary = times.stream().collect(QuantityFunctions.summarizeQuantity(Units.HOUR));
 
-    Assert.assertEquals(4, summary.getCount());
-    Assert.assertNotNull(summary.getAverage());
-    Assert.assertNotNull(summary.getCount());
-    Assert.assertNotNull(summary.getMax());
-    Assert.assertNotNull(summary.getMin());
-    Assert.assertNotNull(summary.getSum());
+    assertEquals(4, summary.getCount());
+    assertNotNull(summary.getAverage());
+    assertNotNull(summary.getCount());
+    assertNotNull(summary.getMax());
+    assertNotNull(summary.getMin());
+    assertNotNull(summary.getSum());
   }
 
   private List<Quantity<Time>> createTimes() {

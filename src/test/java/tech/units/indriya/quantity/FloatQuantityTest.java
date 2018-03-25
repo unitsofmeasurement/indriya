@@ -29,15 +29,14 @@
  */
 package tech.units.indriya.quantity;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import javax.measure.Quantity;
 import javax.measure.quantity.ElectricResistance;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Time;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.AbstractQuantity;
 import tech.units.indriya.quantity.FloatQuantity;
@@ -91,19 +90,19 @@ public class FloatQuantityTest {
   public void doubleValueTest() {
     FloatQuantity<Time> day = new FloatQuantity<Time>(3F, Units.DAY);
     double hours = day.doubleValue(Units.HOUR);
-    assertEquals(72D, hours, 0);
+    assertEquals(72D, hours);
   }
 
   @Test
   public void toTest() {
     Quantity<Time> day = Quantities.getQuantity(1D, Units.DAY);
     Quantity<Time> hour = day.to(Units.HOUR);
-    Assert.assertEquals(Double.valueOf(24), hour.getValue());
-    Assert.assertEquals(hour.getUnit(), Units.HOUR);
+    assertEquals(Double.valueOf(24), hour.getValue());
+    assertEquals(hour.getUnit(), Units.HOUR);
 
     Quantity<Time> dayResult = hour.to(Units.DAY);
-    Assert.assertEquals(dayResult.getValue(), day.getValue());
-    Assert.assertEquals(dayResult.getUnit(), day.getUnit());
+    assertEquals(dayResult.getValue(), day.getValue());
+    assertEquals(dayResult.getUnit(), day.getUnit());
   }
 
   @Test

@@ -29,9 +29,9 @@
  */
 package tech.units.indriya.quantity;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static tech.units.indriya.unit.MetricPrefix.HECTO;
 import static tech.units.indriya.unit.MetricPrefix.MILLI;
 import static tech.units.indriya.unit.Units.PASCAL;
@@ -40,7 +40,7 @@ import java.math.BigDecimal;
 
 import javax.measure.Quantity;
 import javax.measure.quantity.Pressure;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.quantity.CompoundQuantity;
 import tech.units.indriya.quantity.Quantities;

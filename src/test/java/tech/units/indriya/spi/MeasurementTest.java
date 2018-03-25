@@ -29,14 +29,14 @@
  */
 package tech.units.indriya.spi;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static tech.units.indriya.unit.Units.KILOGRAM;
 
 import java.time.Instant;
 
 import javax.measure.quantity.Mass;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.spi.Measurement;

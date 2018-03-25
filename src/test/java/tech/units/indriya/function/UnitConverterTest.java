@@ -29,7 +29,7 @@
  */
 package tech.units.indriya.function;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static tech.units.indriya.unit.MetricPrefix.*;
 import static tech.units.indriya.unit.Units.*;
 
@@ -39,7 +39,7 @@ import javax.measure.UnitConverter;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Temperature;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.MetricPrefix;
@@ -56,8 +56,8 @@ public class UnitConverterTest {
     double length2 = 6.0;
     double result1 = converter.convert(length1);
     double result2 = converter.convert(length2);
-    assertEquals(400, result1, 0);
-    assertEquals(600, result2, 0);
+    assertEquals(400, result1);
+    assertEquals(600, result2);
   }
 
   @Test

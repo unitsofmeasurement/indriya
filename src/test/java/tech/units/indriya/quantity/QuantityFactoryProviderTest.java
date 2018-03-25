@@ -29,7 +29,7 @@
  */
 package tech.units.indriya.quantity;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static tech.units.indriya.unit.Units.KILOGRAM;
 import static tech.units.indriya.unit.Units.METRE;
 import static tech.units.indriya.unit.Units.MINUTE;
@@ -41,8 +41,8 @@ import javax.measure.quantity.Mass;
 import javax.measure.quantity.Time;
 import javax.measure.spi.ServiceProvider;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author Werner Keil
@@ -50,7 +50,7 @@ import org.junit.Test;
 public class QuantityFactoryProviderTest {
   static ServiceProvider service;
 
-  @BeforeClass
+  @BeforeAll
   public static void init() {
     service = ServiceProvider.current();
   }

@@ -29,7 +29,7 @@
  */
 package tech.units.indriya.format;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static tech.units.indriya.unit.MetricPrefix.KILO;
 import static tech.units.indriya.unit.MetricPrefix.MEGA;
 import static tech.units.indriya.unit.Units.*;
@@ -43,8 +43,8 @@ import javax.measure.format.QuantityFormat;
 import javax.measure.quantity.Frequency;
 import javax.measure.quantity.Length;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.format.AbstractQuantityFormat;
 import tech.units.indriya.quantity.Quantities;
@@ -58,7 +58,7 @@ public class QuantityFormatTest {
   private Quantity<Length> sut;
   private QuantityFormat format;
 
-  @Before
+  @BeforeEach
   public void init() {
     // sut =
     // DefaultQuantityFactoryService.getQuantityFactory(Length.class).create(10,

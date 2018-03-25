@@ -29,7 +29,7 @@
  */
 package tech.units.indriya.format;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static tech.units.indriya.unit.MetricPrefix.*;
 import static tech.units.indriya.unit.Units.*;
 
@@ -42,12 +42,11 @@ import javax.measure.format.ParserException;
 import javax.measure.format.UnitFormat;
 import javax.measure.quantity.Length;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.format.EBNFUnitFormat;
 import tech.units.indriya.function.RationalConverter;
-import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.TransformedUnit;
 import tech.units.indriya.unit.Units;
 
@@ -60,7 +59,7 @@ public class EBNFFormatTest {
 
   private UnitFormat format;
 
-  @Before
+  @BeforeEach
   public void init() {
     format = EBNFUnitFormat.getInstance();
   }
@@ -117,10 +116,12 @@ public class EBNFFormatTest {
     assertEquals("mm", s);
   }
 
-  @Test(expected = ParserException.class)
+  @Test
   public void testParseIrregularStringEBNF() {
-    Unit<?> u = format.parse("bl//^--1a");
-    // System.out.println(u);
+	    assertThrows(ParserException.class, () -> {
+	    	   @SuppressWarnings("unused")
+			Unit<?> u = format.parse("bl//^--1a");
+        });
   }
 
   @Test

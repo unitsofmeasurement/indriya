@@ -29,7 +29,7 @@
  */
 package tech.units.indriya.quantity;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.math.BigInteger;
 
@@ -38,8 +38,8 @@ import javax.measure.quantity.ElectricResistance;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Time;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.quantity.BigIntegerQuantity;
 import tech.units.indriya.quantity.Quantities;
@@ -93,19 +93,19 @@ public class BigIntegerQuantityTest {
   public void doubleValueTest() {
     BigIntegerQuantity<Time> day = new BigIntegerQuantity<Time>(Long.valueOf(3), Units.DAY);
     double hours = day.doubleValue(Units.HOUR);
-    assertEquals(72D, hours, 0);
+    assertEquals(72D, hours);
   }
 
   @Test
   public void toTest() {
     Quantity<Time> day = Quantities.getQuantity(1D, Units.DAY);
     Quantity<Time> hour = day.to(Units.HOUR);
-    Assert.assertEquals(hour.getValue().intValue(), 24);
-    Assert.assertEquals(hour.getUnit(), Units.HOUR);
+    assertEquals(hour.getValue().intValue(), 24);
+    assertEquals(hour.getUnit(), Units.HOUR);
 
     Quantity<Time> dayResult = hour.to(Units.DAY);
-    Assert.assertEquals(dayResult.getValue().intValue(), day.getValue().intValue());
-    Assert.assertEquals(dayResult.getValue().intValue(), day.getValue().intValue());
+    assertEquals(dayResult.getValue().intValue(), day.getValue().intValue());
+    assertEquals(dayResult.getValue().intValue(), day.getValue().intValue());
   }
 
   @Test
@@ -134,7 +134,6 @@ public class BigIntegerQuantityTest {
         MetricPrefix.YOTTA(Units.OHM));
     final BigIntegerQuantity<ElectricResistance> RESULT_OHM = new BigIntegerQuantity<ElectricResistance>(new BigInteger("9223372036854775808"),
         Units.OHM);
-
     assertEquals(RESULT_OHM, ONE_OHM.add(ONE_YOTTAOHM));
   }
 }

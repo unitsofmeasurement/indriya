@@ -48,7 +48,7 @@ import tech.uom.lib.common.function.ValueSupplier;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.1, August 06, 2017
+ * @version 1.2, March 25, 2018
  * @since 1.0
  */
 public final class ExpConverter extends AbstractConverter implements ValueSupplier<String> {
@@ -77,6 +77,16 @@ public final class ExpConverter extends AbstractConverter implements ValueSuppli
   public ExpConverter(double base) {
     this.base = base;
     this.logOfBase = Math.log(base);
+  }
+
+  /**
+   * Creates a logarithmic converter having the specified base.
+   *
+   * @param base
+   *          the logarithmic base (e.g. <code>Math.E</code> for the Natural Logarithm).
+   */
+  public static ExpConverter of(double base) {
+    return new ExpConverter(base);
   }
 
   /**
@@ -141,6 +151,7 @@ public final class ExpConverter extends AbstractConverter implements ValueSuppli
     return toString();
   }
 
+  @SuppressWarnings("rawtypes")
   @Override
   public int compareTo(UnitConverter o) {
     if (this == o) {

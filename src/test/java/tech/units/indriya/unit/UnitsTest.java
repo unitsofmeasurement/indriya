@@ -42,9 +42,9 @@ import javax.measure.quantity.Time;
 
 import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.AbstractConverter;
 import tech.units.indriya.AbstractUnit;
@@ -53,7 +53,7 @@ import tech.units.indriya.unit.MetricPrefix;
 import tech.units.indriya.unit.TransformedUnit;
 import tech.units.indriya.unit.Units;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static tech.units.indriya.unit.MetricPrefix.KILO;
 import static tech.units.indriya.unit.Units.GRAM;
 import static tech.units.indriya.unit.Units.METRE;
@@ -71,7 +71,7 @@ public class UnitsTest {
   public UnitsTest() {
   }
 
-  @BeforeClass
+  @BeforeAll
   public static void setUpClass() throws Exception {
   }
 
@@ -84,7 +84,7 @@ public class UnitsTest {
    * 
    * @see junit.framework.TestCase#setUp()
    */
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     // super.setUp();
     one = AbstractUnit.ONE;

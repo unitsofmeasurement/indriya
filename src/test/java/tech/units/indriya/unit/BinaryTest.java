@@ -29,14 +29,14 @@
  */
 package tech.units.indriya.unit;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static tech.units.indriya.unit.BinaryPrefix.*;
 import static tech.units.indriya.unit.MetricPrefix.*;
 import static tech.units.indriya.unit.Units.*;
 
 import javax.measure.UnitConverter;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.function.RationalConverter;
 

@@ -29,14 +29,14 @@
  */
 package tech.units.indriya.quantity;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static tech.units.indriya.unit.Units.METRE;
 
 import javax.measure.Quantity;
 import javax.measure.quantity.Length;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.quantity.Quantities;
 
@@ -46,7 +46,7 @@ public class ArithmeticTest {
 
   // private QuantityFactory<Length> lengthFactory;
 
-  @Before
+  @BeforeEach
   public void init() {
     // lengthFactory =
     // QuantityFactoryService.getQuantityFactory(Length.class);

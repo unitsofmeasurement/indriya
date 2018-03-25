@@ -29,14 +29,14 @@
  */
 package tech.units.indriya.format;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static tech.units.indriya.unit.MetricPrefix.*;
 import static tech.units.indriya.unit.Units.*;
 
 import javax.measure.Unit;
 import javax.measure.format.UnitFormat;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.format.LocalUnitFormat;
 
@@ -47,7 +47,7 @@ import tech.units.indriya.format.LocalUnitFormat;
 public class LocalFormatTest {
 
   @Test
-  @Ignore
+  @Disabled
   // TODO LocalUnitFormat won't parse Compound Units, EBNF does, also see https://github.com/unitsofmeasurement/uom-se/issues/145
   public void testPrefixKm() {
     final UnitFormat format = LocalUnitFormat.getInstance();
@@ -70,11 +70,12 @@ public class LocalFormatTest {
     assertEquals("mm", s);
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void testParseIrregularStringLocal() {
+	  assertThrows(UnsupportedOperationException.class, () -> {
     final UnitFormat format = LocalUnitFormat.getInstance();
-    Unit<?> u = format.parse("bl//^--1a");
-    // System.out.println(u);
+    @SuppressWarnings("unused")
+	Unit<?> u = format.parse("bl//^--1a");
+	  });
   }
-
 }

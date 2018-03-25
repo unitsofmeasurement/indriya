@@ -29,15 +29,15 @@
  */
 package tech.units.indriya.spi;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static tech.units.indriya.unit.Units.KILOGRAM;
 
 import javax.measure.Quantity;
 import javax.measure.quantity.Mass;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.quantity.QuantityRange;
@@ -50,7 +50,7 @@ public class RangeTest {
   @SuppressWarnings("rawtypes")
   private Range range;
 
-  @Before
+  @BeforeEach
   public void init() {
     min = Quantities.getQuantity(1d, KILOGRAM);
     max = Quantities.getQuantity(10d, KILOGRAM);

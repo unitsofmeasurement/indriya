@@ -29,7 +29,7 @@
  */
 package tech.units.indriya.function;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,8 +41,8 @@ import javax.measure.quantity.Time;
 import javax.measure.spi.QuantityFactory;
 import javax.measure.spi.ServiceProvider;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.function.QuantityFunctions;
 import tech.units.indriya.unit.Units;
@@ -55,7 +55,7 @@ public class QuantityFunctionsFilterTest {
   private Quantity<Time> minutes;
   private Quantity<Time> seconds;
 
-  @Before
+  @BeforeEach
   public void init() {
     ServiceProvider factoryService = ServiceProvider.current();
     timeFactory = factoryService.getQuantityFactory(Time.class);

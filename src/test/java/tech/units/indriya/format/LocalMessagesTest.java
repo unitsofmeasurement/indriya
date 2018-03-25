@@ -29,12 +29,12 @@
  */
 package tech.units.indriya.format;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class LocalMessagesTest {
   private static final String BUNDLE_NAME = "tech.units.indriya.format.messages";

@@ -29,11 +29,13 @@
  */
 package tech.units.indriya.function;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import javax.measure.format.ParserException;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.function.MultiplyConverter;
 
@@ -41,16 +43,16 @@ public class MultiplyConverterTest {
 
   private MultiplyConverter converter;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     converter = new MultiplyConverter(2);
   }
 
   @Test
   public void testConvertMethod() {
-    Assert.assertEquals(200, converter.convert(100), 0.1);
-    Assert.assertEquals(0, converter.convert(0), 0.0);
-    Assert.assertEquals(-200, converter.convert(-100), 0.1);
+    assertEquals(200, converter.convert(100), 0.1);
+    assertEquals(0, converter.convert(0));
+    assertEquals(-200, converter.convert(-100), 0.1);
   }
 
   @Test
@@ -75,10 +77,12 @@ public class MultiplyConverterTest {
     assertEquals(new MultiplyConverter(0.5), converter.inverse());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void identityTest() {
-    @SuppressWarnings("unused")
-    MultiplyConverter identConverter = new MultiplyConverter(1);
+	  assertThrows(IllegalArgumentException.class, () -> {
+		    @SuppressWarnings("unused")
+		    MultiplyConverter identConverter = new MultiplyConverter(1);
+	  });
   }
 
   @Test

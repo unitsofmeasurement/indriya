@@ -29,10 +29,10 @@
  */
 package tech.units.indriya.function;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.function.ExpConverter;
 import tech.units.indriya.function.LogConverter;
@@ -41,14 +41,14 @@ public class LogConverterTest {
 
   private LogConverter logConverterBase10;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     logConverterBase10 = new LogConverter(10.);
   }
 
   @Test
   public void testBaseUnmodified() {
-    assertEquals(10., logConverterBase10.getBase(), 0.);
+    assertEquals(10., logConverterBase10.getBase());
   }
 
   @Test
@@ -72,8 +72,8 @@ public class LogConverterTest {
 
   @Test
   public void convertLogTest() {
-    assertEquals(1, logConverterBase10.convert(10), 0.);
-    assertEquals(Double.NaN, logConverterBase10.convert(-10), 0.);
+    assertEquals(1, logConverterBase10.convert(10));
+    assertEquals(Double.NaN, logConverterBase10.convert(-10));
     assertTrue(Double.isInfinite(logConverterBase10.convert(0)));
   }
 

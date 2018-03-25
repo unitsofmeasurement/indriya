@@ -29,14 +29,14 @@
  */
 package tech.units.indriya.format;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Locale;
 import java.util.ResourceBundle;
 
 import javax.measure.Unit;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.format.EBNFUnitFormat;
 import tech.units.indriya.format.SymbolMap;

@@ -29,7 +29,7 @@
  */
 package tech.units.indriya.unit;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;
@@ -38,7 +38,7 @@ import javax.measure.quantity.Area;
 import javax.measure.quantity.Speed;
 import javax.measure.quantity.Volume;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.unit.ProductUnit;

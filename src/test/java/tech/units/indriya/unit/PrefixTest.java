@@ -29,8 +29,8 @@
  */
 package tech.units.indriya.unit;
 
-import org.junit.Ignore;
-import org.junit.Test;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.Units;
@@ -44,9 +44,8 @@ import javax.measure.quantity.Volume;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static tech.units.indriya.unit.MetricPrefix.*;
 import static tech.units.indriya.unit.Units.*;
 
@@ -151,7 +150,7 @@ public class PrefixTest {
   public void testHashMapAccessingMap() {
     assertThat(LITRE.toString(), is("l"));
     assertThat(MILLI(LITRE).toString(), is("ml"));
-    assertNotNull(MILLI(GRAM).toString(), is("mg"));
+    assertThat(MILLI(GRAM).toString(), is("mg"));
   }
 
   @Test
@@ -160,7 +159,7 @@ public class PrefixTest {
   }
 
   @Test
-  @Ignore("This is research for https://github.com/unitsofmeasurement/uom-se/issues/164")
+  @Disabled("This is research for https://github.com/unitsofmeasurement/uom-se/issues/164")
   public void testNestedOperationsShouldBeSame() {
     Unit<Mass> m1 = MICRO(GRAM);
     Unit<Mass> m2 = GRAM.divide(1000).divide(1000);

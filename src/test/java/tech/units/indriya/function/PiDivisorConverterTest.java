@@ -29,15 +29,15 @@
  */
 package tech.units.indriya.function;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.function.PiDivisorConverter;
 
@@ -45,23 +45,23 @@ public class PiDivisorConverterTest {
 
   private PiDivisorConverter converter;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     converter = new PiDivisorConverter();
   }
 
   @Test
   public void testConvertMethod() {
-    Assert.assertEquals(1000, converter.convert(3141), 0.2);
-    Assert.assertEquals(0, converter.convert(0), 0.0);
-    Assert.assertEquals(-1000, converter.convert(-3141), 0.2);
+    assertEquals(1000, converter.convert(3141), 0.2);
+    assertEquals(0, converter.convert(0));
+    assertEquals(-1000, converter.convert(-3141), 0.2);
   }
 
   @Test
   public void testConvertBigDecimalMethod() {
-    Assert.assertEquals(1000, converter.convert(new BigDecimal("3141"), MathContext.DECIMAL32).doubleValue(), 0.2);
-    Assert.assertEquals(0, converter.convert(BigDecimal.ZERO, MathContext.DECIMAL32).doubleValue(), 0.0);
-    Assert.assertEquals(-1000, converter.convert(new BigDecimal("-3141"), MathContext.DECIMAL32).doubleValue(), 0.2);
+    assertEquals(1000, converter.convert(new BigDecimal("3141"), MathContext.DECIMAL32).doubleValue(), 0.2);
+    assertEquals(0, converter.convert(BigDecimal.ZERO, MathContext.DECIMAL32).doubleValue());
+    assertEquals(-1000, converter.convert(new BigDecimal("-3141"), MathContext.DECIMAL32).doubleValue(), 0.2);
   }
 
   @Test

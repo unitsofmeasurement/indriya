@@ -29,14 +29,14 @@
  */
 package tech.units.indriya.spi;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 
 import javax.measure.spi.ServiceProvider;
 import javax.measure.spi.UnitFormatService;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 /**
  * Tests for services provided via {@link ServiceProvider}.

@@ -29,15 +29,14 @@
  */
 package tech.units.indriya.quantity;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import javax.measure.Quantity;
 import javax.measure.quantity.ElectricResistance;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Time;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.quantity.ByteQuantity;
 import tech.units.indriya.quantity.Quantities;
@@ -89,7 +88,7 @@ public class ByteQuantityTest {
   public void doubleValueTest() {
     ByteQuantity<Time> day = new ByteQuantity<Time>(Byte.valueOf("3").byteValue(), Units.DAY);
     double hours = day.doubleValue(Units.HOUR);
-    assertEquals(72D, hours, 0);
+    assertEquals(72D, hours);
   }
 
   @Test
@@ -108,6 +107,6 @@ public class ByteQuantityTest {
   public void testEquality() throws Exception {
     Quantity<Length> value = Quantities.getQuantity(Byte.valueOf("1"), Units.METRE);
     Quantity<Length> anotherValue = Quantities.getQuantity(Byte.valueOf("1"), Units.METRE);
-    Assert.assertEquals(value, anotherValue);
+    assertEquals(value, anotherValue);
   }
 }

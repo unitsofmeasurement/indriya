@@ -36,6 +36,7 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.MINUTES;
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static tech.units.indriya.unit.Units.DAY;
 import static tech.units.indriya.unit.Units.HOUR;
 import static tech.units.indriya.unit.Units.MINUTE;
@@ -47,8 +48,7 @@ import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.quantity.Time;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.quantity.time.TimeQuantities;
@@ -60,7 +60,7 @@ public class TimeQuantitiesConcurrentTest {
   @Test
   public void ofTest() {
 
-    TimeUnitQuantity day = TimeUnitQuantity.of(DAYS, 1);
+    TimeUnitQuantity day = TimeUnitQuantity.of(1, DAYS);
     TimeUnitQuantity hour = TimeUnitQuantity.of(HOURS, 1);
     TimeUnitQuantity minute = TimeUnitQuantity.of(MINUTES, 1);
     TimeUnitQuantity second = TimeUnitQuantity.of(SECONDS, 1);
@@ -68,26 +68,26 @@ public class TimeQuantitiesConcurrentTest {
     TimeUnitQuantity milliSecond = TimeUnitQuantity.of(MILLISECONDS, 1);
     TimeUnitQuantity nanoSecond = TimeUnitQuantity.of(NANOSECONDS, 1);
 
-    Assert.assertEquals(DAYS, day.getTimeUnit());
-    Assert.assertEquals(Integer.valueOf(1), day.getValue());
+    assertEquals(DAYS, day.getTimeUnit());
+    assertEquals(Integer.valueOf(1), day.getValue());
 
-    Assert.assertEquals(HOURS, hour.getTimeUnit());
-    Assert.assertEquals(Integer.valueOf(1), hour.getValue());
+    assertEquals(HOURS, hour.getTimeUnit());
+    assertEquals(Integer.valueOf(1), hour.getValue());
 
-    Assert.assertEquals(MINUTES, minute.getTimeUnit());
-    Assert.assertEquals(Integer.valueOf(1), minute.getValue());
+    assertEquals(MINUTES, minute.getTimeUnit());
+    assertEquals(Integer.valueOf(1), minute.getValue());
 
-    Assert.assertEquals(SECONDS, second.getTimeUnit());
-    Assert.assertEquals(Integer.valueOf(1), second.getValue());
+    assertEquals(SECONDS, second.getTimeUnit());
+    assertEquals(Integer.valueOf(1), second.getValue());
 
-    Assert.assertEquals(MICROSECONDS, microSecond.getTimeUnit());
-    Assert.assertEquals(Integer.valueOf(1), microSecond.getValue());
+    assertEquals(MICROSECONDS, microSecond.getTimeUnit());
+    assertEquals(Integer.valueOf(1), microSecond.getValue());
 
-    Assert.assertEquals(MILLISECONDS, milliSecond.getTimeUnit());
-    Assert.assertEquals(Integer.valueOf(1), milliSecond.getValue());
+    assertEquals(MILLISECONDS, milliSecond.getTimeUnit());
+    assertEquals(Integer.valueOf(1), milliSecond.getValue());
 
-    Assert.assertEquals(NANOSECONDS, nanoSecond.getTimeUnit());
-    Assert.assertEquals(Integer.valueOf(1), nanoSecond.getValue());
+    assertEquals(NANOSECONDS, nanoSecond.getTimeUnit());
+    assertEquals(Integer.valueOf(1), nanoSecond.getValue());
   }
 
   @Test
@@ -95,9 +95,9 @@ public class TimeQuantitiesConcurrentTest {
     Quantity<Time> hour = Quantities.getQuantity(1, Units.HOUR);
     TimeUnitQuantity timeQuantity = TimeUnitQuantity.of(hour);
 
-    Assert.assertEquals(TimeUnit.SECONDS, timeQuantity.getTimeUnit());
-    Assert.assertEquals(SECOND, timeQuantity.toUnit());
-    Assert.assertEquals(Integer.valueOf(3600), timeQuantity.getValue());
+    assertEquals(TimeUnit.SECONDS, timeQuantity.getTimeUnit());
+    assertEquals(SECOND, timeQuantity.toUnit());
+    assertEquals(Integer.valueOf(3600), timeQuantity.getValue());
   }
 
   @Test
@@ -111,15 +111,15 @@ public class TimeQuantitiesConcurrentTest {
     TimeUnitQuantity milliSecond = TimeUnitQuantity.of(MILLISECONDS, 1);
     TimeUnitQuantity nanoSecond = TimeUnitQuantity.of(NANOSECONDS, 1);
 
-    Assert.assertEquals(DAY, day.toUnit());
-    Assert.assertEquals(HOUR, hour.toUnit());
-    Assert.assertEquals(MINUTE, minute.toUnit());
+    assertEquals(DAY, day.toUnit());
+    assertEquals(HOUR, hour.toUnit());
+    assertEquals(MINUTE, minute.toUnit());
 
-    Assert.assertEquals(SECOND, second.toUnit());
+    assertEquals(SECOND, second.toUnit());
 
-    Assert.assertEquals(TimeQuantities.MICROSECOND, microSecond.toUnit());
-    Assert.assertEquals(TimeQuantities.MILLISECOND, milliSecond.toUnit());
-    Assert.assertEquals(TimeQuantities.NANOSECOND, nanoSecond.toUnit());
+    assertEquals(TimeQuantities.MICROSECOND, microSecond.toUnit());
+    assertEquals(TimeQuantities.MILLISECOND, milliSecond.toUnit());
+    assertEquals(TimeQuantities.NANOSECOND, nanoSecond.toUnit());
   }
 
   @Test
@@ -147,16 +147,16 @@ public class TimeQuantitiesConcurrentTest {
     TimeUnitQuantity day = TimeUnitQuantity.of(DAYS, 1);
     TimeUnitQuantity hours = day.to(TimeUnit.HOURS);
 
-    Assert.assertEquals(TimeUnit.HOURS, hours.getTimeUnit());
-    Assert.assertEquals(Integer.valueOf(24), hours.getValue());
+    assertEquals(TimeUnit.HOURS, hours.getTimeUnit());
+    assertEquals(Integer.valueOf(24), hours.getValue());
 
     TimeUnitQuantity oneDay = hours.to(TimeUnit.DAYS);
-    Assert.assertEquals(TimeUnit.DAYS, oneDay.getTimeUnit());
-    Assert.assertEquals(Integer.valueOf(1), oneDay.getValue());
+    assertEquals(TimeUnit.DAYS, oneDay.getTimeUnit());
+    assertEquals(Integer.valueOf(1), oneDay.getValue());
   }
 
   private void verifyQuantity(Quantity<Time> quantity, Unit<Time> unit, Number number) {
-    Assert.assertEquals(unit, quantity.getUnit());
-    Assert.assertEquals(Integer.valueOf(number.intValue()), Integer.valueOf(quantity.getValue().intValue()));
+    assertEquals(unit, quantity.getUnit());
+    assertEquals(Integer.valueOf(number.intValue()), Integer.valueOf(quantity.getValue().intValue()));
   }
 }

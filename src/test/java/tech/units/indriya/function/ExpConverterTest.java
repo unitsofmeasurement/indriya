@@ -29,10 +29,10 @@
  */
 package tech.units.indriya.function;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.function.ExpConverter;
 import tech.units.indriya.function.LogConverter;
@@ -41,14 +41,14 @@ public class ExpConverterTest {
 
   private ExpConverter expConverterBase10;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     expConverterBase10 = new ExpConverter(10.);
   }
 
   @Test
   public void testBaseUnmodified() {
-    assertEquals(10., expConverterBase10.getBase(), 0.);
+    assertEquals(10., expConverterBase10.getBase());
   }
 
   @Test
@@ -73,13 +73,13 @@ public class ExpConverterTest {
   @Test
   public void convertLogTest() {
     LogConverter logConverter = new LogConverter(10.);
-    assertEquals(1.0, logConverter.convert(expConverterBase10.convert(1.0)), 0.);
-    assertEquals(-10, logConverter.convert(expConverterBase10.convert(-10)), 0.);
+    assertEquals(1.0, logConverter.convert(expConverterBase10.convert(1.0)));
+    assertEquals(-10, logConverter.convert(expConverterBase10.convert(-10)));
   }
 
   @Test
   public void inverseLogTest() {
-    ExpConverter expConverter = new ExpConverter(Math.E);
+    ExpConverter expConverter = ExpConverter.of(Math.E);
     assertEquals(new LogConverter(10.), expConverterBase10.inverse());
     assertEquals(new LogConverter(Math.E), expConverter.inverse());
   }

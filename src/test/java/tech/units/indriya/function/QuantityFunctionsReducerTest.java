@@ -29,7 +29,7 @@
  */
 package tech.units.indriya.function;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Arrays;
 import java.util.List;
@@ -39,9 +39,9 @@ import javax.measure.quantity.Time;
 import javax.measure.spi.QuantityFactory;
 import javax.measure.spi.ServiceProvider;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.function.QuantityFunctions;
 import tech.units.indriya.unit.Units;
@@ -54,7 +54,7 @@ public class QuantityFunctionsReducerTest {
   private Quantity<Time> minutes;
   private Quantity<Time> seconds;
 
-  @Before
+  @BeforeEach
   public void init() {
     ServiceProvider provider = ServiceProvider.current();
     timeFactory = provider.getQuantityFactory(Time.class);
@@ -68,23 +68,23 @@ public class QuantityFunctionsReducerTest {
   public void minTest() {
     List<Quantity<Time>> times = getTimes();
     Quantity<Time> quantity = times.stream().reduce(QuantityFunctions.min()).get();
-    Assert.assertEquals(seconds, quantity);
+    assertEquals(seconds, quantity);
 
     List<Quantity<Time>> secondsList = Arrays.asList(timeFactory.create(300, Units.SECOND), timeFactory.create(130, Units.SECOND), seconds,
         timeFactory.create(10000, Units.SECOND));
     Quantity<Time> minSeconds = secondsList.stream().reduce(QuantityFunctions.min()).get();
-    Assert.assertEquals(seconds, minSeconds);
+    assertEquals(seconds, minSeconds);
   }
 
   @Test
   public void maxTest() {
     List<Quantity<Time>> times = getTimes();
     Quantity<Time> quantity = times.stream().reduce(QuantityFunctions.max()).get();
-    Assert.assertEquals(day, quantity);
+    assertEquals(day, quantity);
     Quantity<Time> max = timeFactory.create(20, Units.DAY);
     List<Quantity<Time>> dayList = Arrays.asList(timeFactory.create(3, Units.DAY), timeFactory.create(5, Units.DAY), max);
     Quantity<Time> maxDay = dayList.stream().reduce(QuantityFunctions.max()).get();
-    Assert.assertEquals(max, maxDay);
+    assertEquals(max, maxDay);
   }
 
   @Test

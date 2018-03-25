@@ -30,6 +30,7 @@
 package tech.units.indriya.quantity.time;
 
 import static java.time.temporal.ChronoUnit.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static tech.units.indriya.unit.Units.DAY;
 import static tech.units.indriya.unit.Units.HERTZ;
 import static tech.units.indriya.unit.Units.HOUR;
@@ -51,8 +52,7 @@ import javax.measure.Unit;
 import javax.measure.quantity.Frequency;
 import javax.measure.quantity.Time;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.quantity.time.TemporalQuantity;
@@ -72,26 +72,26 @@ public class TimeQuantitiesTest {
     TemporalQuantity milliSecond = TemporalQuantity.of(1, MILLIS);
     TemporalQuantity nanoSecond = TemporalQuantity.of(1, NANOS);
 
-    Assert.assertEquals(DAYS, day.getTemporalUnit());
-    Assert.assertEquals(Integer.valueOf(1), day.getValue());
+    assertEquals(DAYS, day.getTemporalUnit());
+    assertEquals(Integer.valueOf(1), day.getValue());
 
-    Assert.assertEquals(HOURS, hour.getTemporalUnit());
-    Assert.assertEquals(Integer.valueOf(1), hour.getValue());
+    assertEquals(HOURS, hour.getTemporalUnit());
+    assertEquals(Integer.valueOf(1), hour.getValue());
 
-    Assert.assertEquals(MINUTES, minute.getTemporalUnit());
-    Assert.assertEquals(Integer.valueOf(1), minute.getValue());
+    assertEquals(MINUTES, minute.getTemporalUnit());
+    assertEquals(Integer.valueOf(1), minute.getValue());
 
-    Assert.assertEquals(SECONDS, second.getTemporalUnit());
-    Assert.assertEquals(Integer.valueOf(1), second.getValue());
+    assertEquals(SECONDS, second.getTemporalUnit());
+    assertEquals(Integer.valueOf(1), second.getValue());
 
-    Assert.assertEquals(MICROS, microSecond.getTemporalUnit());
-    Assert.assertEquals(Integer.valueOf(1), microSecond.getValue());
+    assertEquals(MICROS, microSecond.getTemporalUnit());
+    assertEquals(Integer.valueOf(1), microSecond.getValue());
 
-    Assert.assertEquals(MILLIS, milliSecond.getTemporalUnit());
-    Assert.assertEquals(Integer.valueOf(1), milliSecond.getValue());
+    assertEquals(MILLIS, milliSecond.getTemporalUnit());
+    assertEquals(Integer.valueOf(1), milliSecond.getValue());
 
-    Assert.assertEquals(NANOS, nanoSecond.getTemporalUnit());
-    Assert.assertEquals(Integer.valueOf(1), nanoSecond.getValue());
+    assertEquals(NANOS, nanoSecond.getTemporalUnit());
+    assertEquals(Integer.valueOf(1), nanoSecond.getValue());
   }
 
   @Test
@@ -99,9 +99,9 @@ public class TimeQuantitiesTest {
     Quantity<Time> hour = Quantities.getQuantity(1, Units.HOUR);
     TemporalQuantity timeQuantity = TemporalQuantity.of(hour);
 
-    Assert.assertEquals(SECONDS, timeQuantity.getTemporalUnit());
-    Assert.assertEquals(SECOND, timeQuantity.toUnit());
-    Assert.assertEquals(Integer.valueOf(3600), timeQuantity.getValue());
+    assertEquals(SECONDS, timeQuantity.getTemporalUnit());
+    assertEquals(SECOND, timeQuantity.toUnit());
+    assertEquals(Integer.valueOf(3600), timeQuantity.getValue());
   }
 
   @Test
@@ -114,13 +114,13 @@ public class TimeQuantitiesTest {
     TemporalQuantity milliSecond = TemporalQuantity.of(1, MILLIS);
     TemporalQuantity nanoSecond = TemporalQuantity.of(1, NANOS);
 
-    Assert.assertEquals(DAY, day.toUnit());
-    Assert.assertEquals(HOUR, hour.toUnit());
-    Assert.assertEquals(MINUTE, minute.toUnit());
-    Assert.assertEquals(SECOND, second.toUnit());
-    Assert.assertEquals(TimeQuantities.MICROSECOND, microSecond.toUnit());
-    Assert.assertEquals(TimeQuantities.MILLISECOND, milliSecond.toUnit());
-    Assert.assertEquals(TimeQuantities.NANOSECOND, nanoSecond.toUnit());
+    assertEquals(DAY, day.toUnit());
+    assertEquals(HOUR, hour.toUnit());
+    assertEquals(MINUTE, minute.toUnit());
+    assertEquals(SECOND, second.toUnit());
+    assertEquals(TimeQuantities.MICROSECOND, microSecond.toUnit());
+    assertEquals(TimeQuantities.MILLISECOND, milliSecond.toUnit());
+    assertEquals(TimeQuantities.NANOSECOND, nanoSecond.toUnit());
   }
 
   @Test
@@ -148,17 +148,17 @@ public class TimeQuantitiesTest {
     TemporalQuantity day = TemporalQuantity.of(1, DAYS);
     TemporalQuantity hours = day.to(HOURS);
 
-    Assert.assertEquals(HOURS, hours.getTemporalUnit());
-    Assert.assertEquals(Integer.valueOf(24), hours.getValue());
+    assertEquals(HOURS, hours.getTemporalUnit());
+    assertEquals(Integer.valueOf(24), hours.getValue());
 
     TemporalQuantity oneDay = hours.to(DAYS);
-    Assert.assertEquals(DAYS, oneDay.getTemporalUnit());
-    Assert.assertEquals(Integer.valueOf(1), oneDay.getValue());
+    assertEquals(DAYS, oneDay.getTemporalUnit());
+    assertEquals(Integer.valueOf(1), oneDay.getValue());
   }
 
   private void verifyQuantity(Quantity<Time> quantity, Unit<Time> unit, Number number) {
-    Assert.assertEquals(unit, quantity.getUnit());
-    Assert.assertEquals(Integer.valueOf(number.intValue()), Integer.valueOf(quantity.getValue().intValue()));
+    assertEquals(unit, quantity.getUnit());
+    assertEquals(Integer.valueOf(number.intValue()), Integer.valueOf(quantity.getValue().intValue()));
   }
 
   @Test
@@ -166,8 +166,8 @@ public class TimeQuantitiesTest {
     LocalDate a = Year.of(2015).atMonth(Month.JANUARY).atDay(9);
     LocalDate b = Year.of(2015).atMonth(Month.JANUARY).atDay(10);
     Quantity<Time> time = TimeQuantities.getQuantity(a, b);
-    Assert.assertEquals(Integer.valueOf(1), Integer.valueOf(time.getValue().intValue()));
-    Assert.assertEquals(Units.DAY, time.getUnit());
+    assertEquals(Integer.valueOf(1), Integer.valueOf(time.getValue().intValue()));
+    assertEquals(Units.DAY, time.getUnit());
   }
 
   @Test
@@ -175,8 +175,8 @@ public class TimeQuantitiesTest {
     LocalTime a = LocalTime.of(0, 0);
     LocalTime b = LocalTime.of(12, 0);
     Quantity<Time> time = TimeQuantities.getQuantity(a, b);
-    Assert.assertEquals(Double.valueOf(12.0), Double.valueOf(time.getValue().doubleValue()));
-    Assert.assertEquals(Units.HOUR, time.getUnit());
+    assertEquals(Double.valueOf(12.0), Double.valueOf(time.getValue().doubleValue()));
+    assertEquals(Units.HOUR, time.getUnit());
   }
 
   @Test
@@ -184,8 +184,8 @@ public class TimeQuantitiesTest {
 	LocalDate a = Year.of(2015).atMonth(Month.JANUARY).atDay(9);
 
 	Quantity<Time> time = TimeQuantities.getQuantity(a, () -> TemporalAdjusters.next(DayOfWeek.SUNDAY));
-	Assert.assertEquals(Integer.valueOf(2), Integer.valueOf(time.getValue().intValue()));
-	Assert.assertEquals(Units.DAY, time.getUnit());
+	assertEquals(Integer.valueOf(2), Integer.valueOf(time.getValue().intValue()));
+	assertEquals(Units.DAY, time.getUnit());
     }
 
   @Test
@@ -194,23 +194,23 @@ public class TimeQuantitiesTest {
 	TemporalAdjuster temporalAdjuster = (temporal) -> temporal.plus(12L, ChronoUnit.HOURS);
 
 	Quantity<Time> time = TimeQuantities.getQuantity(a, () -> temporalAdjuster);
-	Assert.assertEquals(Integer.valueOf(12), Integer.valueOf(time.getValue().intValue()));
-	Assert.assertEquals(Units.HOUR, time.getUnit());
+	assertEquals(Integer.valueOf(12), Integer.valueOf(time.getValue().intValue()));
+	assertEquals(Units.HOUR, time.getUnit());
     }
 
   @Test
   public void inverseTest() {
     TimeUnitQuantity tenSeconds = TimeUnitQuantity.of(10, TimeUnit.SECONDS);
     Quantity<Frequency> perTenSeconds = tenSeconds.inverse();
-    Assert.assertEquals(Double.valueOf(0.1d), perTenSeconds.getValue());
-    Assert.assertEquals(HERTZ.getConverterTo(perTenSeconds.getUnit()), perTenSeconds.getUnit().getConverterTo(HERTZ));
+    assertEquals(Double.valueOf(0.1d), perTenSeconds.getValue());
+    assertEquals(HERTZ.getConverterTo(perTenSeconds.getUnit()), perTenSeconds.getUnit().getConverterTo(HERTZ));
   }
 
   @Test
   public void inverseTemporalTest() {
     TemporalQuantity tenSeconds = TemporalQuantity.of(10, SECONDS);
     Quantity<Frequency> perTenSeconds = tenSeconds.inverse();
-    Assert.assertEquals(0.1d, perTenSeconds.getValue());
-    Assert.assertEquals(HERTZ.getConverterTo(perTenSeconds.getUnit()), perTenSeconds.getUnit().getConverterTo(HERTZ));
+    assertEquals(0.1d, perTenSeconds.getValue());
+    assertEquals(HERTZ.getConverterTo(perTenSeconds.getUnit()), perTenSeconds.getUnit().getConverterTo(HERTZ));
   }
 }

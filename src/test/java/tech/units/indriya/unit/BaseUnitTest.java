@@ -31,12 +31,12 @@ package tech.units.indriya.unit;
 
 import javax.measure.quantity.Length;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.unit.BaseUnit;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  *
@@ -49,7 +49,7 @@ public class BaseUnitTest {
   // public BaseUnitTest() {
   // }
   //
-  // @BeforeClass
+  // @BeforeAll
   // public static void setUpClass() throws Exception {
   // }
   //

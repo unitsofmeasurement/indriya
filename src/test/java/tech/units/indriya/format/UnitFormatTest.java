@@ -29,7 +29,7 @@
  */
 package tech.units.indriya.format;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static tech.units.indriya.AbstractUnit.ONE;
 import static tech.units.indriya.unit.MetricPrefix.KILO;
 import static tech.units.indriya.unit.MetricPrefix.MEGA;
@@ -45,8 +45,8 @@ import javax.measure.quantity.Frequency;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Speed;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.format.LocalUnitFormat;
 import tech.units.indriya.format.SimpleUnitFormat;
@@ -61,7 +61,7 @@ public class UnitFormatTest {
   private Quantity<Length> sut;
   private UnitFormat format;
 
-  @Before
+  @BeforeEach
   public void init() {
     // sut =
     // DefaultQuantityFactoryService.getQuantityFactory(Length.class).create(10,
@@ -171,20 +171,24 @@ public class UnitFormatTest {
     }
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test
   public void testParseLocal() {
     final UnitFormat format = LocalUnitFormat.getInstance();
-    try {
-      Unit<?> u = format.parse("min");
-      assertEquals("min", u.getSymbol());
-    } catch (ParserException e) {
-      fail(e.getMessage());
-    }
+    assertThrows(UnsupportedOperationException.class, () -> {
+	    try {
+	      Unit<?> u = format.parse("min");
+	      assertEquals("min", u.getSymbol());
+	    } catch (ParserException e) {
+	      fail(e.getMessage());
+	    }
+    });
   }
 
-  @Test(expected = ParserException.class)
+  @Test
   public void testParseIrregularStringSimple() {
     final UnitFormat format = SimpleUnitFormat.getInstance();
-    Unit<?> u = format.parse("bl//^--1a");
+    assertThrows(ParserException.class, () -> {
+    	Unit<?> u = format.parse("bl//^--1a");
+    });
   }
 }

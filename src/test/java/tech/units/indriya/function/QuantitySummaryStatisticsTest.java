@@ -29,10 +29,12 @@
  */
 package tech.units.indriya.function;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import javax.measure.quantity.Time;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.function.QuantitySummaryStatistics;
 import tech.units.indriya.quantity.Quantities;
@@ -43,18 +45,20 @@ public class QuantitySummaryStatisticsTest {
   @Test
   public void shouldBeEmpty() {
     QuantitySummaryStatistics<Time> summary = new QuantitySummaryStatistics<>(Units.DAY);
-    Assert.assertEquals(0L, summary.getCount());
-    Assert.assertEquals(0L, summary.getMin().getValue().longValue());
-    Assert.assertEquals(0L, summary.getMax().getValue().longValue());
-    Assert.assertEquals(0L, summary.getSum().getValue().longValue());
-    Assert.assertEquals(0L, summary.getAverage().getValue().longValue());
+    assertEquals(0L, summary.getCount());
+    assertEquals(0L, summary.getMin().getValue().longValue());
+    assertEquals(0L, summary.getMax().getValue().longValue());
+    assertEquals(0L, summary.getSum().getValue().longValue());
+    assertEquals(0L, summary.getAverage().getValue().longValue());
 
   }
 
-  @Test(expected = NullPointerException.class)
+  @Test
   public void shouldErrorWhenIsNull() {
-    QuantitySummaryStatistics<Time> summary = new QuantitySummaryStatistics<>(Units.DAY);
-    summary.accept(null);
+	  assertThrows(NullPointerException.class, () -> {
+		  QuantitySummaryStatistics<Time> summary = new QuantitySummaryStatistics<>(Units.DAY);
+		  summary.accept(null);
+	  });
   }
 
   @Test
@@ -62,16 +66,16 @@ public class QuantitySummaryStatisticsTest {
     QuantitySummaryStatistics<Time> summary = new QuantitySummaryStatistics<>(Units.DAY);
 
     summary.accept(Quantities.getQuantity(10, Units.DAY));
-    Assert.assertEquals(1L, summary.getCount());
-    Assert.assertEquals(10L, summary.getMin().getValue().longValue());
-    Assert.assertEquals(10L, summary.getMax().getValue().longValue());
-    Assert.assertEquals(10L, summary.getSum().getValue().longValue());
-    Assert.assertEquals(10L, summary.getAverage().getValue().longValue());
+    assertEquals(1L, summary.getCount());
+    assertEquals(10L, summary.getMin().getValue().longValue());
+    assertEquals(10L, summary.getMax().getValue().longValue());
+    assertEquals(10L, summary.getSum().getValue().longValue());
+    assertEquals(10L, summary.getAverage().getValue().longValue());
 
-    Assert.assertEquals(240L, summary.getMin(Units.HOUR).getValue().longValue());
-    Assert.assertEquals(240L, summary.getMax(Units.HOUR).getValue().longValue());
-    Assert.assertEquals(240L, summary.getSum(Units.HOUR).getValue().longValue());
-    Assert.assertEquals(240L, summary.getAverage(Units.HOUR).getValue().longValue());
+    assertEquals(240L, summary.getMin(Units.HOUR).getValue().longValue());
+    assertEquals(240L, summary.getMax(Units.HOUR).getValue().longValue());
+    assertEquals(240L, summary.getSum(Units.HOUR).getValue().longValue());
+    assertEquals(240L, summary.getAverage(Units.HOUR).getValue().longValue());
   }
 
   @Test
@@ -80,10 +84,10 @@ public class QuantitySummaryStatisticsTest {
 
     summary.accept(Quantities.getQuantity(10, Units.DAY));
 
-    Assert.assertEquals(240L, summary.getMin(Units.HOUR).getValue().longValue());
-    Assert.assertEquals(240L, summary.getMax(Units.HOUR).getValue().longValue());
-    Assert.assertEquals(240L, summary.getSum(Units.HOUR).getValue().longValue());
-    Assert.assertEquals(240L, summary.getAverage(Units.HOUR).getValue().longValue());
+    assertEquals(240L, summary.getMin(Units.HOUR).getValue().longValue());
+    assertEquals(240L, summary.getMax(Units.HOUR).getValue().longValue());
+    assertEquals(240L, summary.getSum(Units.HOUR).getValue().longValue());
+    assertEquals(240L, summary.getAverage(Units.HOUR).getValue().longValue());
   }
 
   @Test
@@ -93,21 +97,21 @@ public class QuantitySummaryStatisticsTest {
 
     summary.accept(Quantities.getQuantity(10, Units.DAY));
     QuantitySummaryStatistics<Time> summaryHour = summary.to(Units.HOUR);
-    Assert.assertEquals(240L, summaryHour.getMin().getValue().longValue());
-    Assert.assertEquals(240L, summaryHour.getMax().getValue().longValue());
-    Assert.assertEquals(240L, summaryHour.getSum().getValue().longValue());
-    Assert.assertEquals(240L, summaryHour.getAverage().getValue().longValue());
+    assertEquals(240L, summaryHour.getMin().getValue().longValue());
+    assertEquals(240L, summaryHour.getMax().getValue().longValue());
+    assertEquals(240L, summaryHour.getSum().getValue().longValue());
+    assertEquals(240L, summaryHour.getAverage().getValue().longValue());
 
   }
 
   @Test
   public void addTest() {
     QuantitySummaryStatistics<Time> summary = createSummaryTime();
-    Assert.assertEquals(3L, summary.getCount());
-    Assert.assertEquals(1L, summary.getMin().getValue().longValue());
-    Assert.assertEquals(9L, summary.getMax().getValue().longValue());
-    Assert.assertEquals(12L, summary.getSum().getValue().longValue());
-    Assert.assertEquals(4L, summary.getAverage().getValue().longValue());
+    assertEquals(3L, summary.getCount());
+    assertEquals(1L, summary.getMin().getValue().longValue());
+    assertEquals(9L, summary.getMax().getValue().longValue());
+    assertEquals(12L, summary.getSum().getValue().longValue());
+    assertEquals(4L, summary.getAverage().getValue().longValue());
   }
 
   @Test
@@ -116,11 +120,11 @@ public class QuantitySummaryStatisticsTest {
     QuantitySummaryStatistics<Time> summaryB = createSummaryTime();
     QuantitySummaryStatistics<Time> summary = summaryA.combine(summaryB);
 
-    Assert.assertEquals(6L, summary.getCount());
-    Assert.assertEquals(1L, summary.getMin().getValue().longValue());
-    Assert.assertEquals(9L, summary.getMax().getValue().longValue());
-    Assert.assertEquals(24L, summary.getSum().getValue().longValue());
-    Assert.assertEquals(4L, summary.getAverage().getValue().longValue());
+    assertEquals(6L, summary.getCount());
+    assertEquals(1L, summary.getMin().getValue().longValue());
+    assertEquals(9L, summary.getMax().getValue().longValue());
+    assertEquals(24L, summary.getSum().getValue().longValue());
+    assertEquals(4L, summary.getAverage().getValue().longValue());
   }
 
   private QuantitySummaryStatistics<Time> createSummaryTime() {

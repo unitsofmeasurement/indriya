@@ -29,7 +29,7 @@
  */
 package tech.units.indriya.format;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static tech.units.indriya.unit.MetricPrefix.*;
 import static tech.units.indriya.unit.Units.GRAM;
 import static tech.units.indriya.unit.Units.HERTZ;
@@ -40,8 +40,8 @@ import javax.measure.quantity.Frequency;
 import javax.measure.quantity.Mass;
 import javax.measure.quantity.Speed;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.format.SimpleUnitFormat;
 import tech.units.indriya.unit.Units;
@@ -54,7 +54,7 @@ public class SimpleFormatTest {
 
   private SimpleUnitFormat fmt;
 
-  @Before
+  @BeforeEach
   public void init() {
     fmt = SimpleUnitFormat.getInstance();
   }

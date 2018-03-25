@@ -29,20 +29,20 @@
  */
 package tech.units.indriya.spi;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import javax.measure.spi.ServiceProvider;
 import javax.measure.spi.SystemOfUnits;
 import javax.measure.spi.SystemOfUnitsService;
 
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 public class SystemOfUnitsServiceTest {
   private static SystemOfUnitsService service;
 
-  @BeforeClass
+  @BeforeAll
   public static void setUp() {
     service = ServiceProvider.current().getSystemOfUnitsService();
   }

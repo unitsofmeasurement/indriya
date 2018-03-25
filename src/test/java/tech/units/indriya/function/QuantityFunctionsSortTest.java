@@ -29,6 +29,8 @@
  */
 package tech.units.indriya.function;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -40,9 +42,9 @@ import javax.measure.quantity.Time;
 import javax.measure.spi.QuantityFactory;
 import javax.measure.spi.ServiceProvider;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.function.QuantityFunctions;
 import tech.units.indriya.unit.Units;
@@ -55,7 +57,7 @@ public class QuantityFunctionsSortTest {
   private Quantity<Time> minutes;
   private Quantity<Time> seconds;
 
-  @Before
+  @BeforeEach
   public void init() {
     ServiceProvider provider = ServiceProvider.current();
     timeFactory = provider.getQuantityFactory(Time.class);
@@ -69,10 +71,10 @@ public class QuantityFunctionsSortTest {
   public void sortNumberTest() {
     List<Quantity<Time>> times = getTimes().stream().sorted(QuantityFunctions.sortNumber()).collect(Collectors.toList());
 
-    Assert.assertEquals(day, times.get(0));
-    Assert.assertEquals(minutes, times.get(1));
-    Assert.assertEquals(hours, times.get(2));
-    Assert.assertEquals(seconds, times.get(3));
+    assertEquals(day, times.get(0));
+    assertEquals(minutes, times.get(1));
+    assertEquals(hours, times.get(2));
+    assertEquals(seconds, times.get(3));
 
   }
 
@@ -80,49 +82,49 @@ public class QuantityFunctionsSortTest {
   public void sortNumberDescTest() {
     List<Quantity<Time>> times = getTimes().stream().sorted(QuantityFunctions.sortNumberDesc()).collect(Collectors.toList());
 
-    Assert.assertEquals(seconds, times.get(0));
-    Assert.assertEquals(hours, times.get(1));
-    Assert.assertEquals(minutes, times.get(2));
-    Assert.assertEquals(day, times.get(3));
+    assertEquals(seconds, times.get(0));
+    assertEquals(hours, times.get(1));
+    assertEquals(minutes, times.get(2));
+    assertEquals(day, times.get(3));
   }
 
   @Test
   public void sortSymbolTest() {
     List<Quantity<Time>> times = getTimes().stream().sorted(QuantityFunctions.sortSymbol()).collect(Collectors.toList());
 
-    Assert.assertEquals(day, times.get(0));
-    Assert.assertEquals(hours, times.get(1));
-    Assert.assertEquals(minutes, times.get(2));
-    Assert.assertEquals(seconds, times.get(3));
+    assertEquals(day, times.get(0));
+    assertEquals(hours, times.get(1));
+    assertEquals(minutes, times.get(2));
+    assertEquals(seconds, times.get(3));
 
   }
 
   @Test
   public void sortSymbolDesctTest() {
     List<Quantity<Time>> times = getTimes().stream().sorted(QuantityFunctions.sortSymbolDesc()).collect(Collectors.toList());
-    Assert.assertEquals(seconds, times.get(0));
-    Assert.assertEquals(minutes, times.get(1));
-    Assert.assertEquals(hours, times.get(2));
-    Assert.assertEquals(day, times.get(3));
+    assertEquals(seconds, times.get(0));
+    assertEquals(minutes, times.get(1));
+    assertEquals(hours, times.get(2));
+    assertEquals(day, times.get(3));
   }
 
   @Test
   public void sortNaturalTest() {
     List<Quantity<Time>> times = getTimes().stream().sorted(QuantityFunctions.sortNatural()).collect(Collectors.toList());
-    Assert.assertEquals(seconds, times.get(0));
-    Assert.assertEquals(minutes, times.get(1));
-    Assert.assertEquals(hours, times.get(2));
-    Assert.assertEquals(day, times.get(3));
+    assertEquals(seconds, times.get(0));
+    assertEquals(minutes, times.get(1));
+    assertEquals(hours, times.get(2));
+    assertEquals(day, times.get(3));
   }
 
   @Test
   public void sortNaturalDescTest() {
     List<Quantity<Time>> times = getTimes().stream().sorted(QuantityFunctions.sortNaturalDesc()).collect(Collectors.toList());
 
-    Assert.assertEquals(day, times.get(0));
-    Assert.assertEquals(hours, times.get(1));
-    Assert.assertEquals(minutes, times.get(2));
-    Assert.assertEquals(seconds, times.get(3));
+    assertEquals(day, times.get(0));
+    assertEquals(hours, times.get(1));
+    assertEquals(minutes, times.get(2));
+    assertEquals(seconds, times.get(3));
   }
 
   @Test
@@ -135,11 +137,11 @@ public class QuantityFunctionsSortTest {
     Comparator<Quantity<Time>> sortSymbol = QuantityFunctions.sortSymbol();
 
     List<Quantity<Time>> result = times.stream().sorted(sortNatural.thenComparing(sortSymbol)).collect(Collectors.toList());
-    Assert.assertEquals(seconds, result.get(0));
-    Assert.assertEquals(minutes, result.get(1));
-    Assert.assertEquals(hours, result.get(2));
-    Assert.assertEquals(day, result.get(3));
-    Assert.assertEquals(dayinHour, result.get(4));
+    assertEquals(seconds, result.get(0));
+    assertEquals(minutes, result.get(1));
+    assertEquals(hours, result.get(2));
+    assertEquals(day, result.get(3));
+    assertEquals(dayinHour, result.get(4));
   }
 
   private List<Quantity<Time>> getTimes() {

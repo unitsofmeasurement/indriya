@@ -29,7 +29,7 @@
  */
 package tech.units.indriya.function;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -37,9 +37,9 @@ import java.math.MathContext;
 import javax.measure.Quantity;
 import javax.measure.quantity.Angle;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.function.PiMultiplierConverter;
 import tech.units.indriya.quantity.Quantities;
@@ -49,23 +49,23 @@ public class PiMultiplierConverterTest {
 
   private PiMultiplierConverter piMultiplierConverter;
 
-  @Before
+  @BeforeEach
   public void setUp() throws Exception {
     piMultiplierConverter = new PiMultiplierConverter();
   }
 
   @Test
   public void testConvertMethod() {
-    Assert.assertEquals(314.15, piMultiplierConverter.convert(100), 0.1);
-    Assert.assertEquals(0, piMultiplierConverter.convert(0), 0.0);
-    Assert.assertEquals(-314.15, piMultiplierConverter.convert(-100), 0.1);
+    assertEquals(314.15, piMultiplierConverter.convert(100), 0.1);
+    assertEquals(0, piMultiplierConverter.convert(0));
+    assertEquals(-314.15, piMultiplierConverter.convert(-100), 0.1);
   }
 
   @Test
   public void testConvertBigDecimalMethod() {
-    Assert.assertEquals(314.15, piMultiplierConverter.convert(new BigDecimal("100"), MathContext.DECIMAL32).doubleValue(), 0.1);
-    Assert.assertEquals(0, piMultiplierConverter.convert(BigDecimal.ZERO, MathContext.DECIMAL32).doubleValue(), 0.0);
-    Assert.assertEquals(-314.15, piMultiplierConverter.convert(new BigDecimal("-100"), MathContext.DECIMAL32).doubleValue(), 0.1);
+    assertEquals(314.15, piMultiplierConverter.convert(new BigDecimal("100"), MathContext.DECIMAL32).doubleValue(), 0.1);
+    assertEquals(0, piMultiplierConverter.convert(BigDecimal.ZERO, MathContext.DECIMAL32).doubleValue());
+    assertEquals(-314.15, piMultiplierConverter.convert(new BigDecimal("-100"), MathContext.DECIMAL32).doubleValue(), 0.1);
   }
 
   @Test

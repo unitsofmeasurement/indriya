@@ -29,8 +29,8 @@
  */
 package tech.units.indriya.quantity;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static tech.units.indriya.unit.Units.PASCAL;
 
 import java.math.BigDecimal;
@@ -41,8 +41,8 @@ import javax.measure.Quantity;
 import javax.measure.quantity.Pressure;
 import javax.measure.quantity.Time;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.quantity.DecimalQuantity;
 import tech.units.indriya.quantity.DoubleQuantity;
@@ -102,6 +102,6 @@ public class QuantitiesTest {
     BigDecimal value = (BigDecimal) second.getValue();
     value.setScale(4, RoundingMode.HALF_EVEN);
     BigDecimal expected = BigDecimal.valueOf(31556952);
-    Assert.assertEquals(expected.setScale(4, RoundingMode.HALF_EVEN), value.setScale(4, RoundingMode.HALF_EVEN));
+    assertEquals(expected.setScale(4, RoundingMode.HALF_EVEN), value.setScale(4, RoundingMode.HALF_EVEN));
   }
 }
