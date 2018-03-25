@@ -12,11 +12,6 @@ This implementation aims at **Java SE 8** and above.
 [![Join the chat at https://gitter.im/unitsofmeasurement/indriya](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/unitsofmeasurement/indriya?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ## Planning
-[![Issue Stats](http://issuestats.com/github/unitsofmeasurement/indriya/badge/issue)](http://issuestats.com/github/unitsofmeasurement/indriya) 
-[![Issue Stats](http://issuestats.com/github/unitsofmeasurement/indriya/badge/pr)](http://issuestats.com/github/unitsofmeasurement/indriya)
-
-[![GitHub issue age](https://img.shields.io/github/issues/detail/age/unitsofmeasurement/indriya/979.svg)](https://github.com/unitsofmeasurement/indriya/issues)
-
 
 [![GitHub issues](https://img.shields.io/github/issues-raw/unitsofmeasurement/indriya.svg)](https://github.com/unitsofmeasurement/indriya/issues) 
 [![GitHub issues](https://img.shields.io/github/issues-closed-raw/unitsofmeasurement/indriya.svg)](https://github.com/unitsofmeasurement/indriya/issues?q=is%3Aissue+is%3Aclosed)
