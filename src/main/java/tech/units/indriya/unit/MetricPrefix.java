@@ -61,20 +61,30 @@ import java.math.BigInteger;
  * @see <a href="http://en.wikipedia.org/wiki/Metric_prefix">Wikipedia: Metric Prefix</a>
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.2, 2018-03-24
+ * @version 1.3, 2018-03-25
  * @since 1.0
  */
 public enum MetricPrefix implements SymbolSupplier, UnitConverterSupplier, Prefix {
-  YOTTA("Y", RationalConverter.of(BigInteger.TEN.pow(24), BigInteger.ONE)), ZETTA("Z", new RationalConverter(BigInteger.TEN.pow(21), BigInteger.ONE)), EXA(
-      "E", new RationalConverter(BigInteger.TEN.pow(18), BigInteger.ONE)), PETA("P", new RationalConverter(BigInteger.TEN.pow(15), BigInteger.ONE)), TERA(
-      "T", new RationalConverter(BigInteger.TEN.pow(12), BigInteger.ONE)), GIGA("G", new RationalConverter(BigInteger.TEN.pow(9), BigInteger.ONE)), MEGA(
-      "M", new RationalConverter(BigInteger.TEN.pow(6), BigInteger.ONE)), KILO("k", new RationalConverter(BigInteger.TEN.pow(3), BigInteger.ONE)), HECTO(
-      "h", new RationalConverter(BigInteger.TEN.pow(2), BigInteger.ONE)), DEKA("da", new RationalConverter(BigInteger.TEN.pow(1), BigInteger.ONE)), DECI(
-      "d", new RationalConverter(BigInteger.ONE, BigInteger.TEN.pow(1))), CENTI("c", new RationalConverter(BigInteger.ONE, BigInteger.TEN.pow(2))), MILLI(
-      "m", new RationalConverter(BigInteger.ONE, BigInteger.TEN.pow(3))), MICRO("µ", new RationalConverter(BigInteger.ONE, BigInteger.TEN.pow(6))), NANO(
-      "n", new RationalConverter(BigInteger.ONE, BigInteger.TEN.pow(9))), PICO("p", new RationalConverter(BigInteger.ONE, BigInteger.TEN.pow(12))), FEMTO(
-      "f", new RationalConverter(BigInteger.ONE, BigInteger.TEN.pow(15))), ATTO("a", new RationalConverter(BigInteger.ONE, BigInteger.TEN.pow(18))), ZEPTO(
-      "z", new RationalConverter(BigInteger.ONE, BigInteger.TEN.pow(21))), YOCTO("y", new RationalConverter(BigInteger.ONE, BigInteger.TEN.pow(24)));
+  YOTTA("Y", RationalConverter.of(BigInteger.TEN.pow(24), BigInteger.ONE)), //
+  ZETTA("Z", RationalConverter.of(BigInteger.TEN.pow(21), BigInteger.ONE)), //
+  EXA("E", RationalConverter.of(BigInteger.TEN.pow(18), BigInteger.ONE)), //
+  PETA("P", RationalConverter.of(BigInteger.TEN.pow(15), BigInteger.ONE)), //
+  TERA("T", RationalConverter.of(BigInteger.TEN.pow(12), BigInteger.ONE)), //
+  GIGA("G", RationalConverter.of(BigInteger.TEN.pow(9), BigInteger.ONE)), //
+  MEGA("M", RationalConverter.of(BigInteger.TEN.pow(6), BigInteger.ONE)), //
+  KILO("k", RationalConverter.of(BigInteger.TEN.pow(3), BigInteger.ONE)), //
+  HECTO("h", RationalConverter.of(BigInteger.TEN.pow(2), BigInteger.ONE)), //
+  DEKA("da", RationalConverter.of(BigInteger.TEN.pow(1), BigInteger.ONE)), //
+  DECI("d", RationalConverter.of(BigInteger.ONE, BigInteger.TEN.pow(1))), //
+  CENTI("c", RationalConverter.of(BigInteger.ONE, BigInteger.TEN.pow(2))), //
+  MILLI("m", RationalConverter.of(BigInteger.ONE, BigInteger.TEN.pow(3))), //
+  MICRO("µ", RationalConverter.of(BigInteger.ONE, BigInteger.TEN.pow(6))), //
+  NANO("n", RationalConverter.of(BigInteger.ONE, BigInteger.TEN.pow(9))), //
+  PICO("p", new RationalConverter(BigInteger.ONE, BigInteger.TEN.pow(12))), //
+  FEMTO("f", RationalConverter.of(BigInteger.ONE, BigInteger.TEN.pow(15))), //
+  ATTO("a", new RationalConverter(BigInteger.ONE, BigInteger.TEN.pow(18))), //
+  ZEPTO("z", new RationalConverter(BigInteger.ONE, BigInteger.TEN.pow(21))), //
+  YOCTO("y", new RationalConverter(BigInteger.ONE, BigInteger.TEN.pow(24)));
 
   /**
    * The symbol of this prefix, as returned by {@link #getSymbol}.
