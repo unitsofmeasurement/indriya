@@ -42,12 +42,19 @@ import tech.units.indriya.function.RationalConverter;
  * </p>
  *
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.1, March 24, 2018
+ * @version 1.2, March 25, 2018
  * @see <a href="https://en.wikipedia.org/wiki/Binary_prefix">Wikipedia: Binary Prefix</a>
  * @since 2.0
  */
 public enum BinaryPrefix implements Prefix {
-  KIBI("Ki", RationalConverter.of(1024, 1)), MEBI("Mi", RationalConverter.of(1024, 2)), GIBI("Gi", RationalConverter.of(1024, 3));
+  KIBI("Ki", RationalConverter.of(1024, 1)), //
+  MEBI("Mi", RationalConverter.of(1024, 2)), //
+  GIBI("Gi", RationalConverter.of(1024, 3)), //
+  TEBI("Ti", RationalConverter.of(1024, 4)), //
+  PEBI("Pi", RationalConverter.of(1024, 5)), //
+  EXBI("Ei", RationalConverter.of(1024, 6)), //
+  ZEBI("Zi", RationalConverter.of(1024, 7)), //
+  YOBI("Yi", RationalConverter.of(1024, 8));
 
   /**
    * The symbol of this prefix, as returned by {@link #getSymbol}.
@@ -120,7 +127,7 @@ public enum BinaryPrefix implements Prefix {
    * @return <code>unit.multiply(1099511627776L)</code>.
    */
   public static <Q extends Quantity<Q>> Unit<Q> TEBI(Unit<Q> unit) {
-    return unit.multiply(1099511627776L);
+    return unit.transform(TEBI.getConverter());
   }
 
   /**
@@ -131,7 +138,7 @@ public enum BinaryPrefix implements Prefix {
    * @return <code>unit.multiply(1125899906842624L)</code>.
    */
   public static <Q extends Quantity<Q>> Unit<Q> PEBI(Unit<Q> unit) {
-    return unit.multiply(1125899906842624L);
+    return unit.transform(PEBI.getConverter());
   }
 
   /**
@@ -142,7 +149,7 @@ public enum BinaryPrefix implements Prefix {
    * @return <code>unit.multiply(1152921504606846976L)</code>.
    */
   public static <Q extends Quantity<Q>> Unit<Q> EXBI(Unit<Q> unit) {
-    return unit.multiply(1152921504606846976L);
+    return unit.transform(EXBI.getConverter());
   }
 
   /**
@@ -153,7 +160,7 @@ public enum BinaryPrefix implements Prefix {
    * @return <code>unit.multiply(1152921504606846976d)</code>.
    */
   public static <Q extends Quantity<Q>> Unit<Q> ZEBI(Unit<Q> unit) {
-    return unit.multiply(1180591620717411303424d);
+    return unit.transform(ZEBI.getConverter());
   }
 
   /**
@@ -164,7 +171,7 @@ public enum BinaryPrefix implements Prefix {
    * @return <code>unit.multiply(1208925819614629174706176d)</code>.
    */
   public static <Q extends Quantity<Q>> Unit<Q> YOBI(Unit<Q> unit) {
-    return unit.multiply(1208925819614629174706176d);
+    return unit.transform(YOBI.getConverter());
   }
 
   /**
