@@ -34,7 +34,6 @@ import javax.measure.Unit;
 import javax.measure.UnitConverter;
 import javax.measure.spi.Prefix;
 
-import tech.units.indriya.function.MultiplyConverter;
 import tech.units.indriya.function.RationalConverter;
 
 /**
@@ -48,7 +47,7 @@ import tech.units.indriya.function.RationalConverter;
  * @since 2.0
  */
 public enum BinaryPrefix implements Prefix {
-  KIBI("Ki", new MultiplyConverter(1024)), MEBI("Mi", RationalConverter.of(1024, 2)), GIBI("Gi", RationalConverter.of(1024, 3));
+  KIBI("Ki", RationalConverter.of(1024, 1)), MEBI("Mi", RationalConverter.of(1024, 2)), GIBI("Gi", RationalConverter.of(1024, 3));
 
   /**
    * The symbol of this prefix, as returned by {@link #getSymbol}.

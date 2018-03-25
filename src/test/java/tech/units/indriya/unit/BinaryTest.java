@@ -43,8 +43,9 @@ import tech.units.indriya.function.RationalConverter;
 public class BinaryTest {
   @Test
   public void testKibi() {
+    final UnitConverter expected = new RationalConverter(128, 125);
     final UnitConverter actual = KIBI(METRE).getConverterTo(KILO(METRE));
-    assertEquals(2, actual.getConversionSteps().size());
+    assertEquals(expected, actual);
   }
 
   @Test
