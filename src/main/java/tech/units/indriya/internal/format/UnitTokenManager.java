@@ -33,6 +33,32 @@ package tech.units.indriya.internal.format;
 /** Token Manager. */
 final class UnitTokenManager {
 
+  /** Token literal values. */
+  public static final String[] jjstrLiteralImages = { "", null, null, null, null, "\53", "\55", "\52", "\267", "\57", "\136", "\72", "\50", "\51",
+      null, null, null, null, null, "\145", null, };
+
+  /** Lexer state names. */
+  public static final String[] lexStateNames = { "DEFAULT", };
+  protected DefaultCharStream input_stream;
+  private final int[] jjrounds = new int[15];
+  private final int[] jjstateSet = new int[30];
+  protected char curChar;
+
+  private static final long[] jjbitVec0 = { 0x0L, 0x0L, 0x20c000000000000L, 0x0L };
+  private static final long[] jjbitVec1 = { 0x0L, 0x3f1000000000000L, 0x0L, 0x0L };
+  private static final long[] jjbitVec2 = { 0xfffffffefffffffeL, 0xffffffffffffffffL, 0xffffffffffffffffL, 0xffffffffffffffffL };
+  private static final long[] jjbitVec4 = { 0x0L, 0x0L, 0xfd73ffffffffffffL, 0xffffffffffffffffL };
+  private static final long[] jjbitVec5 = { 0xffffffffffffffffL, 0xfc0effffffffffffL, 0xffffffffffffffffL, 0xffffffffffffffffL };
+
+  private static final int[] jjnextStates = { 9, 1, 2, 3, 10, 1, 2, 3, 10, 12, 14, 4, 5, };
+
+  private int curLexState = 0;
+  private final int defaultLexState = 0;
+  private int jjnewStateCnt;
+  private int jjround;
+  private int jjmatchedPos;
+  private int jjmatchedKind;
+
   /** Debug output. */
   public java.io.PrintStream debugStream = System.out;
 
@@ -84,12 +110,6 @@ final class UnitTokenManager {
     }
     return jjMoveNfa_0(state, pos + 1);
   }
-
-  static final long[] jjbitVec0 = { 0x0L, 0x0L, 0x20c000000000000L, 0x0L };
-  static final long[] jjbitVec1 = { 0x0L, 0x3f1000000000000L, 0x0L, 0x0L };
-  static final long[] jjbitVec2 = { 0xfffffffefffffffeL, 0xffffffffffffffffL, 0xffffffffffffffffL, 0xffffffffffffffffL };
-  static final long[] jjbitVec4 = { 0x0L, 0x0L, 0xfd73ffffffffffffL, 0xffffffffffffffffL };
-  static final long[] jjbitVec5 = { 0xffffffffffffffffL, 0xfc0effffffffffffL, 0xffffffffffffffffL, 0xffffffffffffffffL };
 
   private int jjMoveNfa_0(int startState, int curPos) {
     int startsAt = 0;
@@ -269,8 +289,6 @@ final class UnitTokenManager {
     }
   }
 
-  static final int[] jjnextStates = { 9, 1, 2, 3, 10, 1, 2, 3, 10, 12, 14, 4, 5, };
-
   private static boolean jjCanMove_0(int hiByte, int i2, long l2) {
     switch (hiByte) {
       case 0:
@@ -292,17 +310,6 @@ final class UnitTokenManager {
         return (jjbitVec2[i1] & l1) != 0L;
     }
   }
-
-  /** Token literal values. */
-  public static final String[] jjstrLiteralImages = { "", null, null, null, null, "\53", "\55", "\52", "\267", "\57", "\136", "\72", "\50", "\51",
-      null, null, null, null, null, "\145", null, };
-
-  /** Lexer state names. */
-  public static final String[] lexStateNames = { "DEFAULT", };
-  protected DefaultCharStream input_stream;
-  private final int[] jjrounds = new int[15];
-  private final int[] jjstateSet = new int[30];
-  protected char curChar;
 
   /** Constructor. */
   public UnitTokenManager(DefaultCharStream stream) {
@@ -368,13 +375,6 @@ final class UnitTokenManager {
 
     return t;
   }
-
-  int curLexState = 0;
-  final int defaultLexState = 0;
-  int jjnewStateCnt;
-  int jjround;
-  int jjmatchedPos;
-  int jjmatchedKind;
 
   /** Get the next Token. */
   public Token getNextToken() {
