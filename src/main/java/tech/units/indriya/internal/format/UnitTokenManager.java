@@ -41,17 +41,6 @@ final class UnitTokenManager {
     debugStream = ds;
   }
 
-  private int jjStopStringLiteralDfa_0(int pos) {
-    switch (pos) {
-      default:
-        return -1;
-    }
-  }
-
-  private int jjStartNfa_0(int pos, long active0) {
-    return jjMoveNfa_0(jjStopStringLiteralDfa_0(pos), pos + 1);
-  }
-
   private int jjStopAtPos(int pos, int kind) {
     jjmatchedKind = kind;
     jjmatchedPos = pos;
@@ -285,9 +274,9 @@ final class UnitTokenManager {
   private static boolean jjCanMove_0(int hiByte, int i2, long l2) {
     switch (hiByte) {
       case 0:
-        return ((jjbitVec0[i2] & l2) != 0L);
+        return (jjbitVec0[i2] & l2) != 0L;
       case 32:
-        return ((jjbitVec1[i2] & l2) != 0L);
+        return (jjbitVec1[i2] & l2) != 0L;
       default:
         return false;
     }
@@ -296,9 +285,9 @@ final class UnitTokenManager {
   private static boolean jjCanMove_1(int hiByte, int i1, int i2, long l1, long l2) {
     switch (hiByte) {
       case 0:
-        return ((jjbitVec4[i2] & l2) != 0L);
+        return (jjbitVec4[i2] & l2) != 0L;
       case 32:
-        return ((jjbitVec5[i2] & l2) != 0L);
+        return (jjbitVec5[i2] & l2) != 0L;
       default:
         return (jjbitVec2[i1] & l1) != 0L;
     }
