@@ -31,7 +31,7 @@
 /* JavaCCOptions:KEEP_LINE_COL=null */
 package tech.units.indriya.internal.format;
 
-import javax.measure.MeasurementException;
+import javax.measure.format.MeasurementParseException;
 
 /**
  * This exception is thrown when token errors are encountered. You can explicitly create objects of this exception type by calling the method
@@ -41,10 +41,9 @@ import javax.measure.MeasurementException;
  * 
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 0.5.4, Jan 20, 2015
+ * @version 0.6, Mar 27, 2018
  */
-public class TokenException extends MeasurementException {
-  // TODO try to merge this with ParserException
+public class TokenException extends MeasurementParseException {
   /**
    * The Serialization identifier for this class. Increment only if the <i>serialized</i> form of the class changes.
    */
@@ -68,7 +67,7 @@ public class TokenException extends MeasurementException {
    */
 
   public TokenException() {
-    super();
+    super("");
   }
 
   /** Constructor with message. */

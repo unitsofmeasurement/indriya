@@ -50,8 +50,9 @@ import tech.uom.lib.common.function.QuantitySupplier;
  *
  * @see {@link QuantitySupplier}
  * @author werner
- * @version 0.6
+ * @version 0.7
  * @param <Q>
+ * @since 1.0
  */
 public interface Measurement<Q extends Quantity<Q>> extends QuantitySupplier<Q>, Serializable {
 
