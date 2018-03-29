@@ -41,7 +41,6 @@ import javax.measure.UnitConverter;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
 import javax.measure.quantity.Volume;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -181,5 +180,15 @@ public class PrefixTest {
     List steps2 = c2.getConversionSteps();
     assertNotEquals(c1, c2);
     assertNotEquals(m1, m2);
+  }
+
+  @Test
+  public void testMetricPrefixes() {
+    assertEquals(20, MetricPrefix.prefixes().size());
+  }
+
+  @Test
+  public void testBinaryPrefixes() {
+    assertEquals(8, BinaryPrefix.prefixes().size());
   }
 }

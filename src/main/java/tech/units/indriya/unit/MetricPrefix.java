@@ -397,7 +397,18 @@ public enum MetricPrefix implements SymbolSupplier, UnitConverterSupplier, Prefi
     return symbol;
   }
 
-  /* (non-Javadoc)
+  /**
+   * Returns a Set containing the MetricPrefix values.<br>
+   * This method may be used to iterate over the prefixes as follows:
+   * 
+   * <pre>
+   * <code>
+   *    for(Prefix p : MetricPrefix.prefixes())
+   *        System.out.println(p);
+   * </code>
+   * </pre>
+   * 
+   * @return a set containing the constant values of this Prefix type, in the order they're declared
    */
   public static Set<Prefix> prefixes() {
     return Collections.<Prefix> unmodifiableSet(EnumSet.allOf(MetricPrefix.class));
