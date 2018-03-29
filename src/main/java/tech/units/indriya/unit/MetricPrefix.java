@@ -39,6 +39,9 @@ import javax.measure.UnitConverter;
 import javax.measure.spi.Prefix;
 
 import java.math.BigInteger;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.Set;
 
 /**
  * <p>
@@ -61,7 +64,7 @@ import java.math.BigInteger;
  * @see <a href="http://en.wikipedia.org/wiki/Metric_prefix">Wikipedia: Metric Prefix</a>
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.3, 2018-03-25
+ * @version 1.4, 2018-03-29
  * @since 1.0
  */
 public enum MetricPrefix implements SymbolSupplier, UnitConverterSupplier, Prefix {
@@ -114,24 +117,6 @@ public enum MetricPrefix implements SymbolSupplier, UnitConverterSupplier, Prefi
   private MetricPrefix(String symbol, RationalConverter converter) {
     this.symbol = symbol;
     this.converter = converter;
-  }
-
-  /**
-   * Returns the symbol of this prefix.
-   *
-   * @return this prefix symbol, not {@code null}.
-   */
-  public String getSymbol() {
-    return symbol;
-  }
-
-  /**
-   * Returns the corresponding unit converter.
-   *
-   * @return the unit converter.
-   */
-  public UnitConverter getConverter() {
-    return converter;
   }
 
   /**
@@ -392,5 +377,29 @@ public enum MetricPrefix implements SymbolSupplier, UnitConverterSupplier, Prefi
    */
   public static <Q extends Quantity<Q>> Unit<Q> YOCTO(Unit<Q> unit) {
     return unit.transform(YOCTO.getConverter());
+  }
+
+  /**
+   * Returns the corresponding unit converter.
+   *
+   * @return the unit converter.
+   */
+  public UnitConverter getConverter() {
+    return converter;
+  }
+
+  /**
+   * Returns the symbol of this prefix.
+   *
+   * @return this prefix symbol, not {@code null}.
+   */
+  public String getSymbol() {
+    return symbol;
+  }
+
+  /* (non-Javadoc)
+   */
+  public static Set<Prefix> prefixes() {
+    return Collections.<Prefix> unmodifiableSet(EnumSet.allOf(MetricPrefix.class));
   }
 }

@@ -29,11 +29,14 @@
  */
 package tech.units.indriya.unit;
 
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.Set;
+
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.UnitConverter;
 import javax.measure.spi.Prefix;
-
 import tech.units.indriya.function.RationalConverter;
 
 /**
@@ -42,7 +45,7 @@ import tech.units.indriya.function.RationalConverter;
  * </p>
  *
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.2, March 25, 2018
+ * @version 1.3, March 29, 2018
  * @see <a href="https://en.wikipedia.org/wiki/Binary_prefix">Wikipedia: Binary Prefix</a>
  * @since 2.0
  */
@@ -190,5 +193,11 @@ public enum BinaryPrefix implements Prefix {
    */
   public String getSymbol() {
     return symbol;
+  }
+
+  /* (non-Javadoc)
+   */
+  public static Set<Prefix> prefixes() {
+    return Collections.<Prefix> unmodifiableSet(EnumSet.allOf(BinaryPrefix.class));
   }
 }
