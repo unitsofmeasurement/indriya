@@ -32,6 +32,9 @@ package tech.units.indriya.spi;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import java.util.Collection;
+
+import javax.measure.spi.Prefix;
 import javax.measure.spi.ServiceProvider;
 import javax.measure.spi.SystemOfUnits;
 import javax.measure.spi.SystemOfUnitsService;
@@ -63,5 +66,21 @@ public class SystemOfUnitsServiceTest {
      * o : list) { System.out.println(o.toString()); }
      */
     assertEquals(46, system.getUnits().size());
+  }
+
+  @Test
+  public void testGetMetricPrefixes() {
+    assertNotNull(service);
+    Collection<Prefix> prefixes = service.getPrefixes("MetricPrefix");
+    assertNotNull(prefixes);
+    assertEquals(20, prefixes.size());
+  }
+
+  @Test
+  public void testGetBinaryPrefixes() {
+    assertNotNull(service);
+    Collection<Prefix> prefixes = service.getPrefixes("BinaryPrefix");
+    assertNotNull(prefixes);
+    assertEquals(8, prefixes.size());
   }
 }

@@ -31,23 +31,31 @@ package tech.units.indriya.internal;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.measure.spi.Prefix;
 import javax.measure.spi.SystemOfUnits;
 import javax.measure.spi.SystemOfUnitsService;
 
+import tech.units.indriya.unit.BinaryPrefix;
+import tech.units.indriya.unit.MetricPrefix;
 import tech.units.indriya.unit.Units;
 
 /**
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 0.2, November 3, 2015
+ * @version 0.3, March 29, 2018
  */
 public class DefaultSystemOfUnitsService implements SystemOfUnitsService {
 
-  final Map<String, SystemOfUnits> souMap = new ConcurrentHashMap<>();
+  private final Map<String, SystemOfUnits> souMap = new ConcurrentHashMap<>();
+
+  private final Map<String, Set<Prefix>> prefixMap = new ConcurrentHashMap<>();
 
   public DefaultSystemOfUnitsService() {
     souMap.put(Units.class.getSimpleName(), Units.getInstance());
+    prefixMap.put(MetricPrefix.class.getSimpleName(), MetricPrefix.prefixes());
+    prefixMap.put(BinaryPrefix.class.getSimpleName(), BinaryPrefix.prefixes());
   }
 
   public Collection<SystemOfUnits> getAvailableSystemsOfUnits() {
@@ -62,6 +70,11 @@ public class DefaultSystemOfUnitsService implements SystemOfUnitsService {
   @Override
   public SystemOfUnits getSystemOfUnits(String name) {
     return souMap.get(name);
+  }
+
+  @Override
+  public Collection<Prefix> getPrefixes(String name) {
+    return prefixMap.get(name);
   }
 
 }
