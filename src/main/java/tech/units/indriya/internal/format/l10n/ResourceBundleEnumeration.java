@@ -37,6 +37,8 @@ import java.util.Set;
 
 /**
  * Implements an Enumeration that combines elements from a Set and an Enumeration. Used by {@link MultiPropertyResourceBundle}.
+ * 
+ * @deprecated Seems unused.
  */
 class ResourceBundleEnumeration implements Serializable, Enumeration<String> {
 
