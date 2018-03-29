@@ -44,23 +44,25 @@ import tech.units.indriya.format.SimpleUnitFormat.Flavor;
 import tech.uom.lib.common.function.IntPrioritySupplier;
 
 /**
- * Default format service.
+ * Default unit format service.
  *
  * @author Werner Keil
- * @version 0.5, January 19, 2017
+ * @version 0.6, March 30, 2018
+ * @since 1.0
+ * @deprecated For backward-compatibility, to be removed in a future version.
  */
 public class DefaultUnitFormatService implements UnitFormatService, IntPrioritySupplier {
   static final int PRIO = 1000;
 
   private static final String DEFAULT_FORMAT = Flavor.Default.name();
 
-  private final Map<String, UnitFormat> formats = new HashMap<>();
+  protected final Map<String, UnitFormat> unitFormats = new HashMap<>();
 
   public DefaultUnitFormatService() {
-    formats.put(DEFAULT_FORMAT, SimpleUnitFormat.getInstance());
-    formats.put(Flavor.ASCII.name(), SimpleUnitFormat.getInstance(Flavor.ASCII));
-    formats.put("EBNF", EBNFUnitFormat.getInstance());
-    formats.put("Local", LocalUnitFormat.getInstance());
+    unitFormats.put(DEFAULT_FORMAT, SimpleUnitFormat.getInstance());
+    unitFormats.put(Flavor.ASCII.name(), SimpleUnitFormat.getInstance(Flavor.ASCII));
+    unitFormats.put("EBNF", EBNFUnitFormat.getInstance());
+    unitFormats.put("Local", LocalUnitFormat.getInstance());
   }
 
   /*
@@ -71,7 +73,7 @@ public class DefaultUnitFormatService implements UnitFormatService, IntPriorityS
   @Override
   public UnitFormat getUnitFormat(String formatName) {
     Objects.requireNonNull(formatName, "Format name required");
-    return formats.get(formatName);
+    return unitFormats.get(formatName);
   }
 
   /*
@@ -85,7 +87,7 @@ public class DefaultUnitFormatService implements UnitFormatService, IntPriorityS
   }
 
   public Set<String> getAvailableFormatNames() {
-    return formats.keySet();
+    return unitFormats.keySet();
   }
 
   @Override

@@ -30,6 +30,7 @@
 package tech.units.indriya.spi;
 
 import javax.measure.Quantity;
+import javax.measure.spi.FormatService;
 import javax.measure.spi.QuantityFactory;
 import javax.measure.spi.ServiceProvider;
 import javax.measure.spi.SystemOfUnitsService;
@@ -53,7 +54,8 @@ import java.util.logging.Logger;
  * services.
  *
  * @author Werner Keil
- * @version 0.9
+ * @version 1.0
+ * @since 1.0
  */
 public class DefaultServiceProvider extends ServiceProvider implements Comparable<ServiceProvider> {
 	/**
@@ -107,14 +109,6 @@ public class DefaultServiceProvider extends ServiceProvider implements Comparabl
 	static int compareServices(Object o1, Object o2) {
 		int prio1 = 0;
 		int prio2 = 0;
-//		Priority prio1Annot = o1.getClass().getAnnotation(Priority.class);
-//		if (prio1Annot != null) {
-//			prio1 = prio1Annot.value();
-//		}
-//		Priority prio2Annot = o2.getClass().getAnnotation(Priority.class);
-//		if (prio2Annot != null) {
-//			prio2 = prio2Annot.value();
-//		}
 		if (prio1 < prio2) {
 			return 1;
 		}
@@ -164,6 +158,11 @@ public class DefaultServiceProvider extends ServiceProvider implements Comparabl
 	@Override
 	public UnitFormatService getUnitFormatService() {
 		return getService(UnitFormatService.class);
+	}
+	
+	@Override
+	public FormatService getFormatService() {
+		return getService(FormatService.class);
 	}
 
 	 /**

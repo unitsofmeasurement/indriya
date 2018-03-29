@@ -27,46 +27,61 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package tech.units.indriya.internal.format.l10n;
+package tech.units.indriya.internal.format;
 
-import java.util.Enumeration;
+import static tech.units.indriya.format.FormatBehavior.LOCALE_SENSITIVE;
+
 import java.util.HashMap;
 import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.Set;
+
+import javax.measure.format.QuantityFormat;
+import javax.measure.spi.FormatService;
+import tech.units.indriya.format.AbstractQuantityFormat;
+import tech.uom.lib.common.function.IntPrioritySupplier;
 
 /**
- * 
+ * Default format service.
+ *
  * @author Werner Keil
- * @version 0.3, February 15, 2015
- * @deprecated Seems unused
+ * @version 0.5, March 30, 2018
+ * @since 2.0
  */
-public final class BundleToMapAdapter {
-  public static Map<String, String> toMap(final ResourceBundle resource) {
-    Map<String, String> map = new HashMap<>();
+public class DefaultFormatService extends DefaultUnitFormatService implements FormatService, IntPrioritySupplier {
+  static final int PRIO = 1000;
 
-    Enumeration<String> keys = resource.getKeys();
-    while (keys.hasMoreElements()) {
-      String key = keys.nextElement();
-      map.put(key, resource.getString(key));
-    }
+  private static final String DEFAULT_FORMAT = "Default";
 
-    return map;
+  private final Map<String, QuantityFormat> quantityFormats = new HashMap<>();
+
+  public DefaultFormatService() {
+    super();
+    quantityFormats.put(DEFAULT_FORMAT, AbstractQuantityFormat.getInstance());
+    quantityFormats.put("Local", AbstractQuantityFormat.getInstance(LOCALE_SENSITIVE));
   }
 
-  // public final static Map<String, String> toMap(final MapResourceBundle
-  // resource) {
-  // Map<String, String> map = new HashMap<>();
-  //
-  // Enumeration<String> keys = resource.getKeys();
-  // while (keys.hasMoreElements()) {
-  // String key = keys.nextElement();
-  // map.put(key, resource.getString(key));
-  // }
-  //
-  // return map;
-  // }
+  @Override
+  public int getPriority() {
+    return PRIO;
+  }
 
-  public static Map<String, String> toMap(String resName) {
-    return toMap(ResourceBundle.getBundle(resName));
+  @Override
+  public QuantityFormat getQuantityFormat(String name) {
+    return quantityFormats.get(name);
+  }
+
+  @Override
+  public QuantityFormat getQuantityFormat() {
+    return getQuantityFormat(DEFAULT_FORMAT);
+  }
+
+  @Override
+  public Set<String> getAvailableFormatNames(FormatType type) {
+    switch (type) {
+      case QUANTITY_FORMAT:
+        return quantityFormats.keySet();
+      default:
+        return unitFormats.keySet();
+    }
   }
 }
