@@ -42,6 +42,9 @@ import javax.measure.spi.SystemOfUnitsService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import tech.units.indriya.unit.BinaryPrefix;
+import tech.units.indriya.unit.MetricPrefix;
+
 public class SystemOfUnitsServiceTest {
   private static SystemOfUnitsService service;
 
@@ -77,9 +80,25 @@ public class SystemOfUnitsServiceTest {
   }
 
   @Test
+  public void testGetMetricPrefixes2() {
+    assertNotNull(service);
+    Collection<Prefix> prefixes = service.getPrefixes(MetricPrefix.class);
+    assertNotNull(prefixes);
+    assertEquals(20, prefixes.size());
+  }
+
+  @Test
   public void testGetBinaryPrefixes() {
     assertNotNull(service);
     Collection<Prefix> prefixes = service.getPrefixes("BinaryPrefix");
+    assertNotNull(prefixes);
+    assertEquals(8, prefixes.size());
+  }
+
+  @Test
+  public void testGetBinaryPrefixes2() {
+    assertNotNull(service);
+    Collection<Prefix> prefixes = service.getPrefixes(BinaryPrefix.class);
     assertNotNull(prefixes);
     assertEquals(8, prefixes.size());
   }

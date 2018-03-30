@@ -30,6 +30,8 @@
 package tech.units.indriya.internal;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.EnumSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -44,7 +46,7 @@ import tech.units.indriya.unit.Units;
 
 /**
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 0.3, March 29, 2018
+ * @version 0.5, March 30, 2018
  */
 public class DefaultSystemOfUnitsService implements SystemOfUnitsService {
 
@@ -77,4 +79,13 @@ public class DefaultSystemOfUnitsService implements SystemOfUnitsService {
     return prefixMap.get(name);
   }
 
+  @SuppressWarnings("unchecked")
+  @Override
+  public Collection<Prefix> getPrefixes(@SuppressWarnings("rawtypes") Class c) {
+    if (c.isEnum()) {
+      return Collections.<Prefix> unmodifiableSet(EnumSet.allOf(c));
+    } else {
+      return Collections.<Prefix> emptyList();
+    }
+  }
 }

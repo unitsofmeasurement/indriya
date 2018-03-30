@@ -43,61 +43,61 @@ import org.junit.jupiter.api.Test;
  */
 public class FormatServiceTest {
 
-	@Test
-	public void testGetServices() throws Exception {
-		List<ServiceProvider> services = ServiceProvider.available();
-		assertNotNull(services);
-		assertFalse(services.isEmpty());
-		assertEquals(1, services.size());
-	}
+  @Test
+  public void testGetServices() throws Exception {
+    List<ServiceProvider> services = ServiceProvider.available();
+    assertNotNull(services);
+    assertFalse(services.isEmpty());
+    assertEquals(1, services.size());
+  }
 
-	@Test
-	public void testGetService() throws Exception {
-		FormatService fs = ServiceProvider.current().getFormatService();
-		assertNotNull(fs);
-		assertNotNull(fs.getUnitFormat());
-		assertEquals("DefaultFormat", fs.getUnitFormat().getClass().getSimpleName());
-	}
+  @Test
+  public void testGetService() throws Exception {
+    FormatService fs = ServiceProvider.current().getFormatService();
+    assertNotNull(fs);
+    assertNotNull(fs.getUnitFormat());
+    assertEquals("DefaultFormat", fs.getUnitFormat().getClass().getSimpleName());
+  }
 
-	@Test
-	public void testGetUnitFormatFound() throws Exception {
-		final FormatService fs = ServiceProvider.current().getFormatService();
-		assertNotNull(fs);
-		assertNotNull(fs.getUnitFormat("EBNF"));
-	}
+  @Test
+  public void testGetUnitFormatFound() throws Exception {
+    final FormatService fs = ServiceProvider.current().getFormatService();
+    assertNotNull(fs);
+    assertNotNull(fs.getUnitFormat("EBNF"));
+  }
 
-	@Test
-	public void testGetUnitFormatNotFound() throws Exception {
-		final FormatService fs = ServiceProvider.current().getFormatService();
-		assertNotNull(fs);
-		assertNull(fs.getUnitFormat("XYZ"));
-	}
+  @Test
+  public void testGetUnitFormatNotFound() throws Exception {
+    final FormatService fs = ServiceProvider.current().getFormatService();
+    assertNotNull(fs);
+    assertNull(fs.getUnitFormat("XYZ"));
+  }
 
-	@Test
-	public void testGetUnitFormatNames() throws Exception {
-		final FormatService fs = ServiceProvider.current().getFormatService();
-		assertNotNull(fs);
-		assertEquals(4, fs.getAvailableFormatNames(UNIT_FORMAT).size());
-	}
+  @Test
+  public void testGetUnitFormatNames() throws Exception {
+    final FormatService fs = ServiceProvider.current().getFormatService();
+    assertNotNull(fs);
+    assertEquals(4, fs.getAvailableFormatNames(UNIT_FORMAT).size());
+  }
 
-	@Test
-	public void testGetQuantityFormatFound() throws Exception {
-		final FormatService fs = ServiceProvider.current().getFormatService();
-		assertNotNull(fs);
-		assertNotNull(fs.getQuantityFormat("Default"));
-	}
+  @Test
+  public void testGetQuantityFormatFound() throws Exception {
+    final FormatService fs = ServiceProvider.current().getFormatService();
+    assertNotNull(fs);
+    assertNotNull(fs.getQuantityFormat("Default"));
+  }
 
-	@Test
-	public void testGetQuantityFormatNotFound() throws Exception {
-		final FormatService fs = ServiceProvider.current().getFormatService();
-		assertNotNull(fs);
-		assertNull(fs.getQuantityFormat("XYZ"));
-	}
-	
-	@Test
-	public void testGetQuantityFormatNames() throws Exception {
-		final FormatService fs = ServiceProvider.current().getFormatService();
-		assertNotNull(fs);
-		assertEquals(2, fs.getAvailableFormatNames(QUANTITY_FORMAT).size());
-	}
+  @Test
+  public void testGetQuantityFormatNotFound() throws Exception {
+    final FormatService fs = ServiceProvider.current().getFormatService();
+    assertNotNull(fs);
+    assertNull(fs.getQuantityFormat("XYZ"));
+  }
+
+  @Test
+  public void testGetQuantityFormatNames() throws Exception {
+    final FormatService fs = ServiceProvider.current().getFormatService();
+    assertNotNull(fs);
+    assertEquals(2, fs.getAvailableFormatNames(QUANTITY_FORMAT).size());
+  }
 }
