@@ -32,7 +32,6 @@ package tech.units.indriya.unit;
 import tech.units.indriya.AbstractSystemOfUnits;
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.function.AddConverter;
-import tech.units.indriya.function.PiMultiplierConverter;
 import tech.units.indriya.function.RationalConverter;
 import tech.units.indriya.quantity.QuantityDimension;
 import tech.uom.lib.common.function.Nameable;
@@ -81,7 +80,7 @@ import javax.measure.spi.SystemOfUnits;
  * This class defines commonly used units.
  *
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.0.5, October 23, 2017
+ * @version 1.0.6, March 30, 2018
  * @since 1.0
  */
 public class Units extends AbstractSystemOfUnits implements Nameable {
@@ -383,30 +382,6 @@ public class Units extends AbstractSystemOfUnits implements Nameable {
    * A time unit accepted for use with SI units (standard name <code>y</code> ).
    */
   public static final Unit<Time> YEAR = addUnit(Units.DAY.multiply(365.2425));
-
-  /**
-   * An angle unit accepted for use with SI units (standard name <code>deg</code>).
-   * 
-   * @deprecated Use from NonSI
-   */
-  public static final Unit<Angle> DEGREE_ANGLE = addUnit(new TransformedUnit<>(RADIAN, new PiMultiplierConverter().concatenate(new RationalConverter(
-      1, 180))));
-
-  /**
-   * An angle unit accepted for use with SI units (standard name <code>'</code>).
-   * 
-   * @deprecated Use from SI
-   */
-  public static final Unit<Angle> MINUTE_ANGLE = addUnit(new TransformedUnit<>(RADIAN, new PiMultiplierConverter().concatenate(new RationalConverter(
-      1, 180 * 60))));
-
-  /**
-   * An angle unit accepted for use with SI units (standard name <code>''</code>).
-   * 
-   * @deprecated Use from SI
-   */
-  public static final Unit<Angle> SECOND_ANGLE = addUnit(new TransformedUnit<>(RADIAN, new PiMultiplierConverter().concatenate(new RationalConverter(
-      1, 180 * 60 * 60))));
 
   /**
    * A volume unit accepted for use with SI units (standard name <code>l</code>).
