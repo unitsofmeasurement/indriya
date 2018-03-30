@@ -68,19 +68,11 @@ public class SystemOfUnitsServiceTest {
      * Arrays.asList((units.toArray())); Collections.sort(list); for (Object
      * o : list) { System.out.println(o.toString()); }
      */
-    assertEquals(46, system.getUnits().size());
+    assertEquals(43, system.getUnits().size());
   }
 
   @Test
   public void testGetMetricPrefixes() {
-    assertNotNull(service);
-    Collection<Prefix> prefixes = service.getPrefixes("MetricPrefix");
-    assertNotNull(prefixes);
-    assertEquals(20, prefixes.size());
-  }
-
-  @Test
-  public void testGetMetricPrefixes2() {
     assertNotNull(service);
     Collection<Prefix> prefixes = service.getPrefixes(MetricPrefix.class);
     assertNotNull(prefixes);
@@ -89,14 +81,6 @@ public class SystemOfUnitsServiceTest {
 
   @Test
   public void testGetBinaryPrefixes() {
-    assertNotNull(service);
-    Collection<Prefix> prefixes = service.getPrefixes("BinaryPrefix");
-    assertNotNull(prefixes);
-    assertEquals(8, prefixes.size());
-  }
-
-  @Test
-  public void testGetBinaryPrefixes2() {
     assertNotNull(service);
     Collection<Prefix> prefixes = service.getPrefixes(BinaryPrefix.class);
     assertNotNull(prefixes);

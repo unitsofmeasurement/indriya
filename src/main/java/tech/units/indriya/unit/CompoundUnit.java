@@ -46,13 +46,13 @@ import javax.measure.Unit;
  * </p>
  * 
  * <p>
- * Examples of compound units:<code> Unit<Time> HOUR_MINUTE_SECOND = HOUR.compound(MINUTE).compound(SECOND); <br>Unit<Angle> DEGREE_MINUTE_ANGLE =
- * DEGREE_ANGLE.compound(MINUTE_ANGLE); </code>
+ * Examples of compound units:<code> Unit<Time> HOUR_MINUTE_SECOND = HOUR.compound(MINUTE).compound(SECOND); <br>Unit<Length> FOOT_INCH =
+ * FOOT.compound(INCH); </code>
  * </p>
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.6, March 30, 2018
+ * @version 1.7, March 30, 2018
  * @since 1.1
  */
 public final class CompoundUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {

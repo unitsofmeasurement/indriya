@@ -40,24 +40,19 @@ import javax.measure.spi.Prefix;
 import javax.measure.spi.SystemOfUnits;
 import javax.measure.spi.SystemOfUnitsService;
 
-import tech.units.indriya.unit.BinaryPrefix;
-import tech.units.indriya.unit.MetricPrefix;
 import tech.units.indriya.unit.Units;
 
 /**
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 0.5, March 30, 2018
+ * @version 0.6, March 30, 2018
+ * @since 1.0
  */
 public class DefaultSystemOfUnitsService implements SystemOfUnitsService {
 
   private final Map<String, SystemOfUnits> souMap = new ConcurrentHashMap<>();
 
-  private final Map<String, Set<Prefix>> prefixMap = new ConcurrentHashMap<>();
-
   public DefaultSystemOfUnitsService() {
     souMap.put(Units.class.getSimpleName(), Units.getInstance());
-    prefixMap.put(MetricPrefix.class.getSimpleName(), MetricPrefix.prefixes());
-    prefixMap.put(BinaryPrefix.class.getSimpleName(), BinaryPrefix.prefixes());
   }
 
   public Collection<SystemOfUnits> getAvailableSystemsOfUnits() {
@@ -74,18 +69,14 @@ public class DefaultSystemOfUnitsService implements SystemOfUnitsService {
     return souMap.get(name);
   }
 
-  @Override
-  public Collection<Prefix> getPrefixes(String name) {
-    return prefixMap.get(name);
-  }
-
   @SuppressWarnings("unchecked")
   @Override
-  public Collection<Prefix> getPrefixes(@SuppressWarnings("rawtypes") Class c) {
-    if (c.isEnum()) {
-      return Collections.<Prefix> unmodifiableSet(EnumSet.allOf(c));
+  public Set<Prefix> getPrefixes(@SuppressWarnings("rawtypes") Class prefixType) {
+    if (prefixType.isEnum()) {
+      return Collections.<Prefix> unmodifiableSet(EnumSet.allOf(prefixType));
     } else {
-      return Collections.<Prefix> emptyList();
+      return Collections.<Prefix> emptySet();
+      // TODO shall we throw an exception here e.g. IllegalArgumentException?
     }
   }
 }
