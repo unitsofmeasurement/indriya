@@ -61,4 +61,11 @@ public class BinaryTest {
     final UnitConverter actual = GIBI(METRE).getConverterTo(GIGA(METRE));
     assertEquals(expected, actual);
   }
+  
+  @Test
+  public void testTebi() {
+    final UnitConverter expected = new RationalConverter(1, 3906250);
+    final UnitConverter actual = TEBI(LITRE).getConverterTo(GIGA(LITRE));
+    assertEquals(expected, actual);
+  }
 }
