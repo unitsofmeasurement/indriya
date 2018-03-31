@@ -64,8 +64,15 @@ public class BinaryTest {
   
   @Test
   public void testTebi() {
-    final UnitConverter expected = new RationalConverter(1, 3906250);
-    final UnitConverter actual = TEBI(LITRE).getConverterTo(GIGA(LITRE));
+    final UnitConverter expected = new RationalConverter(1, 3906250000l);
+    final UnitConverter actual = TEBI(LITRE).getConverterTo(TERA(LITRE));
+    assertEquals(expected, actual);
+  }
+  
+  @Test
+  public void testPebi() {
+    final UnitConverter expected = new RationalConverter(1, 4882812500000l);
+    final UnitConverter actual = PEBI(LITRE).getConverterTo(PETA(LITRE));
     assertEquals(expected, actual);
   }
 }
