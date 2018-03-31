@@ -45,6 +45,7 @@ public class BinaryTest {
   public void testKibi() {
     final UnitConverter expected = new RationalConverter(128, 125);
     final UnitConverter actual = KIBI(METRE).getConverterTo(KILO(METRE));
+    assertEquals("Ki", KIBI.getSymbol());
     assertEquals(expected, actual);
   }
 
