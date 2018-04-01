@@ -54,6 +54,7 @@
 		<thisYear>2018</thisYear>
 		<!-- Plugins -->
 		<felix.version>3.4.0</felix.version>
+		<maven.jar.version>3.0.2</maven.jar.version>
 	</properties>
 
 	<dependencies>
@@ -138,6 +139,37 @@
 					</dependency>
 				</dependencies>
 			</plugin>
+			
+					<!-- JAR packaging -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>${maven.jar.version}</version>
+				<configuration>
+					<archive>
+						<manifest>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+						</manifest>
+						<manifestEntries>
+							<Specification-Title>Unit API</Specification-Title>
+							<Specification-Version>${project.version}</Specification-Version>
+							<Specification-Vendor>Unit-API contributors</Specification-Vendor>
+							<Implementation-Title>${project.name}</Implementation-Title>
+							<Implementation-Version>${project.version}</Implementation-Version>
+							<Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
+							<Implementation-URL>http://unitsofmeasurement.github.io</Implementation-URL>
+						</manifestEntries>
+					</archive>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>test-jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			
 			<!-- Packaging (OSGi bundle) -->
 			<plugin>
 				<groupId>org.apache.felix</groupId>
@@ -204,33 +236,6 @@
 						</plugin>
 
 						<!-- ======================================================= -->
-						<!-- Javadoc generation -->
-						<!-- -->
-						<!-- Do not set <docfilessubdirs> to true, since this -->
-						<!-- cause the unwanted copy of .svn sub-directories. -->
-						<!-- ======================================================= -->
-						<plugin>
-							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-javadoc-plugin</artifactId>
-							<version>2.9.1</version>
-							<configuration>
-								<source>${project.build.javaVersion}</source>             <!-- Enables javadoc to handle assertions present in J2SE 1.4. -->
-								<encoding>${project.build.sourceEncoding}</encoding>       <!-- The encoding of the source files. -->
-								<docencoding>${project.build.sourceEncoding}</docencoding> <!-- The encoding of the generated HTML files. -->
-								<charset>${sourceEncoding}</charset>         <!-- Specifies the HTML character set for this document. -->
-								<locale>en</locale>              <!-- Locale that javadoc uses when generating documentation. -->
-								<noqualifier>all</noqualifier>   <!-- Omit qualifying package name before class names in output. -->
-								<quiet>true</quiet>              <!-- Shuts off non-error and non-warning messages. -->
-								<keywords>true</keywords>        <!-- Adds HTML meta keyword tags to the generated files. -->
-								<!-- Creates links to existing javadoc-generated documentation of 
-									external referenced classes. -->
-								<links>
-									<link>http://docs.oracle.com/javase/8/docs/api/</link>
-								</links>
-							</configuration>
-						</plugin>
-
-						<!-- ======================================================= -->
 						<!-- Code analysis -->
 						<!-- ======================================================= -->
 						<plugin>
@@ -274,7 +279,7 @@
 						<plugin>
 							<groupId>org.jacoco</groupId>
 							<artifactId>jacoco-maven-plugin</artifactId>
-							<version>${jacoco.plugin.version}</version>
+							<version>${jacoco.version}</version>
 							<configuration>
 								<destfile>${basedir}/target/coverage-reports/jacoco-unit.exec</destfile>
 								<datafile>${basedir}/target/coverage-reports/jacoco-unit.exec</datafile>
@@ -336,6 +341,68 @@
 					</reportPlugins>
 				</configuration>
 			</plugin>
+			
+			<plugin>
+				<groupId>org.eluder.coveralls</groupId>
+				<artifactId>coveralls-maven-plugin</artifactId>
+				<version>4.3.0</version>
+				<configuration>
+					<repoToken>${env.COVERALLS_REPO_TOKEN}</repoToken>
+				</configuration>
+			</plugin>
+
+			<!-- Attach Sources -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>3.0.1</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<phase>package</phase>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<detectLinks>true</detectLinks>
+					<keywords>true</keywords>
+					<linksource>true</linksource>
+					<failOnError>false</failOnError>
+					<source>${maven.compile.sourceLevel}</source>
+					<verbose>true</verbose>
+					<tags>
+						<tag>
+							<name>apiNote</name>
+							<placement>a</placement>
+							<head>API Note:</head>
+						</tag>
+						<tag>
+							<name>implSpec</name>
+							<placement>a</placement>
+							<head>Implementation Requirements:</head>
+						</tag>
+					</tags>
+					<sourceFileExcludes>
+						<exclude>**/module-info.java</exclude>
+					</sourceFileExcludes>
+				</configuration>
+			</plugin>
+			
 		</plugins>
 	</build>
 
