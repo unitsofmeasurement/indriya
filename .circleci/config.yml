@@ -108,7 +108,7 @@ jobs:
           key: v1-dependencies-{{ checksum "pom.xml" }}
         
       # run tests!
-      - run: mvn test cobertura:cobertura
+      - run: mvn test jacoco:report cobertura:cobertura
       
       - run: bash <(curl -s https://codecov.io/bash)
 workflows:
