@@ -115,7 +115,7 @@
 	</dependencyManagement>
 	<build>
 		<plugins>
-		<!-- Compilation -->
+			<!-- Compilation -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -275,43 +275,19 @@
 						<plugin>
 							<groupId>org.jacoco</groupId>
 							<artifactId>jacoco-maven-plugin</artifactId>
-							<configuration>
-								<!-- this does not work for packages <excludes> <exclude>tech.units.indriya.internal.*</exclude> 
-									</excludes -->
-							</configuration>
+							<version>${jacoco.version}</version>
 							<executions>
 								<execution>
-									<id>pre-unit-test</id>
 									<goals>
 										<goal>prepare-agent</goal>
 									</goals>
 								</execution>
 								<execution>
-									<id>post-unit-test</id>
+									<id>report</id>
 									<phase>test</phase>
 									<goals>
 										<goal>report</goal>
-										<goal>check</goal>
 									</goals>
-									<configuration>
-										<rules>
-											<rule>
-												<element>BUNDLE</element>
-												<limits>
-													<limit implementation="org.jacoco.report.check.Limit">
-														<counter>INSTRUCTION</counter>
-														<value>COVEREDRATIO</value>
-														<minimum>0.45</minimum>
-													</limit>
-													<limit>
-														<counter>COMPLEXITY</counter>
-														<value>COVEREDRATIO</value>
-														<minimum>0.34</minimum>
-													</limit>
-												</limits>
-											</rule>
-										</rules>
-									</configuration>
 								</execution>
 							</executions>
 						</plugin>
@@ -331,15 +307,6 @@
 								<check />
 							</configuration>
 						</plugin>
-
-						<!-- ======================================================= -->
-						<!-- Static analysis for occurences of bug patterns -->
-						<!-- ======================================================= -->
-						<!-- plugin> <groupId>org.codehaus.mojo</groupId> <artifactId>findbugs-maven-plugin</artifactId> 
-							<version>2.5.2</version> </plugin> <plugin> <groupId>org.apache.maven.plugins</groupId> 
-							<artifactId>maven-checkstyle-plugin</artifactId> <version>2.11</version> 
-							<configuration> <configLocation>src/main/config/checkstyle.xml</configLocation> 
-							</configuration> </plugin -->
 					</reportPlugins>
 				</configuration>
 			</plugin>
