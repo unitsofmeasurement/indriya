@@ -48,13 +48,13 @@
 		<hamcrest.version>2.0.0.0</hamcrest.version>
 		<junit.jupiter.version>5.1.0</junit.jupiter.version>
 		<junit.platform.version>1.1.0</junit.platform.version>
-		<maven.source.version>3.0.1</maven.source.version>
 		<jacoco.version>0.8.1</jacoco.version>
 		<compile.exclude.files>module-info.java</compile.exclude.files>
 		<thisYear>2018</thisYear>
 		<!-- Plugins -->
 		<felix.version>3.4.0</felix.version>
 		<maven.jar.version>3.0.2</maven.jar.version>
+		<maven.source.version>3.0.1</maven.source.version>
 	</properties>
 
 	<dependencies>
