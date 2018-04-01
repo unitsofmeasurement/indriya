@@ -32,6 +32,7 @@ package tech.units.indriya.unit;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import tech.units.indriya.function.RationalConverter;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.Units;
 
@@ -45,9 +46,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static tech.units.indriya.unit.BinaryPrefix.*;
 import static tech.units.indriya.unit.MetricPrefix.*;
 import static tech.units.indriya.unit.Units.*;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.List;
 
 public class PrefixTest {
@@ -180,5 +184,56 @@ public class PrefixTest {
     List steps2 = c2.getConversionSteps();
     assertNotEquals(c1, c2);
     assertNotEquals(m1, m2);
+  }
+  
+  @Test
+  public void testKibi() {
+    final UnitConverter expected = new RationalConverter(128, 125);
+    final UnitConverter actual = KIBI(METRE).getConverterTo(KILO(METRE));
+    assertEquals("Ki", KIBI.getSymbol());
+    assertEquals(expected, actual);
+  }
+
+  @Test
+  public void testMebi() {
+    final UnitConverter expected = new RationalConverter(8, 15625);
+    final UnitConverter actual = MEBI(METRE).getConverterTo(MEGA(METRE));
+    assertEquals(expected, actual);
+  }
+
+  @Test
+  public void testGibi() {
+    final UnitConverter expected = new RationalConverter(2, 5859375);
+    final UnitConverter actual = GIBI(METRE).getConverterTo(GIGA(METRE));
+    assertEquals(expected, actual);
+  }
+
+  @Test
+  public void testTebi() {
+    final UnitConverter expected = new RationalConverter(1, 3906250000l);
+    final UnitConverter actual = TEBI(LITRE).getConverterTo(TERA(LITRE));
+    assertEquals(expected, actual);
+  }
+
+  @Test
+  public void testPebi() {
+    final UnitConverter expected = new RationalConverter(1, 4882812500000L);
+    final UnitConverter actual = PEBI(LITRE).getConverterTo(PETA(LITRE));
+    assertEquals(expected, actual);
+  }
+  
+  @Test
+  public void testZebi() {
+    final UnitConverter expected = new RationalConverter(1, 6835937500000000000L);
+    final UnitConverter actual = ZEBI(GRAM).getConverterTo(ZETTA(GRAM));
+    assertEquals(expected, actual);
+  }
+  
+  @Test
+  public void testYobi() {
+    final UnitConverter expected = new RationalConverter(BigInteger.ONE, 
+    		  BigDecimal.valueOf(7812500000000000000000D).toBigInteger());
+    final UnitConverter actual = YOBI(GRAM).getConverterTo(YOTTA(GRAM));
+    assertEquals(expected, actual);
   }
 }
