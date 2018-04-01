@@ -181,14 +181,4 @@ public class PrefixTest {
     assertNotEquals(c1, c2);
     assertNotEquals(m1, m2);
   }
-
-  @Test
-  public void testMetricPrefixes() {
-    assertEquals(20, MetricPrefix.prefixes().size());
-  }
-
-  @Test
-  public void testBinaryPrefixes() {
-    assertEquals(8, BinaryPrefix.prefixes().size());
-  }
 }

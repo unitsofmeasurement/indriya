@@ -308,14 +308,10 @@ public class UnitsTest {
     // TODO see https://github.com/unitsofmeasurement/uom-se/issues/54 /
     // https://java.net/jira/browse/UNITSOFMEASUREMENT-109
     assertEquals("kg", Units.KILOGRAM.getSymbol());
-    // assertEquals("kg", Units.GRAM.getSymbol()); //"g"
+    assertNull(Units.GRAM.getSymbol());
     // assertEquals("kg", UCUM.POUND.getSymbol()); //"lb"
     // assertEquals("kg", UCUM.OUNCE.getSymbol());//"oz"
     // assertEquals("kg", MetricPrefix.KILO(Units.GRAM).getSymbol());
-    // assertEquals("kg", UCUM.GRAM.getSymbol()); //"g"
-    // assertEquals("kg", US.POUND.getSymbol()); //"lb"
-    // assertNull(Units.GRAM.getSymbol());
-    // assertNull(UCUM.OUNCE.getSymbol());
   }
 
   @Test
