@@ -139,8 +139,8 @@
 					</dependency>
 				</dependencies>
 			</plugin>
-			
-					<!-- JAR packaging -->
+
+			<!-- JAR packaging -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
@@ -169,7 +169,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			
+
 			<!-- Packaging (OSGi bundle) -->
 			<plugin>
 				<groupId>org.apache.felix</groupId>
@@ -177,22 +177,63 @@
 				<extensions>true</extensions>
 			</plugin>
 
+
+			<!-- ======================================================= -->
+			<!-- Code analysis -->
+			<!-- ======================================================= -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<version>3.2</version>
+				<configuration>
+					<sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
+					<targetJdk>${project.build.javaVersion}</targetJdk>
+				</configuration>
+			</plugin>
+
+			<!-- ======================================================= -->
+			<!-- Test results -->
+			<!-- ======================================================= -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.19</version>
+				<dependencies>
+					<dependency>
+						<groupId>org.junit.platform</groupId>
+						<artifactId>junit-platform-surefire-provider</artifactId>
+						<version>${junit.platform.version}</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+
+			<!-- ======================================================= -->
+			<!-- Report on test results -->
+			<!-- ======================================================= -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+				<version>2.16</version>
+			</plugin>
+
+			<!-- ======================================================= -->
+			<!-- Coverage -->
+			<!-- ======================================================= -->
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>${jacoco.version}</version>
+				<configuration>
+					<destfile>${basedir}/target/coverage-reports/jacoco-unit.exec</destfile>
+					<datafile>${basedir}/target/coverage-reports/jacoco-unit.exec</datafile>
+					<excludes>
+					</excludes>
+				</configuration>
 				<executions>
 					<execution>
-						<id>prepare-agent</id>
+						<id>pre-unit-test</id>
 						<goals>
 							<goal>prepare-agent</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>report</id>
-						<phase>prepare-package</phase>
-						<goals>
-							<goal>report</goal>
 						</goals>
 					</execution>
 					<execution>
@@ -200,148 +241,47 @@
 						<phase>test</phase>
 						<goals>
 							<goal>report</goal>
+							<goal>check</goal>
 						</goals>
 						<configuration>
-							<!-- Sets the path to the file which contains the execution data. -->
-
-							<dataFile>target/jacoco.exec</dataFile>
-							<!-- Sets the output directory for the code coverage report. -->
-							<outputDirectory>target/jacoco-ut</outputDirectory>
+							<rules>
+								<rule>
+									<element>BUNDLE</element>
+									<limits>
+										<limit implementation="org.jacoco.report.check.Limit">
+											<counter>INSTRUCTION</counter>
+											<value>COVEREDRATIO</value>
+											<minimum>0.3</minimum>
+										</limit>
+										<limit>
+											<counter>COMPLEXITY</counter>
+											<value>COVEREDRATIO</value>
+											<minimum>0.3</minimum>
+										</limit>
+									</limits>
+								</rule>
+							</rules>
 						</configuration>
 					</execution>
 				</executions>
+			</plugin>
+
+			<!-- ======================================================= -->
+			<!-- Report on test coverage -->
+			<!-- ======================================================= -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>cobertura-maven-plugin</artifactId>
+				<version>2.7</version>
 				<configuration>
-					<locales>en</locales>
-					<inputEncoding>${project.build.sourceEncoding}</inputEncoding>
-					<outputEncoding>UTF-8</outputEncoding>
-					<reportPlugins>
-						<plugin>
-							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-project-info-reports-plugin</artifactId>
-							<version>2.7</version>
-							<reportSets>
-								<reportSet>
-									<reports>
-										<report>index</report>
-										<report>summary</report>
-										<report>license</report>
-										<report>scm</report>
-										<report>cim</report>
-										<report>project-team</report>
-										<report>mailing-list</report>
-										<report>issue-tracking</report>
-									</reports>
-								</reportSet>
-							</reportSets>
-						</plugin>
-
-						<!-- ======================================================= -->
-						<!-- Code analysis -->
-						<!-- ======================================================= -->
-						<plugin>
-							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-pmd-plugin</artifactId>
-							<version>3.2</version>
-							<configuration>
-								<sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
-								<targetJdk>${project.build.javaVersion}</targetJdk>
-							</configuration>
-						</plugin>
-
-						<!-- ======================================================= -->
-						<!-- Test results -->
-						<!-- ======================================================= -->
-						<plugin>
-							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-surefire-plugin</artifactId>
-							<version>2.19</version>
-							<dependencies>
-								<dependency>
-									<groupId>org.junit.platform</groupId>
-									<artifactId>junit-platform-surefire-provider</artifactId>
-									<version>${junit.platform.version}</version>
-								</dependency>
-							</dependencies>
-						</plugin>
-
-						<!-- ======================================================= -->
-						<!-- Report on test results -->
-						<!-- ======================================================= -->
-						<plugin>
-							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-surefire-report-plugin</artifactId>
-							<version>2.16</version>
-						</plugin>
-
-						<!-- ======================================================= -->
-						<!-- Coverage -->
-						<!-- ======================================================= -->
-						<plugin>
-							<groupId>org.jacoco</groupId>
-							<artifactId>jacoco-maven-plugin</artifactId>
-							<version>${jacoco.version}</version>
-							<configuration>
-								<destfile>${basedir}/target/coverage-reports/jacoco-unit.exec</destfile>
-								<datafile>${basedir}/target/coverage-reports/jacoco-unit.exec</datafile>
-								<excludes>
-								</excludes>
-							</configuration>
-							<executions>
-								<execution>
-									<id>pre-unit-test</id>
-									<goals>
-										<goal>prepare-agent</goal>
-									</goals>
-								</execution>
-								<execution>
-									<id>post-unit-test</id>
-									<phase>test</phase>
-									<goals>
-										<goal>report</goal>
-										<goal>check</goal>
-									</goals>
-									<configuration>
-										<rules>
-											<rule>
-												<element>BUNDLE</element>
-												<limits>
-													<limit implementation="org.jacoco.report.check.Limit">
-														<counter>INSTRUCTION</counter>
-														<value>COVEREDRATIO</value>
-														<minimum>0.3</minimum>
-													</limit>
-													<limit>
-														<counter>COMPLEXITY</counter>
-														<value>COVEREDRATIO</value>
-														<minimum>0.3</minimum>
-													</limit>
-												</limits>
-											</rule>
-										</rules>
-									</configuration>
-								</execution>
-							</executions>
-						</plugin>
-
-						<!-- ======================================================= -->
-						<!-- Report on test coverage -->
-						<!-- ======================================================= -->
-						<plugin>
-							<groupId>org.codehaus.mojo</groupId>
-							<artifactId>cobertura-maven-plugin</artifactId>
-							<version>2.7</version>
-							<configuration>
-								<formats>
-									<format>html</format>
-									<format>xml</format>
-								</formats>
-								<check />
-							</configuration>
-						</plugin>
-					</reportPlugins>
+					<formats>
+						<format>html</format>
+						<format>xml</format>
+					</formats>
+					<check />
 				</configuration>
 			</plugin>
-			
+
 			<plugin>
 				<groupId>org.eluder.coveralls</groupId>
 				<artifactId>coveralls-maven-plugin</artifactId>
@@ -402,7 +342,7 @@
 					</sourceFileExcludes>
 				</configuration>
 			</plugin>
-			
+
 		</plugins>
 	</build>
 
