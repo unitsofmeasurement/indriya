@@ -39,9 +39,6 @@ import javax.measure.UnitConverter;
 import javax.measure.spi.Prefix;
 
 import java.math.BigInteger;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.Set;
 
 /**
  * <p>
@@ -64,7 +61,7 @@ import java.util.Set;
  * @see <a href="http://en.wikipedia.org/wiki/Metric_prefix">Wikipedia: Metric Prefix</a>
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.4, 2018-03-29
+ * @version 1.5, 2018-04-01
  * @since 1.0
  */
 public enum MetricPrefix implements SymbolSupplier, UnitConverterSupplier, Prefix {
@@ -395,22 +392,5 @@ public enum MetricPrefix implements SymbolSupplier, UnitConverterSupplier, Prefi
    */
   public String getSymbol() {
     return symbol;
-  }
-
-  /**
-   * Returns a Set containing the MetricPrefix values.<br>
-   * This method may be used to iterate over the prefixes as follows:
-   * 
-   * <pre>
-   * <code>
-   *    for(Prefix p : MetricPrefix.prefixes())
-   *        System.out.println(p);
-   * </code>
-   * </pre>
-   * 
-   * @return a set containing the constant values of this Prefix type, in the order they're declared
-   */
-  public static Set<Prefix> prefixes() {
-    return Collections.<Prefix> unmodifiableSet(EnumSet.allOf(MetricPrefix.class));
   }
 }

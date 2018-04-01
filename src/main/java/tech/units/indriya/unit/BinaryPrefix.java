@@ -194,21 +194,4 @@ public enum BinaryPrefix implements Prefix {
   public String getSymbol() {
     return symbol;
   }
-
-  /**
-   * Returns a Set containing the BinaryPrefix values.<br>
-   * This method may be used to iterate over the prefixes as follows:
-   * 
-   * <pre>
-   * <code>
-   *    for(Prefix p : BinaryPrefix.prefixes())
-   *        System.out.println(p);
-   * </code>
-   * </pre>
-   * 
-   * @return a set containing the constant values of this Prefix type, in the order they're declared
-   */
-  public static Set<Prefix> prefixes() {
-    return Collections.<Prefix> unmodifiableSet(EnumSet.allOf(BinaryPrefix.class));
-  }
 }

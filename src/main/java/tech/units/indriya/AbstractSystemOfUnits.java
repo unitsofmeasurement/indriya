@@ -51,7 +51,7 @@ import java.util.stream.Collectors;
  * </p>
  *
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.0.2, November 3, 2016
+ * @version 1.1, April 1, 2018
  * @since 1.0
  */
 public abstract class AbstractSystemOfUnits implements SystemOfUnits, Nameable {
@@ -68,21 +68,6 @@ public abstract class AbstractSystemOfUnits implements SystemOfUnits, Nameable {
 
   protected static final Logger logger = Logger.getLogger(AbstractSystemOfUnits.class.getName());
 
-  /**
-   * Adds a new named unit to the collection.
-   * 
-   * @param unit
-   *          the unit being added.
-   * @param name
-   *          the name of the unit.
-   * @return <code>unit</code>.
-   */
-  /*
-   * @SuppressWarnings("unchecked") private <U extends Unit<?>> U addUnit(U
-   * unit, String name) { if (name != null && unit instanceof AbstractUnit) {
-   * AbstractUnit<?> aUnit = (AbstractUnit<?>) unit; aUnit.setName(name);
-   * units.add(aUnit); return (U) aUnit; } units.add(unit); return unit; }
-   */
   /**
    * The natural logarithm.
    **/
