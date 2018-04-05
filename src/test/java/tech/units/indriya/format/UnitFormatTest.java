@@ -39,6 +39,7 @@ import java.io.IOException;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;
+import javax.measure.format.MeasurementParseException;
 import javax.measure.format.ParserException;
 import javax.measure.format.UnitFormat;
 import javax.measure.quantity.Frequency;
@@ -187,7 +188,7 @@ public class UnitFormatTest {
   @Test
   public void testParseIrregularStringSimple() {
     final UnitFormat format = SimpleUnitFormat.getInstance();
-    assertThrows(ParserException.class, () -> {
+    assertThrows(MeasurementParseException.class, () -> {
     	Unit<?> u = format.parse("bl//^--1a");
     });
   }

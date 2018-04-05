@@ -38,7 +38,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.measure.Unit;
-import javax.measure.format.ParserException;
+import javax.measure.format.MeasurementParseException;
 import javax.measure.format.UnitFormat;
 import javax.measure.quantity.Length;
 
@@ -96,7 +96,7 @@ public class EBNFFormatTest {
         Unit<?> v = format.parse("1/" + u.toString());
         assertNotNull(v);
         logger.log(Level.FINER, v.toString());
-      } catch (ParserException pex) {
+      } catch (MeasurementParseException pex) {
         logger.log(Level.WARNING, String.format(" %s parsing %s", pex, u));
       }
     }
@@ -118,7 +118,7 @@ public class EBNFFormatTest {
 
   @Test
   public void testParseIrregularStringEBNF() {
-	    assertThrows(ParserException.class, () -> {
+	    assertThrows(MeasurementParseException.class, () -> {
 	    	   @SuppressWarnings("unused")
 			Unit<?> u = format.parse("bl//^--1a");
         });

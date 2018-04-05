@@ -41,7 +41,7 @@ import java.util.Map;
 import javax.measure.Unit;
 import javax.measure.UnitConverter;
 import javax.measure.Quantity;
-import javax.measure.format.ParserException;
+import javax.measure.format.MeasurementParseException;
 import javax.measure.format.UnitFormat;
 
 import tech.units.indriya.AbstractUnit;
@@ -74,7 +74,7 @@ import tech.units.indriya.unit.Units;
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
  * @author Eric Russell
- * @version 1.2, January 28, 2018
+ * @version 1.3, April 5, 2018
  * @since 1.0
  */
 public abstract class SimpleUnitFormat extends AbstractUnitFormat {
@@ -89,7 +89,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
    * @author Werner
    *
    */
-  public enum Flavor {
+  public static enum Flavor {
     Default, ASCII
   }
 
@@ -157,7 +157,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
    *           if the character sequence contains an illegal syntax.
    */
   @SuppressWarnings("rawtypes")
-  public abstract Unit<? extends Quantity> parseProductUnit(CharSequence csq, ParsePosition pos) throws ParserException;
+  public abstract Unit<? extends Quantity> parseProductUnit(CharSequence csq, ParsePosition pos) throws MeasurementParseException;
 
   /**
    * Parses a sequence of character to produce a single unit.
@@ -171,7 +171,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
    *           if the character sequence does not contain a valid unit identifier.
    */
   @SuppressWarnings("rawtypes")
-  public abstract Unit<? extends Quantity> parseSingleUnit(CharSequence csq, ParsePosition pos) throws ParserException;
+  public abstract Unit<? extends Quantity> parseSingleUnit(CharSequence csq, ParsePosition pos) throws MeasurementParseException;
 
   /**
    * Attaches a system-wide label to the specified unit. For example: <code> SimpleUnitFormat.getInstance().label(DAY.multiply(365), "year");
@@ -262,7 +262,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
    *          the cursor position.
    * @return the corresponding unit or <code>null</code> if the string cannot be parsed.
    */
-  public final Unit<?> parseObject(String source, ParsePosition pos) throws ParserException {
+  public final Unit<?> parseObject(String source, ParsePosition pos) throws MeasurementParseException {
     return parseProductUnit(source, pos);
   }
 
@@ -287,20 +287,20 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
     /**
      * Holds the name to unit mapping.
      */
-    final HashMap<String, Unit<?>> _nameToUnit = new HashMap<>();
+    final HashMap<String, Unit<?>> nameToUnit = new HashMap<>();
 
     /**
      * Holds the unit to name mapping.
      */
-    final HashMap<Unit<?>, String> _unitToName = new HashMap<>();
+    final HashMap<Unit<?>, String> unitToName = new HashMap<>();
 
     @Override
     public void label(Unit<?> unit, String label) {
       if (!isValidIdentifier(label))
         throw new IllegalArgumentException("Label: " + label + " is not a valid identifier.");
       synchronized (this) {
-        _nameToUnit.put(label, unit);
-        _unitToName.put(unit, label);
+        nameToUnit.put(label, unit);
+        unitToName.put(unit, label);
       }
     }
 
@@ -309,7 +309,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
       if (!isValidIdentifier(alias))
         throw new IllegalArgumentException("Alias: " + alias + " is not a valid identifier.");
       synchronized (this) {
-        _nameToUnit.put(alias, unit);
+        nameToUnit.put(alias, unit);
       }
     }
 
@@ -333,7 +333,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
     // Returns the name for the specified unit or null if product unit.
     protected String nameFor(Unit<?> unit) {
       // Searches label database.
-      String label = _unitToName.get(unit);
+      String label = unitToName.get(unit);
       if (label != null)
         return label;
       if (unit instanceof BaseUnit)
@@ -342,6 +342,9 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
         return ((AlternateUnit<?>) unit).getSymbol();
       if (unit instanceof TransformedUnit) {
         TransformedUnit<?> tfmUnit = (TransformedUnit<?>) unit;
+        if (tfmUnit.getSymbol() != null) {
+        	return tfmUnit.getSymbol();
+        }
         Unit<?> baseUnit = tfmUnit.getParentUnit();
         UnitConverter cvtr = tfmUnit.getConverter(); // tfmUnit.getSystemConverter();
         StringBuilder result = new StringBuilder();
@@ -418,7 +421,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
 
     // Returns the unit for the specified name.
     protected Unit<?> unitFor(String name) {
-      Unit<?> unit = _nameToUnit.get(name);
+      Unit<?> unit = nameToUnit.get(name);
       if (unit != null)
         return unit;
       unit = SYMBOL_TO_UNIT.get(name);
@@ -428,7 +431,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
     // //////////////////////////
     // Parsing.
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public Unit<? extends Quantity> parseSingleUnit(CharSequence csq, ParsePosition pos) throws ParserException {
+    public Unit<? extends Quantity> parseSingleUnit(CharSequence csq, ParsePosition pos) throws MeasurementParseException {
       int startIndex = pos.getIndex();
       String name = readIdentifier(csq, pos);
       Unit unit = unitFor(name);
@@ -438,7 +441,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
-    public Unit<? extends Quantity> parseProductUnit(CharSequence csq, ParsePosition pos) throws ParserException {
+    public Unit<? extends Quantity> parseProductUnit(CharSequence csq, ParsePosition pos) throws MeasurementParseException {
       Unit result = AbstractUnit.ONE;
       int token = nextToken(csq, pos);
       switch (token) {
@@ -513,14 +516,14 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
                 result = result.shift(d);
               }
             } else {
-              throw new ParserException("not a number", pos.getIndex());
+              throw new MeasurementParseException("not a number", pos.getIndex());
             }
             break;
           case EOF:
           case CLOSE_PAREN:
             return result;
           default:
-            throw new ParserException("unexpected token " + token, pos.getIndex());
+            throw new MeasurementParseException("unexpected token " + token, pos.getIndex());
         }
         token = nextToken(csq, pos);
       }
@@ -577,9 +580,9 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
       return EOF;
     }
 
-    private void check(boolean expr, String message, CharSequence csq, int index) throws ParserException {
+    private void check(boolean expr, String message, CharSequence csq, int index) throws MeasurementParseException {
       if (!expr) {
-        throw new ParserException(message + " (in " + csq + " at index " + index + ")", index);
+        throw new MeasurementParseException(message + " (in " + csq + " at index " + index + ")", index);
       }
     }
 
@@ -770,7 +773,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
     // private static final long serialVersionUID = 1L;
 
     @Override
-    public Unit<?> parse(CharSequence csq) throws ParserException {
+    public Unit<?> parse(CharSequence csq) throws MeasurementParseException {
       return parse(csq, 0);
     }
 
@@ -797,7 +800,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
     @Override
     protected String nameFor(Unit<?> unit) {
       // First search if specific ASCII name should be used.
-      String name = _unitToName.get(unit);
+      String name = unitToName.get(unit);
       if (name != null)
         return name;
       // Else returns default name.
@@ -807,7 +810,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
     @Override
     protected Unit<?> unitFor(String name) {
       // First search if specific ASCII name.
-      Unit<?> unit = _nameToUnit.get(name);
+      Unit<?> unit = nameToUnit.get(name);
       if (unit != null)
         return unit;
       // Else returns default mapping.
