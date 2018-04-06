@@ -77,7 +77,7 @@ public abstract class AbstractQuantityFormat extends Format implements QuantityF
   /**
    * Holds the default format instance.
    */
-  private static final DefaultQuantityFormat DEFAULT = new DefaultQuantityFormat();
+  private static final SimpleQuantityFormat DEFAULT = new SimpleQuantityFormat();
 
   /**
    * Returns the quantity format for the default locale. The default format assumes the quantity is composed of a decimal number and a {@link Unit}

@@ -47,7 +47,7 @@ import tech.units.indriya.quantity.Quantities;
  * Holds standard implementation
  */
 @SuppressWarnings("rawtypes")
-class DefaultQuantityFormat extends AbstractQuantityFormat {
+class SimpleQuantityFormat extends AbstractQuantityFormat {
 
   /**
     *
