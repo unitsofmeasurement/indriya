@@ -53,7 +53,7 @@ import tech.uom.lib.common.function.Parser;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:werner@uom.technology">Werner Keil</a>
- * @version 1.0.4, $Date: 2018-03-30 $
+ * @version 1.1, $Date: 2018-04-06 $
  * @since 1.0
  * 
  */
