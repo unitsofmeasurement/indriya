@@ -84,7 +84,7 @@ public class FormatServiceTest {
   public void testGetQuantityFormatFound() throws Exception {
     final FormatService fs = ServiceProvider.current().getFormatService();
     assertNotNull(fs);
-    assertNotNull(fs.getQuantityFormat("Default"));
+    assertNotNull(fs.getQuantityFormat("Simple"));
   }
 
   @Test
@@ -98,6 +98,6 @@ public class FormatServiceTest {
   public void testGetQuantityFormatNames() throws Exception {
     final FormatService fs = ServiceProvider.current().getFormatService();
     assertNotNull(fs);
-    assertEquals(2, fs.getAvailableFormatNames(QUANTITY_FORMAT).size());
+    assertEquals(3, fs.getAvailableFormatNames(QUANTITY_FORMAT).size());
   }
 }

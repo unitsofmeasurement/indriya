@@ -40,7 +40,7 @@ import javax.measure.Unit;
 import javax.measure.UnitConverter;
 import javax.measure.quantity.Dimensionless;
 
-import tech.units.indriya.format.AbstractQuantityFormat;
+import tech.units.indriya.format.SimpleQuantityFormat;
 import tech.units.indriya.function.NaturalQuantityComparator;
 import tech.units.indriya.quantity.Quantities;
 import tech.uom.lib.common.function.UnitSupplier;
@@ -104,7 +104,7 @@ import tech.uom.lib.common.function.ValueSupplier;
  * </p>
  *
  * @author <a href="mailto:werner@uom.technology">Werner Keil</a>
- * @version 1.1, March 12, 2018
+ * @version 1.2, April 6, 2018
  * @since 1.0
  */
 @SuppressWarnings("unchecked")
@@ -394,7 +394,7 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
    * @return <code>QuantityFormat.getInstance().parse(csq)</code>
    */
   public static Quantity<?> parse(CharSequence csq) {
-    return AbstractQuantityFormat.getInstance().parse(csq);
+    return SimpleQuantityFormat.getInstance().parse(csq);
   }
 
   protected boolean hasFraction(double value) {

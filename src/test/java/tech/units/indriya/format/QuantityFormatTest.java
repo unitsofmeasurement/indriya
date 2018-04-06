@@ -64,7 +64,7 @@ public class QuantityFormatTest {
     // DefaultQuantityFactoryService.getQuantityFactory(Length.class).create(10,
     // METRE);
     sut = Quantities.getQuantity(10, METRE);
-    format = AbstractQuantityFormat.getInstance();
+    format = SimpleQuantityFormat.getInstance();
   }
 
   @Test
@@ -87,7 +87,7 @@ public class QuantityFormatTest {
 
   @Test
   public void testParseSimple1() {
-    Quantity<?> parsed1 = AbstractQuantityFormat.getInstance().parse("10 min");
+    Quantity<?> parsed1 = SimpleQuantityFormat.getInstance().parse("10 min");
     assertNotNull(parsed1);
     assertEquals(BigDecimal.valueOf(10), parsed1.getValue());
     assertEquals(Units.MINUTE, parsed1.getUnit());
@@ -95,7 +95,7 @@ public class QuantityFormatTest {
 
   @Test
   public void testParse2() {
-    Quantity<?> parsed1 = AbstractQuantityFormat.getInstance().parse("60 m");
+    Quantity<?> parsed1 = SimpleQuantityFormat.getInstance().parse("60 m");
     assertNotNull(parsed1);
     assertEquals(BigDecimal.valueOf(60), parsed1.getValue());
     assertEquals(Units.METRE, parsed1.getUnit());

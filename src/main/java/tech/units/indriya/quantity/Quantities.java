@@ -29,8 +29,6 @@
  */
 package tech.units.indriya.quantity;
 
-import static tech.units.indriya.format.FormatBehavior.LOCALE_NEUTRAL;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.ParsePosition;
@@ -38,14 +36,15 @@ import java.util.Objects;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;
-import javax.measure.format.ParserException;
+import javax.measure.format.MeasurementParseException;
 
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.format.AbstractQuantityFormat;
+import tech.units.indriya.format.SimpleQuantityFormat;
 
 /**
  * Singleton class for accessing {@link Quantity} instances.
- * 
+ * @version 1.1
  * @author werner
  * @author otaviojava
  * @since 1.0
@@ -75,8 +74,8 @@ public final class Quantities {
    */
   public static ComparableQuantity<?> getQuantity(CharSequence csq) {
     try {
-      return AbstractQuantityFormat.getInstance(LOCALE_NEUTRAL).parse(csq, new ParsePosition(0));
-    } catch (ParserException e) {
+      return SimpleQuantityFormat.getInstance().parse(csq, new ParsePosition(0));
+    } catch (MeasurementParseException e) {
       throw new IllegalArgumentException(e.getParsedString());
     }
   }

@@ -29,13 +29,16 @@
  */
 package tech.units.indriya.format;
 
+import static tech.units.indriya.format.FormatBehavior.LOCALE_NEUTRAL;
+
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;
-import javax.measure.format.ParserException;
+import javax.measure.format.MeasurementParseException;
 import javax.measure.format.UnitFormat;
 
 import tech.units.indriya.AbstractUnit;
@@ -43,76 +46,132 @@ import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.Quantities;
 
 @SuppressWarnings({ "rawtypes", "unchecked" })
-class NumberSpaceQuantityFormat extends AbstractQuantityFormat {
+public class NumberSpaceQuantityFormat extends AbstractQuantityFormat {
 
-  private final NumberFormat numberFormat;
+	/**
+	 * Holds the default format instance.
+	 */
+	private static final NumberSpaceQuantityFormat DEFAULT = new NumberSpaceQuantityFormat(NumberFormat.getInstance(),
+			EBNFUnitFormat.getInstance());
 
-  private final UnitFormat unitFormat;
+	/**
+	 * Holds the localized format instance.
+	 */
+	private static final NumberSpaceQuantityFormat LOCAL = new NumberSpaceQuantityFormat(NumberFormat.getInstance(),
+			LocalUnitFormat.getInstance());
 
-  NumberSpaceQuantityFormat(NumberFormat numberFormat, UnitFormat unitFormat) {
-    this.numberFormat = numberFormat;
-    this.unitFormat = unitFormat;
-  }
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3546952599885869402L;
 
-  static int getFractionDigitsCount(double d) {
-    if (d >= 1) { // we only need the fraction digits
-      d = d - (long) d;
-    }
-    if (d == 0) { // nothing to count
-      return 0;
-    }
-    d *= 10; // shifts 1 digit to left
-    int count = 1;
-    while (d - (long) d != 0) { // keeps shifting until there are no more
-      // fractions
-      d *= 10;
-      count++;
-    }
-    return count;
-  }
+	private final NumberFormat numberFormat;
 
-  @Override
-  public Appendable format(Quantity<?> quantity, Appendable dest) throws IOException {
-    // dest.append(numberFormat.format(quantity.getValue()));
-    // if (quantity.getUnit().equals(AbstractUnit.ONE))
-    // return dest;
-    // dest.append(' ');
-    // return unitFormat.format(quantity.getUnit(), dest);
-    int fract = 0;
-    if (quantity != null && quantity.getValue() != null) {
-      fract = getFractionDigitsCount(quantity.getValue().doubleValue());
-    }
-    if (fract > 1) {
-      numberFormat.setMaximumFractionDigits(fract + 1);
-    }
-    dest.append(numberFormat.format(quantity.getValue()));
-    if (quantity.getUnit().equals(AbstractUnit.ONE))
-      return dest;
-    dest.append(' ');
-    return unitFormat.format(quantity.getUnit(), dest);
-  }
+	private final UnitFormat unitFormat;
 
-  @Override
-  public ComparableQuantity<?> parse(CharSequence csq, ParsePosition cursor) throws IllegalArgumentException, ParserException {
-    String str = csq.toString();
-    Number number = numberFormat.parse(str, cursor);
-    if (number == null)
-      throw new IllegalArgumentException("Number cannot be parsed");
+	NumberSpaceQuantityFormat(NumberFormat numberFormat, UnitFormat unitFormat) {
+		this.numberFormat = numberFormat;
+		this.unitFormat = unitFormat;
+	}
 
-    Unit unit = unitFormat.parse(csq);
-    return Quantities.getQuantity(number.longValue(), unit);
-  }
+	static int getFractionDigitsCount(double d) {
+		if (d >= 1) { // we only need the fraction digits
+			d = d - (long) d;
+		}
+		if (d == 0) { // nothing to count
+			return 0;
+		}
+		d *= 10; // shifts 1 digit to left
+		int count = 1;
+		while (d - (long) d != 0) { // keeps shifting until there are no more
+			// fractions
+			d *= 10;
+			count++;
+		}
+		return count;
+	}
 
-  @Override
-  ComparableQuantity<?> parse(CharSequence csq, int index) throws IllegalArgumentException, ParserException {
-    return parse(csq, new ParsePosition(index));
-  }
+	@Override
+	public Appendable format(Quantity<?> quantity, Appendable dest) throws IOException {
+		int fract = 0;
+		if (quantity != null && quantity.getValue() != null) {
+			fract = getFractionDigitsCount(quantity.getValue().doubleValue());
+		}
+		if (fract > 1) {
+			numberFormat.setMaximumFractionDigits(fract + 1);
+		}
+		dest.append(numberFormat.format(quantity.getValue()));
+		if (quantity.getUnit().equals(AbstractUnit.ONE))
+			return dest;
+		dest.append(' ');
+		return unitFormat.format(quantity.getUnit(), dest);
+	}
 
-  @Override
-  public ComparableQuantity<?> parse(CharSequence csq) throws IllegalArgumentException, ParserException {
-    return parse(csq, 0);
-  }
+	@Override
+	public ComparableQuantity<?> parse(CharSequence csq, ParsePosition cursor)
+			throws IllegalArgumentException, MeasurementParseException {
+		String str = csq.toString();
+		Number number = numberFormat.parse(str, cursor);
+		if (number == null)
+			throw new IllegalArgumentException("Number cannot be parsed");
 
-  private static final long serialVersionUID = 1L;
+		Unit unit = unitFormat.parse(csq);
+		return Quantities.getQuantity(number.longValue(), unit);
+	}
 
+	@Override
+	ComparableQuantity<?> parse(CharSequence csq, int index)
+			throws IllegalArgumentException, MeasurementParseException {
+		return parse(csq, new ParsePosition(index));
+	}
+
+	@Override
+	public ComparableQuantity<?> parse(CharSequence csq) throws IllegalArgumentException, MeasurementParseException {
+		return parse(csq, 0);
+	}
+
+	/**
+	 * Returns the culture invariant format based upon {@link BigDecimal} canonical
+	 * format and the {@link UnitFormat#getStandardInstance() standard} unit format.
+	 * This format <b>is not</b> locale-sensitive and can be used for unambiguous
+	 * electronic communication of quantities together with their units without loss
+	 * of information. For example: <code>"1.23456789 kg.m/s2"</code> returns
+	 * <code>Quantities.getQuantity(new BigDecimal("1.23456789"), AbstractUnit.parse("kg.m/s2")));</code>
+	 *
+	 * @param style
+	 *            the format style to apply.
+	 * @return the desired format.
+	 */
+	public static NumberSpaceQuantityFormat getInstance(FormatBehavior style) {
+		switch (style) {
+		case LOCALE_NEUTRAL:
+			return DEFAULT;
+		case LOCALE_SENSITIVE:
+			return LOCAL;
+		default:
+			return DEFAULT;
+		}
+	}
+	
+	/**
+	 * Returns the default format.
+	 * @return the desired format.
+	 */
+	public static NumberSpaceQuantityFormat getInstance() {
+		return getInstance(LOCALE_NEUTRAL);
+	}
+
+	/**
+	 * Returns the quantity format using the specified number format and unit format
+	 * (the number and unit are separated by one space).
+	 *
+	 * @param numberFormat
+	 *            the number format.
+	 * @param unitFormat
+	 *            the unit format.
+	 * @return the corresponding format.
+	 */
+	public static NumberSpaceQuantityFormat getInstance(NumberFormat numberFormat, UnitFormat unitFormat) {
+		return new NumberSpaceQuantityFormat(numberFormat, unitFormat);
+	}
 }

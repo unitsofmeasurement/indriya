@@ -44,64 +44,76 @@ import tech.units.indriya.quantity.NumberQuantity;
 import tech.units.indriya.quantity.Quantities;
 
 /**
- * Holds standard implementation
+ * A simple implementation of QuantityFormat
  */
 @SuppressWarnings("rawtypes")
 public class SimpleQuantityFormat extends AbstractQuantityFormat {
+	/**
+	 * Holds the default format instance.
+	 */
+	private static final SimpleQuantityFormat DEFAULT = new SimpleQuantityFormat();
 
-  /**
-    *
-    */
-  private static final long serialVersionUID = 2758248665095734058L;
+	/**
+	*
+	*/
+	private static final long serialVersionUID = 2758248665095734058L;
 
-  @Override
-  public Appendable format(Quantity measure, Appendable dest) throws IOException {
-    Unit unit = measure.getUnit();
+	@Override
+	public Appendable format(Quantity quantity, Appendable dest) throws IOException {
+		Unit unit = quantity.getUnit();
 
-    dest.append(measure.getValue().toString());
-    if (measure.getUnit().equals(AbstractUnit.ONE))
-      return dest;
-    dest.append(' ');
-    return SimpleUnitFormat.getInstance().format(unit, dest);
-  }
+		dest.append(quantity.getValue().toString());
+		if (quantity.getUnit().equals(AbstractUnit.ONE))
+			return dest;
+		dest.append(' ');
+		return SimpleUnitFormat.getInstance().format(unit, dest);
+	}
 
-  @SuppressWarnings("unchecked")
-  @Override
-  public ComparableQuantity<?> parse(CharSequence csq, ParsePosition cursor) throws MeasurementParseException {
-    int startDecimal = cursor.getIndex();
-    while ((startDecimal < csq.length()) && Character.isWhitespace(csq.charAt(startDecimal))) {
-      startDecimal++;
-    }
-    int endDecimal = startDecimal + 1;
-    while ((endDecimal < csq.length()) && !Character.isWhitespace(csq.charAt(endDecimal))) {
-      endDecimal++;
-    }
-    BigDecimal decimal = new BigDecimal(csq.subSequence(startDecimal, endDecimal).toString());
-    cursor.setIndex(endDecimal + 1);
-    Unit unit = SimpleUnitFormat.getInstance().parse(csq, cursor);
-    return Quantities.getQuantity(decimal, unit);
-  }
+	@SuppressWarnings("unchecked")
+	@Override
+	public ComparableQuantity<?> parse(CharSequence csq, ParsePosition cursor) throws MeasurementParseException {
+		int startDecimal = cursor.getIndex();
+		while ((startDecimal < csq.length()) && Character.isWhitespace(csq.charAt(startDecimal))) {
+			startDecimal++;
+		}
+		int endDecimal = startDecimal + 1;
+		while ((endDecimal < csq.length()) && !Character.isWhitespace(csq.charAt(endDecimal))) {
+			endDecimal++;
+		}
+		BigDecimal decimal = new BigDecimal(csq.subSequence(startDecimal, endDecimal).toString());
+		cursor.setIndex(endDecimal + 1);
+		Unit unit = SimpleUnitFormat.getInstance().parse(csq, cursor);
+		return Quantities.getQuantity(decimal, unit);
+	}
 
-  @SuppressWarnings("unchecked")
-  @Override
-  AbstractQuantity<?> parse(CharSequence csq, int index) throws MeasurementParseException {
-    int startDecimal = index; // cursor.getIndex();
-    while ((startDecimal < csq.length()) && Character.isWhitespace(csq.charAt(startDecimal))) {
-      startDecimal++;
-    }
-    int endDecimal = startDecimal + 1;
-    while ((endDecimal < csq.length()) && !Character.isWhitespace(csq.charAt(endDecimal))) {
-      endDecimal++;
-    }
-    Double decimal = new Double(csq.subSequence(startDecimal, endDecimal).toString());
-    // cursor.setIndex(endDecimal + 1);
-    // Unit unit = EBNFUnitFormat.getInstance().parse(csq, index);
-    Unit unit = SimpleUnitFormat.getInstance().parse(csq, index);
-    return NumberQuantity.of(decimal, unit);
-  }
+	@SuppressWarnings("unchecked")
+	@Override
+	AbstractQuantity<?> parse(CharSequence csq, int index) throws MeasurementParseException {
+		int startDecimal = index; // cursor.getIndex();
+		while ((startDecimal < csq.length()) && Character.isWhitespace(csq.charAt(startDecimal))) {
+			startDecimal++;
+		}
+		int endDecimal = startDecimal + 1;
+		while ((endDecimal < csq.length()) && !Character.isWhitespace(csq.charAt(endDecimal))) {
+			endDecimal++;
+		}
+		Double decimal = new Double(csq.subSequence(startDecimal, endDecimal).toString());
+		Unit unit = SimpleUnitFormat.getInstance().parse(csq, index);
+		return NumberQuantity.of(decimal, unit);
+	}
 
-  @Override
-  public ComparableQuantity<?> parse(CharSequence csq) throws MeasurementParseException {
-    return parse(csq, new ParsePosition(0));
+	@Override
+	public ComparableQuantity<?> parse(CharSequence csq) throws MeasurementParseException {
+		return parse(csq, new ParsePosition(0));
+	}
+
+	/**
+   * Returns the quantity format for the default locale. The default format assumes the quantity is composed of a decimal number and a {@link Unit}
+   * separated by whitespace(s).
+   *
+   * @return <code>MeasureFormat.getInstance(NumberFormat.getInstance(), UnitFormat.getInstance())</code>
+   */
+  public static SimpleQuantityFormat getInstance() {
+    return DEFAULT;
   }
 }

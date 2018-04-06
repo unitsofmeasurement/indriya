@@ -30,18 +30,13 @@
 package tech.units.indriya.format;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.text.FieldPosition;
 import java.text.Format;
-import java.text.NumberFormat;
 import java.text.ParsePosition;
 
 import javax.measure.Quantity;
-import javax.measure.Unit;
 import javax.measure.format.MeasurementParseException;
 import javax.measure.format.QuantityFormat;
-import javax.measure.format.UnitFormat;
-
 import tech.units.indriya.AbstractQuantity;
 import tech.units.indriya.ComparableQuantity;
 import tech.uom.lib.common.function.Parser;
@@ -68,60 +63,6 @@ public abstract class AbstractQuantityFormat extends Format implements QuantityF
    *
    */
   private static final long serialVersionUID = -4628006924354248662L;
-
-  /**
-   * Holds the localized format instance.
-   */
-  private static final NumberSpaceQuantityFormat LOCAL = new NumberSpaceQuantityFormat(NumberFormat.getInstance(), LocalUnitFormat.getInstance());
-
-  /**
-   * Holds the default format instance.
-   */
-  private static final SimpleQuantityFormat DEFAULT = new SimpleQuantityFormat();
-
-  /**
-   * Returns the quantity format for the default locale. The default format assumes the quantity is composed of a decimal number and a {@link Unit}
-   * separated by whitespace(s).
-   *
-   * @return <code>MeasureFormat.getInstance(NumberFormat.getInstance(), UnitFormat.getInstance())</code>
-   */
-  public static AbstractQuantityFormat getInstance() {
-    return DEFAULT;
-  }
-
-  /**
-   * Returns the quantity format using the specified number format and unit format (the number and unit are separated by one space).
-   *
-   * @param numberFormat
-   *          the number format.
-   * @param unitFormat
-   *          the unit format.
-   * @return the corresponding format.
-   */
-  public static AbstractQuantityFormat getInstance(NumberFormat numberFormat, UnitFormat unitFormat) {
-    return new NumberSpaceQuantityFormat(numberFormat, unitFormat);
-  }
-
-  /**
-   * Returns the culture invariant format based upon {@link BigDecimal} canonical format and the {@link UnitFormat#getStandardInstance() standard}
-   * unit format. This format <b>is not</b> locale-sensitive and can be used for unambiguous electronic communication of quantities together with
-   * their units without loss of information. For example: <code>"1.23456789 kg.m/s2"</code> returns
-   * <code>Quantities.getQuantity(new BigDecimal("1.23456789"), AbstractUnit.parse("kg.m/s2")));</code>
-   *
-   * @param style
-   *          the format style to apply.
-   * @return the desired format.
-   */
-  public static AbstractQuantityFormat getInstance(FormatBehavior style) {
-    switch (style) {
-      case LOCALE_NEUTRAL:
-        return DEFAULT;
-      case LOCALE_SENSITIVE:
-        return LOCAL;
-      default:
-        return DEFAULT;
-    }
-  }
 
   /**
    * Formats the specified quantity into an <code>Appendable</code>.

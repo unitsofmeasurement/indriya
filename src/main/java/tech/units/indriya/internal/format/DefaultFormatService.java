@@ -37,27 +37,29 @@ import java.util.Set;
 
 import javax.measure.format.QuantityFormat;
 import javax.measure.spi.FormatService;
-import tech.units.indriya.format.AbstractQuantityFormat;
+import tech.units.indriya.format.NumberSpaceQuantityFormat;
+import tech.units.indriya.format.SimpleQuantityFormat;
 import tech.uom.lib.common.function.IntPrioritySupplier;
 
 /**
  * Default format service.
  *
  * @author Werner Keil
- * @version 0.5, March 30, 2018
+ * @version 0.6, April 6, 2018
  * @since 2.0
  */
 public class DefaultFormatService extends DefaultUnitFormatService implements FormatService, IntPrioritySupplier {
   static final int PRIO = 1000;
 
-  private static final String DEFAULT_FORMAT = "Default";
+  private static final String DEFAULT_FORMAT = "Simple";
 
   private final Map<String, QuantityFormat> quantityFormats = new HashMap<>();
 
   public DefaultFormatService() {
     super();
-    quantityFormats.put(DEFAULT_FORMAT, AbstractQuantityFormat.getInstance());
-    quantityFormats.put("Local", AbstractQuantityFormat.getInstance(LOCALE_SENSITIVE));
+    quantityFormats.put(DEFAULT_FORMAT, SimpleQuantityFormat.getInstance());
+    quantityFormats.put("NumberSpace", NumberSpaceQuantityFormat.getInstance());
+    quantityFormats.put("Local", NumberSpaceQuantityFormat.getInstance(LOCALE_SENSITIVE));
   }
 
   @Override
