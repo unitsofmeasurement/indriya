@@ -40,7 +40,6 @@ import tech.units.indriya.quantity.QuantityDimension;
 import tech.units.indriya.spi.DimensionalModel;
 import tech.units.indriya.unit.AlternateUnit;
 import tech.units.indriya.unit.AnnotatedUnit;
-import tech.units.indriya.unit.CompoundUnit;
 import tech.units.indriya.unit.ProductUnit;
 import tech.units.indriya.unit.TransformedUnit;
 
@@ -64,7 +63,7 @@ import java.lang.reflect.Type;
  * @see <a href= "http://en.wikipedia.org/wiki/International_System_of_Units">Wikipedia: International System of Units</a>
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.1.3, December 29, 2017
+ * @version 1.2, April 11, 2018
  * @since 1.0
  */
 public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableUnit<Q> {
@@ -158,7 +157,7 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
     return new AnnotatedUnit<>(this, annotation);
   }
 
-  /**
+  /*
    * Returns the combination of this unit with the specified sub-unit. Compound units are typically used for formatting purpose. Examples of compound
    * units:<code> 
    *     Unit<Length> FOOT_INCH = FOOT.compound(INCH);
@@ -168,10 +167,10 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
    * @param that
    *          the least significant unit to combine with this unit.
    * @return the corresponding compound unit.
-   */
+   *
   public final Unit<Q> compound(Unit<Q> that) {
     return new CompoundUnit<Q>(this, that);
-  }
+  } */
 
   /**
    * Returns the abstract unit represented by the specified characters as per default format.

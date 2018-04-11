@@ -103,24 +103,4 @@ public class AbsUnitTest {
   public void testAnnotateClass() {
     assertEquals("tech.units.indriya.unit.AnnotatedUnit", (((AbstractUnit) GRAM).annotate("Gr")).getClass().getName());
   }
-
-  @SuppressWarnings({ "rawtypes", "unchecked" })
-  @Test
-  public void testCompound() {
-    assertEquals("kg:g", (((AbstractUnit) KILOGRAM).compound(GRAM)).toString());
-  }
-
-  @SuppressWarnings({ "rawtypes", "unchecked" })
-  @Test
-  public void testCompoundClass() {
-    assertEquals("tech.units.indriya.unit.CompoundUnit", (((AbstractUnit) KILOGRAM).compound(GRAM)).getClass().getName());
-  }
-
-  @SuppressWarnings("unchecked")
-  @Test
-  public void testCompound2() {
-    @SuppressWarnings("rawtypes")
-    final AbstractUnit hourMin = (AbstractUnit) ((AbstractUnit) HOUR).compound(MINUTE);
-    assertEquals("h:min:s", hourMin.compound(SECOND).toString());
-  }
 }
