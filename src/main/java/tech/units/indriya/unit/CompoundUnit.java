@@ -54,6 +54,7 @@ import javax.measure.Unit;
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
  * @version 1.7, March 30, 2018
  * @since 1.1
+ * @deprecated This class may be subject to change with the next version of the API/RI.
  */
 public final class CompoundUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
 
