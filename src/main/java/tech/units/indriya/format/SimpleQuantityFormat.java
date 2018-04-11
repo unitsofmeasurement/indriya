@@ -32,7 +32,6 @@ package tech.units.indriya.format;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.ParsePosition;
-
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.format.MeasurementParseException;
@@ -54,10 +53,36 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
 	private static final SimpleQuantityFormat DEFAULT = new SimpleQuantityFormat();
 
 	/**
+     * The pattern string of this formatter.  This is always a non-localized
+     * pattern.  May not be null.  See class documentation for details.
+     * @serial
+     */
+    private String pattern;
+	
+	/**
 	*
 	*/
 	private static final long serialVersionUID = 2758248665095734058L;
 
+    /**
+     * Constructs a <code>SimpleQuantityFormat</code> using the given pattern.
+     * <p>This is equivalent to calling
+     * @param pattern the pattern describing the quantity and unit format
+     * @exception NullPointerException if the given pattern is null
+     * @exception IllegalArgumentException if the given pattern is invalid
+     */
+    public SimpleQuantityFormat(String pattern) {
+        this.pattern = pattern;
+    }
+    
+    /**
+     * Constructs a <code>SimpleQuantityFormat</code> using the default pattern.
+     * For full coverage, use the factory methods.
+     */
+    public SimpleQuantityFormat() {
+        this("");
+    }
+	
 	@Override
 	public Appendable format(Quantity quantity, Appendable dest) throws IOException {
 		Unit unit = quantity.getUnit();
