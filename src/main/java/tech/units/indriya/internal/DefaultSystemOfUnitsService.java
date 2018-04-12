@@ -44,39 +44,34 @@ import tech.units.indriya.unit.Units;
 
 /**
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 0.6, March 30, 2018
+ * @author Martin Desruisseaux
+ * @version 0.7, April 12, 2018
  * @since 1.0
  */
 public class DefaultSystemOfUnitsService implements SystemOfUnitsService {
+	private final Map<String, SystemOfUnits> souMap = new ConcurrentHashMap<>();
 
-  private final Map<String, SystemOfUnits> souMap = new ConcurrentHashMap<>();
+	public DefaultSystemOfUnitsService() {
+		souMap.put(Units.class.getSimpleName(), Units.getInstance());
+	}
 
-  public DefaultSystemOfUnitsService() {
-    souMap.put(Units.class.getSimpleName(), Units.getInstance());
-  }
+	public Collection<SystemOfUnits> getAvailableSystemsOfUnits() {
+		return souMap.values();
+	}
 
-  public Collection<SystemOfUnits> getAvailableSystemsOfUnits() {
-    return souMap.values();
-  }
+	@Override
+	public SystemOfUnits getSystemOfUnits() {
+		return getSystemOfUnits(Units.class.getSimpleName());
+	}
 
-  @Override
-  public SystemOfUnits getSystemOfUnits() {
-    return getSystemOfUnits(Units.class.getSimpleName());
-  }
+	@Override
+	public SystemOfUnits getSystemOfUnits(String name) {
+		return souMap.get(name);
+	}
 
-  @Override
-  public SystemOfUnits getSystemOfUnits(String name) {
-    return souMap.get(name);
-  }
-
-  @SuppressWarnings("unchecked")
-  @Override
-  public Set<Prefix> getPrefixes(Class<?> prefixType) {
-    if (prefixType.isEnum()) {
-      return Collections.<Prefix> unmodifiableSet(EnumSet.allOf(prefixType.asSubclass(Enum.class)));
-    } else {
-      return Collections.<Prefix> emptySet();
-      // TODO shall we throw an exception here e.g. IllegalArgumentException?
-    }
-  }
+	@SuppressWarnings("unchecked")
+	@Override
+	public Set<Prefix> getPrefixes(Class<?> prefixType) {
+		return Collections.<Prefix>unmodifiableSet(EnumSet.allOf(prefixType.asSubclass(Enum.class)));
+	}
 }
