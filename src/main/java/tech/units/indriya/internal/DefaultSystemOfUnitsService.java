@@ -71,9 +71,9 @@ public class DefaultSystemOfUnitsService implements SystemOfUnitsService {
 
   @SuppressWarnings("unchecked")
   @Override
-  public Set<Prefix> getPrefixes(@SuppressWarnings("rawtypes") Class prefixType) {
+  public Set<Prefix> getPrefixes(Class<?> prefixType) {
     if (prefixType.isEnum()) {
-      return Collections.<Prefix> unmodifiableSet(EnumSet.allOf(prefixType));
+      return Collections.<Prefix> unmodifiableSet(EnumSet.allOf(prefixType.asSubclass(Enum.class)));
     } else {
       return Collections.<Prefix> emptySet();
       // TODO shall we throw an exception here e.g. IllegalArgumentException?
