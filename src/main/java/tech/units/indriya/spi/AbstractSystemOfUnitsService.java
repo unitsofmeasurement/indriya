@@ -27,26 +27,40 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package tech.units.indriya.internal;
+package tech.units.indriya.spi;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.EnumSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+
+import javax.measure.spi.Prefix;
 import javax.measure.spi.SystemOfUnits;
-import tech.units.indriya.spi.AbstractSystemOfUnitsService;
-import tech.units.indriya.unit.Units;
+import javax.measure.spi.SystemOfUnitsService;
 
 /**
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @author Martin Desruisseaux
- * @version 0.8, April 13, 2018
- * @since 1.0
+ * @version 0.7, April 13, 2018
+ * @since 2.0
  */
-public class DefaultSystemOfUnitsService extends AbstractSystemOfUnitsService {
+public abstract class AbstractSystemOfUnitsService implements SystemOfUnitsService {
+	protected final Map<String, SystemOfUnits> souMap = new ConcurrentHashMap<>();
 
-	public DefaultSystemOfUnitsService() {
-		souMap.put(Units.class.getSimpleName(), Units.getInstance());
+	@Override
+	public Collection<SystemOfUnits> getAvailableSystemsOfUnits() {
+		return souMap.values();
 	}
 
 	@Override
-	public SystemOfUnits getSystemOfUnits() {
-		return getSystemOfUnits(Units.class.getSimpleName());
+	public SystemOfUnits getSystemOfUnits(String name) {
+		return souMap.get(name);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Set<Prefix> getPrefixes(Class<?> prefixType) {
+		return Collections.<Prefix>unmodifiableSet(EnumSet.allOf(prefixType.asSubclass(Enum.class)));
 	}
 }
