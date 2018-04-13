@@ -104,7 +104,7 @@ import tech.uom.lib.common.function.ValueSupplier;
  * </p>
  *
  * @author <a href="mailto:werner@uom.technology">Werner Keil</a>
- * @version 1.2, April 6, 2018
+ * @version 1.3, April 13, 2018
  * @since 1.0
  */
 @SuppressWarnings("unchecked")
@@ -150,17 +150,6 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
   @Override
   public Unit<Q> getUnit() {
     return unit;
-  }
-
-  /**
-   * Convenient method equivalent to {@link #to(javax.measure.Unit) to(this.getUnit().toSystemUnit())}.
-   *
-   * @return this quantity or a new quantity equivalent to this quantity stated in SI units.
-   * @throws ArithmeticException
-   *           if the result is inexact and the quotient has a non-terminating decimal expansion.
-   */
-  public Quantity<Q> toSystemUnit() {
-    return to(this.getUnit().getSystemUnit());
   }
 
   /**
@@ -306,7 +295,7 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
   /**
    * Returns the <code>String</code> representation of this quantity. The string produced for a given quantity is always the same; it is not affected
    * by locale. This means that it can be used as a canonical string representation for exchanging quantity, or as a key for a Hashtable, etc.
-   * Locale-sensitive quantity formatting and parsing is handled by the {@link MeasurementFormat} class and its subclasses.
+   * Locale-sensitive quantity formatting and parsing is handled by the {@link QuantityFormat} implementations and its subclasses.
    *
    * @return <code>UnitFormat.getInternational().format(this)</code>
    */
