@@ -88,12 +88,12 @@ public class SystemOfUnitsServiceTest {
     assertNotNull(prefixes);
     assertEquals(8, prefixes.size());
   }
-  
+
   @Test
   public void testWrongPrefix() {
 	    assertThrows(ClassCastException.class, () -> {
 	    	@SuppressWarnings("unused")
-			Collection<Prefix> prefixes = service.getPrefixes(BigDecimal.class);
+			Collection<Prefix> prefixes = service.getPrefixes((Class) BigDecimal.class);
         });
   }
 }
