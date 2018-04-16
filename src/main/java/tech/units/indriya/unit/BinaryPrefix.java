@@ -29,10 +29,6 @@
  */
 package tech.units.indriya.unit;
 
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.Set;
-
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.UnitConverter;
@@ -45,7 +41,7 @@ import tech.units.indriya.function.RationalConverter;
  * </p>
  *
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.3, March 29, 2018
+ * @version 1.4, April 17, 2018
  * @see <a href="https://en.wikipedia.org/wiki/Binary_prefix">Wikipedia: Binary Prefix</a>
  * @since 2.0
  */
