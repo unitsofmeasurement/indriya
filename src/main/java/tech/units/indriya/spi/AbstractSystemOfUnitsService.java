@@ -60,7 +60,7 @@ public abstract class AbstractSystemOfUnitsService implements SystemOfUnitsServi
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public Set<Prefix> getPrefixes(Class<?> prefixType) {
+	public Set<Prefix> getPrefixes(Class<? extends Prefix> prefixType) {
 		return Collections.<Prefix>unmodifiableSet(EnumSet.allOf(prefixType.asSubclass(Enum.class)));
 	}
 }
