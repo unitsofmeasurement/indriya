@@ -30,8 +30,10 @@
 package tech.units.indriya.quantity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import javax.measure.Quantity;
+import javax.measure.Unit;
 import javax.measure.quantity.ElectricResistance;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Time;
@@ -42,9 +44,19 @@ import tech.units.indriya.AbstractQuantity;
 import tech.units.indriya.quantity.FloatQuantity;
 import tech.units.indriya.quantity.NumberQuantity;
 import tech.units.indriya.quantity.Quantities;
+import tech.units.indriya.unit.MetricPrefix;
 import tech.units.indriya.unit.Units;
 
 public class FloatQuantityTest {
+
+  private final FloatQuantity<ElectricResistance> ONE_OHM = createQuantity(1, Units.OHM);
+  private final FloatQuantity<ElectricResistance> TWO_OHM = createQuantity(2, Units.OHM);
+  private final FloatQuantity<ElectricResistance> MAX_VALUE_OHM = createQuantity(Float.MAX_VALUE, Units.OHM);
+  private final FloatQuantity<ElectricResistance> ONE_MILLIOHM = createQuantity(1, MetricPrefix.MILLI(Units.OHM));
+
+  private <Q extends Quantity<Q>> FloatQuantity<Q> createQuantity(float f, Unit<Q> unit) {
+    return new FloatQuantity<Q>(Float.valueOf(f).floatValue(), unit);
+  }
 
   @Test
   public void divideTest() {
@@ -54,21 +66,63 @@ public class FloatQuantityTest {
     assertEquals(Float.valueOf(1.5f), result.getValue());
   }
 
+  /**
+   * Verifies that the addition of two quantities with the same multiples results in a new quantity with the same multiple and the value holding the
+   * sum.
+   */
   @Test
-  public void addTest() {
-    FloatQuantity quantity1 = new FloatQuantity(Float.valueOf(1).floatValue(), Units.OHM);
-    FloatQuantity quantity2 = new FloatQuantity(Float.valueOf(2).floatValue(), Units.OHM);
-    Quantity<ElectricResistance> result = quantity1.add(quantity2);
-    assertEquals(Float.valueOf(3f), result.getValue());
+  public void additionWithSameMultipleKeepsMultiple() {
+    Quantity<ElectricResistance> actual = ONE_OHM.add(TWO_OHM);
+    FloatQuantity<ElectricResistance> expected = createQuantity(3, Units.OHM);
+    assertEquals(expected, actual);
   }
 
+  /**
+   * Verifies that adding a quantity with a larger multiple keeps the result to the smaller multiple.
+   */
   @Test
-  public void subtractTest() {
-    FloatQuantity<ElectricResistance> quantity1 = new FloatQuantity<ElectricResistance>(Float.valueOf(1).floatValue(), Units.OHM);
-    FloatQuantity<ElectricResistance> quantity2 = new FloatQuantity<ElectricResistance>(Float.valueOf(2).floatValue(), Units.OHM);
-    Quantity<ElectricResistance> result = quantity2.subtract(quantity1);
-    assertEquals(Float.valueOf(1), result.getValue());
-    assertEquals(Units.OHM, result.getUnit());
+  public void additionWithLargerMultipleKeepsSmallerMultiple() {
+    Quantity<ElectricResistance> actual = ONE_MILLIOHM.add(ONE_OHM);
+    FloatQuantity<ElectricResistance> expected = createQuantity(1001, MetricPrefix.MILLI(Units.OHM));
+    assertEquals(expected, actual);
+  }
+
+  /**
+   * Verifies that adding a quantity with a smaller multiple keeps the result to the larger multiple.
+   */
+  @Test
+  public void additionWithSmallerMultipleKeepsLargerMultiple() {
+    Quantity<ElectricResistance> actual = ONE_OHM.add(ONE_MILLIOHM);
+    FloatQuantity<ElectricResistance> expected = createQuantity(1.001f, Units.OHM);
+    assertEquals(expected, actual);
+  }
+
+  /**
+   * Verifies that the addition of two quantities with the same multiples resulting in an overflow throws an exception.
+   */
+  @Test
+  public void additionWithSameMultipleResultingInOverflowThrowsException() {
+    assertThrows(ArithmeticException.class, () -> {
+      MAX_VALUE_OHM.add(MAX_VALUE_OHM);
+    });
+  }
+
+  /**
+   * Verifies that adding a quantity with a larger overflowing multiple casts the result to the larger multiple.
+   */
+  @Test
+  public void additionWithLargerOverflowingMultipleCastsToLargerMultiple() {
+    Quantity<ElectricResistance> actual = ONE_MILLIOHM.add(MAX_VALUE_OHM);
+    assertEquals(MAX_VALUE_OHM, actual);
+  }
+
+  /**
+   * Verifies that subtraction subtracts the argument from the target object.
+   */
+  @Test
+  public void subtractionSubtractsArgumentFromTargetObject() {
+    Quantity<ElectricResistance> actual = TWO_OHM.subtract(ONE_OHM);
+    assertEquals(ONE_OHM, actual);
   }
 
   @Test

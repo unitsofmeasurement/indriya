@@ -54,8 +54,8 @@ import tech.units.indriya.ComparableQuantity;
 final class FloatQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
 
   /**
-     * 
-     */
+   * 
+   */
   private static final long serialVersionUID = 5992028803791009345L;
 
   final float value;
@@ -72,29 +72,44 @@ final class FloatQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
 
   // Implements AbstractQuantity
   public double doubleValue(Unit<Q> unit) {
-    return (super.getUnit().equals(unit)) ? value : super.getUnit().getConverterTo(unit).convert(value);
+    return super.getUnit().equals(unit) ? value : super.getUnit().getConverterTo(unit).convert(value);
   }
 
   public long longValue(Unit<Q> unit) {
     double result = doubleValue(unit);
-    if ((result < Long.MIN_VALUE) || (result > Long.MAX_VALUE)) {
+    if (result < Long.MIN_VALUE || result > Long.MAX_VALUE) {
       throw new ArithmeticException("Overflow (" + result + ")");
     }
     return (long) result;
   }
 
-  public Quantity<Q> add(ComparableQuantity<Q> that) {
-    final Quantity<Q> converted = that.to(getUnit());
-    return NumberQuantity.of(value + converted.getValue().floatValue(), getUnit());
+  private ComparableQuantity<Q> addRaw(Number a, Number b, Unit<Q> unit) {
+    return NumberQuantity.of(a.floatValue() + b.floatValue(), unit);
   }
 
-  public ComparableQuantity<Q> subtract(ComparableQuantity<Q> that) {
-    final Quantity<Q> converted = that.to(getUnit());
-    return NumberQuantity.of(value - converted.getValue().floatValue(), getUnit());
+  public ComparableQuantity<Q> add(Quantity<Q> that) {
+    final Quantity<Q> thatConverted = that.to(getUnit());
+    final Quantity<Q> thisConverted = this.to(that.getUnit());
+    final float resultValueInThisUnit = getValue().floatValue() + thatConverted.getValue().floatValue();
+    final float resultValueInThatUnit = thisConverted.getValue().floatValue() + that.getValue().floatValue();
+    final ComparableQuantity<Q> resultInThisUnit = addRaw(getValue(), thatConverted.getValue(), getUnit());
+    final ComparableQuantity<Q> resultInThatUnit = addRaw(thisConverted.getValue(), that.getValue(), that.getUnit());
+    if (Float.isInfinite(resultValueInThisUnit) && Float.isInfinite(resultValueInThatUnit)) {
+      throw new ArithmeticException();
+    } else if (Float.isInfinite(resultValueInThisUnit)) {
+      return resultInThatUnit;
+    } else {
+      return resultInThisUnit;
+    }
+  }
+
+  public ComparableQuantity<Q> subtract(Quantity<Q> that) {
+    final Quantity<Q> thatNegated = NumberQuantity.of(-that.getValue().floatValue(), that.getUnit());
+    return add(thatNegated);
   }
 
   @SuppressWarnings({ "rawtypes", "unchecked" })
-  public ComparableQuantity<?> multiply(ComparableQuantity<?> that) {
+  public ComparableQuantity<?> multiply(Quantity<?> that) {
     return new FloatQuantity(value * that.getValue().floatValue(), getUnit().multiply(that.getUnit()));
   }
 
@@ -103,7 +118,7 @@ final class FloatQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
   }
 
   @SuppressWarnings({ "rawtypes", "unchecked" })
-  public ComparableQuantity<?> divide(ComparableQuantity<?> that) {
+  public ComparableQuantity<?> divide(Quantity<?> that) {
     return new FloatQuantity(value / that.getValue().floatValue(), getUnit().divide(that.getUnit()));
   }
 
@@ -132,30 +147,6 @@ final class FloatQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
       return Objects.equals(getUnit(), that.getUnit()) && Equalizer.hasEquality(value, that.getValue());
     }
     return false;
-  }
-
-  @Override
-  public ComparableQuantity<Q> add(Quantity<Q> that) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public ComparableQuantity<Q> subtract(Quantity<Q> that) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public ComparableQuantity<?> divide(Quantity<?> that) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public ComparableQuantity<?> multiply(Quantity<?> multiplier) {
-    // TODO Auto-generated method stub
-    return null;
   }
 
   @Override
