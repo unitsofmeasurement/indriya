@@ -48,7 +48,7 @@ import javax.measure.quantity.Time;
 
 import tech.units.indriya.function.MultiplyConverter;
 import tech.units.indriya.quantity.Quantities;
-import javax.measure.spi.MetricPrefix;
+import tech.units.indriya.unit.MetricPrefix;
 import tech.units.indriya.unit.TransformedUnit;
 
 /**

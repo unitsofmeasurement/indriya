@@ -33,6 +33,9 @@ import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.UnitConverter;
 import javax.measure.spi.Prefix;
+import java.math.BigInteger;
+import tech.units.indriya.function.RationalConverter;
+import tech.uom.lib.common.function.UnitConverterSupplier;
 
 /**
  * <p>
@@ -42,7 +45,7 @@ import javax.measure.spi.Prefix;
  * <pre>
  * <code>
  *     import static tech.units.indriya.unit.Units.*;  // Static import.
- *     import static javax.measure.spi.MetricPrefix.*; // Static import.
+ *     import static tech.units.indriya.unit.MetricPrefix.*; // Static import.
  *     import javax.measure.*;
  *     import javax.measure.quantity.*;
  *     ...
@@ -61,27 +64,35 @@ import javax.measure.spi.Prefix;
  * @since 1.0
  * @deprecated should be possible to use the same from SPI now
  */
-public enum MetricPrefix implements Prefix {
-	YOTTA("Y", Math.pow(10, 24)), //
-	ZETTA("Z", Math.pow(10, 21)), //
-	EXA("E", Math.pow(10, 18)), //
-	PETA("P", Math.pow(10, 15)), //
-	TERA("T", Math.pow(10, 12)), //
-	GIGA("G", Math.pow(10, 9)), //
-	MEGA("M", Math.pow(10, 6)), //
-	KILO("k", Math.pow(10, 3)), //
-	HECTO("h", Math.pow(10, 2)), //
-	DEKA("da", Math.pow(10, 1)), //
-	DECI("d", Math.pow(10, -1)), //
-	CENTI("c", Math.pow(10, -2)), //
-	MILLI("m", Math.pow(10, -3)), //
-	MICRO("µ", Math.pow(10, -6)), //
-	NANO("n", Math.pow(10, -9)), //
-	PICO("p", Math.pow(10, -12)), //
-	FEMTO("f", Math.pow(10, -15)), //
-	ATTO("a", Math.pow(10, -18)), //
-	ZEPTO("z", Math.pow(10, -21)), //
-	YOCTO("y", Math.pow(10, -24));
+public enum MetricPrefix implements Prefix, UnitConverterSupplier {
+	YOTTA("Y", Math.pow(10, 24), RationalConverter.of(BigInteger.TEN.pow(24), BigInteger.ONE)), //
+	ZETTA("Z", Math.pow(10, 21), RationalConverter.of(BigInteger.TEN.pow(21), BigInteger.ONE)), //
+	EXA("E", Math.pow(10, 18), RationalConverter.of(BigInteger.TEN.pow(18), BigInteger.ONE)), //
+	PETA("P", Math.pow(10, 15), RationalConverter.of(BigInteger.TEN.pow(15), BigInteger.ONE)), //
+	TERA("T", Math.pow(10, 12), RationalConverter.of(BigInteger.TEN.pow(12), BigInteger.ONE)), //
+	GIGA("G", Math.pow(10, 9), RationalConverter.of(BigInteger.TEN.pow(9), BigInteger.ONE)), //
+	MEGA("M", Math.pow(10, 6), RationalConverter.of(BigInteger.TEN.pow(6), BigInteger.ONE)), //
+	KILO("k", Math.pow(10, 3), RationalConverter.of(BigInteger.TEN.pow(3), BigInteger.ONE)), //
+	HECTO("h", Math.pow(10, 2), RationalConverter.of(BigInteger.TEN.pow(2), BigInteger.ONE)), //
+	DEKA("da", Math.pow(10, 1), RationalConverter.of(BigInteger.TEN.pow(1), BigInteger.ONE)), //
+	DECI("d", Math.pow(10, -1), RationalConverter.of(BigInteger.ONE, BigInteger.TEN.pow(1))), //
+	CENTI("c", Math.pow(10, -2), RationalConverter.of(BigInteger.ONE, BigInteger.TEN.pow(2))), //
+	MILLI("m", Math.pow(10, -3), RationalConverter.of(BigInteger.ONE, BigInteger.TEN.pow(3))), //
+	MICRO("µ", Math.pow(10, -6), RationalConverter.of(BigInteger.ONE, BigInteger.TEN.pow(6))), //
+	NANO("n", toDouble(BigInteger.ONE) / toDouble(BigInteger.TEN.pow(9)), 
+			RationalConverter.of(BigInteger.ONE, BigInteger.TEN.pow(9))), //
+	PICO("p", Math.pow(10, -12), RationalConverter.of(BigInteger.ONE, BigInteger.TEN.pow(12))), //
+	FEMTO("f", Math.pow(10, -15), RationalConverter.of(BigInteger.ONE, BigInteger.TEN.pow(15))), //
+	ATTO("a", Math.pow(10, -18), RationalConverter.of(BigInteger.ONE, BigInteger.TEN.pow(18))), //
+	ZEPTO("z", Math.pow(10, -21), RationalConverter.of(BigInteger.ONE, BigInteger.TEN.pow(21))), //
+	YOCTO("y", toDouble(BigInteger.ONE) / toDouble(BigInteger.TEN.pow(24)), 
+			RationalConverter.of(BigInteger.ONE, BigInteger.TEN.pow(24)));
+	
+	  // Optimization of BigInteger.doubleValue() (implementation too
+	  // inneficient).
+	  private static double toDouble(BigInteger integer) {
+	    return (integer.bitLength() < 64) ? integer.longValue() : integer.doubleValue();
+	  }
 	
 /*
   YOTTA("Y", RationalConverter.of(BigInteger.TEN.pow(24), BigInteger.ONE)), //
@@ -122,19 +133,22 @@ public enum MetricPrefix implements Prefix {
 	 * @see #getConverter()
 	 * @see {@link UnitConverter}
 	 */
-	private final Number converter;
+	private final Number factor;
+	
+	private final UnitConverter converter;
 
 	/**
 	 * Creates a new prefix.
 	 *
 	 * @param symbol
 	 *            the symbol of this prefix.
-	 * @param converter
-	 *            the associated unit converter.
+	 * @param factor
+	 *            the associated unit factor.
 	 */
-	private MetricPrefix(String symbol, Number converter) {
+	private MetricPrefix(String symbol, Number factor, UnitConverter conv) {
 		this.symbol = symbol;
-		this.converter = converter;
+		this.factor = factor;
+		this.converter = conv;
 	}
 
 	/**
@@ -148,7 +162,7 @@ public enum MetricPrefix implements Prefix {
 	 * @return <code>unit.times(1e24)</code>.
 	 */
 	public static <Q extends Quantity<Q>> Unit<Q> YOTTA(Unit<Q> unit) {
-		return unit.multiply(YOTTA.getFactor().doubleValue());
+		return unit.transform(YOTTA.getConverter());
 	}
 
 	/**
@@ -162,7 +176,7 @@ public enum MetricPrefix implements Prefix {
 	 * @return <code>unit.times(1e21)</code>.
 	 */
 	public static <Q extends Quantity<Q>> Unit<Q> ZETTA(Unit<Q> unit) {
-		return unit.multiply(ZETTA.getFactor().doubleValue());
+		return unit.transform(ZETTA.getConverter());
 	}
 
 	/**
@@ -176,7 +190,7 @@ public enum MetricPrefix implements Prefix {
 	 * @return <code>unit.times(1e18)</code>.
 	 */
 	public static <Q extends Quantity<Q>> Unit<Q> EXA(Unit<Q> unit) {
-		return unit.multiply(EXA.getFactor().doubleValue());
+		return unit.transform(EXA.getConverter());
 	}
 
 	/**
@@ -190,7 +204,7 @@ public enum MetricPrefix implements Prefix {
 	 * @return <code>unit.times(1e15)</code>.
 	 */
 	public static <Q extends Quantity<Q>> Unit<Q> PETA(Unit<Q> unit) {
-		return unit.multiply(PETA.getFactor().doubleValue());
+		return unit.transform(PETA.getConverter());
 	}
 
 	/**
@@ -204,7 +218,7 @@ public enum MetricPrefix implements Prefix {
 	 * @return <code>unit.times(1e12)</code>.
 	 */
 	public static <Q extends Quantity<Q>> Unit<Q> TERA(Unit<Q> unit) {
-		return unit.multiply(TERA.getFactor().doubleValue());
+		return unit.transform(TERA.getConverter());
 	}
 
 	/**
@@ -218,7 +232,7 @@ public enum MetricPrefix implements Prefix {
 	 * @return <code>unit.times(1e9)</code>.
 	 */
 	public static <Q extends Quantity<Q>> Unit<Q> GIGA(Unit<Q> unit) {
-		return unit.multiply(GIGA.getFactor().doubleValue());
+		return unit.transform(GIGA.getConverter());
 	}
 
 	/**
@@ -232,7 +246,7 @@ public enum MetricPrefix implements Prefix {
 	 * @return <code>unit.times(1e6)</code>.
 	 */
 	public static <Q extends Quantity<Q>> Unit<Q> MEGA(Unit<Q> unit) {
-		return unit.multiply(MEGA.getFactor().doubleValue());
+		return unit.transform(MEGA.getConverter());
 	}
 
 	/**
@@ -246,7 +260,7 @@ public enum MetricPrefix implements Prefix {
 	 * @return <code>unit.times(1e3)</code>.
 	 */
 	public static <Q extends Quantity<Q>> Unit<Q> KILO(Unit<Q> unit) {
-		return unit.multiply(KILO.getFactor().doubleValue());
+		return unit.transform(KILO.getConverter());
 	}
 
 	/**
@@ -260,7 +274,7 @@ public enum MetricPrefix implements Prefix {
 	 * @return <code>unit.times(1e2)</code>.
 	 */
 	public static <Q extends Quantity<Q>> Unit<Q> HECTO(Unit<Q> unit) {
-		return unit.multiply(HECTO.getFactor().doubleValue());
+		return unit.transform(HECTO.getConverter());
 	}
 
 	/**
@@ -274,7 +288,7 @@ public enum MetricPrefix implements Prefix {
 	 * @return <code>unit.times(1e1)</code>.
 	 */
 	public static <Q extends Quantity<Q>> Unit<Q> DEKA(Unit<Q> unit) {
-		return unit.multiply(DEKA.getFactor().doubleValue());
+		return unit.transform(DEKA.getConverter());
 	}
 
 	/**
@@ -288,7 +302,7 @@ public enum MetricPrefix implements Prefix {
 	 * @return <code>unit.times(1e-1)</code>.
 	 */
 	public static <Q extends Quantity<Q>> Unit<Q> DECI(Unit<Q> unit) {
-		return unit.multiply(DECI.getFactor().doubleValue());
+		return unit.transform(DECI.getConverter());
 	}
 
 	/**
@@ -302,7 +316,7 @@ public enum MetricPrefix implements Prefix {
 	 * @return <code>unit.times(1e-2)</code>.
 	 */
 	public static <Q extends Quantity<Q>> Unit<Q> CENTI(Unit<Q> unit) {
-		return unit.multiply(CENTI.getFactor().doubleValue());
+		return unit.transform(CENTI.getConverter());
 	}
 
 	/**
@@ -316,7 +330,7 @@ public enum MetricPrefix implements Prefix {
 	 * @return <code>unit.times(1e-3)</code>.
 	 */
 	public static <Q extends Quantity<Q>> Unit<Q> MILLI(Unit<Q> unit) {
-		return unit.multiply(MILLI.getFactor().doubleValue());
+		return unit.transform(MILLI.getConverter());
 	}
 
 	/**
@@ -330,7 +344,7 @@ public enum MetricPrefix implements Prefix {
 	 * @return <code>unit.times(1e-6)</code>.
 	 */
 	public static <Q extends Quantity<Q>> Unit<Q> MICRO(Unit<Q> unit) {
-		return unit.multiply(MICRO.getFactor().doubleValue());
+		return unit.transform(MICRO.getConverter());
 	}
 
 	/**
@@ -344,7 +358,7 @@ public enum MetricPrefix implements Prefix {
 	 * @return <code>unit.times(1e-9)</code>.
 	 */
 	public static <Q extends Quantity<Q>> Unit<Q> NANO(Unit<Q> unit) {
-		return unit.multiply(NANO.getFactor().doubleValue());
+		return unit.transform(NANO.getConverter());
 	}
 
 	/**
@@ -358,7 +372,7 @@ public enum MetricPrefix implements Prefix {
 	 * @return <code>unit.times(1e-12)</code>.
 	 */
 	public static <Q extends Quantity<Q>> Unit<Q> PICO(Unit<Q> unit) {
-		return unit.multiply(PICO.getFactor().doubleValue());
+		return unit.transform(PICO.getConverter());
 	}
 
 	/**
@@ -372,7 +386,7 @@ public enum MetricPrefix implements Prefix {
 	 * @return <code>unit.times(1e-15)</code>.
 	 */
 	public static <Q extends Quantity<Q>> Unit<Q> FEMTO(Unit<Q> unit) {
-		return unit.multiply(FEMTO.getFactor().doubleValue());
+		return unit.transform(FEMTO.getConverter());
 	}
 
 	/**
@@ -386,7 +400,7 @@ public enum MetricPrefix implements Prefix {
 	 * @return <code>unit.times(1e-18)</code>.
 	 */
 	public static <Q extends Quantity<Q>> Unit<Q> ATTO(Unit<Q> unit) {
-		return unit.multiply(ATTO.getFactor().doubleValue());
+		return unit.transform(ATTO.getConverter());
 	}
 
 	/**
@@ -400,7 +414,7 @@ public enum MetricPrefix implements Prefix {
 	 * @return <code>unit.times(1e-21)</code>.
 	 */
 	public static <Q extends Quantity<Q>> Unit<Q> ZEPTO(Unit<Q> unit) {
-		return unit.multiply(ZEPTO.getFactor().doubleValue());
+		return unit.transform(ZEPTO.getConverter());
 	}
 
 	/**
@@ -414,7 +428,7 @@ public enum MetricPrefix implements Prefix {
 	 * @return <code>unit.times(1e-24)</code>.
 	 */
 	public static <Q extends Quantity<Q>> Unit<Q> YOCTO(Unit<Q> unit) {
-		return unit.multiply(YOCTO.getFactor().doubleValue());
+		return unit.transform(YOCTO.getConverter());
 	}
 
 	/**
@@ -423,7 +437,7 @@ public enum MetricPrefix implements Prefix {
 	 * @return the conversion factor.
 	 */
 	public Number getFactor() {
-		return converter;
+		return factor;
 	}
 
 	/**
@@ -433,5 +447,9 @@ public enum MetricPrefix implements Prefix {
 	 */
 	public String getSymbol() {
 		return symbol;
+	}
+	
+	public UnitConverter getConverter() {
+		return converter;
 	}
 }

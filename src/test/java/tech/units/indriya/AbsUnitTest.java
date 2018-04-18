@@ -31,7 +31,7 @@ package tech.units.indriya;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static javax.measure.spi.MetricPrefix.MICRO;
+import static tech.units.indriya.unit.MetricPrefix.MICRO;
 import static tech.units.indriya.unit.Units.GRAM;
 import javax.measure.quantity.Length;
 
@@ -40,7 +40,7 @@ import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.unit.BaseUnit;
-import javax.measure.spi.MetricPrefix;
+import tech.units.indriya.unit.MetricPrefix;
 import tech.units.indriya.unit.Units;
 
 public class AbsUnitTest {

@@ -29,12 +29,7 @@
  */
 package tech.units.indriya;
 
-import javax.measure.UnitConverter;
-import javax.measure.spi.Prefix;
-
-import tech.units.indriya.function.Converter;
-import tech.units.indriya.function.MultiplyConverter;
-import tech.units.indriya.function.UnitComparator;
+import static tech.units.indriya.AbstractUnit.converterOf;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -44,7 +39,12 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
-import static tech.units.indriya.AbstractUnit.converterOf;
+import javax.measure.UnitConverter;
+import javax.measure.spi.Prefix;
+
+import tech.units.indriya.function.UnitComparator;
+import tech.units.indriya.unit.MetricPrefix;
+import tech.uom.lib.common.function.Converter;
 
 /**
  * <p>
@@ -53,7 +53,7 @@ import static tech.units.indriya.AbstractUnit.converterOf;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.4, April 18, 2018
+ * @version 1.5, April 19, 2018
  * @since 1.0
  */
 public abstract class AbstractConverter
@@ -105,8 +105,12 @@ public abstract class AbstractConverter
 	 */
 	public static UnitConverter of(Prefix prefix) {
 		Objects.requireNonNull(prefix);
-		Objects.requireNonNull(prefix.getFactor());
-		return converterOf(prefix.getFactor().doubleValue());
+		if (prefix instanceof MetricPrefix) {
+			return ((MetricPrefix)prefix).getConverter();
+		} else {
+			Objects.requireNonNull(prefix.getFactor());
+			return converterOf(prefix.getFactor().doubleValue());
+		}
 	}
 
 	@Override

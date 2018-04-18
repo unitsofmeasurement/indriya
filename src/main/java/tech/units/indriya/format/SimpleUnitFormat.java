@@ -29,7 +29,7 @@
  */
 package tech.units.indriya.format;
 
-import static javax.measure.spi.MetricPrefix.*;
+import static tech.units.indriya.unit.MetricPrefix.*;
 
 import java.io.IOException;
 import java.lang.CharSequence;
@@ -45,9 +45,10 @@ import javax.measure.UnitConverter;
 import javax.measure.Quantity;
 import javax.measure.format.MeasurementParseException;
 import javax.measure.format.UnitFormat;
-import javax.measure.spi.MetricPrefix;
+import tech.units.indriya.unit.MetricPrefix;
 import javax.measure.spi.Prefix;
 
+import tech.units.indriya.AbstractConverter;
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.function.AddConverter;
 import tech.units.indriya.function.MultiplyConverter;
@@ -897,7 +898,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
   private static UnitConverter[] toConverters(Prefix[] prefixes) {
 	  final List<UnitConverter> convList = new ArrayList<>();
 	  for (Prefix p : prefixes) {
-		  convList.add(MultiplyConverter.of(p));
+		  convList.add(AbstractConverter.of(p));
 	  }
 	  return convList.toArray(new UnitConverter[]{});
   }

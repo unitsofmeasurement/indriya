@@ -41,7 +41,7 @@
  * import tech.units.indriya.function.AbstractConverter;
  * 
  * import static tech.units.indriya.unit.Units.*; // Standard CommonUnits.
- * import static javax.measure.spi.MetricPrefix.*;
+ * import static tech.units.indriya.unit.MetricPrefix.*;
  * import static tech.units.indriya.spi.UCUM.*; // Standard & Non-Standard CommonUnits.
  *
  * public class Main {

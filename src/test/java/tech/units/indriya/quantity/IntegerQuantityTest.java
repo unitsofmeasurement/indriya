@@ -42,7 +42,7 @@ import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.quantity.IntegerQuantity;
 import tech.units.indriya.quantity.Quantities;
-import javax.measure.spi.MetricPrefix;
+import tech.units.indriya.unit.MetricPrefix;
 import tech.units.indriya.unit.Units;
 
 public class IntegerQuantityTest {

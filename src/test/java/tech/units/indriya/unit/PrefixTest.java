@@ -47,7 +47,7 @@ import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static javax.measure.spi.BinaryPrefix.*;
-import static javax.measure.spi.MetricPrefix.*;
+import static tech.units.indriya.unit.MetricPrefix.*;
 import static tech.units.indriya.unit.Units.*;
 
 import java.math.BigDecimal;
@@ -224,6 +224,7 @@ public class PrefixTest {
   }
   
   @Test
+  @Disabled("Until https://github.com/unitsofmeasurement/unit-api/issues/87 is resolved")
   public void testZebi() {
     final UnitConverter expected = new RationalConverter(1, 6835937500000000000L);
     final UnitConverter actual = ZEBI(GRAM).getConverterTo(ZETTA(GRAM));
@@ -231,6 +232,7 @@ public class PrefixTest {
   }
   
   @Test
+  @Disabled("Until https://github.com/unitsofmeasurement/unit-api/issues/87 is resolved")
   public void testYobi() {
     final UnitConverter expected = new RationalConverter(BigInteger.ONE, 
     		  BigDecimal.valueOf(7812500000000000000000D).toBigInteger());
