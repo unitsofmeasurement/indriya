@@ -30,7 +30,7 @@
 package tech.units.indriya.function;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static tech.units.indriya.unit.MetricPrefix.*;
+import static javax.measure.spi.MetricPrefix.*;
 import static tech.units.indriya.unit.Units.*;
 
 import javax.measure.Quantity;
@@ -42,7 +42,7 @@ import javax.measure.quantity.Temperature;
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.quantity.Quantities;
-import tech.units.indriya.unit.MetricPrefix;
+import javax.measure.spi.MetricPrefix;
 import tech.units.indriya.unit.Units;
 
 public class UnitConverterTest {

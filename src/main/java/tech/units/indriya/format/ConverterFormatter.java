@@ -30,10 +30,10 @@
 package tech.units.indriya.format;
 
 import javax.measure.UnitConverter;
+import javax.measure.spi.Prefix;
 
 import tech.units.indriya.AbstractConverter;
 import tech.units.indriya.function.*;
-import tech.units.indriya.unit.MetricPrefix;
 
 import java.math.BigInteger;
 import java.util.Formattable;
@@ -65,7 +65,7 @@ class ConverterFormatter {
    * @return the operator precedence of the given UnitConverter
    */
   static int formatConverter(UnitConverter converter, boolean continued, int unitPrecedence, StringBuilder buffer, SymbolMap symbolMap) {
-    final MetricPrefix prefix = symbolMap.getPrefix((AbstractConverter) converter);
+    final Prefix prefix = symbolMap.getPrefix((AbstractConverter) converter);
     if ((prefix != null) && (unitPrecedence == EBNFHelper.NOOP_PRECEDENCE)) {
       return noopPrecedence(buffer, symbolMap, prefix);
     } else if (converter instanceof AddConverter) {
@@ -199,7 +199,7 @@ class ConverterFormatter {
     return EBNFHelper.ADDITION_PRECEDENCE;
   }
 
-  private static int noopPrecedence(StringBuilder buffer, SymbolMap symbolMap, MetricPrefix prefix) {
+  private static int noopPrecedence(StringBuilder buffer, SymbolMap symbolMap, Prefix prefix) {
     buffer.insert(0, symbolMap.getSymbol(prefix));
     return EBNFHelper.NOOP_PRECEDENCE;
   }

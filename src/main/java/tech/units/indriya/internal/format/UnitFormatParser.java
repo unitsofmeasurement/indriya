@@ -30,11 +30,12 @@
 package tech.units.indriya.internal.format;
 
 import javax.measure.Unit;
+import javax.measure.spi.Prefix;
 
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.format.SymbolMap;
 import tech.units.indriya.function.LogConverter;
-import tech.units.indriya.unit.MetricPrefix;
+import tech.units.indriya.function.MultiplyConverter;
 
 /** */
 public final class UnitFormatParser implements UnitTokenConstants {
@@ -310,14 +311,14 @@ public final class UnitFormatParser implements UnitTokenConstants {
         token = jj_consume_token(UNIT_IDENTIFIER);
         Unit<?> unit = symbols.getUnit(token.image);
         if (unit == null) {
-          MetricPrefix prefix = symbols.getPrefix(token.image);
+          Prefix prefix = symbols.getPrefix(token.image);
           if (prefix != null) {
             String prefixSymbol = symbols.getSymbol(prefix);
             unit = symbols.getUnit(token.image.substring(prefixSymbol.length()));
             if (unit != null) {
               {
                 if (true)
-                  return unit.transform(prefix.getConverter());
+                  return unit.transform(MultiplyConverter.of(prefix)); // TODO try unit.multiply(factor)
               }
             }
           }

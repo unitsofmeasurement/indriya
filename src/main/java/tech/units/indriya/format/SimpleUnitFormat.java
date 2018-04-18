@@ -29,13 +29,15 @@
  */
 package tech.units.indriya.format;
 
-import static tech.units.indriya.unit.MetricPrefix.*;
+import static javax.measure.spi.MetricPrefix.*;
 
 import java.io.IOException;
 import java.lang.CharSequence;
 import java.text.FieldPosition;
 import java.text.ParsePosition;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.measure.Unit;
@@ -43,6 +45,8 @@ import javax.measure.UnitConverter;
 import javax.measure.Quantity;
 import javax.measure.format.MeasurementParseException;
 import javax.measure.format.UnitFormat;
+import javax.measure.spi.MetricPrefix;
+import javax.measure.spi.Prefix;
 
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.function.AddConverter;
@@ -51,7 +55,6 @@ import tech.units.indriya.function.RationalConverter;
 import tech.units.indriya.unit.AlternateUnit;
 import tech.units.indriya.unit.AnnotatedUnit;
 import tech.units.indriya.unit.BaseUnit;
-import tech.units.indriya.unit.MetricPrefix;
 import tech.units.indriya.unit.ProductUnit;
 import tech.units.indriya.unit.TransformedUnit;
 import tech.units.indriya.unit.Units;
@@ -865,14 +868,14 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
   private static final String[] PREFIXES = { YOTTA.getSymbol(), ZETTA.getSymbol(), EXA.getSymbol(), PETA.getSymbol(), TERA.getSymbol(),
       GIGA.getSymbol(), MEGA.getSymbol(), KILO.getSymbol(), HECTO.getSymbol(), DEKA.getSymbol(), DECI.getSymbol(), CENTI.getSymbol(),
       MILLI.getSymbol(), MICRO.getSymbol(), NANO.getSymbol(), PICO.getSymbol(), FEMTO.getSymbol(), ATTO.getSymbol(), ZEPTO.getSymbol(),
-      YOCTO.getSymbol() };
+      YOCTO.getSymbol() }; // TODO use a set via SystemOfUnitsService or MetricPrefix.values()
 
   // TODO we could try retrieving this dynamically in a static {} method from
   // MetricPrefix if symbols above are also aligned
-  private static final UnitConverter[] CONVERTERS = { YOTTA.getConverter(), ZETTA.getConverter(), EXA.getConverter(), PETA.getConverter(),
-      TERA.getConverter(), GIGA.getConverter(), MEGA.getConverter(), KILO.getConverter(), HECTO.getConverter(), DEKA.getConverter(),
-      DECI.getConverter(), CENTI.getConverter(), MILLI.getConverter(), MICRO.getConverter(), NANO.getConverter(), PICO.getConverter(),
-      FEMTO.getConverter(), ATTO.getConverter(), ZEPTO.getConverter(), YOCTO.getConverter() };
+  private static final UnitConverter[] CONVERTERS = toConverters(new Prefix[]{ YOTTA, ZETTA, EXA, PETA,
+      TERA, GIGA, MEGA, KILO, HECTO, DEKA,
+      DECI, CENTI, MILLI, MICRO, NANO, PICO,
+      FEMTO, ATTO, ZEPTO, YOCTO }); // TODO use a set via SystemOfUnitsService or MetricPrefix.values()
 
   private static String asciiPrefix(String prefix) {
     return prefix == "µ" ? "micro" : prefix;
@@ -891,6 +894,14 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
     return isASCII;
   }
 
+  private static UnitConverter[] toConverters(Prefix[] prefixes) {
+	  final List<UnitConverter> convList = new ArrayList<>();
+	  for (Prefix p : prefixes) {
+		  convList.add(MultiplyConverter.of(p));
+	  }
+	  return convList.toArray(new UnitConverter[]{});
+  }
+  
   // Initializations
   static {
     for (int i = 0; i < SI_UNITS.length; i++) {
@@ -910,12 +921,13 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
     // Special case for KILOGRAM.
     DEFAULT.label(Units.GRAM, "g");
     for (int i = 0; i < PREFIXES.length; i++) {
-      if (CONVERTERS[i] == KILO.getConverter()) // TODO should it better
+      if (CONVERTERS[i] == MultiplyConverter.of(KILO)) // TODO should it better
         // be equals()?
         continue; // kg is already defined.
-      DEFAULT.label(Units.KILOGRAM.transform(CONVERTERS[i].concatenate(MILLI.getConverter())), PREFIXES[i] + "g");
+      final UnitConverter milliConv = MultiplyConverter.of(MILLI);
+      DEFAULT.label(Units.KILOGRAM.transform(CONVERTERS[i].concatenate(milliConv)), PREFIXES[i] + "g");
       if (PREFIXES[i] == "µ") {
-        ASCII.label(Units.KILOGRAM.transform(CONVERTERS[i].concatenate(MILLI.getConverter())), "microg");
+        ASCII.label(Units.KILOGRAM.transform(CONVERTERS[i].concatenate(milliConv)), "microg");
       }
     }
 

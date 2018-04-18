@@ -44,8 +44,8 @@ import javax.measure.spi.SystemOfUnitsService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import tech.units.indriya.unit.BinaryPrefix;
-import tech.units.indriya.unit.MetricPrefix;
+import javax.measure.spi.BinaryPrefix;
+import javax.measure.spi.MetricPrefix;
 
 public class SystemOfUnitsServiceTest {
   private static SystemOfUnitsService service;

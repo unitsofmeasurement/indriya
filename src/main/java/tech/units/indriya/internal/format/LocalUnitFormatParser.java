@@ -33,11 +33,12 @@ package tech.units.indriya.internal.format;
 import static tech.units.indriya.internal.format.UnitTokenConstants.*;
 
 import javax.measure.Unit;
+import javax.measure.spi.Prefix;
 
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.format.SymbolMap;
 import tech.units.indriya.function.LogConverter;
-import tech.units.indriya.unit.MetricPrefix;
+import tech.units.indriya.function.MultiplyConverter;
 
 /**
  * @deprecated use {@link UnitFormatParser} FIXME there are some details e.g. Exception handling that are different, try to resolve or keep LUFP
@@ -281,13 +282,13 @@ public final class LocalUnitFormatParser {
         token = consumeToken(UNIT_IDENTIFIER);
         Unit unit = symbols.getUnit(token.image);
         if (unit == null) {
-          MetricPrefix prefix = symbols.getPrefix(token.image);
+          Prefix prefix = symbols.getPrefix(token.image);
           if (prefix != null) {
             String prefixSymbol = symbols.getSymbol(prefix);
             unit = symbols.getUnit(token.image.substring(prefixSymbol.length()));
             if (unit != null) {
               {
-                return unit.transform(prefix.getConverter());
+                return unit.transform(MultiplyConverter.of(prefix));
               }
             }
           }

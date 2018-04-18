@@ -33,6 +33,7 @@ import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.UnitConverter;
 import javax.measure.format.ParserException;
+import javax.measure.spi.Prefix;
 
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.function.AddConverter;
@@ -44,7 +45,6 @@ import tech.units.indriya.internal.format.TokenMgrError;
 import tech.units.indriya.unit.AlternateUnit;
 import tech.units.indriya.unit.AnnotatedUnit;
 import tech.units.indriya.unit.BaseUnit;
-import tech.units.indriya.unit.MetricPrefix;
 import tech.units.indriya.unit.TransformedUnit;
 
 import static tech.units.indriya.unit.Units.CUBIC_METRE;
@@ -551,7 +551,7 @@ public class LocalUnitFormat extends AbstractUnitFormat {
    * @return the operator precedence of the given UnitConverter
    */
   private int formatConverter(UnitConverter converter, boolean continued, int unitPrecedence, StringBuilder buffer) {
-    MetricPrefix prefix = symbolMap.getPrefix(converter);
+    Prefix prefix = symbolMap.getPrefix(converter);
     if ((prefix != null) && (unitPrecedence == NOOP_PRECEDENCE)) {
       buffer.insert(0, symbolMap.getSymbol(prefix));
       return NOOP_PRECEDENCE;

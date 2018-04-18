@@ -46,8 +46,9 @@ import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.quantity.Time;
 
+import tech.units.indriya.function.MultiplyConverter;
 import tech.units.indriya.quantity.Quantities;
-import tech.units.indriya.unit.MetricPrefix;
+import javax.measure.spi.MetricPrefix;
 import tech.units.indriya.unit.TransformedUnit;
 
 /**
@@ -58,126 +59,139 @@ import tech.units.indriya.unit.TransformedUnit;
  */
 public final class TimeQuantities {
 
-  private TimeQuantities() {
-  }
+	private TimeQuantities() {
+	}
 
-  // Convenience constants outside the unit system (multiples are not held there)
+	// Convenience constants outside the unit system (multiples are not held there)
 
-  public static final Unit<Time> MICROSECOND = new TransformedUnit<>("μs", SECOND, SECOND, MetricPrefix.MICRO.getConverter());
+	public static final Unit<Time> MICROSECOND = new TransformedUnit<>("μs", SECOND, SECOND,
+			MultiplyConverter.of(MetricPrefix.MICRO.getFactor().doubleValue()));
 
-  public static final TransformedUnit<Time> MILLISECOND = new TransformedUnit<>("ms", SECOND, SECOND, MetricPrefix.MILLI.getConverter());
+	public static final TransformedUnit<Time> MILLISECOND = new TransformedUnit<>("ms", SECOND, SECOND, 
+			MultiplyConverter.of(MetricPrefix.MILLI.getFactor().doubleValue()));
 
-  public static final TransformedUnit<Time> NANOSECOND = new TransformedUnit<>("ns", SECOND, SECOND, MetricPrefix.NANO.getConverter());
+	public static final TransformedUnit<Time> NANOSECOND = new TransformedUnit<>("ns", SECOND, SECOND,
+			MultiplyConverter.of(MetricPrefix.NANO.getFactor().doubleValue()));
 
-  /**
-   * Creates the {@link Quantity<Time>} based in the difference of the two {@link Temporal}
-   * 
-   * @param temporalA
-   *          - First parameter to range, inclusive
-   * @param temporalB
-   *          - second parameter to range, exclusive
-   * @return the Quantity difference based in {@link Units#DAY}.
-   * @throws java.time.temporal.UnsupportedTemporalTypeException
-   *           if some temporal doesn't support {@link ChronoUnit#DAYS}
-   */
-  public static Quantity<Time> getQuantity(Temporal temporalA, Temporal temporalB) {
-    long days = ChronoUnit.DAYS.between(temporalA, temporalB);
-    return Quantities.getQuantity(days, DAY);
-  }
+	/**
+	 * Creates the {@link Quantity<Time>} based in the difference of the two
+	 * {@link Temporal}
+	 * 
+	 * @param temporalA
+	 *            - First parameter to range, inclusive
+	 * @param temporalB
+	 *            - second parameter to range, exclusive
+	 * @return the Quantity difference based in {@link Units#DAY}.
+	 * @throws java.time.temporal.UnsupportedTemporalTypeException
+	 *             if some temporal doesn't support {@link ChronoUnit#DAYS}
+	 */
+	public static Quantity<Time> getQuantity(Temporal temporalA, Temporal temporalB) {
+		long days = ChronoUnit.DAYS.between(temporalA, temporalB);
+		return Quantities.getQuantity(days, DAY);
+	}
 
-  /**
-   * Creates the {@link Quantity<Time>} based in the difference of the two {@link LocalTime}
-   * 
-   * @param localTimeA
-   *          - First parameter to range, inclusive
-   * @param localTimeB
-   *          - second parameter to range, exclusive
-   * @return the Quantity difference based in {@link Units#HOUR}.
-   * @throws java.time.temporal.UnsupportedTemporalTypeException
-   *           if some temporal doesn't support {@link ChronoUnit#DAYS}
-   */
-  public static Quantity<Time> getQuantity(LocalTime localTimeA, LocalTime localTimeB) {
-    long hours = ChronoUnit.HOURS.between(localTimeA, localTimeB);
-    return Quantities.getQuantity(hours, HOUR);
-  }
+	/**
+	 * Creates the {@link Quantity<Time>} based in the difference of the two
+	 * {@link LocalTime}
+	 * 
+	 * @param localTimeA
+	 *            - First parameter to range, inclusive
+	 * @param localTimeB
+	 *            - second parameter to range, exclusive
+	 * @return the Quantity difference based in {@link Units#HOUR}.
+	 * @throws java.time.temporal.UnsupportedTemporalTypeException
+	 *             if some temporal doesn't support {@link ChronoUnit#DAYS}
+	 */
+	public static Quantity<Time> getQuantity(LocalTime localTimeA, LocalTime localTimeB) {
+		long hours = ChronoUnit.HOURS.between(localTimeA, localTimeB);
+		return Quantities.getQuantity(hours, HOUR);
+	}
 
-  /**
-   * Creates the {@link Quantity<Time>} based in the {@link Temporal} with {@link TemporalAdjuster}
-   * 
-   * @param temporalA
-   *          - temporal
-   * @param supplier
-   *          the adjust @see {@link TemporalAdjuster}
-   * @return The Quantity based in Temporal with TemporalAdjuster in {@link Units#DAY}.
-   * @throws java.time.temporal.UnsupportedTemporalTypeException
-   *           if some temporal doesn't support {@link ChronoUnit#DAYS}
-   */
-  public static Quantity<Time> getQuantity(Temporal temporalA, Supplier<TemporalAdjuster> supplier) {
-    Temporal temporalB = temporalA.with(supplier.get());
-    return getQuantity(temporalA, temporalB);
-  }
+	/**
+	 * Creates the {@link Quantity<Time>} based in the {@link Temporal} with
+	 * {@link TemporalAdjuster}
+	 * 
+	 * @param temporalA
+	 *            - temporal
+	 * @param supplier
+	 *            the adjust @see {@link TemporalAdjuster}
+	 * @return The Quantity based in Temporal with TemporalAdjuster in
+	 *         {@link Units#DAY}.
+	 * @throws java.time.temporal.UnsupportedTemporalTypeException
+	 *             if some temporal doesn't support {@link ChronoUnit#DAYS}
+	 */
+	public static Quantity<Time> getQuantity(Temporal temporalA, Supplier<TemporalAdjuster> supplier) {
+		Temporal temporalB = temporalA.with(supplier.get());
+		return getQuantity(temporalA, temporalB);
+	}
 
-  /**
-   * Creates the {@link Quantity<Time>} based in the {@link Temporal} with {@link Supplier<TemporalAdjuster>}
-   * 
-   * @param localTimeA
-   * @see {@link LocalTime}
-   * @param supplier
-   *          he adjust @see {@link TemporalAdjuster}
-   * @return The Quantity based in Temporal with TemporalAdjuster in {@link Units#DAY}.
-   * @throws java.time.temporal.UnsupportedTemporalTypeException
-   *           if some temporal doesn't support {@link ChronoUnit#DAYS}
-   */
-  public static Quantity<Time> getQuantity(LocalTime localTimeA, Supplier<TemporalAdjuster> supplier) {
-    LocalTime localTimeB = localTimeA.with(supplier.get());
-    return getQuantity(localTimeA, localTimeB);
-  }
+	/**
+	 * Creates the {@link Quantity<Time>} based in the {@link Temporal} with
+	 * {@link Supplier<TemporalAdjuster>}
+	 * 
+	 * @param localTimeA
+	 * @see {@link LocalTime}
+	 * @param supplier
+	 *            he adjust @see {@link TemporalAdjuster}
+	 * @return The Quantity based in Temporal with TemporalAdjuster in
+	 *         {@link Units#DAY}.
+	 * @throws java.time.temporal.UnsupportedTemporalTypeException
+	 *             if some temporal doesn't support {@link ChronoUnit#DAYS}
+	 */
+	public static Quantity<Time> getQuantity(LocalTime localTimeA, Supplier<TemporalAdjuster> supplier) {
+		LocalTime localTimeB = localTimeA.with(supplier.get());
+		return getQuantity(localTimeA, localTimeB);
+	}
 
-  /**
-   * creates the {@link TimeUnitQuantity} using {@link TimeUnit} and {@link Integer}
-   * 
-   * @param value
-   *          - value to be used
-   * @param timeUnit
-   *          - time to be used
-   */
-  public static TimeUnitQuantity getQuantity(Integer number, TimeUnit timeUnit) {
-    return new TimeUnitQuantity(Objects.requireNonNull(timeUnit), Objects.requireNonNull(number));
-  }
+	/**
+	 * creates the {@link TimeUnitQuantity} using {@link TimeUnit} and
+	 * {@link Integer}
+	 * 
+	 * @param value
+	 *            - value to be used
+	 * @param timeUnit
+	 *            - time to be used
+	 */
+	public static TimeUnitQuantity getQuantity(Integer number, TimeUnit timeUnit) {
+		return new TimeUnitQuantity(Objects.requireNonNull(timeUnit), Objects.requireNonNull(number));
+	}
 
-  /**
-   * creates the {@link TemporalQuantity} using {@link TemporalUnit} and {@link Integer}
-   * 
-   * @param value
-   *          - value to be used
-   * @param timeUnit
-   *          - time to be used
-   */
-  public static TemporalQuantity getQuantity(Integer number, TemporalUnit temporalUnit) {
-    return new TemporalQuantity(Objects.requireNonNull(number), Objects.requireNonNull(temporalUnit));
-  }
+	/**
+	 * creates the {@link TemporalQuantity} using {@link TemporalUnit} and
+	 * {@link Integer}
+	 * 
+	 * @param value
+	 *            - value to be used
+	 * @param timeUnit
+	 *            - time to be used
+	 */
+	public static TemporalQuantity getQuantity(Integer number, TemporalUnit temporalUnit) {
+		return new TemporalQuantity(Objects.requireNonNull(number), Objects.requireNonNull(temporalUnit));
+	}
 
-  /**
-   * Creates a {@link TimeUnitQuantity} based a {@link Quantity<Time>} converted to {@link Units#SECOND}.
-   * 
-   * @param quantity
-   *          - quantity to be used
-   * @return the {@link TimeUnitQuantity} converted be quantity in seconds.
-   */
-  public static TimeUnitQuantity toTimeUnitSeconds(Quantity<Time> quantity) {
-    Quantity<Time> seconds = Objects.requireNonNull(quantity).to(SECOND);
-    return new TimeUnitQuantity(TimeUnit.SECONDS, seconds.getValue().intValue());
-  }
+	/**
+	 * Creates a {@link TimeUnitQuantity} based a {@link Quantity<Time>} converted
+	 * to {@link Units#SECOND}.
+	 * 
+	 * @param quantity
+	 *            - quantity to be used
+	 * @return the {@link TimeUnitQuantity} converted be quantity in seconds.
+	 */
+	public static TimeUnitQuantity toTimeUnitSeconds(Quantity<Time> quantity) {
+		Quantity<Time> seconds = Objects.requireNonNull(quantity).to(SECOND);
+		return new TimeUnitQuantity(TimeUnit.SECONDS, seconds.getValue().intValue());
+	}
 
-  /**
-   * Creates a {@link TemporalQuantity} based a {@link Quantity<Time>} converted to {@link Units#SECOND}.
-   * 
-   * @param quantity
-   *          - quantity to be used
-   * @return the {@link TemporalQuantity} converted be quantity in seconds.
-   */
-  public static TemporalQuantity toTemporalSeconds(Quantity<Time> quantity) {
-    Quantity<Time> seconds = Objects.requireNonNull(quantity).to(SECOND);
-    return TemporalQuantity.of(seconds);
-  }
+	/**
+	 * Creates a {@link TemporalQuantity} based a {@link Quantity<Time>} converted
+	 * to {@link Units#SECOND}.
+	 * 
+	 * @param quantity
+	 *            - quantity to be used
+	 * @return the {@link TemporalQuantity} converted be quantity in seconds.
+	 */
+	public static TemporalQuantity toTemporalSeconds(Quantity<Time> quantity) {
+		Quantity<Time> seconds = Objects.requireNonNull(quantity).to(SECOND);
+		return TemporalQuantity.of(seconds);
+	}
 }

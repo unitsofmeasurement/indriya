@@ -31,10 +31,11 @@ package tech.units.indriya.format;
 
 import javax.measure.Unit;
 import javax.measure.UnitConverter;
+import javax.measure.spi.Prefix;
 
 import tech.units.indriya.AbstractConverter;
 import tech.units.indriya.AbstractUnit;
-import tech.units.indriya.unit.MetricPrefix;
+import tech.units.indriya.function.MultiplyConverter;
 
 import java.lang.reflect.Field;
 import java.util.Collections;
@@ -76,7 +77,7 @@ public final class SymbolMap {
   private final Map<Unit<?>, String> unitToSymbol;
   private final Map<String, Object> symbolToPrefix;
   private final Map<Object, String> prefixToSymbol;
-  private final Map<UnitConverter, MetricPrefix> converterToPrefix;
+  private final Map<UnitConverter, Prefix> converterToPrefix;
 
   /**
    * Creates an empty mapping.
@@ -121,8 +122,8 @@ public final class SymbolMap {
           } else {
             label((AbstractUnit<?>) value, symbol);
           }
-        } else if (value instanceof MetricPrefix) {
-          label((MetricPrefix) value, symbol);
+        } else if (value instanceof Prefix) {
+          label((Prefix) value, symbol);
         } else {
           throw new ClassCastException("unable to cast " + value + " to Unit or Prefix");
         }
@@ -175,11 +176,13 @@ public final class SymbolMap {
    * Attaches a label to the specified prefix. For example:<br>
    * <code> symbolMap.label(MetricPrefix.GIGA, "G"); symbolMap.label(MetricPrefix.MICRO, "µ");
    * </code>
+   * 
+   * TODO should be able to do this with a generic Prefix
    */
-  public void label(MetricPrefix prefix, String symbol) {
+  public void label(Prefix prefix, String symbol) {
     symbolToPrefix.put(symbol, prefix);
     prefixToSymbol.put(prefix, symbol);
-    converterToPrefix.put(prefix.getConverter(), prefix);
+    converterToPrefix.put(MultiplyConverter.of(prefix), prefix);
   }
 
   /**
@@ -211,14 +214,14 @@ public final class SymbolMap {
    *          the unit symbol.
    * @return the corresponding prefix or <code>null</code> if none.
    */
-  public MetricPrefix getPrefix(String symbol) {
+  public Prefix getPrefix(String symbol) {
 	final List<String> list = symbolToPrefix.keySet().stream().collect(Collectors.toList());
 	final Comparator<String> comparator = Comparator.comparing(String::length);
 	Collections.sort(list, comparator.reversed());
 
 	for (String key : list) {
 	    if (symbol.startsWith(key)) {
-		return (MetricPrefix) symbolToPrefix.get(key);
+		return (Prefix) symbolToPrefix.get(key);
 	    }
 	}
 	return null;
@@ -231,7 +234,7 @@ public final class SymbolMap {
    *          the unit converter.
    * @return the corresponding prefix or <code>null</code> if none.
    */
-  public MetricPrefix getPrefix(UnitConverter converter) {
+  public Prefix getPrefix(UnitConverter converter) {
     return converterToPrefix.get(converter);
   }
 
@@ -242,7 +245,7 @@ public final class SymbolMap {
    *          the prefix.
    * @return the corresponding symbol or <code>null</code> if none.
    */
-  public String getSymbol(MetricPrefix prefix) {
+  public String getSymbol(Prefix prefix) {
     return prefixToSymbol.get(prefix);
   }
 

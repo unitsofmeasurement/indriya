@@ -46,8 +46,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static tech.units.indriya.unit.BinaryPrefix.*;
-import static tech.units.indriya.unit.MetricPrefix.*;
+import static javax.measure.spi.BinaryPrefix.*;
+import static javax.measure.spi.MetricPrefix.*;
 import static tech.units.indriya.unit.Units.*;
 
 import java.math.BigDecimal;
@@ -196,28 +196,29 @@ public class PrefixTest {
 
   @Test
   public void testMebi() {
-    final UnitConverter expected = new RationalConverter(8, 15625);
+    final UnitConverter expected = new RationalConverter(16384, 15625);
     final UnitConverter actual = MEBI(METRE).getConverterTo(MEGA(METRE));
     assertEquals(expected, actual);
   }
 
   @Test
   public void testGibi() {
-    final UnitConverter expected = new RationalConverter(2, 5859375);
+	assertEquals(1073741824d, GIBI.getFactor());
+    final UnitConverter expected = new RationalConverter(2097152, 1953125);
     final UnitConverter actual = GIBI(METRE).getConverterTo(GIGA(METRE));
     assertEquals(expected, actual);
   }
 
   @Test
   public void testTebi() {
-    final UnitConverter expected = new RationalConverter(1, 3906250000l);
+    final UnitConverter expected = new RationalConverter(268435456L, 244140625L);
     final UnitConverter actual = TEBI(LITRE).getConverterTo(TERA(LITRE));
     assertEquals(expected, actual);
   }
 
   @Test
   public void testPebi() {
-    final UnitConverter expected = new RationalConverter(1, 4882812500000L);
+    final UnitConverter expected = new RationalConverter(34359738368L, 30517578125L);
     final UnitConverter actual = PEBI(LITRE).getConverterTo(PETA(LITRE));
     assertEquals(expected, actual);
   }

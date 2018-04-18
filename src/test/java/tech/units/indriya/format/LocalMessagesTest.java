@@ -49,7 +49,7 @@ public class LocalMessagesTest {
     String text = bundle.getString(KEY);
     assertEquals("km/h", text);
 
-    assertEquals(64, bundle.keySet().size());
+    assertEquals(84, bundle.keySet().size());
   }
 
   @Test

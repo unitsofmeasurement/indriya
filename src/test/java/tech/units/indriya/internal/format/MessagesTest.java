@@ -46,6 +46,6 @@ public class MessagesTest {
     assertNotNull(bundle);
     String text = bundle.getString("tech.units.indriya.unit.Units.KILOMETRE_PER_HOUR");
     assertEquals("km/h", text);
-    assertEquals(64, bundle.keySet().size());
+    assertEquals(84, bundle.keySet().size());
   }
 }

@@ -35,12 +35,12 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import javax.measure.Unit;
+import javax.measure.spi.MetricPrefix;
 
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.format.EBNFUnitFormat;
 import tech.units.indriya.format.SymbolMap;
-import tech.units.indriya.unit.MetricPrefix;
 import tech.units.indriya.unit.Units;
 
 public class SymbolMapTest {

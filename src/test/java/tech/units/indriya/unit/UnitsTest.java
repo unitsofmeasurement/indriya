@@ -49,15 +49,14 @@ import org.junit.jupiter.api.Test;
 import tech.units.indriya.AbstractConverter;
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.quantity.Quantities;
-import tech.units.indriya.unit.MetricPrefix;
 import tech.units.indriya.unit.TransformedUnit;
 import tech.units.indriya.unit.Units;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static tech.units.indriya.unit.MetricPrefix.KILO;
 import static tech.units.indriya.unit.Units.GRAM;
 import static tech.units.indriya.unit.Units.METRE;
 import static tech.units.indriya.unit.Units.WATT;
+import static javax.measure.spi.MetricPrefix.*;
 
 /**
  *
