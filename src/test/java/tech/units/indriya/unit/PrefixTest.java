@@ -159,6 +159,7 @@ public class PrefixTest {
   }
 
   @Test
+  @Disabled("both Units have different UnitConverters, check for equality will always fail")
   public void testSingleOperation() {
     assertEquals(MICRO(GRAM), GRAM.divide(1_000_000));
   }

@@ -487,7 +487,7 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
 	public final Unit<Q> divide(double divisor) {
 		if (divisor == 1)
 			return this;
-		if (isLongValue(divisor))
+		if (isLongValue(divisor)) //TODO [ahuber] you can not reach every long with a double!
 			return transform(new RationalConverter(BigInteger.ONE, BigInteger.valueOf((long) divisor)));
 		return transform(new MultiplyConverter(1.0 / divisor));
 	}
