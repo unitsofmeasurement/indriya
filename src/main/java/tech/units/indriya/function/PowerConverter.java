@@ -159,6 +159,12 @@ public class PowerConverter implements UnitConverter {
 		if(converter.isIdentity()) {
 			return this;
 		}
+		if(converter instanceof PowerConverter) {
+			PowerConverter other = (PowerConverter) converter;
+			if(this.base == other.base) {
+				return composeSameBaseNonIdentity(other);
+			}
+		}
 		return new Pair(this, converter);
 	}
 
@@ -188,6 +194,13 @@ public class PowerConverter implements UnitConverter {
 	@Override
 	public final String toString() {
 		return "PowerConverter(" + base + "^" + exponent + ")";
+	}
+	
+	// -- HELPER
+	
+	private PowerConverter composeSameBaseNonIdentity(PowerConverter other) {
+		// no check for identity required
+		return new PowerConverter(this.base, this.exponent + other.exponent);
 	}
 
 }
