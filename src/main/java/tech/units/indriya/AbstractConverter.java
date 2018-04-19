@@ -70,6 +70,7 @@ public abstract class AbstractConverter
 	/**
 	 * Holds identity converter.
 	 */
+	@Deprecated //[ahuber] potentially misused
 	public static final AbstractConverter IDENTITY = new Identity();
 
 	/**

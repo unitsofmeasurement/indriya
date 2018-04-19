@@ -37,6 +37,7 @@ import java.util.ResourceBundle;
 import javax.measure.MetricPrefix;
 import javax.measure.Unit;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.format.EBNFUnitFormat;
@@ -82,6 +83,9 @@ public class SymbolMapTest {
   public void parseWithEBNFUnitFormat() {
     Unit u2 = EBNFUnitFormat.getInstance().parse("dag");
 
+    Assertions.assertTrue(u2.equals(MetricPrefix.DEKA(Units.GRAM)));
+    Assertions.assertTrue(MetricPrefix.DEKA(Units.GRAM).equals(u2));
+    
     assertEquals(MetricPrefix.DEKA(Units.GRAM), u2);
   }
 }

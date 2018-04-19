@@ -65,7 +65,7 @@ class ConverterFormatter {
    * @return the operator precedence of the given UnitConverter
    */
   static int formatConverter(UnitConverter converter, boolean continued, int unitPrecedence, StringBuilder buffer, SymbolMap symbolMap) {
-    final Prefix prefix = symbolMap.getPrefix((AbstractConverter) converter);
+    final Prefix prefix = symbolMap.getPrefix((BaseExponentConverter) converter);
     if ((prefix != null) && (unitPrecedence == EBNFHelper.NOOP_PRECEDENCE)) {
       return noopPrecedence(buffer, symbolMap, prefix);
     } else if (converter instanceof AddConverter) {

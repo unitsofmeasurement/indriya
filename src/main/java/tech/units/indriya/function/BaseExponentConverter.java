@@ -43,14 +43,14 @@ import javax.measure.spi.Prefix;
 import tech.units.indriya.AbstractConverter.Pair;
 
 public class BaseExponentConverter implements UnitConverter {
-	
+
 	private final int base;
 	private final int exponent;
-	
+
 	public static UnitConverter of(Prefix prefix) {
 		return new BaseExponentConverter(prefix.getBase(), prefix.getExponent());
 	}
-	
+
 	protected BaseExponentConverter(int base, int exponent) {
 		if(base == 0 && exponent == 0) {
 			throw new IllegalArgumentException("base and exponent can not be both zero at the same time (0^0 is undefined)");
@@ -80,51 +80,51 @@ public class BaseExponentConverter implements UnitConverter {
 
 	@Override
 	public Number convert(Number value) {
-		
+
 		if(isIdentity()) {
 			return value;
 		}
 
 		//[ahuber] at this point we know exponent is not zero
-		
+
 		if (value == null) {
 			throw new IllegalArgumentException("Value cannot be null");
 		}
-		
+
 		if (value instanceof BigDecimal) {
 			//[ahuber] exact number representation of factor 
 			final BigDecimal bdecFactor = new BigDecimal(BigInteger.valueOf(base).pow(Math.abs(exponent)));
 			final BigDecimal bdecValue = (BigDecimal) value;
-			
+
 			//[ahuber] thats where we are loosing 'exactness'
 			return exponent>0 
 					? bdecValue.multiply(bdecFactor, MathContext.DECIMAL128)
-					: bdecValue.divide(bdecFactor, MathContext.DECIMAL128);
+							: bdecValue.divide(bdecFactor, MathContext.DECIMAL128);
 		}
 		if (value instanceof BigInteger) {
 			//[ahuber] exact number representation of factor 
 			final BigInteger bintFactor = BigInteger.valueOf(base).pow(Math.abs(exponent));
-			
+
 			if(exponent>0) {
 				return bintFactor.multiply((BigInteger) value);
 			}
-			
+
 			//[ahuber] we try to return an exact BigInteger if possible
 			final BigInteger[] divideAndRemainder = bintFactor.divideAndRemainder(bintFactor);
 			final BigInteger divisionResult = divideAndRemainder[0]; 
 			final BigInteger divisionRemainder = divideAndRemainder[1];
-			
+
 			if(BigInteger.ZERO.compareTo(divisionRemainder) == 0) {
 				return divisionResult;
 			}
-			
+
 			//[ahuber] fallback to BigDecimal, thats where we are loosing 'exactness'
 			final BigDecimal bdecFactor = new BigDecimal(bintFactor);
 			final BigDecimal bdecValue = new BigDecimal((BigInteger) value);
-			
+
 			return bdecValue.divide(bdecFactor, MathContext.DECIMAL128);
 		}
-		
+
 		return convert(value.doubleValue());
 	}
 
@@ -154,6 +154,22 @@ public class BaseExponentConverter implements UnitConverter {
 		return Collections.singletonList(this);
 	}
 
-	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj instanceof UnitConverter) {
+			UnitConverter other = (UnitConverter) obj;
+			if(this.isIdentity() && other.isIdentity()) {
+				return true;
+			}
+		}
+		if (obj instanceof BaseExponentConverter) {
+			BaseExponentConverter other = (BaseExponentConverter) obj;
+			return this.base == other.base && this.exponent == other.exponent;
+		}
+		return false;
+	}
 
 }
