@@ -29,7 +29,11 @@
  */
 package tech.units.indriya.format;
 
-import static javax.measure.MetricPrefix.*;
+import static javax.measure.MetricPrefix.CENTI;
+import static javax.measure.MetricPrefix.DECI;
+import static javax.measure.MetricPrefix.KILO;
+import static javax.measure.MetricPrefix.MICRO;
+import static javax.measure.MetricPrefix.MILLI;
 
 import java.io.IOException;
 import java.text.FieldPosition;
@@ -49,8 +53,8 @@ import javax.measure.format.UnitFormat;
 
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.function.AddConverter;
-import tech.units.indriya.function.PowerConverter;
 import tech.units.indriya.function.MultiplyConverter;
+import tech.units.indriya.function.PowerConverter;
 import tech.units.indriya.function.RationalConverter;
 import tech.units.indriya.unit.AlternateUnit;
 import tech.units.indriya.unit.AnnotatedUnit;

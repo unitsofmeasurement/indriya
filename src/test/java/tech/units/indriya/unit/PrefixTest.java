@@ -261,27 +261,32 @@ public class PrefixTest {
   // -- HELPER
   
   private static class Rational {
-	  static Rational of(long dividend, long divisor) {
+	  
+	  private BigInteger dividend; 
+	  private BigInteger divisor;
+	  
+	  private static Rational of(long dividend, long divisor) {
 		  return of(BigInteger.valueOf(dividend), BigInteger.valueOf(divisor));
 	  }
-	  static Rational of(BigInteger dividend, BigInteger divisor) {
+	  
+	  private static Rational of(BigInteger dividend, BigInteger divisor) {
 		  return new Rational(dividend, divisor);
 	  }
+	  
 	  private Rational(BigInteger dividend, BigInteger divisor) {
 		  this.dividend = dividend;
 		  this.divisor = divisor;
 	  }
-	  BigInteger dividend; 
-	  BigInteger divisor;
+	  
 	  public boolean isEqualTo(Rational other) {
 		  // a/b =?= c/d  is equivalent to a*d =?= c*b; 
-
 		  BigInteger a = dividend;
 		  BigInteger b = divisor;
 		  BigInteger c = other.dividend;
 		  BigInteger d = other.divisor;
 		  return a.multiply(d).equals(c.multiply(b));
 	  }
+	  
 	  @Override
 	  public boolean equals(Object obj) {
 		  if(obj instanceof Rational) {
@@ -289,6 +294,7 @@ public class PrefixTest {
 		  }
 		  return super.equals(obj);
 	  }
+	  
 	  public double doubleValue() {
 		  return new BigDecimal(dividend).divide(new BigDecimal(divisor)).doubleValue();
 	  }
