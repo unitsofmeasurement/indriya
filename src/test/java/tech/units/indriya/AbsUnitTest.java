@@ -85,6 +85,11 @@ public class AbsUnitTest {
 
   @Test
   public void testEquivalent() {
+    assertTrue((((AbstractUnit) MICRO(GRAM))).isEquivalentOf(GRAM.divide(1_000_000)));
+  }
+  
+  @Test
+  public void testEquivalent_composed() {
     assertTrue((((AbstractUnit) MICRO(GRAM))).isEquivalentOf(GRAM.divide(1000).divide(1000)));
   }
 

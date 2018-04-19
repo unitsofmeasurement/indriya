@@ -40,17 +40,19 @@ import java.util.Objects;
 import javax.measure.UnitConverter;
 import javax.measure.spi.Prefix;
 
-import tech.units.indriya.AbstractConverter.Pair;
+import tech.units.indriya.AbstractConverter;
 
 /**
  * 
  * UnitConverter for numbers in base^exponent representation. 
  *
  */
-public class PowerConverter implements UnitConverter {
-
+public class PowerConverter extends AbstractConverter {
+	private static final long serialVersionUID = 3546932001671571300L;
+	
 	private final int base;
 	private final int exponent;
+	private final int hashCode;
 
 	public static UnitConverter of(Prefix prefix) {
 		return new PowerConverter(prefix.getBase(), prefix.getExponent());
@@ -62,6 +64,7 @@ public class PowerConverter implements UnitConverter {
 		}
 		this.base = base;
 		this.exponent = exponent;
+		this.hashCode = Objects.hash(base, exponent);
 	}
 
 	public int getBase() {
@@ -87,58 +90,58 @@ public class PowerConverter implements UnitConverter {
 	}
 
 	@Override
-	public UnitConverter inverse() {
+	public AbstractConverter inverse() {
 		return isIdentity() ? this : new PowerConverter(base, -exponent);
 	}
 
 	@Override
+	protected Number convert(BigInteger value, MathContext ctx) {
+		//[ahuber] exact number representation of factor 
+		final BigInteger bintFactor = BigInteger.valueOf(base).pow(Math.abs(exponent));
+
+		if(exponent>0) {
+			return bintFactor.multiply(value);
+		}
+
+		//[ahuber] we try to return an exact BigInteger if possible
+		final BigInteger[] divideAndRemainder = value.divideAndRemainder(bintFactor);
+		final BigInteger divisionResult = divideAndRemainder[0]; 
+		final BigInteger divisionRemainder = divideAndRemainder[1];
+
+		if(BigInteger.ZERO.compareTo(divisionRemainder) == 0) {
+			return divisionResult;
+		}
+
+		//[ahuber] fallback to BigDecimal, thats where we are loosing 'exactness'
+		final BigDecimal bdecFactor = new BigDecimal(bintFactor);
+		final BigDecimal bdecValue = new BigDecimal(value);
+
+		return bdecValue.divide(bdecFactor, MathContext.DECIMAL128);
+	}
+	
+	@Override
+	public BigDecimal convert(BigDecimal value, MathContext ctx) throws ArithmeticException {
+		//[ahuber] at this point we know exponent is not zero
+		
+		//[ahuber] exact number representation of factor 
+		final BigDecimal bdecFactor = new BigDecimal(BigInteger.valueOf(base).pow(Math.abs(exponent)));
+		final BigDecimal bdecValue = (BigDecimal) value;
+
+		//[ahuber] thats where we are loosing 'exactness'
+		return exponent>0 
+				? bdecValue.multiply(bdecFactor, ctx)
+				: bdecValue.divide(bdecFactor, ctx);
+	}
+	
+	@Override
 	public Number convert(Number value) {
 
+		//TODO [ahuber] this should be handled in super class
 		if(isIdentity()) {
 			return value;
 		}
-
-		//[ahuber] at this point we know exponent is not zero
-
-		if (value == null) {
-			throw new IllegalArgumentException("Value cannot be null");
-		}
-
-		if (value instanceof BigDecimal) {
-			//[ahuber] exact number representation of factor 
-			final BigDecimal bdecFactor = new BigDecimal(BigInteger.valueOf(base).pow(Math.abs(exponent)));
-			final BigDecimal bdecValue = (BigDecimal) value;
-
-			//[ahuber] thats where we are loosing 'exactness'
-			return exponent>0 
-					? bdecValue.multiply(bdecFactor, MathContext.DECIMAL128)
-							: bdecValue.divide(bdecFactor, MathContext.DECIMAL128);
-		}
-		if (value instanceof BigInteger) {
-			//[ahuber] exact number representation of factor 
-			final BigInteger bintFactor = BigInteger.valueOf(base).pow(Math.abs(exponent));
-
-			if(exponent>0) {
-				return bintFactor.multiply((BigInteger) value);
-			}
-
-			//[ahuber] we try to return an exact BigInteger if possible
-			final BigInteger[] divideAndRemainder = bintFactor.divideAndRemainder(bintFactor);
-			final BigInteger divisionResult = divideAndRemainder[0]; 
-			final BigInteger divisionRemainder = divideAndRemainder[1];
-
-			if(BigInteger.ZERO.compareTo(divisionRemainder) == 0) {
-				return divisionResult;
-			}
-
-			//[ahuber] fallback to BigDecimal, thats where we are loosing 'exactness'
-			final BigDecimal bdecFactor = new BigDecimal(bintFactor);
-			final BigDecimal bdecValue = new BigDecimal((BigInteger) value);
-
-			return bdecValue.divide(bdecFactor, MathContext.DECIMAL128);
-		}
-
-		return convert(value.doubleValue());
+		
+		return super.convert(value);
 	}
 
 	@Override
@@ -165,7 +168,10 @@ public class PowerConverter implements UnitConverter {
 				return composeSameBaseNonIdentity(other);
 			}
 		}
-		return new Pair(this, converter);
+		if(converter instanceof RationalConverter) {
+			return toRationalConverter().compose((RationalConverter) converter);
+		}
+		return super.concatenate(converter);
 	}
 
 	@Override
@@ -196,11 +202,41 @@ public class PowerConverter implements UnitConverter {
 		return "PowerConverter(" + base + "^" + exponent + ")";
 	}
 	
+	@Override
+	public int compareTo(UnitConverter o) {
+		if (this == o) {
+			return 0;
+		}
+		if(this.isIdentity() && o.isIdentity()) {
+			return 0;
+		}
+		if (o instanceof PowerConverter) {
+			PowerConverter other = (PowerConverter) o;
+			int c = Integer.compare(base, other.base);
+			if(c!=0) {
+				return c;
+			}
+			return Integer.compare(exponent, other.exponent);
+		}
+		return this.getClass().getName().compareTo(o.getClass().getName());
+	}
+
+	@Override
+	public int hashCode() {
+		return hashCode;
+	}
+	
 	// -- HELPER
 	
 	private PowerConverter composeSameBaseNonIdentity(PowerConverter other) {
 		// no check for identity required
 		return new PowerConverter(this.base, this.exponent + other.exponent);
+	}
+	
+	RationalConverter toRationalConverter() {
+		return exponent>0
+				? new RationalConverter(BigInteger.valueOf(base).pow(exponent), BigInteger.ONE)
+				: new RationalConverter(BigInteger.ONE, BigInteger.valueOf(base).pow(-exponent));
 	}
 
 }

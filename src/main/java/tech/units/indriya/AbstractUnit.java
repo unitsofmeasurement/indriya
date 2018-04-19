@@ -470,7 +470,7 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
 	}
 
 	/**
-	 * Returns the result of dividing this unit by the specifified divisor. If the
+	 * Returns the result of dividing this unit by the specified divisor. If the
 	 * factor is an integer value, the division is exact. For example:
 	 * 
 	 * <pre>

@@ -29,17 +29,17 @@
  */
 package tech.units.indriya.function;
 
-import javax.measure.UnitConverter;
-
-import tech.units.indriya.AbstractConverter;
-import tech.uom.lib.common.function.ValueSupplier;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
 import java.util.Objects;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
+
+import javax.measure.UnitConverter;
+
+import tech.units.indriya.AbstractConverter;
+import tech.uom.lib.common.function.ValueSupplier;
 
 /**
  * <p>
@@ -193,15 +193,22 @@ public final class RationalConverter extends AbstractConverter implements ValueS
 
   @Override
   public UnitConverter concatenate(UnitConverter converter) {
-    if (!(converter instanceof RationalConverter))
-      return super.concatenate(converter);
-    RationalConverter that = (RationalConverter) converter;
-    BigInteger newDividend = this.getDividend().multiply(that.getDividend());
-    BigInteger newDivisor = this.getDivisor().multiply(that.getDivisor());
-    BigInteger gcd = newDividend.gcd(newDivisor);
-    newDividend = newDividend.divide(gcd);
-    newDivisor = newDivisor.divide(gcd);
-    return (newDividend.equals(BigInteger.ONE) && newDivisor.equals(BigInteger.ONE)) ? IDENTITY : new RationalConverter(newDividend, newDivisor);
+    if (converter instanceof RationalConverter) {
+      return compose((RationalConverter) converter); 
+    }
+    if (converter instanceof PowerConverter) {
+        return compose(((PowerConverter) converter).toRationalConverter()); 
+    }
+    return super.concatenate(converter);
+  }
+  
+  UnitConverter compose(RationalConverter that) {
+	  BigInteger newDividend = this.getDividend().multiply(that.getDividend());
+	  BigInteger newDivisor = this.getDivisor().multiply(that.getDivisor());
+	  BigInteger gcd = newDividend.gcd(newDivisor);
+	  newDividend = newDividend.divide(gcd);
+	  newDivisor = newDivisor.divide(gcd);
+	  return (newDividend.equals(BigInteger.ONE) && newDivisor.equals(BigInteger.ONE)) ? IDENTITY : new RationalConverter(newDividend, newDivisor);
   }
 
   @Override
