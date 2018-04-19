@@ -43,9 +43,10 @@ import javax.measure.UnitConverter;
 import tech.units.indriya.AbstractConverter;
 
 /**
- * 
- * UnitConverter for numbers in base^exponent representation. 
- *
+ * UnitConverter for numbers in base^exponent representation.
+ * @author Andi Huber#
+ * @version 0.9, April 20, 2018
+ * @since 2.0
  */
 public class PowerConverter extends AbstractConverter {
 	private static final long serialVersionUID = 3546932001671571300L;
@@ -54,6 +55,12 @@ public class PowerConverter extends AbstractConverter {
 	private final int exponent;
 	private final int hashCode;
 
+	/**
+	 * Creates a converter with the specified Prefix.
+	 * 
+	 * @param prefix
+	 *            the prefix for the factor.
+	 */
 	public static UnitConverter of(Prefix prefix) {
 		return new PowerConverter(prefix.getBase(), prefix.getExponent());
 	}
@@ -241,5 +248,4 @@ public class PowerConverter extends AbstractConverter {
 				? new RationalConverter(BigInteger.valueOf(base).pow(exponent), BigInteger.ONE)
 				: new RationalConverter(BigInteger.ONE, BigInteger.valueOf(base).pow(-exponent));
 	}
-
 }
