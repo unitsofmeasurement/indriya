@@ -88,6 +88,26 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
     * 
     */
   // private static final long serialVersionUID = 4149424034841739785L;
+	
+  // Initializes the standard unit database for SI units.
+
+  private static final Unit<?>[] SI_UNITS = { Units.AMPERE, Units.BECQUEREL, Units.CANDELA, Units.COULOMB, Units.FARAD, Units.GRAY, Units.HENRY,
+      Units.HERTZ, Units.JOULE, Units.KATAL, Units.KELVIN, Units.LUMEN, Units.LUX, Units.METRE, Units.MOLE, Units.NEWTON, Units.OHM, Units.PASCAL,
+      Units.RADIAN, Units.SECOND, Units.SIEMENS, Units.SIEVERT, Units.STERADIAN, Units.TESLA, Units.VOLT, Units.WATT, Units.WEBER };
+
+  private static final Prefix[] PREFIXES = MetricPrefix.values();
+  
+  private static final String[] PREFIX_SYMBOLS =  
+		  Stream.of(PREFIXES)
+		  .map(Prefix::getSymbol)
+		  .collect(Collectors.toList())
+		  .toArray(new String[] {});
+
+  private static final UnitConverter[] PREFIX_CONVERTERS =  
+		  Stream.of(PREFIXES)
+		  .map(PowerConverter::of)
+		  .collect(Collectors.toList())
+  		  .toArray(new UnitConverter[] {});
 
   /**
    * Flavor of this format
@@ -862,26 +882,6 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
    */
   private static final Map<String, Unit<?>> SYMBOL_TO_UNIT = new HashMap<>();
 
-  // //////////////////////////////////////////////////////////////////////////
-  // Initializes the standard unit database for SI units.
-
-  private static final Unit<?>[] SI_UNITS = { Units.AMPERE, Units.BECQUEREL, Units.CANDELA, Units.COULOMB, Units.FARAD, Units.GRAY, Units.HENRY,
-      Units.HERTZ, Units.JOULE, Units.KATAL, Units.KELVIN, Units.LUMEN, Units.LUX, Units.METRE, Units.MOLE, Units.NEWTON, Units.OHM, Units.PASCAL,
-      Units.RADIAN, Units.SECOND, Units.SIEMENS, Units.SIEVERT, Units.STERADIAN, Units.TESLA, Units.VOLT, Units.WATT, Units.WEBER };
-
-  private static final Prefix[] PREFIXES = MetricPrefix.values();
-  
-  private static final String[] PREFIX_SYMBOLS =  
-		  Stream.of(PREFIXES)
-		  .map(Prefix::getSymbol)
-		  .collect(Collectors.toList())
-		  .toArray(new String[] {});
-
-  private static final UnitConverter[] PREFIX_CONVERTERS =  
-		  Stream.of(PREFIXES)
-		  .map(PowerConverter::of)
-		  .collect(Collectors.toList())
-  		  .toArray(new UnitConverter[] {});
 
   private static String asciiPrefix(String prefix) {
     return prefix == "µ" ? "micro" : prefix;
@@ -911,7 +911,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
       for (int j = 0; j < PREFIX_SYMBOLS.length; j++) {
         Unit<?> u = si.prefix(PREFIXES[j]);
         DEFAULT.label(u, PREFIX_SYMBOLS[j] + symbol);
-        if (PREFIX_SYMBOLS[j] == "µ") {
+        if ( "µ".equals(PREFIX_SYMBOLS[j]) ) {
           ASCII.label(u, "micro"); // + symbol);
         }
       }
@@ -925,7 +925,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
         continue; // kg is already defined.
       
       DEFAULT.label(Units.KILOGRAM.prefix(PREFIXES[i]).prefix(MILLI), PREFIX_SYMBOLS[i] + "g");
-      if (PREFIX_SYMBOLS[i] == "µ") {
+      if ( "µ".equals(PREFIX_SYMBOLS[i]) ) {
         ASCII.label(Units.KILOGRAM.prefix(PREFIXES[i]).prefix(MILLI), "microg");
       }
     }
