@@ -29,11 +29,11 @@
  */
 package tech.units.indriya.format;
 
+import javax.measure.Prefix;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.UnitConverter;
 import javax.measure.format.ParserException;
-import javax.measure.spi.Prefix;
 
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.function.AddConverter;

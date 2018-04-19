@@ -38,12 +38,11 @@ import javax.measure.quantity.ElectricResistance;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Time;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.quantity.BigIntegerQuantity;
 import tech.units.indriya.quantity.Quantities;
-import tech.units.indriya.unit.MetricPrefix;
+import static javax.measure.MetricPrefix.*;
 import tech.units.indriya.unit.Units;
 
 public class BigIntegerQuantityTest {
@@ -119,21 +118,25 @@ public class BigIntegerQuantityTest {
   public void milliOhmTest() {
     final BigIntegerQuantity<ElectricResistance> ONE_OHM = new BigIntegerQuantity<ElectricResistance>(Long.valueOf(1), Units.OHM);
     final BigIntegerQuantity<ElectricResistance> ONE_MILLIOHM = new BigIntegerQuantity<ElectricResistance>(Long.valueOf(1),
-        MetricPrefix.MILLI(Units.OHM));
+        MILLI(Units.OHM));
 
     assertEquals(ONE_OHM, ONE_OHM.add(ONE_MILLIOHM));
     final BigIntegerQuantity<ElectricResistance> ONEOONE_MILLIOHM = new BigIntegerQuantity<ElectricResistance>(Long.valueOf(1001),
-        MetricPrefix.MILLI(Units.OHM));
+        MILLI(Units.OHM));
     assertEquals(ONEOONE_MILLIOHM, ONE_MILLIOHM.add(ONE_OHM));
   }
 
   @Test
   public void yottaOhmTest() {
-    final BigIntegerQuantity<ElectricResistance> ONE_OHM = new BigIntegerQuantity<ElectricResistance>(Long.valueOf(1), Units.OHM);
-    final BigIntegerQuantity<ElectricResistance> ONE_YOTTAOHM = new BigIntegerQuantity<ElectricResistance>(Long.valueOf(1),
-        MetricPrefix.YOTTA(Units.OHM));
-    final BigIntegerQuantity<ElectricResistance> RESULT_OHM = new BigIntegerQuantity<ElectricResistance>(new BigInteger("9223372036854775808"),
-        Units.OHM);
+    final BigIntegerQuantity<ElectricResistance> ONE_OHM = 
+    		new BigIntegerQuantity<ElectricResistance>(Long.valueOf(1), Units.OHM);
+    
+    final BigIntegerQuantity<ElectricResistance> ONE_YOTTAOHM = 
+    		new BigIntegerQuantity<ElectricResistance>(Long.valueOf(1), YOTTA(Units.OHM));
+    
+    final BigIntegerQuantity<ElectricResistance> RESULT_OHM = 
+    		new BigIntegerQuantity<ElectricResistance>(BigInteger.TEN.pow(24).add(BigInteger.ONE), Units.OHM);
+    
     assertEquals(RESULT_OHM, ONE_OHM.add(ONE_YOTTAOHM));
   }
 }

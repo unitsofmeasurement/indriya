@@ -31,8 +31,7 @@ package tech.units.indriya.format;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static tech.units.indriya.AbstractUnit.ONE;
-import static tech.units.indriya.unit.MetricPrefix.KILO;
-import static tech.units.indriya.unit.MetricPrefix.MEGA;
+import static javax.measure.MetricPrefix.*;
 import static tech.units.indriya.unit.Units.*;
 
 import java.io.IOException;

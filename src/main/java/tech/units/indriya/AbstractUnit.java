@@ -34,6 +34,7 @@ import javax.measure.quantity.Dimensionless;
 
 import tech.units.indriya.format.SimpleUnitFormat;
 import tech.units.indriya.function.AddConverter;
+import tech.units.indriya.function.PowerConverter;
 import tech.units.indriya.function.MultiplyConverter;
 import tech.units.indriya.function.RationalConverter;
 import tech.units.indriya.quantity.QuantityDimension;
@@ -468,7 +469,7 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
 	}
 
 	/**
-	 * Returns the result of dividing this unit by the specifified divisor. If the
+	 * Returns the result of dividing this unit by the specified divisor. If the
 	 * factor is an integer value, the division is exact. For example:
 	 * 
 	 * <pre>
@@ -485,7 +486,7 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
 	public final Unit<Q> divide(double divisor) {
 		if (divisor == 1)
 			return this;
-		if (isLongValue(divisor))
+		if (isLongValue(divisor)) //TODO [ahuber] you can not reach every long with a double!
 			return transform(new RationalConverter(BigInteger.ONE, BigInteger.valueOf((long) divisor)));
 		return transform(new MultiplyConverter(1.0 / divisor));
 	}
@@ -550,6 +551,11 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
 		else
 			// n < 0
 			return ONE.divide(this.pow(-n));
+	}
+	
+	@Override
+	public Unit<Q> prefix(Prefix prefix) {
+		return this.transform(PowerConverter.of(prefix));
 	}
 
 	/**
@@ -627,4 +633,7 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
 			return false;
 		}
 	}
+	
+
+	
 }

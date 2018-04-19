@@ -56,7 +56,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static tech.units.indriya.unit.Units.GRAM;
 import static tech.units.indriya.unit.Units.METRE;
 import static tech.units.indriya.unit.Units.WATT;
-import static tech.units.indriya.unit.MetricPrefix.*;
+import static javax.measure.MetricPrefix.*;
 
 /**
  *
@@ -273,13 +273,13 @@ public class UnitsTest {
   public void testKiloIsAThousand() {
     // FIXME: Need to find the org.hamcrest assertion libs
     Quantity<Power> w2000 = Quantities.getQuantity(2000, WATT);
-    Quantity<Power> kW2 = Quantities.getQuantity(2, MetricPrefix.KILO(WATT));
+    Quantity<Power> kW2 = Quantities.getQuantity(2, KILO(WATT));
     // assertThat(w2000, is(kW2));
   }
 
   @Test
   public void testOf() {
-    assertEquals(MetricPrefix.KILO(Units.GRAM).toString(), AbstractUnit.parse("kg").toString());
+    assertEquals(KILO(Units.GRAM).toString(), AbstractUnit.parse("kg").toString());
   }
 
   @Test
@@ -295,7 +295,7 @@ public class UnitsTest {
 
   @Test
   public void testToString() {
-    assertEquals("kg", MetricPrefix.KILO(Units.GRAM).toString());
+    assertEquals("kg", KILO(Units.GRAM).toString());
   }
 
   @Test

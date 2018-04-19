@@ -29,16 +29,15 @@
  */
 package tech.units.indriya.function;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.util.Objects;
+
 import javax.measure.UnitConverter;
-import javax.measure.spi.Prefix;
 
 import tech.units.indriya.AbstractConverter;
 import tech.uom.lib.common.function.DoubleFactorSupplier;
 import tech.uom.lib.common.function.ValueSupplier;
-
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.util.Objects;
 
 /**
  * <p>

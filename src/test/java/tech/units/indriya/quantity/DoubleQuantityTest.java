@@ -44,7 +44,7 @@ import javax.measure.quantity.Time;
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.quantity.Quantities;
-import tech.units.indriya.unit.MetricPrefix;
+import static javax.measure.MetricPrefix.*;
 import tech.units.indriya.unit.Units;
 
 public class DoubleQuantityTest {
@@ -52,7 +52,7 @@ public class DoubleQuantityTest {
   private final DoubleQuantity<ElectricResistance> ONE_OHM = createQuantity(1, Units.OHM);
   private final DoubleQuantity<ElectricResistance> TWO_OHM = createQuantity(2, Units.OHM);
   private final DoubleQuantity<ElectricResistance> MAX_VALUE_OHM = createQuantity(Double.MAX_VALUE, Units.OHM);
-  private final DoubleQuantity<ElectricResistance> ONE_MILLIOHM = createQuantity(1, MetricPrefix.MILLI(Units.OHM));
+  private final DoubleQuantity<ElectricResistance> ONE_MILLIOHM = createQuantity(1, MILLI(Units.OHM));
 
   private <Q extends Quantity<Q>> DoubleQuantity<Q> createQuantity(double d, Unit<Q> unit) {
     return new DoubleQuantity<Q>(Double.valueOf(d).doubleValue(), unit);
@@ -75,7 +75,7 @@ public class DoubleQuantityTest {
   @Test
   public void additionWithLargerMultipleKeepsSmallerMultiple() {
     Quantity<ElectricResistance> actual = ONE_MILLIOHM.add(ONE_OHM);
-    DoubleQuantity<ElectricResistance> expected = createQuantity(1001, MetricPrefix.MILLI(Units.OHM));
+    DoubleQuantity<ElectricResistance> expected = createQuantity(1001, MILLI(Units.OHM));
     assertEquals(expected, actual);
   }
 

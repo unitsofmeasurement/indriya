@@ -29,29 +29,32 @@
  */
 package tech.units.indriya.format;
 
-import static tech.units.indriya.unit.MetricPrefix.*;
+import static javax.measure.MetricPrefix.CENTI;
+import static javax.measure.MetricPrefix.DECI;
+import static javax.measure.MetricPrefix.KILO;
+import static javax.measure.MetricPrefix.MICRO;
+import static javax.measure.MetricPrefix.MILLI;
 
 import java.io.IOException;
-import java.lang.CharSequence;
 import java.text.FieldPosition;
 import java.text.ParsePosition;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import javax.measure.MetricPrefix;
+import javax.measure.Prefix;
+import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.UnitConverter;
-import javax.measure.Quantity;
 import javax.measure.format.MeasurementParseException;
 import javax.measure.format.UnitFormat;
-import tech.units.indriya.unit.MetricPrefix;
-import javax.measure.spi.Prefix;
 
-import tech.units.indriya.AbstractConverter;
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.function.AddConverter;
 import tech.units.indriya.function.MultiplyConverter;
+import tech.units.indriya.function.PowerConverter;
 import tech.units.indriya.function.RationalConverter;
 import tech.units.indriya.unit.AlternateUnit;
 import tech.units.indriya.unit.AnnotatedUnit;
@@ -85,6 +88,26 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
     * 
     */
   // private static final long serialVersionUID = 4149424034841739785L;
+	
+  // Initializes the standard unit database for SI units.
+
+  private static final Unit<?>[] SI_UNITS = { Units.AMPERE, Units.BECQUEREL, Units.CANDELA, Units.COULOMB, Units.FARAD, Units.GRAY, Units.HENRY,
+      Units.HERTZ, Units.JOULE, Units.KATAL, Units.KELVIN, Units.LUMEN, Units.LUX, Units.METRE, Units.MOLE, Units.NEWTON, Units.OHM, Units.PASCAL,
+      Units.RADIAN, Units.SECOND, Units.SIEMENS, Units.SIEVERT, Units.STERADIAN, Units.TESLA, Units.VOLT, Units.WATT, Units.WEBER };
+
+  private static final Prefix[] PREFIXES = MetricPrefix.values();
+  
+  private static final String[] PREFIX_SYMBOLS =  
+		  Stream.of(PREFIXES)
+		  .map(Prefix::getSymbol)
+		  .collect(Collectors.toList())
+		  .toArray(new String[] {});
+
+  private static final UnitConverter[] PREFIX_CONVERTERS =  
+		  Stream.of(PREFIXES)
+		  .map(PowerConverter::of)
+		  .collect(Collectors.toList())
+  		  .toArray(new UnitConverter[] {});
 
   /**
    * Flavor of this format
@@ -405,9 +428,9 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
 
     // Returns the prefix for the specified unit converter.
     protected String prefixFor(UnitConverter converter) {
-      for (int i = 0; i < CONVERTERS.length; i++) {
-        if (CONVERTERS[i].equals(converter)) {
-          return PREFIXES[i];
+      for (int i = 0; i < PREFIX_CONVERTERS.length; i++) {
+        if (PREFIX_CONVERTERS[i].equals(converter)) {
+          return PREFIX_SYMBOLS[i];
         }
       }
       return null; // TODO or return blank?
@@ -859,24 +882,6 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
    */
   private static final Map<String, Unit<?>> SYMBOL_TO_UNIT = new HashMap<>();
 
-  // //////////////////////////////////////////////////////////////////////////
-  // Initializes the standard unit database for SI units.
-
-  private static final Unit<?>[] SI_UNITS = { Units.AMPERE, Units.BECQUEREL, Units.CANDELA, Units.COULOMB, Units.FARAD, Units.GRAY, Units.HENRY,
-      Units.HERTZ, Units.JOULE, Units.KATAL, Units.KELVIN, Units.LUMEN, Units.LUX, Units.METRE, Units.MOLE, Units.NEWTON, Units.OHM, Units.PASCAL,
-      Units.RADIAN, Units.SECOND, Units.SIEMENS, Units.SIEVERT, Units.STERADIAN, Units.TESLA, Units.VOLT, Units.WATT, Units.WEBER };
-
-  private static final String[] PREFIXES = { YOTTA.getSymbol(), ZETTA.getSymbol(), EXA.getSymbol(), PETA.getSymbol(), TERA.getSymbol(),
-      GIGA.getSymbol(), MEGA.getSymbol(), KILO.getSymbol(), HECTO.getSymbol(), DEKA.getSymbol(), DECI.getSymbol(), CENTI.getSymbol(),
-      MILLI.getSymbol(), MICRO.getSymbol(), NANO.getSymbol(), PICO.getSymbol(), FEMTO.getSymbol(), ATTO.getSymbol(), ZEPTO.getSymbol(),
-      YOCTO.getSymbol() }; // TODO use a set via SystemOfUnitsService or MetricPrefix.values()
-
-  // TODO we could try retrieving this dynamically in a static {} method from
-  // MetricPrefix if symbols above are also aligned
-  private static final UnitConverter[] CONVERTERS = toConverters(new Prefix[]{ YOTTA, ZETTA, EXA, PETA,
-      TERA, GIGA, MEGA, KILO, HECTO, DEKA,
-      DECI, CENTI, MILLI, MICRO, NANO, PICO,
-      FEMTO, ATTO, ZEPTO, YOCTO }); // TODO use a set via SystemOfUnitsService or MetricPrefix.values()
 
   private static String asciiPrefix(String prefix) {
     return prefix == "µ" ? "micro" : prefix;
@@ -894,14 +899,6 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
     }
     return isASCII;
   }
-
-  private static UnitConverter[] toConverters(Prefix[] prefixes) {
-	  final List<UnitConverter> convList = new ArrayList<>();
-	  for (Prefix p : prefixes) {
-		  convList.add(AbstractConverter.of(p));
-	  }
-	  return convList.toArray(new UnitConverter[]{});
-  }
   
   // Initializations
   static {
@@ -911,43 +908,44 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
       DEFAULT.label(si, symbol);
       if (isAllASCII(symbol))
         ASCII.label(si, symbol);
-      for (int j = 0; j < PREFIXES.length; j++) {
-        Unit<?> u = si.transform(CONVERTERS[j]);
-        DEFAULT.label(u, PREFIXES[j] + symbol);
-        if (PREFIXES[j] == "µ") {
+      for (int j = 0; j < PREFIX_SYMBOLS.length; j++) {
+        Unit<?> u = si.prefix(PREFIXES[j]);
+        DEFAULT.label(u, PREFIX_SYMBOLS[j] + symbol);
+        if ( "µ".equals(PREFIX_SYMBOLS[j]) ) {
           ASCII.label(u, "micro"); // + symbol);
         }
       }
     }
+    
     // Special case for KILOGRAM.
     DEFAULT.label(Units.GRAM, "g");
-    for (int i = 0; i < PREFIXES.length; i++) {
-      if (CONVERTERS[i] == MultiplyConverter.of(KILO)) // TODO should it better
+    for (int i = 0; i < PREFIX_SYMBOLS.length; i++) {
+      if (PREFIX_CONVERTERS[i] == MultiplyConverter.of(KILO)) // TODO should it better
         // be equals()?
         continue; // kg is already defined.
-      final UnitConverter milliConv = MultiplyConverter.of(MILLI);
-      DEFAULT.label(Units.KILOGRAM.transform(CONVERTERS[i].concatenate(milliConv)), PREFIXES[i] + "g");
-      if (PREFIXES[i] == "µ") {
-        ASCII.label(Units.KILOGRAM.transform(CONVERTERS[i].concatenate(milliConv)), "microg");
+      
+      DEFAULT.label(Units.KILOGRAM.prefix(PREFIXES[i]).prefix(MILLI), PREFIX_SYMBOLS[i] + "g");
+      if ( "µ".equals(PREFIX_SYMBOLS[i]) ) {
+        ASCII.label(Units.KILOGRAM.prefix(PREFIXES[i]).prefix(MILLI), "microg");
       }
     }
 
     // Alias and ASCIIFormat for Ohm
     DEFAULT.alias(Units.OHM, "Ohm");
     ASCII.label(Units.OHM, "Ohm");
-    for (int i = 0; i < PREFIXES.length; i++) {
-      DEFAULT.alias(Units.OHM.transform(CONVERTERS[i]), PREFIXES[i] + "Ohm");
-      ASCII.label(Units.OHM.transform(CONVERTERS[i]), asciiPrefix(PREFIXES[i]) + "Ohm");
+    for (int i = 0; i < PREFIX_SYMBOLS.length; i++) {
+      DEFAULT.alias(Units.OHM.prefix(PREFIXES[i]), PREFIX_SYMBOLS[i] + "Ohm");
+      ASCII.label(Units.OHM.prefix(PREFIXES[i]), asciiPrefix(PREFIX_SYMBOLS[i]) + "Ohm");
     }
 
     // Special case for DEGREE_CELSIUS.
     DEFAULT.label(Units.CELSIUS, "℃");
     DEFAULT.alias(Units.CELSIUS, "°C");
     ASCII.label(Units.CELSIUS, "Celsius");
-    for (int i = 0; i < PREFIXES.length; i++) {
-      DEFAULT.label(Units.CELSIUS.transform(CONVERTERS[i]), PREFIXES[i] + "℃");
-      DEFAULT.alias(Units.CELSIUS.transform(CONVERTERS[i]), PREFIXES[i] + "°C");
-      ASCII.label(Units.CELSIUS.transform(CONVERTERS[i]), asciiPrefix(PREFIXES[i]) + "Celsius");
+    for (int i = 0; i < PREFIX_SYMBOLS.length; i++) {
+      DEFAULT.label(Units.CELSIUS.prefix(PREFIXES[i]), PREFIX_SYMBOLS[i] + "℃");
+      DEFAULT.alias(Units.CELSIUS.prefix(PREFIXES[i]), PREFIX_SYMBOLS[i] + "°C");
+      ASCII.label(Units.CELSIUS.prefix(PREFIXES[i]), asciiPrefix(PREFIX_SYMBOLS[i]) + "Celsius");
     }
 
     DEFAULT.label(Units.PERCENT, "%");
@@ -970,14 +968,14 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
     ASCII.label(Units.CUBIC_METRE, "m3");
     ASCII.label(Units.LITRE, "l");
     DEFAULT.label(Units.LITRE, "l");
-    DEFAULT.label(MetricPrefix.MICRO(Units.LITRE), "µl");
-    ASCII.label(MetricPrefix.MICRO(Units.LITRE), "microL");
-    ASCII.label(MetricPrefix.MILLI(Units.LITRE), "mL");
-    DEFAULT.label(MetricPrefix.MILLI(Units.LITRE), "ml");
-    ASCII.label(MetricPrefix.CENTI(Units.LITRE), "cL");
-    DEFAULT.label(MetricPrefix.CENTI(Units.LITRE), "cl");
-    ASCII.label(MetricPrefix.DECI(Units.LITRE), "dL");
-    DEFAULT.label(MetricPrefix.DECI(Units.LITRE), "dl");
+    DEFAULT.label(MICRO(Units.LITRE), "µl");
+    ASCII.label(MICRO(Units.LITRE), "microL");
+    ASCII.label(MILLI(Units.LITRE), "mL");
+    DEFAULT.label(MILLI(Units.LITRE), "ml");
+    ASCII.label(CENTI(Units.LITRE), "cL");
+    DEFAULT.label(CENTI(Units.LITRE), "cl");
+    ASCII.label(DECI(Units.LITRE), "dL");
+    DEFAULT.label(DECI(Units.LITRE), "dl");
     DEFAULT.label(Units.NEWTON, "N");
     ASCII.label(Units.NEWTON, "N");
     DEFAULT.label(Units.RADIAN, "rad");

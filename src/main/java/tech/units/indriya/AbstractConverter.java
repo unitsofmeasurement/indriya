@@ -29,21 +29,21 @@
  */
 package tech.units.indriya;
 
-import static tech.units.indriya.AbstractUnit.converterOf;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
+import javax.measure.Prefix;
 import javax.measure.UnitConverter;
-import javax.measure.spi.Prefix;
 
+import tech.units.indriya.function.PowerConverter;
 import tech.units.indriya.function.UnitComparator;
-import tech.units.indriya.unit.MetricPrefix;
 import tech.uom.lib.common.function.Converter;
 
 /**
@@ -72,6 +72,8 @@ public abstract class AbstractConverter
 	/**
 	 * Holds identity converter.
 	 */
+	@Deprecated //[ahuber] potentially misused: checking whether a UnitConverter is an identity operator
+	// should be done with unitConverter.isIdentity() rather then unitConverter == AbstractConverter.IDENTITY
 	public static final AbstractConverter IDENTITY = new Identity();
 
 	/**
@@ -104,13 +106,7 @@ public abstract class AbstractConverter
 	 *             converter)
 	 */
 	public static UnitConverter of(Prefix prefix) {
-		Objects.requireNonNull(prefix);
-		if (prefix instanceof MetricPrefix) {
-			return ((MetricPrefix)prefix).getConverter();
-		} else {
-			Objects.requireNonNull(prefix.getFactor());
-			return converterOf(prefix.getFactor().doubleValue());
-		}
+		return PowerConverter.of(prefix);
 	}
 
 	@Override
@@ -147,6 +143,9 @@ public abstract class AbstractConverter
 		if (value instanceof BigDecimal) {
 			return convert((BigDecimal) value, MathContext.DECIMAL128);
 		}
+		if (value instanceof BigInteger) {
+			return convert((BigInteger) value, MathContext.DECIMAL128);
+		}
 		if (value != null) {
 			return convert(value.doubleValue());
 		} else {
@@ -157,6 +156,10 @@ public abstract class AbstractConverter
 	@Override
 	public abstract double convert(double value);
 
+	protected Number convert(BigInteger value, MathContext ctx) {
+		return convert(new BigDecimal(value), ctx);
+	}
+	
 	public abstract BigDecimal convert(BigDecimal value, MathContext ctx) throws ArithmeticException;
 
 	/**
@@ -184,6 +187,11 @@ public abstract class AbstractConverter
 			return value;
 		}
 
+		@Override
+		public Number convert(BigInteger value, MathContext ctx) {
+			return value;
+		}
+		
 		@Override
 		public BigDecimal convert(BigDecimal value, MathContext ctx) {
 			return value;
@@ -288,6 +296,14 @@ public abstract class AbstractConverter
 		public double convert(double value) {
 			return left.convert(right.convert(value));
 		}
+		
+		@Override
+		public Number convert(BigInteger value, MathContext ctx) {
+			if (right instanceof AbstractConverter) {
+				return ((AbstractConverter) left).convert(((AbstractConverter) right).convert(value));
+			}
+			return convert(new BigDecimal(value), ctx);
+		}
 
 		@Override
 		public BigDecimal convert(BigDecimal value, MathContext ctx) {
@@ -336,5 +352,14 @@ public abstract class AbstractConverter
 			}
 			return -1;
 		}
+		
+		@Override
+		public String toString() {
+			return String.format("AbstractConverter.Pair[%s]",
+					getConversionSteps().stream()
+					.map(UnitConverter::toString)
+					.collect(Collectors.joining(", ")) );
+		}
+		
 	}
 }

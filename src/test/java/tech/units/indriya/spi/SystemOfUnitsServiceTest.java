@@ -36,7 +36,9 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.math.BigDecimal;
 import java.util.Collection;
 
-import javax.measure.spi.Prefix;
+import javax.measure.BinaryPrefix;
+import javax.measure.MetricPrefix;
+import javax.measure.Prefix;
 import javax.measure.spi.ServiceProvider;
 import javax.measure.spi.SystemOfUnits;
 import javax.measure.spi.SystemOfUnitsService;
@@ -44,8 +46,6 @@ import javax.measure.spi.SystemOfUnitsService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import javax.measure.spi.BinaryPrefix;
-import tech.units.indriya.unit.MetricPrefix;
 
 public class SystemOfUnitsServiceTest {
   private static SystemOfUnitsService service;

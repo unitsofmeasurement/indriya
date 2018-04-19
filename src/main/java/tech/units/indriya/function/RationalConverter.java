@@ -29,17 +29,17 @@
  */
 package tech.units.indriya.function;
 
-import javax.measure.UnitConverter;
-
-import tech.units.indriya.AbstractConverter;
-import tech.uom.lib.common.function.ValueSupplier;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
 import java.util.Objects;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
+
+import javax.measure.UnitConverter;
+
+import tech.units.indriya.AbstractConverter;
+import tech.uom.lib.common.function.ValueSupplier;
 
 /**
  * <p>
@@ -185,6 +185,22 @@ public final class RationalConverter extends AbstractConverter implements ValueS
   }
 
   @Override
+  protected Number convert(BigInteger value, MathContext ctx) {
+	BigInteger newDividend = dividend.multiply(value);
+	
+	//[ahuber] we try to return an exact BigInteger if possible
+	final BigInteger[] divideAndRemainder = newDividend.divideAndRemainder(divisor);
+	final BigInteger divisionResult = divideAndRemainder[0]; 
+	final BigInteger divisionRemainder = divideAndRemainder[1];
+
+	if(BigInteger.ZERO.compareTo(divisionRemainder) == 0) {
+		return divisionResult;
+	}
+	//[ahuber] fallback to BigDecimal, thats where we are loosing 'exactness'	
+	return convert(new BigDecimal(value), ctx);
+  }
+  
+  @Override
   public BigDecimal convert(BigDecimal value, MathContext ctx) throws ArithmeticException {
     BigDecimal decimalDividend = new BigDecimal(dividend, 0);
     BigDecimal decimalDivisor = new BigDecimal(divisor, 0);
@@ -193,15 +209,13 @@ public final class RationalConverter extends AbstractConverter implements ValueS
 
   @Override
   public UnitConverter concatenate(UnitConverter converter) {
-    if (!(converter instanceof RationalConverter))
-      return super.concatenate(converter);
-    RationalConverter that = (RationalConverter) converter;
-    BigInteger newDividend = this.getDividend().multiply(that.getDividend());
-    BigInteger newDivisor = this.getDivisor().multiply(that.getDivisor());
-    BigInteger gcd = newDividend.gcd(newDivisor);
-    newDividend = newDividend.divide(gcd);
-    newDivisor = newDivisor.divide(gcd);
-    return (newDividend.equals(BigInteger.ONE) && newDivisor.equals(BigInteger.ONE)) ? IDENTITY : new RationalConverter(newDividend, newDivisor);
+    if (converter instanceof RationalConverter) {
+      return compose((RationalConverter) converter); 
+    }
+    if (converter instanceof PowerConverter) {
+        return compose(((PowerConverter) converter).toRationalConverter()); 
+    }
+    return super.concatenate(converter);
   }
 
   @Override
@@ -261,6 +275,20 @@ public final class RationalConverter extends AbstractConverter implements ValueS
     if (o instanceof RationalConverter) {
       return getValue().compareTo(((RationalConverter) o).getValue());
     }
-    return -1;
+    return this.getClass().getName().compareTo(o.getClass().getName());
   }
+  
+  // -- HELPER
+  
+  private UnitConverter compose(RationalConverter that) {
+	  BigInteger newDividend = this.getDividend().multiply(that.getDividend());
+	  BigInteger newDivisor = this.getDivisor().multiply(that.getDivisor());
+	  BigInteger gcd = newDividend.gcd(newDivisor);
+	  newDividend = newDividend.divide(gcd);
+	  newDivisor = newDivisor.divide(gcd);
+	  return (newDividend.equals(BigInteger.ONE) && newDivisor.equals(BigInteger.ONE)) 
+			  ? IDENTITY 
+			  : new RationalConverter(newDividend, newDivisor);
+  }
+  
 }

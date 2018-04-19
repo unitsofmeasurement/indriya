@@ -36,7 +36,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.measure.spi.Prefix;
+import javax.measure.Prefix;
 import javax.measure.spi.SystemOfUnits;
 import javax.measure.spi.SystemOfUnitsService;
 

@@ -30,7 +30,7 @@
 package tech.units.indriya.function;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static tech.units.indriya.unit.MetricPrefix.*;
+import static javax.measure.MetricPrefix.*;
 import static tech.units.indriya.unit.Units.*;
 
 import javax.measure.Quantity;
@@ -42,8 +42,7 @@ import javax.measure.quantity.Temperature;
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.quantity.Quantities;
-import tech.units.indriya.unit.MetricPrefix;
-import tech.units.indriya.unit.Units;
+
 
 public class UnitConverterTest {
   private final Unit<Length> sourceUnit = METRE;
@@ -73,15 +72,15 @@ public class UnitConverterTest {
 
   @Test
   public void testKelvinToCelsius() {
-    Quantity<Temperature> sut = Quantities.getQuantity(273.15d, Units.KELVIN).to(Units.CELSIUS);
+    Quantity<Temperature> sut = Quantities.getQuantity(273.15d, KELVIN).to(CELSIUS);
     assertNotNull(sut);
-    assertEquals(Units.CELSIUS, sut.getUnit());
+    assertEquals(CELSIUS, sut.getUnit());
     assertEquals(0d, sut.getValue());
   }
 
   @Test
   public void testConverterTo() {
-    assertEquals(Units.KILOGRAM.getConverterTo(MetricPrefix.KILO(Units.GRAM)), MetricPrefix.KILO(Units.GRAM).getConverterTo(Units.KILOGRAM));
+    assertEquals(KILOGRAM.getConverterTo(KILO(GRAM)), KILO(GRAM).getConverterTo(KILOGRAM));
   }
 
   @Test

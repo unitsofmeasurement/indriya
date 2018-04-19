@@ -32,6 +32,7 @@ package tech.units.indriya.quantity;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import javax.measure.MetricPrefix;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.quantity.ElectricResistance;
@@ -42,7 +43,6 @@ import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.quantity.IntegerQuantity;
 import tech.units.indriya.quantity.Quantities;
-import tech.units.indriya.unit.MetricPrefix;
 import tech.units.indriya.unit.Units;
 
 public class IntegerQuantityTest {
