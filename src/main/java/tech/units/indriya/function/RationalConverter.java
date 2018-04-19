@@ -261,6 +261,6 @@ public final class RationalConverter extends AbstractConverter implements ValueS
     if (o instanceof RationalConverter) {
       return getValue().compareTo(((RationalConverter) o).getValue());
     }
-    return -1;
+    return this.getClass().getName().compareTo(o.getClass().getName());
   }
 }

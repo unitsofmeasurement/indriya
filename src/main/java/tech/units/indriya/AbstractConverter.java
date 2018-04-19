@@ -31,6 +31,7 @@ package tech.units.indriya;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -142,6 +143,9 @@ public abstract class AbstractConverter
 		if (value instanceof BigDecimal) {
 			return convert((BigDecimal) value, MathContext.DECIMAL128);
 		}
+		if (value instanceof BigInteger) {
+			return convert((BigInteger) value, MathContext.DECIMAL128);
+		}
 		if (value != null) {
 			return convert(value.doubleValue());
 		} else {
@@ -152,6 +156,10 @@ public abstract class AbstractConverter
 	@Override
 	public abstract double convert(double value);
 
+	protected Number convert(BigInteger value, MathContext ctx) {
+		return new BigDecimal(value);
+	}
+	
 	public abstract BigDecimal convert(BigDecimal value, MathContext ctx) throws ArithmeticException;
 
 	/**
@@ -179,6 +187,11 @@ public abstract class AbstractConverter
 			return value;
 		}
 
+		@Override
+		public Number convert(BigInteger value, MathContext ctx) {
+			return value;
+		}
+		
 		@Override
 		public BigDecimal convert(BigDecimal value, MathContext ctx) {
 			return value;
@@ -282,6 +295,14 @@ public abstract class AbstractConverter
 		@Override
 		public double convert(double value) {
 			return left.convert(right.convert(value));
+		}
+		
+		@Override
+		public Number convert(BigInteger value, MathContext ctx) {
+			if (right instanceof AbstractConverter) {
+				return ((AbstractConverter) left).convert(((AbstractConverter) right).convert(value));
+			}
+			return convert(new BigDecimal(value), ctx);
 		}
 
 		@Override
