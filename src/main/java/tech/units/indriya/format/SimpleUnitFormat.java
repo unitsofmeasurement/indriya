@@ -49,7 +49,7 @@ import javax.measure.spi.Prefix;
 
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.function.AddConverter;
-import tech.units.indriya.function.BaseExponentConverter;
+import tech.units.indriya.function.PowerConverter;
 import tech.units.indriya.function.MultiplyConverter;
 import tech.units.indriya.function.RationalConverter;
 import tech.units.indriya.unit.AlternateUnit;
@@ -875,7 +875,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
 
   private static final UnitConverter[] PREFIX_CONVERTERS =  
 		  Stream.of(PREFIXES)
-		  .map(BaseExponentConverter::of)
+		  .map(PowerConverter::of)
 		  .collect(Collectors.toList())
   		  .toArray(new UnitConverter[] {});
 

@@ -47,7 +47,7 @@ import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.quantity.Time;
 
-import tech.units.indriya.function.BaseExponentConverter;
+import tech.units.indriya.function.PowerConverter;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.TransformedUnit;
 import tech.units.indriya.unit.Units;
@@ -66,13 +66,13 @@ public final class TimeQuantities {
 	// Convenience constants outside the unit system (multiples are not held there)
 
 	public static final Unit<Time> MICROSECOND = new TransformedUnit<>("μs", SECOND, SECOND,
-			BaseExponentConverter.of(MetricPrefix.MICRO));
+			PowerConverter.of(MetricPrefix.MICRO));
 
 	public static final TransformedUnit<Time> MILLISECOND = new TransformedUnit<>("ms", SECOND, SECOND,
-			BaseExponentConverter.of(MetricPrefix.MILLI));
+			PowerConverter.of(MetricPrefix.MILLI));
 
 	public static final TransformedUnit<Time> NANOSECOND = new TransformedUnit<>("ns", SECOND, SECOND,
-			BaseExponentConverter.of(MetricPrefix.NANO));
+			PowerConverter.of(MetricPrefix.NANO));
 
 	/**
 	 * Creates the {@link Quantity<Time>} based in the difference of the two

@@ -42,16 +42,21 @@ import javax.measure.spi.Prefix;
 
 import tech.units.indriya.AbstractConverter.Pair;
 
-public class BaseExponentConverter implements UnitConverter {
+/**
+ * 
+ * UnitConverter for numbers in base^exponent representation. 
+ *
+ */
+public class PowerConverter implements UnitConverter {
 
 	private final int base;
 	private final int exponent;
 
 	public static UnitConverter of(Prefix prefix) {
-		return new BaseExponentConverter(prefix.getBase(), prefix.getExponent());
+		return new PowerConverter(prefix.getBase(), prefix.getExponent());
 	}
 
-	protected BaseExponentConverter(int base, int exponent) {
+	protected PowerConverter(int base, int exponent) {
 		if(base == 0 && exponent == 0) {
 			throw new IllegalArgumentException("base and exponent can not be both zero at the same time (0^0 is undefined)");
 		}
@@ -59,6 +64,14 @@ public class BaseExponentConverter implements UnitConverter {
 		this.exponent = exponent;
 	}
 
+	public int getBase() {
+		return base;
+	}
+	
+	public int getExponent() {
+		return exponent;
+	}
+	
 	@Override
 	public boolean isIdentity() {
 		if( base == 1 ) {
@@ -75,7 +88,7 @@ public class BaseExponentConverter implements UnitConverter {
 
 	@Override
 	public UnitConverter inverse() {
-		return isIdentity() ? this : new BaseExponentConverter(base, -exponent);
+		return isIdentity() ? this : new PowerConverter(base, -exponent);
 	}
 
 	@Override
@@ -165,11 +178,16 @@ public class BaseExponentConverter implements UnitConverter {
 				return true;
 			}
 		}
-		if (obj instanceof BaseExponentConverter) {
-			BaseExponentConverter other = (BaseExponentConverter) obj;
+		if (obj instanceof PowerConverter) {
+			PowerConverter other = (PowerConverter) obj;
 			return this.base == other.base && this.exponent == other.exponent;
 		}
 		return false;
+	}
+
+	@Override
+	public final String toString() {
+		return "BaseExponentConverter(" + base + "^" + exponent + ")";
 	}
 
 }

@@ -36,11 +36,12 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import javax.measure.UnitConverter;
 import javax.measure.spi.Prefix;
 
-import tech.units.indriya.function.BaseExponentConverter;
+import tech.units.indriya.function.PowerConverter;
 import tech.units.indriya.function.UnitComparator;
 import tech.uom.lib.common.function.Converter;
 
@@ -70,7 +71,8 @@ public abstract class AbstractConverter
 	/**
 	 * Holds identity converter.
 	 */
-	@Deprecated //[ahuber] potentially misused
+	@Deprecated //[ahuber] potentially misused: checking whether a UnitConverter is an identity operator
+	// should be done with unitConverter.isIdentity() rather then unitConverter == AbstractConverter.IDENTITY
 	public static final AbstractConverter IDENTITY = new Identity();
 
 	/**
@@ -103,7 +105,7 @@ public abstract class AbstractConverter
 	 *             converter)
 	 */
 	public static UnitConverter of(Prefix prefix) {
-		return BaseExponentConverter.of(prefix);
+		return PowerConverter.of(prefix);
 	}
 
 	@Override
@@ -329,5 +331,14 @@ public abstract class AbstractConverter
 			}
 			return -1;
 		}
+		
+		@Override
+		public String toString() {
+			return String.format("AbstractConverter.Pair[%s]",
+					getConversionSteps().stream()
+					.map(UnitConverter::toString)
+					.collect(Collectors.joining(", ")) );
+		}
+		
 	}
 }

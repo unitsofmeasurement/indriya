@@ -65,7 +65,7 @@ class ConverterFormatter {
    * @return the operator precedence of the given UnitConverter
    */
   static int formatConverter(UnitConverter converter, boolean continued, int unitPrecedence, StringBuilder buffer, SymbolMap symbolMap) {
-    final Prefix prefix = symbolMap.getPrefix((BaseExponentConverter) converter);
+    final Prefix prefix = symbolMap.getPrefix((PowerConverter) converter);
     if ((prefix != null) && (unitPrecedence == EBNFHelper.NOOP_PRECEDENCE)) {
       return noopPrecedence(buffer, symbolMap, prefix);
     } else if (converter instanceof AddConverter) {
@@ -77,7 +77,9 @@ class ConverterFormatter {
     } else if (converter instanceof MultiplyConverter) {
       return productPrecedence((MultiplyConverter) converter, continued, unitPrecedence, buffer);
     } else if (converter instanceof RationalConverter) {
-      return productPrecedence((RationalConverter) converter, continued, unitPrecedence, buffer);
+        return productPrecedence((RationalConverter) converter, continued, unitPrecedence, buffer);
+    } else if (converter instanceof PowerConverter) {
+        return productPrecedence((PowerConverter) converter, continued, unitPrecedence, buffer);
     } else if (converter instanceof AbstractConverter.Pair) {
       AbstractConverter.Pair compound = (AbstractConverter.Pair) converter;
       if (compound.getLeft() == AbstractConverter.IDENTITY) {
@@ -107,6 +109,22 @@ class ConverterFormatter {
     }
   }
 
+  private static int productPrecedence(PowerConverter converter, boolean continued, int unitPrecedence, StringBuilder buffer) {
+    if (unitPrecedence < EBNFHelper.PRODUCT_PRECEDENCE) {
+      buffer.insert(0, '(');
+      buffer.append(')');
+    }
+    PowerConverter powerConverter = converter;
+    
+    if(!powerConverter.isIdentity()) {
+		if (continued) {
+	        buffer.append(EBNFHelper.MIDDLE_DOT);
+	    }
+	    buffer.append(powerConverter.getBase()).append("^").append(powerConverter.getExponent());
+    }
+    return EBNFHelper.PRODUCT_PRECEDENCE;
+  }
+  
   private static int productPrecedence(RationalConverter converter, boolean continued, int unitPrecedence, StringBuilder buffer) {
     if (unitPrecedence < EBNFHelper.PRODUCT_PRECEDENCE) {
       buffer.insert(0, '(');

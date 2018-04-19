@@ -35,7 +35,7 @@ import javax.measure.spi.Prefix;
 
 import tech.units.indriya.format.SimpleUnitFormat;
 import tech.units.indriya.function.AddConverter;
-import tech.units.indriya.function.BaseExponentConverter;
+import tech.units.indriya.function.PowerConverter;
 import tech.units.indriya.function.MultiplyConverter;
 import tech.units.indriya.function.RationalConverter;
 import tech.units.indriya.quantity.QuantityDimension;
@@ -556,7 +556,7 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
 	
 	@Override
 	public Unit<Q> prefix(Prefix prefix) {
-		return this.transform(BaseExponentConverter.of(prefix));
+		return this.transform(PowerConverter.of(prefix));
 	}
 
 	/**
