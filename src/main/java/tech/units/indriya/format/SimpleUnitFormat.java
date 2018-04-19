@@ -40,12 +40,12 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.measure.MetricPrefix;
+import javax.measure.Prefix;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.UnitConverter;
 import javax.measure.format.MeasurementParseException;
 import javax.measure.format.UnitFormat;
-import javax.measure.spi.Prefix;
 
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.function.AddConverter;

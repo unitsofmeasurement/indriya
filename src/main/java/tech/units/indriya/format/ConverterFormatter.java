@@ -29,8 +29,8 @@
  */
 package tech.units.indriya.format;
 
+import javax.measure.Prefix;
 import javax.measure.UnitConverter;
-import javax.measure.spi.Prefix;
 
 import tech.units.indriya.AbstractConverter;
 import tech.units.indriya.function.*;

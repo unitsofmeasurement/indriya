@@ -38,7 +38,7 @@ import java.util.Collection;
 
 import javax.measure.BinaryPrefix;
 import javax.measure.MetricPrefix;
-import javax.measure.spi.Prefix;
+import javax.measure.Prefix;
 import javax.measure.spi.ServiceProvider;
 import javax.measure.spi.SystemOfUnits;
 import javax.measure.spi.SystemOfUnitsService;

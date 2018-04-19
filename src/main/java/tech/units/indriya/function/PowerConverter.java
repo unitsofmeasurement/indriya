@@ -37,8 +37,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import javax.measure.Prefix;
 import javax.measure.UnitConverter;
-import javax.measure.spi.Prefix;
 
 import tech.units.indriya.AbstractConverter;
 

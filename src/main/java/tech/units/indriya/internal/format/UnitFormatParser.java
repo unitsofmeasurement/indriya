@@ -29,8 +29,8 @@
  */
 package tech.units.indriya.internal.format;
 
+import javax.measure.Prefix;
 import javax.measure.Unit;
-import javax.measure.spi.Prefix;
 
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.format.SymbolMap;

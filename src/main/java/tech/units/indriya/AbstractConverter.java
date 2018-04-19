@@ -39,8 +39,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import javax.measure.Prefix;
 import javax.measure.UnitConverter;
-import javax.measure.spi.Prefix;
 
 import tech.units.indriya.function.PowerConverter;
 import tech.units.indriya.function.UnitComparator;

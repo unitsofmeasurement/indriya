@@ -31,7 +31,6 @@ package tech.units.indriya;
 
 import javax.measure.*;
 import javax.measure.quantity.Dimensionless;
-import javax.measure.spi.Prefix;
 
 import tech.units.indriya.format.SimpleUnitFormat;
 import tech.units.indriya.function.AddConverter;

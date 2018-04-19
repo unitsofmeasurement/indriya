@@ -32,8 +32,8 @@ package tech.units.indriya.internal.format;
 
 import static tech.units.indriya.internal.format.UnitTokenConstants.*;
 
+import javax.measure.Prefix;
 import javax.measure.Unit;
-import javax.measure.spi.Prefix;
 
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.format.SymbolMap;

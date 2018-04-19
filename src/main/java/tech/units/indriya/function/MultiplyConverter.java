@@ -29,8 +29,8 @@
  */
 package tech.units.indriya.function;
 
+import javax.measure.Prefix;
 import javax.measure.UnitConverter;
-import javax.measure.spi.Prefix;
 
 import tech.units.indriya.AbstractConverter;
 import tech.uom.lib.common.function.DoubleFactorSupplier;
