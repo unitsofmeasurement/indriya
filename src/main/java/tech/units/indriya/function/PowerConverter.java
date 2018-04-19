@@ -187,7 +187,7 @@ public class PowerConverter implements UnitConverter {
 
 	@Override
 	public final String toString() {
-		return "BaseExponentConverter(" + base + "^" + exponent + ")";
+		return "PowerConverter(" + base + "^" + exponent + ")";
 	}
 
 }
