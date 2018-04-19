@@ -42,12 +42,13 @@ import javax.measure.UnitConverter;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
 import javax.measure.quantity.Volume;
+
+import static javax.measure.BinaryPrefix.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static javax.measure.spi.BinaryPrefix.*;
-import static tech.units.indriya.unit.MetricPrefix.*;
+import static javax.measure.MetricPrefix.*;
 import static tech.units.indriya.unit.Units.*;
 
 import java.math.BigDecimal;
@@ -203,7 +204,9 @@ public class PrefixTest {
 
   @Test
   public void testGibi() {
-	assertEquals(1073741824d, GIBI.getFactor());
+	  
+	final BigInteger exactFactor = BigInteger.valueOf(GIBI.getBase()).pow(GIBI.getExponent());
+	assertEquals(1073741824L, exactFactor.longValue());
     final UnitConverter expected = new RationalConverter(2097152, 1953125);
     final UnitConverter actual = GIBI(METRE).getConverterTo(GIGA(METRE));
     assertEquals(expected, actual);

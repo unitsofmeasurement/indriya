@@ -29,8 +29,6 @@
  */
 package tech.units.indriya;
 
-import static tech.units.indriya.AbstractUnit.converterOf;
-
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -42,8 +40,8 @@ import java.util.Objects;
 import javax.measure.UnitConverter;
 import javax.measure.spi.Prefix;
 
+import tech.units.indriya.function.BaseExponentConverter;
 import tech.units.indriya.function.UnitComparator;
-import tech.units.indriya.unit.MetricPrefix;
 import tech.uom.lib.common.function.Converter;
 
 /**
@@ -104,13 +102,7 @@ public abstract class AbstractConverter
 	 *             converter)
 	 */
 	public static UnitConverter of(Prefix prefix) {
-		Objects.requireNonNull(prefix);
-		if (prefix instanceof MetricPrefix) {
-			return ((MetricPrefix)prefix).getConverter();
-		} else {
-			Objects.requireNonNull(prefix.getFactor());
-			return converterOf(prefix.getFactor().doubleValue());
-		}
+		return BaseExponentConverter.of(prefix);
 	}
 
 	@Override

@@ -42,14 +42,15 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
+import javax.measure.MetricPrefix;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.quantity.Time;
 
-import tech.units.indriya.function.MultiplyConverter;
+import tech.units.indriya.function.BaseExponentConverter;
 import tech.units.indriya.quantity.Quantities;
-import tech.units.indriya.unit.MetricPrefix;
 import tech.units.indriya.unit.TransformedUnit;
+import tech.units.indriya.unit.Units;
 
 /**
  * @author Otavio
@@ -65,13 +66,13 @@ public final class TimeQuantities {
 	// Convenience constants outside the unit system (multiples are not held there)
 
 	public static final Unit<Time> MICROSECOND = new TransformedUnit<>("μs", SECOND, SECOND,
-			MultiplyConverter.of(MetricPrefix.MICRO.getFactor().doubleValue()));
+			BaseExponentConverter.of(MetricPrefix.MICRO));
 
-	public static final TransformedUnit<Time> MILLISECOND = new TransformedUnit<>("ms", SECOND, SECOND, 
-			MultiplyConverter.of(MetricPrefix.MILLI.getFactor().doubleValue()));
+	public static final TransformedUnit<Time> MILLISECOND = new TransformedUnit<>("ms", SECOND, SECOND,
+			BaseExponentConverter.of(MetricPrefix.MILLI));
 
 	public static final TransformedUnit<Time> NANOSECOND = new TransformedUnit<>("ns", SECOND, SECOND,
-			MultiplyConverter.of(MetricPrefix.NANO.getFactor().doubleValue()));
+			BaseExponentConverter.of(MetricPrefix.NANO));
 
 	/**
 	 * Creates the {@link Quantity<Time>} based in the difference of the two

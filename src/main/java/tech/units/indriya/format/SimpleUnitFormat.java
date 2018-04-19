@@ -29,7 +29,7 @@
  */
 package tech.units.indriya.format;
 
-import static tech.units.indriya.unit.MetricPrefix.*;
+import static javax.measure.MetricPrefix.*;
 
 import java.io.IOException;
 import java.lang.CharSequence;
@@ -45,7 +45,6 @@ import javax.measure.UnitConverter;
 import javax.measure.Quantity;
 import javax.measure.format.MeasurementParseException;
 import javax.measure.format.UnitFormat;
-import tech.units.indriya.unit.MetricPrefix;
 import javax.measure.spi.Prefix;
 
 import tech.units.indriya.AbstractConverter;
@@ -970,14 +969,14 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
     ASCII.label(Units.CUBIC_METRE, "m3");
     ASCII.label(Units.LITRE, "l");
     DEFAULT.label(Units.LITRE, "l");
-    DEFAULT.label(MetricPrefix.MICRO(Units.LITRE), "µl");
-    ASCII.label(MetricPrefix.MICRO(Units.LITRE), "microL");
-    ASCII.label(MetricPrefix.MILLI(Units.LITRE), "mL");
-    DEFAULT.label(MetricPrefix.MILLI(Units.LITRE), "ml");
-    ASCII.label(MetricPrefix.CENTI(Units.LITRE), "cL");
-    DEFAULT.label(MetricPrefix.CENTI(Units.LITRE), "cl");
-    ASCII.label(MetricPrefix.DECI(Units.LITRE), "dL");
-    DEFAULT.label(MetricPrefix.DECI(Units.LITRE), "dl");
+    DEFAULT.label(MICRO(Units.LITRE), "µl");
+    ASCII.label(MICRO(Units.LITRE), "microL");
+    ASCII.label(MILLI(Units.LITRE), "mL");
+    DEFAULT.label(MILLI(Units.LITRE), "ml");
+    ASCII.label(CENTI(Units.LITRE), "cL");
+    DEFAULT.label(CENTI(Units.LITRE), "cl");
+    ASCII.label(DECI(Units.LITRE), "dL");
+    DEFAULT.label(DECI(Units.LITRE), "dl");
     DEFAULT.label(Units.NEWTON, "N");
     ASCII.label(Units.NEWTON, "N");
     DEFAULT.label(Units.RADIAN, "rad");

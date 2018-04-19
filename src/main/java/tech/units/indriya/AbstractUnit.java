@@ -31,9 +31,11 @@ package tech.units.indriya;
 
 import javax.measure.*;
 import javax.measure.quantity.Dimensionless;
+import javax.measure.spi.Prefix;
 
 import tech.units.indriya.format.SimpleUnitFormat;
 import tech.units.indriya.function.AddConverter;
+import tech.units.indriya.function.BaseExponentConverter;
 import tech.units.indriya.function.MultiplyConverter;
 import tech.units.indriya.function.RationalConverter;
 import tech.units.indriya.quantity.QuantityDimension;
@@ -551,6 +553,11 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
 			// n < 0
 			return ONE.divide(this.pow(-n));
 	}
+	
+	@Override
+	public Unit<Q> prefix(Prefix prefix) {
+		return this.transform(BaseExponentConverter.of(prefix));
+	}
 
 	/**
 	 * Compares this unit to the specified unit. The default implementation compares
@@ -627,4 +634,7 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
 			return false;
 		}
 	}
+	
+
+	
 }
