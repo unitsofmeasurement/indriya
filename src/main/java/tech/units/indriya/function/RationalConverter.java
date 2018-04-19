@@ -217,15 +217,6 @@ public final class RationalConverter extends AbstractConverter implements ValueS
     }
     return super.concatenate(converter);
   }
-  
-  UnitConverter compose(RationalConverter that) {
-	  BigInteger newDividend = this.getDividend().multiply(that.getDividend());
-	  BigInteger newDivisor = this.getDivisor().multiply(that.getDivisor());
-	  BigInteger gcd = newDividend.gcd(newDivisor);
-	  newDividend = newDividend.divide(gcd);
-	  newDivisor = newDivisor.divide(gcd);
-	  return (newDividend.equals(BigInteger.ONE) && newDivisor.equals(BigInteger.ONE)) ? IDENTITY : new RationalConverter(newDividend, newDivisor);
-  }
 
   @Override
   public RationalConverter inverse() {
@@ -286,4 +277,18 @@ public final class RationalConverter extends AbstractConverter implements ValueS
     }
     return this.getClass().getName().compareTo(o.getClass().getName());
   }
+  
+  // -- HELPER
+  
+  private UnitConverter compose(RationalConverter that) {
+	  BigInteger newDividend = this.getDividend().multiply(that.getDividend());
+	  BigInteger newDivisor = this.getDivisor().multiply(that.getDivisor());
+	  BigInteger gcd = newDividend.gcd(newDivisor);
+	  newDividend = newDividend.divide(gcd);
+	  newDivisor = newDivisor.divide(gcd);
+	  return (newDividend.equals(BigInteger.ONE) && newDivisor.equals(BigInteger.ONE)) 
+			  ? IDENTITY 
+			  : new RationalConverter(newDividend, newDivisor);
+  }
+  
 }

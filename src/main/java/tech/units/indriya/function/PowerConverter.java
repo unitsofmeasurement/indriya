@@ -169,7 +169,7 @@ public class PowerConverter extends AbstractConverter {
 			}
 		}
 		if(converter instanceof RationalConverter) {
-			return toRationalConverter().compose((RationalConverter) converter);
+			return toRationalConverter().concatenate((RationalConverter) converter);
 		}
 		return super.concatenate(converter);
 	}
@@ -233,7 +233,10 @@ public class PowerConverter extends AbstractConverter {
 		return new PowerConverter(this.base, this.exponent + other.exponent);
 	}
 	
-	RationalConverter toRationalConverter() {
+	public RationalConverter toRationalConverter() {
+		if(isIdentity()) {
+			throw new IllegalArgumentException("can not convert identity operator to RationalConverter");
+		}
 		return exponent>0
 				? new RationalConverter(BigInteger.valueOf(base).pow(exponent), BigInteger.ONE)
 				: new RationalConverter(BigInteger.ONE, BigInteger.valueOf(base).pow(-exponent));
