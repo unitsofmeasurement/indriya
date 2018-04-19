@@ -185,6 +185,22 @@ public final class RationalConverter extends AbstractConverter implements ValueS
   }
 
   @Override
+  protected Number convert(BigInteger value, MathContext ctx) {
+	BigInteger newDividend = dividend.multiply(value);
+	
+	//[ahuber] we try to return an exact BigInteger if possible
+	final BigInteger[] divideAndRemainder = newDividend.divideAndRemainder(divisor);
+	final BigInteger divisionResult = divideAndRemainder[0]; 
+	final BigInteger divisionRemainder = divideAndRemainder[1];
+
+	if(BigInteger.ZERO.compareTo(divisionRemainder) == 0) {
+		return divisionResult;
+	}
+	//[ahuber] fallback to BigDecimal, thats where we are loosing 'exactness'	
+	return convert(new BigDecimal(value), ctx);
+  }
+  
+  @Override
   public BigDecimal convert(BigDecimal value, MathContext ctx) throws ArithmeticException {
     BigDecimal decimalDividend = new BigDecimal(dividend, 0);
     BigDecimal decimalDivisor = new BigDecimal(divisor, 0);

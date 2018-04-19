@@ -29,12 +29,20 @@
  */
 package tech.units.indriya.unit;
 
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
+import static javax.measure.BinaryPrefix.*;
+import static javax.measure.MetricPrefix.*;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static tech.units.indriya.unit.Units.GRAM;
+import static tech.units.indriya.unit.Units.KILOGRAM;
+import static tech.units.indriya.unit.Units.LITRE;
+import static tech.units.indriya.unit.Units.METRE;
 
-import tech.units.indriya.function.RationalConverter;
-import tech.units.indriya.quantity.Quantities;
-import tech.units.indriya.unit.Units;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.List;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;
@@ -43,17 +51,10 @@ import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
 import javax.measure.quantity.Volume;
 
-import static javax.measure.BinaryPrefix.*;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static javax.measure.MetricPrefix.*;
-import static tech.units.indriya.unit.Units.*;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.List;
+import tech.units.indriya.quantity.Quantities;
 
 public class PrefixTest {
   @Test
@@ -209,7 +210,7 @@ public class PrefixTest {
 	final BigInteger exactFactor = BigInteger.valueOf(GIBI.getBase()).pow(GIBI.getExponent());
 	assertEquals(1073741824L, exactFactor.longValue());
 	
-    final Rational rational = Rational.of(2097152, 1953125);
+    final Rational rational = Rational.of(2_097_152L, 1_953_125L);
     final UnitConverter converter = GIBI(METRE).getConverterTo(GIGA(METRE));
     assertEquals(rational.dividend, converter.convert(rational.divisor));
     assertEquals(rational.doubleValue(), converter.convert(1.), 1E-12);
@@ -217,7 +218,7 @@ public class PrefixTest {
 
   @Test
   public void testTebi() {
-	final Rational rational = Rational.of(268435456L, 244140625L);
+	final Rational rational = Rational.of(268_435_456L, 244_140_625L);
     final UnitConverter converter = TEBI(LITRE).getConverterTo(TERA(LITRE));
     assertEquals(rational.dividend, converter.convert(rational.divisor));
     assertEquals(rational.doubleValue(), converter.convert(1.), 1E-12);
@@ -225,15 +226,23 @@ public class PrefixTest {
 
   @Test
   public void testPebi() {
-	final Rational rational = Rational.of(34359738368L, 30517578125L);
+	final Rational rational = Rational.of(34_359_738_368L, 30_517_578_125L);
     final UnitConverter converter = PEBI(LITRE).getConverterTo(PETA(LITRE));
     assertEquals(rational.dividend, converter.convert(rational.divisor));
     assertEquals(rational.doubleValue(), converter.convert(1.), 1E-12);
   }
   
   @Test
+  public void testExbi() {
+	final Rational rational = Rational.of(4_398_046_511_104L, 3_814_697_265_625L);
+    final UnitConverter converter = EXBI(GRAM).getConverterTo(EXA(GRAM));
+    assertEquals(rational.dividend, converter.convert(rational.divisor));
+    assertEquals(rational.doubleValue(), converter.convert(1.), 1E-12);
+  }
+  
+  @Test
   public void testZebi() {
-	final Rational rational = Rational.of(1, 6835937500000000000L);
+	  final Rational rational = Rational.of(562_949_953_421_312L, 47_683_715_8203_125L);
     final UnitConverter converter = ZEBI(GRAM).getConverterTo(ZETTA(GRAM));
     assertEquals(rational.dividend, converter.convert(rational.divisor));
     assertEquals(rational.doubleValue(), converter.convert(1.), 1E-12);
@@ -241,11 +250,12 @@ public class PrefixTest {
   
   @Test
   public void testYobi() {
-	final Rational rational = Rational.of(BigInteger.ONE, BigInteger.TEN.pow(17).multiply(BigInteger.valueOf(78125))); 
+	final Rational rational = Rational.of(72_057_594_037_927_936L, 59_604_644_775_390_625L); 
     final UnitConverter converter = YOBI(GRAM).getConverterTo(YOTTA(GRAM));
     assertEquals(rational.dividend, converter.convert(rational.divisor));
     assertEquals(rational.doubleValue(), converter.convert(1.), 1E-12);
   }
+  
   
   // -- HELPER
   

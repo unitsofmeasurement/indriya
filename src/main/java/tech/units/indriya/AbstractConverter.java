@@ -157,7 +157,7 @@ public abstract class AbstractConverter
 	public abstract double convert(double value);
 
 	protected Number convert(BigInteger value, MathContext ctx) {
-		return new BigDecimal(value);
+		return convert(new BigDecimal(value), ctx);
 	}
 	
 	public abstract BigDecimal convert(BigDecimal value, MathContext ctx) throws ArithmeticException;
