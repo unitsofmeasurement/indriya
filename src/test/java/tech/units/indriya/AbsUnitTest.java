@@ -32,7 +32,7 @@ package tech.units.indriya;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static javax.measure.MetricPrefix.*;
-import static tech.units.indriya.unit.Units.GRAM;
+import static tech.units.indriya.unit.Units.*;
 import javax.measure.quantity.Length;
 
 import org.junit.jupiter.api.BeforeAll;
@@ -40,7 +40,6 @@ import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.unit.BaseUnit;
-import tech.units.indriya.unit.Units;
 
 public class AbsUnitTest {
   private static final AbstractUnit<Length> sut = new BaseUnit<>("m");
@@ -65,22 +64,22 @@ public class AbsUnitTest {
 
   @Test
   public void testParse() {
-    assertEquals(KILO(Units.WATT), AbstractUnit.parse("kW"));
+    assertEquals(KILO(WATT), AbstractUnit.parse("kW"));
   }
 
   @Test
   public void testParse2() {
-    assertEquals(MILLI(Units.CELSIUS), AbstractUnit.parse("m°C"));
+    assertEquals(MILLI(CELSIUS), AbstractUnit.parse("m°C"));
   }
 
   @Test
   public void testCompareTo() {
-    assertEquals(0, ((AbstractUnit) Units.KILOGRAM).compareTo(Units.KILOGRAM));
+    assertEquals(0, ((AbstractUnit) KILOGRAM).compareTo(KILOGRAM));
   }
 
   @Test
   public void testCompareToOther() {
-    assertEquals(-1, ((AbstractUnit) Units.KILOGRAM).compareTo(KILO(Units.GRAM)));
+    assertEquals(-1, ((AbstractUnit) KILOGRAM).compareTo(KILO(GRAM)));
   }
 
   @Test

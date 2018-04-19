@@ -30,7 +30,6 @@
 package tech.units.indriya.unit;
 
 import javax.measure.Dimension;
-import javax.measure.Prefix;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.UnitConverter;

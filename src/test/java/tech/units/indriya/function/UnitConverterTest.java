@@ -42,7 +42,7 @@ import javax.measure.quantity.Temperature;
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.quantity.Quantities;
-import tech.units.indriya.unit.Units;
+
 
 public class UnitConverterTest {
   private final Unit<Length> sourceUnit = METRE;
@@ -72,15 +72,15 @@ public class UnitConverterTest {
 
   @Test
   public void testKelvinToCelsius() {
-    Quantity<Temperature> sut = Quantities.getQuantity(273.15d, Units.KELVIN).to(Units.CELSIUS);
+    Quantity<Temperature> sut = Quantities.getQuantity(273.15d, KELVIN).to(CELSIUS);
     assertNotNull(sut);
-    assertEquals(Units.CELSIUS, sut.getUnit());
+    assertEquals(CELSIUS, sut.getUnit());
     assertEquals(0d, sut.getValue());
   }
 
   @Test
   public void testConverterTo() {
-    assertEquals(Units.KILOGRAM.getConverterTo(KILO(Units.GRAM)), KILO(Units.GRAM).getConverterTo(Units.KILOGRAM));
+    assertEquals(KILOGRAM.getConverterTo(KILO(GRAM)), KILO(GRAM).getConverterTo(KILOGRAM));
   }
 
   @Test
