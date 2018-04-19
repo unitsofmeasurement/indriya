@@ -30,13 +30,9 @@
 package tech.units.indriya.spi;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.EnumSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.measure.Prefix;
 import javax.measure.spi.SystemOfUnits;
 import javax.measure.spi.SystemOfUnitsService;
 
@@ -56,11 +52,5 @@ public abstract class AbstractSystemOfUnitsService implements SystemOfUnitsServi
 	@Override
 	public SystemOfUnits getSystemOfUnits(String name) {
 		return souMap.get(name);
-	}
-
-	@SuppressWarnings("unchecked")
-	@Override
-	public Set<Prefix> getPrefixes(Class<? extends Prefix> prefixType) {
-		return Collections.<Prefix>unmodifiableSet(EnumSet.allOf(prefixType.asSubclass(Enum.class)));
 	}
 }
