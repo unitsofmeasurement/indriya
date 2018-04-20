@@ -49,7 +49,8 @@ import org.junit.jupiter.api.extension.ParameterResolver;
 @DisplayName("Testing Composition of UnitConverters")
 public class CompositionEquivalenceTest {
 	
-	private static enum ConverterType {
+	public static enum ConverterType {
+		
 		POWER(PowerConverter.class,
 				PowerConverter.of(3, 7), 
 				PowerConverter.of(7, -3)	),
@@ -69,30 +70,32 @@ public class CompositionEquivalenceTest {
 		//TODO there are more ...
 		;
 
-		@SuppressWarnings("unused")
+		public static final int typeCount = 5; // should be equal to ConverterType.values().length 
+		public static final int candidatesPerType = 2;
+		public static final int candidateCount = typeCount * candidatesPerType;
+		
 		private final Class<? extends UnitConverter> type;
 		private final UnitConverter[] candidates;
+		
+		public Class<? extends UnitConverter> getType() { return type; }
+		public UnitConverter[] getCandidates() { return candidates; }
 
 		private ConverterType(Class<? extends UnitConverter> type, UnitConverter ... instances) {
 			this.type = type;
 			this.candidates = instances;
 		}
-		
-		public static final int typeCount = 5; // should be equal to ConverterType.values().length 
-		public static final int candidatesPerType = 2;
-		public static final int candidateCount = typeCount * candidatesPerType;
 
 	}
 	
     @Nested
-    @DisplayName("When composing, any converter")
+    @DisplayName("When composing, any converter should ...")
     @ExtendWith(UnitConverterParameterResolver.class)
     public class Identity {
     	
     	@RepeatedTest(
     			value = ConverterType.candidateCount, 
     			name = "{currentRepetition} of {totalRepetitions} candidates")
-        @DisplayName("should compose with inverse to identity, commute with itself and with identity")
+        @DisplayName("compose with inverse to identity, commute with itself and with identity")
     	public void testIdentity(UnitConverter u0) {
     		
     		String msg = String.format("testing %s", u0);
@@ -106,11 +109,10 @@ public class CompositionEquivalenceTest {
     		assertEquals(true, commutes(u0, _I), msg);
     		assertEquals(true, commutes(_I, u0), msg);
     		
-    		// any converters, that are linear should commute, we need ordering to find a normal form
     	}
     	
     	@RepeatedTest(value = ConverterType.candidateCount * ConverterType.candidateCount)
-        @DisplayName("if scaling should commute with any other that is scaling")
+        @DisplayName("(if scaling) commute with any other that is scaling")
     	public void commuteWithScaling(UnitConverter u1, UnitConverter u2) {
     		if(u1.isLinear() && u2.isLinear()) {
     			assertEquals(true, commutes(u1, u2), String.format("testing %s %s", u1, u2));
@@ -156,12 +158,10 @@ public class CompositionEquivalenceTest {
 			int modulus = BigInteger.valueOf(ConverterType.candidateCount).pow(1+parameterContext.getIndex()).intValue();
 			int divisor = BigInteger.valueOf(ConverterType.candidateCount).pow(parameterContext.getIndex()).intValue();
 			
-			//System.out.println(conextKey+"["+parameterContext.getIndex()+"] --> "+next);
-			
 			next = (next % modulus) / divisor;
 			
 			UnitConverter candidate = ConverterType.values()[next/ConverterType.candidatesPerType]
-					.candidates[next%ConverterType.candidatesPerType];
+					.getCandidates()[next%ConverterType.candidatesPerType];
 			
 			return candidate;
 		}
