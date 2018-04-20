@@ -61,8 +61,19 @@ public class PowerConverter extends AbstractConverter {
 	 * @param prefix
 	 *            the prefix for the factor.
 	 */
-	public static UnitConverter of(Prefix prefix) {
+	public static PowerConverter of(Prefix prefix) {
 		return new PowerConverter(prefix.getBase(), prefix.getExponent());
+	}
+	
+	/**
+	 * Creates a converter with a factor represented by specified base^exponent.
+	 * 
+	 * @param base
+	 * @param exponent
+	 * @return
+	 */
+	public static PowerConverter of(int base, int exponent) {
+		return new PowerConverter(base, exponent);
 	}
 
 	protected PowerConverter(int base, int exponent) {
