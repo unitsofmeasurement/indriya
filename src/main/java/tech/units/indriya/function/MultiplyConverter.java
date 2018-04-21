@@ -60,7 +60,7 @@ public final class MultiplyConverter extends AbstractConverter implements ValueS
 	/**
 	 * Holds the scale factor.
 	 */
-	private double factor;
+	private final double factor;
 
 	/**
 	 * Creates a multiply converter with the specified scale factor.
@@ -72,8 +72,6 @@ public final class MultiplyConverter extends AbstractConverter implements ValueS
 	 *             converter)
 	 */
 	public MultiplyConverter(double factor) {
-		if (factor == 1.0)
-			throw new IllegalArgumentException("Would result in identity converter");
 		this.factor = factor;
 	}
 
@@ -100,11 +98,23 @@ public final class MultiplyConverter extends AbstractConverter implements ValueS
 	}
 
 	@Override
-	public UnitConverter concatenate(UnitConverter converter) {
-		if (!(converter instanceof MultiplyConverter))
-			return super.concatenate(converter);
-		double newfactor = factor * ((MultiplyConverter) converter).factor;
-		return newfactor == 1.0 ? IDENTITY : new MultiplyConverter(newfactor);
+	public boolean isIdentity() {
+		return factor == 1.0;
+	}
+
+	@Override
+	protected boolean isSimpleCompositionWith(AbstractConverter that) {
+		return that.isLinear();
+	}
+
+	@Override
+	protected AbstractConverter simpleCompose(AbstractConverter that) {
+		if (that instanceof MultiplyConverter) {
+			return new MultiplyConverter(factor * ((MultiplyConverter) that).factor);
+		}
+		throw new IllegalStateException(String.format(
+				"%s.simpleCompose() not handled for linear converter %s", 
+				this, that));
 	}
 
 	@Override

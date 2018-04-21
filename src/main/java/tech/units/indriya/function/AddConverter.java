@@ -29,7 +29,6 @@
  */
 package tech.units.indriya.function;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.Objects;
@@ -57,7 +56,7 @@ public final class AddConverter extends AbstractConverter implements ValueSuppli
   /**
    * Holds the offset.
    */
-  private double offset;
+  private final double offset;
 
   /**
    * Creates an additive converter having the specified offset.
@@ -68,8 +67,6 @@ public final class AddConverter extends AbstractConverter implements ValueSuppli
    *           if offset is <code>0.0</code> (would result in identity converter).
    */
   public AddConverter(double offset) {
-    if (offset == 0.0)
-      throw new IllegalArgumentException("Would result in identity converter");
     this.offset = offset;
   }
 
@@ -81,15 +78,22 @@ public final class AddConverter extends AbstractConverter implements ValueSuppli
   public double getOffset() {
     return offset;
   }
-
+  
   @Override
-  public UnitConverter concatenate(UnitConverter converter) {
-    if (!(converter instanceof AddConverter))
-      return super.concatenate(converter);
-    double newOffset = offset + ((AddConverter) converter).offset;
-    return newOffset == 0.0 ? IDENTITY : new AddConverter(newOffset);
+  public boolean isIdentity() {
+    return offset == 0.0;
   }
 
+  @Override
+  protected boolean isSimpleCompositionWith(AbstractConverter that) {
+  	return that instanceof AddConverter;
+  }
+
+  @Override
+  protected AbstractConverter simpleCompose(AbstractConverter that) {
+    return new AddConverter(offset + ((AddConverter)that).offset);
+  }
+  
   @Override
   public AddConverter inverse() {
     return new AddConverter(-offset);
@@ -130,7 +134,7 @@ public final class AddConverter extends AbstractConverter implements ValueSuppli
 
   @Override
   public boolean isLinear() {
-    return false;
+    return isIdentity();
   }
 
   public Double getValue() {
@@ -147,4 +151,6 @@ public final class AddConverter extends AbstractConverter implements ValueSuppli
     }
     return -1;
   }
+
+
 }

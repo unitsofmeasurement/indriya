@@ -72,7 +72,7 @@ public abstract class AbstractConverter
 	/**
 	 * Holds identity converter.
 	 */
-	@Deprecated //[ahuber] potentially misused: checking whether a UnitConverter is an identity operator
+	// [ahuber] potentially misused: checking whether a UnitConverter is an identity operator
 	// should be done with unitConverter.isIdentity() rather then unitConverter == AbstractConverter.IDENTITY
 	public static final AbstractConverter IDENTITY = new Identity();
 
@@ -83,17 +83,20 @@ public abstract class AbstractConverter
 	}
 
 	/**
-	 * Concatenates this physics converter with another physics converter. The
-	 * resulting converter is equivalent to first converting by the specified
-	 * converter (right converter), and then converting by this converter (left
-	 * converter).
-	 *
+	 * Guard for {@link #simpleCompose(AbstractConverter)}
 	 * @param that
-	 *            the other converter.
-	 * @return the concatenation of this converter with that converter.
+	 * @return whether or not a 'simple' composition of transformations is possible
 	 */
-	public AbstractConverter concatenate(AbstractConverter that) {
-		return (that == IDENTITY) ? this : new Pair(this, that);
+	protected abstract boolean isSimpleCompositionWith(AbstractConverter that);
+	
+	/**
+	 * Guarded by {@link #isSimpleCompositionWith(AbstractConverter)}
+	 * @param that
+	 * @return a new AbstractConverter that adds no additional conversion step
+	 */
+	protected AbstractConverter simpleCompose(AbstractConverter that) {
+		throw new IllegalStateException(
+				String.format("Concrete UnitConverter '%s' does not implement simpleCompose(...).", this)); 
 	}
 
 	/**
@@ -110,11 +113,6 @@ public abstract class AbstractConverter
 	}
 
 	@Override
-	public boolean isIdentity() {
-		return false;
-	}
-
-	@Override
 	public abstract boolean equals(Object cvtr);
 
 	@Override
@@ -124,8 +122,21 @@ public abstract class AbstractConverter
 	public abstract AbstractConverter inverse();
 
 	@Override
-	public UnitConverter concatenate(UnitConverter converter) {
-		return (converter == IDENTITY) ? this : new Pair(this, converter);
+	public final UnitConverter concatenate(UnitConverter converter) {
+		Objects.requireNonNull(converter, "Can not concatenate null.");
+		if(converter instanceof AbstractConverter) {
+			// let Simplifier decide
+			AbstractConverter other = (AbstractConverter) converter;
+			return AbstractUnit.Simplifier.compose(this, other);
+		}
+		// converter is not known to this implementation ...
+		if(converter.isIdentity()) {
+			return this;
+		}
+		if(this.isIdentity()) {
+			return converter;
+		}
+		return new Pair(this, converter);
 	}
 
 	@Override
@@ -139,18 +150,20 @@ public abstract class AbstractConverter
 	 * @throws IllegalArgumentException
 	 *             if the value is </code>null</code>.
 	 */
-	public Number convert(Number value) {
+	public final Number convert(Number value) {
+		if(isIdentity()) {
+			return value;
+		}
+		if (value == null) {
+			throw new IllegalArgumentException("Value cannot be null");
+		}
 		if (value instanceof BigDecimal) {
 			return convert((BigDecimal) value, MathContext.DECIMAL128);
 		}
 		if (value instanceof BigInteger) {
 			return convert((BigInteger) value, MathContext.DECIMAL128);
 		}
-		if (value != null) {
-			return convert(value.doubleValue());
-		} else {
-			throw new IllegalArgumentException("Value cannot be null");
-		}
+		return convert(value.doubleValue());
 	}
 
 	@Override
@@ -198,11 +211,6 @@ public abstract class AbstractConverter
 		}
 
 		@Override
-		public UnitConverter concatenate(UnitConverter converter) {
-			return converter;
-		}
-
-		@Override
 		public boolean equals(Object cvtr) {
 			return (cvtr instanceof Identity);
 		}
@@ -223,6 +231,11 @@ public abstract class AbstractConverter
 				return 0;
 			}
 			return -1;
+		}
+
+		@Override
+		protected boolean isSimpleCompositionWith(AbstractConverter that) {
+			return true;
 		}
 	}
 
@@ -360,6 +373,13 @@ public abstract class AbstractConverter
 					.map(UnitConverter::toString)
 					.collect(Collectors.joining(", ")) );
 		}
+
+		@Override
+		protected boolean isSimpleCompositionWith(AbstractConverter that) {
+			return false;
+		}
 		
 	}
+
+
 }

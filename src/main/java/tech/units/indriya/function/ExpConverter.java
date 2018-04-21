@@ -99,6 +99,24 @@ public final class ExpConverter extends AbstractConverter implements ValueSuppli
   }
 
   @Override
+  public boolean isIdentity() {
+    return false;
+  }
+
+  @Override
+  protected boolean isSimpleCompositionWith(AbstractConverter that) {
+	if(that instanceof LogConverter) {
+		return ((LogConverter)that).getBase() == base; // can compose with log to identity, provided it has same base
+	}
+  	return false;
+  }
+
+  @Override
+  protected AbstractConverter simpleCompose(AbstractConverter that) {
+    return AbstractConverter.IDENTITY;
+  }
+  
+  @Override
   public AbstractConverter inverse() {
     return new LogConverter(base);
   }
@@ -162,4 +180,6 @@ public final class ExpConverter extends AbstractConverter implements ValueSuppli
     }
     return -1;
   }
+
+
 }

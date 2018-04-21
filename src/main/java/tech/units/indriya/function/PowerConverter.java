@@ -50,7 +50,7 @@ import tech.units.indriya.AbstractConverter;
  */
 public class PowerConverter extends AbstractConverter {
 	private static final long serialVersionUID = 3546932001671571300L;
-	
+
 	private final int base;
 	private final int exponent;
 	private final int hashCode;
@@ -64,7 +64,7 @@ public class PowerConverter extends AbstractConverter {
 	public static PowerConverter of(Prefix prefix) {
 		return new PowerConverter(prefix.getBase(), prefix.getExponent());
 	}
-	
+
 	/**
 	 * Creates a converter with a factor represented by specified base^exponent.
 	 * 
@@ -88,11 +88,11 @@ public class PowerConverter extends AbstractConverter {
 	public int getBase() {
 		return base;
 	}
-	
+
 	public int getExponent() {
 		return exponent;
 	}
-	
+
 	@Override
 	public boolean isIdentity() {
 		if( base == 1 ) {
@@ -105,6 +105,34 @@ public class PowerConverter extends AbstractConverter {
 	@Override
 	public boolean isLinear() {
 		return true;
+	}
+
+	@Override
+	protected boolean isSimpleCompositionWith(AbstractConverter that) {
+		if (that instanceof PowerConverter) {
+			return ((PowerConverter) that).base == this.base;
+		}
+		return that.isLinear();
+	}
+
+	@Override
+	protected AbstractConverter simpleCompose(AbstractConverter that) {
+		if (that instanceof PowerConverter) {
+			PowerConverter other = (PowerConverter) that;
+			if(this.base == other.base) { // always true due to guard above
+				return composeSameBaseNonIdentity(other);
+			} 
+		}
+		if (that instanceof RationalConverter) {
+			return (AbstractConverter) toRationalConverter().concatenate((RationalConverter) that);
+		}
+		if (that instanceof MultiplyConverter) {
+			// TODO simple, but not the best we can do
+			return new MultiplyConverter(Math.pow(base, exponent) * ((MultiplyConverter) that).getFactor());
+		}
+		throw new IllegalStateException(String.format(
+				"%s.simpleCompose() not handled for linear converter %s", 
+				this, that));
 	}
 
 	@Override
@@ -136,30 +164,18 @@ public class PowerConverter extends AbstractConverter {
 
 		return bdecValue.divide(bdecFactor, MathContext.DECIMAL128);
 	}
-	
+
 	@Override
 	public BigDecimal convert(BigDecimal value, MathContext ctx) throws ArithmeticException {
 		//[ahuber] at this point we know exponent is not zero
-		
-		//[ahuber] exact number representation of factor 
-		final BigDecimal bdecFactor = new BigDecimal(BigInteger.valueOf(base).pow(Math.abs(exponent)));
-		final BigDecimal bdecValue = (BigDecimal) value;
 
 		//[ahuber] thats where we are loosing 'exactness'
+		final BigDecimal bdecFactor = new BigDecimal(BigInteger.valueOf(base).pow(Math.abs(exponent)));
+		final BigDecimal bdecValue = (BigDecimal) value;
+		
 		return exponent>0 
 				? bdecValue.multiply(bdecFactor, ctx)
-				: bdecValue.divide(bdecFactor, ctx);
-	}
-	
-	@Override
-	public Number convert(Number value) {
-
-		//TODO [ahuber] this should be handled in super class
-		if(isIdentity()) {
-			return value;
-		}
-		
-		return super.convert(value);
+						: bdecValue.divide(bdecFactor, ctx);
 	}
 
 	@Override
@@ -169,27 +185,6 @@ public class PowerConverter extends AbstractConverter {
 		}
 		//[ahuber] multiplication is probably non-critical regarding preservation of precision
 		return value * Math.pow(base, exponent);
-	}
-
-	@Override
-	public UnitConverter concatenate(UnitConverter converter) {
-		Objects.requireNonNull(converter);
-		if(isIdentity()) {
-			return converter;
-		}
-		if(converter.isIdentity()) {
-			return this;
-		}
-		if(converter instanceof PowerConverter) {
-			PowerConverter other = (PowerConverter) converter;
-			if(this.base == other.base) {
-				return composeSameBaseNonIdentity(other);
-			}
-		}
-		if(converter instanceof RationalConverter) {
-			return toRationalConverter().concatenate((RationalConverter) converter);
-		}
-		return super.concatenate(converter);
 	}
 
 	@Override
@@ -219,9 +214,12 @@ public class PowerConverter extends AbstractConverter {
 	public final String toString() {
 		return "PowerConverter(" + base + "^" + exponent + ")";
 	}
-	
+
 	@Override
 	public int compareTo(UnitConverter o) {
+		
+		//TODO let simplifier handle this
+		
 		if (this == o) {
 			return 0;
 		}
@@ -243,20 +241,20 @@ public class PowerConverter extends AbstractConverter {
 	public int hashCode() {
 		return hashCode;
 	}
-	
+
 	// -- HELPER
-	
+
 	private PowerConverter composeSameBaseNonIdentity(PowerConverter other) {
 		// no check for identity required
 		return new PowerConverter(this.base, this.exponent + other.exponent);
 	}
-	
+
 	public RationalConverter toRationalConverter() {
 		if(isIdentity()) {
 			throw new IllegalArgumentException("can not convert identity operator to RationalConverter");
 		}
 		return exponent>0
 				? new RationalConverter(BigInteger.valueOf(base).pow(exponent), BigInteger.ONE)
-				: new RationalConverter(BigInteger.ONE, BigInteger.valueOf(base).pow(-exponent));
+						: new RationalConverter(BigInteger.ONE, BigInteger.valueOf(base).pow(-exponent));
 	}
 }
