@@ -131,7 +131,7 @@ public class CompositionEquivalenceTest {
 	}
 	
 	@Test
-	void setupForTestShouldIncludeAllTypes() throws Exception {
+	public void setupForTestShouldIncludeAllTypes() throws Exception {
 		assertEquals(ConverterType.values().length, ConverterType.typeCount);
 	}
 
