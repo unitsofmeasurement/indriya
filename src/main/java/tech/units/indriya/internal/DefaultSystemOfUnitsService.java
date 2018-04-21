@@ -70,7 +70,8 @@ public class DefaultSystemOfUnitsService extends AbstractSystemOfUnitsService {
 			return Stream.of(BinaryPrefix.values()).collect(Collectors.toSet()); 
 		}
 		if(Prefix.class.equals(prefixType)) {
-			//TODO  
+			Stream.concat( Stream.of(MetricPrefix.values()), Stream.of(BinaryPrefix.values()))
+			.collect(Collectors.toSet()); 
 		}
 		return Collections.emptySet();
 	}
