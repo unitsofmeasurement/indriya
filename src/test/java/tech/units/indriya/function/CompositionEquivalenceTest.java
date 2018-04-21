@@ -29,8 +29,7 @@
  */
 package tech.units.indriya.function;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -44,6 +43,7 @@ import javax.measure.UnitConverter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.RepeatedTest;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
@@ -54,6 +54,7 @@ import org.junit.jupiter.api.extension.ParameterResolver;
 public class CompositionEquivalenceTest {
 
 	private Random random = new Random(0); // seed = 0, to make tests reproducible
+	private final static int RANDOM_VALUES_REPEAT_COUNT = 100;
 
 	public static enum ConverterType {
 
@@ -92,7 +93,7 @@ public class CompositionEquivalenceTest {
 		// when adding entries, also increment the typeCount!
 		;
 
-		public static final int typeCount = 6; // should be equal to ConverterType.values().length 
+		public static final int typeCount = 8; // should be equal to ConverterType.values().length 
 		public static final int candidatesPerType = 2;
 		public static final int candidateCount = typeCount * candidatesPerType;
 
@@ -122,6 +123,11 @@ public class CompositionEquivalenceTest {
 		}
 
 	}
+	
+	@Test
+	void setupForTestShouldIncludeAllTypes() throws Exception {
+		assertEquals(ConverterType.values().length, ConverterType.typeCount);
+	}
 
 	@Nested
 	@DisplayName("Any converter type should ...")
@@ -147,11 +153,11 @@ public class CompositionEquivalenceTest {
 					return;
 				}
 
-				assertEquals(true, _I.isIdentity(), msg);
-				assertEquals(true, _I.isLinear(), msg);  // identity must always be linear
-				assertEquals(true, _I.concatenate(_I).isIdentity(), msg);
+				assertTrue(_I.isIdentity(), msg);
+				assertTrue(_I.isLinear(), msg);  // identity must always be linear
+				assertTrue(_I.concatenate(_I).isIdentity(), msg);
 
-				assertIdentityCalculusRepeated(_I, 100);
+				assertIdentityCalculus(_I, RANDOM_VALUES_REPEAT_COUNT);
 			}
 
 		}		
@@ -174,12 +180,12 @@ public class CompositionEquivalenceTest {
 
 			UnitConverter _I = identityOf(u0); // get identity by composition
 
-			assertEquals(true, _I.isIdentity(), msg);
-			assertEquals(true, _I.isLinear(), msg);  // identity must always be linear
-			assertEquals(true, _I.concatenate(_I).isIdentity(), msg);
-			assertEquals(true, commutes(u0, u0), msg);
-			assertEquals(true, commutes(u0, _I), msg);
-			assertEquals(true, commutes(_I, u0), msg);
+			assertTrue(_I.isIdentity(), msg);
+			assertTrue(_I.isLinear(), msg);  // identity must always be linear
+			assertTrue(_I.concatenate(_I).isIdentity(), msg);
+			assertTrue(commutes(u0, u0), msg);
+			assertTrue(commutes(u0, _I), msg);
+			assertTrue(commutes(_I, u0), msg);
 		}
 
 		@RepeatedTest(
@@ -188,7 +194,7 @@ public class CompositionEquivalenceTest {
 		@DisplayName("(if identity) calculate like identity")
 		public void testIdentityCalculus(UnitConverter u0) {
 			UnitConverter _I = identityOf(u0);
-			assertIdentityCalculusRepeated(_I, 100);
+			assertIdentityCalculus(_I, RANDOM_VALUES_REPEAT_COUNT); 
 		}
 
 
@@ -196,7 +202,8 @@ public class CompositionEquivalenceTest {
 		@DisplayName("(if scaling) commute with any other that is scaling")
 		public void commuteWithScaling(UnitConverter u1, UnitConverter u2) {
 			if(u1.isLinear() && u2.isLinear()) {
-				assertEquals(true, commutes(u1, u2), String.format("testing %s %s", u1, u2));
+				assertTrue(commutes(u1, u2), String.format("testing %s %s", u1, u2));
+				assertCommutingCalculus(u1, u2, RANDOM_VALUES_REPEAT_COUNT); 
 			}
 		}
 
@@ -222,26 +229,55 @@ public class CompositionEquivalenceTest {
 
 		return ab.concatenate(ba.inverse()).isIdentity();
 	}
-
-	private void assertIdentityCalculus(UnitConverter a) {
+	
+	private double nextRandomValue() {
 		double randomRange = Math.pow(10., random.nextInt(65)-32); // [10^-32..10^32]
 		double randomFactor = 2.*random.nextDouble()-1.; // [-1..1]
 		double randomValue = randomFactor * randomRange;
-		// double calculus
-		assertEquals(randomValue, a.convert(randomValue), 1E-12, 
-				String.format("testing %s: identity convertion failed for double value %f", 
-						a, randomValue));
-		// BigDecimal calculus
-		BigDecimal bdRandomValue = BigDecimal.valueOf(randomValue);
-		// we assume a.convert(BigDecimal) returns BigDecimal, but this is not a strict requirement
-		assertEquals(0, bdRandomValue.compareTo((BigDecimal) a.convert(bdRandomValue)), 
-				String.format("testing %s: identity convertion failed for double value %f", 
-						a, randomValue));
+		return randomValue;
 	}
 
-	private void assertIdentityCalculusRepeated(UnitConverter a, int repeating) {
+	private void assertIdentityCalculus(UnitConverter a, int repeating) {
 		for(int i=0; i<repeating; ++i) {
-			assertIdentityCalculus(a);
+			double randomValue = nextRandomValue();
+			// double calculus
+			assertEquals(randomValue, a.convert(randomValue), 1E-12, 
+					String.format("testing %s: identity calculus failed for double value %f", 
+							a, randomValue));
+			// BigDecimal calculus
+			BigDecimal bdRandomValue = BigDecimal.valueOf(randomValue);
+			// we assume a.convert(BigDecimal) returns BigDecimal, but this is not a strict requirement
+			assertEquals(0, bdRandomValue.compareTo((BigDecimal) a.convert(bdRandomValue)), 
+					String.format("testing %s: identity calculus failed for double value %f "
+							+ "using BigDecimal", 
+							a, randomValue));
+		}
+	}
+	
+	private void assertCommutingCalculus(UnitConverter a, UnitConverter b, int repeating) {
+
+		UnitConverter ab = a.concatenate(b);
+		UnitConverter ba = b.concatenate(a);
+
+		for(int i=0; i<repeating; ++i) {
+			double randomValue = nextRandomValue();
+			
+			// double calculus
+			assertEquals(ab.convert(randomValue), ba.convert(randomValue), 1E-12, 
+					String.format("testing %s: commuting calculus failed for double value %f", 
+							a, randomValue));
+			// BigDecimal calculus
+			BigDecimal bdRandomValue = BigDecimal.valueOf(randomValue);
+			
+			// we assume AbstractConverter.convert(BigDecimal) returns BigDecimal, 
+			// but this is not a strict requirement
+			BigDecimal abValue = (BigDecimal) ab.convert(bdRandomValue);
+			BigDecimal baValue = (BigDecimal) ba.convert(bdRandomValue);
+
+			assertEquals(0, abValue.compareTo(baValue), 
+					String.format("testing %s: commuting calculus failed for double value %f "
+							+ "using BigDecimal", 
+							a, randomValue));
 		}
 	}
 
