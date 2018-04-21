@@ -52,11 +52,11 @@ import org.junit.jupiter.api.extension.ParameterResolver;
 
 @DisplayName("Testing Composition of UnitConverters")
 public class CompositionEquivalenceTest {
-	
+
 	private Random random = new Random(0); // seed = 0, to make tests reproducible
-	
+
 	public static enum ConverterType {
-		
+
 		POWER(PowerConverter.class, 
 				()->PowerConverter.of(1, 0),
 				PowerConverter.of(3, 7), 
@@ -66,7 +66,7 @@ public class CompositionEquivalenceTest {
 				RationalConverter.of(17, 13),
 				RationalConverter.of(-34, 17)	),
 		MULTIPLY(MultiplyConverter.class, 
-				()->new MultiplyConverter(0.),
+				()->new MultiplyConverter(1.),
 				new MultiplyConverter(17.23),
 				new MultiplyConverter(-0.333) ),
 		ADD(AddConverter.class, 
@@ -88,11 +88,11 @@ public class CompositionEquivalenceTest {
 		public static final int typeCount = 6; // should be equal to ConverterType.values().length 
 		public static final int candidatesPerType = 2;
 		public static final int candidateCount = typeCount * candidatesPerType;
-		
+
 		private final Class<? extends UnitConverter> type;
 		private final UnitConverter[] candidates;
 		private Supplier<? extends UnitConverter> identitySupplier;
-		
+
 		public Class<? extends UnitConverter> getType() { return type; }
 		public UnitConverter[] getCandidates() { return candidates; }
 
@@ -105,97 +105,97 @@ public class CompositionEquivalenceTest {
 			this.identitySupplier = identitySupplier;
 			this.candidates = instances;
 		}
-		
+
 		public boolean hasIdentity() {
 			return identitySupplier!=null;
 		}
-		
+
 		public UnitConverter getIdentity() {
 			return identitySupplier.get();
 		}
 
 	}
-	
+
 	@Nested
-    @DisplayName("Any converter type should ...")
-    @ExtendWith(ConverterTypesForTests.class)
-    public class ConverterTypeTests {
-		
+	@DisplayName("Any converter type should ...")
+	@ExtendWith(ConverterTypesForTests.class)
+	public class ConverterTypeTests {
+
 		@RepeatedTest(
-    			value = ConverterType.typeCount, 
-    			name = "{currentRepetition} of {totalRepetitions} candidates")
-        @DisplayName("(if has identity) provide identity")
-    	public void testIdentityByConstruction(ConverterType c0) {
-    		
+				value = ConverterType.typeCount, 
+				name = "{currentRepetition} of {totalRepetitions} candidates")
+		@DisplayName("(if has identity) provide identity")
+		public void testIdentityByConstruction(ConverterType c0) {
+
 			String msg = String.format("testing %s", c0);
-			
+
 			if(c0.hasIdentity()) {
-				
+
 				final UnitConverter _I;
-				
+
 				try {
 					_I = c0.getIdentity(); // get identity by construction
 				} catch (Exception e) {
 					fail(msg+": "+e.getMessage());
 					return;
 				}
-				
+
 				assertEquals(true, _I.isIdentity(), msg);
-	    		assertEquals(true, _I.isLinear(), msg);  // identity must always be linear
-	    		assertEquals(true, _I.concatenate(_I).isIdentity(), msg);
-				
-	    		assertIdentityCalculusRepeated(_I, 100);
+				assertEquals(true, _I.isLinear(), msg);  // identity must always be linear
+				assertEquals(true, _I.concatenate(_I).isIdentity(), msg);
+
+				assertIdentityCalculusRepeated(_I, 100);
 			}
-    		
-    	}		
-		
+
+		}		
+
 	}
-	
 
-    @Nested
-    @DisplayName("Any converter should ...")
-    @ExtendWith(UnitConverterForCompositionTests.class)
-    public class CompositionTests {
-    	
-    	@RepeatedTest(
-    			value = ConverterType.candidateCount, 
-    			name = "{currentRepetition} of {totalRepetitions} candidates")
-        @DisplayName("compose with inverse to identity, commute with itself and with identity")
-    	public void testIdentityByComposition(UnitConverter u0) {
-    		
-    		String msg = String.format("testing %s", u0);
 
-    		UnitConverter _I = identityOf(u0); // get identity by composition
-    		
-    		assertEquals(true, _I.isIdentity(), msg);
-    		assertEquals(true, _I.isLinear(), msg);  // identity must always be linear
-    		assertEquals(true, _I.concatenate(_I).isIdentity(), msg);
-    		assertEquals(true, commutes(u0, u0), msg);
-    		assertEquals(true, commutes(u0, _I), msg);
-    		assertEquals(true, commutes(_I, u0), msg);
-    	}
-    	
-    	@RepeatedTest(
-    			value = ConverterType.candidateCount, 
-    			name = "{currentRepetition} of {totalRepetitions} candidates")
-        @DisplayName("(if identity) calculate like identity")
-    	public void testIdentityCalculus(UnitConverter u0) {
-    		UnitConverter _I = identityOf(u0);
-    		assertIdentityCalculusRepeated(_I, 100);
-    	}
+	@Nested
+	@DisplayName("Any converter should ...")
+	@ExtendWith(UnitConverterForCompositionTests.class)
+	public class CompositionTests {
 
-    	
-    	@RepeatedTest(value = ConverterType.candidateCount * ConverterType.candidateCount)
-        @DisplayName("(if scaling) commute with any other that is scaling")
-    	public void commuteWithScaling(UnitConverter u1, UnitConverter u2) {
-    		if(u1.isLinear() && u2.isLinear()) {
-    			assertEquals(true, commutes(u1, u2), String.format("testing %s %s", u1, u2));
-    		}
-    	}
+		@RepeatedTest(
+				value = ConverterType.candidateCount, 
+				name = "{currentRepetition} of {totalRepetitions} candidates")
+		@DisplayName("compose with inverse to identity, commute with itself and with identity")
+		public void testIdentityByComposition(UnitConverter u0) {
 
-    }
+			String msg = String.format("testing %s", u0);
 
-	
+			UnitConverter _I = identityOf(u0); // get identity by composition
+
+			assertEquals(true, _I.isIdentity(), msg);
+			assertEquals(true, _I.isLinear(), msg);  // identity must always be linear
+			assertEquals(true, _I.concatenate(_I).isIdentity(), msg);
+			assertEquals(true, commutes(u0, u0), msg);
+			assertEquals(true, commutes(u0, _I), msg);
+			assertEquals(true, commutes(_I, u0), msg);
+		}
+
+		@RepeatedTest(
+				value = ConverterType.candidateCount, 
+				name = "{currentRepetition} of {totalRepetitions} candidates")
+		@DisplayName("(if identity) calculate like identity")
+		public void testIdentityCalculus(UnitConverter u0) {
+			UnitConverter _I = identityOf(u0);
+			assertIdentityCalculusRepeated(_I, 100);
+		}
+
+
+		@RepeatedTest(value = ConverterType.candidateCount * ConverterType.candidateCount)
+		@DisplayName("(if scaling) commute with any other that is scaling")
+		public void commuteWithScaling(UnitConverter u1, UnitConverter u2) {
+			if(u1.isLinear() && u2.isLinear()) {
+				assertEquals(true, commutes(u1, u2), String.format("testing %s %s", u1, u2));
+			}
+		}
+
+	}
+
+
 	// -- HELPER
 
 	private UnitConverter identityOf(UnitConverter a) {
@@ -207,15 +207,15 @@ public class CompositionEquivalenceTest {
 		// a.b == (a^-1).(b^-1), only holds if a and b commute (a.b == b.a)
 		UnitConverter ab = a.concatenate(b);
 		UnitConverter ba = b.concatenate(a);
-		
-//		System.out.println("ab: "+ab);
-//		System.out.println("ba: "+ba);
-//		System.out.println("id: "+ab.concatenate(ba.inverse()));
-//		System.out.println();
-		
+
+		//		System.out.println("ab: "+ab);
+		//		System.out.println("ba: "+ba);
+		//		System.out.println("id: "+ab.concatenate(ba.inverse()));
+		//		System.out.println();
+
 		return ab.concatenate(ba.inverse()).isIdentity();
 	}
-	
+
 	private void assertIdentityCalculus(UnitConverter a) {
 		double randomRange = Math.pow(10., random.nextInt(65)-32); // [10^-32..10^32]
 		double randomFactor = 2.*random.nextDouble()-1.; // [-1..1]
@@ -231,7 +231,7 @@ public class CompositionEquivalenceTest {
 				String.format("testing %s: identity convertion failed for double value %f", 
 						a, randomValue));
 	}
-	
+
 	private void assertIdentityCalculusRepeated(UnitConverter a, int repeating) {
 		for(int i=0; i<repeating; ++i) {
 			assertIdentityCalculus(a);
@@ -239,7 +239,7 @@ public class CompositionEquivalenceTest {
 	}
 
 	// -- HELPER - PARAMETER PROVIDER - 1  
-	
+
 	private static class ConverterTypesForTests implements ParameterResolver {
 
 		private Map<String, Integer> indexByContext = new HashMap<>();
@@ -257,21 +257,21 @@ public class CompositionEquivalenceTest {
 				ExtensionContext extensionContext) throws ParameterResolutionException {
 
 			String conextKey = parameterContext.getDeclaringExecutable().toString()+":"+parameterContext.getIndex();
-			
+
 			int next = indexByContext.compute(conextKey, (__, index)->index!=null ? index+1 : 0);
 			int modulus = BigInteger.valueOf(ConverterType.candidateCount).pow(1+parameterContext.getIndex()).intValue();
 			int divisor = BigInteger.valueOf(ConverterType.candidateCount).pow(parameterContext.getIndex()).intValue();
-			
+
 			next = (next % modulus) / divisor;
-			
+
 			ConverterType candidate = ConverterType.values()[next%ConverterType.typeCount];
-			
+
 			return candidate;
 		}
 	}
-	
+
 	// -- HELPER - PARAMETER PROVIDER - 2  
-	
+
 	private static class UnitConverterForCompositionTests implements ParameterResolver {
 
 		private Map<String, Integer> indexByContext = new HashMap<>();
@@ -289,16 +289,16 @@ public class CompositionEquivalenceTest {
 				ExtensionContext extensionContext) throws ParameterResolutionException {
 
 			String conextKey = parameterContext.getDeclaringExecutable().toString()+":"+parameterContext.getIndex();
-			
+
 			int next = indexByContext.compute(conextKey, (__, index)->index!=null ? index+1 : 0);
 			int modulus = BigInteger.valueOf(ConverterType.candidateCount).pow(1+parameterContext.getIndex()).intValue();
 			int divisor = BigInteger.valueOf(ConverterType.candidateCount).pow(parameterContext.getIndex()).intValue();
-			
+
 			next = (next % modulus) / divisor;
-			
+
 			UnitConverter candidate = ConverterType.values()[next/ConverterType.candidatesPerType]
 					.getCandidates()[next%ConverterType.candidatesPerType];
-			
+
 			return candidate;
 		}
 	}
