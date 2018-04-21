@@ -232,8 +232,18 @@ public abstract class AbstractConverter
 
 		@Override
 		protected boolean isSimpleCompositionWith(AbstractConverter that) {
-			return true;
+			return true; // composition with identity can always be simplified
 		}
+		
+		@Override
+		protected AbstractConverter simpleCompose(AbstractConverter that) {
+			if(that.isIdentity()) {
+				// if both are identities, let the default implementation take precedence
+				return this; 
+			}
+			return that;
+		}
+		
 	}
 
 	/**
