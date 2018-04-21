@@ -81,8 +81,15 @@ public class CompositionEquivalenceTest {
 				null, // exp has no identity variant
 				new ExpConverter(4.5),
 				new ExpConverter(0.1) ),
+		PI_MUL(PiMultiplierConverter.class, 
+				null, // log has no identity variant
+				new PiMultiplierConverter(),
+				new PiMultiplierConverter() ),
+		PI_DIV(PiDivisorConverter.class, 
+				null, // exp has no identity variant
+				new PiDivisorConverter(),
+				new PiDivisorConverter() ),
 		// when adding entries, also increment the typeCount!
-		//TODO there are more ...
 		;
 
 		public static final int typeCount = 6; // should be equal to ConverterType.values().length 
