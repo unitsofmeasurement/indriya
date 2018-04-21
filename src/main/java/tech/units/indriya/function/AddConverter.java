@@ -63,8 +63,6 @@ public final class AddConverter extends AbstractConverter implements ValueSuppli
    *
    * @param offset
    *          the offset value.
-   * @throws IllegalArgumentException
-   *           if offset is <code>0.0</code> (would result in identity converter).
    */
   public AddConverter(double offset) {
     this.offset = offset;

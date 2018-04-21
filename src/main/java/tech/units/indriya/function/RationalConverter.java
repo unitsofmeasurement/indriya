@@ -78,14 +78,10 @@ public final class RationalConverter extends AbstractConverter implements ValueS
    *          the positive divisor.
    * @throws IllegalArgumentException
    *           if <code>divisor &lt;= 0</code>
-   * @throws IllegalArgumentException
-   *           if <code>dividend == divisor</code>
    */
   public RationalConverter(BigInteger dividend, BigInteger divisor) {
     if (divisor.compareTo(BigInteger.ZERO) <= 0)
       throw new IllegalArgumentException("Negative or zero divisor");
-//    if (dividend.equals(divisor))
-//      throw new IllegalArgumentException("Would result in identity converter");
     this.dividend = dividend; // Exact conversion.
     this.divisor = divisor; // Exact conversion.
   }

@@ -67,9 +67,6 @@ public final class MultiplyConverter extends AbstractConverter implements ValueS
 	 * 
 	 * @param factor
 	 *            the scaling factor.
-	 * @throws IllegalArgumentException
-	 *             if coefficient is <code>1.0</code> (would result in identity
-	 *             converter)
 	 */
 	public MultiplyConverter(double factor) {
 		this.factor = factor;
@@ -80,9 +77,6 @@ public final class MultiplyConverter extends AbstractConverter implements ValueS
 	 * 
 	 * @param factor
 	 *            the scaling factor.
-	 * @throws IllegalArgumentException
-	 *             if coefficient is <code>1.0</code> (would result in identity
-	 *             converter)
 	 */
 	public static MultiplyConverter of(double factor) {
 		return new MultiplyConverter(factor);

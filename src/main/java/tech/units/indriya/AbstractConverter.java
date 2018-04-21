@@ -104,9 +104,6 @@ public abstract class AbstractConverter
 	 * 
 	 * @param prefix
 	 *            the prefix for the factor.
-	 * @throws IllegalArgumentException
-	 *             if coefficient is <code>1.0</code> (would result in identity
-	 *             converter)
 	 */
 	public static UnitConverter of(Prefix prefix) {
 		return PowerConverter.of(prefix);
