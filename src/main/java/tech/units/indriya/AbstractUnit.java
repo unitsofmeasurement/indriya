@@ -593,7 +593,8 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
 	public boolean isEquivalentOf(Unit<Q> that) {
 		if (this.compareTo(that) == 0)
 			return true;
-		return this.getConverterTo(that).equals(that.getConverterTo(this));
+		return this.getConverterTo(that).isIdentity();
+		//[ahuber] was ... return this.getConverterTo(that).equals(that.getConverterTo(this));
 	}
 
 	// //////////////////////////////////////////////////////////////
