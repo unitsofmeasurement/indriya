@@ -50,6 +50,8 @@ import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
 
+import tech.units.indriya.AbstractConverter;
+
 @DisplayName("Testing Composition of UnitConverters")
 public class CompositionEquivalenceTest {
 
@@ -57,7 +59,11 @@ public class CompositionEquivalenceTest {
 	private final static int RANDOM_VALUES_REPEAT_COUNT = 100;
 
 	public static enum ConverterType {
-
+		
+		ID(AbstractConverter.class, 
+				()->AbstractConverter.IDENTITY,
+				AbstractConverter.IDENTITY, 
+				AbstractConverter.IDENTITY	),
 		POWER(PowerConverter.class, 
 				()->PowerConverter.of(1, 0),
 				PowerConverter.of(3, 7), 
@@ -93,7 +99,7 @@ public class CompositionEquivalenceTest {
 		// when adding entries, also increment the typeCount!
 		;
 
-		public static final int typeCount = 8; // should be equal to ConverterType.values().length 
+		public static final int typeCount = 9; // should be equal to ConverterType.values().length 
 		public static final int candidatesPerType = 2;
 		public static final int candidateCount = typeCount * candidatesPerType;
 
