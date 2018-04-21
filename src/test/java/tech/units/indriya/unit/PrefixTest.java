@@ -170,6 +170,7 @@ public class PrefixTest {
 	  ComparableUnit a = (ComparableUnit) MICRO(GRAM); 
 	  ComparableUnit b = (ComparableUnit) GRAM.divide(1_000_000);
 	  assertEquals(true, a.isEquivalentOf(b));
+	  assertEquals(true, b.isEquivalentOf(a));
   }
 
   @Test
@@ -190,6 +191,7 @@ public class PrefixTest {
 	  ComparableUnit a = (ComparableUnit) MICRO(GRAM);
 	  ComparableUnit b = (ComparableUnit) GRAM.divide(1000).divide(1000);
 	  assertEquals(true, a.isEquivalentOf(b));
+	  assertEquals(true, b.isEquivalentOf(a));
   }
 
   @Test
