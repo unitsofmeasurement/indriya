@@ -65,7 +65,8 @@ import java.util.logging.Logger;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.0, $Date: 2016-10-18 $
+ * @version 1.1, $Date: 2018-04-22 $
+ * @since 1.0
  */
 public final class QuantityDimension implements Dimension, Serializable {
   private static final Logger logger = Logger.getLogger(QuantityDimension.class.getName());
@@ -141,21 +142,7 @@ public final class QuantityDimension implements Dimension, Serializable {
    * @param quantityType
    *          the quantity type.
    * @return the dimension for the quantity type or <code>null</code>.
-   * @since 1.0
-   * @deprecated use of()
-   */
-  public static <Q extends Quantity<Q>> Dimension getInstance(Class<Q> quantityType) {
-    return of(quantityType);
-  }
-
-  /**
-   * Returns the dimension for the specified quantity type by aggregating the results of {@link DimensionService} or <code>null</code> if the
-   * specified quantity is unknown.
-   *
-   * @param quantityType
-   *          the quantity type.
-   * @return the dimension for the quantity type or <code>null</code>.
-   * @since 1.0.1
+   * @since 1.1
    */
   public static <Q extends Quantity<Q>> Dimension of(Class<Q> quantityType) {
     // TODO: Track services and aggregate results (register custom
