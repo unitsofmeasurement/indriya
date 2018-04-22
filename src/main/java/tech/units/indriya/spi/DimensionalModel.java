@@ -29,12 +29,13 @@
  */
 package tech.units.indriya.spi;
 
+import java.util.Map;
+
 import javax.measure.Dimension;
 
 import tech.units.indriya.AbstractConverter;
+import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.quantity.QuantityDimension;
-
-import java.util.Map;
 
 /**
  * <p>
@@ -155,7 +156,7 @@ public abstract class DimensionalModel {
         cvtr = cvtr.inverse();
       }
       for (int j = 0; j < pow; j++) {
-        toFundamental = toFundamental.concatenate(cvtr);
+        toFundamental = AbstractUnit.Simplifier.compose(toFundamental, cvtr);
       }
     }
     return toFundamental;

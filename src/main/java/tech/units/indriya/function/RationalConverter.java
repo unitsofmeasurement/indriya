@@ -78,14 +78,10 @@ public final class RationalConverter extends AbstractConverter implements ValueS
    *          the positive divisor.
    * @throws IllegalArgumentException
    *           if <code>divisor &lt;= 0</code>
-   * @throws IllegalArgumentException
-   *           if <code>dividend == divisor</code>
    */
   public RationalConverter(BigInteger dividend, BigInteger divisor) {
     if (divisor.compareTo(BigInteger.ZERO) <= 0)
       throw new IllegalArgumentException("Negative or zero divisor");
-    if (dividend.equals(divisor))
-      throw new IllegalArgumentException("Would result in identity converter");
     this.dividend = dividend; // Exact conversion.
     this.divisor = divisor; // Exact conversion.
   }
@@ -208,15 +204,32 @@ public final class RationalConverter extends AbstractConverter implements ValueS
   }
 
   @Override
-  public UnitConverter concatenate(UnitConverter converter) {
-    if (converter instanceof RationalConverter) {
-      return compose((RationalConverter) converter); 
-    }
-    if (converter instanceof PowerConverter) {
-        return compose(((PowerConverter) converter).toRationalConverter()); 
-    }
-    return super.concatenate(converter);
+  public boolean isIdentity() {
+    return dividend.equals(divisor);
   }
+
+  @Override
+  protected boolean isSimpleCompositionWith(AbstractConverter that) {
+  	return that.isLinear();
+  }
+
+  @Override
+  protected AbstractConverter simpleCompose(AbstractConverter that) {
+	  if (that instanceof RationalConverter) {
+		  return (AbstractConverter) composeSameType((RationalConverter) that); 
+	  }
+	  if (that instanceof PowerConverter) {
+		  return (AbstractConverter) composeSameType(((PowerConverter) that).toRationalConverter()); 
+	  }
+	  if (that instanceof MultiplyConverter) {
+		  // TODO [ahuber] simple, but not the best we can do
+		  return new MultiplyConverter(getValue() * ((MultiplyConverter) that).getFactor()); 
+	  }
+	  throw new IllegalStateException(String.format(
+			  "%s.simpleCompose() not handled for linear converter %s", 
+			  this, that));
+  }
+
 
   @Override
   public RationalConverter inverse() {
@@ -280,7 +293,7 @@ public final class RationalConverter extends AbstractConverter implements ValueS
   
   // -- HELPER
   
-  private UnitConverter compose(RationalConverter that) {
+  private AbstractConverter composeSameType(RationalConverter that) {
 	  BigInteger newDividend = this.getDividend().multiply(that.getDividend());
 	  BigInteger newDivisor = this.getDivisor().multiply(that.getDivisor());
 	  BigInteger gcd = newDividend.gcd(newDivisor);

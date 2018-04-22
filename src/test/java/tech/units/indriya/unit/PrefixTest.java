@@ -54,6 +54,7 @@ import javax.measure.quantity.Volume;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import tech.units.indriya.ComparableUnit;
 import tech.units.indriya.quantity.Quantities;
 
 public class PrefixTest {
@@ -163,6 +164,14 @@ public class PrefixTest {
   public void testSingleOperation() {
     assertEquals(MICRO(GRAM), GRAM.divide(1_000_000));
   }
+  
+  @Test
+  public void testEquivalence() {
+	  ComparableUnit a = (ComparableUnit) MICRO(GRAM); 
+	  ComparableUnit b = (ComparableUnit) GRAM.divide(1_000_000);
+	  assertEquals(true, a.isEquivalentOf(b));
+	  assertEquals(true, b.isEquivalentOf(a));
+  }
 
   @Test
   @Disabled("This is research for https://github.com/unitsofmeasurement/uom-se/issues/164")
@@ -175,6 +184,14 @@ public class PrefixTest {
     List steps2 = c2.getConversionSteps();
     assertEquals(c1, c2);
     assertEquals(m1, m2);
+  }
+  
+  @Test
+  public void testNestedEquivalence() {
+	  ComparableUnit a = (ComparableUnit) MICRO(GRAM);
+	  ComparableUnit b = (ComparableUnit) GRAM.divide(1000).divide(1000);
+	  assertEquals(true, a.isEquivalentOf(b));
+	  assertEquals(true, b.isEquivalentOf(a));
   }
 
   @Test

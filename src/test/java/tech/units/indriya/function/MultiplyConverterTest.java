@@ -29,15 +29,13 @@
  */
 package tech.units.indriya.function;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import javax.measure.format.ParserException;
-
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import tech.units.indriya.function.MultiplyConverter;
 
 public class MultiplyConverterTest {
 
@@ -79,10 +77,7 @@ public class MultiplyConverterTest {
 
   @Test
   public void identityTest() {
-	  assertThrows(IllegalArgumentException.class, () -> {
-		    @SuppressWarnings("unused")
-		    MultiplyConverter identConverter = new MultiplyConverter(1);
-	  });
+	  assertTrue(new MultiplyConverter(1).isIdentity());
   }
 
   @Test

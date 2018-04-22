@@ -344,7 +344,7 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
 		} else {
 			cvtr = operation;
 		}
-		if (cvtr.equals(AbstractConverter.IDENTITY)) {
+		if (cvtr.isIdentity()) {
 			return systemUnit;
 		} else {
 			return new TransformedUnit<>(null, this, systemUnit, cvtr);
@@ -593,7 +593,8 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
 	public boolean isEquivalentOf(Unit<Q> that) {
 		if (this.compareTo(that) == 0)
 			return true;
-		return this.getConverterTo(that).equals(that.getConverterTo(this));
+		return this.getConverterTo(that).isIdentity();
+		//[ahuber] was ... return this.getConverterTo(that).equals(that.getConverterTo(this));
 	}
 
 	// //////////////////////////////////////////////////////////////
@@ -631,6 +632,47 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
 			if (u1 == u2)
 				return true;
 			return false;
+		}
+	}
+	
+	/**
+	 * Utility class for UnitConverter composition and equivalence decision
+	 */
+	public static final class Simplifier {
+		
+		public static AbstractConverter compose(AbstractConverter a, AbstractConverter b) {
+			
+			if(a.isIdentity()) {
+				if(b.isIdentity()) {
+					return normalFormOrder(a, b)<=0 ? a : b;
+				}
+				return b;
+			}
+			if(b.isIdentity()) {
+				return a;
+			}
+			
+			if(a.isSimpleCompositionWith(b)) {
+				return a.simpleCompose(b);
+			}
+			
+			// TODO simplify if a or b are instances of Pair, will require 'commutes' checks
+			
+			return normalFormOrder(a, b)<=0 ? new AbstractConverter.Pair(a, b) : new AbstractConverter.Pair(b, a);
+		}
+		
+		private static int normalFormOrder(AbstractConverter a, AbstractConverter b) {
+			
+			if(a.getClass().equals(b.getClass())) {
+				
+				if(a instanceof PowerConverter) {
+					return Integer.compare( ((PowerConverter)a).getBase(), ((PowerConverter)b).getBase() );
+				}
+				
+				return 0;
+			}
+			// TODO lookup a table ?
+			return 0;
 		}
 	}
 	

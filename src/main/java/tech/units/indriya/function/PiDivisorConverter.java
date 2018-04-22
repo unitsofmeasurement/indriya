@@ -70,6 +70,26 @@ final class PiDivisorConverter extends AbstractConverter implements ValueSupplie
   }
 
   @Override
+  public boolean isIdentity() {
+    return false;
+  }
+
+  @Override
+  protected boolean isSimpleCompositionWith(AbstractConverter that) {
+	return that.isLinear();
+  }
+
+  @Override
+  protected AbstractConverter simpleCompose(AbstractConverter that) {
+	if(that instanceof PiMultiplierConverter) {
+		return AbstractConverter.IDENTITY;	
+	}
+	throw new IllegalStateException(String.format(
+			"%s.simpleCompose() not handled for linear converter %s", 
+			this, that));
+  }
+  
+  @Override
   public BigDecimal convert(BigDecimal value, MathContext ctx) throws ArithmeticException {
     int nbrDigits = ctx.getPrecision();
     if (nbrDigits == 0)

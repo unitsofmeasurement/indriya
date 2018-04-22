@@ -81,6 +81,27 @@ public final class PiMultiplierConverter extends AbstractConverter implements Va
   }
 
   @Override
+  public boolean isIdentity() {
+    return false;
+  }
+
+  @Override
+  protected boolean isSimpleCompositionWith(AbstractConverter that) {
+	return that.isLinear();
+  }
+
+  @Override
+  protected AbstractConverter simpleCompose(AbstractConverter that) {
+	if(that instanceof PiDivisorConverter) {
+		return AbstractConverter.IDENTITY;	
+	}
+	throw new IllegalStateException(String.format(
+			"%s.simpleCompose() not handled for linear converter %s", 
+			this, that));
+  }
+
+  
+  @Override
   public AbstractConverter inverse() {
     return new PiDivisorConverter();
   }
