@@ -48,7 +48,7 @@ import tech.uom.lib.common.function.ValueSupplier;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.0, October 11, 2016
+ * @version 1.1, April 22, 2018
  * @since 1.0
  */
 final class PiDivisorConverter extends AbstractConverter implements ValueSupplier<String> {
@@ -59,7 +59,7 @@ final class PiDivisorConverter extends AbstractConverter implements ValueSupplie
   private static final long serialVersionUID = 5052794216568914141L;
 
   /**
-   * Creates a Pi multiplier converter.
+   * Creates a Pi divisor converter.
    */
   public PiDivisorConverter() {
   }

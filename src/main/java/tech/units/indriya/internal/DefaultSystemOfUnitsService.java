@@ -29,14 +29,6 @@
  */
 package tech.units.indriya.internal;
 
-import java.util.Collections;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import javax.measure.BinaryPrefix;
-import javax.measure.MetricPrefix;
-import javax.measure.Prefix;
 import javax.measure.spi.SystemOfUnits;
 import tech.units.indriya.spi.AbstractSystemOfUnitsService;
 import tech.units.indriya.unit.Units;
@@ -44,7 +36,7 @@ import tech.units.indriya.unit.Units;
 /**
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
  * @author Martin Desruisseaux
- * @version 0.8, April 13, 2018
+ * @version 1.0, April 22, 2018
  * @since 1.0
  */
 public class DefaultSystemOfUnitsService extends AbstractSystemOfUnitsService {
@@ -56,23 +48,5 @@ public class DefaultSystemOfUnitsService extends AbstractSystemOfUnitsService {
 	@Override
 	public SystemOfUnits getSystemOfUnits() {
 		return getSystemOfUnits(Units.class.getSimpleName());
-	}
-
-	@Override @Deprecated //TODO [ahuber] currently subject of discussion whether to remove entirely 
-	public Set<Prefix> getPrefixes(Class<? extends Prefix> prefixType) {
-		if(!Prefix.class.isAssignableFrom(prefixType)) {
-			throw new ClassCastException(String.format("Not a prefix type: %s", prefixType));
-		}
-		if(MetricPrefix.class.equals(prefixType)) {
-			return Stream.of(MetricPrefix.values()).collect(Collectors.toSet()); 
-		}
-		if(BinaryPrefix.class.equals(prefixType)) {
-			return Stream.of(BinaryPrefix.values()).collect(Collectors.toSet()); 
-		}
-		if(Prefix.class.equals(prefixType)) {
-			Stream.concat( Stream.of(MetricPrefix.values()), Stream.of(BinaryPrefix.values()))
-			.collect(Collectors.toSet()); 
-		}
-		return Collections.emptySet();
 	}
 }

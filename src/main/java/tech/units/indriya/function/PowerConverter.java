@@ -44,11 +44,11 @@ import tech.units.indriya.AbstractConverter;
 
 /**
  * UnitConverter for numbers in base^exponent representation.
- * @author Andi Huber#
- * @version 0.9, April 20, 2018
+ * @author Andi Huber
+ * @version 1.0, April 22, 2018
  * @since 2.0
  */
-public class PowerConverter extends AbstractConverter {
+public final class PowerConverter extends AbstractConverter {
 	private static final long serialVersionUID = 3546932001671571300L;
 
 	private final int base;
