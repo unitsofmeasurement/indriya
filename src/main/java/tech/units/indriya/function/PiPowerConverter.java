@@ -40,7 +40,7 @@ import tech.units.indriya.AbstractConverter;
 
 /**
  * This class represents a converter multiplying numeric values by π (Pi).
- * @author Andi Huber#
+ * @author Andi Huber
  * @version 0.9, April 23, 2018
  * @since 2.0
  */
