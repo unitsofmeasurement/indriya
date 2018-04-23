@@ -32,7 +32,6 @@ package tech.units.indriya.quantity;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.math.MathContext;
 import java.util.Objects;
 
 import javax.measure.Quantity;
@@ -41,6 +40,7 @@ import javax.measure.Unit;
 import javax.measure.UnitConverter;
 
 import tech.units.indriya.AbstractQuantity;
+import tech.units.indriya.Calculus;
 import tech.units.indriya.ComparableQuantity;
 
 /**
@@ -134,14 +134,8 @@ public class NumberQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> i
   }
 
   @Override
-  public BigDecimal decimalValue(Unit<Q> unit, MathContext ctx) throws ArithmeticException {
-    if (value instanceof BigDecimal) {
-      return (BigDecimal) value;
-    }
-    if (value instanceof BigInteger) {
-      return new BigDecimal((BigInteger) value);
-    }
-    return BigDecimal.valueOf(value.doubleValue());
+  public BigDecimal decimalValue(Unit<Q> unit) throws ArithmeticException {
+    return Calculus.toBigDecimal(value);
   }
 
   @Override

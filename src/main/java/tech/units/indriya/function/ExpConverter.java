@@ -148,12 +148,12 @@ public final class ExpConverter extends AbstractConverter implements ValueSuppli
   }
 
   @Override
-  public double convert(double amount) {
+  public double convertWhenNotIdentity(double amount) {
     return Math.exp(logOfBase * amount);
   }
 
   @Override
-  public BigDecimal convert(BigDecimal value, MathContext ctx) throws ArithmeticException {
+  public BigDecimal convertWhenNotIdentity(BigDecimal value, MathContext ctx) throws ArithmeticException {
     return BigDecimal.valueOf(convert(value.doubleValue())); // Reverts to
     // double
     // conversion.

@@ -34,6 +34,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -65,11 +66,6 @@ public abstract class AbstractConverter
 	private static final long serialVersionUID = 5790242858468427131L;
 
 	/**
-	 * The ratio of the circumference of a circle to its diameter.
-	 **/
-	protected static final double PI = 3.1415926535897932384626433832795;
-
-	/**
 	 * Holds identity converter.
 	 */
 	// [ahuber] potentially misused: checking whether a UnitConverter is an identity operator
@@ -77,26 +73,14 @@ public abstract class AbstractConverter
 	public static final AbstractConverter IDENTITY = new Identity();
 
 	/**
+	 * memoization for getConversionSteps
+	 */
+	protected List<? extends UnitConverter> conversionSteps; 
+
+	/**
 	 * DefaultQuantityFactory constructor.
 	 */
 	protected AbstractConverter() {
-	}
-
-	/**
-	 * Guard for {@link #simpleCompose(AbstractConverter)}
-	 * @param that
-	 * @return whether or not a 'simple' composition of transformations is possible
-	 */
-	protected abstract boolean isSimpleCompositionWith(AbstractConverter that);
-	
-	/**
-	 * Guarded by {@link #isSimpleCompositionWith(AbstractConverter)}
-	 * @param that
-	 * @return a new AbstractConverter that adds no additional conversion step
-	 */
-	protected AbstractConverter simpleCompose(AbstractConverter that) {
-		throw new IllegalStateException(
-				String.format("Concrete UnitConverter '%s' does not implement simpleCompose(...).", this)); 
 	}
 
 	/**
@@ -117,7 +101,30 @@ public abstract class AbstractConverter
 
 	@Override
 	public abstract AbstractConverter inverse();
+	
+	// -- COMPOSITION CONTRACTS (TO BE IMPLEMENTED BY SUB-CLASSES)
 
+	/**
+	 * Non-API
+	 * Guard for {@link #simpleCompose(AbstractConverter)}
+	 * @param that
+	 * @return whether or not a 'simple' composition of transformations is possible
+	 */
+	protected abstract boolean isSimpleCompositionWith(AbstractConverter that);
+	
+	/**
+	 * Non-API
+	 * Guarded by {@link #isSimpleCompositionWith(AbstractConverter)}
+	 * @param that
+	 * @return a new AbstractConverter that adds no additional conversion step
+	 */
+	protected AbstractConverter simpleCompose(AbstractConverter that) {
+		throw new IllegalStateException(
+				String.format("Concrete UnitConverter '%s' does not implement simpleCompose(...).", this)); 
+	}
+	
+	// -- COMPOSITION INTERFACE IMPLEMENTATION (FINAL)
+	
 	@Override
 	public final UnitConverter concatenate(UnitConverter converter) {
 		Objects.requireNonNull(converter, "Can not concatenate null.");
@@ -137,16 +144,58 @@ public abstract class AbstractConverter
 	}
 
 	@Override
-	public List<? extends UnitConverter> getConversionSteps() {
-		List<AbstractConverter> converters = new ArrayList<>();
-		converters.add(this);
-		return converters;
+	public final List<? extends UnitConverter> getConversionSteps() {
+		if(conversionSteps != null) {
+			return conversionSteps;  
+		}
+		if(this instanceof Pair) {
+			return conversionSteps = ((Pair)this).createConversionSteps();
+		}
+		return conversionSteps = Collections.singletonList(this);
 	}
+	
+	// -- CONVERSION CONTRACTS (TO BE IMPLEMENTED BY SUB-CLASSES)
+	
+	/**
+	 * Non-API
+	 * @param value
+	 * @return transformed value 
+	 */
+	protected abstract double convertWhenNotIdentity(double value);
 
+	/**
+	 * Non-API
+	 * @param value
+	 * @param ctx
+	 * @return transformed value (most likely a BigInteger or BigDecimal)
+	 */
+	protected Number convertWhenNotIdentity(BigInteger value, MathContext ctx) {
+		return convertWhenNotIdentity(new BigDecimal(value), ctx);
+	}
+	
+	/**
+	 * Non-API
+	 * @param value
+	 * @param ctx
+	 * @return transformed value
+	 */
+	protected abstract BigDecimal convertWhenNotIdentity(BigDecimal value, MathContext ctx);
+
+	// -- CONVERSION INTERFACE IMPLEMENTATION (FINAL)
+	
+	@Override
+	public final double convert(double value) {
+		if(isIdentity()) {
+			return value;
+		}
+		return convertWhenNotIdentity(value);
+	}
+	
 	/**
 	 * @throws IllegalArgumentException
 	 *             if the value is </code>null</code>.
 	 */
+	@Override
 	public final Number convert(Number value) {
 		if(isIdentity()) {
 			return value;
@@ -155,22 +204,15 @@ public abstract class AbstractConverter
 			throw new IllegalArgumentException("Value cannot be null");
 		}
 		if (value instanceof BigDecimal) {
-			return convert((BigDecimal) value, MathContext.DECIMAL128);
+			return convertWhenNotIdentity((BigDecimal) value, Calculus.MATH_CONTEXT);
 		}
 		if (value instanceof BigInteger) {
-			return convert((BigInteger) value, MathContext.DECIMAL128);
+			return convertWhenNotIdentity((BigInteger) value, Calculus.MATH_CONTEXT);
 		}
-		return convert(value.doubleValue());
-	}
-
-	@Override
-	public abstract double convert(double value);
-
-	protected Number convert(BigInteger value, MathContext ctx) {
-		return convert(new BigDecimal(value), ctx);
+		return convertWhenNotIdentity(value.doubleValue());
 	}
 	
-	public abstract BigDecimal convert(BigDecimal value, MathContext ctx) throws ArithmeticException;
+	// -- DEFAULT IMPLEMENTATION OF IDENTITY
 
 	/**
 	 * This class represents the identity converter (singleton).
@@ -193,23 +235,23 @@ public abstract class AbstractConverter
 		}
 
 		@Override
-		public double convert(double value) {
-			return value;
+		public double convertWhenNotIdentity(double value) {
+			throw new IllegalStateException("code was reached, that is expected unreachable");
 		}
 
 		@Override
-		public Number convert(BigInteger value, MathContext ctx) {
-			return value;
+		public Number convertWhenNotIdentity(BigInteger value, MathContext ctx) {
+			throw new IllegalStateException("code was reached, that is expected unreachable");
 		}
 		
 		@Override
-		public BigDecimal convert(BigDecimal value, MathContext ctx) {
-			return value;
+		public BigDecimal convertWhenNotIdentity(BigDecimal value, MathContext ctx) {
+			throw new IllegalStateException("code was reached, that is expected unreachable");
 		}
 
 		@Override
 		public boolean equals(Object cvtr) {
-			return (cvtr instanceof Identity);
+			return (cvtr instanceof Identity); //TODO [ahuber] unless we have a clear spec what equals is, this is questionable
 		}
 
 		@Override
@@ -232,19 +274,17 @@ public abstract class AbstractConverter
 
 		@Override
 		protected boolean isSimpleCompositionWith(AbstractConverter that) {
-			return true; // composition with identity can always be simplified
+			throw new IllegalStateException("code was reached, that is expected unreachable");
 		}
 		
 		@Override
 		protected AbstractConverter simpleCompose(AbstractConverter that) {
-			if(that.isIdentity()) {
-				// if both are identities, let the default implementation take precedence
-				return this; 
-			}
-			return that;
+			throw new IllegalStateException("code was reached, that is expected unreachable");
 		}
 		
 	}
+	
+	// -- BINARY TREE (PAIR)
 
 	/**
 	 * This class represents converters made up of two or more separate converters
@@ -297,11 +337,13 @@ public abstract class AbstractConverter
 			return false;
 		}
 
-		@Override
-		public List<UnitConverter> getConversionSteps() {
-			final List<UnitConverter> steps = new ArrayList<>();
+		/*
+		 * Non-API
+		 */
+		protected List<? extends UnitConverter> createConversionSteps(){
 			List<? extends UnitConverter> leftCompound = left.getConversionSteps();
 			List<? extends UnitConverter> rightCompound = right.getConversionSteps();
+			final List<UnitConverter> steps = new ArrayList<>(leftCompound.size() + rightCompound.size());
 			steps.addAll(leftCompound);
 			steps.addAll(rightCompound);
 			return steps;
@@ -313,26 +355,40 @@ public abstract class AbstractConverter
 		}
 
 		@Override
-		public double convert(double value) {
+		public double convertWhenNotIdentity(double value) {
 			return left.convert(right.convert(value));
 		}
 		
 		@Override
-		public Number convert(BigInteger value, MathContext ctx) {
+		public Number convertWhenNotIdentity(BigInteger value, MathContext ctx) {
 			if (right instanceof AbstractConverter) {
-				return ((AbstractConverter) left).convert(((AbstractConverter) right).convert(value));
+				//TODO [ahuber] assumes left is always instanceof AbstractConverter, why?
+				final AbstractConverter _left = (AbstractConverter) left;
+				final AbstractConverter _right = (AbstractConverter) right;
+				
+				final Number rightValue = _right.convertWhenNotIdentity(value, ctx);
+				if(rightValue instanceof BigDecimal) {
+					return _left.convertWhenNotIdentity((BigDecimal) rightValue, ctx);
+				}
+				if(rightValue instanceof BigInteger) {
+					return _left.convertWhenNotIdentity((BigInteger) rightValue, ctx);
+				}
+				return _left.convertWhenNotIdentity(Calculus.toBigDecimal(rightValue), ctx);
 			}
-			return convert(new BigDecimal(value), ctx);
+			return convertWhenNotIdentity(new BigDecimal(value), ctx);
 		}
 
 		@Override
-		public BigDecimal convert(BigDecimal value, MathContext ctx) {
+		public BigDecimal convertWhenNotIdentity(BigDecimal value, MathContext ctx) {
 			if (right instanceof AbstractConverter) {
-				return ((AbstractConverter) left).convert(((AbstractConverter) right).convert(value, ctx), ctx);
+				//TODO [ahuber] assumes left is always instanceof AbstractConverter, why?
+				final AbstractConverter _left = (AbstractConverter) left;
+				final AbstractConverter _right = (AbstractConverter) right;
+				return _left.convertWhenNotIdentity(_right.convertWhenNotIdentity(value, ctx), ctx);
 			}
-			return (BigDecimal) left.convert(right.convert(value));
+			return Calculus.toBigDecimal(left.convert(right.convert(value)));
 		}
-
+		
 		@Override
 		public boolean equals(Object obj) {
 			if (this == obj) {

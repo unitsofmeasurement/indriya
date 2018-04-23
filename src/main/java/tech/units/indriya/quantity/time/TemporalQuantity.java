@@ -29,19 +29,17 @@
  */
 package tech.units.indriya.quantity.time;
 
-import java.util.Objects;
-
 import static tech.units.indriya.unit.Units.DAY;
 import static tech.units.indriya.unit.Units.HOUR;
 import static tech.units.indriya.unit.Units.MINUTE;
 import static tech.units.indriya.unit.Units.SECOND;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAmount;
 import java.time.temporal.TemporalUnit;
+import java.util.Objects;
 
 import javax.measure.IncommensurableException;
 import javax.measure.Quantity;
@@ -54,6 +52,7 @@ import javax.measure.quantity.Time;
 import tech.units.indriya.AbstractQuantity;
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.Quantities;
+import tech.units.indriya.unit.Units;
 
 /**
  * Class that represents {@link TemporalUnit} in Unit-API
@@ -294,7 +293,7 @@ public final class TemporalQuantity extends AbstractQuantity<Time> {
   }
 
   @Override
-  public BigDecimal decimalValue(Unit<Time> unit, MathContext ctx) throws ArithmeticException {
+  public BigDecimal decimalValue(Unit<Time> unit) throws ArithmeticException {
     return BigDecimal.valueOf(value.doubleValue());
   }
 

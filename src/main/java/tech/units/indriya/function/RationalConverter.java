@@ -170,7 +170,7 @@ public final class RationalConverter extends AbstractConverter implements ValueS
   }
 
   @Override
-  public double convert(double value) {
+  public double convertWhenNotIdentity(double value) {
     return value * toDouble(dividend) / toDouble(divisor);
   }
 
@@ -181,7 +181,7 @@ public final class RationalConverter extends AbstractConverter implements ValueS
   }
 
   @Override
-  protected Number convert(BigInteger value, MathContext ctx) {
+  protected Number convertWhenNotIdentity(BigInteger value, MathContext ctx) {
 	BigInteger newDividend = dividend.multiply(value);
 	
 	//[ahuber] we try to return an exact BigInteger if possible
@@ -193,11 +193,11 @@ public final class RationalConverter extends AbstractConverter implements ValueS
 		return divisionResult;
 	}
 	//[ahuber] fallback to BigDecimal, thats where we are loosing 'exactness'	
-	return convert(new BigDecimal(value), ctx);
+	return convertWhenNotIdentity(new BigDecimal(value), ctx);
   }
   
   @Override
-  public BigDecimal convert(BigDecimal value, MathContext ctx) throws ArithmeticException {
+  public BigDecimal convertWhenNotIdentity(BigDecimal value, MathContext ctx) throws ArithmeticException {
     BigDecimal decimalDividend = new BigDecimal(dividend, 0);
     BigDecimal decimalDivisor = new BigDecimal(divisor, 0);
     return value.multiply(decimalDividend, ctx).divide(decimalDivisor, ctx);
