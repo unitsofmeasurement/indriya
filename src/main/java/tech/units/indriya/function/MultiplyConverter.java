@@ -98,17 +98,12 @@ public final class MultiplyConverter extends AbstractConverter implements ValueS
 
 	@Override
 	protected boolean isSimpleCompositionWith(AbstractConverter that) {
-		return that.isLinear();
+		return that instanceof MultiplyConverter;
 	}
 
 	@Override
 	protected AbstractConverter simpleCompose(AbstractConverter that) {
-		if (that instanceof MultiplyConverter) {
-			return new MultiplyConverter(factor * ((MultiplyConverter) that).factor);
-		}
-		throw new IllegalStateException(String.format(
-				"%s.simpleCompose() not handled for linear converter %s", 
-				this, that));
+		return new MultiplyConverter(factor * ((MultiplyConverter) that).factor);
 	}
 
 	@Override
