@@ -204,10 +204,10 @@ public abstract class AbstractConverter
 			throw new IllegalArgumentException("Value cannot be null");
 		}
 		if (value instanceof BigDecimal) {
-			return convertWhenNotIdentity((BigDecimal) value, Calculus.DEFAULT_MATH_CONTEXT);
+			return convertWhenNotIdentity((BigDecimal) value, Calculus.MATH_CONTEXT);
 		}
 		if (value instanceof BigInteger) {
-			return convertWhenNotIdentity((BigInteger) value, Calculus.DEFAULT_MATH_CONTEXT);
+			return convertWhenNotIdentity((BigInteger) value, Calculus.MATH_CONTEXT);
 		}
 		return convertWhenNotIdentity(value.doubleValue());
 	}

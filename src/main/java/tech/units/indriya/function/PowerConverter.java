@@ -164,7 +164,7 @@ public final class PowerConverter extends AbstractConverter {
 		final BigDecimal bdecFactor = new BigDecimal(bintFactor);
 		final BigDecimal bdecValue = new BigDecimal(value);
 
-		return bdecValue.divide(bdecFactor, Calculus.DEFAULT_MATH_CONTEXT);
+		return bdecValue.divide(bdecFactor, Calculus.MATH_CONTEXT);
 	}
 
 	@Override

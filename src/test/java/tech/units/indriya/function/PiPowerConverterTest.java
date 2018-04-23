@@ -30,6 +30,7 @@
 package tech.units.indriya.function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
@@ -41,25 +42,23 @@ import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.Calculus;
 
-public class PiDivisorConverterTest {
-
-	private PiPowerConverter converter;
-	private final static MathContext INITIAL_DEFAULT = Calculus.DEFAULT_MATH_CONTEXT;
-
+public class PiPowerConverterTest {
 
 	@BeforeEach
 	public void setUp() throws Exception {
-		converter = new PiPowerConverter(-1);
-		Calculus.DEFAULT_MATH_CONTEXT = MathContext.DECIMAL32;
+		
 	}
 
 	@AfterEach
 	public void reset() throws Exception {
-		Calculus.DEFAULT_MATH_CONTEXT = INITIAL_DEFAULT;
+		Calculus.MATH_CONTEXT = Calculus.DEFAULT_MATH_CONTEXT;
 	}
-
+	
 	@Test
 	public void testConvertMethod() {
+		PiPowerConverter converter = new PiPowerConverter(-1);
+		Calculus.MATH_CONTEXT = MathContext.DECIMAL32;
+		
 		assertEquals(1000, converter.convert(3141), 0.2);
 		assertEquals(0, converter.convert(0));
 		assertEquals(-1000, converter.convert(-3141), 0.2);
@@ -67,18 +66,51 @@ public class PiDivisorConverterTest {
 
 	@Test
 	public void testConvertBigDecimalMethod() {
+		PiPowerConverter converter = new PiPowerConverter(-1);
+		Calculus.MATH_CONTEXT = MathContext.DECIMAL32;
+		
 		assertEquals(1000, converter.convert(new BigDecimal("3141")).doubleValue(), 0.2);
 		assertEquals(0, converter.convert(BigDecimal.ZERO).doubleValue());
 		assertEquals(-1000, converter.convert(new BigDecimal("-3141")).doubleValue(), 0.2);
 	}
 
 	@Test
-	public void testEqualityOfTwoLogConverter() {
-		assertTrue(!converter.equals(null));
+	public void testEquality() {
+		PiPowerConverter a = new PiPowerConverter(-1);
+		PiPowerConverter b = new PiPowerConverter(-1);
+		PiPowerConverter c = new PiPowerConverter(1);
+		assertTrue(a.equals(b)); 
+		assertTrue(!a.equals(c));
 	}
 
 	@Test
-	public void isLinearOfLogConverterTest() {
+	public void isLinear() {
+		PiPowerConverter converter = new PiPowerConverter(-1);
 		assertTrue(converter.isLinear());
 	}
+	
+	@Test
+	public void piSquaredBigDecimalDefaultPrecision() {
+		PiPowerConverter converter = new PiPowerConverter(2);
+		BigDecimal value = (BigDecimal) converter.convert(BigDecimal.valueOf(0.1));
+		assertEquals("0.9869604401089358618834490999876151", value.toPlainString());
+	}
+	
+	@Test
+	public void piBigDecimalDefaultPrecision() {
+		PiPowerConverter converter = new PiPowerConverter(1);
+		Calculus.MATH_CONTEXT = MathContext.UNLIMITED;
+		assertThrows(ArithmeticException.class, ()->converter.convert(BigDecimal.valueOf(1.0)));
+	}
+	
+	@Test
+	public void piBigDecimalExtendedPrecision() {
+		PiPowerConverter converter = new PiPowerConverter(1);
+		Calculus.MATH_CONTEXT = new MathContext(MathContext.DECIMAL128.getPrecision() * 2);
+		BigDecimal value = (BigDecimal) converter.convert(BigDecimal.valueOf(1.));
+		assertEquals(
+				"3.14159265358979323846264338327950288419716939937510582097494459230780", 
+				value.toPlainString());
+	}
+	
 }

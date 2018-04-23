@@ -40,9 +40,14 @@ public final class Calculus {
 	private static final Logger logger = Logger.getLogger(Calculus.class.getName());
 
 	/**
+	 * The default MathContext used for BigDecimal calculus.
+	 */
+	public static final MathContext DEFAULT_MATH_CONTEXT = MathContext.DECIMAL128;
+
+	/**
 	 * Exposes (non-final) the MathContext used for BigDecimal calculus.
 	 */
-	public static MathContext DEFAULT_MATH_CONTEXT = MathContext.DECIMAL128;
+	public static MathContext MATH_CONTEXT = DEFAULT_MATH_CONTEXT;
 
 	/**
 	 * Converts a number to {@link BigDecimal}
