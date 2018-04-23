@@ -213,10 +213,7 @@ public final class RationalConverter extends AbstractConverter implements ValueS
 		if (that instanceof RationalConverter) {
 			return true; 
 		}
-		if (that instanceof PowerConverter) {
-			return true; 
-		}
-		return false;
+		return that instanceof PowerConverter;
 	}
 
 	@Override
