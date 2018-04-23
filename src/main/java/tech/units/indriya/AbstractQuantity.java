@@ -30,17 +30,17 @@
 package tech.units.indriya;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.math.MathContext;
 import java.util.Comparator;
 import java.util.Objects;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.UnitConverter;
+import javax.measure.format.QuantityFormat;
 import javax.measure.quantity.Dimensionless;
 
 import tech.units.indriya.format.SimpleQuantityFormat;
+import tech.units.indriya.format.SimpleUnitFormat;
 import tech.units.indriya.function.NaturalQuantityComparator;
 import tech.units.indriya.quantity.Quantities;
 import tech.uom.lib.common.function.UnitSupplier;
@@ -173,26 +173,27 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
     return Quantities.getQuantity(convertedValue, unit);
   }
 
-  /**
-   * Returns this measure after conversion to specified unit. The default implementation returns
-   * <code>Measure.valueOf(decimalValue(unit, ctx), unit)</code>. If this measure is already stated in the specified unit, then this measure is
-   * returned and no conversion is performed.
-   *
-   * @param unit
-   *          the unit in which the returned measure is stated.
-   * @param ctx
-   *          the math context to use for conversion.
-   * @return this measure or a new measure equivalent to this measure but stated in the specified unit.
-   * @throws ArithmeticException
-   *           if the result is inexact but the rounding mode is <code>UNNECESSARY</code> or <code>mathContext.precision == 0</code> and the quotient
-   *           has a non-terminating decimal expansion.
-   */
-  public Quantity<Q> to(Unit<Q> unit, MathContext ctx) {
-    if (unit.equals(this.getUnit())) {
-      return this;
-    }
-    return Quantities.getQuantity(decimalValue(unit, ctx), unit);
-  }
+//  /**
+//   * Returns this measure after conversion to specified unit. The default implementation returns
+//   * <code>Measure.valueOf(decimalValue(unit, ctx), unit)</code>. If this measure is already stated 
+//   * in the specified unit, then this measure is returned and no conversion is performed.
+//   *
+//   * @param unit
+//   *          the unit in which the returned measure is stated.
+//   * @param ctx
+//   *          the math context to use for conversion.
+//   * @return this measure or a new measure equivalent to this measure but stated in the specified unit.
+//   * @throws ArithmeticException
+//   *           if the result is inexact but the rounding mode is <code>UNNECESSARY</code> or 
+//   *           <code>mathContext.precision == 0</code> and the quotient
+//   *           has a non-terminating decimal expansion.
+//   */
+//  public Quantity<Q> to(Unit<Q> unit) {
+//    if (unit.equals(this.getUnit())) {
+//      return this;
+//    }
+//    return Quantities.getQuantity(decimalValue(unit), unit);
+//  }
 
   @Override
   public boolean isGreaterThan(Quantity<Q> that) {
@@ -304,7 +305,7 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
     return String.valueOf(getValue()) + " " + String.valueOf(getUnit());
   }
 
-  public abstract BigDecimal decimalValue(Unit<Q> unit, MathContext ctx) throws ArithmeticException;
+  public abstract BigDecimal decimalValue(Unit<Q> unit) throws ArithmeticException;
 
   public abstract double doubleValue(Unit<Q> unit) throws ArithmeticException;
 
@@ -400,38 +401,6 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
   protected static final class Equalizer {
 
     /**
-     * Converts a number to {@link BigDecimal}
-     *
-     * @param value
-     *          the value to be converted
-     * @return the value converted
-     */
-    public static BigDecimal toBigDecimal(Number value) {
-      if (BigDecimal.class.isInstance(value)) {
-        return BigDecimal.class.cast(value);
-      } else if (BigInteger.class.isInstance(value)) {
-        return new BigDecimal(BigInteger.class.cast(value));
-      }
-      return BigDecimal.valueOf(value.doubleValue());
-    }
-
-    /**
-     * Converts a number to {@link BigInteger}
-     *
-     * @param value
-     *          the value to be converted
-     * @return the value converted
-     */
-    public static BigInteger toBigInteger(Number value) {
-      if (BigInteger.class.isInstance(value)) {
-        return BigInteger.class.cast(value);
-      } else if (BigDecimal.class.isInstance(value)) {
-        return (BigDecimal.class.cast(value)).toBigInteger();
-      }
-      return BigInteger.valueOf(value.longValue());
-    }
-
-    /**
      * Check if the both value has equality number, in other words, 1 is equals to 1.0000 and 1.0.
      * 
      * If the first value is a <type>Number</type> of either <type>Double</type>, <type>Float</type>, <type>Integer</type>, <type>Long</type>,
@@ -461,7 +430,7 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
       } else if (valueA instanceof Byte && valueB instanceof Byte) {
         return valueA.byteValue() == valueB.byteValue();
       }
-      return toBigDecimal(valueA).compareTo(toBigDecimal(valueB)) == 0;
+      return Calculus.toBigDecimal(valueA).compareTo(Calculus.toBigDecimal(valueB)) == 0;
     }
   }
 }

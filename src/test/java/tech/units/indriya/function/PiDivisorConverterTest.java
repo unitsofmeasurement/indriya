@@ -35,47 +35,50 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.math.BigDecimal;
 import java.math.MathContext;
 
-import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import tech.units.indriya.function.PiDivisorConverter;
+import tech.units.indriya.Calculus;
 
 public class PiDivisorConverterTest {
 
-  private PiDivisorConverter converter;
+	private PiPowerConverter converter;
+	private final static MathContext INITIAL_DEFAULT = Calculus.DEFAULT_MATH_CONTEXT;
 
-  @BeforeEach
-  public void setUp() throws Exception {
-    converter = new PiDivisorConverter();
-  }
 
-  @Test
-  public void testConvertMethod() {
-    assertEquals(1000, converter.convert(3141), 0.2);
-    assertEquals(0, converter.convert(0));
-    assertEquals(-1000, converter.convert(-3141), 0.2);
-  }
+	@BeforeEach
+	public void setUp() throws Exception {
+		converter = new PiPowerConverter(-1);
+		Calculus.DEFAULT_MATH_CONTEXT = MathContext.DECIMAL32;
+	}
 
-  @Test
-  public void testConvertBigDecimalMethod() {
-    assertEquals(1000, converter.convert(new BigDecimal("3141"), MathContext.DECIMAL32).doubleValue(), 0.2);
-    assertEquals(0, converter.convert(BigDecimal.ZERO, MathContext.DECIMAL32).doubleValue());
-    assertEquals(-1000, converter.convert(new BigDecimal("-3141"), MathContext.DECIMAL32).doubleValue(), 0.2);
-  }
+	@AfterEach
+	public void reset() throws Exception {
+		Calculus.DEFAULT_MATH_CONTEXT = INITIAL_DEFAULT;
+	}
 
-  @Test
-  public void testEqualityOfTwoLogConverter() {
-    assertTrue(!converter.equals(null));
-  }
+	@Test
+	public void testConvertMethod() {
+		assertEquals(1000, converter.convert(3141), 0.2);
+		assertEquals(0, converter.convert(0));
+		assertEquals(-1000, converter.convert(-3141), 0.2);
+	}
 
-  @Test
-  public void testGetValuePiDivisorConverter() {
-    assertEquals("(1/π)", converter.getValue());
-  }
+	@Test
+	public void testConvertBigDecimalMethod() {
+		assertEquals(1000, converter.convert(new BigDecimal("3141")).doubleValue(), 0.2);
+		assertEquals(0, converter.convert(BigDecimal.ZERO).doubleValue());
+		assertEquals(-1000, converter.convert(new BigDecimal("-3141")).doubleValue(), 0.2);
+	}
 
-  @Test
-  public void isLinearOfLogConverterTest() {
-    assertTrue(converter.isLinear());
-  }
+	@Test
+	public void testEqualityOfTwoLogConverter() {
+		assertTrue(!converter.equals(null));
+	}
+
+	@Test
+	public void isLinearOfLogConverterTest() {
+		assertTrue(converter.isLinear());
+	}
 }

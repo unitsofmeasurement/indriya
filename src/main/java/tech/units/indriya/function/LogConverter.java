@@ -136,12 +136,12 @@ public final class LogConverter extends AbstractConverter implements ValueSuppli
   }
 
   @Override
-  public double convert(double amount) {
+  public double convertWhenNotIdentity(double amount) {
     return Math.log(amount) / logOfBase;
   }
 
   @Override
-  public BigDecimal convert(BigDecimal value, MathContext ctx) throws ArithmeticException {
+  public BigDecimal convertWhenNotIdentity(BigDecimal value, MathContext ctx) throws ArithmeticException {
     return BigDecimal.valueOf(convert(value.doubleValue())); // Reverts to
     // double
     // conversion.

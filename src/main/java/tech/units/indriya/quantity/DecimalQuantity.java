@@ -37,8 +37,8 @@ import java.util.Objects;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 
-import tech.units.indriya.AbstractConverter;
 import tech.units.indriya.AbstractQuantity;
+import tech.units.indriya.Calculus;
 import tech.units.indriya.ComparableQuantity;
 
 /**
@@ -80,45 +80,47 @@ final class DecimalQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> i
 
   @Override
   public double doubleValue(Unit<Q> unit) {
-    return (getUnit().equals(unit)) ? value.doubleValue() : getUnit().getConverterTo(unit).convert(value.doubleValue());
+    return (getUnit().equals(unit)) 
+    		? value.doubleValue() 
+    		: getUnit().getConverterTo(unit).convert(value.doubleValue());
   }
 
   @Override
-  public BigDecimal decimalValue(Unit<Q> unit, MathContext ctx) throws ArithmeticException {
-    return (super.getUnit().equals(unit)) ? value : ((AbstractConverter) unit.getConverterTo(unit)).convert(value, ctx);
+  public BigDecimal decimalValue(Unit<Q> unit) throws ArithmeticException {
+    return Calculus.toBigDecimal(super.getUnit().getConverterTo(unit).convert(value));
   }
 
   @Override
   public ComparableQuantity<Q> add(Quantity<Q> that) {
     if (getUnit().equals(that.getUnit())) {
-      return Quantities.getQuantity(value.add(Equalizer.toBigDecimal(that.getValue()), MathContext.DECIMAL128), getUnit());
+      return Quantities.getQuantity(value.add(Calculus.toBigDecimal(that.getValue()), Calculus.DEFAULT_MATH_CONTEXT), getUnit());
     }
     Quantity<Q> converted = that.to(getUnit());
-    return Quantities.getQuantity(value.add(Equalizer.toBigDecimal(converted.getValue())), getUnit());
+    return Quantities.getQuantity(value.add(Calculus.toBigDecimal(converted.getValue())), getUnit());
   }
 
   @Override
   public ComparableQuantity<Q> subtract(Quantity<Q> that) {
     if (getUnit().equals(that.getUnit())) {
-      return Quantities.getQuantity(value.subtract(Equalizer.toBigDecimal(that.getValue()), MathContext.DECIMAL128), getUnit());
+      return Quantities.getQuantity(value.subtract(Calculus.toBigDecimal(that.getValue()), Calculus.DEFAULT_MATH_CONTEXT), getUnit());
     }
     Quantity<Q> converted = that.to(getUnit());
-    return Quantities.getQuantity(value.subtract(Equalizer.toBigDecimal(converted.getValue()), MathContext.DECIMAL128), getUnit());
+    return Quantities.getQuantity(value.subtract(Calculus.toBigDecimal(converted.getValue()), Calculus.DEFAULT_MATH_CONTEXT), getUnit());
   }
 
   @Override
   public ComparableQuantity<?> multiply(Quantity<?> that) {
-    return new DecimalQuantity(value.multiply(Equalizer.toBigDecimal(that.getValue()), MathContext.DECIMAL128), getUnit().multiply(that.getUnit()));
+    return new DecimalQuantity(value.multiply(Calculus.toBigDecimal(that.getValue()), Calculus.DEFAULT_MATH_CONTEXT), getUnit().multiply(that.getUnit()));
   }
 
   @Override
   public ComparableQuantity<Q> multiply(Number that) {
-    return Quantities.getQuantity(value.multiply(Equalizer.toBigDecimal(that), MathContext.DECIMAL128), getUnit());
+    return Quantities.getQuantity(value.multiply(Calculus.toBigDecimal(that), Calculus.DEFAULT_MATH_CONTEXT), getUnit());
   }
 
   @Override
   public ComparableQuantity<Q> divide(Number that) {
-    return Quantities.getQuantity(value.divide(Equalizer.toBigDecimal(that), MathContext.DECIMAL128), getUnit());
+    return Quantities.getQuantity(value.divide(Calculus.toBigDecimal(that), Calculus.DEFAULT_MATH_CONTEXT), getUnit());
   }
 
   @Override
@@ -142,7 +144,7 @@ final class DecimalQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> i
 
   @Override
   public ComparableQuantity<?> divide(Quantity<?> that) {
-    return new DecimalQuantity(value.divide(Equalizer.toBigDecimal(that.getValue()), MathContext.DECIMAL128), getUnit().divide(that.getUnit()));
+    return new DecimalQuantity(value.divide(Calculus.toBigDecimal(that.getValue()), Calculus.DEFAULT_MATH_CONTEXT), getUnit().divide(that.getUnit()));
   }
 
   /*

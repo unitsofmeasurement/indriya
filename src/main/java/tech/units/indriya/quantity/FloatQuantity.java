@@ -30,7 +30,6 @@
 package tech.units.indriya.quantity;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.util.Objects;
 
 import javax.measure.Quantity;
@@ -155,7 +154,7 @@ final class FloatQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
   }
 
   @Override
-  public BigDecimal decimalValue(Unit<Q> unit, MathContext ctx) throws ArithmeticException {
+  public BigDecimal decimalValue(Unit<Q> unit) throws ArithmeticException {
     return BigDecimal.valueOf(value);
   }
 }

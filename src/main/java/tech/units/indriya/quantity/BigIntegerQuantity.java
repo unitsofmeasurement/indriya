@@ -32,7 +32,6 @@ package tech.units.indriya.quantity;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.math.MathContext;
 import java.util.Objects;
 
 import javax.measure.Quantity;
@@ -40,6 +39,7 @@ import javax.measure.Unit;
 
 import tech.units.indriya.AbstractConverter;
 import tech.units.indriya.AbstractQuantity;
+import tech.units.indriya.Calculus;
 import tech.units.indriya.ComparableQuantity;
 
 /**
@@ -89,7 +89,7 @@ final class BigIntegerQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q
   }
 
   @Override
-  public BigDecimal decimalValue(Unit<Q> unit, MathContext ctx) throws ArithmeticException {
+  public BigDecimal decimalValue(Unit<Q> unit) throws ArithmeticException {
     if (getUnit().equals(unit)) {
       return new BigDecimal(value);
     } else {
@@ -107,34 +107,34 @@ final class BigIntegerQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q
   @Override
   public ComparableQuantity<Q> add(Quantity<Q> that) {
     if (getUnit().equals(that.getUnit())) {
-      return Quantities.getQuantity(value.add(Equalizer.toBigInteger(that.getValue())), getUnit());
+      return Quantities.getQuantity(value.add(Calculus.toBigInteger(that.getValue())), getUnit());
     }
     Quantity<Q> converted = that.to(getUnit());
-    return Quantities.getQuantity(value.add(Equalizer.toBigInteger(converted.getValue())), getUnit());
+    return Quantities.getQuantity(value.add(Calculus.toBigInteger(converted.getValue())), getUnit());
   }
 
   @Override
   public ComparableQuantity<Q> subtract(Quantity<Q> that) {
     if (getUnit().equals(that.getUnit())) {
-      return Quantities.getQuantity(value.subtract(Equalizer.toBigInteger(that.getValue())), getUnit());
+      return Quantities.getQuantity(value.subtract(Calculus.toBigInteger(that.getValue())), getUnit());
     }
     Quantity<Q> converted = that.to(getUnit());
-    return Quantities.getQuantity(value.subtract(Equalizer.toBigInteger(converted.getValue())), getUnit());
+    return Quantities.getQuantity(value.subtract(Calculus.toBigInteger(converted.getValue())), getUnit());
   }
 
   @Override
   public ComparableQuantity<?> multiply(Quantity<?> that) {
-    return new BigIntegerQuantity(value.multiply(Equalizer.toBigDecimal(that.getValue()).toBigInteger()), getUnit().multiply(that.getUnit()));
+    return new BigIntegerQuantity(value.multiply(Calculus.toBigDecimal(that.getValue()).toBigInteger()), getUnit().multiply(that.getUnit()));
   }
 
   @Override
   public ComparableQuantity<Q> multiply(Number that) {
-    return Quantities.getQuantity(value.multiply(Equalizer.toBigInteger(that)), getUnit());
+    return Quantities.getQuantity(value.multiply(Calculus.toBigInteger(that)), getUnit());
   }
 
   @Override
   public ComparableQuantity<Q> divide(Number that) {
-    return Quantities.getQuantity(value.divide(Equalizer.toBigDecimal(that).toBigInteger()), getUnit());
+    return Quantities.getQuantity(value.divide(Calculus.toBigDecimal(that).toBigInteger()), getUnit());
   }
 
   @Override
@@ -158,7 +158,7 @@ final class BigIntegerQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q
 
   @Override
   public ComparableQuantity<?> divide(Quantity<?> that) {
-    return new BigIntegerQuantity(value.divide(Equalizer.toBigInteger(that.getValue())), getUnit().divide(that.getUnit()));
+    return new BigIntegerQuantity(value.divide(Calculus.toBigInteger(that.getValue())), getUnit().divide(that.getUnit()));
   }
 
   /*

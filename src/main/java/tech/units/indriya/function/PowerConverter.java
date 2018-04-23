@@ -33,14 +33,13 @@ package tech.units.indriya.function;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
-import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 
 import javax.measure.Prefix;
 import javax.measure.UnitConverter;
 
 import tech.units.indriya.AbstractConverter;
+import tech.units.indriya.Calculus;
 
 /**
  * UnitConverter for numbers in base^exponent representation.
@@ -54,6 +53,7 @@ public final class PowerConverter extends AbstractConverter {
 	private final int base;
 	private final int exponent;
 	private final int hashCode;
+	private final double doubleFactor; // for double calculus only
 
 	/**
 	 * Creates a converter with the specified Prefix.
@@ -77,11 +77,12 @@ public final class PowerConverter extends AbstractConverter {
 	}
 
 	protected PowerConverter(int base, int exponent) {
-		if(base == 0 && exponent == 0) {
-			throw new IllegalArgumentException("base and exponent can not be both zero at the same time (0^0 is undefined)");
+		if(base == 0) {
+			throw new IllegalArgumentException("base can not be zero (because 0^0 is undefined)");
 		}
 		this.base = base;
 		this.exponent = exponent;
+		this.doubleFactor = Math.pow(base, exponent);
 		this.hashCode = Objects.hash(base, exponent);
 	}
 
@@ -99,7 +100,8 @@ public final class PowerConverter extends AbstractConverter {
 			return true; // 1^x = 1
 		}
 		return exponent == 0; // x^0 = 1, for any x!=0
-		// [ahuber] 0^0 is undefined, but we guard against this case in the constructor
+		// [ahuber] 0^0 is undefined, but we guard against base==0 in the constructor,
+		// and there is no composition, that changes the base
 	}
 
 	@Override
@@ -141,7 +143,7 @@ public final class PowerConverter extends AbstractConverter {
 	}
 
 	@Override
-	protected Number convert(BigInteger value, MathContext ctx) {
+	protected Number convertWhenNotIdentity(BigInteger value, MathContext ctx) {
 		//[ahuber] exact number representation of factor 
 		final BigInteger bintFactor = BigInteger.valueOf(base).pow(Math.abs(exponent));
 
@@ -162,12 +164,11 @@ public final class PowerConverter extends AbstractConverter {
 		final BigDecimal bdecFactor = new BigDecimal(bintFactor);
 		final BigDecimal bdecValue = new BigDecimal(value);
 
-		return bdecValue.divide(bdecFactor, MathContext.DECIMAL128);
+		return bdecValue.divide(bdecFactor, Calculus.DEFAULT_MATH_CONTEXT);
 	}
 
 	@Override
-	public BigDecimal convert(BigDecimal value, MathContext ctx) throws ArithmeticException {
-		//[ahuber] at this point we know exponent is not zero
+	public BigDecimal convertWhenNotIdentity(BigDecimal value, MathContext ctx) throws ArithmeticException {
 
 		//[ahuber] thats where we are loosing 'exactness'
 		final BigDecimal bdecFactor = new BigDecimal(BigInteger.valueOf(base).pow(Math.abs(exponent)));
@@ -179,18 +180,11 @@ public final class PowerConverter extends AbstractConverter {
 	}
 
 	@Override
-	public double convert(double value) {
-		if(isIdentity()) {
-			return value;
-		}
+	public double convertWhenNotIdentity(double value) {
 		//[ahuber] multiplication is probably non-critical regarding preservation of precision
-		return value * Math.pow(base, exponent);
+		return value * doubleFactor;
 	}
 
-	@Override
-	public List<? extends UnitConverter> getConversionSteps() {
-		return Collections.singletonList(this);
-	}
 
 	@Override
 	public boolean equals(Object obj) {
@@ -212,14 +206,11 @@ public final class PowerConverter extends AbstractConverter {
 
 	@Override
 	public final String toString() {
-		return "PowerConverter(" + base + "^" + exponent + ")";
+		return "PiPowerConverter(^" + exponent + ")";
 	}
 
 	@Override
 	public int compareTo(UnitConverter o) {
-		
-		//TODO let simplifier handle this
-		
 		if (this == o) {
 			return 0;
 		}
@@ -250,9 +241,6 @@ public final class PowerConverter extends AbstractConverter {
 	}
 
 	public RationalConverter toRationalConverter() {
-		if(isIdentity()) {
-			throw new IllegalArgumentException("can not convert identity operator to RationalConverter");
-		}
 		return exponent>0
 				? new RationalConverter(BigInteger.valueOf(base).pow(exponent), BigInteger.ONE)
 						: new RationalConverter(BigInteger.ONE, BigInteger.valueOf(base).pow(-exponent));

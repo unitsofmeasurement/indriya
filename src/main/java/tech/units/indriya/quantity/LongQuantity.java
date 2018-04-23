@@ -30,7 +30,6 @@
 package tech.units.indriya.quantity;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.util.Objects;
 
 import javax.measure.Quantity;
@@ -166,7 +165,7 @@ final class LongQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
   }
 
   @Override
-  public BigDecimal decimalValue(Unit<Q> unit, MathContext ctx) {
+  public BigDecimal decimalValue(Unit<Q> unit) {
     return BigDecimal.valueOf(doubleValue(unit));
   }
 }

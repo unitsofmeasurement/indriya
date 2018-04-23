@@ -98,12 +98,12 @@ public final class AddConverter extends AbstractConverter implements ValueSuppli
   }
 
   @Override
-  public double convert(double value) {
+  public double convertWhenNotIdentity(double value) {
     return value + offset;
   }
 
   @Override
-  public BigDecimal convert(BigDecimal value, MathContext ctx) throws ArithmeticException {
+  public BigDecimal convertWhenNotIdentity(BigDecimal value, MathContext ctx) throws ArithmeticException {
     return value.add(BigDecimal.valueOf(offset), ctx);
   }
 

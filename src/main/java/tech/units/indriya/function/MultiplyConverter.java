@@ -117,12 +117,12 @@ public final class MultiplyConverter extends AbstractConverter implements ValueS
 	}
 
 	@Override
-	public double convert(double value) {
+	public double convertWhenNotIdentity(double value) {
 		return value * factor;
 	}
 
 	@Override
-	public BigDecimal convert(BigDecimal value, MathContext ctx) throws ArithmeticException {
+	public BigDecimal convertWhenNotIdentity(BigDecimal value, MathContext ctx) throws ArithmeticException {
 		return value.multiply(BigDecimal.valueOf(factor), ctx);
 	}
 

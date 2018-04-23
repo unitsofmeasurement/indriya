@@ -35,7 +35,6 @@ import static tech.units.indriya.unit.Units.MINUTE;
 import static tech.units.indriya.unit.Units.SECOND;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -330,7 +329,7 @@ public final class TimeUnitQuantity extends AbstractQuantity<Time> {
    * @since 1.0.1
    */
   @Override
-  public BigDecimal decimalValue(Unit<Time> unit, MathContext ctx) throws ArithmeticException {
+  public BigDecimal decimalValue(Unit<Time> unit) throws ArithmeticException {
     return BigDecimal.valueOf(value.doubleValue());
   }
 

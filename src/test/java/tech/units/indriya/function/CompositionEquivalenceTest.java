@@ -40,7 +40,6 @@ import java.util.function.Supplier;
 
 import javax.measure.UnitConverter;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.RepeatedTest;
@@ -54,9 +53,6 @@ import org.junit.jupiter.api.extension.ParameterResolver;
 import tech.units.indriya.AbstractConverter;
 
 @DisplayName("Testing Composition of UnitConverters")
-/**
- * @author Andi Huber
- */
 public class CompositionEquivalenceTest {
 
 	private Random random = new Random(0); // seed = 0, to make tests reproducible
@@ -92,18 +88,14 @@ public class CompositionEquivalenceTest {
 				null, // exp has no identity variant
 				new ExpConverter(4.5),
 				new ExpConverter(0.1) ),
-		PI_MUL(PiMultiplierConverter.class, 
-				null, // log has no identity variant
-				new PiMultiplierConverter(),
-				new PiMultiplierConverter() ),
-		PI_DIV(PiDivisorConverter.class, 
-				null, // exp has no identity variant
-				new PiDivisorConverter(),
-				new PiDivisorConverter() ),
+		PI(PiPowerConverter.class, 
+				()->PiPowerConverter.of(0), // log has no identity variant
+				PiPowerConverter.of(1),
+				PiPowerConverter.of(-1) ),
 		// when adding entries, also increment the typeCount!
 		;
 
-		public static final int typeCount = 9; // should be equal to ConverterType.values().length 
+		public static final int typeCount = 8; // should be equal to ConverterType.values().length 
 		public static final int candidatesPerType = 2;
 		public static final int candidateCount = typeCount * candidatesPerType;
 
@@ -178,7 +170,6 @@ public class CompositionEquivalenceTest {
 	@Nested
 	@DisplayName("Any converter should ...")
 	@ExtendWith(UnitConverterForCompositionTests.class)
-	@Disabled
 	public class CompositionTests {
 
 		@RepeatedTest(
@@ -211,7 +202,6 @@ public class CompositionEquivalenceTest {
 
 		@RepeatedTest(value = ConverterType.candidateCount * ConverterType.candidateCount)
 		@DisplayName("(if scaling) commute with any other that is scaling")
-		@Disabled("Currently fails")
 		public void commuteWithScaling(UnitConverter u1, UnitConverter u2) {
 			if(u1.isLinear() && u2.isLinear()) {
 				assertTrue(commutes(u1, u2), String.format("testing %s %s", u1, u2));
