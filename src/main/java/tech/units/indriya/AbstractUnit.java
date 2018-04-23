@@ -29,13 +29,30 @@
  */
 package tech.units.indriya;
 
-import javax.measure.*;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.Map;
+
+import javax.measure.Dimension;
+import javax.measure.IncommensurableException;
+import javax.measure.Prefix;
+import javax.measure.Quantity;
+import javax.measure.UnconvertibleException;
+import javax.measure.Unit;
+import javax.measure.UnitConverter;
+import javax.measure.format.ParserException;
 import javax.measure.quantity.Dimensionless;
 
+import tech.units.indriya.format.LocalUnitFormat;
 import tech.units.indriya.format.SimpleUnitFormat;
 import tech.units.indriya.function.AddConverter;
-import tech.units.indriya.function.PowerConverter;
+import tech.units.indriya.function.ExpConverter;
+import tech.units.indriya.function.LogConverter;
 import tech.units.indriya.function.MultiplyConverter;
+import tech.units.indriya.function.PiPowerConverter;
+import tech.units.indriya.function.PowerConverter;
 import tech.units.indriya.function.RationalConverter;
 import tech.units.indriya.quantity.QuantityDimension;
 import tech.units.indriya.spi.DimensionalModel;
@@ -43,12 +60,7 @@ import tech.units.indriya.unit.AlternateUnit;
 import tech.units.indriya.unit.AnnotatedUnit;
 import tech.units.indriya.unit.ProductUnit;
 import tech.units.indriya.unit.TransformedUnit;
-
-import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.Map;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
+import tech.units.indriya.unit.Units;
 
 /**
  * <p>
@@ -640,6 +652,17 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
 	 */
 	public static final class Simplifier {
 		
+		private final static Map<Class<?>, Integer> normalFormOrder = new HashMap<>(6);
+		static {
+			normalFormOrder.put(PowerConverter.class, 1); 
+			normalFormOrder.put(RationalConverter.class, 2); 
+			normalFormOrder.put(MultiplyConverter.class, 3);
+			normalFormOrder.put(PiPowerConverter.class, 4); 
+			normalFormOrder.put(AddConverter.class, 5);
+			normalFormOrder.put(LogConverter.class, 6); 
+			normalFormOrder.put(ExpConverter.class, 7);
+		}
+		
 		public static AbstractConverter compose(AbstractConverter a, AbstractConverter b) {
 			
 			if(a.isIdentity()) {
@@ -656,23 +679,28 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
 				return a.simpleCompose(b);
 			}
 			
-			// TODO simplify if a or b are instances of Pair, will require 'commutes' checks
+			final AbstractConverter.Pair nonSimplifiedForm = normalFormOrder(a, b)<=0 
+					? new AbstractConverter.Pair(a, b) 
+					: new AbstractConverter.Pair(b, a); 
 			
-			return normalFormOrder(a, b)<=0 ? new AbstractConverter.Pair(a, b) : new AbstractConverter.Pair(b, a);
+			return simplify(nonSimplifiedForm);
 		}
 		
-		private static int normalFormOrder(AbstractConverter a, AbstractConverter b) {
+		private static AbstractConverter simplify(AbstractConverter.Pair nonSimplifiedForm) {
+
+			//TODO actually simplify, and produce a normal-form
 			
+			return nonSimplifiedForm;
+		}
+
+		private static int normalFormOrder(AbstractConverter a, AbstractConverter b) {
 			if(a.getClass().equals(b.getClass())) {
-				
 				if(a instanceof PowerConverter) {
 					return Integer.compare( ((PowerConverter)a).getBase(), ((PowerConverter)b).getBase() );
 				}
-				
 				return 0;
 			}
-			// TODO lookup a table ?
-			return 0;
+			return Integer.compare(normalFormOrder.get(a.getClass()), normalFormOrder.get(b.getClass()));
 		}
 	}
 	
