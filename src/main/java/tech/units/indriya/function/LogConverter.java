@@ -163,7 +163,7 @@ public final class LogConverter extends AbstractConverter implements ValueSuppli
       return 0;
     }
     if (o instanceof ValueSupplier) {
-      return getValue().compareTo(String.valueOf(((ValueSupplier) o).getValue()));
+      return getValue().compareTo(String.valueOf(((ValueSupplier<?>) o).getValue()));
     }
     return -1;
   }
