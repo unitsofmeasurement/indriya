@@ -30,6 +30,7 @@
 package tech.units.indriya.function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -37,17 +38,16 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.Calculus;
 
 public class PiPowerConverterTest {
 
-	@BeforeEach
-	public void setUp() throws Exception {
-		
-	}
+//	@BeforeEach
+//	public void setUp() throws Exception {
+//		
+//	}
 
 	@AfterEach
 	public void reset() throws Exception {
@@ -80,7 +80,7 @@ public class PiPowerConverterTest {
 		PiPowerConverter b = new PiPowerConverter(-1);
 		PiPowerConverter c = new PiPowerConverter(1);
 		assertTrue(a.equals(b)); 
-		assertTrue(!a.equals(c));
+		assertFalse(a.equals(c));
 	}
 
 	@Test
