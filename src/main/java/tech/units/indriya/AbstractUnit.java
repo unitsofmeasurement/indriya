@@ -58,6 +58,7 @@ import tech.units.indriya.quantity.QuantityDimension;
 import tech.units.indriya.spi.DimensionalModel;
 import tech.units.indriya.unit.AlternateUnit;
 import tech.units.indriya.unit.AnnotatedUnit;
+import tech.units.indriya.unit.CompoundUnit;
 import tech.units.indriya.unit.ProductUnit;
 import tech.units.indriya.unit.TransformedUnit;
 import tech.units.indriya.unit.Units;
@@ -82,7 +83,7 @@ import tech.units.indriya.unit.Units;
  *      International System of Units</a>
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.2, April 11, 2018
+ * @version 1.2.1, April 25, 2018
  * @since 1.0
  */
 public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableUnit<Q> {
@@ -498,7 +499,7 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
 	public final Unit<Q> divide(double divisor) {
 		if (divisor == 1)
 			return this;
-		if (isLongValue(divisor)) //TODO [ahuber] you can not reach every long with a double!
+		if (isLongValue(divisor)) // TODO [ahuber] you can not reach every long with a double!
 			return transform(new RationalConverter(BigInteger.ONE, BigInteger.valueOf((long) divisor)));
 		return transform(new MultiplyConverter(1.0 / divisor));
 	}
@@ -564,10 +565,26 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
 			// n < 0
 			return ONE.divide(this.pow(-n));
 	}
-	
+
 	@Override
 	public Unit<Q> prefix(Prefix prefix) {
 		return this.transform(PowerConverter.of(prefix));
+	}
+
+	/**
+	 * Returns the combination of this unit with the specified sub-unit. Compound
+	 * units are typically used for formatting purpose. Examples of compound
+	 * units:<code> 
+	 *     Unit<Length> FOOT_INCH = FOOT.compound(INCH);
+	 *     Unit<Time> HOUR_MINUTE_SECOND = HOUR.compound(MINUTE).compound(SECOND);
+	 * </code>
+	 * 
+	 * @param that
+	 *            the least significant unit to combine with this unit.
+	 * @return the corresponding compound unit.
+	 */
+	public final Unit<Q> compound(Unit<Q> that) {
+		return new CompoundUnit<Q>(this, that);
 	}
 
 	/**
@@ -606,7 +623,8 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
 		if (this.compareTo(that) == 0)
 			return true;
 		return this.getConverterTo(that).isIdentity();
-		//[ahuber] was ... return this.getConverterTo(that).equals(that.getConverterTo(this));
+		// [ahuber] was ... return
+		// this.getConverterTo(that).equals(that.getConverterTo(this));
 	}
 
 	// //////////////////////////////////////////////////////////////
@@ -631,7 +649,8 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
 		 * @return <code>true</code> if <code>this</code> and <code>obj</code> are
 		 *         considered equal; <code>false</code>otherwise.
 		 */
-		public static boolean areEqual(@SuppressWarnings("rawtypes") AbstractUnit u1, @SuppressWarnings("rawtypes") AbstractUnit u2) {
+		public static boolean areEqual(@SuppressWarnings("rawtypes") AbstractUnit u1,
+				@SuppressWarnings("rawtypes") AbstractUnit u2) {
 			/*
 			 * if (u1 != null && u2 != null) { if (u1.getName() != null && u1.getSymbol() !=
 			 * null) { return u1.getName().equals(u2.getName()) &&
@@ -646,97 +665,96 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
 			return false;
 		}
 	}
-	
+
 	/**
-	 * Utility class for UnitConverter composition yielding a normal-form.
-	 * A normal-form is required to decide whether two UnitConverters are equivalent.
+	 * Utility class for UnitConverter composition yielding a normal-form. A
+	 * normal-form is required to decide whether two UnitConverters are equivalent.
 	 * 
 	 */
 	public static final class Simplifier {
-		
+
 		private final static Map<Class<?>, Integer> normalFormOrder = new HashMap<>(6);
 		static {
-			normalFormOrder.put(PowerConverter.class, 1); 
-			normalFormOrder.put(RationalConverter.class, 2); 
+			normalFormOrder.put(PowerConverter.class, 1);
+			normalFormOrder.put(RationalConverter.class, 2);
 			normalFormOrder.put(MultiplyConverter.class, 3);
-			normalFormOrder.put(PiPowerConverter.class, 4); 
+			normalFormOrder.put(PiPowerConverter.class, 4);
 			normalFormOrder.put(AddConverter.class, 5);
-			normalFormOrder.put(LogConverter.class, 6); 
+			normalFormOrder.put(LogConverter.class, 6);
 			normalFormOrder.put(ExpConverter.class, 7);
 		}
-		
+
 		public static AbstractConverter compose(AbstractConverter a, AbstractConverter b) {
-			
-			if(a.isIdentity()) {
-				if(b.isIdentity()) {
+
+			if (a.isIdentity()) {
+				if (b.isIdentity()) {
 					return isNormalFormOrderWhenIdentity(a, b) ? a : b;
 				}
 				return b;
 			}
-			if(b.isIdentity()) {
+			if (b.isIdentity()) {
 				return a;
 			}
-			
-			if(a.isSimpleCompositionWith(b)) {
+
+			if (a.isSimpleCompositionWith(b)) {
 				return a.simpleCompose(b);
 			}
-			
-			final boolean commutative = a.isLinear() && b.isLinear(); 
+
+			final boolean commutative = a.isLinear() && b.isLinear();
 			final boolean swap = commutative && !isNormalFormOrderWhenCommutative(a, b);
-			
-			final AbstractConverter.Pair nonSimplifiedForm = swap 
-					? new AbstractConverter.Pair(b, a) 
-					: new AbstractConverter.Pair(a, b); 
-			
+
+			final AbstractConverter.Pair nonSimplifiedForm = swap ? new AbstractConverter.Pair(b, a)
+					: new AbstractConverter.Pair(a, b);
+
 			return simplify(nonSimplifiedForm);
 		}
-		
+
 		private static AbstractConverter simplify(AbstractConverter.Pair nonSimplifiedForm) {
 
-			//List<? extends UnitConverter> conversionSteps = nonSimplifiedForm.getConversionSteps();
-			
-			//TODO [ahuber] actually simplify, and return a normal-form, that is ...
-			
+			// List<? extends UnitConverter> conversionSteps =
+			// nonSimplifiedForm.getConversionSteps();
+
+			// TODO [ahuber] actually simplify, and return a normal-form, that is ...
+
 			// given 'conversionSteps' a list of converters where order matters,
-			// we form a permutation group of all allowed permutations 
-			// 'reachable' through 'allowed' swapping 
+			// we form a permutation group of all allowed permutations
+			// 'reachable' through 'allowed' swapping
 			// swapping is allowed for 2 consecutive converters that are both commutative
-			
-			// we search this permutation group for any sequence of converters, that allows simplification:
-			
+
+			// we search this permutation group for any sequence of converters, that allows
+			// simplification:
+
 			// for every pair of consecutive converters within a sequence,
 			// check whether a simplification is possible (a.isSimpleCompositionWith(b))
 			// then apply simplification and start over
-			
+
 			// finally sort according to normal-form order
-			
+
 			return nonSimplifiedForm;
 		}
 
 		private static boolean isNormalFormOrderWhenIdentity(AbstractConverter a, AbstractConverter b) {
-			if(a.getClass().equals(b.getClass())) {
+			if (a.getClass().equals(b.getClass())) {
 				return true;
 			}
 			return normalFormOrder.get(a.getClass()) <= normalFormOrder.get(b.getClass());
 		}
-		
+
 		private static boolean isNormalFormOrderWhenCommutative(AbstractConverter a, AbstractConverter b) {
-			if(a.getClass().equals(b.getClass())) {
-				if(a instanceof PowerConverter) {
-					return  ((PowerConverter)a).getBase() <= ((PowerConverter)b).getBase();
+			if (a.getClass().equals(b.getClass())) {
+				if (a instanceof PowerConverter) {
+					return ((PowerConverter) a).getBase() <= ((PowerConverter) b).getBase();
 				}
-				if(a instanceof LogConverter) {
-					return  ((LogConverter)a).getBase() <= ((LogConverter)b).getBase();
+				if (a instanceof LogConverter) {
+					return ((LogConverter) a).getBase() <= ((LogConverter) b).getBase();
 				}
-				if(a instanceof ExpConverter) {
-					return  ((ExpConverter)a).getBase() <= ((ExpConverter)b).getBase();
+				if (a instanceof ExpConverter) {
+					return ((ExpConverter) a).getBase() <= ((ExpConverter) b).getBase();
 				}
 				return true;
 			}
 			return normalFormOrder.get(a.getClass()) <= normalFormOrder.get(b.getClass());
 		}
 	}
-	
 
-	
 }

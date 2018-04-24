@@ -59,6 +59,7 @@ import tech.units.indriya.function.RationalConverter;
 import tech.units.indriya.unit.AlternateUnit;
 import tech.units.indriya.unit.AnnotatedUnit;
 import tech.units.indriya.unit.BaseUnit;
+import tech.units.indriya.unit.CompoundUnit;
 import tech.units.indriya.unit.ProductUnit;
 import tech.units.indriya.unit.TransformedUnit;
 import tech.units.indriya.unit.Units;
@@ -80,7 +81,7 @@ import tech.units.indriya.unit.Units;
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
  * @author Eric Russell
- * @version 1.3, April 5, 2018
+ * @version 1.3.1, April 25, 2018
  * @since 1.0
  */
 public abstract class SimpleUnitFormat extends AbstractUnitFormat {
@@ -422,6 +423,15 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
           annotable.append('}');
         }
         return annotable.toString();
+      }
+      // Compound unit.
+      if (unit instanceof CompoundUnit) {
+        CompoundUnit<?> cpdUnit = (CompoundUnit<?>) unit;
+        final StringBuilder compoundable = new StringBuilder();
+        compoundable.append(nameFor(cpdUnit.getUpper()));
+        compoundable.append(":"); // FIXME we need a more flexible pattern here
+        compoundable.append(nameFor(cpdUnit.getLower()));
+        return compoundable.toString();
       }
       return null; // Product unit.
     }
