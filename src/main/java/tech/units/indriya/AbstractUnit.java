@@ -648,7 +648,9 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
 	}
 	
 	/**
-	 * Utility class for UnitConverter composition and equivalence decision
+	 * Utility class for UnitConverter composition yielding a normal-form.
+	 * A normal-form is required to decide whether two UnitConverters are equivalent.
+	 * 
 	 */
 	public static final class Simplifier {
 		
@@ -667,7 +669,7 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
 			
 			if(a.isIdentity()) {
 				if(b.isIdentity()) {
-					return normalFormOrder(a, b)<=0 ? a : b;
+					return isNormalFormOrderWhenIdentity(a, b) ? a : b;
 				}
 				return b;
 			}
@@ -679,28 +681,59 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
 				return a.simpleCompose(b);
 			}
 			
-			final AbstractConverter.Pair nonSimplifiedForm = normalFormOrder(a, b)<=0 
-					? new AbstractConverter.Pair(a, b) 
-					: new AbstractConverter.Pair(b, a); 
+			final boolean commutative = a.isLinear() && b.isLinear(); 
+			final boolean swap = commutative && !isNormalFormOrderWhenCommutative(a, b);
+			
+			final AbstractConverter.Pair nonSimplifiedForm = swap 
+					? new AbstractConverter.Pair(b, a) 
+					: new AbstractConverter.Pair(a, b); 
 			
 			return simplify(nonSimplifiedForm);
 		}
 		
 		private static AbstractConverter simplify(AbstractConverter.Pair nonSimplifiedForm) {
 
-			//TODO actually simplify, and produce a normal-form
+			//List<? extends UnitConverter> conversionSteps = nonSimplifiedForm.getConversionSteps();
+			
+			//TODO [ahuber] actually simplify, and return a normal-form, that is ...
+			
+			// given 'conversionSteps' a list of converters where order matters,
+			// we form a permutation group of all allowed permutations 
+			// 'reachable' through 'allowed' swapping 
+			// swapping is allowed for 2 consecutive converters that are both commutative
+			
+			// we search this permutation group for any sequence of converters, that allows simplification:
+			
+			// for every pair of consecutive converters within a sequence,
+			// check whether a simplification is possible (a.isSimpleCompositionWith(b))
+			// then apply simplification and start over
+			
+			// finally sort according to normal-form order
 			
 			return nonSimplifiedForm;
 		}
 
-		private static int normalFormOrder(AbstractConverter a, AbstractConverter b) {
+		private static boolean isNormalFormOrderWhenIdentity(AbstractConverter a, AbstractConverter b) {
+			if(a.getClass().equals(b.getClass())) {
+				return true;
+			}
+			return normalFormOrder.get(a.getClass()) <= normalFormOrder.get(b.getClass());
+		}
+		
+		private static boolean isNormalFormOrderWhenCommutative(AbstractConverter a, AbstractConverter b) {
 			if(a.getClass().equals(b.getClass())) {
 				if(a instanceof PowerConverter) {
-					return Integer.compare( ((PowerConverter)a).getBase(), ((PowerConverter)b).getBase() );
+					return  ((PowerConverter)a).getBase() <= ((PowerConverter)b).getBase();
 				}
-				return 0;
+				if(a instanceof LogConverter) {
+					return  ((LogConverter)a).getBase() <= ((LogConverter)b).getBase();
+				}
+				if(a instanceof ExpConverter) {
+					return  ((ExpConverter)a).getBase() <= ((ExpConverter)b).getBase();
+				}
+				return true;
 			}
-			return Integer.compare(normalFormOrder.get(a.getClass()), normalFormOrder.get(b.getClass()));
+			return normalFormOrder.get(a.getClass()) <= normalFormOrder.get(b.getClass());
 		}
 	}
 	
