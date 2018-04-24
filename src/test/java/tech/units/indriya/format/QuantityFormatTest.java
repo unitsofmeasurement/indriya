@@ -54,63 +54,70 @@ import tech.units.indriya.unit.Units;
  *
  */
 public class QuantityFormatTest {
-  private Quantity<Length> sut;
-  private QuantityFormat format;
+	private Quantity<Length> sut;
+	private QuantityFormat format;
 
-  @BeforeEach
-  public void init() {
-    // sut =
-    // DefaultQuantityFactoryService.getQuantityFactory(Length.class).create(10,
-    // METRE);
-    sut = Quantities.getQuantity(10, METRE);
-    format = SimpleQuantityFormat.getInstance();
-  }
+	@BeforeEach
+	public void init() {
+		// sut =
+		// DefaultQuantityFactoryService.getQuantityFactory(Length.class).create(10,
+		// METRE);
+		sut = Quantities.getQuantity(10, METRE);
+		format = SimpleQuantityFormat.getInstance();
+	}
 
-  @Test
-  public void testFormat() {
-    Unit<Frequency> hz = HERTZ;
-    assertEquals("Hz", hz.toString());
-  }
+	@Test
+	public void testFormat() {
+		Unit<Frequency> hz = HERTZ;
+		assertEquals("Hz", hz.toString());
+	}
 
-  @Test
-  public void testFormat2() {
-    Unit<Frequency> mhz = MEGA(HERTZ);
-    assertEquals("MHz", mhz.toString());
-  }
+	@Test
+	public void testFormat2() {
+		Unit<Frequency> mhz = MEGA(HERTZ);
+		assertEquals("MHz", mhz.toString());
+	}
 
-  @Test
-  public void testFormat3() {
-    Unit<Frequency> khz = KILO(HERTZ);
-    assertEquals("kHz", khz.toString());
-  }
+	@Test
+	public void testFormat3() {
+		Unit<Frequency> khz = KILO(HERTZ);
+		assertEquals("kHz", khz.toString());
+	}
 
-  @Test
-  public void testParseSimple1() {
-    Quantity<?> parsed1 = SimpleQuantityFormat.getInstance().parse("10 min");
-    assertNotNull(parsed1);
-    assertEquals(BigDecimal.valueOf(10), parsed1.getValue());
-    assertEquals(Units.MINUTE, parsed1.getUnit());
-  }
+	@Test
+	public void testParseSimple1() {
+		Quantity<?> parsed1 = SimpleQuantityFormat.getInstance().parse("10 min");
+		assertNotNull(parsed1);
+		assertEquals(BigDecimal.valueOf(10), parsed1.getValue());
+		assertEquals(Units.MINUTE, parsed1.getUnit());
+	}
 
-  @Test
-  public void testParse2() {
-    Quantity<?> parsed1 = SimpleQuantityFormat.getInstance().parse("60 m");
-    assertNotNull(parsed1);
-    assertEquals(BigDecimal.valueOf(60), parsed1.getValue());
-    assertEquals(Units.METRE, parsed1.getUnit());
-  }
+	@Test
+	public void testParse2() {
+		Quantity<?> parsed1 = SimpleQuantityFormat.getInstance().parse("60 m");
+		assertNotNull(parsed1);
+		assertEquals(BigDecimal.valueOf(60), parsed1.getValue());
+		assertEquals(Units.METRE, parsed1.getUnit());
+	}
 
-  @Test
-  public void testParseSimple3() {
-    try {
-      Quantity<?> parsed1 = format.parse("5 kg");
-      assertNotNull(parsed1);
-      assertEquals(BigDecimal.valueOf(5), parsed1.getValue());
-      assertNotNull(parsed1.getUnit());
-      assertEquals("kg", parsed1.getUnit().getSymbol());
-      assertEquals(KILOGRAM, parsed1.getUnit());
-    } catch (ParserException e) {
-      fail(e.getMessage());
-    }
-  }
+	@Test
+	public void testParseSimple3() {
+		try {
+			Quantity<?> parsed1 = format.parse("5 kg");
+			assertNotNull(parsed1);
+			assertEquals(BigDecimal.valueOf(5), parsed1.getValue());
+			assertNotNull(parsed1.getUnit());
+			assertEquals("kg", parsed1.getUnit().getSymbol());
+			assertEquals(KILOGRAM, parsed1.getUnit());
+		} catch (ParserException e) {
+			fail(e.getMessage());
+		}
+	}
+
+	@Test
+	public void testPattern() {
+		SimpleQuantityFormat patternFormat = SimpleQuantityFormat.getInstance("V U");
+		assertEquals("V U", patternFormat.getPattern());
+		assertEquals("10 m", patternFormat.format(sut));
+	}
 }
