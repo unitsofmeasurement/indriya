@@ -30,8 +30,11 @@
 package tech.units.indriya.quantity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import javax.measure.MetricPrefix;
 import javax.measure.Quantity;
+import javax.measure.Unit;
 import javax.measure.quantity.ElectricResistance;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Time;
@@ -44,29 +47,112 @@ import tech.units.indriya.unit.Units;
 
 public class ByteQuantityTest {
 
+  private final ByteQuantity<ElectricResistance> ONE_OHM = createQuantity((byte) 1, Units.OHM);
+  private final ByteQuantity<ElectricResistance> TWO_OHM = createQuantity((byte) 2, Units.OHM);
+  private final ByteQuantity<ElectricResistance> MAX_VALUE_OHM = createQuantity(Byte.MAX_VALUE, Units.OHM);
+  private final ByteQuantity<ElectricResistance> ONE_DEKAOHM = createQuantity((byte) 1, MetricPrefix.DEKA(Units.OHM));
+  private final ByteQuantity<ElectricResistance> ONE_DECIOHM = createQuantity((byte) 1, MetricPrefix.DECI(Units.OHM));
+  private final ByteQuantity<ElectricResistance> ONE_YOTTAOHM = createQuantity((byte) 1, MetricPrefix.YOTTA(Units.OHM));
+
+  private <Q extends Quantity<Q>> ByteQuantity<Q> createQuantity(byte b, Unit<Q> unit) {
+    return new ByteQuantity<Q>(Byte.valueOf(b).byteValue(), unit);
+  }
+
+  /**
+   * Verifies that the addition of two quantities with the same multiples results in a new quantity with the same multiple and the value holding the
+   * sum.
+   */
+  @Test
+  public void additionWithSameMultipleKeepsMultiple() {
+    Quantity<ElectricResistance> actual = ONE_OHM.add(TWO_OHM);
+    ByteQuantity<ElectricResistance> expected = createQuantity((byte) 3, Units.OHM);
+    assertEquals(expected, actual);
+  }
+
+  /**
+   * Verifies that the addition of two quantities with the same multiples resulting in an overflow throws an exception.
+   */
+  @Test
+  public void additionWithSameMultipleResultingInOverflowThrowsException() {
+    assertThrows(ArithmeticException.class, () -> {
+      ONE_OHM.add(MAX_VALUE_OHM);
+    });
+  }
+
+  /**
+   * Verifies that adding a quantity with a larger multiple keeps the result to the smaller multiple.
+   */
+  @Test
+  public void additionWithLargerMultipleKeepsSmallerMultiple() {
+    Quantity<ElectricResistance> actual = ONE_DECIOHM.add(ONE_OHM);
+    ByteQuantity<ElectricResistance> expected = createQuantity((byte) 11, MetricPrefix.DECI(Units.OHM));
+    assertEquals(expected, actual);
+  }
+
+  /**
+   * Verifies that adding a quantity with a smaller multiple casts the result to the smaller multiple.
+   */
+  @Test
+  public void additionWithSmallerMultipleCastsToSmallerMultipleIfNeeded() {
+    Quantity<ElectricResistance> actual = ONE_OHM.add(ONE_DECIOHM);
+    ByteQuantity<ElectricResistance> expected = createQuantity((byte) 11, MetricPrefix.DECI(Units.OHM));
+    assertEquals(expected, actual);
+  }
+
+  /**
+   * Verifies that adding a quantity with a larger overflowing multiple casts the result to the larger multiple.
+   */
+  @Test
+  public void additionWithLargerOverflowingMultipleCastsToLargerMultiple() {
+    Quantity<ElectricResistance> actual = ONE_OHM.add(ONE_YOTTAOHM);
+    assertEquals(ONE_YOTTAOHM, actual);
+  }
+
+  /**
+   * Verifies that adding a quantity with a larger multiple resulting in an overflowing sum casts the result to the larger multiple.
+   */
+  @Test
+  public void additionWithLargerMultipleAndOverflowingResultCastsToLargerMultiple() {
+    ByteQuantity<ElectricResistance> almost_max_value_ohm = createQuantity((byte) (Byte.MAX_VALUE - 9), Units.OHM);
+    Quantity<ElectricResistance> actual = almost_max_value_ohm.add(ONE_DEKAOHM);
+    ByteQuantity<ElectricResistance> expected = createQuantity((byte) (Byte.MAX_VALUE / 10), MetricPrefix.DEKA(Units.OHM));
+    assertEquals(expected, actual);
+  }
+
+  /**
+   * Verifies that adding a quantity with a larger multiple resulting in an overflowing sum casts the result to the larger multiple.
+   */
+  @Test
+  public void additionWithLargerMultipleButNotOverflowingResultKeepsSmallerMultiple() {
+    ByteQuantity<ElectricResistance> almost_max_value_ohm = createQuantity((byte) (Byte.MAX_VALUE - 10), Units.OHM);
+    Quantity<ElectricResistance> actual = almost_max_value_ohm.add(ONE_DEKAOHM);
+    assertEquals(MAX_VALUE_OHM, actual);
+  }
+
+  /**
+   * Verifies that adding a quantity with a smaller underflowing multiple keeps the result at the larger multiple.
+   */
+  @Test
+  public void additionWithSmallerUnderflowingMultipleKeepsAtLargerMultiple() {
+    Quantity<ElectricResistance> actual = ONE_YOTTAOHM.add(ONE_OHM);
+    assertEquals(ONE_YOTTAOHM, actual);
+  }
+
+  /**
+   * Verifies that subtraction subtracts the argument from the target object.
+   */
+  @Test
+  public void subtractionSubtractsArgumentFromTargetObject() {
+    Quantity<ElectricResistance> actual = TWO_OHM.subtract(ONE_OHM);
+    assertEquals(ONE_OHM, actual);
+  }
+
   @Test
   public void divideTest() {
     ByteQuantity<ElectricResistance> quantity1 = new ByteQuantity<>(Byte.valueOf("3").byteValue(), Units.OHM);
     ByteQuantity<ElectricResistance> quantity2 = new ByteQuantity<>(Byte.valueOf("2").byteValue(), Units.OHM);
     Quantity<?> result = quantity1.divide(quantity2);
     assertEquals(Integer.valueOf("1"), result.getValue());
-  }
-
-  @Test
-  public void addTest() {
-    ByteQuantity<ElectricResistance> quantity1 = new ByteQuantity<>(Byte.valueOf("1").byteValue(), Units.OHM);
-    ByteQuantity<ElectricResistance> quantity2 = new ByteQuantity<>(Byte.valueOf("2").byteValue(), Units.OHM);
-    Quantity<ElectricResistance> result = quantity1.add(quantity2);
-    assertEquals(Byte.valueOf("3").intValue(), result.getValue().intValue());
-  }
-
-  @Test
-  public void subtractTest() {
-    ByteQuantity<ElectricResistance> quantity1 = new ByteQuantity<>(Byte.valueOf("1").byteValue(), Units.OHM);
-    ByteQuantity<ElectricResistance> quantity2 = new ByteQuantity<>(Byte.valueOf("2").byteValue(), Units.OHM);
-    Quantity<ElectricResistance> result = quantity2.subtract(quantity1);
-    assertEquals(Byte.valueOf("1").intValue(), result.getValue().intValue());
-    assertEquals(Units.OHM, result.getUnit());
   }
 
   @Test
