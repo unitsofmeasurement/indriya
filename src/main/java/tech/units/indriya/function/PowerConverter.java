@@ -78,7 +78,7 @@ public final class PowerConverter extends AbstractConverter {
 
 	protected PowerConverter(int base, int exponent) {
 		if(base == 0) {
-			throw new IllegalArgumentException("base can not be zero (because 0^0 is undefined)");
+			throw new IllegalArgumentException("base cannot be zero (because 0^0 is undefined)");
 		}
 		this.base = base;
 		this.exponent = exponent;
