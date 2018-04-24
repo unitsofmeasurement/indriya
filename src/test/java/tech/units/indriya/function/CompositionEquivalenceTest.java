@@ -54,7 +54,7 @@ import org.junit.jupiter.api.extension.ParameterResolver;
 import tech.units.indriya.AbstractConverter;
 
 @DisplayName("Testing Composition of UnitConverters")
-@Disabled("At least 40 tests fail in this class")
+//@Disabled("At least 40 tests fail in this class")
 public class CompositionEquivalenceTest {
 
 	private Random random = new Random(0); // seed = 0, to make tests reproducible
@@ -188,7 +188,7 @@ public class CompositionEquivalenceTest {
 			assertTrue(_I.isLinear(), msg);  // identity must always be linear
 			assertTrue(_I.concatenate(_I).isIdentity(), msg);
 			
-			//FIXME disabled because 'simplify' not yet implemented
+			//FIXME Simplifier with normal-form ordering not yet implemented
 			if(!(u0 instanceof LogConverter || u0 instanceof ExpConverter)) {
 				assertTrue(commutes(u0, u0), msg);
 			}
@@ -209,7 +209,7 @@ public class CompositionEquivalenceTest {
 
 		@RepeatedTest(value = ConverterType.candidateCount * ConverterType.candidateCount)
 		@DisplayName("(if scaling) commute with any other that is scaling")
-		@Disabled("NormalForm ordering not yet implemented")
+		@Disabled("Simplifier with normal-form ordering not yet implemented")
 		public void commuteWithScaling(UnitConverter u1, UnitConverter u2) {
 			if(u1.isLinear() && u2.isLinear()) {
 				assertTrue(commutes(u1, u2), String.format("testing %s %s", u1, u2));
