@@ -32,8 +32,6 @@ package tech.units.indriya.function;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.util.Objects;
-
 import javax.measure.UnitConverter;
 
 import tech.units.indriya.AbstractConverter;
@@ -42,16 +40,13 @@ import tech.units.indriya.AbstractConverter;
  * This class represents a converter multiplying numeric values by a factor of
  * Pi to the power of an integer exponent (π^exponent).
  * @author Andi Huber
- * @version 0.9, April 23, 2018
+ * @author Werner Keil
+ * @version 1.0, April 24, 2018
  * @since 2.0
  */
-public class PiPowerConverter extends AbstractConverter {
+public final class PiPowerConverter extends PowerConverter {
 
 	private static final long serialVersionUID = 5000593326722785126L;
-	
-	private final int exponent;
-	private final int hashCode;
-	private final double doubleFactor; // for double calculus only
 
 	/**
 	 * Creates a converter with the specified exponent.
@@ -64,23 +59,12 @@ public class PiPowerConverter extends AbstractConverter {
 	}
 
 	protected PiPowerConverter(int exponent) {
-		this.exponent = exponent;
-		this.doubleFactor =  Math.pow(Math.PI, exponent);
-		this.hashCode = Objects.hash(exponent);
-	}
-
-	public int getExponent() {
-		return exponent;
+		super(Math.PI, exponent);
 	}
 
 	@Override
 	public boolean isIdentity() {
 		return exponent == 0; // x^0 = 1, for any x!=0
-	}
-
-	@Override
-	public boolean isLinear() {
-		return true;
 	}
 
 	@Override
@@ -151,10 +135,4 @@ public class PiPowerConverter extends AbstractConverter {
 		}
 		return this.getClass().getName().compareTo(o.getClass().getName());
 	}
-
-	@Override
-	public int hashCode() {
-		return hashCode;
-	}
-
 }
