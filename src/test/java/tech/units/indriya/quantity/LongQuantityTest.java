@@ -47,12 +47,12 @@ import tech.units.indriya.unit.Units;
 
 public class LongQuantityTest {
 
-  final LongQuantity<ElectricResistance> ONE_OHM = createQuantity(1L, Units.OHM);
-  final LongQuantity<ElectricResistance> TWO_OHM = createQuantity(2L, Units.OHM);
-  final LongQuantity<ElectricResistance> MAX_VALUE_OHM = createQuantity(Long.MAX_VALUE, Units.OHM);
-  final LongQuantity<ElectricResistance> ONE_MILLIOHM = createQuantity(1L, MetricPrefix.MILLI(Units.OHM));
-  final LongQuantity<ElectricResistance> ONE_KILOOHM = createQuantity(1L, MetricPrefix.KILO(Units.OHM));
-  final LongQuantity<ElectricResistance> ONE_YOTTAOHM = createQuantity(1L, MetricPrefix.YOTTA(Units.OHM));
+  private final LongQuantity<ElectricResistance> ONE_OHM = createQuantity(1L, Units.OHM);
+  private final LongQuantity<ElectricResistance> TWO_OHM = createQuantity(2L, Units.OHM);
+  private final LongQuantity<ElectricResistance> MAX_VALUE_OHM = createQuantity(Long.MAX_VALUE, Units.OHM);
+  private final LongQuantity<ElectricResistance> ONE_MILLIOHM = createQuantity(1L, MetricPrefix.MILLI(Units.OHM));
+  private final LongQuantity<ElectricResistance> ONE_KILOOHM = createQuantity(1L, MetricPrefix.KILO(Units.OHM));
+  private final LongQuantity<ElectricResistance> ONE_YOTTAOHM = createQuantity(1L, MetricPrefix.YOTTA(Units.OHM));
 
   private <Q extends Quantity<Q>> LongQuantity<Q> createQuantity(long l, Unit<Q> unit) {
     return new LongQuantity<Q>(Long.valueOf(l).longValue(), unit);
