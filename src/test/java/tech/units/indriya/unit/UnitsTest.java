@@ -41,9 +41,7 @@ import javax.measure.quantity.Power;
 import javax.measure.quantity.Time;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.AbstractConverter;
@@ -66,14 +64,6 @@ public class UnitsTest {
   static final Logger logger = Logger.getLogger(UnitsTest.class.getName());
 
   Unit<Dimensionless> one;
-
-  @BeforeAll
-  public static void setUpClass() throws Exception {
-  }
-
-  @AfterClass
-  public static void tearDownClass() throws Exception {
-  }
 
   /*
    * (non-Javadoc)
