@@ -120,15 +120,6 @@ public class UnitsTest {
   }
 
   /**
-   * Test method for {@link javax.measure.Unit#isMetric()}.
-   */
-  // @Test
-  // public void testIsMetric() {
-  // boolean standard = one.isMetric();
-  // assertTrue(standard);
-  // }
-
-  /**
    * Test method for {@link javax.measure.Unit#asType(java.lang.Class)}.
    */
   @Test
@@ -296,29 +287,17 @@ public class UnitsTest {
   }
 
   @Test
-  public void testGetConverterToSystemUnit() {
-  }
-
-  @Test
   public void testGetSymbol() {
     // TODO see https://github.com/unitsofmeasurement/uom-se/issues/54 /
     // https://java.net/jira/browse/UNITSOFMEASUREMENT-109
     assertEquals("kg", Units.KILOGRAM.getSymbol());
     assertNull(Units.GRAM.getSymbol());
-    // assertEquals("kg", UCUM.POUND.getSymbol()); //"lb"
-    // assertEquals("kg", UCUM.OUNCE.getSymbol());//"oz"
-    // assertEquals("kg", MetricPrefix.KILO(Units.GRAM).getSymbol());
   }
 
   @Test
   public void testGetParentUnit() {
     assertEquals("TransformedUnit", Units.GRAM.getClass().getSimpleName());
     assertEquals("kg", ((TransformedUnit<Mass>) Units.GRAM).getParentUnit().getSymbol());
-    // assertEquals("kg", UCUM.POUND.getSymbol()); //"lb"
-    // assertEquals("kg", UCUM.OUNCE.getSymbol());//"oz"
-    // assertEquals("kg", MetricPrefix.KILO(UCUM.GRAM).getSymbol());
-    // assertEquals("kg", UCUM.GRAM.getSymbol()); //"g"
-    // assertEquals("kg", US.POUND.getSymbol()); //"lb"
   }
 
   @Test
