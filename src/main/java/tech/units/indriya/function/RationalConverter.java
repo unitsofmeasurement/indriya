@@ -239,7 +239,7 @@ public final class RationalConverter extends AbstractConverter implements ValueS
 
 	@Override
 	public final String transformationLiteral() {
-		return String.format("(%s)/(%s)", dividend, divisor);
+		return String.format("x -> x * (%s)/(%s)", dividend, divisor);
 	}
 
 	@Override
