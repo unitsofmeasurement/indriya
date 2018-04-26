@@ -66,7 +66,8 @@ public class TokenMgrError extends Error {
   /**
    * Indicates the reason why the exception is thrown. It will have one of the above 4 values.
    */
-  int errorCode;
+  @SuppressWarnings("unused")
+private int errorCode;
 
   /**
    * Replaces unprintable characters by their escaped (or unicode escaped) equivalents in the given string
@@ -120,7 +121,7 @@ public class TokenMgrError extends Error {
    * : column number when the error occurred errorAfter : prefix that was seen before this error occurred curchar : the offending character Note: You
    * can customize the lexical error message by modifying this method.
    */
-  protected static String LexicalError(boolean EOFSeen, int errorLine, int errorColumn, String errorAfter, char curChar) {
+  protected static String lexicalError(boolean EOFSeen, int errorLine, int errorColumn, String errorAfter, char curChar) {
     return ("Lexical error at line " + errorLine + ", column " + errorColumn + ".  Encountered: "
         + (EOFSeen ? "<EOF> " : ("\"" + addEscapes(String.valueOf(curChar)) + "\"") + " (" + (int) curChar + "), ") + "after : \""
         + addEscapes(errorAfter) + "\"");
@@ -154,7 +155,7 @@ public class TokenMgrError extends Error {
 
   /** Full Constructor. */
   public TokenMgrError(boolean EOFSeen, int lexState, int errorLine, int errorColumn, String errorAfter, char curChar, int reason) {
-    this(LexicalError(EOFSeen, errorLine, errorColumn, errorAfter, curChar), reason);
+    this(lexicalError(EOFSeen, errorLine, errorColumn, errorAfter, curChar), reason);
   }
 }
 /*
