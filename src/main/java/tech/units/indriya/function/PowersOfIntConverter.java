@@ -39,7 +39,6 @@ import javax.measure.Prefix;
 import javax.measure.UnitConverter;
 
 import tech.units.indriya.AbstractConverter;
-import tech.units.indriya.Calculus;
 
 /**
  * UnitConverter for numbers in base^exponent representation.

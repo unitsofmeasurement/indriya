@@ -40,8 +40,6 @@ import java.math.MathContext;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
-import tech.units.indriya.Calculus;
-
 public class PowersOfPiConverterTest {
 
 	// for reference

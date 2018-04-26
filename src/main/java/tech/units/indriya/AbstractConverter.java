@@ -43,6 +43,7 @@ import java.util.stream.Collectors;
 import javax.measure.Prefix;
 import javax.measure.UnitConverter;
 
+import tech.units.indriya.function.Calculus;
 import tech.units.indriya.function.PowersOfIntConverter;
 import tech.units.indriya.function.UnitComparator;
 import tech.uom.lib.common.function.Converter;
