@@ -50,16 +50,12 @@ import tech.uom.lib.common.function.Parser;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:werner@uom.technology">Werner Keil</a>
- * @version 1.1, $Date: 2018-04-06 $
+ * @version 1.2, $Date: 2018-04-26 $
  * @since 1.0
  * 
  */
 @SuppressWarnings("rawtypes")
 public abstract class AbstractQuantityFormat extends Format implements QuantityFormat, Parser<CharSequence, ComparableQuantity> {
-  // TODO for later, see https://github.com/unitsofmeasurement/indriya/issues/17
-  // * <p>
-  // * Instances of this class should be able to format quantities stated in {@link CompoundUnit}. See {@link #formatCompound formatCompound(...)}.
-  // * </p>
 
   /**
    *
@@ -155,7 +151,8 @@ public abstract class AbstractQuantityFormat extends Format implements QuantityF
   }
 
   @Override
-  public final Quantity<?> parseObject(String source, ParsePosition pos) {
+  public final Object parseObject(String source, ParsePosition pos) {
+	// TODO try handle a CompoundQuantity here, see https://github.com/unitsofmeasurement/indriya/issues/17
     try {
       return parse(source, pos);
     } catch (IllegalArgumentException | MeasurementParseException e) {
