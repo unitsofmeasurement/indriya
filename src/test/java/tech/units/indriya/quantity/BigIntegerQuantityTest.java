@@ -116,7 +116,7 @@ public class BigIntegerQuantityTest {
   }
 
   @Test
-  @DisplayName("1 Ω + 1 mΩ should to be 1001 mΩ")
+  @DisplayName("1 Ω + 1 mΩ should be 1001 mΩ")
   public void milliOhm1() {
     final BigIntegerQuantity<ElectricResistance> ONE_OHM = 
     		new BigIntegerQuantity<ElectricResistance>(1L, Units.OHM);
@@ -130,7 +130,7 @@ public class BigIntegerQuantityTest {
   }
   
   @Test
-  @DisplayName("1 Ω + 1001 mΩ should to be 2001 mΩ")
+  @DisplayName("1 Ω + 1001 mΩ should be 2001 mΩ")
   public void milliOhm2() {
     final BigIntegerQuantity<ElectricResistance> ONE_OHM = 
     		new BigIntegerQuantity<ElectricResistance>(1L, Units.OHM);
@@ -144,7 +144,7 @@ public class BigIntegerQuantityTest {
   }
   
   @Test
-  @DisplayName("1 Ω - 1001 mΩ should to be -1 mΩ")
+  @DisplayName("1 Ω - 1001 mΩ should be -1 mΩ")
   public void milliOhm3() {
     final BigIntegerQuantity<ElectricResistance> ONE_OHM = 
     		new BigIntegerQuantity<ElectricResistance>(1L, Units.OHM);
