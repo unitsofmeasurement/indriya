@@ -69,7 +69,7 @@ final class DefaultCharStream {
     return tabSize;
   }
 
-  protected void ExpandBuff(boolean wrapAround) {
+  protected void expandBuff(boolean wrapAround) {
     char[] newbuffer = new char[bufsize + 2048];
     int newbufline[] = new int[bufsize + 2048];
     int newbufcolumn[] = new int[bufsize + 2048];
@@ -110,7 +110,7 @@ final class DefaultCharStream {
     tokenBegin = 0;
   }
 
-  protected void FillBuff() throws java.io.IOException {
+  protected void fillBuff() throws java.io.IOException {
     if (maxNextCharInd == available) {
       if (available == bufsize) {
         if (tokenBegin > 2048) {
@@ -119,11 +119,11 @@ final class DefaultCharStream {
         } else if (tokenBegin < 0)
           bufpos = maxNextCharInd = 0;
         else
-          ExpandBuff(false);
+          expandBuff(false);
       } else if (available > tokenBegin)
         available = bufsize;
       else if ((tokenBegin - available) < 2048)
-        ExpandBuff(true);
+        expandBuff(true);
       else
         available = tokenBegin;
     }
@@ -145,7 +145,7 @@ final class DefaultCharStream {
   }
 
   /** Start. */
-  public char BeginToken() throws java.io.IOException {
+  public char beginToken() throws java.io.IOException {
     tokenBegin = -1;
     char c = readChar();
     tokenBegin = bufpos;
@@ -153,7 +153,7 @@ final class DefaultCharStream {
     return c;
   }
 
-  protected void UpdateLineColumn(char c) {
+  protected void updateLineColumn(char c) {
     column++;
 
     if (prevCharIsLF) {
@@ -198,11 +198,11 @@ final class DefaultCharStream {
     }
 
     if (++bufpos >= maxNextCharInd)
-      FillBuff();
+      fillBuff();
 
     char c = buffer[bufpos];
 
-    UpdateLineColumn(c);
+    updateLineColumn(c);
     return c;
   }
 
@@ -351,7 +351,7 @@ final class DefaultCharStream {
   }
 
   /** Reinitialise. */
-  public void ReInit(java.io.InputStream dstream) {
+  public void reInit(java.io.InputStream dstream) {
     ReInit(dstream, 1, 1, 4096);
   }
 
@@ -361,12 +361,12 @@ final class DefaultCharStream {
   }
 
   /** Reinitialise. */
-  public void ReInit(java.io.InputStream dstream, int startline, int startcolumn) {
+  public void reInit(java.io.InputStream dstream, int startline, int startcolumn) {
     ReInit(dstream, startline, startcolumn, 4096);
   }
 
   /** Get token literal value. */
-  public String GetImage() {
+  public String getImage() {
     if (bufpos >= tokenBegin)
       return new String(buffer, tokenBegin, bufpos - tokenBegin + 1);
     else
@@ -388,7 +388,7 @@ final class DefaultCharStream {
   }
 
   /** Reset buffer when finished. */
-  public void Done() {
+  public void done() {
     buffer = null;
     bufline = null;
     bufcolumn = null;

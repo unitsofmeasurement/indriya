@@ -119,7 +119,7 @@ final class UnitTokenManager {
     int kind = 0x7fffffff;
     for (;;) {
       if (++jjround == 0x7fffffff)
-        ReInitRounds();
+        reInitRounds();
       if (curChar < 64) {
         long l = 1L << curChar;
         do {
@@ -321,18 +321,18 @@ final class UnitTokenManager {
   /** Constructor. */
   public UnitTokenManager(DefaultCharStream stream, int lexState) {
     this(stream);
-    SwitchTo(lexState);
+    switchTo(lexState);
   }
 
   /** Reinitialise parser. */
-  public void ReInit(DefaultCharStream stream) {
+  public void reInit(DefaultCharStream stream) {
     jjmatchedPos = jjnewStateCnt = 0;
     curLexState = defaultLexState;
     input_stream = stream;
-    ReInitRounds();
+    reInitRounds();
   }
 
-  private void ReInitRounds() {
+  private void reInitRounds() {
     int i;
     jjround = 0x80000001;
     for (i = 15; i-- > 0;)
@@ -340,13 +340,13 @@ final class UnitTokenManager {
   }
 
   /** Reinitialise parser. */
-  public void ReInit(DefaultCharStream stream, int lexState) {
-    ReInit(stream);
-    SwitchTo(lexState);
+  public void reInit(DefaultCharStream stream, int lexState) {
+    reInit(stream);
+    switchTo(lexState);
   }
 
   /** Switch to specified lex state. */
-  public void SwitchTo(int lexState) {
+  public void switchTo(int lexState) {
     if (lexState >= 1 || lexState < 0)
       throw new TokenMgrError("Error: Ignoring invalid lexical state : " + lexState + ". State unchanged.", TokenMgrError.INVALID_LEXICAL_STATE);
     else
@@ -361,7 +361,7 @@ final class UnitTokenManager {
     final int beginColumn;
     final int endColumn;
     String im = jjstrLiteralImages[jjmatchedKind];
-    curTokenImage = (im == null) ? input_stream.GetImage() : im;
+    curTokenImage = (im == null) ? input_stream.getImage() : im;
     beginLine = input_stream.getBeginLine();
     beginColumn = input_stream.getBeginColumn();
     endLine = input_stream.getEndLine();
@@ -383,7 +383,7 @@ final class UnitTokenManager {
 
     EOFLoop: for (;;) {
       try {
-        curChar = input_stream.BeginToken();
+        curChar = input_stream.beginToken();
       } catch (java.io.IOException e) {
         jjmatchedKind = 0;
         matchedToken = jjFillToken();
@@ -408,7 +408,7 @@ final class UnitTokenManager {
         input_stream.backup(1);
       } catch (java.io.IOException e1) {
         EOFSeen = true;
-        error_after = curPos <= 1 ? "" : input_stream.GetImage();
+        error_after = curPos <= 1 ? "" : input_stream.getImage();
         if (curChar == '\n' || curChar == '\r') {
           error_line++;
           error_column = 0;
@@ -417,7 +417,7 @@ final class UnitTokenManager {
       }
       if (!EOFSeen) {
         input_stream.backup(1);
-        error_after = curPos <= 1 ? "" : input_stream.GetImage();
+        error_after = curPos <= 1 ? "" : input_stream.getImage();
       }
       throw new TokenMgrError(EOFSeen, curLexState, error_line, error_column, error_after, curChar, TokenMgrError.LEXICAL_ERROR);
     }

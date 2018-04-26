@@ -616,7 +616,7 @@ public final class LocalUnitFormatParser {
     } catch (java.io.UnsupportedEncodingException e) {
       throw new RuntimeException(e);
     }
-    tokenSource.ReInit(inputStream);
+    tokenSource.reInit(inputStream);
     token = new Token();
     nextTokenIndex = -1;
     genInt = 0;
@@ -646,7 +646,7 @@ public final class LocalUnitFormatParser {
   /** Reinitialise. */
   public void ReInit(java.io.Reader stream) {
     inputStream.ReInit(stream, 1, 1);
-    tokenSource.ReInit(inputStream);
+    tokenSource.reInit(inputStream);
     token = new Token();
     nextTokenIndex = -1;
     genInt = 0;
