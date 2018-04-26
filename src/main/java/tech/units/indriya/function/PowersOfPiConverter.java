@@ -32,6 +32,8 @@ package tech.units.indriya.function;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.util.Objects;
+
 import javax.measure.UnitConverter;
 
 import tech.units.indriya.AbstractConverter;
@@ -44,9 +46,13 @@ import tech.units.indriya.AbstractConverter;
  * @version 1.0, April 24, 2018
  * @since 2.0
  */
-public final class PiPowerConverter extends PowerConverter {
+public final class PowersOfPiConverter extends AbstractConverter {
 
 	private static final long serialVersionUID = 5000593326722785126L;
+	
+	private final int exponent;
+	private final int hashCode;
+	private final double doubleFactor; // for double calculus only
 
 	/**
 	 * Creates a converter with the specified exponent.
@@ -54,12 +60,18 @@ public final class PiPowerConverter extends PowerConverter {
 	 * @param exponent
 	 *            the exponent for the factor π^exponent.
 	 */
-	public static PiPowerConverter of(int exponent) {
-		return new PiPowerConverter(exponent);
+	public static PowersOfPiConverter of(int exponent) {
+		return new PowersOfPiConverter(exponent);
 	}
 
-	protected PiPowerConverter(int exponent) {
-		super(Math.PI, exponent);
+	protected PowersOfPiConverter(int exponent) {
+		this.exponent = exponent;
+		this.doubleFactor =  Math.pow(Math.PI, exponent);
+		this.hashCode = Objects.hash(exponent);
+	}
+
+	public int getExponent() {
+		return exponent;
 	}
 
 	@Override
@@ -68,8 +80,13 @@ public final class PiPowerConverter extends PowerConverter {
 	}
 
 	@Override
-	public AbstractConverter inverse() {
-		return isIdentity() ? this : new PiPowerConverter(-exponent);
+	public boolean isLinear() {
+		return true;
+	}
+
+	@Override
+	public AbstractConverter inverseWhenNotIdentity() {
+		return new PowersOfPiConverter(-exponent);
 	}
 
 	@Override
@@ -90,12 +107,12 @@ public final class PiPowerConverter extends PowerConverter {
 
 	@Override
 	protected boolean isSimpleCompositionWith(AbstractConverter that) {
-		return that instanceof PiPowerConverter;
+		return that instanceof PowersOfPiConverter;
 	}
 
 	@Override
 	protected AbstractConverter simpleCompose(AbstractConverter that) {
-		return new PiPowerConverter(this.exponent + ((PiPowerConverter)that).exponent);
+		return new PowersOfPiConverter(this.exponent + ((PowersOfPiConverter)that).exponent);
 	}
 
 	@Override
@@ -109,16 +126,16 @@ public final class PiPowerConverter extends PowerConverter {
 				return true;
 			}
 		}
-		if (obj instanceof PiPowerConverter) {
-			PiPowerConverter other = (PiPowerConverter) obj;
+		if (obj instanceof PowersOfPiConverter) {
+			PowersOfPiConverter other = (PowersOfPiConverter) obj;
 			return this.exponent == other.exponent;
 		}
 		return false;
 	}
 
 	@Override
-	public final String toString() {
-		return "PiPowerConverter(π^" + exponent + ")";
+	public final String transformationLiteral() {
+		return String.format("x -> x * π^%s", exponent);
 	}
 
 	@Override
@@ -129,10 +146,16 @@ public final class PiPowerConverter extends PowerConverter {
 		if(this.isIdentity() && o.isIdentity()) {
 			return 0;
 		}
-		if (o instanceof PiPowerConverter) {
-			PiPowerConverter other = (PiPowerConverter) o;
+		if (o instanceof PowersOfPiConverter) {
+			PowersOfPiConverter other = (PowersOfPiConverter) o;
 			return Integer.compare(exponent, other.exponent);
 		}
 		return this.getClass().getName().compareTo(o.getClass().getName());
 	}
+
+	@Override
+	public int hashCode() {
+		return hashCode;
+	}
+
 }

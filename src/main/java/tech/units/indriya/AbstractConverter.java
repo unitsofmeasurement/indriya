@@ -43,7 +43,7 @@ import java.util.stream.Collectors;
 import javax.measure.Prefix;
 import javax.measure.UnitConverter;
 
-import tech.units.indriya.function.PowerConverter;
+import tech.units.indriya.function.PowersOfIntConverter;
 import tech.units.indriya.function.UnitComparator;
 import tech.uom.lib.common.function.Converter;
 
@@ -54,7 +54,8 @@ import tech.uom.lib.common.function.Converter;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.5, April 19, 2018
+ * @author Andi Huber
+ * @version 1.6, April 26, 2018
  * @since 1.0
  */
 public abstract class AbstractConverter
@@ -90,7 +91,7 @@ public abstract class AbstractConverter
 	 *            the prefix for the factor.
 	 */
 	public static UnitConverter of(Prefix prefix) {
-		return PowerConverter.of(prefix);
+		return PowersOfIntConverter.of(prefix);
 	}
 
 	@Override
@@ -98,9 +99,56 @@ public abstract class AbstractConverter
 
 	@Override
 	public abstract int hashCode();
-
+	
+	// -- TO-STRING - CONTRACT AND INTERFACE IMPLEMENTATION (FINAL)
+	
+	/**
+	 * Non-API
+	 * <p>
+	 * Returns a String describing the transformation that is represented by this converter. 
+	 * Contributes to converter's {@code toString} method. If null or empty
+	 * {@code toString} output becomes simplified.
+	 * </p>
+	 * @return 
+	 */
+	protected abstract String transformationLiteral();
+	
 	@Override
-	public abstract AbstractConverter inverse();
+	public final String toString() {
+		String converterName = getClass().getSimpleName();
+		// omit trailing 'Converter'
+		if(converterName.endsWith("Converter")) {
+			converterName = converterName.substring(0, converterName.length()-"Converter".length());
+		}
+		if(isIdentity()) {
+			return String.format("%s(IDENTITY)", converterName);
+		}
+		final String transformationLiteral = transformationLiteral();
+		if(transformationLiteral==null || transformationLiteral.length()==0) {
+			return String.format("%s", converterName);
+		}
+		return String.format("%s(%s)", converterName, transformationLiteral);
+	}
+
+	// -- INVERSION - CONTRACT AND INTERFACE IMPLEMENTATION (FINAL)
+	
+	/**
+	 * Non-API
+	 * <p>
+	 * Returns an AbstractConverter that represents the inverse transformation of this converter,
+	 * for cases where the transformation is not the identity transformation.
+	 * </p>  
+	 * @return 
+	 */
+	protected abstract AbstractConverter inverseWhenNotIdentity();
+	
+	@Override
+	public final AbstractConverter inverse() {
+		if(isIdentity()) {
+			return this;
+		}
+		return inverseWhenNotIdentity();
+	}
 	
 	// -- COMPOSITION CONTRACTS (TO BE IMPLEMENTED BY SUB-CLASSES)
 
@@ -230,11 +278,6 @@ public abstract class AbstractConverter
 		}
 
 		@Override
-		public Identity inverse() {
-			return this;
-		}
-
-		@Override
 		public double convertWhenNotIdentity(double value) {
 			throw new IllegalStateException("code was reached, that is expected unreachable");
 		}
@@ -251,7 +294,7 @@ public abstract class AbstractConverter
 
 		@Override
 		public boolean equals(Object cvtr) {
-			return (cvtr instanceof Identity); //TODO [ahuber] unless we have a clear spec what equals is, this is questionable
+			return (cvtr instanceof Identity); 
 		}
 
 		@Override
@@ -280,6 +323,16 @@ public abstract class AbstractConverter
 		@Override
 		protected AbstractConverter simpleCompose(AbstractConverter that) {
 			throw new IllegalStateException("code was reached, that is expected unreachable");
+		}
+
+		@Override
+		protected AbstractConverter inverseWhenNotIdentity() {
+			throw new IllegalStateException("code was reached, that is expected unreachable");
+		}
+		
+		@Override
+		protected String transformationLiteral() {
+			return null;
 		}
 		
 	}
@@ -350,7 +403,7 @@ public abstract class AbstractConverter
 		}
 
 		@Override
-		public Pair inverse() {
+		public Pair inverseWhenNotIdentity() {
 			return new Pair(right.inverse(), left.inverse());
 		}
 
@@ -430,12 +483,13 @@ public abstract class AbstractConverter
 		}
 		
 		@Override
-		public String toString() {
-			return String.format("AbstractConverter.Pair[%s]",
-					getConversionSteps().stream()
-					.map(UnitConverter::toString)
-					.collect(Collectors.joining(", ")) );
+		protected String transformationLiteral() {
+			return String.format("%s",
+				getConversionSteps().stream()
+				.map(UnitConverter::toString)
+				.collect(Collectors.joining(" ○ ")) );
 		}
+		
 
 		@Override
 		protected boolean isSimpleCompositionWith(AbstractConverter that) {

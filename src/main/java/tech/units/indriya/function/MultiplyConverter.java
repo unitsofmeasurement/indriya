@@ -107,7 +107,7 @@ public final class MultiplyConverter extends AbstractConverter implements ValueS
 	}
 
 	@Override
-	public MultiplyConverter inverse() {
+	public MultiplyConverter inverseWhenNotIdentity() {
 		return new MultiplyConverter(1.0 / factor);
 	}
 
@@ -122,8 +122,8 @@ public final class MultiplyConverter extends AbstractConverter implements ValueS
 	}
 
 	@Override
-	public final String toString() {
-		return MultiplyConverter.class.getSimpleName() + "(" + factor + ")";
+	public final String transformationLiteral() {
+		return String.format("x -> x * %s", factor);
 	}
 
 	@Override

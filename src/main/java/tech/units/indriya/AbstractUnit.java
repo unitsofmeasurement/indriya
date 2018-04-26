@@ -51,8 +51,8 @@ import tech.units.indriya.function.AddConverter;
 import tech.units.indriya.function.ExpConverter;
 import tech.units.indriya.function.LogConverter;
 import tech.units.indriya.function.MultiplyConverter;
-import tech.units.indriya.function.PiPowerConverter;
-import tech.units.indriya.function.PowerConverter;
+import tech.units.indriya.function.PowersOfPiConverter;
+import tech.units.indriya.function.PowersOfIntConverter;
 import tech.units.indriya.function.RationalConverter;
 import tech.units.indriya.quantity.QuantityDimension;
 import tech.units.indriya.spi.DimensionalModel;
@@ -567,7 +567,7 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
 	
 	@Override
 	public Unit<Q> prefix(Prefix prefix) {
-		return this.transform(PowerConverter.of(prefix));
+		return this.transform(PowersOfIntConverter.of(prefix));
 	}
 
 	/**
@@ -656,10 +656,10 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
 		
 		private final static Map<Class<?>, Integer> normalFormOrder = new HashMap<>(6);
 		static {
-			normalFormOrder.put(PowerConverter.class, 1); 
+			normalFormOrder.put(PowersOfIntConverter.class, 1); 
 			normalFormOrder.put(RationalConverter.class, 2); 
 			normalFormOrder.put(MultiplyConverter.class, 3);
-			normalFormOrder.put(PiPowerConverter.class, 4); 
+			normalFormOrder.put(PowersOfPiConverter.class, 4); 
 			normalFormOrder.put(AddConverter.class, 5);
 			normalFormOrder.put(LogConverter.class, 6); 
 			normalFormOrder.put(ExpConverter.class, 7);
@@ -722,8 +722,8 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
 		
 		private static boolean isNormalFormOrderWhenCommutative(AbstractConverter a, AbstractConverter b) {
 			if(a.getClass().equals(b.getClass())) {
-				if(a instanceof PowerConverter) {
-					return  ((PowerConverter)a).getBase() <= ((PowerConverter)b).getBase();
+				if(a instanceof PowersOfIntConverter) {
+					return  ((PowersOfIntConverter)a).getBase() <= ((PowersOfIntConverter)b).getBase();
 				}
 				if(a instanceof LogConverter) {
 					return  ((LogConverter)a).getBase() <= ((LogConverter)b).getBase();

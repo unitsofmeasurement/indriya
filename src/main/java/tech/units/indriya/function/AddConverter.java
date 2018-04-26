@@ -93,7 +93,7 @@ public final class AddConverter extends AbstractConverter implements ValueSuppli
   }
   
   @Override
-  public AddConverter inverse() {
+  public AddConverter inverseWhenNotIdentity() {
     return new AddConverter(-offset);
   }
 
@@ -108,8 +108,8 @@ public final class AddConverter extends AbstractConverter implements ValueSuppli
   }
 
   @Override
-  public final String toString() {
-    return "AddConverter(" + offset + ")";
+  public String transformationLiteral() {
+    return String.format("x -> x %s %s", offset < 0 ? "-" : "+", Math.abs(offset));
   }
 
   @Override

@@ -87,6 +87,6 @@ public class MultiplyConverterTest {
 
   @Test
   public void toStringTest() {
-    assertEquals("MultiplyConverter(2.0)", converter.toString());
+    assertEquals("Multiply(x -> x * 2.0)", converter.toString());
   }
 }
