@@ -54,6 +54,7 @@ import javax.measure.Unit;
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
  * @version 1.8, April 11, 2018
  * @since 1.1
+ * @deprecated It does not seem to add value compared to the CompoundQuantity (or another name) approach
  */
 public final class CompoundUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
 
