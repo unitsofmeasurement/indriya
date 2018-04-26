@@ -44,14 +44,14 @@ import tech.uom.lib.common.function.QuantityConverter;
 
 /**
  * <p>
- * This class represents multi-radix quantities (like "1 hour: 5 min: 30 sec" or "6 ft, 3 in").
+ * This class represents multi-radix quantities (like "1 hour, 5 min, 30 sec" or "6 ft, 3 in").
  * </p>
  * 
  * @param <Q>
  *          The type of the quantity.
  * 
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 0.6, April 25, 2018
+ * @version 0.7, April 26, 2018
  * @see <a href="http://www.thefreedictionary.com/Compound+quantity">Free Dictionary: Compound Quantity</a>
  */
 public class CompoundQuantity<Q extends Quantity<Q>> implements QuantityConverter<Q>, Serializable {
