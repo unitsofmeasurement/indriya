@@ -324,12 +324,12 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
     /**
      * Holds the name to unit mapping.
      */
-    final HashMap<String, Unit<?>> nameToUnit = new HashMap<>();
+    protected final HashMap<String, Unit<?>> nameToUnit = new HashMap<>();
 
     /**
      * Holds the unit to name mapping.
      */
-    final HashMap<Unit<?>, String> unitToName = new HashMap<>();
+    protected final HashMap<Unit<?>, String> unitToName = new HashMap<>();
 
     @Override
     public void label(Unit<?> unit, String label) {
@@ -361,7 +361,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
       return isUnitIdentifierPart(name.charAt(0));
     }
 
-    static boolean isUnitIdentifierPart(char ch) {
+    protected static boolean isUnitIdentifierPart(char ch) {
       return Character.isLetter(ch)
           || (!Character.isWhitespace(ch) && !Character.isDigit(ch) && (ch != '\u00b7') && (ch != '*') && (ch != '/') && (ch != '(') && (ch != ')')
               && (ch != '[') && (ch != ']') && (ch != '\u00b9') && (ch != '\u00b2') && (ch != '\u00b3') && (ch != '^') && (ch != '+') && (ch != '-'));
