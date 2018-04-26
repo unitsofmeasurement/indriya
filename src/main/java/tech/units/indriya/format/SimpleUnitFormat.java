@@ -80,7 +80,7 @@ import tech.units.indriya.unit.Units;
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
  * @author Eric Russell
- * @version 1.3, April 5, 2018
+ * @version 1.4, April 26, 2018
  * @since 1.0
  */
 public abstract class SimpleUnitFormat extends AbstractUnitFormat {
@@ -89,6 +89,16 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
     */
   // private static final long serialVersionUID = 4149424034841739785L;
 	
+  /**
+   * Flavor of this format
+   *
+   * @author Werner
+   *
+   */
+  public static enum Flavor {
+    Default, ASCII
+  }
+  
   // Initializes the standard unit database for SI units.
 
   private static final Unit<?>[] SI_UNITS = { Units.AMPERE, Units.BECQUEREL, Units.CANDELA, Units.COULOMB, Units.FARAD, Units.GRAY, Units.HENRY,
@@ -109,15 +119,6 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
 		  .collect(Collectors.toList())
   		  .toArray(new UnitConverter[] {});
 
-  /**
-   * Flavor of this format
-   *
-   * @author Werner
-   *
-   */
-  public static enum Flavor {
-    Default, ASCII
-  }
 
   /**
    * Holds the standard unit format.
@@ -309,6 +310,16 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
    * This class represents the standard format.
    */
   protected static class DefaultFormat extends SimpleUnitFormat {
+    private static final int EOF = 0;
+    private static final int IDENTIFIER = 1;
+    private static final int OPEN_PAREN = 2;
+    private static final int CLOSE_PAREN = 3;
+    private static final int EXPONENT = 4;
+    private static final int MULTIPLY = 5;
+    private static final int DIVIDE = 6;
+    private static final int PLUS = 7;
+    private static final int INTEGER = 8;
+    private static final int FLOAT = 9;
 
     /**
      * Holds the name to unit mapping.
@@ -545,17 +556,6 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
         token = nextToken(csq, pos);
       }
     }
-
-    private static final int EOF = 0;
-    private static final int IDENTIFIER = 1;
-    private static final int OPEN_PAREN = 2;
-    private static final int CLOSE_PAREN = 3;
-    private static final int EXPONENT = 4;
-    private static final int MULTIPLY = 5;
-    private static final int DIVIDE = 6;
-    private static final int PLUS = 7;
-    private static final int INTEGER = 8;
-    private static final int FLOAT = 9;
 
     private int nextToken(CharSequence csq, ParsePosition pos) {
       final int length = csq.length();

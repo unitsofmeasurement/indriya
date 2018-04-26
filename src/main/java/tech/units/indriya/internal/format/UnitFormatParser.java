@@ -123,7 +123,7 @@ public final class UnitFormatParser implements UnitTokenConstants {
     }
     if (n2 != null) {
       double offset = n2.doubleValue();
-      if (sign2.image.equals("-")) {
+      if ("-".equals(sign2.image)) {
         offset = -offset;
       }
       result = result.shift(offset);

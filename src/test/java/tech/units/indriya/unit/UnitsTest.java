@@ -67,9 +67,6 @@ public class UnitsTest {
 
   Unit<Dimensionless> one;
 
-  public UnitsTest() {
-  }
-
   @BeforeAll
   public static void setUpClass() throws Exception {
   }
