@@ -29,7 +29,9 @@
  */
 package tech.units.indriya.function;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -40,7 +42,6 @@ import java.util.function.Supplier;
 
 import javax.measure.UnitConverter;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.RepeatedTest;
@@ -54,7 +55,6 @@ import org.junit.jupiter.api.extension.ParameterResolver;
 import tech.units.indriya.AbstractConverter;
 
 @DisplayName("Testing Composition of UnitConverters")
-//@Disabled("At least 40 tests fail in this class")
 public class CompositionEquivalenceTest {
 
 	private Random random = new Random(0); // seed = 0, to make tests reproducible
@@ -129,6 +129,7 @@ public class CompositionEquivalenceTest {
 	}
 	
 	@Test
+	@DisplayName("Setup for tests should include all converter types.")
 	public void setupForTestShouldIncludeAllTypes() throws Exception {
 		assertEquals(ConverterType.values().length, ConverterType.typeCount);
 	}
@@ -187,12 +188,8 @@ public class CompositionEquivalenceTest {
 			assertTrue(_I.isIdentity(), msg);
 			assertTrue(_I.isLinear(), msg);  // identity must always be linear
 			assertTrue(_I.concatenate(_I).isIdentity(), msg);
-			
-			//FIXME Simplifier with normal-form ordering not yet implemented
-			if(!(u0 instanceof LogConverter || u0 instanceof ExpConverter)) {
-				assertTrue(commutes(u0, u0), msg);
-			}
-			
+
+			assertTrue(commutes(u0, u0), msg);
 			assertTrue(commutes(u0, _I), msg);
 			assertTrue(commutes(_I, u0), msg);
 		}
@@ -209,7 +206,6 @@ public class CompositionEquivalenceTest {
 
 		@RepeatedTest(value = ConverterType.candidateCount * ConverterType.candidateCount)
 		@DisplayName("(if scaling) commute with any other that is scaling")
-		@Disabled("Simplifier with normal-form ordering not yet implemented")
 		public void commuteWithScaling(UnitConverter u1, UnitConverter u2) {
 			if(u1.isLinear() && u2.isLinear()) {
 				assertTrue(commutes(u1, u2), String.format("testing %s %s", u1, u2));
