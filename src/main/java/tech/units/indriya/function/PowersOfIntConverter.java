@@ -48,7 +48,7 @@ import tech.units.indriya.Calculus;
  * @version 1.1, April 24, 2018
  * @since 2.0
  */
-public final class PowerConverter extends AbstractConverter {
+public final class PowersOfIntConverter extends AbstractConverter {
 	private static final long serialVersionUID = 3546932001671571300L;
 
 	private final int base;
@@ -62,8 +62,8 @@ public final class PowerConverter extends AbstractConverter {
 	 * @param prefix
 	 *            the prefix for the factor.
 	 */
-	public static PowerConverter of(Prefix prefix) {
-		return new PowerConverter(prefix.getBase(), prefix.getExponent());
+	public static PowersOfIntConverter of(Prefix prefix) {
+		return new PowersOfIntConverter(prefix.getBase(), prefix.getExponent());
 	}
 
 	/**
@@ -73,11 +73,11 @@ public final class PowerConverter extends AbstractConverter {
 	 * @param exponent
 	 * @return
 	 */
-	public static PowerConverter of(int base, int exponent) {
-		return new PowerConverter(base, exponent);
+	public static PowersOfIntConverter of(int base, int exponent) {
+		return new PowersOfIntConverter(base, exponent);
 	}
 
-	protected PowerConverter(int base, int exponent) {
+	protected PowersOfIntConverter(int base, int exponent) {
 		if(base == 0) {
 			throw new IllegalArgumentException("base cannot be zero (because 0^0 is undefined)");
 		}
@@ -112,16 +112,16 @@ public final class PowerConverter extends AbstractConverter {
 
 	@Override
 	protected boolean isSimpleCompositionWith(AbstractConverter that) {
-		if (that instanceof PowerConverter) {
-			return ((PowerConverter) that).base == this.base;
+		if (that instanceof PowersOfIntConverter) {
+			return ((PowersOfIntConverter) that).base == this.base;
 		}
 		return that.isLinear();
 	}
 
 	@Override
 	protected AbstractConverter simpleCompose(AbstractConverter that) {
-		if (that instanceof PowerConverter) {
-			PowerConverter other = (PowerConverter) that;
+		if (that instanceof PowersOfIntConverter) {
+			PowersOfIntConverter other = (PowersOfIntConverter) that;
 			if(this.base == other.base) { // always true due to guard above
 				return composeSameBaseNonIdentity(other);
 			} 
@@ -140,7 +140,7 @@ public final class PowerConverter extends AbstractConverter {
 
 	@Override
 	public AbstractConverter inverse() {
-		return isIdentity() ? this : new PowerConverter(base, -exponent);
+		return isIdentity() ? this : new PowersOfIntConverter(base, -exponent);
 	}
 
 	@Override
@@ -197,8 +197,8 @@ public final class PowerConverter extends AbstractConverter {
 				return true;
 			}
 		}
-		if (obj instanceof PowerConverter) {
-			PowerConverter other = (PowerConverter) obj;
+		if (obj instanceof PowersOfIntConverter) {
+			PowersOfIntConverter other = (PowersOfIntConverter) obj;
 			return this.base == other.base && this.exponent == other.exponent;
 		}
 		return false;
@@ -217,8 +217,8 @@ public final class PowerConverter extends AbstractConverter {
 		if(this.isIdentity() && o.isIdentity()) {
 			return 0;
 		}
-		if (o instanceof PowerConverter) {
-			PowerConverter other = (PowerConverter) o;
+		if (o instanceof PowersOfIntConverter) {
+			PowersOfIntConverter other = (PowersOfIntConverter) o;
 			int c = Integer.compare(base, other.base);
 			if(c!=0) {
 				return c;
@@ -235,9 +235,9 @@ public final class PowerConverter extends AbstractConverter {
 
 	// -- HELPER
 
-	private PowerConverter composeSameBaseNonIdentity(PowerConverter other) {
+	private PowersOfIntConverter composeSameBaseNonIdentity(PowersOfIntConverter other) {
 		// no check for identity required
-		return new PowerConverter(this.base, this.exponent + other.exponent);
+		return new PowersOfIntConverter(this.base, this.exponent + other.exponent);
 	}
 
 	public RationalConverter toRationalConverter() {

@@ -66,10 +66,10 @@ public class CompositionEquivalenceTest {
 				()->AbstractConverter.IDENTITY,
 				AbstractConverter.IDENTITY, 
 				AbstractConverter.IDENTITY	),
-		POWER(PowerConverter.class, 
-				()->PowerConverter.of(1, 0),
-				PowerConverter.of(3, 7), 
-				PowerConverter.of(7, -3)	),
+		POWER(PowersOfIntConverter.class, 
+				()->PowersOfIntConverter.of(1, 0),
+				PowersOfIntConverter.of(3, 7), 
+				PowersOfIntConverter.of(7, -3)	),
 		RATIONAL(RationalConverter.class, 
 				()->RationalConverter.of(1, 1),
 				RationalConverter.of(17, 13),
@@ -90,10 +90,10 @@ public class CompositionEquivalenceTest {
 				null, // exp has no identity variant
 				new ExpConverter(4.5),
 				new ExpConverter(0.1) ),
-		PI(PiPowerConverter.class, 
-				()->PiPowerConverter.of(0), // log has no identity variant
-				PiPowerConverter.of(1),
-				PiPowerConverter.of(-1) ),
+		PI(PowersOfPiConverter.class, 
+				()->PowersOfPiConverter.of(0), // log has no identity variant
+				PowersOfPiConverter.of(1),
+				PowersOfPiConverter.of(-1) ),
 		// when adding entries, also increment the typeCount!
 		;
 

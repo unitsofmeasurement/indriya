@@ -46,7 +46,7 @@ import tech.units.indriya.AbstractConverter;
  * @version 1.0, April 24, 2018
  * @since 2.0
  */
-public final class PiPowerConverter extends AbstractConverter {
+public final class PowersOfPiConverter extends AbstractConverter {
 
 	private static final long serialVersionUID = 5000593326722785126L;
 	
@@ -60,11 +60,11 @@ public final class PiPowerConverter extends AbstractConverter {
 	 * @param exponent
 	 *            the exponent for the factor π^exponent.
 	 */
-	public static PiPowerConverter of(int exponent) {
-		return new PiPowerConverter(exponent);
+	public static PowersOfPiConverter of(int exponent) {
+		return new PowersOfPiConverter(exponent);
 	}
 
-	protected PiPowerConverter(int exponent) {
+	protected PowersOfPiConverter(int exponent) {
 		this.exponent = exponent;
 		this.doubleFactor =  Math.pow(Math.PI, exponent);
 		this.hashCode = Objects.hash(exponent);
@@ -86,7 +86,7 @@ public final class PiPowerConverter extends AbstractConverter {
 
 	@Override
 	public AbstractConverter inverse() {
-		return isIdentity() ? this : new PiPowerConverter(-exponent);
+		return isIdentity() ? this : new PowersOfPiConverter(-exponent);
 	}
 
 	@Override
@@ -107,12 +107,12 @@ public final class PiPowerConverter extends AbstractConverter {
 
 	@Override
 	protected boolean isSimpleCompositionWith(AbstractConverter that) {
-		return that instanceof PiPowerConverter;
+		return that instanceof PowersOfPiConverter;
 	}
 
 	@Override
 	protected AbstractConverter simpleCompose(AbstractConverter that) {
-		return new PiPowerConverter(this.exponent + ((PiPowerConverter)that).exponent);
+		return new PowersOfPiConverter(this.exponent + ((PowersOfPiConverter)that).exponent);
 	}
 
 	@Override
@@ -126,8 +126,8 @@ public final class PiPowerConverter extends AbstractConverter {
 				return true;
 			}
 		}
-		if (obj instanceof PiPowerConverter) {
-			PiPowerConverter other = (PiPowerConverter) obj;
+		if (obj instanceof PowersOfPiConverter) {
+			PowersOfPiConverter other = (PowersOfPiConverter) obj;
 			return this.exponent == other.exponent;
 		}
 		return false;
@@ -146,8 +146,8 @@ public final class PiPowerConverter extends AbstractConverter {
 		if(this.isIdentity() && o.isIdentity()) {
 			return 0;
 		}
-		if (o instanceof PiPowerConverter) {
-			PiPowerConverter other = (PiPowerConverter) o;
+		if (o instanceof PowersOfPiConverter) {
+			PowersOfPiConverter other = (PowersOfPiConverter) o;
 			return Integer.compare(exponent, other.exponent);
 		}
 		return this.getClass().getName().compareTo(o.getClass().getName());

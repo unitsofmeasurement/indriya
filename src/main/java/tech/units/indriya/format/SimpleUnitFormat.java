@@ -54,7 +54,7 @@ import javax.measure.format.UnitFormat;
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.function.AddConverter;
 import tech.units.indriya.function.MultiplyConverter;
-import tech.units.indriya.function.PowerConverter;
+import tech.units.indriya.function.PowersOfIntConverter;
 import tech.units.indriya.function.RationalConverter;
 import tech.units.indriya.unit.AlternateUnit;
 import tech.units.indriya.unit.AnnotatedUnit;
@@ -105,7 +105,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
 
   private static final UnitConverter[] PREFIX_CONVERTERS =  
 		  Stream.of(PREFIXES)
-		  .map(PowerConverter::of)
+		  .map(PowersOfIntConverter::of)
 		  .collect(Collectors.toList())
   		  .toArray(new UnitConverter[] {});
 

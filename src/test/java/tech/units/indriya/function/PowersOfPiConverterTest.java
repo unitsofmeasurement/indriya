@@ -56,7 +56,7 @@ public class PiPowerConverterTest {
 	
 	@Test
 	public void testConvertMethod() {
-		PiPowerConverter converter = new PiPowerConverter(-1);
+		PowersOfPiConverter converter = new PowersOfPiConverter(-1);
 		Calculus.MATH_CONTEXT = MathContext.DECIMAL32;
 		
 		assertEquals(1000, converter.convert(3141), 0.2);
@@ -66,7 +66,7 @@ public class PiPowerConverterTest {
 
 	@Test
 	public void testConvertBigDecimalMethod() {
-		PiPowerConverter converter = new PiPowerConverter(-1);
+		PowersOfPiConverter converter = new PowersOfPiConverter(-1);
 		Calculus.MATH_CONTEXT = MathContext.DECIMAL32;
 		
 		assertEquals(1000, converter.convert(new BigDecimal("3141")).doubleValue(), 0.2);
@@ -76,36 +76,36 @@ public class PiPowerConverterTest {
 
 	@Test
 	public void testEquality() {
-		PiPowerConverter a = new PiPowerConverter(-1);
-		PiPowerConverter b = new PiPowerConverter(-1);
-		PiPowerConverter c = new PiPowerConverter(1);
+		PowersOfPiConverter a = new PowersOfPiConverter(-1);
+		PowersOfPiConverter b = new PowersOfPiConverter(-1);
+		PowersOfPiConverter c = new PowersOfPiConverter(1);
 		assertTrue(a.equals(b)); 
 		assertFalse(a.equals(c));
 	}
 
 	@Test
 	public void isLinear() {
-		PiPowerConverter converter = new PiPowerConverter(-1);
+		PowersOfPiConverter converter = new PowersOfPiConverter(-1);
 		assertTrue(converter.isLinear());
 	}
 	
 	@Test
 	public void piSquaredBigDecimalDefaultPrecision() {
-		PiPowerConverter converter = new PiPowerConverter(2);
+		PowersOfPiConverter converter = new PowersOfPiConverter(2);
 		BigDecimal value = (BigDecimal) converter.convert(BigDecimal.valueOf(0.1));
 		assertEquals("0.9869604401089358618834490999876151", value.toPlainString());
 	}
 	
 	@Test
 	public void piBigDecimalDefaultPrecision() {
-		PiPowerConverter converter = new PiPowerConverter(1);
+		PowersOfPiConverter converter = new PowersOfPiConverter(1);
 		Calculus.MATH_CONTEXT = MathContext.UNLIMITED;
 		assertThrows(ArithmeticException.class, ()->converter.convert(BigDecimal.valueOf(1.0)));
 	}
 	
 	@Test
 	public void piBigDecimalExtendedPrecision() {
-		PiPowerConverter converter = new PiPowerConverter(1);
+		PowersOfPiConverter converter = new PowersOfPiConverter(1);
 		Calculus.MATH_CONTEXT = new MathContext(MathContext.DECIMAL128.getPrecision() * 2);
 		BigDecimal value = (BigDecimal) converter.convert(BigDecimal.valueOf(1.));
 		assertEquals(
