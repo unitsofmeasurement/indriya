@@ -35,7 +35,12 @@ import java.math.MathContext;
 import java.util.Objects;
 import java.util.logging.Logger;
 
+/**
+ * Mathematical helper class
+ * @author Andi Huber
+ */
 public final class Calculus {
+	private static final String MSG_NUMBER_NON_NULL = "number cannot be null";
 	
 	private static final Logger logger = Logger.getLogger(Calculus.class.getName());
 
@@ -57,7 +62,7 @@ public final class Calculus {
 	 * @return the number converted
 	 */
 	public static BigDecimal toBigDecimal(Number number) {
-		Objects.requireNonNull(number, "number can not be null");
+		Objects.requireNonNull(number, MSG_NUMBER_NON_NULL);
 		if(number instanceof BigDecimal) {
 			return (BigDecimal) number;
 		}
@@ -81,7 +86,7 @@ public final class Calculus {
 	 * @return the number converted
 	 */
 	public static BigInteger toBigInteger(Number number) {
-		Objects.requireNonNull(number, "number can not be null");
+		Objects.requireNonNull(number, MSG_NUMBER_NON_NULL);
 		if(number instanceof BigInteger) {
 			return (BigInteger) number;
 		}
@@ -110,7 +115,7 @@ public final class Calculus {
 	 * @return 
 	 */
 	public static Number abs(Number number) {
-		Objects.requireNonNull(number, "number can not be null");
+		Objects.requireNonNull(number, MSG_NUMBER_NON_NULL);
 		if(number instanceof BigInteger) {
 			return ((BigInteger) number).abs();
 		}
@@ -144,7 +149,7 @@ public final class Calculus {
 	 * @return -number
 	 */
 	public static Number negate(Number number) {
-		Objects.requireNonNull(number, "number can not be null");
+		Objects.requireNonNull(number, MSG_NUMBER_NON_NULL);
 		if(number instanceof BigInteger) {
 			return ((BigInteger) number).negate();
 		}
@@ -178,7 +183,7 @@ public final class Calculus {
 	 * @return
 	 */
 	public static boolean isLessThanOne(Number number) {
-		Objects.requireNonNull(number, "number can not be null");
+		Objects.requireNonNull(number, MSG_NUMBER_NON_NULL);
 		if(number instanceof BigInteger) {
 			return ((BigInteger) number).compareTo(BigInteger.ONE) == -1;
 		}
@@ -196,7 +201,4 @@ public final class Calculus {
 				number.getClass().getName()));
 		return number.doubleValue() < 1.0;
 	}
-
-
-
 }
