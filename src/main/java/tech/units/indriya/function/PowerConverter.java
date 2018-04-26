@@ -48,13 +48,13 @@ import tech.units.indriya.Calculus;
  * @version 1.1, April 24, 2018
  * @since 2.0
  */
-public class PowerConverter extends AbstractConverter {
+public final class PowerConverter extends AbstractConverter {
 	private static final long serialVersionUID = 3546932001671571300L;
 
-	protected final int base;
-	protected final int exponent;
-	protected final int hashCode;
-	protected final double doubleFactor; // for double calculus only
+	private final int base;
+	private final int exponent;
+	private final int hashCode;
+	private final double doubleFactor; // for double calculus only
 
 	/**
 	 * Creates a converter with the specified Prefix.
@@ -82,16 +82,6 @@ public class PowerConverter extends AbstractConverter {
 			throw new IllegalArgumentException("base cannot be zero (because 0^0 is undefined)");
 		}
 		this.base = base;
-		this.exponent = exponent;
-		this.doubleFactor = Math.pow(base, exponent);
-		this.hashCode = Objects.hash(base, exponent);
-	}
-	
-	protected PowerConverter(double base, int exponent) {
-		if(base == 0) {
-			throw new IllegalArgumentException("base cannot be zero (because 0^0 is undefined)");
-		}
-		this.base = (int)base;
 		this.exponent = exponent;
 		this.doubleFactor = Math.pow(base, exponent);
 		this.hashCode = Objects.hash(base, exponent);

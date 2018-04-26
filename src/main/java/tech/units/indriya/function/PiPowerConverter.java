@@ -32,6 +32,8 @@ package tech.units.indriya.function;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.util.Objects;
+
 import javax.measure.UnitConverter;
 
 import tech.units.indriya.AbstractConverter;
@@ -44,9 +46,13 @@ import tech.units.indriya.AbstractConverter;
  * @version 1.0, April 24, 2018
  * @since 2.0
  */
-public final class PiPowerConverter extends PowerConverter {
+public final class PiPowerConverter extends AbstractConverter {
 
 	private static final long serialVersionUID = 5000593326722785126L;
+	
+	private final int exponent;
+	private final int hashCode;
+	private final double doubleFactor; // for double calculus only
 
 	/**
 	 * Creates a converter with the specified exponent.
@@ -59,12 +65,23 @@ public final class PiPowerConverter extends PowerConverter {
 	}
 
 	protected PiPowerConverter(int exponent) {
-		super(Math.PI, exponent);
+		this.exponent = exponent;
+		this.doubleFactor =  Math.pow(Math.PI, exponent);
+		this.hashCode = Objects.hash(exponent);
+	}
+
+	public int getExponent() {
+		return exponent;
 	}
 
 	@Override
 	public boolean isIdentity() {
 		return exponent == 0; // x^0 = 1, for any x!=0
+	}
+
+	@Override
+	public boolean isLinear() {
+		return true;
 	}
 
 	@Override
@@ -135,4 +152,10 @@ public final class PiPowerConverter extends PowerConverter {
 		}
 		return this.getClass().getName().compareTo(o.getClass().getName());
 	}
+
+	@Override
+	public int hashCode() {
+		return hashCode;
+	}
+
 }
