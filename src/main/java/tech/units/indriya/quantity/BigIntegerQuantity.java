@@ -36,6 +36,7 @@ import java.util.Objects;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;
+import javax.measure.UnitConverter;
 
 import tech.units.indriya.AbstractConverter;
 import tech.units.indriya.AbstractQuantity;
@@ -52,7 +53,7 @@ import tech.units.indriya.ComparableQuantity;
  * @see AbstractQuantity
  * @see Quantity
  * @see ComparableQuantity
- * @version 0.2
+ * @version 0.3
  * @since 2.0
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -73,7 +74,18 @@ final class BigIntegerQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q
     super(unit);
     this.value = BigInteger.valueOf(value);
   }
-
+  
+  /**
+   * Not-API (not yet)
+   * <p>
+   * Returns a BigIntegerQuantity with same Unit, but whose value is (-this.getValue()).
+   * </p>
+   * @return
+   */
+  public BigIntegerQuantity negate() {
+	  return new BigIntegerQuantity(value.negate(), getUnit());
+  }
+  
   @Override
   public BigInteger getValue() {
     return value;
@@ -109,22 +121,38 @@ final class BigIntegerQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q
     if (getUnit().equals(that.getUnit())) {
       return Quantities.getQuantity(value.add(Calculus.toBigInteger(that.getValue())), getUnit());
     }
-    Quantity<Q> converted = that.to(getUnit());
-    Unit<Q> unit = getUnit();
-    if(Calculus.isLessThanOne(Calculus.abs(converted.getValue()))) {
-    	converted = this.to(that.getUnit());
-    	unit = that.getUnit();
+    // we need to decide which of the 2 units to pick for the result
+    // 1) this.getUnit()
+    // 2) that.getUnit()
+    // we pick the one, that yields higher precision
+    
+    final UnitConverter t1 = this.getUnit().getConverterTo(that.getUnit());
+    final UnitConverter t2 = that.getUnit().getConverterTo(this.getUnit());
+    
+    boolean switchUnits = Math.abs(t1.convert(1.0)) > Math.abs(t2.convert(1.0));    
+    
+    final Unit<Q> pickedUnit;
+    final BigInteger sumValue;
+    
+    if(switchUnits) {
+    	pickedUnit = that.getUnit();
+    	BigInteger thisValueTransformed = Calculus.toBigInteger(t1.convert(getValue()));
+    	sumValue = Calculus.toBigInteger(that.getValue()).add(thisValueTransformed);
+    } else {
+    	pickedUnit = this.getUnit();
+    	BigInteger thatValueTransformed = Calculus.toBigInteger(t2.convert(that.getValue()));
+    	sumValue = value.add(thatValueTransformed);
     }
-    return Quantities.getQuantity(value.add(Calculus.toBigInteger(converted.getValue())), unit);
+    
+	return Quantities.getQuantity(sumValue, pickedUnit);
   }
 
   @Override
   public ComparableQuantity<Q> subtract(Quantity<Q> that) {
-    if (getUnit().equals(that.getUnit())) {
-      return Quantities.getQuantity(value.subtract(Calculus.toBigInteger(that.getValue())), getUnit());
-    }
-    Quantity<Q> converted = that.to(getUnit());
-    return Quantities.getQuantity(value.subtract(Calculus.toBigInteger(converted.getValue())), getUnit());
+	 if(that instanceof BigIntegerQuantity) {
+		 return add(((BigIntegerQuantity)that).negate());
+	 }
+	 return add(Quantities.getQuantity(Calculus.negate(that.getValue()), that.getUnit()));
   }
 
   @Override

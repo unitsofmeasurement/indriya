@@ -137,6 +137,40 @@ public final class Calculus {
 				number.getClass().getName()));
 		return Math.abs(number.doubleValue());
 	}
+	
+	/**
+	 * Returns the absolute value of {@code number}
+	 * @param number
+	 * @return 
+	 */
+	public static Number negate(Number number) {
+		Objects.requireNonNull(number, "number can not be null");
+		if(number instanceof BigInteger) {
+			return ((BigInteger) number).negate();
+		}
+		if(number instanceof BigDecimal) {
+			return ((BigDecimal) number).negate();
+		}
+		if(number instanceof Double) {
+			return -((double)number);
+		}
+		if(number instanceof Long) {
+			return -((long)number);
+		}
+		if(number instanceof Integer) {
+			return -((int)number);
+		}
+		if(number instanceof Short) {
+			return -((short)number);
+		}
+		if(number instanceof Byte) {
+			return -((byte)number);
+		}
+		logger.fine(()->String.format(
+				"WARNING: possibly loosing precision, when converting from Number type '%s' to double.",
+				number.getClass().getName()));
+		return -(number.doubleValue());
+	}
 
 	/**
 	 * 

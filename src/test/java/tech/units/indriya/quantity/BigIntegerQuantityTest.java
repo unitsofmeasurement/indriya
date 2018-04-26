@@ -41,6 +41,7 @@ import javax.measure.quantity.ElectricResistance;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Time;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.unit.Units;
@@ -115,7 +116,8 @@ public class BigIntegerQuantityTest {
   }
 
   @Test
-  public void milliOhmTest() {
+  @DisplayName("1 Ω + 1 mΩ should to be 1001 mΩ")
+  public void milliOhm1() {
     final BigIntegerQuantity<ElectricResistance> ONE_OHM = 
     		new BigIntegerQuantity<ElectricResistance>(1L, Units.OHM);
     final BigIntegerQuantity<ElectricResistance> ONE_MILLIOHM = 
@@ -125,6 +127,34 @@ public class BigIntegerQuantityTest {
     
     assertEquals(expected, ONE_OHM.add(ONE_MILLIOHM));
     assertEquals(expected, ONE_MILLIOHM.add(ONE_OHM));
+  }
+  
+  @Test
+  @DisplayName("1 Ω + 1001 mΩ should to be 2001 mΩ")
+  public void milliOhm2() {
+    final BigIntegerQuantity<ElectricResistance> ONE_OHM = 
+    		new BigIntegerQuantity<ElectricResistance>(1L, Units.OHM);
+    final BigIntegerQuantity<ElectricResistance> operand = 
+    		new BigIntegerQuantity<ElectricResistance>(1001L, MILLI(Units.OHM));
+    final BigIntegerQuantity<ElectricResistance> expected = 
+    		new BigIntegerQuantity<ElectricResistance>(2001L, MILLI(Units.OHM));
+    
+    assertEquals(expected, ONE_OHM.add(operand));
+    assertEquals(expected, operand.add(ONE_OHM));
+  }
+  
+  @Test
+  @DisplayName("1 Ω - 1001 mΩ should to be -1 mΩ")
+  public void milliOhm3() {
+    final BigIntegerQuantity<ElectricResistance> ONE_OHM = 
+    		new BigIntegerQuantity<ElectricResistance>(1L, Units.OHM);
+    final BigIntegerQuantity<ElectricResistance> operand = 
+    		new BigIntegerQuantity<ElectricResistance>(1001L, MILLI(Units.OHM));
+    final BigIntegerQuantity<ElectricResistance> expected = 
+    		new BigIntegerQuantity<ElectricResistance>(-1L, MILLI(Units.OHM));
+    
+    assertEquals(expected, ONE_OHM.subtract(operand));
+    assertEquals(expected, operand.subtract(ONE_OHM).multiply(-1));
   }
 
   @Test
