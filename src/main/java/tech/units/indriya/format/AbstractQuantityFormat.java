@@ -33,12 +33,14 @@ import java.io.IOException;
 import java.text.FieldPosition;
 import java.text.Format;
 import java.text.ParsePosition;
+import java.util.Collection;
 
 import javax.measure.Quantity;
 import javax.measure.format.MeasurementParseException;
 import javax.measure.format.QuantityFormat;
 import tech.units.indriya.AbstractQuantity;
 import tech.units.indriya.ComparableQuantity;
+import tech.units.indriya.quantity.CompoundQuantity;
 import tech.uom.lib.common.function.Parser;
 
 /**
@@ -122,14 +124,33 @@ public abstract class AbstractQuantityFormat extends Format implements QuantityF
 
   @Override
   public final StringBuffer format(Object obj, final StringBuffer toAppendTo, FieldPosition pos) {
-    if (!(obj instanceof AbstractQuantity<?>))
-      throw new IllegalArgumentException("obj: Not an instance of Quantity");
-    if ((toAppendTo == null) || (pos == null))
-      throw new NullPointerException();
-    try {
-      return (StringBuffer) format((AbstractQuantity<?>) obj, toAppendTo);
-    } catch (IOException ex) {
-      throw new Error(ex); // Cannot happen.
+    if (obj instanceof AbstractQuantity<?>) {
+	    if ((toAppendTo == null) || (pos == null))
+	      throw new NullPointerException();
+	    try {
+	      return (StringBuffer) format((AbstractQuantity<?>) obj, toAppendTo);
+	    } catch (IOException ex) {
+	      throw new Error(ex); // Cannot happen.
+	    } 
+    } else {
+    	if (obj instanceof CompoundQuantity) {
+    		CompoundQuantity comp = (CompoundQuantity)obj;
+    		@SuppressWarnings("unchecked")
+			Collection<Quantity<?>> col = comp.getQuantities();
+    		StringBuffer cols = new StringBuffer();
+    		int ind = 0;
+    		for (Quantity<?> quant : col) {
+    			if (ind>0) {
+    				cols = format(quant, toAppendTo.append(" "), pos);
+    			} else {
+    				cols = format(quant, toAppendTo, pos);
+    			}
+    			ind++;
+    		}
+    		return cols;
+    	} else {
+    		throw new IllegalArgumentException("obj: Not a Quantity or Compound Quantity");
+    	}
     }
   }
 

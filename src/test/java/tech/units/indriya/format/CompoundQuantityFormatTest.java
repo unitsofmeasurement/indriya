@@ -29,6 +29,7 @@
  */
 package tech.units.indriya.format;
 
+import static javax.measure.MetricPrefix.HECTO;
 import static javax.measure.MetricPrefix.KILO;
 import static javax.measure.MetricPrefix.MEGA;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -37,6 +38,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 import static tech.units.indriya.unit.Units.HERTZ;
 import static tech.units.indriya.unit.Units.KILOGRAM;
 import static tech.units.indriya.unit.Units.METRE;
+import static tech.units.indriya.unit.Units.PASCAL;
 
 import java.math.BigDecimal;
 
@@ -46,10 +48,12 @@ import javax.measure.format.ParserException;
 import javax.measure.format.QuantityFormat;
 import javax.measure.quantity.Frequency;
 import javax.measure.quantity.Length;
+import javax.measure.quantity.Pressure;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import tech.units.indriya.quantity.CompoundQuantity;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.Units;
 
@@ -57,64 +61,15 @@ import tech.units.indriya.unit.Units;
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
  *
  */
-public class QuantityFormatTest {
-  private Quantity<Length> sut;
-  private QuantityFormat format;
+public class CompoundQuantityFormatTest {
+	private static final Quantity<Pressure> ONE_HPA = Quantities.getQuantity(BigDecimal.ONE, HECTO(PASCAL));
+	private static final Quantity<Pressure> TEN_PA = Quantities.getQuantity(BigDecimal.TEN, PASCAL);
 
-  @BeforeEach
-  public void init() {
-    // sut =
-    // DefaultQuantityFactoryService.getQuantityFactory(Length.class).create(10,
-    // METRE);
-    sut = Quantities.getQuantity(10, METRE);
-    format = SimpleQuantityFormat.getInstance();
-  }
+	@Test
+	public void testFormat() {
+		CompoundQuantity<Pressure> pressures = CompoundQuantity.of(ONE_HPA, TEN_PA);
+		SimpleQuantityFormat format = SimpleQuantityFormat.getInstance();
+		assertEquals("1 hPa 10 Pa", format.format(pressures));
+	}
 
-  @Test
-  public void testFormat() {
-    Unit<Frequency> hz = HERTZ;
-    assertEquals("Hz", hz.toString());
-  }
-
-  @Test
-  public void testFormat2() {
-    Unit<Frequency> mhz = MEGA(HERTZ);
-    assertEquals("MHz", mhz.toString());
-  }
-
-  @Test
-  public void testFormat3() {
-    Unit<Frequency> khz = KILO(HERTZ);
-    assertEquals("kHz", khz.toString());
-  }
-
-  @Test
-  public void testParseSimple1() {
-    Quantity<?> parsed1 = SimpleQuantityFormat.getInstance().parse("10 min");
-    assertNotNull(parsed1);
-    assertEquals(BigDecimal.valueOf(10), parsed1.getValue());
-    assertEquals(Units.MINUTE, parsed1.getUnit());
-  }
-
-  @Test
-  public void testParse2() {
-    Quantity<?> parsed1 = SimpleQuantityFormat.getInstance().parse("60 m");
-    assertNotNull(parsed1);
-    assertEquals(BigDecimal.valueOf(60), parsed1.getValue());
-    assertEquals(Units.METRE, parsed1.getUnit());
-  }
-
-  @Test
-  public void testParseSimple3() {
-    try {
-      Quantity<?> parsed1 = format.parse("5 kg");
-      assertNotNull(parsed1);
-      assertEquals(BigDecimal.valueOf(5), parsed1.getValue());
-      assertNotNull(parsed1.getUnit());
-      assertEquals("kg", parsed1.getUnit().getSymbol());
-      assertEquals(KILOGRAM, parsed1.getUnit());
-    } catch (ParserException e) {
-      fail(e.getMessage());
-    }
-  }
 }

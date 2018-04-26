@@ -71,8 +71,8 @@ public class CompoundQuantityTest {
 
   @Test
   public void toTest() {
-    CompoundQuantity<Pressure> pressures = CompoundQuantity.of(ONE_HPA, TEN_PA);
-    Quantity<Pressure> inMillis = pressures.to(MILLI(PASCAL));
+    final CompoundQuantity<Pressure> pressures = CompoundQuantity.of(ONE_HPA, TEN_PA);
+    final Quantity<Pressure> inMillis = pressures.to(MILLI(PASCAL));
     assertNotNull(inMillis);
     assertEquals(MILLI(PASCAL), inMillis.getUnit());
     assertEquals(BigDecimal.valueOf(110000d), inMillis.getValue());
@@ -81,7 +81,7 @@ public class CompoundQuantityTest {
   @Test
   public void toStringTest() {
     CompoundQuantity<Pressure> pressures = new CompoundQuantity<>(ONE_HPA, TEN_PA);
-    assertEquals("1 hPa: 10 Pa", pressures.toString());
+    assertEquals("1 hPa 10 Pa", pressures.toString());
   }
 
 }

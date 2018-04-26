@@ -30,6 +30,7 @@
 package tech.units.indriya.quantity;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
@@ -38,6 +39,7 @@ import javax.measure.MeasurementException;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 
+import tech.units.indriya.format.SimpleQuantityFormat;
 import tech.uom.lib.common.function.QuantityConverter;
 
 /**
@@ -49,7 +51,7 @@ import tech.uom.lib.common.function.QuantityConverter;
  *          The type of the quantity.
  * 
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 0.5, April 11, 2018
+ * @version 0.6, April 25, 2018
  * @see <a href="http://www.thefreedictionary.com/Compound+quantity">Free Dictionary: Compound Quantity</a>
  */
 public class CompoundQuantity<Q extends Quantity<Q>> implements QuantityConverter<Q>, Serializable {
@@ -89,6 +91,15 @@ public class CompoundQuantity<Q extends Quantity<Q>> implements QuantityConverte
   public Set<Unit<Q>> getUnits() {
     return quantMap.keySet();
   }
+  
+  /**
+   * Gets quantities in this CompoundQuantity.
+   *
+   * @return a collection containing the quantities, not null
+   */
+  public Collection<Quantity<Q>> getQuantities() {
+    return quantMap.values();
+  }
 
   /**
    * Gets the Quantity of the requested Unit.
@@ -107,16 +118,7 @@ public class CompoundQuantity<Q extends Quantity<Q>> implements QuantityConverte
    */
   @Override
   public String toString() {
-    final StringBuilder sb = new StringBuilder();
-    int pos = 0;
-    for (Quantity<Q> q : quantMap.values()) {
-      sb.append(q);
-      pos++;
-      if (pos < quantMap.size()) {
-        sb.append(": "); // TODO the pattern/separator should be customizable
-      }
-    }
-    return sb.toString();
+    return SimpleQuantityFormat.getInstance().format(this);
   }
 
   /**
