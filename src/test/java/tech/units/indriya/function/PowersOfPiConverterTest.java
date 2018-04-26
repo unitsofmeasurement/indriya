@@ -42,8 +42,12 @@ import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.Calculus;
 
-public class PiPowerConverterTest {
+public class PowersOfPiConverterTest {
 
+	// for reference
+	protected final static String HUNDRED_DIGITS_OF_PI =
+			"3.141592653589793238462643383279502884197169399375105820974944592307816406286208998628034825342117068";
+	
 //	@BeforeEach
 //	public void setUp() throws Exception {
 //		
@@ -108,6 +112,8 @@ public class PiPowerConverterTest {
 		PowersOfPiConverter converter = new PowersOfPiConverter(1);
 		Calculus.MATH_CONTEXT = new MathContext(MathContext.DECIMAL128.getPrecision() * 2);
 		BigDecimal value = (BigDecimal) converter.convert(BigDecimal.valueOf(1.));
+		//[ahuber] last digit should actually round to '2' instead of '0', 
+		// but I suppose this is within margin of error
 		assertEquals(
 				"3.14159265358979323846264338327950288419716939937510582097494459230780", 
 				value.toPlainString());
