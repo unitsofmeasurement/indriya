@@ -61,8 +61,8 @@ public class LogConverterTest {
   @Test
   public void testGetValueLogConverter() {
     LogConverter logConverter = new LogConverter(Math.E);
-    assertEquals("Log(10.0)", logConverterBase10.getValue());
-    assertEquals("ln", logConverter.getValue());
+    assertEquals("Log(x -> log(base=10.0, x))", logConverterBase10.getValue());
+    assertEquals("Log(x -> ln(x))", logConverter.getValue());
   }
 
   @Test

@@ -232,14 +232,14 @@ public final class RationalConverter extends AbstractConverter implements ValueS
 
 
 	@Override
-	public RationalConverter inverse() {
+	public RationalConverter inverseWhenNotIdentity() {
 		return dividend.signum() == -1 ? new RationalConverter(getDivisor().negate(), getDividend().negate()) : new RationalConverter(getDivisor(),
 				getDividend());
 	}
 
 	@Override
-	public final String toString() {
-		return "RationalConverter(" + dividend + "," + divisor + ")";
+	public final String transformationLiteral() {
+		return String.format("(%s)/(%s)", dividend, divisor);
 	}
 
 	@Override

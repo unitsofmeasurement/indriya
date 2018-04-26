@@ -49,122 +49,122 @@ import tech.uom.lib.common.function.ValueSupplier;
  * @since 1.0
  */
 public final class LogConverter extends AbstractConverter implements ValueSupplier<String> { // implements
-  // Immutable<String>
-  // {
+	// Immutable<String>
+	// {
 
-  /**
-     * 
-     */
-  private static final long serialVersionUID = -7584688290961460870L;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7584688290961460870L;
 
-  /**
-   * Holds the logarithmic base.
-   */
-  private final double base;
-  /**
-   * Holds the natural logarithm of the base.
-   */
-  private final double logOfBase;
+	/**
+	 * Holds the logarithmic base.
+	 */
+	private final double base;
+	/**
+	 * Holds the natural logarithm of the base.
+	 */
+	private final double logOfBase;
 
-  /**
-   * Returns a logarithmic converter having the specified base.
-   *
-   * @param base
-   *          the logarithmic base (e.g. <code>Math.E</code> for the Natural Logarithm).
-   */
-  public LogConverter(double base) {
-    this.base = base;
-    this.logOfBase = Math.log(base);
-  }
-
-  /**
-   * Returns the logarithmic base of this converter.
-   *
-   * @return the logarithmic base (e.g. <code>Math.E</code> for the Natural Logarithm).
-   */
-  public double getBase() {
-    return base;
-  }
-  
-  @Override
-  public boolean isIdentity() {
-    return false;
-  }
-
-  @Override
-  protected boolean isSimpleCompositionWith(AbstractConverter that) {
-	if(that instanceof ExpConverter) {
-		return ((ExpConverter)that).getBase() == base; // can compose with exp to identity, provided it has same base
+	/**
+	 * Returns a logarithmic converter having the specified base.
+	 *
+	 * @param base
+	 *          the logarithmic base (e.g. <code>Math.E</code> for the Natural Logarithm).
+	 */
+	public LogConverter(double base) {
+		this.base = base;
+		this.logOfBase = Math.log(base);
 	}
-  	return false;
-  }
 
-  @Override
-  protected AbstractConverter simpleCompose(AbstractConverter that) {
-    return AbstractConverter.IDENTITY;
-  }
+	/**
+	 * Returns the logarithmic base of this converter.
+	 *
+	 * @return the logarithmic base (e.g. <code>Math.E</code> for the Natural Logarithm).
+	 */
+	public double getBase() {
+		return base;
+	}
 
-  @Override
-  public AbstractConverter inverse() {
-    return new ExpConverter(base);
-  }
+	@Override
+	public boolean isIdentity() {
+		return false;
+	}
 
-  @Override
-  public final String toString() {
-    if (base == Math.E) {
-      return "ln";
-    } else {
-      return "Log(" + base + ")";
-    }
-  }
+	@Override
+	protected boolean isSimpleCompositionWith(AbstractConverter that) {
+		if(that instanceof ExpConverter) {
+			return ((ExpConverter)that).getBase() == base; // can compose with exp to identity, provided it has same base
+		}
+		return false;
+	}
 
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj instanceof LogConverter) {
-      LogConverter that = (LogConverter) obj;
-      return Objects.equals(base, that.base);
-    }
-    return false;
-  }
+	@Override
+	protected AbstractConverter simpleCompose(AbstractConverter that) {
+		return AbstractConverter.IDENTITY;
+	}
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(base);
-  }
+	@Override
+	public AbstractConverter inverseWhenNotIdentity() {
+		return new ExpConverter(base);
+	}
 
-  @Override
-  public double convertWhenNotIdentity(double amount) {
-    return Math.log(amount) / logOfBase;
-  }
+	@Override
+	public final String transformationLiteral() {
+		if (base == Math.E) {
+			return "x -> ln(x)";
+		} else {
+			return String.format("x -> log(base=%s, x)", base);
+		}
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj instanceof LogConverter) {
+			LogConverter that = (LogConverter) obj;
+			return Objects.equals(base, that.base);
+		}
+		return false;
+	}
 
-  @Override
-  public BigDecimal convertWhenNotIdentity(BigDecimal value, MathContext ctx) throws ArithmeticException {
-    return BigDecimal.valueOf(convert(value.doubleValue())); // Reverts to
-    // double
-    // conversion.
-  }
+	@Override
+	public int hashCode() {
+		return Objects.hash(base);
+	}
 
-  @Override
-  public boolean isLinear() {
-    return false;
-  }
+	@Override
+	public double convertWhenNotIdentity(double amount) {
+		return Math.log(amount) / logOfBase;
+	}
 
-  @Override
-  public String getValue() {
-    return toString();
-  }
+	@Override
+	public BigDecimal convertWhenNotIdentity(BigDecimal value, MathContext ctx) throws ArithmeticException {
+		return BigDecimal.valueOf(convert(value.doubleValue())); // Reverts to
+		// double
+		// conversion.
+	}
 
-  @Override
-  public int compareTo(UnitConverter o) {
-    if (this == o) {
-      return 0;
-    }
-    if (o instanceof ValueSupplier) {
-      return getValue().compareTo(String.valueOf(((ValueSupplier<?>) o).getValue()));
-    }
-    return -1;
-  }
+	@Override
+	public boolean isLinear() {
+		return false;
+	}
+
+	@Override
+	public String getValue() {
+		return toString();
+	}
+
+	@Override
+	public int compareTo(UnitConverter o) {
+		if (this == o) {
+			return 0;
+		}
+		if (o instanceof ValueSupplier) {
+			return getValue().compareTo(String.valueOf(((ValueSupplier<?>) o).getValue()));
+		}
+		return -1;
+	}
 }

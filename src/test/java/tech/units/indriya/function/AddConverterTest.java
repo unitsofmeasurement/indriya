@@ -74,7 +74,8 @@ public class AddConverterTest {
 
   @Test
   public void toStringTest() {
-    assertEquals("AddConverter(10.0)", converter.toString());
+    assertEquals("Add(x -> x + 10.0)", converter.toString());
+    assertEquals("Add(x -> x - 10.0)", converter.inverse().toString());
   }
 
   @Test

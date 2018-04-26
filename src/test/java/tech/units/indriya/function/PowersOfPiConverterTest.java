@@ -47,22 +47,22 @@ public class PowersOfPiConverterTest {
 	// for reference
 	protected final static String HUNDRED_DIGITS_OF_PI =
 			"3.141592653589793238462643383279502884197169399375105820974944592307816406286208998628034825342117068";
-	
-//	@BeforeEach
-//	public void setUp() throws Exception {
-//		
-//	}
+
+	//	@BeforeEach
+	//	public void setUp() throws Exception {
+	//		
+	//	}
 
 	@AfterEach
 	public void reset() throws Exception {
 		Calculus.MATH_CONTEXT = Calculus.DEFAULT_MATH_CONTEXT;
 	}
-	
+
 	@Test
 	public void testConvertMethod() {
 		PowersOfPiConverter converter = new PowersOfPiConverter(-1);
 		Calculus.MATH_CONTEXT = MathContext.DECIMAL32;
-		
+
 		assertEquals(1000, converter.convert(3141), 0.2);
 		assertEquals(0, converter.convert(0));
 		assertEquals(-1000, converter.convert(-3141), 0.2);
@@ -72,7 +72,7 @@ public class PowersOfPiConverterTest {
 	public void testConvertBigDecimalMethod() {
 		PowersOfPiConverter converter = new PowersOfPiConverter(-1);
 		Calculus.MATH_CONTEXT = MathContext.DECIMAL32;
-		
+
 		assertEquals(1000, converter.convert(new BigDecimal("3141")).doubleValue(), 0.2);
 		assertEquals(0, converter.convert(BigDecimal.ZERO).doubleValue());
 		assertEquals(-1000, converter.convert(new BigDecimal("-3141")).doubleValue(), 0.2);
@@ -92,21 +92,21 @@ public class PowersOfPiConverterTest {
 		PowersOfPiConverter converter = new PowersOfPiConverter(-1);
 		assertTrue(converter.isLinear());
 	}
-	
+
 	@Test
 	public void piSquaredBigDecimalDefaultPrecision() {
 		PowersOfPiConverter converter = new PowersOfPiConverter(2);
 		BigDecimal value = (BigDecimal) converter.convert(BigDecimal.valueOf(0.1));
 		assertEquals("0.9869604401089358618834490999876151", value.toPlainString());
 	}
-	
+
 	@Test
 	public void piBigDecimalDefaultPrecision() {
 		PowersOfPiConverter converter = new PowersOfPiConverter(1);
 		Calculus.MATH_CONTEXT = MathContext.UNLIMITED;
 		assertThrows(ArithmeticException.class, ()->converter.convert(BigDecimal.valueOf(1.0)));
 	}
-	
+
 	@Test
 	public void piBigDecimalExtendedPrecision() {
 		PowersOfPiConverter converter = new PowersOfPiConverter(1);
@@ -118,5 +118,11 @@ public class PowersOfPiConverterTest {
 				"3.14159265358979323846264338327950288419716939937510582097494459230780", 
 				value.toPlainString());
 	}
-	
+
+	@Test
+	public void toStringTest() {
+		PowersOfPiConverter converter = new PowersOfPiConverter(2);
+		assertEquals("PowersOfPi(x -> x * π^2)", converter.toString());
+	}
+
 }

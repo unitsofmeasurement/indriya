@@ -85,8 +85,8 @@ public final class PowersOfPiConverter extends AbstractConverter {
 	}
 
 	@Override
-	public AbstractConverter inverse() {
-		return isIdentity() ? this : new PowersOfPiConverter(-exponent);
+	public AbstractConverter inverseWhenNotIdentity() {
+		return new PowersOfPiConverter(-exponent);
 	}
 
 	@Override
@@ -134,8 +134,8 @@ public final class PowersOfPiConverter extends AbstractConverter {
 	}
 
 	@Override
-	public final String toString() {
-		return "PiPowerConverter(π^" + exponent + ")";
+	public final String transformationLiteral() {
+		return String.format("x -> x * π^%s", exponent);
 	}
 
 	@Override

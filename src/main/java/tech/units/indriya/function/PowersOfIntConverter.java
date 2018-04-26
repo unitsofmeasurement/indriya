@@ -139,8 +139,8 @@ public final class PowersOfIntConverter extends AbstractConverter {
 	}
 
 	@Override
-	public AbstractConverter inverse() {
-		return isIdentity() ? this : new PowersOfIntConverter(base, -exponent);
+	public AbstractConverter inverseWhenNotIdentity() {
+		return new PowersOfIntConverter(base, -exponent);
 	}
 
 	@Override
@@ -205,8 +205,11 @@ public final class PowersOfIntConverter extends AbstractConverter {
 	}
 
 	@Override
-	public String toString() {
-		return "PiPowerConverter(^" + exponent + ")";
+	public final String transformationLiteral() {
+		if(base<0) {
+			return String.format("x -> x * (%s)^%s", base, exponent);
+		}
+		return String.format("x -> x * %s^%s", base, exponent);
 	}
 
 	@Override
