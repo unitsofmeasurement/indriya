@@ -41,7 +41,6 @@ import javax.measure.Quantity;
 import javax.measure.quantity.Pressure;
 import javax.measure.quantity.Time;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.quantity.DecimalQuantity;

@@ -48,7 +48,7 @@ import org.junit.jupiter.api.Test;
  * @author Werner Keil
  */
 public class QuantityFactoryProviderTest {
-  static ServiceProvider service;
+  private static ServiceProvider service;
 
   @BeforeAll
   public static void init() {

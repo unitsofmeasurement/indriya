@@ -47,12 +47,12 @@ import tech.units.indriya.unit.Units;
 
 public class ShortQuantityTest {
 
-  final ShortQuantity<ElectricResistance> ONE_OHM = createQuantity((short) 1, Units.OHM);
-  final ShortQuantity<ElectricResistance> TWO_OHM = createQuantity((short)2, Units.OHM);
-  final ShortQuantity<ElectricResistance> MAX_VALUE_OHM = createQuantity(Short.MAX_VALUE, Units.OHM);
-  final ShortQuantity<ElectricResistance> ONE_MILLIOHM = createQuantity((short)1, MetricPrefix.MILLI(Units.OHM));
-  final ShortQuantity<ElectricResistance> ONE_KILOOHM = createQuantity((short)1, MetricPrefix.KILO(Units.OHM));
-  final ShortQuantity<ElectricResistance> ONE_YOTTAOHM = createQuantity((short)1, MetricPrefix.YOTTA(Units.OHM));
+  private final ShortQuantity<ElectricResistance> ONE_OHM = createQuantity((short) 1, Units.OHM);
+  private final ShortQuantity<ElectricResistance> TWO_OHM = createQuantity((short)2, Units.OHM);
+  private final ShortQuantity<ElectricResistance> MAX_VALUE_OHM = createQuantity(Short.MAX_VALUE, Units.OHM);
+  private final ShortQuantity<ElectricResistance> ONE_MILLIOHM = createQuantity((short)1, MetricPrefix.MILLI(Units.OHM));
+  private final ShortQuantity<ElectricResistance> ONE_KILOOHM = createQuantity((short)1, MetricPrefix.KILO(Units.OHM));
+  private final ShortQuantity<ElectricResistance> ONE_YOTTAOHM = createQuantity((short)1, MetricPrefix.YOTTA(Units.OHM));
 
   private <Q extends Quantity<Q>> ShortQuantity<Q> createQuantity(short s, Unit<Q> unit) {
     return new ShortQuantity<Q>(Short.valueOf(s).shortValue(), unit);
