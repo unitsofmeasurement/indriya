@@ -34,15 +34,15 @@ package tech.units.indriya.internal.format;
 /**
  * An implementation of interface CharStream, where the stream is assumed to contain only ASCII characters (without unicode processing).
  *
- * @version 5.1, December 25, 2013
+ * @version 5.2, April 26, 2018
  */
 
 final class DefaultCharStream {
   /** Whether parser is static. */
   public static final boolean staticFlag = false;
-  int bufsize;
-  int available;
-  int tokenBegin;
+  private int bufsize;
+  private int available;
+  private int tokenBegin;
   /** Position in buffer. */
   public int bufpos = -1;
   protected int bufline[];
@@ -275,7 +275,7 @@ final class DefaultCharStream {
   }
 
   /** Reinitialise. */
-  public void ReInit(java.io.Reader dstream, int startline, int startcolumn, int buffersize) {
+  public void reInit(java.io.Reader dstream, int startline, int startcolumn, int buffersize) {
     inputStream = dstream;
     line = startline;
     column = startcolumn - 1;
@@ -292,13 +292,13 @@ final class DefaultCharStream {
   }
 
   /** Reinitialise. */
-  public void ReInit(java.io.Reader dstream, int startline, int startcolumn) {
-    ReInit(dstream, startline, startcolumn, 4096);
+  public void reInit(java.io.Reader dstream, int startline, int startcolumn) {
+    reInit(dstream, startline, startcolumn, 4096);
   }
 
   /** Reinitialise. */
-  public void ReInit(java.io.Reader dstream) {
-    ReInit(dstream, 1, 1, 4096);
+  public void reInit(java.io.Reader dstream) {
+    reInit(dstream, 1, 1, 4096);
   }
 
   /** Constructor. */
@@ -334,35 +334,35 @@ final class DefaultCharStream {
   }
 
   /** Reinitialise. */
-  public void ReInit(java.io.InputStream dstream, String encoding, int startline, int startcolumn, int buffersize)
+  public void reInit(java.io.InputStream dstream, String encoding, int startline, int startcolumn, int buffersize)
       throws java.io.UnsupportedEncodingException {
-    ReInit(encoding == null ? new java.io.InputStreamReader(dstream) : new java.io.InputStreamReader(dstream, encoding), startline, startcolumn,
+    reInit(encoding == null ? new java.io.InputStreamReader(dstream) : new java.io.InputStreamReader(dstream, encoding), startline, startcolumn,
         buffersize);
   }
 
   /** Reinitialise. */
-  public void ReInit(java.io.InputStream dstream, int startline, int startcolumn, int buffersize) {
-    ReInit(new java.io.InputStreamReader(dstream), startline, startcolumn, buffersize);
+  public void reInit(java.io.InputStream dstream, int startline, int startcolumn, int buffersize) {
+    reInit(new java.io.InputStreamReader(dstream), startline, startcolumn, buffersize);
   }
 
   /** Reinitialise. */
-  public void ReInit(java.io.InputStream dstream, String encoding) throws java.io.UnsupportedEncodingException {
-    ReInit(dstream, encoding, 1, 1, 4096);
+  public void reInit(java.io.InputStream dstream, String encoding) throws java.io.UnsupportedEncodingException {
+    reInit(dstream, encoding, 1, 1, 4096);
   }
 
   /** Reinitialise. */
   public void reInit(java.io.InputStream dstream) {
-    ReInit(dstream, 1, 1, 4096);
+    reInit(dstream, 1, 1, 4096);
   }
 
   /** Reinitialise. */
-  public void ReInit(java.io.InputStream dstream, String encoding, int startline, int startcolumn) throws java.io.UnsupportedEncodingException {
-    ReInit(dstream, encoding, startline, startcolumn, 4096);
+  public void reInit(java.io.InputStream dstream, String encoding, int startline, int startcolumn) throws java.io.UnsupportedEncodingException {
+    reInit(dstream, encoding, startline, startcolumn, 4096);
   }
 
   /** Reinitialise. */
   public void reInit(java.io.InputStream dstream, int startline, int startcolumn) {
-    ReInit(dstream, startline, startcolumn, 4096);
+    reInit(dstream, startline, startcolumn, 4096);
   }
 
   /** Get token literal value. */
