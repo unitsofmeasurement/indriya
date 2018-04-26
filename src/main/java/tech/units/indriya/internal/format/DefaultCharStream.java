@@ -400,16 +400,18 @@ final class DefaultCharStream {
   public void adjustBeginLineColumn(int newLine, int newCol) {
     int start = tokenBegin;
     int len;
+    int i = 0;
+    int j = 0;
+    int k = 0;
+    int nextColDiff = 0;
+    int columnDiff = 0;
 
     if (bufpos >= tokenBegin) {
       len = bufpos - tokenBegin + inBuf + 1;
     } else {
       len = bufsize - tokenBegin + bufpos + 1 + inBuf;
     }
-
-    int i = 0, j = 0, k = 0;
-    int nextColDiff = 0, columnDiff = 0;
-
+    
     while (i < len && bufline[j = start % bufsize] == bufline[k = ++start % bufsize]) {
       bufline[j] = newLine;
       nextColDiff = columnDiff + bufcolumn[k] - bufcolumn[j];
