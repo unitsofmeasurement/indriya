@@ -47,12 +47,12 @@ import tech.units.indriya.unit.Units;
 
 public class IntegerQuantityTest {
 
-  final IntegerQuantity<ElectricResistance> ONE_OHM = createQuantity(1, Units.OHM);
-  final IntegerQuantity<ElectricResistance> TWO_OHM = createQuantity(2, Units.OHM);
-  final IntegerQuantity<ElectricResistance> MAX_VALUE_OHM = createQuantity(Integer.MAX_VALUE, Units.OHM);
-  final IntegerQuantity<ElectricResistance> ONE_MILLIOHM = createQuantity(1, MetricPrefix.MILLI(Units.OHM));
-  final IntegerQuantity<ElectricResistance> ONE_KILOOHM = createQuantity(1, MetricPrefix.KILO(Units.OHM));
-  final IntegerQuantity<ElectricResistance> ONE_YOTTAOHM = createQuantity(1, MetricPrefix.YOTTA(Units.OHM));
+  private final IntegerQuantity<ElectricResistance> ONE_OHM = createQuantity(1, Units.OHM);
+  private final IntegerQuantity<ElectricResistance> TWO_OHM = createQuantity(2, Units.OHM);
+  private final IntegerQuantity<ElectricResistance> MAX_VALUE_OHM = createQuantity(Integer.MAX_VALUE, Units.OHM);
+  private final IntegerQuantity<ElectricResistance> ONE_MILLIOHM = createQuantity(1, MetricPrefix.MILLI(Units.OHM));
+  private final IntegerQuantity<ElectricResistance> ONE_KILOOHM = createQuantity(1, MetricPrefix.KILO(Units.OHM));
+  private final IntegerQuantity<ElectricResistance> ONE_YOTTAOHM = createQuantity(1, MetricPrefix.YOTTA(Units.OHM));
 
   private <Q extends Quantity<Q>> IntegerQuantity<Q> createQuantity(int i, Unit<Q> unit) {
     return new IntegerQuantity<Q>(Integer.valueOf(i).intValue(), unit);
