@@ -5,6 +5,7 @@ JSR 385 - Reference Implementation
 
 This implementation aims at **Java SE 8** and above.
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/b737f829de684058be3fb858cef679d1)](https://app.codacy.com/app/unitsofmeasurement/indriya?utm_source=github.com&utm_medium=referral&utm_content=unitsofmeasurement/indriya&utm_campaign=badger)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/tech.units/indriya/badge.svg)](https://maven-badges.herokuapp.com/maven-central/tech.units/indriya)
 [![CircleCI](https://circleci.com/gh/unitsofmeasurement/indriya.svg?style=svg)](https://circleci.com/gh/unitsofmeasurement/indriya)
 [![codecov](https://codecov.io/gh/unitsofmeasurement/indriya/branch/master/graph/badge.svg)](https://codecov.io/gh/unitsofmeasurement/indriya)
