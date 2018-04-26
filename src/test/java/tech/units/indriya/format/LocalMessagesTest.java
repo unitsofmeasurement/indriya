@@ -53,7 +53,7 @@ public class LocalMessagesTest {
   }
 
   @Test
-  public void testMessageBundle_de() {
+  public void testMessageBundleDe() {
     Locale locale = new Locale("de");
 
     ResourceBundle bundle = ResourceBundle.getBundle(BUNDLE_NAME, locale);
@@ -63,7 +63,7 @@ public class LocalMessagesTest {
   }
 
   @Test
-  public void testMessageBundle_fr() {
+  public void testMessageBundleFr() {
     Locale locale = new Locale("fr");
 
     ResourceBundle bundle = ResourceBundle.getBundle(BUNDLE_NAME, locale);
