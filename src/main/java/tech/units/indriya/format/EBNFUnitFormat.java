@@ -240,10 +240,6 @@ public class EBNFUnitFormat extends AbstractUnitFormat {
     return appendable;
   }
 
-  public boolean isLocaleSensitive() {
-    return false;
-  }
-
   @Override
   protected Unit<? extends Quantity<?>> parse(CharSequence csq, ParsePosition cursor) throws MeasurementParseException {
     // Parsing reads the whole character sequence from the parse position.
