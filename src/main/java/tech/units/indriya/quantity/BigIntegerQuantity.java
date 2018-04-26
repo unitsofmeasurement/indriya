@@ -110,7 +110,12 @@ final class BigIntegerQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q
       return Quantities.getQuantity(value.add(Calculus.toBigInteger(that.getValue())), getUnit());
     }
     Quantity<Q> converted = that.to(getUnit());
-    return Quantities.getQuantity(value.add(Calculus.toBigInteger(converted.getValue())), getUnit());
+    Unit<Q> unit = getUnit();
+    if(Calculus.isLessThanOne(Calculus.abs(converted.getValue()))) {
+    	converted = this.to(that.getUnit());
+    	unit = that.getUnit();
+    }
+    return Quantities.getQuantity(value.add(Calculus.toBigInteger(converted.getValue())), unit);
   }
 
   @Override

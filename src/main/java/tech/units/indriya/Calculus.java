@@ -99,9 +99,68 @@ public final class Calculus {
 			return BigInteger.valueOf(number.longValue());
 		}
 		logger.fine(()->String.format(
-				"WARNING: possibly loosing precision, when converting from Number type '%s' to double.",
+				"WARNING: possibly loosing precision, when converting from Number type '%s' to long.",
 				number.getClass().getName()));
 		return BigInteger.valueOf(number.longValue());
+	}
+
+	/**
+	 * Returns the absolute value of {@code number}
+	 * @param number
+	 * @return 
+	 */
+	public static Number abs(Number number) {
+		Objects.requireNonNull(number, "number can not be null");
+		if(number instanceof BigInteger) {
+			return ((BigInteger) number).abs();
+		}
+		if(number instanceof BigDecimal) {
+			return ((BigDecimal) number).abs();
+		}
+		if(number instanceof Double) {
+			return Math.abs((double)number);
+		}
+		if(number instanceof Long) {
+			return Math.abs((long)number);
+		}
+		if(number instanceof Integer) {
+			return Math.abs((int)number);
+		}
+		if(number instanceof Short) {
+			return Math.abs((short)number);
+		}
+		if(number instanceof Byte) {
+			return Math.abs((byte)number);
+		}
+		logger.fine(()->String.format(
+				"WARNING: possibly loosing precision, when converting from Number type '%s' to double.",
+				number.getClass().getName()));
+		return Math.abs(number.doubleValue());
+	}
+
+	/**
+	 * 
+	 * @param number
+	 * @return
+	 */
+	public static boolean isLessThanOne(Number number) {
+		Objects.requireNonNull(number, "number can not be null");
+		if(number instanceof BigInteger) {
+			return ((BigInteger) number).compareTo(BigInteger.ONE) == -1;
+		}
+		if(number instanceof BigDecimal) {
+			return ((BigDecimal) number).compareTo(BigDecimal.ONE) == -1;
+		}
+		if(number instanceof Double) {
+			return ((double)number) < 1.0;
+		}
+		if(number instanceof Long || number instanceof Integer || number instanceof Short || number instanceof Byte) {
+			return number.longValue() < 1L;
+		}
+		logger.fine(()->String.format(
+				"WARNING: possibly loosing precision, when converting from Number type '%s' to double.",
+				number.getClass().getName()));
+		return number.doubleValue() < 1.0;
 	}
 
 
