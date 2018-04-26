@@ -222,11 +222,10 @@ public final class RationalConverter extends AbstractConverter implements ValueS
 			return (AbstractConverter) composeSameType((RationalConverter) that); 
 		}
 		if (that instanceof PowersOfIntConverter) {
-			//TODO [ahuber] check whether this can be expressed as a PowerConverter, if so return a PowerConverter
 			return (AbstractConverter) composeSameType(((PowersOfIntConverter) that).toRationalConverter()); 
 		}
 		throw new IllegalStateException(String.format(
-				"%s.simpleCompose() not handled for linear converter %s", 
+				"%s.simpleCompose() not handled for converter %s", 
 				this, that));
 	}
 

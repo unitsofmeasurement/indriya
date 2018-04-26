@@ -114,7 +114,7 @@ public final class PowersOfIntConverter extends AbstractConverter {
 		if (that instanceof PowersOfIntConverter) {
 			return ((PowersOfIntConverter) that).base == this.base;
 		}
-		return that.isLinear();
+		return that instanceof RationalConverter;
 	}
 
 	@Override
@@ -128,12 +128,8 @@ public final class PowersOfIntConverter extends AbstractConverter {
 		if (that instanceof RationalConverter) {
 			return (AbstractConverter) toRationalConverter().concatenate((RationalConverter) that);
 		}
-		if (that instanceof MultiplyConverter) {
-			// TODO simple, but not the best we can do
-			return new MultiplyConverter(Math.pow(base, exponent) * ((MultiplyConverter) that).getFactor());
-		}
 		throw new IllegalStateException(String.format(
-				"%s.simpleCompose() not handled for linear converter %s", 
+				"%s.simpleCompose() not handled for converter %s", 
 				this, that));
 	}
 

@@ -46,6 +46,7 @@ import javax.measure.UnitConverter;
 import tech.units.indriya.function.Calculus;
 import tech.units.indriya.function.PowersOfIntConverter;
 import tech.units.indriya.function.UnitComparator;
+import tech.units.indriya.internal.simplify.Simplifier;
 import tech.uom.lib.common.function.Converter;
 
 /**
@@ -180,7 +181,9 @@ public abstract class AbstractConverter
 		if(converter instanceof AbstractConverter) {
 			// let Simplifier decide
 			AbstractConverter other = (AbstractConverter) converter;
-			return AbstractUnit.Simplifier.compose(this, other);
+			return Simplifier.compose(this, other, 
+					AbstractConverter::isSimpleCompositionWith, 
+					AbstractConverter::simpleCompose);
 		}
 		// converter is not known to this implementation ...
 		if(converter.isIdentity()) {
@@ -189,7 +192,10 @@ public abstract class AbstractConverter
 		if(this.isIdentity()) {
 			return converter;
 		}
-		return new Pair(this, converter);
+		throw new IllegalArgumentException(
+				"Concatenate is currently only supported for sub-classes of AbstractConverter"); 
+		//[ahuber] we don't know how to simplify into a 'normal-form' with 'foreign' converters
+		//return new Pair(this, converter);
 	}
 
 	@Override
