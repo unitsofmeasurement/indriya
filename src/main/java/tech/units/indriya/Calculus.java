@@ -139,9 +139,9 @@ public final class Calculus {
 	}
 	
 	/**
-	 * Returns the absolute value of {@code number}
+	 * Returns the negated value of {@code number}
 	 * @param number
-	 * @return 
+	 * @return -number
 	 */
 	public static Number negate(Number number) {
 		Objects.requireNonNull(number, "number can not be null");
