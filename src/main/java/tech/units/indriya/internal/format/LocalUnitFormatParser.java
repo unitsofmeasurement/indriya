@@ -66,34 +66,34 @@ public final class LocalUnitFormatParser {
   }
 
   final public Unit parseUnit() throws TokenException {
-    Unit result = CompoundExpr();
+    Unit result = compoundExpr();
     consumeToken(0);
     {
       return result;
     }
   }
 
-  final public Unit CompoundExpr() throws TokenException {
+  final public Unit compoundExpr() throws TokenException {
     throw new UnsupportedOperationException("Compound units not supported");
   }
 
-  final public Unit AddExpr() throws TokenException {
+  final public Unit addExpr() throws TokenException {
     Unit result = AbstractUnit.ONE;
     Number n1 = null;
     Token sign1 = null;
     Number n2 = null;
     Token sign2 = null;
     if (jj_2_1(2147483647)) {
-      n1 = NumberExpr();
-      sign1 = Sign();
+      n1 = numberExpr();
+      sign1 = sign();
     } else {
     }
-    result = MulExpr();
+    result = mulExpr();
     switch ((nextTokenIndex == -1) ? jj_ntk() : nextTokenIndex) {
       case PLUS:
       case MINUS:
-        sign2 = Sign();
-        n2 = NumberExpr();
+        sign2 = sign();
+        n2 = numberExpr();
         break;
       default:
         laA[1] = genInt;
@@ -116,10 +116,10 @@ public final class LocalUnitFormatParser {
     }
   }
 
-  final public Unit MulExpr() throws TokenException {
+  final public Unit mulExpr() throws TokenException {
     Unit result = AbstractUnit.ONE;
     Unit temp = AbstractUnit.ONE;
-    result = ExponentExpr();
+    result = exponentExpr();
     label_2: while (true) {
       switch ((nextTokenIndex == -1) ? jj_ntk() : nextTokenIndex) {
         case ASTERISK:
@@ -145,12 +145,12 @@ public final class LocalUnitFormatParser {
               consumeToken(-1);
               throw new TokenException();
           }
-          temp = ExponentExpr();
+          temp = exponentExpr();
           result = result.multiply(temp);
           break;
         case SOLIDUS:
           consumeToken(SOLIDUS);
-          temp = ExponentExpr();
+          temp = exponentExpr();
           result = result.divide(temp);
           break;
         default:
@@ -164,7 +164,7 @@ public final class LocalUnitFormatParser {
     }
   }
 
-  final public Unit ExponentExpr() throws TokenException {
+  final public Unit exponentExpr() throws TokenException {
     Unit result = AbstractUnit.ONE;
     Exponent exponent = null;
     Token token = null;
@@ -182,7 +182,7 @@ public final class LocalUnitFormatParser {
           throw new TokenException();
       }
       consumeToken(CARET);
-      result = AtomicExpr();
+      result = atomicExpr();
       double base;
       if (token.kind == INTEGER) {
         base = Integer.parseInt(token.image);
@@ -198,11 +198,11 @@ public final class LocalUnitFormatParser {
         case INTEGER:
         case FLOATING_POINT:
         case UNIT_IDENTIFIER:
-          result = AtomicExpr();
+          result = atomicExpr();
           switch ((nextTokenIndex == -1) ? jj_ntk() : nextTokenIndex) {
             case CARET:
             case SUPERSCRIPT_INTEGER:
-              exponent = Exp();
+              exponent = exp();
               break;
             default:
               laA[6] = genInt;
@@ -240,7 +240,7 @@ public final class LocalUnitFormatParser {
               throw new TokenException();
           }
           consumeToken(OPEN_PAREN);
-          result = AddExpr();
+          result = addExpr();
           consumeToken(CLOSE_PAREN);
           double base = 10;
           if (token != null) {
@@ -261,14 +261,14 @@ public final class LocalUnitFormatParser {
     }
   }
 
-  final public Unit AtomicExpr() throws TokenException {
+  final public Unit atomicExpr() throws TokenException {
     Unit result = AbstractUnit.ONE;
     Number n = null;
     Token token = null;
     switch ((nextTokenIndex == -1) ? jj_ntk() : nextTokenIndex) {
       case INTEGER:
       case FLOATING_POINT:
-        n = NumberExpr();
+        n = numberExpr();
         if (n instanceof Integer) {
           {
             return result.multiply(n.intValue());
@@ -302,7 +302,7 @@ public final class LocalUnitFormatParser {
         }
       case OPEN_PAREN:
         consumeToken(OPEN_PAREN);
-        result = AddExpr();
+        result = addExpr();
         consumeToken(CLOSE_PAREN);
         {
           return result;
@@ -314,7 +314,7 @@ public final class LocalUnitFormatParser {
     }
   }
 
-  final public Token Sign() throws TokenException {
+  final public Token sign() throws TokenException {
     Token result = null;
     switch ((nextTokenIndex == -1) ? jj_ntk() : nextTokenIndex) {
       case PLUS:
@@ -333,7 +333,7 @@ public final class LocalUnitFormatParser {
     }
   }
 
-  final public Number NumberExpr() throws TokenException {
+  final public Number numberExpr() throws TokenException {
     Token token = null;
     switch ((nextTokenIndex == -1) ? jj_ntk() : nextTokenIndex) {
       case INTEGER:
@@ -353,7 +353,7 @@ public final class LocalUnitFormatParser {
     }
   }
 
-  final public Exponent Exp() throws TokenException {
+  final public Exponent exp() throws TokenException {
     Token powSign = null;
     Token powToken = null;
     Token rootSign = null;
@@ -368,7 +368,7 @@ public final class LocalUnitFormatParser {
             switch ((nextTokenIndex == -1) ? jj_ntk() : nextTokenIndex) {
               case PLUS:
               case MINUS:
-                powSign = Sign();
+                powSign = sign();
                 break;
               default:
                 laA[13] = genInt;
@@ -386,7 +386,7 @@ public final class LocalUnitFormatParser {
             switch ((nextTokenIndex == -1) ? jj_ntk() : nextTokenIndex) {
               case PLUS:
               case MINUS:
-                powSign = Sign();
+                powSign = sign();
                 break;
               default:
                 laA[14] = genInt;
@@ -398,7 +398,7 @@ public final class LocalUnitFormatParser {
                 switch ((nextTokenIndex == -1) ? jj_ntk() : nextTokenIndex) {
                   case PLUS:
                   case MINUS:
-                    rootSign = Sign();
+                    rootSign = sign();
                     break;
                   default:
                     laA[15] = genInt;
@@ -605,7 +605,7 @@ public final class LocalUnitFormatParser {
   }
 
   /** Reinitialise. */
-  public void ReInit(java.io.InputStream stream) {
+  public void reInit(java.io.InputStream stream) {
     reInit(stream, null);
   }
 
@@ -644,7 +644,7 @@ public final class LocalUnitFormatParser {
   }
 
   /** Reinitialise. */
-  public void ReInit(java.io.Reader stream) {
+  public void reInit(java.io.Reader stream) {
     inputStream.reInit(stream, 1, 1);
     tokenSource.reInit(inputStream);
     token = new Token();
@@ -673,7 +673,7 @@ public final class LocalUnitFormatParser {
   }
 
   /** Reinitialise. */
-  public void ReInit(UnitTokenManager tm) {
+  public void reInit(UnitTokenManager tm) {
     tokenSource = tm;
     token = new Token();
     nextTokenIndex = -1;
@@ -845,11 +845,11 @@ public final class LocalUnitFormatParser {
   }
 
   /** Enable tracing. */
-  final public void enable_tracing() {
+  final public void enableTracing() {
   }
 
   /** Disable tracing. */
-  final public void disable_tracing() {
+  final public void disableTracing() {
   }
 
   private void jj_rescan_token() {
