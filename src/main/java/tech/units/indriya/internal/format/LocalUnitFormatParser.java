@@ -46,10 +46,33 @@ import tech.units.indriya.function.MultiplyConverter;
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public final class LocalUnitFormatParser {
 
+  private SymbolMap symbols;
+
+  /** Generated Token Manager. */
+  public UnitTokenManager tokenSource;
+
+  private DefaultCharStream inputStream;
+
+  /** Current token. */
+  public Token token;
+
+  /** Next token. */
+  public Token nextToken;
+
+  private int nextTokenIndex;
+
+  private Token scanpos, lastpos;
+
+  private int laInt;
+
+  private int genInt;
+
+  final private int[] laA = new int[19];
+
+  static private int[] laB;
+  
   private static class Exponent {
-
     public final int pow;
-
     public final int root;
 
     public Exponent(int pow, int root) {
@@ -58,8 +81,7 @@ public final class LocalUnitFormatParser {
     }
   }
 
-  private SymbolMap symbols;
-
+  
   public LocalUnitFormatParser(SymbolMap symbols, java.io.Reader in) {
     this(in);
     this.symbols = symbols;
@@ -541,29 +563,6 @@ public final class LocalUnitFormatParser {
   private boolean jj_3R_5() {
     return scanToken(INTEGER);
   }
-
-  /** Generated Token Manager. */
-  public UnitTokenManager tokenSource;
-
-  DefaultCharStream inputStream;
-
-  /** Current token. */
-  public Token token;
-
-  /** Next token. */
-  public Token nextToken;
-
-  private int nextTokenIndex;
-
-  private Token scanpos, lastpos;
-
-  private int laInt;
-
-  private int genInt;
-
-  final private int[] laA = new int[19];
-
-  static private int[] laB;
 
   static {
     init();
