@@ -85,8 +85,8 @@ import tech.units.indriya.unit.Units;
  */
 public abstract class SimpleUnitFormat extends AbstractUnitFormat {
   /**
-    * 
-    */
+   * 
+   */
   // private static final long serialVersionUID = 4149424034841739785L;
 	
   /**
@@ -882,9 +882,8 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
    */
   private static final Map<String, Unit<?>> SYMBOL_TO_UNIT = new HashMap<>();
 
-
   private static String asciiPrefix(String prefix) {
-    return prefix == "µ" ? "micro" : prefix;
+    return "µ".equals(prefix) ? "micro" : prefix;
   }
 
   /** to check if a string only contains US-ASCII characters */
