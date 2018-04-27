@@ -30,7 +30,6 @@
 package tech.units.indriya.quantity;
 
 import static javax.measure.MetricPrefix.MILLI;
-import static javax.measure.MetricPrefix.YOTTA;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.math.BigInteger;
@@ -48,30 +47,14 @@ import tech.units.indriya.unit.Units;
 
 public class BigIntegerQuantityTest {
 
+  private final BigIntegerQuantity<ElectricResistance> ONE_OHM = new BigIntegerQuantity<ElectricResistance>(1L, Units.OHM);
+
   @Test
   public void divideTest() {
     BigIntegerQuantity<ElectricResistance> quantity1 = new BigIntegerQuantity<ElectricResistance>(Long.valueOf(3).intValue(), Units.OHM);
     BigIntegerQuantity<ElectricResistance> quantity2 = new BigIntegerQuantity<ElectricResistance>(Long.valueOf(2).intValue(), Units.OHM);
     Quantity<?> result = quantity1.divide(quantity2);
     assertEquals(BigInteger.ONE, result.getValue());
-  }
-
-  @SuppressWarnings({ "unchecked", "rawtypes" })
-  @Test
-  public void addTest() {
-    BigIntegerQuantity quantity1 = new BigIntegerQuantity(Long.valueOf(1).intValue(), Units.OHM);
-    BigIntegerQuantity quantity2 = new BigIntegerQuantity(Long.valueOf(2).intValue(), Units.OHM);
-    Quantity<ElectricResistance> result = quantity1.add(quantity2);
-    assertEquals(Short.valueOf("3").intValue(), result.getValue().intValue());
-  }
-
-  @Test
-  public void subtractTest() {
-    BigIntegerQuantity<ElectricResistance> quantity1 = new BigIntegerQuantity<ElectricResistance>(Long.valueOf(1).intValue(), Units.OHM);
-    BigIntegerQuantity<ElectricResistance> quantity2 = new BigIntegerQuantity<ElectricResistance>(Long.valueOf(2).intValue(), Units.OHM);
-    Quantity<ElectricResistance> result = quantity2.subtract(quantity1);
-    assertEquals(Short.valueOf("1").intValue(), result.getValue().intValue());
-    assertEquals(Units.OHM, result.getUnit());
   }
 
   @Test
@@ -116,88 +99,37 @@ public class BigIntegerQuantityTest {
   }
 
   @Test
-  @DisplayName("1 Ω + 1 mΩ should be 1001 mΩ")
-  public void milliOhm1() {
-    final BigIntegerQuantity<ElectricResistance> ONE_OHM = 
-    		new BigIntegerQuantity<ElectricResistance>(1L, Units.OHM);
-    final BigIntegerQuantity<ElectricResistance> ONE_MILLIOHM = 
-    		new BigIntegerQuantity<ElectricResistance>(1L, MILLI(Units.OHM));
-    final BigIntegerQuantity<ElectricResistance> expected = 
-    		new BigIntegerQuantity<ElectricResistance>(1001L, MILLI(Units.OHM));
-    
-    assertEquals(expected, ONE_OHM.add(ONE_MILLIOHM));
-    assertEquals(expected, ONE_MILLIOHM.add(ONE_OHM));
+  public void additionMustProduceCorrectResultIfSameUnits() {
+    BigIntegerQuantity<ElectricResistance> twoOhm = new BigIntegerQuantity<ElectricResistance>(Long.valueOf(2).longValue(), Units.OHM);
+    BigIntegerQuantity<ElectricResistance> expected = new BigIntegerQuantity<ElectricResistance>(Long.valueOf(3).longValue(), Units.OHM);
+    Quantity<ElectricResistance> actual = ONE_OHM.add(twoOhm);
+    assertEquals(expected, actual);
   }
-  
+
   @Test
-  @DisplayName("1 Ω + 1001 mΩ should be 2001 mΩ")
-  public void milliOhm2() {
-    final BigIntegerQuantity<ElectricResistance> ONE_OHM = 
-    		new BigIntegerQuantity<ElectricResistance>(1L, Units.OHM);
-    final BigIntegerQuantity<ElectricResistance> operand = 
-    		new BigIntegerQuantity<ElectricResistance>(1001L, MILLI(Units.OHM));
-    final BigIntegerQuantity<ElectricResistance> expected = 
-    		new BigIntegerQuantity<ElectricResistance>(2001L, MILLI(Units.OHM));
-    
-    assertEquals(expected, ONE_OHM.add(operand));
-    assertEquals(expected, operand.add(ONE_OHM));
+  public void additionMustConvertToLowestPrefix() {
+    for (MetricPrefix prefix : MetricPrefix.values()) {
+      final String msg = String.format("testing 1 Ω + 1 %sΩ", prefix.getSymbol());
+      final BigIntegerQuantity<ElectricResistance> operand = new BigIntegerQuantity<ElectricResistance>(1L, Units.OHM.prefix(prefix));
+      final BigIntegerQuantity<ElectricResistance> expected;
+      if (prefix.getExponent() > 0) {
+        expected = new BigIntegerQuantity<ElectricResistance>(BigInteger.TEN.pow(prefix.getExponent()).add(BigInteger.ONE), Units.OHM);
+      } else {
+        expected = new BigIntegerQuantity<ElectricResistance>(BigInteger.TEN.pow(-prefix.getExponent()).add(BigInteger.ONE),
+            Units.OHM.prefix(prefix));
+      }
+      assertEquals(expected, ONE_OHM.add(operand), msg);
+      assertEquals(expected, operand.add(ONE_OHM), msg);
+    }
   }
-  
+
   @Test
   @DisplayName("1 Ω - 1001 mΩ should be -1 mΩ")
-  public void milliOhm3() {
-    final BigIntegerQuantity<ElectricResistance> ONE_OHM = 
-    		new BigIntegerQuantity<ElectricResistance>(1L, Units.OHM);
-    final BigIntegerQuantity<ElectricResistance> operand = 
-    		new BigIntegerQuantity<ElectricResistance>(1001L, MILLI(Units.OHM));
-    final BigIntegerQuantity<ElectricResistance> expected = 
-    		new BigIntegerQuantity<ElectricResistance>(-1L, MILLI(Units.OHM));
-    
+  public void subtractionMustProduceCorrectResult() {
+    final BigIntegerQuantity<ElectricResistance> operand = new BigIntegerQuantity<ElectricResistance>(1001L, MILLI(Units.OHM));
+    final BigIntegerQuantity<ElectricResistance> expected = new BigIntegerQuantity<ElectricResistance>(-1L, MILLI(Units.OHM));
+
     assertEquals(expected, ONE_OHM.subtract(operand));
     assertEquals(expected, operand.subtract(ONE_OHM).multiply(-1));
   }
-
-  @Test
-  public void yottaOhmTest() {
-    final BigIntegerQuantity<ElectricResistance> ONE_OHM = 
-    		new BigIntegerQuantity<ElectricResistance>(1L, Units.OHM);
-    final BigIntegerQuantity<ElectricResistance> ONE_YOTTAOHM = 
-    		new BigIntegerQuantity<ElectricResistance>(1L, YOTTA(Units.OHM));
-    final BigIntegerQuantity<ElectricResistance> expected = 
-    		new BigIntegerQuantity<ElectricResistance>(BigInteger.TEN.pow(24).add(BigInteger.ONE), Units.OHM);
-    
-    assertEquals(expected, ONE_OHM.add(ONE_YOTTAOHM));
-    assertEquals(expected, ONE_YOTTAOHM.add(ONE_OHM));
-  }
-  
-  
-  @Test
-  public void bigIntQuantityAdditionUsingOhm() {
-
-	  final BigIntegerQuantity<ElectricResistance> ONE_OHM = 
-			  new BigIntegerQuantity<ElectricResistance>(1L, Units.OHM);
-
-	  for(MetricPrefix prefix : MetricPrefix.values()) {
-
-		  final String msg = String.format("testing 1 Ω + 1 %sΩ", prefix.getSymbol());
-
-		  final BigIntegerQuantity<ElectricResistance> operand = 
-				  new BigIntegerQuantity<ElectricResistance>(1L, Units.OHM.prefix(prefix));
-
-		  final BigIntegerQuantity<ElectricResistance> expected;
-		  if(prefix.getExponent() > 0) {
-			  expected = new BigIntegerQuantity<ElectricResistance>(
-					  BigInteger.TEN.pow(prefix.getExponent()).add(BigInteger.ONE), Units.OHM);
-		  } else {
-			  expected = new BigIntegerQuantity<ElectricResistance>(
-					  BigInteger.TEN.pow(-prefix.getExponent()).add(BigInteger.ONE), Units.OHM.prefix(prefix));
-		  }
-
-		  assertEquals(expected, ONE_OHM.add(operand), msg);
-		  assertEquals(expected, operand.add(ONE_OHM), msg);
-	  }
-
-  }
-  
-  
 }
