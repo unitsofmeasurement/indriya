@@ -36,8 +36,8 @@ import java.util.Objects;
 import javax.measure.UnitConverter;
 
 import tech.units.indriya.AbstractConverter;
-import tech.uom.lib.common.function.DoubleFactorSupplier;
-import tech.uom.lib.common.function.ValueSupplier;
+import tec.uom.lib.common.function.DoubleFactorSupplier;
+import tec.uom.lib.common.function.ValueSupplier;
 
 /**
  * <p>

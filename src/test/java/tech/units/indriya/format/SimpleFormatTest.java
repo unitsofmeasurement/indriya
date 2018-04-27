@@ -30,7 +30,7 @@
 package tech.units.indriya.format;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static javax.measure.MetricPrefix.*;
+import static tech.units.indriya.unit.MetricPrefix.*;
 import static tech.units.indriya.unit.Units.GRAM;
 import static tech.units.indriya.unit.Units.HERTZ;
 import static tech.units.indriya.unit.Units.KILOGRAM;

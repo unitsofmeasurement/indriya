@@ -35,7 +35,7 @@ import java.text.ParsePosition;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;
-import javax.measure.format.MeasurementParseException;
+import javax.measure.format.ParserException;
 
 import tech.units.indriya.AbstractQuantity;
 import tech.units.indriya.AbstractUnit;
@@ -71,7 +71,7 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public ComparableQuantity<?> parse(CharSequence csq, ParsePosition cursor) throws MeasurementParseException {
+	public ComparableQuantity<?> parse(CharSequence csq, ParsePosition cursor) throws ParserException {
 		int startDecimal = cursor.getIndex();
 		while ((startDecimal < csq.length()) && Character.isWhitespace(csq.charAt(startDecimal))) {
 			startDecimal++;
@@ -88,7 +88,7 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	AbstractQuantity<?> parse(CharSequence csq, int index) throws MeasurementParseException {
+	AbstractQuantity<?> parse(CharSequence csq, int index) throws ParserException {
 		int startDecimal = index; // cursor.getIndex();
 		while ((startDecimal < csq.length()) && Character.isWhitespace(csq.charAt(startDecimal))) {
 			startDecimal++;
@@ -103,7 +103,7 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
 	}
 
 	@Override
-	public ComparableQuantity<?> parse(CharSequence csq) throws MeasurementParseException {
+	public ComparableQuantity<?> parse(CharSequence csq) throws ParserException {
 		return parse(csq, new ParsePosition(0));
 	}
 

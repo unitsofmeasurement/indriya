@@ -38,7 +38,7 @@ import java.text.ParsePosition;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;
-import javax.measure.format.MeasurementParseException;
+import javax.measure.format.ParserException;
 import javax.measure.format.UnitFormat;
 
 import tech.units.indriya.AbstractUnit;
@@ -109,7 +109,7 @@ public class NumberSpaceQuantityFormat extends AbstractQuantityFormat {
 
 	@Override
 	public ComparableQuantity<?> parse(CharSequence csq, ParsePosition cursor)
-			throws IllegalArgumentException, MeasurementParseException {
+			throws IllegalArgumentException, ParserException {
 		String str = csq.toString();
 		Number number = numberFormat.parse(str, cursor);
 		if (number == null)
@@ -121,12 +121,12 @@ public class NumberSpaceQuantityFormat extends AbstractQuantityFormat {
 
 	@Override
 	ComparableQuantity<?> parse(CharSequence csq, int index)
-			throws IllegalArgumentException, MeasurementParseException {
+			throws IllegalArgumentException, ParserException {
 		return parse(csq, new ParsePosition(index));
 	}
 
 	@Override
-	public ComparableQuantity<?> parse(CharSequence csq) throws IllegalArgumentException, MeasurementParseException {
+	public ComparableQuantity<?> parse(CharSequence csq) throws IllegalArgumentException, ParserException {
 		return parse(csq, 0);
 	}
 

@@ -37,7 +37,7 @@ import java.time.Instant;
 import javax.measure.Quantity;
 
 import tech.units.indriya.ComparableQuantity;
-import tech.uom.lib.common.function.QuantitySupplier;
+import tec.uom.lib.common.function.QuantitySupplier;
 
 /**
  * A Measurement contains a {@link Quantity} and a timestamp.

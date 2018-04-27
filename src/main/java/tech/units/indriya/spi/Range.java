@@ -31,8 +31,8 @@ package tech.units.indriya.spi;
 
 import java.util.Objects;
 
-import tech.uom.lib.common.function.MaximumSupplier;
-import tech.uom.lib.common.function.MinimumSupplier;
+import tec.uom.lib.common.function.MaximumSupplier;
+import tec.uom.lib.common.function.MinimumSupplier;
 
 /**
  * A Range is a pair of <code>T</code> items that represent a range of values.

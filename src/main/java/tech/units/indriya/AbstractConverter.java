@@ -40,14 +40,13 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import javax.measure.Prefix;
 import javax.measure.UnitConverter;
 
 import tech.units.indriya.function.Calculus;
 import tech.units.indriya.function.PowersOfIntConverter;
 import tech.units.indriya.function.UnitComparator;
 import tech.units.indriya.internal.simplify.Simplifier;
-import tech.uom.lib.common.function.Converter;
+import tech.units.indriya.unit.Prefix;
 
 /**
  * <p>
@@ -61,7 +60,7 @@ import tech.uom.lib.common.function.Converter;
  * @since 1.0
  */
 public abstract class AbstractConverter
-		implements UnitConverter, Converter<Number, Number>, Serializable, Comparable<UnitConverter> {
+		implements UnitConverter, Serializable, Comparable<UnitConverter> {
 
 	/**
 	*

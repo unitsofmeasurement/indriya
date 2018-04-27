@@ -29,13 +29,13 @@
  */
 package tech.units.indriya.internal.format;
 
-import javax.measure.Prefix;
 import javax.measure.Unit;
 
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.format.SymbolMap;
 import tech.units.indriya.function.LogConverter;
 import tech.units.indriya.function.MultiplyConverter;
+import tech.units.indriya.unit.Prefix;
 
 /** */
 public final class UnitFormatParser implements UnitTokenConstants {

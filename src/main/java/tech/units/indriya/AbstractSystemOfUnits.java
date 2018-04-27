@@ -36,7 +36,7 @@ import javax.measure.spi.SystemOfUnits;
 
 import tech.units.indriya.format.SimpleUnitFormat;
 import tech.units.indriya.format.UnitStyle;
-import tech.uom.lib.common.function.Nameable;
+import tec.uom.lib.common.function.Nameable;
 
 import static tech.units.indriya.format.UnitStyle.*;
 

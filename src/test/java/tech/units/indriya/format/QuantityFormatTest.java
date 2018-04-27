@@ -30,7 +30,7 @@
 package tech.units.indriya.format;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static javax.measure.MetricPrefix.*;
+import static tech.units.indriya.unit.MetricPrefix.*;
 import static tech.units.indriya.unit.Units.*;
 
 import java.math.BigDecimal;
@@ -38,7 +38,7 @@ import java.math.BigDecimal;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.format.ParserException;
-import javax.measure.format.QuantityFormat;
+import tech.units.indriya.format.QuantityFormat;
 import javax.measure.quantity.Frequency;
 import javax.measure.quantity.Length;
 

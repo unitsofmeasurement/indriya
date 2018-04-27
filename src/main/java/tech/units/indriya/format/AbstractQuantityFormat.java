@@ -35,11 +35,11 @@ import java.text.Format;
 import java.text.ParsePosition;
 
 import javax.measure.Quantity;
-import javax.measure.format.MeasurementParseException;
-import javax.measure.format.QuantityFormat;
+import javax.measure.format.ParserException;
+import tech.units.indriya.format.QuantityFormat;
 import tech.units.indriya.AbstractQuantity;
 import tech.units.indriya.ComparableQuantity;
-import tech.uom.lib.common.function.Parser;
+import tec.uom.lib.common.function.Parser;
 
 /**
  * <p>
@@ -89,7 +89,7 @@ public abstract class AbstractQuantityFormat extends Format implements QuantityF
    * @throws IllegalArgumentException
    *           if any problem occurs while parsing the specified character sequence (e.g. illegal syntax).
    */
-  public abstract ComparableQuantity<?> parse(CharSequence csq, ParsePosition cursor) throws IllegalArgumentException, MeasurementParseException;
+  public abstract ComparableQuantity<?> parse(CharSequence csq, ParsePosition cursor) throws IllegalArgumentException, ParserException;
 
   /**
    * Parses a portion of the specified <code>CharSequence</code> from the specified position to produce an object. If parsing succeeds, then the index
@@ -104,7 +104,7 @@ public abstract class AbstractQuantityFormat extends Format implements QuantityF
    *           if any problem occurs while parsing the specified character sequence (e.g. illegal syntax).
    */
   @Override
-  public abstract ComparableQuantity<?> parse(CharSequence csq) throws MeasurementParseException;
+  public abstract ComparableQuantity<?> parse(CharSequence csq) throws ParserException;
 
   /**
    * Parses a portion of the specified <code>CharSequence</code> from the specified position to produce an object. If parsing succeeds, then the index
@@ -118,7 +118,7 @@ public abstract class AbstractQuantityFormat extends Format implements QuantityF
    * @throws IllegalArgumentException
    *           if any problem occurs while parsing the specified character sequence (e.g. illegal syntax).
    */
-  abstract ComparableQuantity<?> parse(CharSequence csq, int index) throws IllegalArgumentException, MeasurementParseException;
+  abstract ComparableQuantity<?> parse(CharSequence csq, int index) throws IllegalArgumentException, ParserException;
 
   @Override
   public final StringBuffer format(Object obj, final StringBuffer toAppendTo, FieldPosition pos) {
@@ -137,7 +137,7 @@ public abstract class AbstractQuantityFormat extends Format implements QuantityF
   public final Quantity<?> parseObject(String source, ParsePosition pos) {
     try {
       return parse(source, pos);
-    } catch (IllegalArgumentException | MeasurementParseException e) {
+    } catch (IllegalArgumentException | ParserException e) {
       return null;
     }
   }

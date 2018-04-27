@@ -38,7 +38,7 @@ import javax.measure.Unit;
 import javax.measure.UnitConverter;
 
 import tech.units.indriya.AbstractUnit;
-import tech.uom.lib.common.function.UnitConverterSupplier;
+import tec.uom.lib.common.function.UnitConverterSupplier;
 
 /**
  * <p>

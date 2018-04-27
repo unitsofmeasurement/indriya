@@ -36,7 +36,7 @@ import java.util.Objects;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;
-import javax.measure.format.MeasurementParseException;
+import javax.measure.format.ParserException;
 
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.format.AbstractQuantityFormat;
@@ -75,7 +75,7 @@ public final class Quantities {
   public static ComparableQuantity<?> getQuantity(CharSequence csq) {
     try {
       return SimpleQuantityFormat.getInstance().parse(csq, new ParsePosition(0));
-    } catch (MeasurementParseException e) {
+    } catch (ParserException e) {
       throw new IllegalArgumentException(e.getParsedString());
     }
   }

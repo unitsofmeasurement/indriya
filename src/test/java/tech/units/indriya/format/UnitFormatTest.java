@@ -31,14 +31,14 @@ package tech.units.indriya.format;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static tech.units.indriya.AbstractUnit.ONE;
-import static javax.measure.MetricPrefix.*;
+import static tech.units.indriya.unit.MetricPrefix.*;
 import static tech.units.indriya.unit.Units.*;
 
 import java.io.IOException;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;
-import javax.measure.format.MeasurementParseException;
+import javax.measure.format.ParserException;
 import javax.measure.format.ParserException;
 import javax.measure.format.UnitFormat;
 import javax.measure.quantity.Frequency;
@@ -187,7 +187,7 @@ public class UnitFormatTest {
   @Test
   public void testParseIrregularStringSimple() {
     final UnitFormat format = SimpleUnitFormat.getInstance();
-    assertThrows(MeasurementParseException.class, () -> {
+    assertThrows(ParserException.class, () -> {
     	Unit<?> u = format.parse("bl//^--1a");
     });
   }

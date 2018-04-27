@@ -31,14 +31,6 @@ package tech.units.indriya.spi;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.math.BigDecimal;
-import java.util.Collection;
-
-import javax.measure.BinaryPrefix;
-import javax.measure.MetricPrefix;
-import javax.measure.Prefix;
 import javax.measure.spi.ServiceProvider;
 import javax.measure.spi.SystemOfUnits;
 import javax.measure.spi.SystemOfUnitsService;
@@ -71,29 +63,5 @@ public class SystemOfUnitsServiceTest {
      * o : list) { System.out.println(o.toString()); }
      */
     assertEquals(43, system.getUnits().size());
-  }
-
-  @Test
-  public void testGetMetricPrefixes() {
-    assertNotNull(service);
-    Collection<Prefix> prefixes = service.getPrefixes(MetricPrefix.class);
-    assertNotNull(prefixes);
-    assertEquals(20, prefixes.size());
-  }
-
-  @Test
-  public void testGetBinaryPrefixes() {
-    assertNotNull(service);
-    Collection<Prefix> prefixes = service.getPrefixes(BinaryPrefix.class);
-    assertNotNull(prefixes);
-    assertEquals(8, prefixes.size());
-  }
-
-  @Test
-  public void testWrongPrefix() {
-	    assertThrows(ClassCastException.class, () -> {
-	    	@SuppressWarnings("unused")
-			Collection<Prefix> prefixes = service.getPrefixes((Class) BigDecimal.class);
-        });
   }
 }

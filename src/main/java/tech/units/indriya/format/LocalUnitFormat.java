@@ -29,7 +29,6 @@
  */
 package tech.units.indriya.format;
 
-import javax.measure.Prefix;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.UnitConverter;
@@ -45,6 +44,7 @@ import tech.units.indriya.internal.format.TokenMgrError;
 import tech.units.indriya.unit.AlternateUnit;
 import tech.units.indriya.unit.AnnotatedUnit;
 import tech.units.indriya.unit.BaseUnit;
+import tech.units.indriya.unit.Prefix;
 import tech.units.indriya.unit.TransformedUnit;
 
 import static tech.units.indriya.unit.Units.CUBIC_METRE;

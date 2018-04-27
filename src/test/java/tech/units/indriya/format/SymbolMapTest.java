@@ -34,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
-import javax.measure.MetricPrefix;
+import tech.units.indriya.unit.MetricPrefix;
 import javax.measure.Unit;
 
 import org.junit.jupiter.api.Assertions;

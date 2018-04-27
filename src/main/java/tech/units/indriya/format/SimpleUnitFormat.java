@@ -29,11 +29,11 @@
  */
 package tech.units.indriya.format;
 
-import static javax.measure.MetricPrefix.CENTI;
-import static javax.measure.MetricPrefix.DECI;
-import static javax.measure.MetricPrefix.KILO;
-import static javax.measure.MetricPrefix.MICRO;
-import static javax.measure.MetricPrefix.MILLI;
+import static tech.units.indriya.unit.MetricPrefix.CENTI;
+import static tech.units.indriya.unit.MetricPrefix.DECI;
+import static tech.units.indriya.unit.MetricPrefix.KILO;
+import static tech.units.indriya.unit.MetricPrefix.MICRO;
+import static tech.units.indriya.unit.MetricPrefix.MILLI;
 
 import java.io.IOException;
 import java.text.FieldPosition;
@@ -43,12 +43,11 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.measure.MetricPrefix;
-import javax.measure.Prefix;
+import tech.units.indriya.unit.MetricPrefix;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.UnitConverter;
-import javax.measure.format.MeasurementParseException;
+import javax.measure.format.ParserException;
 import javax.measure.format.UnitFormat;
 
 import tech.units.indriya.AbstractUnit;
@@ -59,6 +58,7 @@ import tech.units.indriya.function.RationalConverter;
 import tech.units.indriya.unit.AlternateUnit;
 import tech.units.indriya.unit.AnnotatedUnit;
 import tech.units.indriya.unit.BaseUnit;
+import tech.units.indriya.unit.Prefix;
 import tech.units.indriya.unit.ProductUnit;
 import tech.units.indriya.unit.TransformedUnit;
 import tech.units.indriya.unit.Units;
@@ -184,7 +184,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
    *           if the character sequence contains an illegal syntax.
    */
   @SuppressWarnings("rawtypes")
-  public abstract Unit<? extends Quantity> parseProductUnit(CharSequence csq, ParsePosition pos) throws MeasurementParseException;
+  public abstract Unit<? extends Quantity> parseProductUnit(CharSequence csq, ParsePosition pos) throws ParserException;
 
   /**
    * Parses a sequence of character to produce a single unit.
@@ -198,7 +198,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
    *           if the character sequence does not contain a valid unit identifier.
    */
   @SuppressWarnings("rawtypes")
-  public abstract Unit<? extends Quantity> parseSingleUnit(CharSequence csq, ParsePosition pos) throws MeasurementParseException;
+  public abstract Unit<? extends Quantity> parseSingleUnit(CharSequence csq, ParsePosition pos) throws ParserException;
 
   /**
    * Attaches a system-wide label to the specified unit. For example: <code> SimpleUnitFormat.getInstance().label(DAY.multiply(365), "year");
@@ -289,7 +289,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
    *          the cursor position.
    * @return the corresponding unit or <code>null</code> if the string cannot be parsed.
    */
-  public final Unit<?> parseObject(String source, ParsePosition pos) throws MeasurementParseException {
+  public final Unit<?> parseObject(String source, ParsePosition pos) throws ParserException {
     return parseProductUnit(source, pos);
   }
 
@@ -459,7 +459,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
     // //////////////////////////
     // Parsing.
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    public Unit<? extends Quantity> parseSingleUnit(CharSequence csq, ParsePosition pos) throws MeasurementParseException {
+    public Unit<? extends Quantity> parseSingleUnit(CharSequence csq, ParsePosition pos) throws ParserException {
       int startIndex = pos.getIndex();
       String name = readIdentifier(csq, pos);
       Unit unit = unitFor(name);
@@ -469,7 +469,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
-    public Unit<? extends Quantity> parseProductUnit(CharSequence csq, ParsePosition pos) throws MeasurementParseException {
+    public Unit<? extends Quantity> parseProductUnit(CharSequence csq, ParsePosition pos) throws ParserException {
       Unit result = AbstractUnit.ONE;
       int token = nextToken(csq, pos);
       switch (token) {
@@ -544,14 +544,14 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
                 result = result.shift(d);
               }
             } else {
-              throw new MeasurementParseException("not a number", pos.getIndex());
+              throw new ParserException("not a number", pos.getIndex());
             }
             break;
           case EOF:
           case CLOSE_PAREN:
             return result;
           default:
-            throw new MeasurementParseException("unexpected token " + token, pos.getIndex());
+            throw new ParserException("unexpected token " + token, pos.getIndex());
         }
         token = nextToken(csq, pos);
       }
@@ -597,9 +597,9 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
       return EOF;
     }
 
-    private void check(boolean expr, String message, CharSequence csq, int index) throws MeasurementParseException {
+    private void check(boolean expr, String message, CharSequence csq, int index) throws ParserException {
       if (!expr) {
-        throw new MeasurementParseException(message + " (in " + csq + " at index " + index + ")", index);
+        throw new ParserException(message + " (in " + csq + " at index " + index + ")", index);
       }
     }
 
@@ -790,7 +790,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
     // private static final long serialVersionUID = 1L;
 
     @Override
-    public Unit<?> parse(CharSequence csq) throws MeasurementParseException {
+    public Unit<?> parse(CharSequence csq) throws ParserException {
       return parse(csq, 0);
     }
 
@@ -807,6 +807,12 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
     protected Unit<?> parse(CharSequence csq, ParsePosition cursor) throws IllegalArgumentException {
       return parseObject(csq.toString(), cursor);
     }
+
+	@Override
+	public boolean isLocaleSensitive() {
+		// TODO Auto-generated method stub
+		return false;
+	}
   }
 
   /**
@@ -902,13 +908,13 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
   // Initializations
   static {
     for (int i = 0; i < SI_UNITS.length; i++) {
-      Unit<?> si = SI_UNITS[i];
+    	AbstractUnit<?> si = (AbstractUnit<?>) SI_UNITS[i];
       String symbol = (si instanceof BaseUnit) ? ((BaseUnit<?>) si).getSymbol() : ((AlternateUnit<?>) si).getSymbol();
       DEFAULT.label(si, symbol);
       if (isAllASCII(symbol))
         ASCII.label(si, symbol);
       for (int j = 0; j < PREFIX_SYMBOLS.length; j++) {
-        Unit<?> u = si.prefix(PREFIXES[j]);
+        AbstractUnit<?> u = si.prefix(PREFIXES[j]);
         DEFAULT.label(u, PREFIX_SYMBOLS[j] + symbol);
         if ( "µ".equals(PREFIX_SYMBOLS[j]) ) {
           ASCII.label(u, "micro"); // + symbol);

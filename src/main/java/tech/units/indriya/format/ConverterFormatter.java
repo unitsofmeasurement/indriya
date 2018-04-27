@@ -29,11 +29,11 @@
  */
 package tech.units.indriya.format;
 
-import javax.measure.Prefix;
 import javax.measure.UnitConverter;
 
 import tech.units.indriya.AbstractConverter;
 import tech.units.indriya.function.*;
+import tech.units.indriya.unit.Prefix;
 
 import java.math.BigInteger;
 import java.util.Formattable;

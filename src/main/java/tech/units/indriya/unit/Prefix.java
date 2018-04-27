@@ -1,6 +1,6 @@
 /*
- * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2018, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+ * Units of Measurement API
+ * Copyright (c) 2014-2018, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
  *
  * All rights reserved.
  *
@@ -13,7 +13,7 @@
  * 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions
  *    and the following disclaimer in the documentation and/or other materials provided with the distribution.
  *
- * 3. Neither the name of JSR-385, Indriya nor the names of their contributors may be used to endorse or promote products
+ * 3. Neither the name of JSR-385 nor the names of its contributors may be used to endorse or promote products
  *    derived from this software without specific prior written permission.
  *
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
@@ -27,42 +27,34 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package tech.units.indriya.internal.format;
-
-import static tech.units.indriya.format.FormatBehavior.LOCALE_SENSITIVE;
-
-import java.util.HashMap;
-import java.util.Map;
-import javax.measure.spi.UnitFormatService;
-
-import tech.units.indriya.format.QuantityFormat;
-import tech.units.indriya.format.NumberSpaceQuantityFormat;
-import tech.units.indriya.format.SimpleQuantityFormat;
-import tec.uom.lib.common.function.IntPrioritySupplier;
+package tech.units.indriya.unit;
 
 /**
- * Default format service.
+ * <p>
+ * A unit prefix is a specifier or mnemonic that is prepended to units of measurement to indicate multiples or fractions of the units.
  *
- * @author Werner Keil
- * @version 0.6, April 6, 2018
+ * @see <a href="http://en.wikipedia.org/wiki/Unit_prefix">Wikipedia: Unit Prefix</a>
+ * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
+ * @version 0.8, 2018-04-20
  * @since 2.0
  */
-public class DefaultFormatService extends DefaultUnitFormatService implements UnitFormatService, IntPrioritySupplier {
-  static final int PRIO = 1000;
+public interface Prefix {
 
-  private static final String DEFAULT_FORMAT = "Simple";
+  /**
+   * Returns the symbol of this prefix.
+   *
+   * @return this prefix symbol, not {@code null}.
+   */
+  public String getSymbol();
 
-  private final Map<String, QuantityFormat> quantityFormats = new HashMap<>();
+  /**
+   * Base part of the associated factor in base^exponent representation.
+   */
+  public int getBase();
 
-  public DefaultFormatService() {
-    super();
-    quantityFormats.put(DEFAULT_FORMAT, SimpleQuantityFormat.getInstance());
-    quantityFormats.put("NumberSpace", NumberSpaceQuantityFormat.getInstance());
-    quantityFormats.put("Local", NumberSpaceQuantityFormat.getInstance(LOCALE_SENSITIVE));
-  }
+  /**
+   * Exponent part of the associated factor in base^exponent representation.
+   */
+  public int getExponent();
 
-  @Override
-  public int getPriority() {
-    return PRIO;
-  }
 }

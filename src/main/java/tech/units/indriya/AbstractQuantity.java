@@ -36,7 +36,7 @@ import java.util.Objects;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.UnitConverter;
-import javax.measure.format.QuantityFormat;
+import tech.units.indriya.format.QuantityFormat;
 import javax.measure.quantity.Dimensionless;
 
 import tech.units.indriya.format.SimpleQuantityFormat;
@@ -44,8 +44,8 @@ import tech.units.indriya.format.SimpleUnitFormat;
 import tech.units.indriya.function.Calculus;
 import tech.units.indriya.function.NaturalQuantityComparator;
 import tech.units.indriya.quantity.Quantities;
-import tech.uom.lib.common.function.UnitSupplier;
-import tech.uom.lib.common.function.ValueSupplier;
+import tec.uom.lib.common.function.UnitSupplier;
+import tec.uom.lib.common.function.ValueSupplier;
 
 /**
  * <p>

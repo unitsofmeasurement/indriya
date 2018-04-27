@@ -37,7 +37,6 @@ import java.util.Map;
 
 import javax.measure.Dimension;
 import javax.measure.IncommensurableException;
-import javax.measure.Prefix;
 import javax.measure.Quantity;
 import javax.measure.UnconvertibleException;
 import javax.measure.Unit;
@@ -55,6 +54,7 @@ import tech.units.indriya.quantity.QuantityDimension;
 import tech.units.indriya.spi.DimensionalModel;
 import tech.units.indriya.unit.AlternateUnit;
 import tech.units.indriya.unit.AnnotatedUnit;
+import tech.units.indriya.unit.Prefix;
 import tech.units.indriya.unit.ProductUnit;
 import tech.units.indriya.unit.TransformedUnit;
 import tech.units.indriya.unit.Units;
@@ -562,9 +562,8 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
 			return ONE.divide(this.pow(-n));
 	}
 	
-	@Override
-	public Unit<Q> prefix(Prefix prefix) {
-		return this.transform(PowersOfIntConverter.of(prefix));
+	public AbstractUnit<Q> prefix(Prefix prefix) {
+		return (AbstractUnit<Q>) this.transform(PowersOfIntConverter.of(prefix));
 	}
 
 	/**

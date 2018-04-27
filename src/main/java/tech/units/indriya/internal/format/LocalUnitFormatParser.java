@@ -32,13 +32,13 @@ package tech.units.indriya.internal.format;
 
 import static tech.units.indriya.internal.format.UnitTokenConstants.*;
 
-import javax.measure.Prefix;
 import javax.measure.Unit;
 
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.format.SymbolMap;
 import tech.units.indriya.function.LogConverter;
 import tech.units.indriya.function.MultiplyConverter;
+import tech.units.indriya.unit.Prefix;
 
 /**
  * @deprecated use {@link UnitFormatParser} FIXME there are some details e.g. Exception handling that are different, try to resolve or keep LUFP

@@ -29,8 +29,8 @@
  */
 package tech.units.indriya.unit;
 
-import static javax.measure.BinaryPrefix.*;
-import static javax.measure.MetricPrefix.*;
+import static tech.units.indriya.unit.BinaryPrefix.*;
+import static tech.units.indriya.unit.MetricPrefix.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;

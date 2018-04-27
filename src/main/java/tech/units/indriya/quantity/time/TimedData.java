@@ -33,7 +33,7 @@ import java.time.Instant;
 import java.util.Objects;
 import java.util.function.Supplier;
 
-import tech.uom.lib.common.function.Nameable;
+import tec.uom.lib.common.function.Nameable;
 
 /**
  * TimedData is a container for a data value that keeps track of its age. This class keeps track of the birth time of a bit of data, i.e. time the

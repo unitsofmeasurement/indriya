@@ -30,7 +30,6 @@
 package tech.units.indriya.spi;
 
 import javax.measure.Quantity;
-import javax.measure.spi.FormatService;
 import javax.measure.spi.QuantityFactory;
 import javax.measure.spi.ServiceProvider;
 import javax.measure.spi.SystemOfUnitsService;
@@ -158,11 +157,6 @@ public class DefaultServiceProvider extends ServiceProvider implements Comparabl
 	@Override
 	public UnitFormatService getUnitFormatService() {
 		return getService(UnitFormatService.class);
-	}
-	
-	@Override
-	public FormatService getFormatService() {
-		return getService(FormatService.class);
 	}
 
 	 /**

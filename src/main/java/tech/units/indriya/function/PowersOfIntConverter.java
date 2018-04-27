@@ -35,10 +35,10 @@ import java.math.BigInteger;
 import java.math.MathContext;
 import java.util.Objects;
 
-import javax.measure.Prefix;
 import javax.measure.UnitConverter;
 
 import tech.units.indriya.AbstractConverter;
+import tech.units.indriya.unit.Prefix;
 
 /**
  * UnitConverter for numbers in base^exponent representation.

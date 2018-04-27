@@ -34,7 +34,7 @@ import java.io.Serializable;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 
-import tech.uom.lib.common.function.QuantityConverter;
+import tec.uom.lib.common.function.QuantityConverter;
 
 /**
  * Quantity specialized for the Java SE platform. It extends {@link Quantity} with {@linkplain Comparable} and {@linkplain Serializable }

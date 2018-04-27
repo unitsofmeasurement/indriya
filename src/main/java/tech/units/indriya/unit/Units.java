@@ -34,7 +34,7 @@ import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.function.AddConverter;
 import tech.units.indriya.function.RationalConverter;
 import tech.units.indriya.quantity.QuantityDimension;
-import tech.uom.lib.common.function.Nameable;
+import tec.uom.lib.common.function.Nameable;
 
 import static tech.units.indriya.AbstractUnit.ONE;
 
@@ -136,7 +136,7 @@ public class Units extends AbstractSystemOfUnits implements Nameable {
    *
    * @implNote SI Base Unit
    */
-  public static final Unit<Mass> KILOGRAM = addUnit(new BaseUnit<Mass>("kg", QuantityDimension.MASS), Mass.class);
+  public static final AbstractUnit<Mass> KILOGRAM = addUnit(new BaseUnit<Mass>("kg", QuantityDimension.MASS), Mass.class);
 
   /**
    * The SI base unit for length quantities (standard name <code>m</code>). One metre was redefined in 1983 as the distance traveled by light in a
@@ -240,7 +240,7 @@ public class Units extends AbstractSystemOfUnits implements Nameable {
    * The SI unit for electric resistance (standard name <code>Ohm</code>). One Ohm is equal to the resistance of a conductor in which a current of one
    * ampere is produced by a potential of one volt across its terminals. It is named after the German physicist Georg Simon Ohm (1789-1854).
    */
-  public static final Unit<ElectricResistance> OHM = addUnit(new AlternateUnit<ElectricResistance>(VOLT.divide(AMPERE), "Ω"),
+  public static final AbstractUnit<ElectricResistance> OHM = addUnit(new AlternateUnit<ElectricResistance>(VOLT.divide(AMPERE), "Ω"),
       ElectricResistance.class);
 
   /**
@@ -277,7 +277,7 @@ public class Units extends AbstractSystemOfUnits implements Nameable {
    * atmosphere of pressure) is 0 Cel, while the boiling point is 100 Cel.
    */
   @SuppressWarnings({ "rawtypes", "unchecked" })
-  public static final Unit<Temperature> CELSIUS = addUnit(new TransformedUnit(KELVIN, new AddConverter(273.15)));
+  public static final AbstractUnit<Temperature> CELSIUS = addUnit(new TransformedUnit(KELVIN, new AddConverter(273.15)));
   // Not mapping to Temperature since temperature is mapped to Kelvin.
 
   /**

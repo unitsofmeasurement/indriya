@@ -41,7 +41,7 @@ import tech.units.indriya.format.EBNFUnitFormat;
 import tech.units.indriya.format.LocalUnitFormat;
 import tech.units.indriya.format.SimpleUnitFormat;
 import tech.units.indriya.format.SimpleUnitFormat.Flavor;
-import tech.uom.lib.common.function.IntPrioritySupplier;
+import tec.uom.lib.common.function.IntPrioritySupplier;
 
 /**
  * Default unit format service.

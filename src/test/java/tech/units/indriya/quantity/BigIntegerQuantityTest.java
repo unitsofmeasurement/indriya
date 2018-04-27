@@ -29,13 +29,13 @@
  */
 package tech.units.indriya.quantity;
 
-import static javax.measure.MetricPrefix.MILLI;
-import static javax.measure.MetricPrefix.YOTTA;
+import static tech.units.indriya.unit.MetricPrefix.MILLI;
+import static tech.units.indriya.unit.MetricPrefix.YOTTA;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.math.BigInteger;
 
-import javax.measure.MetricPrefix;
+import tech.units.indriya.unit.MetricPrefix;
 import javax.measure.Quantity;
 import javax.measure.quantity.ElectricResistance;
 import javax.measure.quantity.Length;

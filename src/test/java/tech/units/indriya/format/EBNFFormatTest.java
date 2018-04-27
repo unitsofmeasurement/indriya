@@ -30,7 +30,7 @@
 package tech.units.indriya.format;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static javax.measure.MetricPrefix.*;
+import static tech.units.indriya.unit.MetricPrefix.*;
 import static tech.units.indriya.unit.Units.*;
 
 import java.math.BigInteger;
@@ -38,7 +38,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.measure.Unit;
-import javax.measure.format.MeasurementParseException;
+import javax.measure.format.ParserException;
 import javax.measure.format.UnitFormat;
 import javax.measure.quantity.Length;
 
@@ -96,7 +96,7 @@ public class EBNFFormatTest {
         Unit<?> v = format.parse("1/" + u.toString());
         assertNotNull(v);
         logger.log(Level.FINER, v.toString());
-      } catch (MeasurementParseException pex) {
+      } catch (ParserException pex) {
         logger.log(Level.WARNING, String.format(" %s parsing %s", pex, u));
       }
     }
@@ -118,7 +118,7 @@ public class EBNFFormatTest {
 
   @Test
   public void testParseIrregularStringEBNF() {
-	    assertThrows(MeasurementParseException.class, () -> {
+	    assertThrows(ParserException.class, () -> {
 	    	   @SuppressWarnings("unused")
 			Unit<?> u = format.parse("bl//^--1a");
         });
