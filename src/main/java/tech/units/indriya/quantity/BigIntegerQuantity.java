@@ -60,8 +60,8 @@ import tech.units.indriya.function.Calculus;
 final class BigIntegerQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> implements Serializable {
 
   /**
-	 * 
-	 */
+   * 
+   */
   private static final long serialVersionUID = -593014349777834846L;
   private final BigInteger value;
 
@@ -74,18 +74,19 @@ final class BigIntegerQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q
     super(unit);
     this.value = BigInteger.valueOf(value);
   }
-  
+
   /**
    * Not-API (not yet)
    * <p>
    * Returns a BigIntegerQuantity with same Unit, but whose value is (-this.getValue()).
    * </p>
+   * 
    * @return
    */
   public BigIntegerQuantity negate() {
-	  return new BigIntegerQuantity(value.negate(), getUnit());
+    return new BigIntegerQuantity(value.negate(), getUnit());
   }
-  
+
   @Override
   public BigInteger getValue() {
     return value;
@@ -125,34 +126,34 @@ final class BigIntegerQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q
     // 1) this.getUnit()
     // 2) that.getUnit()
     // we pick the one, that yields higher precision
-    
-    final UnitConverter t1 = this.getUnit().getConverterTo(that.getUnit());
-    final UnitConverter t2 = that.getUnit().getConverterTo(this.getUnit());
-    
-    boolean switchUnits = Math.abs(t1.convert(1.0)) > Math.abs(t2.convert(1.0));    
-    
+
+    final UnitConverter thisUnitToThatUnitConverter = this.getUnit().getConverterTo(that.getUnit());
+
+    boolean thisUnitLargerThanThatUnit = Math.abs(thisUnitToThatUnitConverter.convert(1.0)) > 1.0;
+
     final Unit<Q> pickedUnit;
     final BigInteger sumValue;
-    
-    if(switchUnits) {
-    	pickedUnit = that.getUnit();
-    	BigInteger thisValueTransformed = Calculus.toBigInteger(t1.convert(getValue()));
-    	sumValue = Calculus.toBigInteger(that.getValue()).add(thisValueTransformed);
+
+    if (thisUnitLargerThanThatUnit) {
+      pickedUnit = that.getUnit();
+      BigInteger thisValueConverted = Calculus.toBigInteger(thisUnitToThatUnitConverter.convert(getValue()));
+      sumValue = Calculus.toBigInteger(that.getValue()).add(thisValueConverted);
     } else {
-    	pickedUnit = this.getUnit();
-    	BigInteger thatValueTransformed = Calculus.toBigInteger(t2.convert(that.getValue()));
-    	sumValue = value.add(thatValueTransformed);
+      pickedUnit = this.getUnit();
+      UnitConverter thatUnitToThisUnitConverter = that.getUnit().getConverterTo(this.getUnit());
+      BigInteger thatValueConverted = Calculus.toBigInteger(thatUnitToThisUnitConverter.convert(that.getValue()));
+      sumValue = value.add(thatValueConverted);
     }
-    
-	return Quantities.getQuantity(sumValue, pickedUnit);
+
+    return Quantities.getQuantity(sumValue, pickedUnit);
   }
 
   @Override
   public ComparableQuantity<Q> subtract(Quantity<Q> that) {
-	 if(that instanceof BigIntegerQuantity) {
-		 return add(((BigIntegerQuantity)that).negate());
-	 }
-	 return add(Quantities.getQuantity(Calculus.negate(that.getValue()), that.getUnit()));
+    if (that instanceof BigIntegerQuantity) {
+      return add(((BigIntegerQuantity) that).negate());
+    }
+    return add(Quantities.getQuantity(Calculus.negate(that.getValue()), that.getUnit()));
   }
 
   @Override
@@ -178,7 +179,7 @@ final class BigIntegerQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q
   @Override
   protected long longValue(Unit<Q> unit) {
     double result = doubleValue(unit);
-    if ((result < Long.MIN_VALUE) || (result > Long.MAX_VALUE)) {
+    if (result < Long.MIN_VALUE || result > Long.MAX_VALUE) {
       throw new ArithmeticException("Overflow (" + result + ")");
     }
     return (long) result;
