@@ -71,13 +71,13 @@ final class LongQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
   }
 
   public double doubleValue(Unit<Q> unit) {
-    return (super.getUnit().equals(unit)) ? value : super.getUnit().getConverterTo(unit).convert(value);
+    return super.getUnit().equals(unit) ? value : super.getUnit().getConverterTo(unit).convert(value);
   }
 
   @Override
   public long longValue(Unit<Q> unit) {
     double result = doubleValue(unit);
-    if ((result < Long.MIN_VALUE) || (result > Long.MAX_VALUE)) {
+    if (result < Long.MIN_VALUE || result > Long.MAX_VALUE) {
       throw new ArithmeticException("Overflow (" + result + ")");
     }
     return (long) result;
@@ -121,7 +121,7 @@ final class LongQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
 
   @SuppressWarnings({ "rawtypes", "unchecked" })
   public ComparableQuantity<?> multiply(Quantity<?> that) {
-    return new LongQuantity(value * that.getValue().longValue(), getUnit());
+    return new LongQuantity(value * that.getValue().longValue(), getUnit().multiply(that.getUnit()));
   }
 
   public ComparableQuantity<Q> multiply(Number that) {
