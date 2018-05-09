@@ -65,7 +65,7 @@ class ConverterFormatter {
    * @return the operator precedence of the given UnitConverter
    */
   static int formatConverter(UnitConverter converter, boolean continued, int unitPrecedence, StringBuilder buffer, SymbolMap symbolMap) {
-    final Prefix prefix = symbolMap.getPrefix((PowersOfIntConverter) converter);
+    final Prefix prefix = symbolMap.getPrefix((PowerOfIntConverter) converter);
     if ((prefix != null) && (unitPrecedence == EBNFHelper.NOOP_PRECEDENCE)) {
       return noopPrecedence(buffer, symbolMap, prefix);
     } else if (converter instanceof AddConverter) {
@@ -78,8 +78,8 @@ class ConverterFormatter {
       return productPrecedence((MultiplyConverter) converter, continued, unitPrecedence, buffer);
     } else if (converter instanceof RationalConverter) {
         return productPrecedence((RationalConverter) converter, continued, unitPrecedence, buffer);
-    } else if (converter instanceof PowersOfIntConverter) {
-        return productPrecedence((PowersOfIntConverter) converter, continued, unitPrecedence, buffer);
+    } else if (converter instanceof PowerOfIntConverter) {
+        return productPrecedence((PowerOfIntConverter) converter, continued, unitPrecedence, buffer);
     } else if (converter instanceof AbstractConverter.Pair) {
       AbstractConverter.Pair compound = (AbstractConverter.Pair) converter;
       if (compound.getLeft() == AbstractConverter.IDENTITY) {
@@ -109,12 +109,12 @@ class ConverterFormatter {
     }
   }
 
-  private static int productPrecedence(PowersOfIntConverter converter, boolean continued, int unitPrecedence, StringBuilder buffer) {
+  private static int productPrecedence(PowerOfIntConverter converter, boolean continued, int unitPrecedence, StringBuilder buffer) {
     if (unitPrecedence < EBNFHelper.PRODUCT_PRECEDENCE) {
       buffer.insert(0, '(');
       buffer.append(')');
     }
-    PowersOfIntConverter powerConverter = converter;
+    PowerOfIntConverter powerConverter = converter;
     
     if(!powerConverter.isIdentity()) {
 		if (continued) {

@@ -41,7 +41,7 @@ import tech.units.indriya.function.AddConverter;
 import tech.units.indriya.function.ExpConverter;
 import tech.units.indriya.function.LogConverter;
 import tech.units.indriya.function.MultiplyConverter;
-import tech.units.indriya.function.PowersOfIntConverter;
+import tech.units.indriya.function.PowerOfIntConverter;
 import tech.units.indriya.function.PowersOfPiConverter;
 import tech.units.indriya.function.RationalConverter;
 
@@ -58,7 +58,7 @@ public final class Simplifier {
 	final static Map<Class<?>, Integer> normalFormOrder = new HashMap<>(6);
 	static {
 		normalFormOrder.put(AbstractConverter.IDENTITY.getClass(), 0);
-		normalFormOrder.put(PowersOfIntConverter.class, 1); 
+		normalFormOrder.put(PowerOfIntConverter.class, 1); 
 		normalFormOrder.put(RationalConverter.class, 2); 
 		normalFormOrder.put(PowersOfPiConverter.class, 3);
 		normalFormOrder.put(MultiplyConverter.class, 4);
@@ -120,8 +120,8 @@ public final class Simplifier {
 	
 	static boolean isNormalFormOrderWhenCommutative(AbstractConverter a, AbstractConverter b) {
 		if(a.getClass().equals(b.getClass())) {
-			if(a instanceof PowersOfIntConverter) {
-				return  ((PowersOfIntConverter)a).getBase() <= ((PowersOfIntConverter)b).getBase();
+			if(a instanceof PowerOfIntConverter) {
+				return  ((PowerOfIntConverter)a).getBase() <= ((PowerOfIntConverter)b).getBase();
 			}
 //			if(a instanceof LogConverter) {
 //				return  ((LogConverter)a).getBase() <= ((LogConverter)b).getBase();

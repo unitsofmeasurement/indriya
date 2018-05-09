@@ -49,7 +49,7 @@ import tech.units.indriya.format.LocalUnitFormat;
 import tech.units.indriya.format.SimpleUnitFormat;
 import tech.units.indriya.function.AddConverter;
 import tech.units.indriya.function.MultiplyConverter;
-import tech.units.indriya.function.PowersOfIntConverter;
+import tech.units.indriya.function.PowerOfIntConverter;
 import tech.units.indriya.function.RationalConverter;
 import tech.units.indriya.quantity.QuantityDimension;
 import tech.units.indriya.spi.DimensionalModel;
@@ -564,7 +564,7 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
 	
 	@Override
 	public Unit<Q> prefix(Prefix prefix) {
-		return this.transform(PowersOfIntConverter.of(prefix));
+		return this.transform(PowerOfIntConverter.of(prefix));
 	}
 
 	/**

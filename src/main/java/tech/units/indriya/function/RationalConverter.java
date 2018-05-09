@@ -213,7 +213,7 @@ public final class RationalConverter extends AbstractConverter implements ValueS
 		if (that instanceof RationalConverter) {
 			return true; 
 		}
-		return that instanceof PowersOfIntConverter;
+		return that instanceof PowerOfIntConverter;
 	}
 
 	@Override
@@ -221,8 +221,8 @@ public final class RationalConverter extends AbstractConverter implements ValueS
 		if (that instanceof RationalConverter) {
 			return (AbstractConverter) composeSameType((RationalConverter) that); 
 		}
-		if (that instanceof PowersOfIntConverter) {
-			return (AbstractConverter) composeSameType(((PowersOfIntConverter) that).toRationalConverter()); 
+		if (that instanceof PowerOfIntConverter) {
+			return (AbstractConverter) composeSameType(((PowerOfIntConverter) that).toRationalConverter()); 
 		}
 		throw new IllegalStateException(String.format(
 				"%s.simpleCompose() not handled for converter %s", 

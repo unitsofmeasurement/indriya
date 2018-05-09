@@ -44,7 +44,7 @@ import javax.measure.Prefix;
 import javax.measure.UnitConverter;
 
 import tech.units.indriya.function.Calculus;
-import tech.units.indriya.function.PowersOfIntConverter;
+import tech.units.indriya.function.PowerOfIntConverter;
 import tech.units.indriya.function.UnitComparator;
 import tech.units.indriya.internal.simplify.Simplifier;
 import tech.uom.lib.common.function.Converter;
@@ -93,7 +93,7 @@ public abstract class AbstractConverter
 	 *            the prefix for the factor.
 	 */
 	public static UnitConverter of(Prefix prefix) {
-		return PowersOfIntConverter.of(prefix);
+		return PowerOfIntConverter.of(prefix);
 	}
 
 	@Override
