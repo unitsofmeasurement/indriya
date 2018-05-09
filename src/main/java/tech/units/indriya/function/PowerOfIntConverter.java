@@ -27,7 +27,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package tech.units.indriya.function;
 
 import java.math.BigDecimal;
@@ -39,15 +38,18 @@ import javax.measure.Prefix;
 import javax.measure.UnitConverter;
 
 import tech.units.indriya.AbstractConverter;
+import tech.uom.lib.common.function.IntBaseSupplier;
+import tech.uom.lib.common.function.IntExponentSupplier;
 
 /**
  * UnitConverter for numbers in base^exponent representation.
  * @author Andi Huber
  * @author Werner Keil
- * @version 1.1, April 24, 2018
+ * @version 1.2, May 10, 2018
  * @since 2.0
  */
-public final class PowerOfIntConverter extends AbstractConverter {
+public final class PowerOfIntConverter extends AbstractConverter 
+ implements IntBaseSupplier, IntExponentSupplier {
 	private static final long serialVersionUID = 3546932001671571300L;
 
 	private final int base;

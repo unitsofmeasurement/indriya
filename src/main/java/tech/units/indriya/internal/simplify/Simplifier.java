@@ -42,7 +42,7 @@ import tech.units.indriya.function.ExpConverter;
 import tech.units.indriya.function.LogConverter;
 import tech.units.indriya.function.MultiplyConverter;
 import tech.units.indriya.function.PowerOfIntConverter;
-import tech.units.indriya.function.PowersOfPiConverter;
+import tech.units.indriya.function.PowerOfPiConverter;
 import tech.units.indriya.function.RationalConverter;
 
 /**
@@ -60,7 +60,7 @@ public final class Simplifier {
 		normalFormOrder.put(AbstractConverter.IDENTITY.getClass(), 0);
 		normalFormOrder.put(PowerOfIntConverter.class, 1); 
 		normalFormOrder.put(RationalConverter.class, 2); 
-		normalFormOrder.put(PowersOfPiConverter.class, 3);
+		normalFormOrder.put(PowerOfPiConverter.class, 3);
 		normalFormOrder.put(MultiplyConverter.class, 4);
 		normalFormOrder.put(AddConverter.class, 5);
 		normalFormOrder.put(LogConverter.class, 6); 

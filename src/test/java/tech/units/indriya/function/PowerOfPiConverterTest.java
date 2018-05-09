@@ -40,7 +40,7 @@ import java.math.MathContext;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
-public class PowersOfPiConverterTest {
+public class PowerOfPiConverterTest {
 
 	// for reference
 	protected final static String HUNDRED_DIGITS_OF_PI =
@@ -58,7 +58,7 @@ public class PowersOfPiConverterTest {
 
 	@Test
 	public void testConvertMethod() {
-		PowersOfPiConverter converter = new PowersOfPiConverter(-1);
+		PowerOfPiConverter converter = new PowerOfPiConverter(-1);
 		Calculus.MATH_CONTEXT = MathContext.DECIMAL32;
 
 		assertEquals(1000, converter.convert(3141), 0.2);
@@ -68,7 +68,7 @@ public class PowersOfPiConverterTest {
 
 	@Test
 	public void testConvertBigDecimalMethod() {
-		PowersOfPiConverter converter = new PowersOfPiConverter(-1);
+		PowerOfPiConverter converter = new PowerOfPiConverter(-1);
 		Calculus.MATH_CONTEXT = MathContext.DECIMAL32;
 
 		assertEquals(1000, converter.convert(new BigDecimal("3141")).doubleValue(), 0.2);
@@ -78,36 +78,36 @@ public class PowersOfPiConverterTest {
 
 	@Test
 	public void testEquality() {
-		PowersOfPiConverter a = new PowersOfPiConverter(-1);
-		PowersOfPiConverter b = new PowersOfPiConverter(-1);
-		PowersOfPiConverter c = new PowersOfPiConverter(1);
+		PowerOfPiConverter a = new PowerOfPiConverter(-1);
+		PowerOfPiConverter b = new PowerOfPiConverter(-1);
+		PowerOfPiConverter c = new PowerOfPiConverter(1);
 		assertTrue(a.equals(b)); 
 		assertFalse(a.equals(c));
 	}
 
 	@Test
 	public void isLinear() {
-		PowersOfPiConverter converter = new PowersOfPiConverter(-1);
+		PowerOfPiConverter converter = new PowerOfPiConverter(-1);
 		assertTrue(converter.isLinear());
 	}
 
 	@Test
 	public void piSquaredBigDecimalDefaultPrecision() {
-		PowersOfPiConverter converter = new PowersOfPiConverter(2);
+		PowerOfPiConverter converter = new PowerOfPiConverter(2);
 		BigDecimal value = (BigDecimal) converter.convert(BigDecimal.valueOf(0.1));
 		assertEquals("0.9869604401089358618834490999876151", value.toPlainString());
 	}
 
 	@Test
 	public void piBigDecimalDefaultPrecision() {
-		PowersOfPiConverter converter = new PowersOfPiConverter(1);
+		PowerOfPiConverter converter = new PowerOfPiConverter(1);
 		Calculus.MATH_CONTEXT = MathContext.UNLIMITED;
 		assertThrows(ArithmeticException.class, ()->converter.convert(BigDecimal.valueOf(1.0)));
 	}
 
 	@Test
 	public void piBigDecimalExtendedPrecision() {
-		PowersOfPiConverter converter = new PowersOfPiConverter(1);
+		PowerOfPiConverter converter = new PowerOfPiConverter(1);
 		Calculus.MATH_CONTEXT = new MathContext(MathContext.DECIMAL128.getPrecision() * 2);
 		BigDecimal value = (BigDecimal) converter.convert(BigDecimal.valueOf(1.));
 		//[ahuber] last digit should actually round to '2' instead of '0', 
@@ -119,8 +119,8 @@ public class PowersOfPiConverterTest {
 
 	@Test
 	public void toStringTest() {
-		PowersOfPiConverter converter = new PowersOfPiConverter(2);
-		assertEquals("PowersOfPi(x -> x * π^2)", converter.toString());
+		PowerOfPiConverter converter = new PowerOfPiConverter(2);
+		assertEquals("PowerOfPi(x -> x * π^2)", converter.toString());
 	}
 
 }

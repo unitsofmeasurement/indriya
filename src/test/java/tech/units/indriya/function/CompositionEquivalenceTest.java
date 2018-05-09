@@ -90,10 +90,10 @@ public class CompositionEquivalenceTest {
 				null, // exp has no identity variant
 				new ExpConverter(4.5),
 				new ExpConverter(0.1) ),
-		PI(PowersOfPiConverter.class, 
-				()->PowersOfPiConverter.of(0), // log has no identity variant
-				PowersOfPiConverter.of(1),
-				PowersOfPiConverter.of(-1) ),
+		PI(PowerOfPiConverter.class, 
+				()->PowerOfPiConverter.of(0), // log has no identity variant
+				PowerOfPiConverter.of(1),
+				PowerOfPiConverter.of(-1) ),
 		// when adding entries, also increment the typeCount!
 		;
 
