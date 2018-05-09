@@ -47,6 +47,7 @@ import tech.units.indriya.unit.Units;
 
 public class LongQuantityTest {
 
+  private static final Unit<?> SQUARE_OHM = Units.OHM.multiply(Units.OHM);
   private final LongQuantity<ElectricResistance> ONE_OHM = createQuantity(1L, Units.OHM);
   private final LongQuantity<ElectricResistance> TWO_OHM = createQuantity(2L, Units.OHM);
   private final LongQuantity<ElectricResistance> MAX_VALUE_OHM = createQuantity(Long.MAX_VALUE, Units.OHM);
@@ -74,9 +75,9 @@ public class LongQuantityTest {
    */
   @Test
   public void additionWithSameMultipleResultingInOverflowThrowsException() {
-	assertThrows(ArithmeticException.class, () -> {
-		ONE_OHM.add(MAX_VALUE_OHM);
-	});
+    assertThrows(ArithmeticException.class, () -> {
+      ONE_OHM.add(MAX_VALUE_OHM);
+    });
   }
 
   /**
@@ -147,18 +148,21 @@ public class LongQuantityTest {
     assertEquals(ONE_OHM, actual);
   }
 
+  /**
+   * Verifies that multiplication multiplies correctly.
+   */
+  @Test
+  public void multiplicationMultipliesCorrectlyWithSameUnitsWithoutMultiples() {
+    Quantity<?> actual = TWO_OHM.multiply(TWO_OHM);
+    LongQuantity<?> expected = createQuantity(4L, SQUARE_OHM);
+    assertEquals(expected, actual);
+  }
+
   @Test
   public void divideTest() {
     LongQuantity<ElectricResistance> quantity1 = new LongQuantity<ElectricResistance>(Long.valueOf(3).longValue(), Units.OHM);
     Quantity<?> result = quantity1.divide(TWO_OHM);
     assertEquals(Double.valueOf(1.5d), result.getValue());
-  }
-
-  @Test
-  public void multiplyQuantityTest() {
-    LongQuantity<ElectricResistance> quantity1 = new LongQuantity<ElectricResistance>(Long.valueOf(3).longValue(), Units.OHM);
-    Quantity<?> result = quantity1.multiply(TWO_OHM);
-    assertEquals(Long.valueOf(6L), result.getValue());
   }
 
   @Test
