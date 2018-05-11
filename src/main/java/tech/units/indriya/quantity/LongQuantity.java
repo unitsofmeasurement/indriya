@@ -58,7 +58,7 @@ final class LongQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
      */
   private static final long serialVersionUID = 3092808554937634365L;
 
-  final long value;
+  private final long value;
 
   public LongQuantity(long value, Unit<Q> unit) {
     super(unit);
@@ -121,11 +121,21 @@ final class LongQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
 
   @SuppressWarnings({ "rawtypes", "unchecked" })
   public ComparableQuantity<?> multiply(Quantity<?> that) {
-    return new LongQuantity(value * that.getValue().longValue(), getUnit().multiply(that.getUnit()));
+    final BigDecimal product = new BigDecimal(getValue()).multiply(new BigDecimal(that.getValue().longValue()));
+    if (isOverflowing(product)) {
+      throw new ArithmeticException();
+    } else {
+      return new LongQuantity(product.longValue(), getUnit().multiply(that.getUnit()));
+    }
   }
 
   public ComparableQuantity<Q> multiply(Number that) {
-    return NumberQuantity.of(value * that.longValue(), getUnit());
+    final BigDecimal product = new BigDecimal(getValue()).multiply(new BigDecimal(that.longValue()));
+    if (isOverflowing(product)) {
+      throw new ArithmeticException();
+    } else {
+      return NumberQuantity.of(product.longValue(), getUnit());
+    }
   }
 
   public ComparableQuantity<?> divide(Quantity<?> that) {
