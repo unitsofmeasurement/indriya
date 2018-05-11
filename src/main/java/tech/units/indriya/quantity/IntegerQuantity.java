@@ -57,7 +57,7 @@ final class IntegerQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
 	 */
   private static final long serialVersionUID = 1405915111744728289L;
 
-  final int value;
+  private final int value;
 
   public IntegerQuantity(int value, Unit<Q> unit) {
     super(unit);
@@ -83,7 +83,7 @@ final class IntegerQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
   }
 
   private boolean isOverflowing(double value) {
-    return value > Integer.MAX_VALUE;
+    return value < Integer.MIN_VALUE || value > Integer.MAX_VALUE;
   }
 
   private ComparableQuantity<Q> addRaw(Number a, Number b, Unit<Q> unit) {

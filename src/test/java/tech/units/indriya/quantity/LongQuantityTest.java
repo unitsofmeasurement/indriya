@@ -53,6 +53,7 @@ public class LongQuantityTest {
   private static final Unit<?> SQUARE_OHM = Units.OHM.multiply(Units.OHM);
   private final LongQuantity<ElectricResistance> ONE_OHM = createQuantity(1L, Units.OHM);
   private final LongQuantity<ElectricResistance> TWO_OHM = createQuantity(2L, Units.OHM);
+  private final LongQuantity<ElectricResistance> MIN_VALUE_OHM = createQuantity(Long.MIN_VALUE, Units.OHM);
   private final LongQuantity<ElectricResistance> MAX_VALUE_OHM = createQuantity(Long.MAX_VALUE, Units.OHM);
   private final LongQuantity<ElectricResistance> ONE_MILLIOHM = createQuantity(1L, MetricPrefix.MILLI(Units.OHM));
   private final LongQuantity<ElectricResistance> ONE_KILOOHM = createQuantity(1L, MetricPrefix.KILO(Units.OHM));
@@ -152,6 +153,25 @@ public class LongQuantityTest {
   }
 
   /**
+   * Verifies that the subtraction of two quantities with the same multiples resulting in a negative overflow throws an exception.
+   */
+  @Test
+  public void subtractionWithSameMultipleResultingInNegativeOverflowThrowsException() {
+    assertThrows(ArithmeticException.class, () -> {
+      MIN_VALUE_OHM.subtract(ONE_OHM);
+    });
+  }
+
+  /**
+   * Verifies that the subtraction of two quantities with the same multiples almost resulting in a negative overflow doesn't an exception.
+   */
+  @Test
+  public void subtractionWithSameMultipleAlmostResultingInNegativeDoesNotThrowException() {
+    Quantity<ElectricResistance> actual = createQuantity(Long.MIN_VALUE + 1, Units.OHM).subtract(ONE_OHM);
+    assertEquals(MIN_VALUE_OHM, actual);
+  }
+
+  /**
    * Verifies that the multiplication of two quantities multiplies correctly.
    */
   @Test
@@ -211,7 +231,7 @@ public class LongQuantityTest {
     Quantity<?> actual = TWO_OHM.divide(2L);
     assertEquals(ONE_OHM, actual);
   }
-  
+
   /**
    * Verifies that the inverse returns the correct reciprocal for a unit quantity.
    */
@@ -231,7 +251,7 @@ public class LongQuantityTest {
     LongQuantity<?> expected = createQuantity(0L, Units.OHM.inverse());
     assertEquals(expected, actual);
   }
-  
+
   /**
    * Verifies that the inverse throws an exception for a zero quantity.
    */
@@ -240,8 +260,8 @@ public class LongQuantityTest {
     assertThrows(ArithmeticException.class, () -> {
       createQuantity(0L, Units.OHM).inverse();
     });
-  } 
-  
+  }
+
   /**
    * Verifies that a LongQuantity isn't big.
    */
@@ -249,7 +269,7 @@ public class LongQuantityTest {
   public void longQuantityIsNotBig() {
     assertFalse(ONE_OHM.isBig());
   }
-  
+
   /**
    * Verifies that a quantity isn't equal to null.
    */
@@ -257,7 +277,7 @@ public class LongQuantityTest {
   public void longQuantityIsNotEqualToNull() {
     assertFalse(ONE_OHM.equals(null));
   }
-  
+
   /**
    * Verifies that a quantity is equal to itself.
    */
@@ -281,7 +301,7 @@ public class LongQuantityTest {
   public void longQuantityIsEqualToIdenticalInstanceWithAnotherPrimitive() {
     assertTrue(ONE_OHM.equals(new DoubleQuantity<ElectricResistance>(Double.valueOf(1).doubleValue(), Units.OHM)));
   }
-  
+
   /**
    * Verifies that a quantity is not equal to a quantity with a different value.
    */

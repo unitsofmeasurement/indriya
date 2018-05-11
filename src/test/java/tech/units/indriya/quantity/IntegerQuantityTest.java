@@ -49,6 +49,7 @@ public class IntegerQuantityTest {
 
   private final IntegerQuantity<ElectricResistance> ONE_OHM = createQuantity(1, Units.OHM);
   private final IntegerQuantity<ElectricResistance> TWO_OHM = createQuantity(2, Units.OHM);
+  private final IntegerQuantity<ElectricResistance> MIN_VALUE_OHM = createQuantity(Integer.MIN_VALUE, Units.OHM);
   private final IntegerQuantity<ElectricResistance> MAX_VALUE_OHM = createQuantity(Integer.MAX_VALUE, Units.OHM);
   private final IntegerQuantity<ElectricResistance> ONE_MILLIOHM = createQuantity(1, MetricPrefix.MILLI(Units.OHM));
   private final IntegerQuantity<ElectricResistance> ONE_KILOOHM = createQuantity(1, MetricPrefix.KILO(Units.OHM));
@@ -74,9 +75,9 @@ public class IntegerQuantityTest {
    */
   @Test
   public void additionWithSameMultipleResultingInOverflowThrowsException() {
-	  assertThrows(ArithmeticException.class, () -> {
-		  ONE_OHM.add(MAX_VALUE_OHM);
-	  });
+    assertThrows(ArithmeticException.class, () -> {
+      ONE_OHM.add(MAX_VALUE_OHM);
+    });
   }
 
   /**
@@ -145,6 +146,25 @@ public class IntegerQuantityTest {
   public void subtractionSubtractsArgumentFromTargetObject() {
     Quantity<ElectricResistance> actual = TWO_OHM.subtract(ONE_OHM);
     assertEquals(ONE_OHM, actual);
+  }
+
+  /**
+   * Verifies that the subtraction of two quantities with the same multiples resulting in a negative overflow throws an exception.
+   */
+  @Test
+  public void subtractionWithSameMultipleResultingInNegativeOverflowThrowsException() {
+    assertThrows(ArithmeticException.class, () -> {
+      MIN_VALUE_OHM.subtract(ONE_OHM);
+    });
+  }
+
+  /**
+   * Verifies that the subtraction of two quantities with the same multiples almost resulting in a negative overflow doesn't an exception.
+   */
+  @Test
+  public void subtractionWithSameMultipleAlmostResultingInNegativeDoesNotThrowException() {
+    Quantity<ElectricResistance> actual = createQuantity(Integer.MIN_VALUE + 1, Units.OHM).subtract(ONE_OHM);
+    assertEquals(MIN_VALUE_OHM, actual);
   }
 
   @Test
