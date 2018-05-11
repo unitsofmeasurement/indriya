@@ -267,6 +267,22 @@ public class LongQuantityTest {
   }
 
   /**
+   * Verifies that a quantity is equal to another instance with the same value and unit.
+   */
+  @Test
+  public void longQuantityIsEqualToIdenticalInstance() {
+    assertTrue(ONE_OHM.equals(createQuantity(1, Units.OHM)));
+  }
+
+  /**
+   * Verifies that a quantity is equal to another instance with the same value and unit using another primitive.
+   */
+  @Test
+  public void longQuantityIsEqualToIdenticalInstanceWithAnotherPrimitive() {
+    assertTrue(ONE_OHM.equals(new DoubleQuantity<ElectricResistance>(Double.valueOf(1).doubleValue(), Units.OHM)));
+  }
+  
+  /**
    * Verifies that a quantity is not equal to a quantity with a different value.
    */
   @Test
