@@ -30,17 +30,20 @@
 package tech.units.indriya.quantity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import javax.measure.MetricPrefix;
 import javax.measure.Quantity;
 import javax.measure.Unit;
+import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.ElectricResistance;
-import javax.measure.quantity.Length;
 import javax.measure.quantity.Time;
 
 import org.junit.jupiter.api.Test;
 
+import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.quantity.LongQuantity;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.Units;
@@ -149,20 +152,142 @@ public class LongQuantityTest {
   }
 
   /**
-   * Verifies that multiplication multiplies correctly.
+   * Verifies that the multiplication of two quantities multiplies correctly.
    */
   @Test
-  public void multiplicationMultipliesCorrectlyWithSameUnitsWithoutMultiples() {
+  public void quantityMultiplicationMultipliesCorrectly() {
     Quantity<?> actual = TWO_OHM.multiply(TWO_OHM);
     LongQuantity<?> expected = createQuantity(4L, SQUARE_OHM);
     assertEquals(expected, actual);
   }
 
+  /**
+   * Verifies that the multiplication of two quantities resulting in an overflow throws an exception.
+   */
   @Test
-  public void divideTest() {
-    LongQuantity<ElectricResistance> quantity1 = new LongQuantity<ElectricResistance>(Long.valueOf(3).longValue(), Units.OHM);
-    Quantity<?> result = quantity1.divide(TWO_OHM);
-    assertEquals(Double.valueOf(1.5d), result.getValue());
+  public void quantityMultiplicationResultingInOverflowThrowsException() {
+    assertThrows(ArithmeticException.class, () -> {
+      Quantity<ElectricResistance> halfMaxValuePlusOne = createQuantity(1L + Long.MAX_VALUE / 2L, Units.OHM);
+      halfMaxValuePlusOne.multiply(TWO_OHM);
+    });
+  }
+
+  /**
+   * Verifies that the multiplication with a number multiplies correctly.
+   */
+  @Test
+  public void numberMultiplicationMultipliesCorrectly() {
+    Quantity<?> actual = TWO_OHM.multiply(2L);
+    LongQuantity<ElectricResistance> expected = createQuantity(4L, Units.OHM);
+    assertEquals(expected, actual);
+  }
+
+  /**
+   * Verifies that the multiplication with a number resulting in an overflow throws an exception.
+   */
+  @Test
+  public void numberMultiplicationResultingInOverflowThrowsException() {
+    assertThrows(ArithmeticException.class, () -> {
+      Quantity<ElectricResistance> halfMaxValuePlusOne = createQuantity(1L + Long.MAX_VALUE / 2L, Units.OHM);
+      halfMaxValuePlusOne.multiply(2L);
+    });
+  }
+
+  /**
+   * Verifies that the division of two quantities divides correctly.
+   */
+  @Test
+  public void quantityDivisionDividesCorrectly() {
+    Quantity<?> actual = TWO_OHM.divide(TWO_OHM);
+    LongQuantity<Dimensionless> expected = createQuantity(1L, AbstractUnit.ONE);
+    assertEquals(expected, actual);
+  }
+
+  /**
+   * Verifies that the division with a number divides correctly.
+   */
+  @Test
+  public void numberDivisionDividesCorrectly() {
+    Quantity<?> actual = TWO_OHM.divide(2L);
+    assertEquals(ONE_OHM, actual);
+  }
+  
+  /**
+   * Verifies that the inverse returns the correct reciprocal for a unit quantity.
+   */
+  @Test
+  public void inverseReturnsUnitQuantityForUnitQuantity() {
+    Quantity<?> actual = ONE_OHM.inverse();
+    LongQuantity<?> expected = createQuantity(1L, Units.OHM.inverse());
+    assertEquals(expected, actual);
+  }
+
+  /**
+   * Verifies that the inverse returns the correct reciprocal for a quantity larger than a unit quantity.
+   */
+  @Test
+  public void inverseReturnsZeroQuantityForLargerThanUnitQuantity() {
+    Quantity<?> actual = TWO_OHM.inverse();
+    LongQuantity<?> expected = createQuantity(0L, Units.OHM.inverse());
+    assertEquals(expected, actual);
+  }
+  
+  /**
+   * Verifies that the inverse throws an exception for a zero quantity.
+   */
+  @Test
+  public void inverseThrowsExceptionForZeroQuantity() {
+    assertThrows(ArithmeticException.class, () -> {
+      createQuantity(0L, Units.OHM).inverse();
+    });
+  } 
+  
+  /**
+   * Verifies that a LongQuantity isn't big.
+   */
+  @Test
+  public void longQuantityIsNotBig() {
+    assertFalse(ONE_OHM.isBig());
+  }
+  
+  /**
+   * Verifies that a quantity isn't equal to null.
+   */
+  @Test
+  public void longQuantityIsNotEqualToNull() {
+    assertFalse(ONE_OHM.equals(null));
+  }
+  
+  /**
+   * Verifies that a quantity is equal to itself.
+   */
+  @Test
+  public void longQuantityIsEqualToItself() {
+    assertTrue(ONE_OHM.equals(ONE_OHM));
+  }
+
+  /**
+   * Verifies that a quantity is not equal to a quantity with a different value.
+   */
+  @Test
+  public void longQuantityIsNotEqualToQuantityWithDifferentValue() {
+    assertFalse(ONE_OHM.equals(TWO_OHM));
+  }
+
+  /**
+   * Verifies that a quantity is not equal to a quantity with a different unit.
+   */
+  @Test
+  public void longQuantityIsNotEqualToQuantityWithDifferentUnit() {
+    assertFalse(ONE_OHM.equals(ONE_KILOOHM));
+  }
+
+  /**
+   * Verifies that a quantity is not equal to an object of a different class.
+   */
+  @Test
+  public void longQuantityIsNotEqualToObjectOfDifferentClass() {
+    assertFalse(ONE_OHM.equals(SQUARE_OHM));
   }
 
   @Test
@@ -170,13 +295,6 @@ public class LongQuantityTest {
     LongQuantity<Time> day = new LongQuantity<Time>(Double.valueOf(3).longValue(), Units.DAY);
     long hours = day.longValue(Units.HOUR);
     assertEquals(72L, hours);
-  }
-
-  @Test
-  public void testEquality() throws Exception {
-    Quantity<Length> value = Quantities.getQuantity(new Long(10), Units.METRE);
-    Quantity<Length> anotherValue = Quantities.getQuantity(new Long(10), Units.METRE);
-    assertEquals(value, anotherValue);
   }
 
   @Test
