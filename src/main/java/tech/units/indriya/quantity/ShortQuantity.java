@@ -92,7 +92,7 @@ final class ShortQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
   }
 
   private boolean isOverflowing(double value) {
-    return value > Short.MAX_VALUE;
+    return value < Short.MIN_VALUE || value > Short.MAX_VALUE;
   }
 
   private ComparableQuantity<Q> addRaw(Number a, Number b, Unit<Q> unit) {

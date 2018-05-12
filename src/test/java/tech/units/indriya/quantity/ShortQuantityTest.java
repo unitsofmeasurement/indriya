@@ -48,11 +48,12 @@ import tech.units.indriya.unit.Units;
 public class ShortQuantityTest {
 
   private final ShortQuantity<ElectricResistance> ONE_OHM = createQuantity((short) 1, Units.OHM);
-  private final ShortQuantity<ElectricResistance> TWO_OHM = createQuantity((short)2, Units.OHM);
+  private final ShortQuantity<ElectricResistance> TWO_OHM = createQuantity((short) 2, Units.OHM);
+  private final ShortQuantity<ElectricResistance> MIN_VALUE_OHM = createQuantity(Short.MIN_VALUE, Units.OHM);
   private final ShortQuantity<ElectricResistance> MAX_VALUE_OHM = createQuantity(Short.MAX_VALUE, Units.OHM);
-  private final ShortQuantity<ElectricResistance> ONE_MILLIOHM = createQuantity((short)1, MetricPrefix.MILLI(Units.OHM));
-  private final ShortQuantity<ElectricResistance> ONE_KILOOHM = createQuantity((short)1, MetricPrefix.KILO(Units.OHM));
-  private final ShortQuantity<ElectricResistance> ONE_YOTTAOHM = createQuantity((short)1, MetricPrefix.YOTTA(Units.OHM));
+  private final ShortQuantity<ElectricResistance> ONE_MILLIOHM = createQuantity((short) 1, MetricPrefix.MILLI(Units.OHM));
+  private final ShortQuantity<ElectricResistance> ONE_KILOOHM = createQuantity((short) 1, MetricPrefix.KILO(Units.OHM));
+  private final ShortQuantity<ElectricResistance> ONE_YOTTAOHM = createQuantity((short) 1, MetricPrefix.YOTTA(Units.OHM));
 
   private <Q extends Quantity<Q>> ShortQuantity<Q> createQuantity(short s, Unit<Q> unit) {
     return new ShortQuantity<Q>(Short.valueOf(s).shortValue(), unit);
@@ -146,8 +147,26 @@ public class ShortQuantityTest {
     Quantity<ElectricResistance> actual = TWO_OHM.subtract(ONE_OHM);
     assertEquals(ONE_OHM, actual);
   }
-  
-  
+
+  /**
+   * Verifies that the subtraction of two quantities with the same multiples resulting in a negative overflow throws an exception.
+   */
+  @Test
+  public void subtractionWithSameMultipleResultingInNegativeOverflowThrowsException() {
+    assertThrows(ArithmeticException.class, () -> {
+      MIN_VALUE_OHM.subtract(ONE_OHM);
+    });
+  }
+
+  /**
+   * Verifies that the subtraction of two quantities with the same multiples almost resulting in a negative overflow doesn't an exception.
+   */
+  @Test
+  public void subtractionWithSameMultipleAlmostResultingInNegativeDoesNotThrowException() {
+    Quantity<ElectricResistance> actual = createQuantity((short) (Short.MIN_VALUE + 1), Units.OHM).subtract(ONE_OHM);
+    assertEquals(MIN_VALUE_OHM, actual);
+  }
+
   @Test
   public void divideTest() {
     ShortQuantity<ElectricResistance> quantity1 = new ShortQuantity<>(Short.valueOf("3").shortValue(), Units.OHM);

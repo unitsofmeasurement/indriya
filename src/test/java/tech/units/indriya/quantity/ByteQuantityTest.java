@@ -49,6 +49,7 @@ public class ByteQuantityTest {
 
   private final ByteQuantity<ElectricResistance> ONE_OHM = createQuantity((byte) 1, Units.OHM);
   private final ByteQuantity<ElectricResistance> TWO_OHM = createQuantity((byte) 2, Units.OHM);
+  private final ByteQuantity<ElectricResistance> MIN_VALUE_OHM = createQuantity(Byte.MIN_VALUE, Units.OHM);
   private final ByteQuantity<ElectricResistance> MAX_VALUE_OHM = createQuantity(Byte.MAX_VALUE, Units.OHM);
   private final ByteQuantity<ElectricResistance> ONE_DEKAOHM = createQuantity((byte) 1, MetricPrefix.DEKA(Units.OHM));
   private final ByteQuantity<ElectricResistance> ONE_DECIOHM = createQuantity((byte) 1, MetricPrefix.DECI(Units.OHM));
@@ -145,6 +146,25 @@ public class ByteQuantityTest {
   public void subtractionSubtractsArgumentFromTargetObject() {
     Quantity<ElectricResistance> actual = TWO_OHM.subtract(ONE_OHM);
     assertEquals(ONE_OHM, actual);
+  }
+
+  /**
+   * Verifies that the subtraction of two quantities with the same multiples resulting in a negative overflow throws an exception.
+   */
+  @Test
+  public void subtractionWithSameMultipleResultingInNegativeOverflowThrowsException() {
+    assertThrows(ArithmeticException.class, () -> {
+      MIN_VALUE_OHM.subtract(ONE_OHM);
+    });
+  }
+
+  /**
+   * Verifies that the subtraction of two quantities with the same multiples almost resulting in a negative overflow doesn't an exception.
+   */
+  @Test
+  public void subtractionWithSameMultipleAlmostResultingInNegativeDoesNotThrowException() {
+    Quantity<ElectricResistance> actual = createQuantity((byte) (Byte.MIN_VALUE + 1), Units.OHM).subtract(ONE_OHM);
+    assertEquals(MIN_VALUE_OHM, actual);
   }
 
   @Test

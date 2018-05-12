@@ -92,7 +92,7 @@ final class ByteQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
   }
 
   private boolean isOverflowing(double value) {
-    return value > Byte.MAX_VALUE;
+    return value < Byte.MIN_VALUE || value > Byte.MAX_VALUE;
   }
 
   private ComparableQuantity<Q> addRaw(Number a, Number b, Unit<Q> unit) {

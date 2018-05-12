@@ -52,6 +52,7 @@ import tech.units.indriya.ComparableQuantity;
 final class LongQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
 
   private static final BigDecimal LONG_MAX_VALUE_AS_BIG_DECIMAL = new BigDecimal(Long.MAX_VALUE);
+  private static final BigDecimal LONG_MIN_VALUE_AS_BIG_DECIMAL = new BigDecimal(Long.MIN_VALUE);
 
   /**
      * 
@@ -84,7 +85,7 @@ final class LongQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
   }
 
   private boolean isOverflowing(BigDecimal value) {
-    return value.compareTo(LONG_MAX_VALUE_AS_BIG_DECIMAL) > 0;
+    return value.compareTo(LONG_MAX_VALUE_AS_BIG_DECIMAL) > 0 || value.compareTo(LONG_MIN_VALUE_AS_BIG_DECIMAL) < 0;
   }
 
   private ComparableQuantity<Q> addRaw(Number a, Number b, Unit<Q> unit) {
