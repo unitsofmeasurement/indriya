@@ -140,12 +140,22 @@ final class ByteQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
 
   @Override
   public ComparableQuantity<?> multiply(Quantity<?> multiplier) {
-    return NumberQuantity.of(value * multiplier.getValue().byteValue(), getUnit().multiply(multiplier.getUnit()));
+    final double product = getValue().doubleValue() * multiplier.getValue().doubleValue();
+    if (isOverflowing(product)) {
+      throw new ArithmeticException();
+    } else {
+      return NumberQuantity.of(value * multiplier.getValue().byteValue(), getUnit().multiply(multiplier.getUnit()));
+    }
   }
 
   @Override
   public ComparableQuantity<Q> multiply(Number multiplier) {
-    return NumberQuantity.of(value * multiplier.byteValue(), getUnit());
+    final double product = getValue().doubleValue() * multiplier.doubleValue();
+    if (isOverflowing(product)) {
+      throw new ArithmeticException();
+    } else {
+      return NumberQuantity.of(value * multiplier.byteValue(), getUnit());
+    }
   }
 
   @Override

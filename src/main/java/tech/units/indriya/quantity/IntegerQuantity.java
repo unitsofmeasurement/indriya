@@ -53,8 +53,8 @@ import tech.units.indriya.ComparableQuantity;
 final class IntegerQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
 
   /**
-	 * 
-	 */
+   * 
+   */
   private static final long serialVersionUID = 1405915111744728289L;
 
   private final int value;
@@ -117,13 +117,22 @@ final class IntegerQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
     return add(thatNegated);
   }
 
-  @SuppressWarnings({ "rawtypes", "unchecked" })
   public ComparableQuantity<?> multiply(Quantity<?> that) {
-    return new IntegerQuantity(value * that.getValue().intValue(), getUnit().multiply(that.getUnit()));
+    final double product = getValue().doubleValue() * that.getValue().doubleValue();
+    if (isOverflowing(product)) {
+      throw new ArithmeticException();
+    } else {
+      return NumberQuantity.of(value * that.getValue().intValue(), getUnit().multiply(that.getUnit()));
+    }
   }
 
   public ComparableQuantity<Q> multiply(Number that) {
-    return NumberQuantity.of(value * that.intValue(), getUnit());
+    final double product = getValue().doubleValue() * that.doubleValue();
+    if (isOverflowing(product)) {
+      throw new ArithmeticException();
+    } else {
+      return NumberQuantity.of(value * that.intValue(), getUnit());
+    }
   }
 
   public ComparableQuantity<?> divide(Quantity<?> that) {

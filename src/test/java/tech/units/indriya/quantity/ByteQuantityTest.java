@@ -30,23 +30,28 @@
 package tech.units.indriya.quantity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import javax.measure.MetricPrefix;
 import javax.measure.Quantity;
 import javax.measure.Unit;
+import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.ElectricResistance;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Time;
 
 import org.junit.jupiter.api.Test;
 
+import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.quantity.ByteQuantity;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.Units;
 
 public class ByteQuantityTest {
 
+  private static final Unit<?> SQUARE_OHM = Units.OHM.multiply(Units.OHM);
   private final ByteQuantity<ElectricResistance> ONE_OHM = createQuantity((byte) 1, Units.OHM);
   private final ByteQuantity<ElectricResistance> TWO_OHM = createQuantity((byte) 2, Units.OHM);
   private final ByteQuantity<ElectricResistance> MIN_VALUE_OHM = createQuantity(Byte.MIN_VALUE, Units.OHM);
@@ -167,20 +172,159 @@ public class ByteQuantityTest {
     assertEquals(MIN_VALUE_OHM, actual);
   }
 
+  /**
+   * Verifies that the multiplication of two quantities multiplies correctly.
+   */
   @Test
-  public void divideTest() {
-    ByteQuantity<ElectricResistance> quantity1 = new ByteQuantity<>(Byte.valueOf("3").byteValue(), Units.OHM);
-    ByteQuantity<ElectricResistance> quantity2 = new ByteQuantity<>(Byte.valueOf("2").byteValue(), Units.OHM);
-    Quantity<?> result = quantity1.divide(quantity2);
-    assertEquals(Integer.valueOf("1"), result.getValue());
+  public void quantityMultiplicationMultipliesCorrectly() {
+    Quantity<?> actual = TWO_OHM.multiply(TWO_OHM);
+    ByteQuantity<?> expected = createQuantity((byte) 4, SQUARE_OHM);
+    assertEquals(expected, actual);
   }
 
+  /**
+   * Verifies that the multiplication of two quantities resulting in an overflow throws an exception.
+   */
   @Test
-  public void multiplyQuantityTest() {
-    ByteQuantity<ElectricResistance> quantity1 = new ByteQuantity<>(Byte.valueOf("3").byteValue(), Units.OHM);
-    ByteQuantity<ElectricResistance> quantity2 = new ByteQuantity<>(Byte.valueOf("2").byteValue(), Units.OHM);
-    Quantity<?> result = quantity1.multiply(quantity2);
-    assertEquals(6, result.getValue());
+  public void quantityMultiplicationResultingInOverflowThrowsException() {
+    assertThrows(ArithmeticException.class, () -> {
+      Quantity<ElectricResistance> halfMaxValuePlusOne = createQuantity((byte) (1 + Byte.MAX_VALUE / 2), Units.OHM);
+      halfMaxValuePlusOne.multiply(TWO_OHM);
+    });
+  }
+
+  /**
+   * Verifies that the multiplication with a number multiplies correctly.
+   */
+  @Test
+  public void numberMultiplicationMultipliesCorrectly() {
+    Quantity<?> actual = TWO_OHM.multiply(2);
+    ByteQuantity<ElectricResistance> expected = createQuantity((byte) 4, Units.OHM);
+    assertEquals(expected, actual);
+  }
+
+  /**
+   * Verifies that the multiplication with a number resulting in an overflow throws an exception.
+   */
+  @Test
+  public void numberMultiplicationResultingInOverflowThrowsException() {
+    assertThrows(ArithmeticException.class, () -> {
+      Quantity<ElectricResistance> halfMaxValuePlusOne = createQuantity((byte) (1 + Byte.MAX_VALUE / 2), Units.OHM);
+      halfMaxValuePlusOne.multiply(2);
+    });
+  }
+
+  /**
+   * Verifies that the division of two quantities divides correctly.
+   */
+  @Test
+  public void quantityDivisionDividesCorrectly() {
+    Quantity<?> actual = TWO_OHM.divide(TWO_OHM);
+    ByteQuantity<Dimensionless> expected = createQuantity((byte) 1, AbstractUnit.ONE);
+    assertEquals(expected, actual);
+  }
+
+  /**
+   * Verifies that the division with a number divides correctly.
+   */
+  @Test
+  public void numberDivisionDividesCorrectly() {
+    Quantity<?> actual = TWO_OHM.divide(2);
+    assertEquals(ONE_OHM, actual);
+  }
+
+  /**
+   * Verifies that the inverse returns the correct reciprocal for a unit quantity.
+   */
+  @Test
+  public void inverseReturnsUnitQuantityForUnitQuantity() {
+    Quantity<?> actual = ONE_OHM.inverse();
+    ByteQuantity<?> expected = createQuantity((byte) 1, Units.OHM.inverse());
+    assertEquals(expected, actual);
+  }
+
+  /**
+   * Verifies that the inverse returns the correct reciprocal for a quantity larger than a unit quantity.
+   */
+  @Test
+  public void inverseReturnsZeroQuantityForLargerThanUnitQuantity() {
+    Quantity<?> actual = TWO_OHM.inverse();
+    ByteQuantity<?> expected = createQuantity((byte) 0, Units.OHM.inverse());
+    assertEquals(expected, actual);
+  }
+
+  /**
+   * Verifies that the inverse throws an exception for a zero quantity.
+   */
+  @Test
+  public void inverseThrowsExceptionForZeroQuantity() {
+    assertThrows(ArithmeticException.class, () -> {
+      createQuantity((byte) 0, Units.OHM).inverse();
+    });
+  }
+
+  /**
+   * Verifies that a ByteQuantity isn't big.
+   */
+  @Test
+  public void byteQuantityIsNotBig() {
+    assertFalse(ONE_OHM.isBig());
+  }
+
+  /**
+   * Verifies that a quantity isn't equal to null.
+   */
+  @Test
+  public void byteQuantityIsNotEqualToNull() {
+    assertFalse(ONE_OHM.equals(null));
+  }
+
+  /**
+   * Verifies that a quantity is equal to itself.
+   */
+  @Test
+  public void byteQuantityIsEqualToItself() {
+    assertTrue(ONE_OHM.equals(ONE_OHM));
+  }
+
+  /**
+   * Verifies that a quantity is equal to another instance with the same value and unit.
+   */
+  @Test
+  public void byteQuantityIsEqualToIdenticalInstance() {
+    assertTrue(ONE_OHM.equals(createQuantity((byte) 1, Units.OHM)));
+  }
+
+  /**
+   * Verifies that a quantity is equal to another instance with the same value and unit using another primitive.
+   */
+  @Test
+  public void byteQuantityIsEqualToIdenticalInstanceWithAnotherPrimitive() {
+    assertTrue(ONE_OHM.equals(new DoubleQuantity<ElectricResistance>(Double.valueOf(1).doubleValue(), Units.OHM)));
+  }
+
+  /**
+   * Verifies that a quantity is not equal to a quantity with a different value.
+   */
+  @Test
+  public void byteQuantityIsNotEqualToQuantityWithDifferentValue() {
+    assertFalse(ONE_OHM.equals(TWO_OHM));
+  }
+
+  /**
+   * Verifies that a quantity is not equal to a quantity with a different unit.
+   */
+  @Test
+  public void byteQuantityIsNotEqualToQuantityWithDifferentUnit() {
+    assertFalse(ONE_OHM.equals(ONE_DEKAOHM));
+  }
+
+  /**
+   * Verifies that a quantity is not equal to an object of a different class.
+   */
+  @Test
+  public void byteQuantityIsNotEqualToObjectOfDifferentClass() {
+    assertFalse(ONE_OHM.equals(SQUARE_OHM));
   }
 
   @Test
