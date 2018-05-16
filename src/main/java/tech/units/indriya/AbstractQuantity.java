@@ -41,6 +41,7 @@ import javax.measure.quantity.Dimensionless;
 
 import tech.units.indriya.format.SimpleQuantityFormat;
 import tech.units.indriya.format.SimpleUnitFormat;
+import tech.units.indriya.function.Calculus;
 import tech.units.indriya.function.NaturalQuantityComparator;
 import tech.units.indriya.quantity.Quantities;
 import tech.uom.lib.common.function.UnitSupplier;
