@@ -40,8 +40,8 @@ import javax.measure.Unit;
 import javax.measure.UnitConverter;
 
 import tech.units.indriya.AbstractQuantity;
-import tech.units.indriya.Calculus;
 import tech.units.indriya.ComparableQuantity;
+import tech.units.indriya.function.Calculus;
 
 /**
  * An amount of quantity, implementation of {@link ComparableQuantity} that keep {@link Number} as possible otherwise converts to
