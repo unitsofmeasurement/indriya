@@ -120,4 +120,10 @@ public class QuantityFormatTest {
 		assertEquals("V U", patternFormat.getPattern());
 		assertEquals("10 m", patternFormat.format(sut));
 	}
+	
+	@Test
+	public void testSimpleBuilder() {
+		QuantityFormat quantFormat = new SimpleQuantityFormatBuilder().appendUnit(DAY).appendUnit(HOUR).appendUnit(MINUTE).build();
+		assertNotNull(quantFormat);
+	}
 }

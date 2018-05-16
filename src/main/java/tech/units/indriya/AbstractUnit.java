@@ -58,6 +58,7 @@ import tech.units.indriya.quantity.QuantityDimension;
 import tech.units.indriya.spi.DimensionalModel;
 import tech.units.indriya.unit.AlternateUnit;
 import tech.units.indriya.unit.AnnotatedUnit;
+import tech.units.indriya.unit.CompoundUnit;
 import tech.units.indriya.unit.ProductUnit;
 import tech.units.indriya.unit.TransformedUnit;
 import tech.units.indriya.unit.Units;
@@ -82,7 +83,7 @@ import tech.units.indriya.unit.Units;
  *      International System of Units</a>
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.2, April 11, 2018
+ * @version 1.3, May 16, 2018
  * @since 1.0
  */
 public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableUnit<Q> {
@@ -569,6 +570,22 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
 	public Unit<Q> prefix(Prefix prefix) {
 		return this.transform(PowerConverter.of(prefix));
 	}
+	
+	/**
+	 * Returns the combination of this unit with the specified sub-unit. Compound
+	 * units are typically used for formatting purpose. Examples of compound
+	 * units:<code> 
+	 *     Unit<Length> FOOT_INCH = FOOT.compound(INCH);
+	 *     Unit<Time> HOUR_MINUTE_SECOND = HOUR.compound(MINUTE).compound(SECOND);
+	 * </code>
+	 * 
+	 * @param that
+	 *            the least significant unit to combine with this unit.
+	 * @return the corresponding compound unit.
+	 */
+	public final Unit<Q> compound(Unit<Q> that) {
+		return new CompoundUnit<Q>(this, that);
+	}
 
 	/**
 	 * Compares this unit to the specified unit. The default implementation compares
@@ -736,7 +753,4 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
 			return normalFormOrder.get(a.getClass()) <= normalFormOrder.get(b.getClass());
 		}
 	}
-	
-
-	
 }
