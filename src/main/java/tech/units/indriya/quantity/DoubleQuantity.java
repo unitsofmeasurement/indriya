@@ -75,18 +75,23 @@ final class DoubleQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> im
 
   @Override
   public double doubleValue(Unit<Q> unit) {
-    return super.getUnit().equals(unit) ? value : super.getUnit().getConverterTo(unit).convert(value);
+    final double result = getUnit().getConverterTo(unit).convert(value);
+    if (Double.isInfinite(result)) {
+      throw new ArithmeticException();
+    } else {
+      return result;
+    }
   }
 
   @Override
   public BigDecimal decimalValue(Unit<Q> unit) throws ArithmeticException {
     final BigDecimal decimal = BigDecimal.valueOf(value);
-    return Calculus.toBigDecimal(super.getUnit().getConverterTo(unit).convert(decimal));
+    return Calculus.toBigDecimal(getUnit().getConverterTo(unit).convert(decimal));
   }
 
   @Override
   public long longValue(Unit<Q> unit) {
-    double result = doubleValue(unit);
+    final double result = getUnit().getConverterTo(unit).convert(value);
     if (result < Long.MIN_VALUE || result > Long.MAX_VALUE) {
       throw new ArithmeticException("Overflow (" + result + ")");
     }
