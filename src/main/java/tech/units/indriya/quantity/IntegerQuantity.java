@@ -70,7 +70,7 @@ final class IntegerQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
   }
 
   public double doubleValue(Unit<Q> unit) {
-    return super.getUnit().equals(unit) ? value : super.getUnit().getConverterTo(unit).convert(value);
+    return getUnit().equals(unit) ? value : getUnit().getConverterTo(unit).convert(value);
   }
 
   @Override
@@ -173,7 +173,6 @@ final class IntegerQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
 
   @Override
   public BigDecimal decimalValue(Unit<Q> unit) throws ArithmeticException {
-    // TODO Auto-generated method stub
-    return null;
+    return BigDecimal.valueOf(doubleValue(unit));
   }
 }
