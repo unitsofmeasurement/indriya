@@ -32,6 +32,8 @@ package tech.units.indriya.quantity;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.math.BigDecimal;
+
 import javax.measure.MetricPrefix;
 import javax.measure.Quantity;
 import javax.measure.Unit;
@@ -45,6 +47,7 @@ import tech.units.indriya.AbstractQuantity;
 import tech.units.indriya.quantity.FloatQuantity;
 import tech.units.indriya.quantity.NumberQuantity;
 import tech.units.indriya.quantity.Quantities;
+import static javax.measure.MetricPrefix.*;
 import tech.units.indriya.unit.Units;
 
 public class FloatQuantityTest {
@@ -52,7 +55,7 @@ public class FloatQuantityTest {
   private final FloatQuantity<ElectricResistance> ONE_OHM = createQuantity(1, Units.OHM);
   private final FloatQuantity<ElectricResistance> TWO_OHM = createQuantity(2, Units.OHM);
   private final FloatQuantity<ElectricResistance> MAX_VALUE_OHM = createQuantity(Float.MAX_VALUE, Units.OHM);
-  private final FloatQuantity<ElectricResistance> ONE_MILLIOHM = createQuantity(1, MetricPrefix.MILLI(Units.OHM));
+  private final FloatQuantity<ElectricResistance> ONE_MILLIOHM = createQuantity(1, MILLI(Units.OHM));
 
   private <Q extends Quantity<Q>> FloatQuantity<Q> createQuantity(float f, Unit<Q> unit) {
     return new FloatQuantity<Q>(Float.valueOf(f).floatValue(), unit);
@@ -124,6 +127,74 @@ public class FloatQuantityTest {
     Quantity<ElectricResistance> actual = TWO_OHM.subtract(ONE_OHM);
     assertEquals(ONE_OHM, actual);
   }
+  
+  /**
+   * Verifies that the value is returned without conversion if doubleValue is called with the quantity's unit.
+   */
+  @Test
+  public void doubleValueReturnsValueForSameUnit() {
+    assertEquals(1, ONE_OHM.doubleValue(Units.OHM));
+  }
+
+  /**
+   * Verifies that the value is correctly converted if doubleValue is called with the quantity's unit.
+   */
+  @Test
+  public void doubleValueReturnsConvertedValueForOtherUnit() {
+    assertEquals(0.001, ONE_MILLIOHM.doubleValue(Units.OHM));
+  }
+
+  /**
+   * Verifies that the value is returned without conversion if decimalValue is called with the quantity's unit.
+   */
+  @Test
+  public void decimalValueReturnsValueForSameUnit() {
+    assertEquals(BigDecimal.valueOf(1.0), ONE_OHM.decimalValue(Units.OHM));
+  }
+
+  /**
+   * Verifies that the value is correctly converted if decimalValue is called with the quantity's unit.
+   */
+  @Test
+  public void decimalValueReturnsConvertedValueForOtherUnit() {
+    assertEquals(BigDecimal.valueOf(0.001), ONE_MILLIOHM.decimalValue(Units.OHM));
+  }
+
+  /**
+   * Verifies that the value is returned without conversion if longValue is called with the quantity's unit.
+   */
+  @Test
+  public void longValueReturnsValueForSameUnit() {
+    assertEquals(1, ONE_OHM.longValue(Units.OHM));
+  }
+
+  /**
+   * Verifies that the value is correctly converted if longValue is called with the quantity's unit.
+   */
+  @Test
+  public void longValueReturnsConvertedValueForOtherUnit() {
+    assertEquals(0, ONE_MILLIOHM.longValue(Units.OHM));
+  }
+
+  /**
+   * Verifies that an exception is thrown if the conversion for longValue results in a positive overflow.
+   */
+  @Test
+  public void longValueThrowsExceptionOnPositiveOverflow() {
+    assertThrows(ArithmeticException.class, () -> {
+      createQuantity(Long.MAX_VALUE + 550000000000.0F, Units.OHM).longValue(Units.OHM);
+    });
+  }
+
+  /**
+   * Verifies that an exception is thrown if the conversion for longValue results in a negative overflow.
+   */
+  @Test
+  public void longValueThrowsExceptionOnNegativeOverflow() {
+    assertThrows(ArithmeticException.class, () -> {
+      createQuantity(Long.MIN_VALUE - 550000000000.0F, Units.OHM).longValue(Units.OHM);
+    });
+  }
 
   @Test
   public void multiplyQuantityTest() {
@@ -131,20 +202,6 @@ public class FloatQuantityTest {
     FloatQuantity<ElectricResistance> quantity2 = new FloatQuantity<ElectricResistance>(Float.valueOf(2).floatValue(), Units.OHM);
     Quantity<?> result = quantity1.multiply(quantity2);
     assertEquals(Float.valueOf(6L), result.getValue());
-  }
-
-  @Test
-  public void longValueTest() {
-    FloatQuantity<Time> day = new FloatQuantity<Time>(3F, Units.DAY);
-    long hours = day.longValue(Units.HOUR);
-    assertEquals(72L, hours);
-  }
-
-  @Test
-  public void doubleValueTest() {
-    FloatQuantity<Time> day = new FloatQuantity<Time>(3F, Units.DAY);
-    double hours = day.doubleValue(Units.HOUR);
-    assertEquals(72D, hours);
   }
 
   @Test

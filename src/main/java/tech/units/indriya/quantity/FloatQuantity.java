@@ -37,6 +37,7 @@ import javax.measure.Unit;
 
 import tech.units.indriya.AbstractQuantity;
 import tech.units.indriya.ComparableQuantity;
+import tech.units.indriya.function.Calculus;
 
 /**
  * An amount of quantity, consisting of a float and a Unit. FloatQuantity objects are immutable.
@@ -69,13 +70,14 @@ final class FloatQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
     return value;
   }
 
-  // Implements AbstractQuantity
+  @Override
   public double doubleValue(Unit<Q> unit) {
-    return super.getUnit().equals(unit) ? value : super.getUnit().getConverterTo(unit).convert(value);
+    return getUnit().getConverterTo(unit).convert(value);
   }
 
+  @Override
   public long longValue(Unit<Q> unit) {
-    double result = doubleValue(unit);
+    final double result = getUnit().getConverterTo(unit).convert(value);
     if (result < Long.MIN_VALUE || result > Long.MAX_VALUE) {
       throw new ArithmeticException("Overflow (" + result + ")");
     }
@@ -155,6 +157,7 @@ final class FloatQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
 
   @Override
   public BigDecimal decimalValue(Unit<Q> unit) throws ArithmeticException {
-    return BigDecimal.valueOf(value);
+    final BigDecimal decimal = BigDecimal.valueOf(value);
+    return Calculus.toBigDecimal(getUnit().getConverterTo(unit).convert(decimal));
   }
 }
