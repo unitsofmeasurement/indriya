@@ -48,8 +48,8 @@ import tech.units.indriya.function.Calculus;
  * @author Otavio de Santana
  * @param <Q>
  *          The type of the quantity.
- * @version 0.4, $Date: 2017-05-28 $
- * @since 1.0.7
+ * @version 0.5, $Date: 2018-05-29 $
+ * @since 1.0
  */
 final class FloatQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
 
