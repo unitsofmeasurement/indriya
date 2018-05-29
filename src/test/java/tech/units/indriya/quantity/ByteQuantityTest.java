@@ -34,6 +34,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.math.BigDecimal;
+
 import javax.measure.MetricPrefix;
 import javax.measure.Quantity;
 import javax.measure.Unit;
@@ -327,18 +329,72 @@ public class ByteQuantityTest {
     assertFalse(ONE_OHM.equals(SQUARE_OHM));
   }
 
+  /**
+   * Verifies that the value is returned without conversion if doubleValue is called with the quantity's unit.
+   */
   @Test
-  public void longValueTest() {
-    ByteQuantity<Time> day = new ByteQuantity<Time>(Byte.valueOf("3").byteValue(), Units.DAY);
-    long hours = day.longValue(Units.HOUR);
-    assertEquals(72L, hours);
+  public void doubleValueReturnsValueForSameUnit() {
+    assertEquals(1, ONE_OHM.doubleValue(Units.OHM));
   }
 
+  /**
+   * Verifies that the value is correctly converted if doubleValue is called with the quantity's unit.
+   */
   @Test
-  public void doubleValueTest() {
-    ByteQuantity<Time> day = new ByteQuantity<Time>(Byte.valueOf("3").byteValue(), Units.DAY);
-    double hours = day.doubleValue(Units.HOUR);
-    assertEquals(72D, hours);
+  public void doubleValueReturnsConvertedValueForOtherUnit() {
+    assertEquals(0.1, ONE_DECIOHM.doubleValue(Units.OHM));
+  }
+
+  /**
+   * Verifies that the value is returned without conversion if decimalValue is called with the quantity's unit.
+   */
+  @Test
+  public void decimalValueReturnsValueForSameUnit() {
+    assertEquals(BigDecimal.valueOf(1.0), ONE_OHM.decimalValue(Units.OHM));
+  }
+
+  /**
+   * Verifies that the value is correctly converted if decimalValue is called with the quantity's unit.
+   */
+  @Test
+  public void decimalValueReturnsConvertedValueForOtherUnit() {
+    assertEquals(BigDecimal.valueOf(0.1), ONE_DECIOHM.decimalValue(Units.OHM));
+  }
+
+  /**
+   * Verifies that the value is returned without conversion if longValue is called with the quantity's unit.
+   */
+  @Test
+  public void longValueReturnsValueForSameUnit() {
+    assertEquals(1, ONE_OHM.longValue(Units.OHM));
+  }
+
+  /**
+   * Verifies that the value is correctly converted if longValue is called with the quantity's unit.
+   */
+  @Test
+  public void longValueReturnsConvertedValueForOtherUnit() {
+    assertEquals(0, ONE_DECIOHM.longValue(Units.OHM));
+  }
+
+  /**
+   * Verifies that an exception is thrown if the conversion for longValue results in a positive overflow.
+   */
+  @Test
+  public void longValueThrowsExceptionOnPositiveOverflow() {
+    assertThrows(ArithmeticException.class, () -> {
+      createQuantity((byte) 10, MetricPrefix.EXA(Units.OHM)).longValue(Units.OHM);
+    });
+  }
+
+  /**
+   * Verifies that an exception is thrown if the conversion for longValue results in a negative overflow.
+   */
+  @Test
+  public void longValueThrowsExceptionOnNegativeOverflow() {
+    assertThrows(ArithmeticException.class, () -> {
+      createQuantity((byte) -10, MetricPrefix.EXA(Units.OHM)).longValue(Units.OHM);
+    });
   }
 
   @Test
