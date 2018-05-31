@@ -28,10 +28,28 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 module tech.units.indriya {
-    requires java.logging;
-    requires javax.measure;
-    requires javax.measure.format;
-    requires javax.measure.quantity;
-    requires javax.measure.spi;
-    uses java.measure;
+    requires transitive java.logging;
+    requires transitive java.measure;
+    requires transitive tech.uom.lib.common;
+
+    exports tech.units.indriya;
+    exports tech.units.indriya.format;
+    exports tech.units.indriya.function;
+    exports tech.units.indriya.internal;
+    exports tech.units.indriya.internal.format;
+    exports tech.units.indriya.internal.format.l10n;
+    exports tech.units.indriya.internal.simplify;
+    exports tech.units.indriya.quantity;
+    exports tech.units.indriya.quantity.time;
+    exports tech.units.indriya.spi;
+    exports tech.units.indriya.unit;
+
+    provides javax.measure.spi.FormatService with
+        tech.units.indriya.internal.format.DefaultFormatService;
+    provides javax.measure.spi.ServiceProvider with
+        tech.units.indriya.spi.DefaultServiceProvider;
+    provides javax.measure.spi.SystemOfUnitsService with
+        tech.units.indriya.internal.DefaultSystemOfUnitsService;
+    provides javax.measure.spi.UnitFormatService with
+        tech.units.indriya.internal.format.DefaultUnitFormatService;
 }
