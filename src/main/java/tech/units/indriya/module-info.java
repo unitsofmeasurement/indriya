@@ -35,10 +35,6 @@ module tech.units.indriya {
     exports tech.units.indriya;
     exports tech.units.indriya.format;
     exports tech.units.indriya.function;
-    exports tech.units.indriya.internal;
-    exports tech.units.indriya.internal.format;
-    exports tech.units.indriya.internal.format.l10n;
-    exports tech.units.indriya.internal.simplify;
     exports tech.units.indriya.quantity;
     exports tech.units.indriya.quantity.time;
     exports tech.units.indriya.spi;
