@@ -27,7 +27,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package tech.units.indriya.spi;
+package tech.units.indriya.internal;
 
 import javax.measure.Quantity;
 import javax.measure.spi.FormatService;
@@ -54,7 +54,7 @@ import java.util.logging.Logger;
  * services.
  *
  * @author Werner Keil
- * @version 1.0
+ * @version 1.1
  * @since 1.0
  */
 public class DefaultServiceProvider extends ServiceProvider implements Comparable<ServiceProvider> {
@@ -94,7 +94,6 @@ public class DefaultServiceProvider extends ServiceProvider implements Comparabl
 		if (found != null) {
 			return found;
 		}
-
 		return loadServices(serviceType);
 	}
 
@@ -106,7 +105,7 @@ public class DefaultServiceProvider extends ServiceProvider implements Comparabl
 		return services.get(0);
 	}
 
-	static int compareServices(Object o1, Object o2) {
+	private static int compareServices(Object o1, Object o2) {
 		int prio1 = 0;
 		int prio2 = 0;
 		if (prio1 < prio2) {

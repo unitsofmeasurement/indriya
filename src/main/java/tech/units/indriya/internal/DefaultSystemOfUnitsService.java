@@ -27,10 +27,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package tech.units.indriya.spi;
+package tech.units.indriya.internal;
 
 import javax.measure.spi.SystemOfUnits;
 
+import tech.units.indriya.spi.AbstractSystemOfUnitsService;
 import tech.units.indriya.unit.Units;
 
 /**

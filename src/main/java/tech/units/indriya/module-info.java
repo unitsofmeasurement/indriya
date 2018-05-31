@@ -43,9 +43,9 @@ module tech.units.indriya {
     provides javax.measure.spi.FormatService with
         tech.units.indriya.internal.format.DefaultFormatService;
     provides javax.measure.spi.ServiceProvider with
-        tech.units.indriya.spi.DefaultServiceProvider;
+    	tech.units.indriya.internal.DefaultServiceProvider;
     provides javax.measure.spi.SystemOfUnitsService with
-        tech.units.indriya.spi.DefaultSystemOfUnitsService;
+        tech.units.indriya.internal.DefaultSystemOfUnitsService;
     provides javax.measure.spi.UnitFormatService with
         tech.units.indriya.internal.format.DefaultUnitFormatService;
 }
