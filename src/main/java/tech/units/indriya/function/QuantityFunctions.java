@@ -43,7 +43,7 @@ import javax.measure.Unit;
 /**
  * @author Otavio
  * @author Werner
- * @version 1.0
+ * @version 1.0.1
  * @since 1.0
  *
  */
@@ -60,10 +60,10 @@ public final class QuantityFunctions {
    *         <b>Given:</b>
    *         <p>
    *         <code>
-   * Quantity<Time> day = timeFactory.create(1, Units.DAY);<br/>
-   * Quantity<Time> hours = timeFactory.create(18, Units.HOUR);<br/>
-   * Quantity<Time> minutes = timeFactory.create(15, Units.HOUR);<br/>
-   * Quantity<Time> seconds = timeFactory.create(100, Units.HOUR);<br/>
+   * Quantity<Time> day = timeFactory.create(1, Units.DAY);<br>
+   * Quantity<Time> hours = timeFactory.create(18, Units.HOUR);<br>
+   * Quantity<Time> minutes = timeFactory.create(15, Units.HOUR);<br>
+   * Quantity<Time> seconds = timeFactory.create(100, Units.HOUR);<br>
    * </code>
    *         <p>
    *         will return: <code>day, hours, minutes, seconds</code>
@@ -81,10 +81,10 @@ public final class QuantityFunctions {
    *         <b>Given:</b>
    *         <p>
    *         <code>
-   * Quantity<Time> day = timeFactory.create(1, Units.DAY);<br/>
-   * Quantity<Time> hours = timeFactory.create(18, Units.HOUR);<br/>
-   * Quantity<Time> minutes = timeFactory.create(15, Units.HOUR);<br/>
-   * Quantity<Time> seconds = timeFactory.create(100, Units.HOUR);<br/>
+   * Quantity<Time> day = timeFactory.create(1, Units.DAY);<br>
+   * Quantity<Time> hours = timeFactory.create(18, Units.HOUR);<br>
+   * Quantity<Time> minutes = timeFactory.create(15, Units.HOUR);<br>
+   * Quantity<Time> seconds = timeFactory.create(100, Units.HOUR);<br>
    * </code>
    *         <p>
    *         will return: <code>seconds, hours, minutes, day</code>
@@ -103,10 +103,10 @@ public final class QuantityFunctions {
    *         <b>Given:</b>
    *         <p>
    *         <code>
-   * Quantity<Time> day = timeFactory.create(1, Units.DAY);<br/>
-   * Quantity<Time> hours = timeFactory.create(18, Units.HOUR);<br/>
-   * Quantity<Time> minutes = timeFactory.create(15, Units.HOUR);<br/>
-   * Quantity<Time> seconds = timeFactory.create(100, Units.HOUR);<br/>
+   * Quantity<Time> day = timeFactory.create(1, Units.DAY);<br>
+   * Quantity<Time> hours = timeFactory.create(18, Units.HOUR);<br>
+   * Quantity<Time> minutes = timeFactory.create(15, Units.HOUR);<br>
+   * Quantity<Time> seconds = timeFactory.create(100, Units.HOUR);<br>
    * </code>
    *         <p>
    *         will return: <code>day, hours, minutes, seconds</code>
@@ -124,10 +124,10 @@ public final class QuantityFunctions {
    *         <b>Given:</b>
    *         </p>
    *         <code>
-   * Quantity<Time> day = timeFactory.create(1, Units.DAY);<br/>
-   * Quantity<Time> hours = timeFactory.create(18, Units.HOUR);<br/>
-   * Quantity<Time> minutes = timeFactory.create(15, Units.HOUR);<br/>
-   * Quantity<Time> seconds = timeFactory.create(100, Units.HOUR);<br/>
+   * Quantity<Time> day = timeFactory.create(1, Units.DAY);<br>
+   * Quantity<Time> hours = timeFactory.create(18, Units.HOUR);<br>
+   * Quantity<Time> minutes = timeFactory.create(15, Units.HOUR);<br>
+   * Quantity<Time> seconds = timeFactory.create(100, Units.HOUR);<br>
    * </code>
    *         <p>
    *         will return: <code>seconds, minutes, hour,  day</code>
@@ -146,10 +146,10 @@ public final class QuantityFunctions {
    *         <b>Given:</b>
    *         </p>
    *         <code>
-   * Quantity<Time> day = timeFactory.create(1, Units.DAY);<br/>
-   * Quantity<Time> hours = timeFactory.create(18, Units.HOUR);<br/>
-   * Quantity<Time> minutes = timeFactory.create(15, Units.HOUR);<br/>
-   * Quantity<Time> seconds = timeFactory.create(100, Units.HOUR);<br/>
+   * Quantity<Time> day = timeFactory.create(1, Units.DAY);<br>
+   * Quantity<Time> hours = timeFactory.create(18, Units.HOUR);<br>
+   * Quantity<Time> minutes = timeFactory.create(15, Units.HOUR);<br>
+   * Quantity<Time> seconds = timeFactory.create(100, Units.HOUR);<br>
    * </code>
    *         <p>
    *         will return: <code>seconds, minutes, hours, day</code>
@@ -168,10 +168,10 @@ public final class QuantityFunctions {
    *         <b>Given:</b>
    *         </p>
    *         <code>
-   * Quantity<Time> day = timeFactory.create(1, Units.DAY);<br/>
-   * Quantity<Time> hours = timeFactory.create(18, Units.HOUR);<br/>
-   * Quantity<Time> minutes = timeFactory.create(15, Units.HOUR);<br/>
-   * Quantity<Time> seconds = timeFactory.create(100, Units.HOUR);<br/>
+   * Quantity<Time> day = timeFactory.create(1, Units.DAY);<br>
+   * Quantity<Time> hours = timeFactory.create(18, Units.HOUR);<br>
+   * Quantity<Time> minutes = timeFactory.create(15, Units.HOUR);<br>
+   * Quantity<Time> seconds = timeFactory.create(100, Units.HOUR);<br>
    * </code>
    *         <p>
    *         will return: <code>day, hour, minute, second</code>

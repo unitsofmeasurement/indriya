@@ -42,7 +42,7 @@ import tech.units.indriya.AbstractConverter;
  * Worker for the Simplifier.
  * 
  * @author Andi Huber
- * @version 1.0
+ * @version 1.1
  * @since 2.0
  */
 final class SimplificationWorker {
@@ -69,11 +69,11 @@ final class SimplificationWorker {
 	 * Swapping is allowed for 2 consecutive converters that are both
 	 * multiply transformations (x.isLinear()==true).
 	 * We search this permutation group for any sequence of converters, that allows simplification:
-	 * <br/><br/>
+	 * <br><br>
 	 * For every pair of consecutive converters within a sequence, 
 	 * check whether a simplification is possible (a.isSimpleCompositionWith(b)), 
 	 * then apply simplification and start over.
-	 * <br/><br/>
+	 * <br><br>
 	 * Finally sort according to normal-form order.
 	 * </p>
 	 * @param conversionSteps

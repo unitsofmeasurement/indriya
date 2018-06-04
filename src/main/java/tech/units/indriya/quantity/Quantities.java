@@ -44,7 +44,7 @@ import tech.units.indriya.format.SimpleQuantityFormat;
 
 /**
  * Singleton class for accessing {@link Quantity} instances.
- * @version 1.1
+ * @version 1.1.1
  * @author werner
  * @author otaviojava
  * @since 1.0
@@ -58,7 +58,7 @@ public final class Quantities {
 
   /**
    * Returns the {@link #valueOf(java.math.BigDecimal, javax.measure.unit.Unit) decimal} quantity of unknown type corresponding to the specified
-   * representation. This method can be used to parse dimensionless quantities.<br/>
+   * representation. This method can be used to parse dimensionless quantities.<br>
    * <code>
    *     Quantity<Dimensionless> proportion = Quantities.getQuantity("0.234").asType(Dimensionless.class);
    * </code>

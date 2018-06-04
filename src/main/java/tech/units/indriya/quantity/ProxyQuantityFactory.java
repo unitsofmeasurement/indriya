@@ -55,7 +55,7 @@ import tech.units.indriya.AbstractUnit;
  *
  * For example:<br>
  * <code>
- *      Quantity<Mass> m = ProxyQuantityFactory.getInstance(Mass.class).create(23.0, KILOGRAM); // 23.0 kg<br/>
+ *      Quantity<Mass> m = ProxyQuantityFactory.getInstance(Mass.class).create(23.0, KILOGRAM); // 23.0 kg<br>
  *      Quantity<Time> t = ProxyQuantityFactory.getInstance(Time.class).create(124, MILLI(SECOND)); // 124 ms
  * </code>
  * 
@@ -65,7 +65,7 @@ import tech.units.indriya.AbstractUnit;
  * @author <a href="mailto:martin.desruisseaux@geomatys.com">Martin Desruisseaux</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
- * @version 1.1, $Date: 2018-03-04 $
+ * @version 1.1.1, $Date: 2018-06-05 $
  * @since 1.0
  */
 public abstract class ProxyQuantityFactory<Q extends Quantity<Q>> implements QuantityFactory<Q> {

@@ -39,14 +39,14 @@ import tech.units.indriya.spi.Range;
 /**
  * A Quantity Range is a pair of {@link Quantity} items that represent a range of values.
  * <p>
- * Range limits MUST be presented in the same scale and have the same unit as measured data values.<br/>
+ * Range limits MUST be presented in the same scale and have the same unit as measured data values.<br>
  * Subclasses of QuantityRange should be immutable.
  * 
  * @param <Q>
  *          The value of the range.
  * 
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 0.5, December 29, 2017
+ * @version 0.6, June 5, 2018
  * @see <a href= "http://www.botts-inc.com/SensorML_1.0.1/schemaBrowser/SensorML_QuantityRange.html"> SensorML: QuantityRange</a>
  */
 public class QuantityRange<Q extends Quantity<Q>> extends Range<Quantity<Q>> {

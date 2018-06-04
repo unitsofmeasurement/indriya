@@ -37,14 +37,15 @@ import tech.uom.lib.common.function.Nameable;
 
 /**
  * TimedData is a container for a data value that keeps track of its age. This class keeps track of the birth time of a bit of data, i.e. time the
- * object is instantiated.<br/>
+ * object is instantiated.<br>
  * The TimedData MUST be immutable.
  * 
  * @param <T>
  *          The data value.
  * 
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 0.5
+ * @version 0.6
+ * @since 1.0
  * @see <a href="http://en.wikipedia.org/wiki/Time_series"> Wikipedia: Time Series</a>
  */
 public class TimedData<T> implements Nameable, Supplier<T> {

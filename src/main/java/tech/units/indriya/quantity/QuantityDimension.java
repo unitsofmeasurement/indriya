@@ -55,8 +55,8 @@ import java.util.logging.Logger;
  * {@link DimensionService} instances. For convenience, a static method
  * {@link QuantityDimension#of(Class) aggregating the results of all
  * 
- * @link DimensionService} instances is provided.<br/>
- *       <br/>
+ * @link DimensionService} instances is provided.<br>
+ *       <br>
  *       <code>
  *        QuantityDimension speedDimension
  *            = QuantityDimension.of(Speed.class);
@@ -65,7 +65,7 @@ import java.util.logging.Logger;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.1, $Date: 2018-04-22 $
+ * @version 1.1.1, $Date: 2018-06-05 $
  * @since 1.0
  */
 public final class QuantityDimension implements Dimension, Serializable {

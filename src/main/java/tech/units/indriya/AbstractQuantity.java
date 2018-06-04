@@ -54,7 +54,7 @@ import tech.uom.lib.common.function.ValueSupplier;
  *
  * <p>
  * To avoid any loss of precision, known exact quantities (e.g. physical constants) should not be created from <code>double</code> constants but from
- * their decimal representation.<br/>
+ * their decimal representation.<br>
  * <code>
  *         public static final Quantity&lt;Velocity&gt; C = NumberQuantity.parse("299792458 m/s").asType(Velocity.class);
  *         // Speed of Light (exact).
@@ -105,7 +105,7 @@ import tech.uom.lib.common.function.ValueSupplier;
  * </p>
  *
  * @author <a href="mailto:werner@uom.technology">Werner Keil</a>
- * @version 1.3, April 13, 2018
+ * @version 1.3.1, June 5, 2018
  * @since 1.0
  */
 @SuppressWarnings("unchecked")
@@ -349,7 +349,7 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
 
   /**
    * Casts this quantity to a parameterized quantity of specified nature or throw a <code>ClassCastException</code> if the dimension of the specified
-   * quantity and its unit's dimension do not match. For example:<br/>
+   * quantity and its unit's dimension do not match. For example:<br>
    * <code>
    *     Quantity<Length> length = AbstractQuantity.parse("2 km").asType(Length.class);
    * </code>
@@ -370,7 +370,7 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
   }
 
   /**
-   * Returns the quantity of unknown type corresponding to the specified representation. This method can be used to parse dimensionless quantities.<br/>
+   * Returns the quantity of unknown type corresponding to the specified representation. This method can be used to parse dimensionless quantities.<br>
    * <code>
    *     Quatity<Dimensionless> proportion = AbstractQuantity.parse("0.234").asType(Dimensionless.class);
    * </code>
