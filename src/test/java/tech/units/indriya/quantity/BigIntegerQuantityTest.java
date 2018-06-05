@@ -31,11 +31,15 @@ package tech.units.indriya.quantity;
 
 import static javax.measure.MetricPrefix.MILLI;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigInteger;
 
 import javax.measure.MetricPrefix;
 import javax.measure.Quantity;
+import javax.measure.Unit;
+import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.ElectricResistance;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Time;
@@ -43,26 +47,94 @@ import javax.measure.quantity.Time;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.unit.Units;
 
 public class BigIntegerQuantityTest {
 
-  private final BigIntegerQuantity<ElectricResistance> ONE_OHM = new BigIntegerQuantity<ElectricResistance>(1L, Units.OHM);
+  private static final Unit<?> SQUARE_OHM = Units.OHM.multiply(Units.OHM);
+  private final BigIntegerQuantity<ElectricResistance> ONE_OHM = createQuantity(1L, Units.OHM);
+  private final BigIntegerQuantity<ElectricResistance> TWO_OHM = createQuantity(2L, Units.OHM);
 
-  @Test
-  public void divideTest() {
-    BigIntegerQuantity<ElectricResistance> quantity1 = new BigIntegerQuantity<ElectricResistance>(Long.valueOf(3).intValue(), Units.OHM);
-    BigIntegerQuantity<ElectricResistance> quantity2 = new BigIntegerQuantity<ElectricResistance>(Long.valueOf(2).intValue(), Units.OHM);
-    Quantity<?> result = quantity1.divide(quantity2);
-    assertEquals(BigInteger.ONE, result.getValue());
+  private <Q extends Quantity<Q>> BigIntegerQuantity<Q> createQuantity(long l, Unit<Q> unit) {
+    return new BigIntegerQuantity<Q>(l, unit);
   }
 
+  /**
+   * Verifies that the multiplication of two quantities multiplies correctly.
+   */
   @Test
-  public void multiplyQuantityTest() {
-    final BigIntegerQuantity<ElectricResistance> quantity1 = new BigIntegerQuantity<ElectricResistance>(Long.valueOf(3).intValue(), Units.OHM);
-    BigIntegerQuantity<ElectricResistance> quantity2 = new BigIntegerQuantity<ElectricResistance>(Long.valueOf(2).intValue(), Units.OHM);
-    Quantity<?> result = quantity1.multiply(quantity2);
-    assertEquals(BigInteger.valueOf(6), result.getValue());
+  public void quantityMultiplicationMultipliesCorrectly() {
+    Quantity<?> actual = TWO_OHM.multiply(TWO_OHM);
+    BigIntegerQuantity<?> expected = createQuantity(4L, SQUARE_OHM);
+    assertEquals(expected, actual);
+  }
+
+  /**
+   * Verifies that the multiplication with a number multiplies correctly.
+   */
+  @Test
+  public void numberMultiplicationMultipliesCorrectly() {
+    Quantity<?> actual = TWO_OHM.multiply(2L);
+    BigIntegerQuantity<ElectricResistance> expected = createQuantity(4L, Units.OHM);
+    assertEquals(expected, actual);
+  }
+
+  /**
+   * Verifies that the division of two quantities divides correctly.
+   */
+  @Test
+  public void quantityDivisionDividesCorrectly() {
+    Quantity<?> actual = TWO_OHM.divide(TWO_OHM);
+    BigIntegerQuantity<Dimensionless> expected = createQuantity(1L, AbstractUnit.ONE);
+    assertEquals(expected, actual);
+  }
+
+  /**
+   * Verifies that the division with a number divides correctly.
+   */
+  @Test
+  public void numberDivisionDividesCorrectly() {
+    Quantity<?> actual = TWO_OHM.divide(2L);
+    assertEquals(ONE_OHM, actual);
+  }
+
+  /**
+   * Verifies that the inverse returns the correct reciprocal for a unit quantity.
+   */
+  @Test
+  public void inverseReturnsUnitQuantityForUnitQuantity() {
+    Quantity<?> actual = ONE_OHM.inverse();
+    BigIntegerQuantity<?> expected = createQuantity(1L, Units.OHM.inverse());
+    assertEquals(expected, actual);
+  }
+
+  /**
+   * Verifies that the inverse returns the correct reciprocal for a quantity larger than a unit quantity.
+   */
+  @Test
+  public void inverseReturnsZeroQuantityForLargerThanUnitQuantity() {
+    Quantity<?> actual = TWO_OHM.inverse();
+    BigIntegerQuantity<?> expected = createQuantity(0L, Units.OHM.inverse());
+    assertEquals(expected, actual);
+  }
+
+  /**
+   * Verifies that the inverse throws an exception for a zero quantity.
+   */
+  @Test
+  public void inverseThrowsExceptionForZeroQuantity() {
+    assertThrows(ArithmeticException.class, () -> {
+      createQuantity(0L, Units.OHM).inverse();
+    });
+  }
+
+  /**
+   * Verifies that a BigIntegerQuantity is big.
+   */
+  @Test
+  public void bigIntegerQuantityIsBig() {
+    assertTrue(ONE_OHM.isBig());
   }
 
   @Test
