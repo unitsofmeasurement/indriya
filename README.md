@@ -13,7 +13,7 @@ This implementation aims at **Java SE 8** and above.
 [![Join the chat at https://gitter.im/unitsofmeasurement/indriya](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/unitsofmeasurement/indriya?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ## Contribute
-[Contribution Guide](../wiki/Contribution-Guide)
+[Contribution Guide](../../wiki/Contribution-Guide)
 
 ## Planning
 
