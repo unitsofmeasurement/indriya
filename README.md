@@ -12,6 +12,9 @@ This implementation aims at **Java SE 8** and above.
 [![License](http://img.shields.io/badge/license-BSD3-blue.svg)](http://opensource.org/licenses/BSD-3-Clause)
 [![Join the chat at https://gitter.im/unitsofmeasurement/indriya](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/unitsofmeasurement/indriya?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
+## Contribute
+[Contribution Guide](../wiki/Contribution-Guide)
+
 ## Planning
 
 [![GitHub issues](https://img.shields.io/github/issues-raw/unitsofmeasurement/indriya.svg)](https://github.com/unitsofmeasurement/indriya/issues) 
