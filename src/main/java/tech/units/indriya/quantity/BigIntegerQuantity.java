@@ -106,11 +106,11 @@ final class BigIntegerQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q
     if (getUnit().equals(unit)) {
       return new BigDecimal(value);
     } else {
-      final Number converted = ((AbstractConverter) unit.getConverterTo(unit)).convert(value);
+      final Number converted = ((AbstractConverter) getUnit().getConverterTo(unit)).convert(value);
       if (converted instanceof BigDecimal) {
-        return BigDecimal.class.cast(converted);
+        return (BigDecimal) converted;
       } else if (converted instanceof BigInteger) {
-        return new BigDecimal(BigInteger.class.cast(converted));
+        return new BigDecimal((BigInteger) converted);
       } else {
         return BigDecimal.valueOf(converted.doubleValue());
       }
