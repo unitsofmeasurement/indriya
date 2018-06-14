@@ -156,7 +156,7 @@ public interface ComparableQuantity<Q extends Quantity<Q>> extends Quantity<Q>, 
    * @throws NullPointerException
    *           if the quantity is null
    */
-  boolean isEquivalentOf(Quantity<Q> that);
+  boolean isEquivalentTo(Quantity<Q> that);
 
   /**
    * Multiply and cast the {@link ComparableQuantity}

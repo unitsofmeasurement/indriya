@@ -242,9 +242,9 @@ public class DoubleComparableQuantityTest {
     ComparableQuantity<Time> dayInHour = Quantities.getQuantity(24D, Units.HOUR);
     ComparableQuantity<Time> daysInHour = Quantities.getQuantity(46D, Units.HOUR);
 
-    assertTrue(day.isEquivalentOf(day));
-    assertFalse(day.isEquivalentOf(hours));
-    assertTrue(day.isEquivalentOf(dayInHour));
-    assertFalse(day.isEquivalentOf(daysInHour));
+    assertTrue(day.isEquivalentTo(day));
+    assertFalse(day.isEquivalentTo(hours));
+    assertTrue(day.isEquivalentTo(dayInHour));
+    assertFalse(day.isEquivalentTo(daysInHour));
   }
 }

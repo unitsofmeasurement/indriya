@@ -235,15 +235,15 @@ public class NumberComparableQuantityTest {
   }
 
   @Test
-  public void isEquivalentOfTest() {
+  public void isEquivalentTest() {
     ComparableQuantity<Time> day = Quantities.getQuantity(1, Units.DAY);
     ComparableQuantity<Time> hours = Quantities.getQuantity(12, Units.HOUR);
     ComparableQuantity<Time> dayInHour = Quantities.getQuantity(24, Units.HOUR);
     ComparableQuantity<Time> daysInHour = Quantities.getQuantity(48, Units.HOUR);
 
     assertTrue(day.isLessThanOrEqualTo(day));
-    assertFalse(day.isEquivalentOf(hours));
-    assertTrue(day.isEquivalentOf(dayInHour));
-    assertFalse(day.isEquivalentOf(daysInHour));
+    assertFalse(day.isEquivalentTo(hours));
+    assertTrue(day.isEquivalentTo(dayInHour));
+    assertFalse(day.isEquivalentTo(daysInHour));
   }
 }
