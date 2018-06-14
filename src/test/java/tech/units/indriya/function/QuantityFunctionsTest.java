@@ -62,16 +62,16 @@ public class QuantityFunctionsTest {
 
   @Test
   public void sumTemperatureUnitTestC() {
-    List<Quantity<Temperature>> temps = new ArrayList<>(getList());
-    Quantity<Temperature> sumTemp = temps.stream().reduce(QuantityFunctions.sum(Units.CELSIUS)).get();
+    final List<Quantity<Temperature>> temps = new ArrayList<>(getList());
+    final Quantity<Temperature> sumTemp = temps.stream().reduce(QuantityFunctions.sum(Units.CELSIUS)).get();
     assertEquals(BigDecimal.valueOf(-271.15), sumTemp.getValue());
   }
 
   
   @Test
   public void sumTemperatureUnitTestK() {
-    List<Quantity<Temperature>> temps = new ArrayList<>(getList());
-    Quantity<Temperature> sumTemp = temps.stream().reduce(QuantityFunctions.sum(Units.KELVIN)).get();
+    final List<Quantity<Temperature>> temps = new ArrayList<>(getList());
+    final Quantity<Temperature> sumTemp = temps.stream().reduce(QuantityFunctions.sum(Units.KELVIN)).get();
     assertEquals(Double.valueOf(275.15), sumTemp.getValue());
   }
   
