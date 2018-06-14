@@ -61,7 +61,7 @@ public class QuantityFunctionsTest {
   }
 
   @Test
-  public void sumTemperatureUnitTestC() {
+  public void testSumTemperatureC() {
     final List<Quantity<Temperature>> temps = new ArrayList<>(getList());
     final Quantity<Temperature> sumTemp = temps.stream().reduce(QuantityFunctions.sum(Units.CELSIUS)).get();
     assertEquals(Units.CELSIUS, sumTemp.getUnit());
@@ -70,7 +70,7 @@ public class QuantityFunctionsTest {
 
   
   @Test
-  public void sumTemperatureUnitTestK() {
+  public void testSumTemperatureK() {
     final List<Quantity<Temperature>> temps = new ArrayList<>(getList());
     final Quantity<Temperature> sumTemp = temps.stream().reduce(QuantityFunctions.sum(Units.KELVIN)).get();
     assertEquals(Units.KELVIN, sumTemp.getUnit());
@@ -78,7 +78,7 @@ public class QuantityFunctionsTest {
   }
   
   @Test
-  public void sumTemperatureUnitTestK2C() {
+  public void testSumTemperatureK2C() {
     final List<Quantity<Temperature>> temps = new ArrayList<>(getList());
     final Quantity<Temperature> sumTemp = temps.stream().reduce(QuantityFunctions.sum(Units.KELVIN)).get();
     assertEquals(Units.KELVIN, sumTemp.getUnit());
