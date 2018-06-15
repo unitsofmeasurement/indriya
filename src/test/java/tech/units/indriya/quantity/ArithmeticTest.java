@@ -30,11 +30,14 @@
 package tech.units.indriya.quantity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static tech.units.indriya.unit.Units.METRE;
+import static tech.units.indriya.unit.Units.*;
 
 import javax.measure.Quantity;
 import javax.measure.quantity.Length;
+import javax.measure.quantity.Temperature;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -63,6 +66,21 @@ public class ArithmeticTest {
     assertNotNull(result);
     assertEquals(METRE, result.getUnit());
     assertEquals(Double.valueOf(15), Double.valueOf(result.getValue().doubleValue()));
+  }
+  
+  @Test
+  public void testAddTemp() {
+    Quantity<Temperature> temp1 = Quantities.getQuantity(5, CELSIUS);
+    Quantity<Temperature> temp2 = Quantities.getQuantity(5, KELVIN);
+    
+    Quantity<Temperature> result = temp1.add(temp2);
+    Quantity<Temperature> result2 = temp2.add(temp1);
+    assertNotNull(result);
+    assertEquals(CELSIUS, result.getUnit());
+    assertEquals(Double.valueOf(-263.15), Double.valueOf(result.getValue().doubleValue()));
+    assertEquals(KELVIN, result2.getUnit());
+    assertEquals(Double.valueOf(283.15), Double.valueOf(result2.getValue().doubleValue()));
+    assertNotEquals(result, result2.to(CELSIUS)); // currently adding Celsius to Kelvin is not the same as adding Kelvin to Celsius.
   }
 
   @Test
