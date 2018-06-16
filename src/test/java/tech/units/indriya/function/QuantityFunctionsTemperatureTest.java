@@ -48,14 +48,13 @@ import tech.units.indriya.unit.Units;
 
 public class QuantityFunctionsTemperatureTest {
 
-	private QuantityFactory<Temperature> tempFactory;
 	private Quantity<Temperature> temp1;
 	private Quantity<Temperature> temp2;
 
 	@BeforeEach
 	public void init() {
-		final ServiceProvider factoryService = ServiceProvider.current();
-		tempFactory = factoryService.getQuantityFactory(Temperature.class);
+		final QuantityFactory<Temperature> tempFactory =  
+				ServiceProvider.current().getQuantityFactory(Temperature.class);
 		temp1 = tempFactory.create(1, Units.CELSIUS);
 		temp2 = tempFactory.create(1, Units.KELVIN);
 	}
