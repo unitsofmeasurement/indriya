@@ -38,6 +38,7 @@ import java.util.logging.Logger;
 
 /**
  * Utility class providing numerical constants such as Pi
+ * @author Andi Huber
  * @since 2.0 
  */
 class Constants {
