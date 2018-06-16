@@ -46,7 +46,7 @@ import org.junit.jupiter.api.Test;
 import tech.units.indriya.function.QuantityFunctions;
 import tech.units.indriya.unit.Units;
 
-public class QuantityFunctionsTest {
+public class QuantityFunctionsTemperatureTest {
 
 	private QuantityFactory<Temperature> tempFactory;
 	private Quantity<Temperature> temp1;

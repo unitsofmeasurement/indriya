@@ -89,5 +89,11 @@ public class TemperatureTest {
 		Quantity<Temperature> result = t.add(t2);
 		assertEquals(BigDecimal.valueOf(-251.15d), result.getValue());
 	}
+	
+	public void testAdd3() {
+		
+	}
+	
+	//1°C + 2°C = 274.15 K + 275.15 K
 
 }
