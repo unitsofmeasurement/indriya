@@ -31,6 +31,7 @@ package tech.units.indriya.function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static tech.units.indriya.function.QuantityStreams.summarizeQuantity;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -95,7 +96,7 @@ public class QuantityFunctionsGroupTest {
   @Test
   public void summaryTest() {
     List<Quantity<Time>> times = createTimes();
-    QuantitySummaryStatistics<Time> summary = times.stream().collect(QuantityFunctions.summarizeQuantity(Units.HOUR));
+    QuantitySummaryStatistics<Time> summary = times.stream().collect(summarizeQuantity(Units.HOUR));
 
     assertEquals(4, summary.getCount());
     assertNotNull(summary.getAverage());

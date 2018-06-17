@@ -34,16 +34,16 @@ import java.util.Objects;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
-import java.util.stream.Collector;
-
 import javax.measure.Quantity;
 import javax.measure.Unit;
 
 /**
+ * Utility methods for operating on {@link Unit units} and {@link Quantity quantities} with Java 
+ * {@linkplain FunctionalInterface functional interfaces} like {@linkplain Function}. 
+ * 
  * @author Otavio
  * @author Werner
- * @version 1.0.1
+ * @version 1.0.2
  * @since 1.0
  *
  */
@@ -51,6 +51,7 @@ import javax.measure.Unit;
 public final class QuantityFunctions {
 
   private QuantityFunctions() {
+	  throw new Error("no instances");
   }
 
   /**
@@ -393,17 +394,6 @@ public final class QuantityFunctions {
   public static <Q extends Quantity<Q>> Predicate<Quantity<Q>> isBetween(Quantity<Q> min, Quantity<Q> max) {
     return isGreaterThanOrEqualTo(min).and(isLesserThanOrEqualTo(max));
   }
-
-  /**
-   * Summary of Quantity
-   * 
-   * @return the QuantitySummaryStatistics
-   */
-  public static <Q extends Quantity<Q>> Collector<Quantity<Q>, QuantitySummaryStatistics<Q>, QuantitySummaryStatistics<Q>> summarizeQuantity(
-			Unit<Q> unit) {
-		Supplier<QuantitySummaryStatistics<Q>> supplier = () -> new QuantitySummaryStatistics<>(unit);
-		return Collector.of(supplier, QuantitySummaryStatistics<Q>::accept, QuantitySummaryStatistics<Q>::combine);
-	}
 
   public static <Q extends Quantity<Q>> Function<Quantity<Q>, Unit<Q>> groupByUnit() {
 		return Quantity::getUnit;
