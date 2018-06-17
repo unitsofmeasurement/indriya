@@ -84,7 +84,7 @@ public class QuantityFunctionsGroupTest {
   }
 
   @Test
-  public void groupBsyTest() {
+  public void groupByTest2() {
     List<Quantity<Time>> times = createTimes();
     Map<Boolean, List<Quantity<Time>>> timeMap = times.stream().collect(Collectors.partitioningBy(QuantityFunctions.fiterByUnit(Units.MINUTE)));
 
