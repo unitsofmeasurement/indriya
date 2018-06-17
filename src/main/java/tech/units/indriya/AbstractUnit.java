@@ -141,8 +141,8 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
 	 */
 	@Override
 	public boolean isSystemUnit() {
-		Unit<Q> si = this.toSystemUnit();
-		return (this == si) || this.equals(si);
+		Unit<Q> sys = this.toSystemUnit();
+		return (this == sys) || this.equals(sys);
 	}
 
 	/**
