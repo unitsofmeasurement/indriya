@@ -147,7 +147,7 @@ public class QuantityFunctionsFilterTest {
   public void isLesserThanTest() {
     List<Quantity<Time>> times = new ArrayList<>(getTimes());
     times.add(timeFactory.create(30, Units.HOUR));
-    List<Quantity<Time>> list = times.stream().filter(QuantityFunctions.isLesserThan(15)).collect(Collectors.toList());
+    List<Quantity<Time>> list = times.stream().filter(QuantityFunctions.isLessThan(15)).collect(Collectors.toList());
     assertEquals(Integer.valueOf(1), Integer.valueOf(list.size()));
 
   }
@@ -156,7 +156,7 @@ public class QuantityFunctionsFilterTest {
   public void isLesserThanQuantityTest() {
     List<Quantity<Time>> times = createTimesToFilter();
     Quantity<Time> filter = timeFactory.create(1, Units.DAY);
-    List<Quantity<Time>> list = times.stream().filter(QuantityFunctions.isLesserThan(filter)).collect(Collectors.toList());
+    List<Quantity<Time>> list = times.stream().filter(QuantityFunctions.isLessThan(filter)).collect(Collectors.toList());
     assertEquals(Integer.valueOf(1), Integer.valueOf(list.size()));
 
   }
@@ -165,7 +165,7 @@ public class QuantityFunctionsFilterTest {
   public void isLesserThanOrEqualToTest() {
     List<Quantity<Time>> times = new ArrayList<>(getTimes());
     times.add(timeFactory.create(30, Units.HOUR));
-    List<Quantity<Time>> list = times.stream().filter(QuantityFunctions.isLesserThanOrEqualTo(15)).collect(Collectors.toList());
+    List<Quantity<Time>> list = times.stream().filter(QuantityFunctions.isLessThanOrEqualTo(15)).collect(Collectors.toList());
     assertEquals(Integer.valueOf(2), Integer.valueOf(list.size()));
 
   }
@@ -174,7 +174,7 @@ public class QuantityFunctionsFilterTest {
   public void isLesserThanOrEqualToQuantityTest() {
     List<Quantity<Time>> times = createTimesToFilter();
     Quantity<Time> filter = timeFactory.create(1, Units.DAY);
-    List<Quantity<Time>> list = times.stream().filter(QuantityFunctions.isLesserThanOrEqualTo(filter)).collect(Collectors.toList());
+    List<Quantity<Time>> list = times.stream().filter(QuantityFunctions.isLessThanOrEqualTo(filter)).collect(Collectors.toList());
     assertEquals(Integer.valueOf(3), Integer.valueOf(list.size()));
 
   }

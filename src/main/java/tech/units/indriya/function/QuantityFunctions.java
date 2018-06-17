@@ -43,7 +43,7 @@ import javax.measure.Unit;
  * 
  * @author Otavio
  * @author Werner
- * @version 1.0.2
+ * @version 1.0.3
  * @since 1.0
  *
  */
@@ -330,7 +330,7 @@ public final class QuantityFunctions {
    *          - the value to be used in Predicate
    * @return the Predicate greater than this number, ignoring units
    */
-  public static <Q extends Quantity<Q>> Predicate<Quantity<Q>> isLesserThan(Number value) {
+  public static <Q extends Quantity<Q>> Predicate<Quantity<Q>> isLessThan(Number value) {
 		return q -> q.getValue().doubleValue() < value.doubleValue();
 	}
 
@@ -341,7 +341,7 @@ public final class QuantityFunctions {
    *          - the measure to be used in filter
    * @return the Predicate lesser than this measure
    */
-  public static <Q extends Quantity<Q>> Predicate<Quantity<Q>> isLesserThan(Quantity<Q> quantity) {
+  public static <Q extends Quantity<Q>> Predicate<Quantity<Q>> isLessThan(Quantity<Q> quantity) {
 		return q -> q.to(quantity.getUnit()).getValue().doubleValue() < quantity.getValue().doubleValue();
 	}
 
@@ -352,7 +352,7 @@ public final class QuantityFunctions {
    *          - the value to be used in Predicate
    * @return the Predicate lesser or equals than this number, ignoring units
    */
-  public static <Q extends Quantity<Q>> Predicate<Quantity<Q>> isLesserThanOrEqualTo(Number value) {
+  public static <Q extends Quantity<Q>> Predicate<Quantity<Q>> isLessThanOrEqualTo(Number value) {
 		return q -> q.getValue().doubleValue() <= value.doubleValue();
 	}
 
@@ -363,7 +363,7 @@ public final class QuantityFunctions {
    *          - the measure to be used in filter
    * @return the Predicate lesser or equals than this measure
    */
-  public static <Q extends Quantity<Q>> Predicate<Quantity<Q>> isLesserThanOrEqualTo(Quantity<Q> quantity) {
+  public static <Q extends Quantity<Q>> Predicate<Quantity<Q>> isLessThanOrEqualTo(Quantity<Q> quantity) {
 		return q -> q.to(quantity.getUnit()).getValue().doubleValue() <= quantity.getValue().doubleValue();
 	}
 
@@ -378,7 +378,7 @@ public final class QuantityFunctions {
    */
   public static <Q extends Quantity<Q>> Predicate<Quantity<Q>> isBetween(Number min, Number max) {
     Predicate<Quantity<Q>> minFilter = isGreaterThanOrEqualTo(min);
-    Predicate<Quantity<Q>> maxFilter = isLesserThanOrEqualTo(max);
+    Predicate<Quantity<Q>> maxFilter = isLessThanOrEqualTo(max);
     return minFilter.and(maxFilter);
   }
 
@@ -392,9 +392,14 @@ public final class QuantityFunctions {
    * @return the Predicate lesser or equals than this measure
    */
   public static <Q extends Quantity<Q>> Predicate<Quantity<Q>> isBetween(Quantity<Q> min, Quantity<Q> max) {
-    return isGreaterThanOrEqualTo(min).and(isLesserThanOrEqualTo(max));
+    return isGreaterThanOrEqualTo(min).and(isLessThanOrEqualTo(max));
   }
 
+  /**
+   * creates a function to group quantities by their {@link Unit unit}.
+   * 
+   * @return the Function of {@link Quantity} grouped by {@link Unit}
+   */
   public static <Q extends Quantity<Q>> Function<Quantity<Q>, Unit<Q>> groupByUnit() {
 		return Quantity::getUnit;
 	}
