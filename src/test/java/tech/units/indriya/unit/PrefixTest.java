@@ -165,10 +165,11 @@ public class PrefixTest {
     assertEquals(MICRO(GRAM), GRAM.divide(1_000_000));
   }
   
-  @Test
+  @SuppressWarnings({ "unchecked", "rawtypes" })
+@Test
   public void testEquivalence() {
-	  ComparableUnit a = (ComparableUnit) MICRO(GRAM); 
-	  ComparableUnit b = (ComparableUnit) GRAM.divide(1_000_000);
+	final ComparableUnit a = (ComparableUnit) MICRO(GRAM); 
+	final ComparableUnit b = (ComparableUnit) GRAM.divide(1_000_000);
 	  assertEquals(true, a.isEquivalentOf(b));
 	  assertEquals(true, b.isEquivalentOf(a));
   }
@@ -317,5 +318,8 @@ public class PrefixTest {
 	  }
   }
   
-  
+  @Test
+  public void testPrefixMethod() {
+    assertEquals(CENTI(METRE), METRE.prefix(CENTI));
+  }
 }
