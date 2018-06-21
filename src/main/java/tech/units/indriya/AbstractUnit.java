@@ -42,7 +42,6 @@ import javax.measure.Quantity;
 import javax.measure.UnconvertibleException;
 import javax.measure.Unit;
 import javax.measure.UnitConverter;
-import javax.measure.format.ParserException;
 import javax.measure.quantity.Dimensionless;
 
 import tech.units.indriya.format.LocalUnitFormat;
@@ -79,7 +78,7 @@ import tech.units.indriya.unit.Units;
  *      International System of Units</a>
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.2.1, June 17, 2018
+ * @version 1.2.2, June 21, 2018
  * @since 1.0
  */
 public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableUnit<Q> {

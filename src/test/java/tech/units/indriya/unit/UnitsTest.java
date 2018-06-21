@@ -39,6 +39,7 @@ import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Mass;
 import javax.measure.quantity.Power;
 import javax.measure.quantity.Time;
+import javax.measure.spi.SystemOfUnits;
 
 import org.junit.After;
 import org.junit.jupiter.api.BeforeEach;
@@ -295,5 +296,19 @@ public class UnitsTest {
     Unit result = Units.getInstance().getUnit(Time.class);
     assertNotNull(result);
     assertEquals("s", result.toString());
+  }
+  
+  @Test
+  public void testByString() {
+	  final SystemOfUnits sou = Units.getInstance();
+	  final Unit<?> u = sou.getUnit("m");
+	  assertNotNull(u);
+  }
+  
+  @Test
+  public void testByAnotherString() {
+	  final SystemOfUnits sou = Units.getInstance();
+	  final Unit<?> u = sou.getUnit("kg");
+	  assertNotNull(u);
   }
 }

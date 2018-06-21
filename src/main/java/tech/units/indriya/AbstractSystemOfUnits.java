@@ -100,6 +100,15 @@ public abstract class AbstractSystemOfUnits implements SystemOfUnits, Nameable {
 		return quantityToUnit.get(quantityType);
 	}
 
+	@Override
+	public Unit<?> getUnit(String string) {
+		Objects.nonNull(string);
+		return this.getUnits().stream()
+	              .filter((u) -> string.equals(u.toString()))
+	              .findAny()
+	              .orElse(null);
+	}
+	
 	protected static class Helper {
 		static Set<Unit<?>> getUnitsOfDimension(final Set<Unit<?>> units, Dimension dimension) {
 			if (dimension != null) {
