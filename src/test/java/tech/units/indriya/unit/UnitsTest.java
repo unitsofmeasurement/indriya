@@ -47,6 +47,7 @@ import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.AbstractConverter;
 import tech.units.indriya.AbstractUnit;
+import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.TransformedUnit;
 import tech.units.indriya.unit.Units;
@@ -65,8 +66,8 @@ import static javax.measure.MetricPrefix.*;
 public class UnitsTest {
   static final Logger logger = Logger.getLogger(UnitsTest.class.getName());
 
-  Unit<Dimensionless> one;
-  SystemOfUnits sou;
+  private Unit<Dimensionless> one;
+  private SystemOfUnits sou;
   
   /*
    * (non-Javadoc)
@@ -253,10 +254,9 @@ public class UnitsTest {
 
   @Test
   public void testKiloIsAThousand() {
-    // FIXME: Need to find the org.hamcrest assertion libs
-    Quantity<Power> w2000 = Quantities.getQuantity(2000, WATT);
+    ComparableQuantity<Power> w2000 = Quantities.getQuantity(2000, WATT);
     Quantity<Power> kW2 = Quantities.getQuantity(2, KILO(WATT));
-    // assertThat(w2000, is(kW2));
+    assertTrue(w2000.isEquivalentTo(kW2));
   }
 
   @Test
@@ -283,7 +283,6 @@ public class UnitsTest {
   @Test
   public void testGetSymbol() {
     // TODO see https://github.com/unitsofmeasurement/uom-se/issues/54 /
-    // https://java.net/jira/browse/UNITSOFMEASUREMENT-109
     assertEquals("kg", KILOGRAM.getSymbol());
     assertNull(GRAM.getSymbol());
   }
