@@ -45,6 +45,10 @@ import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.Quantities;
 
+/**
+ * An implementation of {@link javax.measure.format.QuantityFormat QuantityFormat} combining {@linkplain NumberFormat} and {@link UnitFormat}.
+ * @since 1.0
+ */
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class NumberSpaceQuantityFormat extends AbstractQuantityFormat {
 

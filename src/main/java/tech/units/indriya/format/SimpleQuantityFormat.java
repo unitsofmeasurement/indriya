@@ -44,6 +44,7 @@ import tech.units.indriya.quantity.Quantities;
 
 /**
  * A simple implementation of QuantityFormat
+ * @since 2.0
  */
 @SuppressWarnings("rawtypes")
 public class SimpleQuantityFormat extends AbstractQuantityFormat {
