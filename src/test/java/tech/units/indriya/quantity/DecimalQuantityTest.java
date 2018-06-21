@@ -29,12 +29,18 @@
  */
 package tech.units.indriya.quantity;
 
+import static javax.measure.MetricPrefix.MILLI;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
 
+import javax.measure.MetricPrefix;
 import javax.measure.Quantity;
+import javax.measure.Unit;
+import javax.measure.quantity.ElectricResistance;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Time;
 
@@ -43,6 +49,15 @@ import org.junit.jupiter.api.Test;
 import tech.units.indriya.unit.Units;
 
 public class DecimalQuantityTest {
+
+  private static final Unit<?> SQUARE_OHM = Units.OHM.multiply(Units.OHM);
+  private final DecimalQuantity<ElectricResistance> ONE_OHM = createQuantity(1L, Units.OHM);
+  private final DecimalQuantity<ElectricResistance> TWO_OHM = createQuantity(2L, Units.OHM);
+  private final DecimalQuantity<ElectricResistance> ONE_MILLIOHM = createQuantity(1L, MILLI(Units.OHM));
+
+  private <Q extends Quantity<Q>> DecimalQuantity<Q> createQuantity(long l, Unit<Q> unit) {
+    return new DecimalQuantity<Q>(l, unit);
+  }
 
   @Test
   public void divideTest() {
@@ -133,24 +148,144 @@ public class DecimalQuantityTest {
     assertEquals("1/s", String.valueOf(secInv.getUnit()));
   }
 
+  /**
+   * Verifies that a DecimalQuantity is big.
+   */
   @Test
-  public void testEquality() throws Exception {
-    Quantity<Length> value = Quantities.getQuantity(BigDecimal.valueOf(10.0), Units.METRE);
-    Quantity<Length> anotherValue = Quantities.getQuantity(BigDecimal.TEN, Units.METRE);
-    assertEquals(value, anotherValue);
+  public void decimalQuantityIsBig() {
+    assertTrue(ONE_OHM.isBig());
   }
 
+  /**
+   * Verifies that the value is returned without conversion if doubleValue is called with the quantity's unit.
+   */
   @Test
-  public void longValueTest() {
-    final DecimalQuantity<Time> day = new DecimalQuantity<Time>(Double.valueOf(3), Units.DAY);
-    long hours = day.longValue(Units.HOUR);
-    assertEquals(72L, hours);
+  public void doubleValueReturnsValueForSameUnit() {
+    assertEquals(1, ONE_OHM.doubleValue(Units.OHM));
   }
 
+  /**
+   * Verifies that the value is correctly converted if doubleValue is called with the quantity's unit.
+   */
   @Test
-  public void doubleValueTest() {
-    DecimalQuantity<Time> day = new DecimalQuantity<Time>(Double.valueOf(3), Units.DAY);
-    double hours = day.doubleValue(Units.HOUR);
-    assertEquals(72D, hours);
+  public void doubleValueReturnsConvertedValueForOtherUnit() {
+    assertEquals(0.001, ONE_MILLIOHM.doubleValue(Units.OHM));
   }
+
+  /**
+   * Verifies that the value is returned without conversion if decimalValue is called with the quantity's unit.
+   */
+  @Test
+  public void decimalValueReturnsValueForSameUnit() {
+    assertEquals(BigDecimal.valueOf(1.0), ONE_OHM.decimalValue(Units.OHM));
+  }
+
+  /**
+   * Verifies that the value is correctly converted to a BigDecimal if decimalValue is called with the quantity's unit.
+   */
+  @Test
+  public void decimalValueReturnsConvertedDecimalValueForOtherUnit() {
+    assertEquals(BigDecimal.valueOf(0.001), ONE_MILLIOHM.decimalValue(Units.OHM));
+  }
+
+  /**
+   * Verifies that the value is correctly converted to a BigDecimal through BigInteger if decimalValue is called with the quantity's unit.
+   */
+  @Test
+  public void decimalValueReturnsConvertedIntegerValueForOtherUnit() {
+    assertEquals(BigDecimal.valueOf(1000.0), ONE_OHM.decimalValue(MILLI(Units.OHM)));
+  }
+
+  /**
+   * Verifies that the value is returned without conversion if longValue is called with the quantity's unit.
+   */
+  @Test
+  public void longValueReturnsValueForSameUnit() {
+    assertEquals(1, ONE_OHM.longValue(Units.OHM));
+  }
+
+  /**
+   * Verifies that the value is correctly converted if longValue is called with the quantity's unit.
+   */
+  @Test
+  public void longValueReturnsConvertedValueForOtherUnit() {
+    assertEquals(0, ONE_MILLIOHM.longValue(Units.OHM));
+  }
+
+  /**
+   * Verifies that an exception is thrown if the conversion for longValue results in a positive overflow.
+   */
+  @Test
+  public void longValueThrowsExceptionOnPositiveOverflow() {
+    assertThrows(ArithmeticException.class, () -> {
+      createQuantity(Long.MAX_VALUE / 10L + 117L, MetricPrefix.DEKA(Units.OHM)).longValue(Units.OHM);
+    });
+  }
+
+  /**
+   * Verifies that an exception is thrown if the conversion for longValue results in a negative overflow.
+   */
+  @Test
+  public void longValueThrowsExceptionOnNegativeOverflow() {
+    assertThrows(ArithmeticException.class, () -> {
+      createQuantity(Long.MIN_VALUE / 10L - 117L, MetricPrefix.DEKA(Units.OHM)).longValue(Units.OHM);
+    });
+  }
+
+  /**
+   * Verifies that a quantity isn't equal to null.
+   */
+  @Test
+  public void decimalQuantityIsNotEqualToNull() {
+    assertFalse(ONE_OHM.equals(null));
+  }
+
+  /**
+   * Verifies that a quantity is equal to itself.
+   */
+  @Test
+  public void decimalQuantityIsEqualToItself() {
+    assertTrue(ONE_OHM.equals(ONE_OHM));
+  }
+
+  /**
+   * Verifies that a quantity is equal to another instance with the same value and unit.
+   */
+  @Test
+  public void decimalQuantityIsEqualToIdenticalInstance() {
+    assertTrue(ONE_OHM.equals(createQuantity(1, Units.OHM)));
+  }
+
+  /**
+   * Verifies that a quantity is equal to another instance with the same value and unit using another primitive.
+   */
+  @Test
+  public void decimalQuantityIsEqualToIdenticalInstanceWithAnotherPrimitive() {
+    assertTrue(ONE_OHM.equals(new DoubleQuantity<ElectricResistance>(Double.valueOf(1).doubleValue(), Units.OHM)));
+  }
+
+  /**
+   * Verifies that a quantity is not equal to a quantity with a different value.
+   */
+  @Test
+  public void decimalQuantityIsNotEqualToQuantityWithDifferentValue() {
+    assertFalse(ONE_OHM.equals(TWO_OHM));
+  }
+
+  /**
+   * Verifies that a quantity is not equal to a quantity with a different unit.
+   */
+  @Test
+  public void decimalQuantityIsNotEqualToQuantityWithDifferentUnit() {
+    assertFalse(ONE_OHM.equals(ONE_MILLIOHM));
+  }
+
+  /**
+   * Verifies that a quantity is not equal to an object of a different class.
+   */
+  @Test
+  public void decimalQuantityIsNotEqualToObjectOfDifferentClass() {
+    assertFalse(ONE_OHM.equals(SQUARE_OHM));
+  }
+
 }

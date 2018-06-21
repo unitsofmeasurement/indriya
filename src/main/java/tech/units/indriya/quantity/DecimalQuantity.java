@@ -80,9 +80,7 @@ final class DecimalQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> i
 
   @Override
   public double doubleValue(Unit<Q> unit) {
-    return (getUnit().equals(unit)) 
-    		? value.doubleValue() 
-    		: getUnit().getConverterTo(unit).convert(value.doubleValue());
+    return getUnit().equals(unit) ? value.doubleValue() : getUnit().getConverterTo(unit).convert(value.doubleValue());
   }
 
   @Override
@@ -131,7 +129,7 @@ final class DecimalQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> i
   @Override
   protected long longValue(Unit<Q> unit) {
     double result = doubleValue(unit);
-    if ((result < Long.MIN_VALUE) || (result > Long.MAX_VALUE)) {
+    if (result < Long.MIN_VALUE || result > Long.MAX_VALUE) {
       throw new ArithmeticException("Overflow (" + result + ")");
     }
     return (long) result;
