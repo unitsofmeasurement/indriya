@@ -102,7 +102,7 @@ public abstract class AbstractSystemOfUnits implements SystemOfUnits, Nameable {
 
 	@Override
 	public Unit<?> getUnit(String string) {
-		Objects.nonNull(string);
+		Objects.requireNonNull(string);
 		return this.getUnits().stream()
 	              .filter((u) -> string.equals(u.toString()))
 	              .findAny()
