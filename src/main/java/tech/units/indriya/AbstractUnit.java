@@ -212,7 +212,7 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
 	 * @param charSequence
 	 *            the character sequence to parse.
 	 * @return <code>SimpleUnitFormat.getInstance().parse(csq, new ParsePosition(0))</code>
-	 * @throws ParserException
+	 * @throws MeasurementParseException
 	 *             if the specified character sequence cannot be correctly parsed
 	 *             (e.g. not UCUM compliant).
 	 */
