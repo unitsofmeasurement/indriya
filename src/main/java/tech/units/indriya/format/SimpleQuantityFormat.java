@@ -44,6 +44,7 @@ import tech.units.indriya.quantity.Quantities;
 
 /**
  * A simple implementation of QuantityFormat
+ * @version 0.9
  * @since 2.0
  */
 @SuppressWarnings("rawtypes")
