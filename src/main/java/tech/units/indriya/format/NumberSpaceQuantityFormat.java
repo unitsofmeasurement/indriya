@@ -47,6 +47,7 @@ import tech.units.indriya.quantity.Quantities;
 
 /**
  * An implementation of {@link javax.measure.format.QuantityFormat QuantityFormat} combining {@linkplain NumberFormat} and {@link UnitFormat}.
+ * @version 1.1, $Date: 2018-06-25 $
  * @since 1.0
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -120,7 +121,7 @@ public class NumberSpaceQuantityFormat extends AbstractQuantityFormat {
 			throw new IllegalArgumentException("Number cannot be parsed");
 
 		Unit unit = unitFormat.parse(csq);
-		return Quantities.getQuantity(number.longValue(), unit);
+		return Quantities.getQuantity(number, unit);
 	}
 
 	@Override
