@@ -30,43 +30,39 @@
 package tech.units.indriya.quantity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
 
 import javax.measure.MetricPrefix;
 import javax.measure.Quantity;
 import javax.measure.Unit;
+import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.ElectricResistance;
-import javax.measure.quantity.Length;
 import javax.measure.quantity.Time;
 
 import org.junit.jupiter.api.Test;
 
-import tech.units.indriya.AbstractQuantity;
+import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.quantity.FloatQuantity;
-import tech.units.indriya.quantity.NumberQuantity;
 import tech.units.indriya.quantity.Quantities;
 import static javax.measure.MetricPrefix.*;
 import tech.units.indriya.unit.Units;
 
 public class FloatQuantityTest {
 
-  private final FloatQuantity<ElectricResistance> ONE_OHM = createQuantity(1, Units.OHM);
-  private final FloatQuantity<ElectricResistance> TWO_OHM = createQuantity(2, Units.OHM);
-  private final FloatQuantity<ElectricResistance> MAX_VALUE_OHM = createQuantity(Float.MAX_VALUE, Units.OHM);
-  private final FloatQuantity<ElectricResistance> ONE_MILLIOHM = createQuantity(1, MILLI(Units.OHM));
+  private static final Unit<?> SQUARE_OHM = Units.OHM.multiply(Units.OHM);
+  private static final FloatQuantity<ElectricResistance> HALF_AN_OHM = createQuantity(0.5F, Units.OHM);
+  private static final FloatQuantity<ElectricResistance> ONE_OHM = createQuantity(1, Units.OHM);
+  private static final FloatQuantity<ElectricResistance> TWO_OHM = createQuantity(2, Units.OHM);
+  private static final FloatQuantity<ElectricResistance> MAX_VALUE_OHM = createQuantity(Float.MAX_VALUE, Units.OHM);
+  private static final FloatQuantity<ElectricResistance> JUST_OVER_HALF_MAX_VALUE_OHM = createQuantity(Float.MAX_VALUE / 1.9999999F, Units.OHM);
+  private static final FloatQuantity<ElectricResistance> ONE_MILLIOHM = createQuantity(1, MILLI(Units.OHM));
 
-  private <Q extends Quantity<Q>> FloatQuantity<Q> createQuantity(float f, Unit<Q> unit) {
+  private static <Q extends Quantity<Q>> FloatQuantity<Q> createQuantity(float f, Unit<Q> unit) {
     return new FloatQuantity<Q>(Float.valueOf(f).floatValue(), unit);
-  }
-
-  @Test
-  public void divideTest() {
-    FloatQuantity<ElectricResistance> quantity1 = new FloatQuantity<ElectricResistance>(Float.valueOf(3).floatValue(), Units.OHM);
-    FloatQuantity<ElectricResistance> quantity2 = new FloatQuantity<ElectricResistance>(Float.valueOf(2).floatValue(), Units.OHM);
-    Quantity<?> result = quantity1.divide(quantity2);
-    assertEquals(Float.valueOf(1.5f), result.getValue());
   }
 
   /**
@@ -127,7 +123,7 @@ public class FloatQuantityTest {
     Quantity<ElectricResistance> actual = TWO_OHM.subtract(ONE_OHM);
     assertEquals(ONE_OHM, actual);
   }
-  
+
   /**
    * Verifies that the value is returned without conversion if doubleValue is called with the quantity's unit.
    */
@@ -196,13 +192,84 @@ public class FloatQuantityTest {
     });
   }
 
+  /**
+   * Verifies that the multiplication of two quantities multiplies correctly.
+   */
   @Test
-  public void multiplyQuantityTest() {
-    FloatQuantity<ElectricResistance> quantity1 = new FloatQuantity<ElectricResistance>(Float.valueOf(3).floatValue(), Units.OHM);
-    FloatQuantity<ElectricResistance> quantity2 = new FloatQuantity<ElectricResistance>(Float.valueOf(2).floatValue(), Units.OHM);
-    Quantity<?> result = quantity1.multiply(quantity2);
-    assertEquals(Float.valueOf(6L), result.getValue());
+  public void quantityMultiplicationMultipliesCorrectly() {
+    Quantity<?> actual = TWO_OHM.multiply(TWO_OHM);
+    FloatQuantity<?> expected = createQuantity(4, SQUARE_OHM);
+    assertEquals(expected, actual);
   }
+
+  /**
+   * Verifies that the multiplication of two quantities resulting in an overflow throws an exception.
+   */
+  @Test
+  public void quantityMultiplicationResultingInOverflowThrowsException() {
+    assertThrows(ArithmeticException.class, () -> {
+      JUST_OVER_HALF_MAX_VALUE_OHM.multiply(TWO_OHM);
+    });
+  }
+
+  /**
+   * Verifies that the multiplication with a number multiplies correctly.
+   */
+  @Test
+  public void numberMultiplicationMultipliesCorrectly() {
+    Quantity<?> actual = TWO_OHM.multiply(2);
+    FloatQuantity<ElectricResistance> expected = createQuantity(4, Units.OHM);
+    assertEquals(expected, actual);
+  }
+
+  /**
+   * Verifies that the multiplication with a number resulting in an overflow throws an exception.
+   */
+  @Test
+  public void numberMultiplicationResultingInOverflowThrowsException() {
+    assertThrows(ArithmeticException.class, () -> {
+      JUST_OVER_HALF_MAX_VALUE_OHM.multiply(2F);
+    });
+  }
+
+  /**
+   * Verifies that the division of two quantities divides correctly.
+   */
+  @Test
+  public void quantityDivisionDividesCorrectly() {
+    Quantity<?> actual = TWO_OHM.divide(TWO_OHM);
+    FloatQuantity<Dimensionless> expected = createQuantity(1, AbstractUnit.ONE);
+    assertEquals(expected, actual);
+  }
+  
+  /**
+   * Verifies that the division of two quantities resulting in an overflow throws an exception.
+   */
+  @Test
+  public void quantityDivisionResultingInOverflowThrowsException() {
+    assertThrows(ArithmeticException.class, () -> {
+      JUST_OVER_HALF_MAX_VALUE_OHM.divide(HALF_AN_OHM);
+    });
+  }  
+
+  /**
+   * Verifies that the division with a number divides correctly.
+   */
+  @Test
+  public void numberDivisionDividesCorrectly() {
+    Quantity<?> actual = TWO_OHM.divide(2);
+    assertEquals(ONE_OHM, actual);
+  }
+  
+  /**
+   * Verifies that the division with a number resulting in an overflow throws an exception.
+   */
+  @Test
+  public void numberDivisionResultingInOverflowThrowsException() {
+    assertThrows(ArithmeticException.class, () -> {
+      JUST_OVER_HALF_MAX_VALUE_OHM.divide(0.5F);
+    });
+  }  
 
   @Test
   public void toTest() {
@@ -216,16 +283,97 @@ public class FloatQuantityTest {
     assertEquals(dayResult.getUnit(), day.getUnit());
   }
 
+  /**
+   * Verifies that the inverse returns the correct reciprocal for a unit quantity.
+   */
   @Test
-  public void inverseTest() {
-    AbstractQuantity<Length> l = NumberQuantity.of(Float.valueOf(10f).floatValue(), Units.METRE);
-    assertEquals(Float.valueOf(1f / 10f), l.inverse().getValue());
+  public void inverseReturnsUnitQuantityForUnitQuantity() {
+    Quantity<?> actual = ONE_OHM.inverse();
+    FloatQuantity<?> expected = createQuantity(1, Units.OHM.inverse());
+    assertEquals(expected, actual);
   }
 
+  /**
+   * Verifies that the inverse returns the correct reciprocal for a quantity larger than a unit quantity.
+   */
   @Test
-  public void testEquality() throws Exception {
-    Quantity<Length> value = Quantities.getQuantity(new Float(10), Units.METRE);
-    Quantity<Length> anotherValue = Quantities.getQuantity(new Float(10.0F), Units.METRE);
-    assertEquals(value, anotherValue);
+  public void inverseReturnsZeroQuantityForLargerThanUnitQuantity() {
+    Quantity<?> actual = TWO_OHM.inverse();
+    FloatQuantity<?> expected = createQuantity(0.5F, Units.OHM.inverse());
+    assertEquals(expected, actual);
+  }
+
+  /**
+   * Verifies that the inverse throws an exception for a zero quantity.
+   */
+  @Test
+  public void inverseReturnsInfinityQuantityForZeroQuantity() {
+    Quantity<?> actual = createQuantity(0, Units.OHM).inverse();
+    FloatQuantity<?> expected = createQuantity(Float.POSITIVE_INFINITY, Units.OHM.inverse());
+    assertEquals(expected, actual);
+  }
+
+  /**
+   * Verifies that a FloatQuantity isn't big.
+   */
+  @Test
+  public void floatQuantityIsNotBig() {
+    assertFalse(ONE_OHM.isBig());
+  }
+
+  /**
+   * Verifies that a quantity isn't equal to null.
+   */
+  @Test
+  public void floatQuantityIsNotEqualToNull() {
+    assertFalse(ONE_OHM.equals(null));
+  }
+
+  /**
+   * Verifies that a quantity is equal to itself.
+   */
+  @Test
+  public void floatQuantityIsEqualToItself() {
+    assertTrue(ONE_OHM.equals(ONE_OHM));
+  }
+
+  /**
+   * Verifies that a quantity is equal to another instance with the same value and unit.
+   */
+  @Test
+  public void floatQuantityIsEqualToIdenticalInstance() {
+    assertTrue(ONE_OHM.equals(createQuantity(1, Units.OHM)));
+  }
+
+  /**
+   * Verifies that a quantity is equal to another instance with the same value and unit using another primitive.
+   */
+  @Test
+  public void floatQuantityIsEqualToIdenticalInstanceWithAnotherPrimitive() {
+    assertTrue(ONE_OHM.equals(new LongQuantity<ElectricResistance>(Long.valueOf(1L).longValue(), Units.OHM)));
+  }
+
+  /**
+   * Verifies that a quantity is not equal to a quantity with a different value.
+   */
+  @Test
+  public void floatQuantityIsNotEqualToQuantityWithDifferentValue() {
+    assertFalse(ONE_OHM.equals(TWO_OHM));
+  }
+
+  /**
+   * Verifies that a quantity is not equal to a quantity with a different unit.
+   */
+  @Test
+  public void floatQuantityIsNotEqualToQuantityWithDifferentUnit() {
+    assertFalse(ONE_OHM.equals(ONE_MILLIOHM));
+  }
+
+  /**
+   * Verifies that a quantity is not equal to an object of a different class.
+   */
+  @Test
+  public void floatQuantityIsNotEqualToObjectOfDifferentClass() {
+    assertFalse(ONE_OHM.equals(SQUARE_OHM));
   }
 }
