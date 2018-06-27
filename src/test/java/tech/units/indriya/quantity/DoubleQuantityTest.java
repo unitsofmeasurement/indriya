@@ -52,12 +52,15 @@ import tech.units.indriya.unit.Units;
 public class DoubleQuantityTest {
 
   private static final Unit<?> SQUARE_OHM = Units.OHM.multiply(Units.OHM);
-  private final DoubleQuantity<ElectricResistance> ONE_OHM = createQuantity(1, Units.OHM);
-  private final DoubleQuantity<ElectricResistance> TWO_OHM = createQuantity(2, Units.OHM);
-  private final DoubleQuantity<ElectricResistance> MAX_VALUE_OHM = createQuantity(Double.MAX_VALUE, Units.OHM);
-  private final DoubleQuantity<ElectricResistance> ONE_MILLIOHM = createQuantity(1, MILLI(Units.OHM));
+  private static final DoubleQuantity<ElectricResistance> HALF_AN_OHM = createQuantity(0.5, Units.OHM);
+  private static final DoubleQuantity<ElectricResistance> ONE_OHM = createQuantity(1, Units.OHM);
+  private static final DoubleQuantity<ElectricResistance> TWO_OHM = createQuantity(2, Units.OHM);
+  private static final DoubleQuantity<ElectricResistance> MAX_VALUE_OHM = createQuantity(Double.MAX_VALUE, Units.OHM);
+  private static final DoubleQuantity<ElectricResistance> JUST_OVER_HALF_MAX_VALUE_OHM = createQuantity(Double.MAX_VALUE / 1.999999999999999,
+      Units.OHM);
+  private static final DoubleQuantity<ElectricResistance> ONE_MILLIOHM = createQuantity(1, MILLI(Units.OHM));
 
-  private <Q extends Quantity<Q>> DoubleQuantity<Q> createQuantity(double d, Unit<Q> unit) {
+  private static <Q extends Quantity<Q>> DoubleQuantity<Q> createQuantity(double d, Unit<Q> unit) {
     return new DoubleQuantity<Q>(Double.valueOf(d).doubleValue(), unit);
   }
 
@@ -136,8 +139,7 @@ public class DoubleQuantityTest {
   @Test
   public void quantityMultiplicationResultingInOverflowThrowsException() {
     assertThrows(ArithmeticException.class, () -> {
-      Quantity<ElectricResistance> halfMaxValuePlusOne = createQuantity(Double.MAX_VALUE / 1.999999999999999, Units.OHM);
-      halfMaxValuePlusOne.multiply(TWO_OHM);
+      JUST_OVER_HALF_MAX_VALUE_OHM.multiply(TWO_OHM);
     });
   }
 
@@ -157,8 +159,7 @@ public class DoubleQuantityTest {
   @Test
   public void numberMultiplicationResultingInOverflowThrowsException() {
     assertThrows(ArithmeticException.class, () -> {
-      Quantity<ElectricResistance> halfMaxValuePlusOne = createQuantity(Double.MAX_VALUE / 1.999999999999999, Units.OHM);
-      halfMaxValuePlusOne.multiply(2);
+      JUST_OVER_HALF_MAX_VALUE_OHM.multiply(2);
     });
   }
 
@@ -173,12 +174,32 @@ public class DoubleQuantityTest {
   }
 
   /**
+   * Verifies that the division of two quantities resulting in an overflow throws an exception.
+   */
+  @Test
+  public void quantityDivisionResultingInOverflowThrowsException() {
+    assertThrows(ArithmeticException.class, () -> {
+      JUST_OVER_HALF_MAX_VALUE_OHM.divide(HALF_AN_OHM);
+    });
+  }
+
+  /**
    * Verifies that the division with a number divides correctly.
    */
   @Test
   public void numberDivisionDividesCorrectly() {
     Quantity<?> actual = TWO_OHM.divide(2);
     assertEquals(ONE_OHM, actual);
+  }
+
+  /**
+   * Verifies that the division with a number resulting in an overflow throws an exception.
+   */
+  @Test
+  public void numberDivisionResultingInOverflowThrowsException() {
+    assertThrows(ArithmeticException.class, () -> {
+      JUST_OVER_HALF_MAX_VALUE_OHM.divide(0.5);
+    });
   }
 
   /**
@@ -212,7 +233,7 @@ public class DoubleQuantityTest {
   }
 
   /**
-   * Verifies that a LongQuantity isn't big.
+   * Verifies that a DoubleQuantity isn't big.
    */
   @Test
   public void doubleQuantityIsNotBig() {
