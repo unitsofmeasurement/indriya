@@ -109,18 +109,34 @@ final class FloatQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
     return add(thatNegated);
   }
 
-  @SuppressWarnings({ "rawtypes", "unchecked" })
+  @Override
   public ComparableQuantity<?> multiply(Quantity<?> that) {
-    return new FloatQuantity(value * that.getValue().floatValue(), getUnit().multiply(that.getUnit()));
+    final float product = value * that.getValue().floatValue();
+    if (Float.isInfinite(product)) {
+      throw new ArithmeticException();
+    } else {
+      return new FloatQuantity(product, getUnit().multiply(that.getUnit()));
+    }
   }
 
+  @Override
   public ComparableQuantity<Q> multiply(Number that) {
-    return NumberQuantity.of(value * that.floatValue(), getUnit().multiply(that.doubleValue()));
+    final float product = value * that.floatValue();
+    if (Float.isInfinite(product)) {
+      throw new ArithmeticException();
+    } else {
+      return new FloatQuantity<Q>(product, getUnit());
+    }
   }
 
-  @SuppressWarnings({ "rawtypes", "unchecked" })
+  @Override
   public ComparableQuantity<?> divide(Quantity<?> that) {
-    return new FloatQuantity(value / that.getValue().floatValue(), getUnit().divide(that.getUnit()));
+    final float quotient = value / that.getValue().floatValue();
+    if (Float.isInfinite(quotient)) {
+      throw new ArithmeticException();
+    } else {
+      return new FloatQuantity(quotient, getUnit().divide(that.getUnit()));
+    }
   }
 
   @SuppressWarnings("unchecked")
@@ -128,8 +144,14 @@ final class FloatQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
     return (AbstractQuantity<Q>) NumberQuantity.of(1f / value, getUnit().inverse());
   }
 
+  @Override
   public ComparableQuantity<Q> divide(Number that) {
-    return NumberQuantity.of(value / that.floatValue(), getUnit());
+    final float quotient = value / that.floatValue();
+    if (Float.isInfinite(quotient)) {
+      throw new ArithmeticException();
+    } else {
+      return new FloatQuantity<Q>(quotient, getUnit());
+    }
   }
 
   /*
