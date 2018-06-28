@@ -57,6 +57,8 @@ import tech.units.indriya.unit.AnnotatedUnit;
 import tech.units.indriya.unit.ProductUnit;
 import tech.units.indriya.unit.TransformedUnit;
 import tech.units.indriya.unit.Units;
+import tech.uom.lib.common.function.Nameable;
+import tech.uom.lib.common.function.SymbolSupplier;
 
 /**
  * <p>
@@ -78,10 +80,10 @@ import tech.units.indriya.unit.Units;
  *      International System of Units</a>
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.2.2, June 21, 2018
+ * @version 1.3, June 29, 2018
  * @since 1.0
  */
-public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableUnit<Q> {
+public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableUnit<Q>, Nameable, SymbolSupplier {
 
 	/**
 	 * 
