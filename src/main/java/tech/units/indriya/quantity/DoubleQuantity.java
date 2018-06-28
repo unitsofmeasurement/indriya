@@ -141,18 +141,28 @@ final class DoubleQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> im
     if (Double.isInfinite(product)) {
       throw new ArithmeticException();
     } else {
-      return new DoubleQuantity(product, getUnit());
+      return new DoubleQuantity<Q>(product, getUnit());
     }
   }
 
   @Override
   public ComparableQuantity<?> divide(Quantity<?> that) {
-    return new DoubleQuantity(value / that.getValue().doubleValue(), getUnit().divide(that.getUnit()));
+    final double quotient = value / that.getValue().doubleValue();
+    if (Double.isInfinite(quotient)) {
+      throw new ArithmeticException();
+    } else {
+      return new DoubleQuantity(quotient, getUnit().divide(that.getUnit()));
+    }
   }
 
   @Override
   public ComparableQuantity<Q> divide(Number that) {
-    return Quantities.getQuantity(value / that.doubleValue(), getUnit());
+    final double quotient = value / that.doubleValue();
+    if (Double.isInfinite(quotient)) {
+      throw new ArithmeticException();
+    } else {
+      return new DoubleQuantity<Q>(quotient, getUnit());
+    }
   }
 
   @Override
