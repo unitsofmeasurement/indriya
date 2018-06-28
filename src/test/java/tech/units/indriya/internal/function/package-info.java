@@ -27,42 +27,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package tech.units.indriya.function;
-
-import java.util.Comparator;
-
-import javax.measure.Quantity;
-
 /**
- * Comparator to sort quantities by natural order, looking both the unit and the value.
+ * These tests cannot be run directly inside uom-lib-common because there are no concrete unit implementations. 
+ * Therefore we test the Lambda features here in the RI.
  * 
- * @author <a href="mailto:werner@uom.technology">Werner Keil</a>
- * @author <a href="mailto:otaviopolianasantana@gmail.com">Otavio Santana</a>
- * @version 1.0.1
- * @return <b>Given:</b>
- *         <p>
- *         Quantity<Time> day = timeFactory.create(1, Units.DAY);
- *         </p>
- *         <p>
- *         Quantity<Time> hours = timeFactory.create(18, Units.HOUR);
- *         </p>
- *         <p>
- *         Quantity<Time> minutes = timeFactory.create(15, Units.HOUR);
- *         </p>
- *         <p>
- *         Quantity<Time> seconds = timeFactory.create(100, Units.HOUR);
- *         </p>
- *         will return: seconds, minutes, hours, day
- * @since 1.0
- * @deprecated Moved to uom-lib-common
+ * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
+ * @version 1.0
+ * @since 2.0
  */
-public class NaturalQuantityComparator<T extends Quantity<T>> implements Comparator<Quantity<T>> {
+package tech.units.indriya.internal.function;
 
-  @Override
-  public int compare(Quantity<T> q1, Quantity<T> q2) {
-    if (q1.getUnit().equals(q2.getUnit())) {
-      return Double.compare(q1.getValue().doubleValue(), q2.getValue().doubleValue());
-    }
-    return Double.compare(q1.getValue().doubleValue(), q2.to(q1.getUnit()).getValue().doubleValue());
-  }
-}

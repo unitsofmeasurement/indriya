@@ -45,6 +45,7 @@ import javax.measure.Unit;
  * @author Werner
  * @version 1.0.3
  * @since 1.0
+ * @deprecated Moved to uom-lib-common
  *
  */
 @SuppressWarnings("rawtypes")

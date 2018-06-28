@@ -27,7 +27,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package tech.units.indriya.function;
+package tech.units.indriya.internal.function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -42,12 +42,11 @@ import javax.measure.quantity.Time;
 import javax.measure.spi.QuantityFactory;
 import javax.measure.spi.ServiceProvider;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import tech.units.indriya.function.QuantityFunctions;
 import tech.units.indriya.unit.Units;
+import tech.uom.lib.common.function.QuantityFunctions;
 
 public class QuantityFunctionsSortTest {
 

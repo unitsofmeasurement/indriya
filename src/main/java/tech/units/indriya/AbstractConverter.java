@@ -45,9 +45,9 @@ import javax.measure.UnitConverter;
 
 import tech.units.indriya.function.Calculus;
 import tech.units.indriya.function.PowerOfIntConverter;
-import tech.units.indriya.function.UnitComparator;
 import tech.units.indriya.internal.simplify.Simplifier;
 import tech.uom.lib.common.function.Converter;
+import tech.uom.lib.common.util.UnitComparator;
 
 /**
  * <p>
@@ -57,7 +57,7 @@ import tech.uom.lib.common.function.Converter;
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
  * @author Andi Huber
- * @version 1.6, April 26, 2018
+ * @version 1.7, June 29, 2018
  * @since 1.0
  */
 public abstract class AbstractConverter
@@ -497,13 +497,9 @@ public abstract class AbstractConverter
 				.collect(Collectors.joining(" ○ ")) );
 		}
 		
-
 		@Override
 		protected boolean isSimpleCompositionWith(AbstractConverter that) {
 			return false;
-		}
-		
+		}	
 	}
-
-
 }
