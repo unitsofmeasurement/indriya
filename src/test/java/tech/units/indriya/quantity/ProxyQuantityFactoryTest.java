@@ -30,6 +30,8 @@
 package tech.units.indriya.quantity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static tech.units.indriya.unit.Units.KILOGRAM;
 import static tech.units.indriya.unit.Units.METRE;
 import static tech.units.indriya.unit.Units.MINUTE;
@@ -46,11 +48,55 @@ import tech.units.indriya.quantity.ProxyQuantityFactory;
 /**
  * @author Werner Keil
  */
-public class QuantityFactoryTest {
+public class ProxyQuantityFactoryTest {
+
+  /**
+   * Verifies that the factory throws an exception if an instance is requested for null.
+   */
+  @Test
+  public void getInstanceThrowsExceptionForNull() {
+    assertThrows(Exception.class, () -> {
+      ProxyQuantityFactory.getInstance(null);
+    });
+  }
+
+  /**
+   * Local quantity interface that hasn't been registered in the factory yet. This interface should only be used by the unit test method verifying
+   * that the factory creates an instance for an unregistered interface.
+   */
+  interface OneTimeUnregisteredQuantityInterface extends Quantity<OneTimeUnregisteredQuantityInterface> {
+  }
+
+  /**
+   * Verifies that the factory returns a new instance for an unregistered quantity interface.
+   */
+  @Test
+  public void getInstanceCreatesAFactoryForAnUnregisteredInterface() {
+    assertNotNull(ProxyQuantityFactory.getInstance(OneTimeUnregisteredQuantityInterface.class));
+  }
+
+  /**
+   * Local quantity interface that hasn't been registered in the factory yet. This interface should only be used by the unit test method verifying
+   * that the factory doesn't create multiple instances for the same quantity interface.
+   */
+  interface TwoTimesUnregisteredQuantityInterface extends Quantity<TwoTimesUnregisteredQuantityInterface> {
+  }
+
+  /**
+   * Verifies that the factory doesn't create a new instance the second time a previously unregistered quantity interface is requested.
+   */
+  @Test
+  public void getInstanceDoesNotCreateTwoFactoriesForAnUnregisteredInterface() {
+    ProxyQuantityFactory<TwoTimesUnregisteredQuantityInterface> instance1 = ProxyQuantityFactory
+        .getInstance(TwoTimesUnregisteredQuantityInterface.class);
+    ProxyQuantityFactory<TwoTimesUnregisteredQuantityInterface> instance2 = ProxyQuantityFactory
+        .getInstance(TwoTimesUnregisteredQuantityInterface.class);
+    assertEquals(instance1, instance2);
+  }
 
   @Test
   public void testLength() {
-    Quantity<Length> l = ProxyQuantityFactory.getInstance(Length.class).create(23.5, METRE); // 23.0 km
+    Quantity<Length> l = ProxyQuantityFactory.getInstance(Length.class).create(23.5, METRE); // 23.5 m
     assertEquals(23.5d, l.getValue());
     assertEquals(METRE, l.getUnit());
     assertEquals("m", l.getUnit().getSymbol());
