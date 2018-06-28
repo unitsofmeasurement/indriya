@@ -237,7 +237,6 @@ public abstract class ProxyQuantityFactory<Q extends Quantity<Q>> implements Qua
     @SuppressWarnings("unchecked")
     @Override
     public Quantity<Q> create(Number value, Unit<Q> unit) {
-      // System.out.println("Type: " + type);
       return (Q) Proxy.newProxyInstance(type.getClassLoader(), new Class<?>[] { type }, new GenericHandler<>(value, unit));
     }
   }
@@ -262,16 +261,16 @@ public abstract class ProxyQuantityFactory<Q extends Quantity<Q>> implements Qua
       switch (name) {
         case "doubleValue": { // Most frequent.
           final Unit<Q> toUnit = (Unit<Q>) args[0];
-          if ((toUnit == unit) || (toUnit.equals(unit)))
+          if (toUnit == unit || toUnit.equals(unit))
             return value.doubleValue(); // Returns value directly.
           return unit.getConverterTo(toUnit).convert(value.doubleValue());
         }
         case "longValue": {
           final Unit<Q> toUnit = (Unit<Q>) args[0];
-          if ((toUnit == unit) || (toUnit.equals(unit)))
+          if (toUnit == unit || toUnit.equals(unit))
             return value.longValue(); // Returns value directly.
           double doubleValue = unit.getConverterTo(toUnit).convert(value.doubleValue());
-          if ((doubleValue < Long.MIN_VALUE) || (doubleValue > Long.MAX_VALUE))
+          if (doubleValue < Long.MIN_VALUE || doubleValue > Long.MAX_VALUE)
             throw new ArithmeticException("Overflow: " + doubleValue + " cannot be represented as a long");
           return (long) doubleValue;
         }
