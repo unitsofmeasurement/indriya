@@ -36,14 +36,14 @@ import java.util.function.Predicate;
  * BitSet Utility for the Simplifier.
  * 
  * @author Andi Huber
- * @version 1.0
+ * @version 1.1
  * @since 2.0
  */
 final class BitScanner {
 	
 	@FunctionalInterface
-	public static interface BiIntConsumer {
-		public void accept(int i, int j); 
+	protected static interface BiIntConsumer {
+		void accept(int i, int j); 
 	}
 	
 	private final BitSet bitSet;
@@ -52,7 +52,7 @@ final class BitScanner {
 		this.bitSet = bitSet;
 	}
 	
-	public static <T> BitScanner of(T[] array, Predicate<T> bitTest) {
+	protected static <T> BitScanner of(T[] array, Predicate<T> bitTest) {
 		final BitSet mask = new BitSet(array.length);
 		int bitIndex = 0;
 		for(T element : array) {
@@ -64,7 +64,7 @@ final class BitScanner {
 		return new BitScanner(mask);
 	}
 	
-	public void visitBitSequences(BiIntConsumer visitor) {
+	protected void visitBitSequences(BiIntConsumer visitor) {
 		int scanPointer = 0;
 		int nextSetBit;
 		while((nextSetBit = bitSet.nextSetBit(scanPointer))>-1) {
