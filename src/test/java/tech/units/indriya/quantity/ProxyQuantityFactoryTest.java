@@ -62,7 +62,7 @@ public class ProxyQuantityFactoryTest {
 
   /**
    * Local quantity interface that hasn't been registered in the factory yet. This interface should only be used by the unit test method verifying
-   * that the factory creates an instance for an unregistered interface.
+   * that the factory creates an instance for an unregistered quantity interface.
    */
   interface OneTimeUnregisteredQuantityInterface extends Quantity<OneTimeUnregisteredQuantityInterface> {
   }
@@ -71,7 +71,7 @@ public class ProxyQuantityFactoryTest {
    * Verifies that the factory returns a new instance for an unregistered quantity interface.
    */
   @Test
-  public void getInstanceCreatesAFactoryForAnUnregisteredInterface() {
+  public void getInstanceCreatesAFactoryForAnUnregisteredQuantityInterface() {
     assertNotNull(ProxyQuantityFactory.getInstance(OneTimeUnregisteredQuantityInterface.class));
   }
 
@@ -86,12 +86,60 @@ public class ProxyQuantityFactoryTest {
    * Verifies that the factory doesn't create a new instance the second time a previously unregistered quantity interface is requested.
    */
   @Test
-  public void getInstanceDoesNotCreateTwoFactoriesForAnUnregisteredInterface() {
+  public void getInstanceDoesNotCreateTwoFactoriesForAnUnregisteredQuantityInterface() {
     ProxyQuantityFactory<TwoTimesUnregisteredQuantityInterface> instance1 = ProxyQuantityFactory
         .getInstance(TwoTimesUnregisteredQuantityInterface.class);
     ProxyQuantityFactory<TwoTimesUnregisteredQuantityInterface> instance2 = ProxyQuantityFactory
         .getInstance(TwoTimesUnregisteredQuantityInterface.class);
     assertEquals(instance1, instance2);
+  }
+
+  /**
+   * Local quantity class that hasn't been registered in the factory yet. This class should only be used by the unit test method verifying that the
+   * factory creates an instance for an unregistered quantity class.
+   */
+  abstract class OneTimeUnregisteredQuantityClass implements Quantity<OneTimeUnregisteredQuantityClass> {
+  }
+
+  /**
+   * Verifies that the factory returns a new instance for an unregistered quantity class.
+   */
+  @Test
+  public void getInstanceCreatesAFactoryForAnUnregisteredQuantityClass() {
+    assertNotNull(ProxyQuantityFactory.getInstance(OneTimeUnregisteredQuantityClass.class));
+  }
+
+  /**
+   * Local quantity class that hasn't been registered in the factory yet. This class should only be used by the unit test method verifying that the
+   * factory doesn't create multiple instances for the same quantity class.
+   */
+  abstract class TwoTimesUnregisteredQuantityClass implements Quantity<TwoTimesUnregisteredQuantityClass> {
+  }
+
+  /**
+   * Verifies that the factory doesn't create a new instance the second time a previously unregistered quantity class is requested.
+   */
+  @Test
+  public void getInstanceDoesNotCreateTwoFactoriesForAnUnregisteredQuantityClass() {
+    ProxyQuantityFactory<TwoTimesUnregisteredQuantityClass> instance1 = ProxyQuantityFactory.getInstance(TwoTimesUnregisteredQuantityClass.class);
+    ProxyQuantityFactory<TwoTimesUnregisteredQuantityClass> instance2 = ProxyQuantityFactory.getInstance(TwoTimesUnregisteredQuantityClass.class);
+    assertEquals(instance1, instance2);
+  }
+
+  /**
+   * Local quantity class that hasn't been registered in the factory yet and that implements a non-quantity interface too. This class should only be
+   * used by the unit test method verifying that the factory creates an instance for an unregistered quantity class implementing an extra interface.
+   */
+  abstract class OneTimeComparableUnregisteredQuantityClass
+      implements Comparable<OneTimeComparableUnregisteredQuantityClass>, Quantity<OneTimeComparableUnregisteredQuantityClass> {
+  }
+
+  /**
+   * Verifies that the factory returns a new instance for an unregistered quantity class implementing an extra interface.
+   */
+  @Test
+  public void getInstanceCreatesAFactoryForAnUnregisteredQuantityClassWithExtraInterface() {
+    assertNotNull(ProxyQuantityFactory.getInstance(OneTimeComparableUnregisteredQuantityClass.class));
   }
 
   @Test
