@@ -34,8 +34,6 @@ import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.function.AddConverter;
 import tech.units.indriya.function.RationalConverter;
 import tech.units.indriya.quantity.QuantityDimension;
-import tech.uom.lib.common.function.Nameable;
-
 import static tech.units.indriya.AbstractUnit.ONE;
 
 import javax.measure.Quantity;
