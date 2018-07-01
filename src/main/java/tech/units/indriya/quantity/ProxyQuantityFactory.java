@@ -81,6 +81,26 @@ public abstract class ProxyQuantityFactory<Q extends Quantity<Q>> implements Qua
   private static final Level LOG_LEVEL = Level.FINE;
 
   /**
+   * Tries to find a type among the interfaces a type implements that can be assigned to Quantity.
+   * 
+   * @param type
+   *          The type
+   * @return
+   */
+  private static <Q extends Quantity<Q>> Class<?> findQuantityAssignableInterface(final Class<Q> type) {
+    for (Class<?> anInterface : type.getInterfaces()) {
+      if (isQuantityAssignable(anInterface)) {
+        return anInterface;
+      }
+    }
+    return null;
+  }
+
+  private static boolean isQuantityAssignable(Class<?> anInterface) {
+    return Quantity.class.isAssignableFrom(anInterface);
+  }
+
+  /**
    * Returns the default instance for the specified quantity type.
    *
    * @param <Q>
@@ -91,46 +111,36 @@ public abstract class ProxyQuantityFactory<Q extends Quantity<Q>> implements Qua
    */
   @SuppressWarnings("unchecked")
   public static <Q extends Quantity<Q>> ProxyQuantityFactory<Q> getInstance(final Class<Q> type) {
-
-    logger.log(LOG_LEVEL, "Type: " + type + ": " + type.isInterface());
-    ProxyQuantityFactory<Q> factory;
-    if (!type.isInterface()) {
-      if (type != null && type.getInterfaces() != null & type.getInterfaces().length > 0) {
-        logger.log(LOG_LEVEL, "Type0: " + type.getInterfaces()[0]);
-        Class<?> type2 = type.getInterfaces()[0];
-
-        factory = INSTANCES.get(type2);
-        if (factory != null)
-          return factory;
-        if (!AbstractQuantity.class.isAssignableFrom(type2))
-          // This exception is not documented because it should never happen if the
-          // user don't try to trick the Java generic types system with unsafe cast.
-          throw new ClassCastException();
-        factory = new Default<>((Class<Q>) type2);
-        INSTANCES.put(type2, factory);
-      } else {
-        factory = INSTANCES.get(type);
-        if (factory != null)
-          return factory;
-        if (!AbstractQuantity.class.isAssignableFrom(type))
-          // This exception is not documented because it should never happen if the
-          // user don't try to trick the Java generic types system with unsafe cast.
-          throw new ClassCastException();
-        factory = new Default<>(type);
-        INSTANCES.put(type, factory);
-      }
-    } else {
-      factory = INSTANCES.get(type);
-      if (factory != null)
-        return factory;
-      if (!Quantity.class.isAssignableFrom(type))
-        // This exception is not documented because it should never happen if the
-        // user don't try to trick the Java generic types system with unsafe cast.
-        throw new ClassCastException();
-      factory = new Default<>(type);
-      INSTANCES.put(type, factory);
+    if (type == null) {
+      throw new NullPointerException();
     }
+    logger.log(LOG_LEVEL, "Type: " + type + ": " + type.isInterface());
+    if (!type.isInterface() && type.getInterfaces().length > 0) {
+      logger.log(LOG_LEVEL, "Type0: " + type.getInterfaces()[0]);
+      Class<?> type2 = findQuantityAssignableInterface(type);
+      return returnOrCreateFactoryForQuantityAssignableType((Class<Q>) type2);
+    } else {
+      return returnOrCreateFactoryForQuantityAssignableType(type);
+    }
+  }
+
+  private static <Q extends Quantity<Q>> ProxyQuantityFactory<Q> returnOrCreateFactoryForQuantityAssignableType(final Class<Q> type) {
+    ProxyQuantityFactory<Q> factory = INSTANCES.get(type);
+    if (factory != null) {
+      return factory;
+    }
+    throwClassCastExceptionIfNotQuantityAssignable(type);
+    factory = new Default<>(type);
+    INSTANCES.put(type, factory);
     return factory;
+  }
+
+  private static <Q extends Quantity<Q>> void throwClassCastExceptionIfNotQuantityAssignable(final Class<?> type) {
+    if (!isQuantityAssignable(type)) {
+      // This exception is not documented because it should never happen if the
+      // user doesn't try to trick the Java generic types system with unsafe cast.
+      throw new ClassCastException();
+    }
   }
 
   /**
@@ -144,10 +154,7 @@ public abstract class ProxyQuantityFactory<Q extends Quantity<Q>> implements Qua
    *          the quantity factory
    */
   protected static <Q extends Quantity<Q>> void setInstance(final Class<Q> type, ProxyQuantityFactory<Q> factory) {
-    if (!AbstractQuantity.class.isAssignableFrom(type))
-      // This exception is not documented because it should never happen if the
-      // user don't try to trick the Java generic types system with unsafe cast.
-      throw new ClassCastException();
+    throwClassCastExceptionIfNotQuantityAssignable(type);
     INSTANCES.put(type, factory);
   }
 
