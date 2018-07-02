@@ -47,6 +47,21 @@ import tech.units.indriya.unit.BaseUnit;
  * @author Werner Keil
  */
 public class ProxyQuantityFactoryTest {
+  private final Quantity<QuantityInterface> testQuantity = createTestQuantity(testQuantityValue, testQuantityUnit);
+  private static final int testQuantityValue = 1;
+  private static final String testQuantitySymbol = "Q";
+  private static final Unit<QuantityInterface> testQuantityUnit = new BaseUnit<QuantityInterface>(testQuantitySymbol, QuantityDimension.NONE);
+
+  /**
+   * Local quantity interface to test the instance methods on.
+   */
+  interface QuantityInterface extends Quantity<QuantityInterface> {
+  }
+
+  private Quantity<QuantityInterface> createTestQuantity(int value, Unit<QuantityInterface> unit) {
+    ProxyQuantityFactory<QuantityInterface> pqf = ProxyQuantityFactory.getInstance(QuantityInterface.class);
+    return pqf.create(value, unit);
+  }
 
   /**
    * Verifies that the factory throws an exception if an instance is requested for null.
@@ -138,22 +153,6 @@ public class ProxyQuantityFactoryTest {
   @Test
   public void getInstanceCreatesAFactoryForAnUnregisteredQuantityClassWithExtraInterface() {
     assertNotNull(ProxyQuantityFactory.getInstance(OneTimeComparableUnregisteredQuantityClass.class));
-  }
-
-  /**
-   * Local quantity interface to test the instance methods on.
-   */
-  interface QuantityInterface extends Quantity<QuantityInterface> {
-  }
-
-  private final Quantity<QuantityInterface> testQuantity = createTestQuantity(testQuantityValue, testQuantityUnit);
-  private static final int testQuantityValue = 1;
-  private static final String testQuantitySymbol = "Q";
-  private static final Unit<QuantityInterface> testQuantityUnit = new BaseUnit<QuantityInterface>(testQuantitySymbol, QuantityDimension.NONE);
-
-  private Quantity<QuantityInterface> createTestQuantity(int value, Unit<QuantityInterface> unit) {
-    ProxyQuantityFactory<QuantityInterface> pqf = ProxyQuantityFactory.getInstance(QuantityInterface.class);
-    return pqf.create(value, unit);
   }
 
   /**
