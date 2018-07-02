@@ -36,6 +36,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -45,7 +46,6 @@ import javax.measure.Unit;
 import javax.measure.quantity.*;
 import javax.measure.spi.QuantityFactory;
 
-import tech.units.indriya.AbstractQuantity;
 import tech.units.indriya.AbstractUnit;
 
 /**
@@ -266,21 +266,6 @@ public abstract class ProxyQuantityFactory<Q extends Quantity<Q>> implements Qua
     public Object invoke(final Object proxy, final Method method, final Object[] args) {
       final String name = method.getName();
       switch (name) {
-        case "doubleValue": { // Most frequent.
-          final Unit<Q> toUnit = (Unit<Q>) args[0];
-          if (toUnit == unit || toUnit.equals(unit))
-            return value.doubleValue(); // Returns value directly.
-          return unit.getConverterTo(toUnit).convert(value.doubleValue());
-        }
-        case "longValue": {
-          final Unit<Q> toUnit = (Unit<Q>) args[0];
-          if (toUnit == unit || toUnit.equals(unit))
-            return value.longValue(); // Returns value directly.
-          double doubleValue = unit.getConverterTo(toUnit).convert(value.doubleValue());
-          if (doubleValue < Long.MIN_VALUE || doubleValue > Long.MAX_VALUE)
-            throw new ArithmeticException("Overflow: " + doubleValue + " cannot be represented as a long");
-          return (long) doubleValue;
-        }
         case "getValue":
           return value;
         case "getUnit":
@@ -288,17 +273,15 @@ public abstract class ProxyQuantityFactory<Q extends Quantity<Q>> implements Qua
         case "toString":
           return String.valueOf(value) + ' ' + unit;
         case "hashCode":
-          return value.hashCode() * 31 + unit.hashCode();
+          return Objects.hash(value, unit);
         case "equals": {
           final Object obj = args[0];
-          if (!(obj instanceof AbstractQuantity))
+          if (!(obj instanceof Quantity)) {
             return false;
-          final AbstractQuantity<Q> that = (AbstractQuantity<Q>) obj;
-          return unit.isCompatible((AbstractUnit<?>) that.getUnit()) && value.doubleValue() == (that).doubleValue(unit);
-        }
-        case "compareTo": {
-          final AbstractQuantity<Q> that = (AbstractQuantity<Q>) args[0];
-          return Double.compare(value.doubleValue(), that.doubleValue(unit));
+          }
+          final Quantity<Q> that = (Quantity<Q>) obj;
+          return unit.isCompatible((AbstractUnit<?>) that.getUnit())
+              && value.doubleValue() == that.getUnit().getConverterTo(unit).convert(that.getValue()).doubleValue();
         }
         default:
           throw new UnsupportedOperationException(name);

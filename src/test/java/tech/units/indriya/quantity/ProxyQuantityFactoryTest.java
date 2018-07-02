@@ -30,25 +30,38 @@
 package tech.units.indriya.quantity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static tech.units.indriya.unit.Units.KILOGRAM;
-import static tech.units.indriya.unit.Units.METRE;
-import static tech.units.indriya.unit.Units.MINUTE;
-import static tech.units.indriya.unit.Units.SECOND;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import javax.measure.MetricPrefix;
 import javax.measure.Quantity;
-import javax.measure.quantity.Length;
-import javax.measure.quantity.Mass;
-import javax.measure.quantity.Time;
+import javax.measure.Unit;
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.quantity.ProxyQuantityFactory;
+import tech.units.indriya.unit.BaseUnit;
 
 /**
  * @author Werner Keil
  */
 public class ProxyQuantityFactoryTest {
+  private final Quantity<QuantityInterface> testQuantity = createTestQuantity(testQuantityValue, testQuantityUnit);
+  private static final int testQuantityValue = 1;
+  private static final String testQuantitySymbol = "Q";
+  private static final Unit<QuantityInterface> testQuantityUnit = new BaseUnit<QuantityInterface>(testQuantitySymbol, QuantityDimension.NONE);
+
+  /**
+   * Local quantity interface to test the instance methods on.
+   */
+  interface QuantityInterface extends Quantity<QuantityInterface> {
+  }
+
+  private Quantity<QuantityInterface> createTestQuantity(int value, Unit<QuantityInterface> unit) {
+    ProxyQuantityFactory<QuantityInterface> pqf = ProxyQuantityFactory.getInstance(QuantityInterface.class);
+    return pqf.create(value, unit);
+  }
 
   /**
    * Verifies that the factory throws an exception if an instance is requested for null.
@@ -142,39 +155,93 @@ public class ProxyQuantityFactoryTest {
     assertNotNull(ProxyQuantityFactory.getInstance(OneTimeComparableUnregisteredQuantityClass.class));
   }
 
+  /**
+   * Verifies that getUnit returns the unit used to create the test quantity.
+   */
   @Test
-  public void testLength() {
-    Quantity<Length> l = ProxyQuantityFactory.getInstance(Length.class).create(23.5, METRE); // 23.5 m
-    assertEquals(23.5d, l.getValue());
-    assertEquals(METRE, l.getUnit());
-    assertEquals("m", l.getUnit().getSymbol());
+  public void getUnitReturnsTheUnit() {
+    assertEquals(testQuantityUnit, testQuantity.getUnit());
   }
 
+  /**
+   * Verifies that getValue returns the value used to create the test quantity.
+   */
   @Test
-  public void testMass() {
-    Quantity<Mass> m = ProxyQuantityFactory.getInstance(Mass.class).create(10, KILOGRAM); // 10 kg
-    assertEquals(10, m.getValue());
-    assertEquals(KILOGRAM, m.getUnit());
-    assertEquals("kg", m.getUnit().getSymbol());
-    assertEquals("10 kg", m.toString());
+  public void getValueReturnsTheValue() {
+    assertEquals(testQuantityValue, testQuantity.getValue());
   }
 
+  /**
+   * Verifies that toString returns a correct String representation of the test quantity.
+   */
   @Test
-  public void testTime() {
-    Quantity<Time> t = ProxyQuantityFactory.getInstance(Time.class).create(30, SECOND); // 30 sec
-    assertEquals(30, t.getValue());
-    assertEquals(SECOND, t.getUnit());
-    assertEquals("s", t.getUnit().getSymbol());
-    assertEquals("30 s", t.toString());
+  public void toStringReturnsCorrectStringRepresentation() {
+    assertEquals("1 Q", testQuantity.toString());
   }
 
+  /**
+   * Verifies that a quantity isn't equal to null.
+   */
   @Test
-  public void testTimeDerived() {
-    Quantity<Time> t = ProxyQuantityFactory.getInstance(Time.class).create(40, MINUTE); // 40 min
-    assertEquals(40, t.getValue());
-    assertEquals(MINUTE, t.getUnit());
-    assertEquals("min", t.getUnit().getSymbol()); // TODO see
-    // https://github.com/unitsofmeasurement/uom-se/issues/54
-    assertEquals("40 min", t.toString());
+  public void testQuantityIsNotEqualToNull() {
+    assertFalse(testQuantity.equals(null));
+  }
+
+  /**
+   * Verifies that a quantity is equal to itself.
+   */
+  @Test
+  public void testQuantityIsEqualToItself() {
+    assertTrue(testQuantity.equals(testQuantity));
+  }
+
+  /**
+   * Verifies that a quantity is equal to another instance with the same value and unit.
+   */
+  @Test
+  public void testQuantityIsEqualToIdenticalInstance() {
+    assertTrue(testQuantity.equals(createTestQuantity(testQuantityValue, testQuantityUnit)));
+  }
+
+  /**
+   * Verifies that a quantity is not equal to a quantity with a different value.
+   */
+  @Test
+  public void testQuantityIsNotEqualToQuantityWithDifferentValue() {
+    assertFalse(testQuantity.equals(createTestQuantity(testQuantityValue + 1, testQuantityUnit)));
+  }
+
+  /**
+   * Verifies that a quantity is not equal to a quantity with a different unit.
+   */
+  @Test
+  public void testQuantityIsNotEqualToQuantityWithDifferentUnit() {
+    assertFalse(testQuantity.equals(createTestQuantity(testQuantityValue, MetricPrefix.DEKA(testQuantityUnit))));
+  }
+
+  /**
+   * Verifies that a quantity is not equal to an object of a different class.
+   */
+  @Test
+  public void testQuantityIsNotEqualToObjectOfDifferentClass() {
+    assertFalse(testQuantity.equals(testQuantityUnit));
+  }
+
+  /**
+   * Verifies that a quantity has the same hash code as another instance with the same value and unit.
+   */
+  @Test
+  public void testQuantityHasSameHashCodeAsIdenticalInstance() {
+    assertEquals(testQuantity.hashCode(), createTestQuantity(testQuantityValue, testQuantityUnit).hashCode());
+  }
+
+  /**
+   * Verifies that methods defined by Quantity but not supported by the default implementation throw an UnsupportedOperationException.
+   */
+  @Test
+  public void inverseThrowsAnUnsupportedOperationException() {
+    assertThrows(UnsupportedOperationException.class, () -> {
+      testQuantity.inverse();
+    });
   }
 }
