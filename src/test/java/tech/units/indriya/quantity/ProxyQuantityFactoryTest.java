@@ -38,10 +38,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import javax.measure.MetricPrefix;
 import javax.measure.Quantity;
 import javax.measure.Unit;
+import javax.measure.quantity.Length;
+import javax.measure.spi.QuantityFactory;
+
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.quantity.ProxyQuantityFactory;
 import tech.units.indriya.unit.BaseUnit;
+import tech.units.indriya.unit.Units;
 
 /**
  * @author Werner Keil
@@ -134,8 +138,8 @@ public class ProxyQuantityFactoryTest {
    */
   @Test
   public void getInstanceDoesNotCreateTwoFactoriesForAnUnregisteredQuantityClass() {
-    ProxyQuantityFactory<TwoTimesUnregisteredQuantityClass> instance1 = ProxyQuantityFactory.getInstance(TwoTimesUnregisteredQuantityClass.class);
-    ProxyQuantityFactory<TwoTimesUnregisteredQuantityClass> instance2 = ProxyQuantityFactory.getInstance(TwoTimesUnregisteredQuantityClass.class);
+    QuantityFactory<TwoTimesUnregisteredQuantityClass> instance1 = ProxyQuantityFactory.getInstance(TwoTimesUnregisteredQuantityClass.class);
+    QuantityFactory<TwoTimesUnregisteredQuantityClass> instance2 = ProxyQuantityFactory.getInstance(TwoTimesUnregisteredQuantityClass.class);
     assertEquals(instance1, instance2);
   }
 
@@ -244,4 +248,16 @@ public class ProxyQuantityFactoryTest {
       testQuantity.inverse();
     });
   }
+  
+  /**
+   * Verifies that a quantity created via ProxyQuantityFactory is equal to one created by the Quantities facade.
+   */
+  @Test
+  public void testQuantityIsEqualToNumberQuantity() {
+	final QuantityFactory<Length> lenFactory = ProxyQuantityFactory.getInstance(Length.class);
+	final Quantity<Length> len1 = lenFactory.create(10, Units.METRE);
+	final Quantity<Length> len2 = Quantities.getQuantity(10, Units.METRE);
+    assertEquals(len1, len2);
+  }
+  
 }

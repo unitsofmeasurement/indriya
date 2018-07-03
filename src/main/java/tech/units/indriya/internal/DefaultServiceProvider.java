@@ -37,7 +37,6 @@ import javax.measure.spi.SystemOfUnitsService;
 import javax.measure.spi.UnitFormatService;
 
 import tech.units.indriya.quantity.DefaultQuantityFactory;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -54,7 +53,7 @@ import java.util.logging.Logger;
  * services.
  *
  * @author Werner Keil
- * @version 1.1
+ * @version 1.2
  * @since 1.0
  */
 public class DefaultServiceProvider extends ServiceProvider implements Comparable<ServiceProvider> {
@@ -180,6 +179,7 @@ public class DefaultServiceProvider extends ServiceProvider implements Comparabl
 	    if (!QUANTITY_FACTORIES.containsKey(quantity)) {
 	      synchronized (QUANTITY_FACTORIES) {
 	        QUANTITY_FACTORIES.put(quantity, DefaultQuantityFactory.getInstance(quantity));
+	    	//QUANTITY_FACTORIES.put(quantity, ProxyQuantityFactory.getInstance(quantity)); FIXME this currently fails because some Quantity methods are not implemented by the proxy
 	      }
 	    }
 	    return QUANTITY_FACTORIES.get(quantity);

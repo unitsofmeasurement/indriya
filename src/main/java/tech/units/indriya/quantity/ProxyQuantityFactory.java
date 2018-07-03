@@ -208,10 +208,10 @@ public abstract class ProxyQuantityFactory<Q extends Quantity<Q>> implements Qua
       CLASS_TO_METRIC_UNIT.put(Length.class, METRE);
       CLASS_TO_METRIC_UNIT.put(AmountOfSubstance.class, MOLE);
       CLASS_TO_METRIC_UNIT.put(Time.class, SECOND);
-      // CLASS_TO_METRIC_UNIT.put(MagnetomotiveForce.class, AMPERE_TURN);
+      // CLASS_TO_SYSTEM_UNIT.put(MagnetomotiveForce.class, AMPERE_TURN);
       CLASS_TO_METRIC_UNIT.put(Angle.class, RADIAN);
       CLASS_TO_METRIC_UNIT.put(SolidAngle.class, STERADIAN);
-      // CLASS_TO_METRIC_UNIT.put(Information.class, BIT);
+      // CLASS_TO_SYSTEM_UNIT.put(Information.class, BIT);
       CLASS_TO_METRIC_UNIT.put(Frequency.class, HERTZ);
       CLASS_TO_METRIC_UNIT.put(Force.class, NEWTON);
       CLASS_TO_METRIC_UNIT.put(Pressure.class, PASCAL);
