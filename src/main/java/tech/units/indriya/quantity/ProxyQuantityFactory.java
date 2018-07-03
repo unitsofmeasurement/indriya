@@ -125,7 +125,8 @@ public abstract class ProxyQuantityFactory<Q extends Quantity<Q>> implements Qua
   }
 
   private static <Q extends Quantity<Q>> ProxyQuantityFactory<Q> returnOrCreateFactoryForQuantityAssignableType(final Class<Q> type) {
-    ProxyQuantityFactory<Q> factory = INSTANCES.get(type);
+    @SuppressWarnings("unchecked")
+	ProxyQuantityFactory<Q> factory = INSTANCES.get(type);
     if (factory != null) {
       return factory;
     }
