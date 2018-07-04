@@ -42,10 +42,10 @@ import javax.measure.quantity.Dimensionless;
 import tech.units.indriya.format.SimpleQuantityFormat;
 import tech.units.indriya.format.SimpleUnitFormat;
 import tech.units.indriya.function.Calculus;
-import tech.units.indriya.function.NaturalQuantityComparator;
 import tech.units.indriya.quantity.Quantities;
 import tech.uom.lib.common.function.UnitSupplier;
 import tech.uom.lib.common.function.ValueSupplier;
+import tech.uom.lib.common.util.NaturalQuantityComparator;
 
 /**
  * <p>
@@ -105,7 +105,7 @@ import tech.uom.lib.common.function.ValueSupplier;
  * </p>
  *
  * @author <a href="mailto:werner@uom.technology">Werner Keil</a>
- * @version 1.3.1, June 5, 2018
+ * @version 1.4, July 4, 2018
  * @since 1.0
  */
 @SuppressWarnings("unchecked")
@@ -259,27 +259,11 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
     if (this == obj) {
       return true;
     }
-    if (obj instanceof AbstractQuantity<?>) {
-      AbstractQuantity<?> that = (AbstractQuantity<?>) obj;
-      return Objects.equals(getUnit(), that.getUnit()) && Objects.equals(getValue(), that.getValue());
+    if (obj instanceof Quantity<?>) {
+    	Quantity<?> that = (Quantity<?>) obj;
+    	return Objects.equals(getUnit(), that.getUnit()) && Objects.equals(getValue(), that.getValue());
     }
     return false;
-  }
-
-  /**
-   * Compares this quantity and the specified quantity to the given accuracy. Quantities are considered approximately equals if their absolute
-   * differences when stated in the same specified unit is less than the specified epsilon.
-   *
-   * @param that
-   *          the quantity to compare with.
-   * @param epsilon
-   *          the absolute error stated in epsilonUnit.
-   * @param epsilonUnit
-   *          the epsilon unit.
-   * @return <code>abs(this.doubleValue(epsilonUnit) - that.doubleValue(epsilonUnit)) &lt;= epsilon</code>
-   */
-  public boolean equals(AbstractQuantity<Q> that, double epsilon, Unit<Q> epsilonUnit) {
-    return Math.abs(this.doubleValue(epsilonUnit) - that.doubleValue(epsilonUnit)) <= epsilon;
   }
 
   /**
