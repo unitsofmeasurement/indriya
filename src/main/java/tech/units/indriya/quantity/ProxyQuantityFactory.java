@@ -65,8 +65,9 @@ import tech.units.indriya.AbstractUnit;
  * @author <a href="mailto:martin.desruisseaux@geomatys.com">Martin Desruisseaux</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
- * @version 1.1.1, $Date: 2018-06-05 $
+ * @version 1.2, $Date: 2018-07-04 $
  * @since 1.0
+ * @deprecated Currently unused by ServiceProvider, shall we keep it here?
  */
 public abstract class ProxyQuantityFactory<Q extends Quantity<Q>> implements QuantityFactory<Q> {
 
