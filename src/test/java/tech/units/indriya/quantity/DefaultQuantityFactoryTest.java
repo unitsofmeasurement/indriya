@@ -156,8 +156,8 @@ public class DefaultQuantityFactoryTest {
    */
   @Test
   public void testQuantityIsEqualToNumberQuantity() {
-    final Quantity<Length> actual = lengthFactory.create(10, Units.METRE);
-    final Quantity<Length> expected = Quantities.getQuantity(10, Units.METRE);
+    final Quantity<Length> actual = lengthFactory.create(10, METRE);
+    final Quantity<Length> expected = Quantities.getQuantity(10, METRE);
     assertEquals(expected, actual);
   }
 
