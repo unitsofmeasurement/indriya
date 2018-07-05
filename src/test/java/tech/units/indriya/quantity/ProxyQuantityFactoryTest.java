@@ -108,7 +108,7 @@ public class ProxyQuantityFactoryTest {
         .getInstance(TwoTimesUnregisteredQuantityInterface.class);
     ProxyQuantityFactory<TwoTimesUnregisteredQuantityInterface> instance2 = ProxyQuantityFactory
         .getInstance(TwoTimesUnregisteredQuantityInterface.class);
-    assertEquals(instance1, instance2);
+    assertTrue(instance1 == instance2);
   }
 
   /**
@@ -140,7 +140,7 @@ public class ProxyQuantityFactoryTest {
   public void getInstanceDoesNotCreateTwoFactoriesForAnUnregisteredQuantityClass() {
     QuantityFactory<TwoTimesUnregisteredQuantityClass> instance1 = ProxyQuantityFactory.getInstance(TwoTimesUnregisteredQuantityClass.class);
     QuantityFactory<TwoTimesUnregisteredQuantityClass> instance2 = ProxyQuantityFactory.getInstance(TwoTimesUnregisteredQuantityClass.class);
-    assertEquals(instance1, instance2);
+    assertTrue(instance1 == instance2);
   }
 
   /**
@@ -248,16 +248,16 @@ public class ProxyQuantityFactoryTest {
       testQuantity.inverse();
     });
   }
-  
+
   /**
    * Verifies that a quantity created via ProxyQuantityFactory is equal to one created by the Quantities facade.
    */
   @Test
   public void testQuantityIsEqualToNumberQuantity() {
-	final QuantityFactory<Length> lenFactory = ProxyQuantityFactory.getInstance(Length.class);
-	final Quantity<Length> len1 = lenFactory.create(10, Units.METRE);
-	final Quantity<Length> len2 = Quantities.getQuantity(10, Units.METRE);
+    final QuantityFactory<Length> lenFactory = ProxyQuantityFactory.getInstance(Length.class);
+    final Quantity<Length> len1 = lenFactory.create(10, Units.METRE);
+    final Quantity<Length> len2 = Quantities.getQuantity(10, Units.METRE);
     assertEquals(len1, len2);
   }
-  
+
 }
