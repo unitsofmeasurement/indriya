@@ -124,7 +124,7 @@ import tech.units.indriya.AbstractUnit;
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:otaviojava@java.net">Otavio Santana</a>
- * @version 1.2.1, $Date: 2018-07-03 $
+ * @version 1.2.2, $Date: 2018-07-06 $
  * @since 1.0
  */
 public class DefaultQuantityFactory<Q extends Quantity<Q>> implements QuantityFactory<Q> {
@@ -220,7 +220,7 @@ public class DefaultQuantityFactory<Q extends Quantity<Q>> implements QuantityFa
   }
 
   public String toString() {
-    return "tech.units.indriya.DefaultQuantityFactory <" + type.getName() + '>';
+    return getClass().getName() + " <" + type.getName() + '>';
   }
 
   public boolean equals(Object obj) {

@@ -207,7 +207,7 @@ public class DefaultQuantityFactoryTest {
    */
   @Test
   public void toStringMustProduceCorrectText() {
-    assertEquals("tech.units.indriya.DefaultQuantityFactory <tech.units.indriya.quantity.DefaultQuantityFactoryTest$QuantityInterface>",
+    assertEquals("tech.units.indriya.quantity.DefaultQuantityFactory <tech.units.indriya.quantity.DefaultQuantityFactoryTest$QuantityInterface>",
         testFactory.toString());
   }
 
