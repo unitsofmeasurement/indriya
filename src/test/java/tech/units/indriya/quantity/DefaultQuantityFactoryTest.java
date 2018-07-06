@@ -35,36 +35,28 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import javax.measure.MetricPrefix;
+import static tech.units.indriya.unit.Units.METRE;
+
 import javax.measure.Quantity;
-import javax.measure.Unit;
 import javax.measure.quantity.Length;
 import javax.measure.spi.QuantityFactory;
 
 import org.junit.jupiter.api.Test;
 
-import tech.units.indriya.quantity.ProxyQuantityFactory;
-import tech.units.indriya.unit.BaseUnit;
 import tech.units.indriya.unit.Units;
 
 /**
  * @author Werner Keil
  */
-public class ProxyQuantityFactoryTest {
-  private final Quantity<QuantityInterface> testQuantity = createTestQuantity(testQuantityValue, testQuantityUnit);
-  private static final int testQuantityValue = 1;
-  private static final String testQuantitySymbol = "Q";
-  private static final Unit<QuantityInterface> testQuantityUnit = new BaseUnit<QuantityInterface>(testQuantitySymbol, QuantityDimension.NONE);
+public class DefaultQuantityFactoryTest {
+
+  private QuantityFactory<Length> lengthFactory = DefaultQuantityFactory.getInstance(Length.class);
+  private QuantityFactory<QuantityInterface> testFactory = DefaultQuantityFactory.getInstance(QuantityInterface.class);
 
   /**
    * Local quantity interface to test the instance methods on.
    */
   interface QuantityInterface extends Quantity<QuantityInterface> {
-  }
-
-  private Quantity<QuantityInterface> createTestQuantity(int value, Unit<QuantityInterface> unit) {
-    ProxyQuantityFactory<QuantityInterface> pqf = ProxyQuantityFactory.getInstance(QuantityInterface.class);
-    return pqf.create(value, unit);
   }
 
   /**
@@ -73,7 +65,7 @@ public class ProxyQuantityFactoryTest {
   @Test
   public void getInstanceThrowsExceptionForNull() {
     assertThrows(Exception.class, () -> {
-      ProxyQuantityFactory.getInstance(null);
+      DefaultQuantityFactory.getInstance(null);
     });
   }
 
@@ -89,7 +81,7 @@ public class ProxyQuantityFactoryTest {
    */
   @Test
   public void getInstanceCreatesAFactoryForAnUnregisteredQuantityInterface() {
-    assertNotNull(ProxyQuantityFactory.getInstance(OneTimeUnregisteredQuantityInterface.class));
+    assertNotNull(DefaultQuantityFactory.getInstance(OneTimeUnregisteredQuantityInterface.class));
   }
 
   /**
@@ -104,9 +96,9 @@ public class ProxyQuantityFactoryTest {
    */
   @Test
   public void getInstanceDoesNotCreateTwoFactoriesForAnUnregisteredQuantityInterface() {
-    ProxyQuantityFactory<TwoTimesUnregisteredQuantityInterface> instance1 = ProxyQuantityFactory
+    QuantityFactory<TwoTimesUnregisteredQuantityInterface> instance1 = DefaultQuantityFactory
         .getInstance(TwoTimesUnregisteredQuantityInterface.class);
-    ProxyQuantityFactory<TwoTimesUnregisteredQuantityInterface> instance2 = ProxyQuantityFactory
+    QuantityFactory<TwoTimesUnregisteredQuantityInterface> instance2 = DefaultQuantityFactory
         .getInstance(TwoTimesUnregisteredQuantityInterface.class);
     assertTrue(instance1 == instance2);
   }
@@ -123,7 +115,7 @@ public class ProxyQuantityFactoryTest {
    */
   @Test
   public void getInstanceCreatesAFactoryForAnUnregisteredQuantityClass() {
-    assertNotNull(ProxyQuantityFactory.getInstance(OneTimeUnregisteredQuantityClass.class));
+    assertNotNull(DefaultQuantityFactory.getInstance(OneTimeUnregisteredQuantityClass.class));
   }
 
   /**
@@ -138,8 +130,8 @@ public class ProxyQuantityFactoryTest {
    */
   @Test
   public void getInstanceDoesNotCreateTwoFactoriesForAnUnregisteredQuantityClass() {
-    QuantityFactory<TwoTimesUnregisteredQuantityClass> instance1 = ProxyQuantityFactory.getInstance(TwoTimesUnregisteredQuantityClass.class);
-    QuantityFactory<TwoTimesUnregisteredQuantityClass> instance2 = ProxyQuantityFactory.getInstance(TwoTimesUnregisteredQuantityClass.class);
+    QuantityFactory<TwoTimesUnregisteredQuantityClass> instance1 = DefaultQuantityFactory.getInstance(TwoTimesUnregisteredQuantityClass.class);
+    QuantityFactory<TwoTimesUnregisteredQuantityClass> instance2 = DefaultQuantityFactory.getInstance(TwoTimesUnregisteredQuantityClass.class);
     assertTrue(instance1 == instance2);
   }
 
@@ -156,108 +148,74 @@ public class ProxyQuantityFactoryTest {
    */
   @Test
   public void getInstanceCreatesAFactoryForAnUnregisteredQuantityClassWithExtraInterface() {
-    assertNotNull(ProxyQuantityFactory.getInstance(OneTimeComparableUnregisteredQuantityClass.class));
+    assertNotNull(DefaultQuantityFactory.getInstance(OneTimeComparableUnregisteredQuantityClass.class));
   }
 
   /**
-   * Verifies that getUnit returns the unit used to create the test quantity.
-   */
-  @Test
-  public void getUnitReturnsTheUnit() {
-    assertEquals(testQuantityUnit, testQuantity.getUnit());
-  }
-
-  /**
-   * Verifies that getValue returns the value used to create the test quantity.
-   */
-  @Test
-  public void getValueReturnsTheValue() {
-    assertEquals(testQuantityValue, testQuantity.getValue());
-  }
-
-  /**
-   * Verifies that toString returns a correct String representation of the test quantity.
-   */
-  @Test
-  public void toStringReturnsCorrectStringRepresentation() {
-    assertEquals("1 Q", testQuantity.toString());
-  }
-
-  /**
-   * Verifies that a quantity isn't equal to null.
-   */
-  @Test
-  public void testQuantityIsNotEqualToNull() {
-    assertFalse(testQuantity.equals(null));
-  }
-
-  /**
-   * Verifies that a quantity is equal to itself.
-   */
-  @Test
-  public void testQuantityIsEqualToItself() {
-    assertTrue(testQuantity.equals(testQuantity));
-  }
-
-  /**
-   * Verifies that a quantity is equal to another instance with the same value and unit.
-   */
-  @Test
-  public void testQuantityIsEqualToIdenticalInstance() {
-    assertTrue(testQuantity.equals(createTestQuantity(testQuantityValue, testQuantityUnit)));
-  }
-
-  /**
-   * Verifies that a quantity is not equal to a quantity with a different value.
-   */
-  @Test
-  public void testQuantityIsNotEqualToQuantityWithDifferentValue() {
-    assertFalse(testQuantity.equals(createTestQuantity(testQuantityValue + 1, testQuantityUnit)));
-  }
-
-  /**
-   * Verifies that a quantity is not equal to a quantity with a different unit.
-   */
-  @Test
-  public void testQuantityIsNotEqualToQuantityWithDifferentUnit() {
-    assertFalse(testQuantity.equals(createTestQuantity(testQuantityValue, MetricPrefix.DEKA(testQuantityUnit))));
-  }
-
-  /**
-   * Verifies that a quantity is not equal to an object of a different class.
-   */
-  @Test
-  public void testQuantityIsNotEqualToObjectOfDifferentClass() {
-    assertFalse(testQuantity.equals(testQuantityUnit));
-  }
-
-  /**
-   * Verifies that a quantity has the same hash code as another instance with the same value and unit.
-   */
-  @Test
-  public void testQuantityHasSameHashCodeAsIdenticalInstance() {
-    assertEquals(testQuantity.hashCode(), createTestQuantity(testQuantityValue, testQuantityUnit).hashCode());
-  }
-
-  /**
-   * Verifies that methods defined by Quantity but not supported by the default implementation throw an UnsupportedOperationException.
-   */
-  @Test
-  public void inverseThrowsAnUnsupportedOperationException() {
-    assertThrows(UnsupportedOperationException.class, () -> {
-      testQuantity.inverse();
-    });
-  }
-
-  /**
-   * Verifies that a quantity created via ProxyQuantityFactory is equal to one created by the Quantities facade.
+   * Verifies that a quantity created via DefaultQuantityFactory is equal to one created by the Quantities facade.
    */
   @Test
   public void testQuantityIsEqualToNumberQuantity() {
-    final QuantityFactory<Length> lenFactory = ProxyQuantityFactory.getInstance(Length.class);
-    final Quantity<Length> len1 = lenFactory.create(10, Units.METRE);
-    final Quantity<Length> len2 = Quantities.getQuantity(10, Units.METRE);
-    assertEquals(len1, len2);
+    final Quantity<Length> actual = lengthFactory.create(10, METRE);
+    final Quantity<Length> expected = Quantities.getQuantity(10, METRE);
+    assertEquals(expected, actual);
   }
 
+  /**
+   * Verifies that a quantity factory isn't equal to null.
+   */
+  @Test
+  public void defaultQuantityFactoryIsNotEqualToNull() {
+    assertFalse(testFactory.equals(null));
+  }
+
+  /**
+   * Verifies that a quantity factory is equal to itself.
+   */
+  @Test
+  public void defaultQuantityFactoryIsEqualToItself() {
+    assertTrue(testFactory.equals(testFactory));
+  }
+
+  /**
+   * Verifies that a quantity factory is not equal to a quantity factory for a different type.
+   */
+  @Test
+  public void testQuantityIsNotEqualToQuantityWithDifferentValue() {
+    assertFalse(testFactory.equals(lengthFactory));
+  }
+
+  /**
+   * Verifies that the hash codes of two factories that aren't equal aren't equal. Notice that this isn't a strict requirement on the hashCode method,
+   * and that hash collisions may occur, but in general, objects that aren't equal shouldn't have an equal hash code.
+   */
+  @Test
+  public void hashCodeShouldBeDifferentForDifferentFactories() {
+    assertFalse(testFactory.hashCode() == lengthFactory.hashCode());
+  }
+
+  /**
+   * Verifies that a quantity factory is not equal to an object of a different class.
+   */
+  @Test
+  public void testQuantityIsNotEqualToObjectOfDifferentClass() {
+    assertFalse(testFactory.equals(Length.class));
+  }
+
+  /**
+   * Verifies that the toString method produces the correct text.
+   */
+  @Test
+  public void toStringMustProduceCorrectText() {
+    assertEquals("tech.units.indriya.DefaultQuantityFactory <tech.units.indriya.quantity.DefaultQuantityFactoryTest$QuantityInterface>",
+        testFactory.toString());
+  }
+
+  /**
+   * Verifies that the length factory returns the meter as the system unit.
+   */
+  @Test
+  public void lengthFactoryMustReturnMeterAsSystemUnit() {
+    assertEquals(METRE, lengthFactory.getSystemUnit());
+  }
 }
