@@ -35,7 +35,6 @@ import java.math.BigInteger;
 import java.util.Objects;
 
 import javax.measure.Quantity;
-import javax.measure.UnconvertibleException;
 import javax.measure.Unit;
 import javax.measure.UnitConverter;
 
@@ -77,13 +76,8 @@ public class NumberQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> i
 
   @Override
   public double doubleValue(Unit<Q> unit) {
-    Unit<Q> myUnit = getUnit();
-    try {
-      UnitConverter converter = myUnit.getConverterTo(unit);
-      return converter.convert(getValue().doubleValue());
-    } catch (UnconvertibleException e) {
-      throw e;
-    }
+    UnitConverter converter = getUnit().getConverterTo(unit);
+    return converter.convert(getValue().doubleValue());
   }
 
   @Override
@@ -135,7 +129,7 @@ public class NumberQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> i
 
   @Override
   public BigDecimal decimalValue(Unit<Q> unit) throws ArithmeticException {
-    return Calculus.toBigDecimal(value);
+    return Calculus.toBigDecimal(getUnit().getConverterTo(unit).convert(getValue()));
   }
 
   @Override

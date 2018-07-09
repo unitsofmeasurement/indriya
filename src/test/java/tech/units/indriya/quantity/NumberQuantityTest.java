@@ -30,6 +30,7 @@
 package tech.units.indriya.quantity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -38,18 +39,97 @@ import java.math.BigInteger;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
+import javax.measure.MetricPrefix;
 import javax.measure.Quantity;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Time;
 
 import org.junit.jupiter.api.Test;
 
-import tech.units.indriya.AbstractQuantity;
 import tech.units.indriya.quantity.NumberQuantity;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.Units;
 
 public class NumberQuantityTest {
+
+  private final NumberQuantity<Length> ONE_METRE = new NumberQuantity<>(1L, Units.METRE);
+
+  /**
+   * Verifies that if isBig is set if the constructor receives a BigInteger.
+   */
+  @Test
+  public void instantiationWithBigIntegerSetsIsBig() {
+    NumberQuantity<Length> length = new NumberQuantity<>(BigInteger.ONE, Units.METRE);
+    assertTrue(length.isBig());
+  }
+
+  /**
+   * Verifies that if isBig is set if the constructor receives a BigDecimal.
+   */
+  @Test
+  public void instantiationWithBigDecimalSetsIsBig() {
+    NumberQuantity<Length> length = new NumberQuantity<>(BigDecimal.ONE, Units.METRE);
+    assertTrue(length.isBig());
+  }
+
+  /**
+   * Verifies that the value is returned without conversion if decimalValue is called with the quantity's unit.
+   */
+  @Test
+  public void decimalValueReturnsValueForSameUnit() {
+    assertEquals(BigDecimal.valueOf(1.0), ONE_METRE.decimalValue(Units.METRE));
+  }
+
+  /**
+   * Verifies that the value is correctly converted if decimalValue is called with the quantity's unit.
+   */
+  @Test
+  public void decimalValueReturnsConvertedValueForOtherUnit() {
+    assertEquals(BigDecimal.valueOf(0.001), ONE_METRE.decimalValue(MetricPrefix.KILO(Units.METRE)));
+  }
+
+  /**
+   * Verifies that a NumberQuantity is equal to itself.
+   */
+  @Test
+  public void numberQuantityIsEqualToItself() {
+    assertEquals(ONE_METRE, ONE_METRE);
+  }
+
+  /**
+   * Verifies that a NumberQuantity is not equal to null.
+   */
+  @Test
+  public void numberQuantityIsNotEqualToNull() {
+    assertNotEquals(ONE_METRE, null);
+  }
+
+  /**
+   * Verifies that a NumberQuantity is not equal to an object of a different type.
+   */
+  @Test
+  public void numberQuantityIsNotEqualToObjectOfDifferentType() {
+    assertNotEquals(ONE_METRE, Units.METRE);
+  }
+
+  /**
+   * Verifies that the factory method using a short value sets the value correctly.
+   */
+  @Test
+  public void factoryMethodForShortSetsValueCorrectly() {
+    Quantity<Length> l = NumberQuantity.of((short) 10, Units.METRE);
+    assertEquals((short) 10, l.getValue());
+  }
+
+  /**
+   * Verifies that the factory method using a byte value returns a ByteQuantity.
+   */
+  @SuppressWarnings("rawtypes")
+  @Test
+  public void factoryMethodForByteSetsValueCorrectly() {
+    Quantity<Length> byteQuantity = NumberQuantity.of((byte) 10, Units.METRE);
+    assertEquals(ByteQuantity.class, byteQuantity.getClass());
+  }
 
   @Test
   public void divideTest() {
@@ -140,12 +220,6 @@ public class NumberQuantityTest {
   }
 
   @Test
-  public void ofTest() {
-    AbstractQuantity<Length> l = NumberQuantity.of(Short.valueOf("10").shortValue(), Units.METRE);
-    assertEquals(Short.valueOf("10"), l.getValue());
-  }
-
-  @Test
   public void inverseTestLength() {
     @SuppressWarnings("unchecked")
     Quantity<Length> metre = (Quantity<Length>) Quantities.getQuantity(10, Units.METRE).inverse();
@@ -178,8 +252,8 @@ public class NumberQuantityTest {
   public void testEqualityWithNull() throws Exception {
     final Quantity<Length> value = Quantities.getQuantity(BigInteger.valueOf(20), Units.METRE);
     assertThrows(NullPointerException.class, () -> {
-    	final Quantity<Length> anotherValue = Quantities.getQuantity(null, Units.METRE);
-    	assertEquals(value, anotherValue);
+      final Quantity<Length> anotherValue = Quantities.getQuantity(null, Units.METRE);
+      assertEquals(value, anotherValue);
     });
   }
 }
