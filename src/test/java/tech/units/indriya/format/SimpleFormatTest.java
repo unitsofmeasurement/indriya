@@ -39,10 +39,12 @@ import static tech.units.indriya.unit.Units.METRE;
 import java.math.BigInteger;
 
 import javax.measure.Unit;
+import javax.measure.format.MeasurementParseException;
 import javax.measure.quantity.Frequency;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
 import javax.measure.quantity.Speed;
+import javax.measure.spi.ServiceProvider;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -58,68 +60,78 @@ import tech.units.indriya.unit.Units;
  */
 public class SimpleFormatTest {
 
-  private SimpleUnitFormat format;
+	private SimpleUnitFormat format;
 
-  @BeforeEach
-  public void init() {
-    format = SimpleUnitFormat.getInstance();
-  }
+	@BeforeEach
+	public void init() {
+		format = SimpleUnitFormat.getInstance();
+	}
 
-  @Test
-  public void testFormat2() {
-    Unit<Speed> kph = Units.KILOMETRE_PER_HOUR;
-    String s = format.format(kph);
-    assertEquals("km/h", s);
-  }
+	@Test
+	public void testFormat2() {
+		Unit<Speed> kph = Units.KILOMETRE_PER_HOUR;
+		String s = format.format(kph);
+		assertEquals("km/h", s);
+	}
 
-  @Test
-  public void testKilo() {
-    Unit<Mass> m = KILOGRAM;
-    String s = format.format(m);
-    assertEquals("kg", s);
-  }
+	@Test
+	public void testKilo() {
+		Unit<Mass> m = KILOGRAM;
+		String s = format.format(m);
+		assertEquals("kg", s);
+	}
 
-  @Test
-  public void testKilo2() {
-    Unit<Mass> m = KILO(GRAM);
-    String s = format.format(m);
-    assertEquals("kg", s);
-  }
+	@Test
+	public void testKilo2() {
+		Unit<Mass> m = KILO(GRAM);
+		String s = format.format(m);
+		assertEquals("kg", s);
+	}
 
-  @Test
-  public void testMilli() {
-    Unit<Mass> m = MILLI(GRAM);
-    String s = format.format(m);
-    assertEquals("mg", s);
-  }
+	@Test
+	public void testMilli() {
+		Unit<Mass> m = MILLI(GRAM);
+		String s = format.format(m);
+		assertEquals("mg", s);
+	}
 
-  @Test
-  public void testNano() {
-    Unit<Mass> m = NANO(GRAM);
-    String s = format.format(m);
-    assertEquals("ng", s);
-  }
+	@Test
+	public void testNano() {
+		Unit<Mass> m = NANO(GRAM);
+		String s = format.format(m);
+		assertEquals("ng", s);
+	}
 
-  @Test
-  public void testFormatHz2() {
-    Unit<Frequency> hz = MEGA(HERTZ);
-    String s = format.format(hz);
-    assertEquals("MHz", s);
-  }
+	@Test
+	public void testFormatHz2() {
+		Unit<Frequency> hz = MEGA(HERTZ);
+		String s = format.format(hz);
+		assertEquals("MHz", s);
+	}
 
-  @Test
-  public void testFormatHz3() {
-    Unit<Frequency> hz = KILO(HERTZ);
-    String s = format.format(hz);
-    assertEquals("kHz", s);
-  }
-  
-  @Test
-  public void testTransformed() {
-    final String ANGSTROEM_SYM = "\u212B";
-    final Unit<Length> ANGSTROEM = new TransformedUnit<Length>(ANGSTROEM_SYM, METRE, METRE, new RationalConverter(BigInteger.ONE,
-        BigInteger.TEN.pow(10)));
-    final String s = format.format(ANGSTROEM);
-    assertEquals(ANGSTROEM_SYM, s);
-  }
+	@Test
+	public void testFormatHz3() {
+		Unit<Frequency> hz = KILO(HERTZ);
+		String s = format.format(hz);
+		assertEquals("kHz", s);
+	}
+
+	@Test
+	public void testTransformed() {
+		final String ANGSTROEM_SYM = "\u212B";
+		final Unit<Length> ANGSTROEM = new TransformedUnit<Length>(ANGSTROEM_SYM, METRE, METRE,
+				new RationalConverter(BigInteger.ONE, BigInteger.TEN.pow(10)));
+		final String s = format.format(ANGSTROEM);
+		assertEquals(ANGSTROEM_SYM, s);
+	}
+
+	@Test
+	public void parseHertz() {
+		assertThrows(MeasurementParseException.class, () -> {
+			ServiceProvider.current().getFormatService().getUnitFormat().parse("1/s");
+		});
+
+		Unit onePerSecond = ServiceProvider.current().getFormatService().getUnitFormat().parse("one/s");
+		System.out.println(onePerSecond);
+	}
 }

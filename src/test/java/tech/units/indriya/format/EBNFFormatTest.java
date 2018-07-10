@@ -95,9 +95,9 @@ public class EBNFFormatTest {
       try {
         Unit<?> v = format.parse("1/" + u.toString());
         assertNotNull(v);
-        logger.log(Level.FINER, v.toString());
+        logger.log(Level.INFO, v.toString());
       } catch (MeasurementParseException pex) {
-        logger.log(Level.WARNING, String.format(" %s parsing %s", pex, u));
+        logger.log(Level.FINE, String.format(" %s parsing %s", pex, u));
       }
     }
   }
