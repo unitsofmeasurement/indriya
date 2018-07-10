@@ -46,13 +46,11 @@ import java.util.logging.Logger;
 
 /**
  * <p>
- * This class represents a quantity dimension (dimension of a physical
- * quantity).
+ * This class represents a quantity dimension (dimension of a physical quantity).
  * </p>
  *
  * <p>
- * The dimension associated to any given quantity are given by the published
- * {@link DimensionService} instances. For convenience, a static method
+ * The dimension associated to any given quantity are given by the published {@link DimensionService} instances. For convenience, a static method
  * {@link QuantityDimension#of(Class) aggregating the results of all
  * 
  * @link DimensionService} instances is provided.<br>
@@ -69,11 +67,11 @@ import java.util.logging.Logger;
  * @since 1.0
  */
 public final class QuantityDimension implements Dimension, Serializable {
-  private static final Logger logger = Logger.getLogger(QuantityDimension.class.getName());
+  private static final Logger LOGGER = Logger.getLogger(QuantityDimension.class.getName());
 
   /**
-	 * 
-	 */
+   * 
+   */
   private static final long serialVersionUID = 123289037718650030L;
 
   /**
@@ -148,14 +146,10 @@ public final class QuantityDimension implements Dimension, Serializable {
     // TODO: Track services and aggregate results (register custom
     // types)
     Unit<Q> siUnit = Units.getInstance().getUnit(quantityType);
-    if (siUnit == null)
-      logger.log(Level.FINER, "Quantity type: " + quantityType + " unknown"); // we're
-    // logging
-    // but
-    // probably
-    // FINER
-    // is
-    // enough?
+    if (siUnit == null) {
+      LOGGER.log(Level.FINER, "Quantity type: " + quantityType + " unknown");
+      // we're logging but probably FINER is enough?
+    }
     return (siUnit != null) ? siUnit.getDimension() : null;
   }
 
@@ -202,7 +196,7 @@ public final class QuantityDimension implements Dimension, Serializable {
    * @since 1.0
    */
   public Dimension multiply(Dimension that) {
-    return (that instanceof QuantityDimension) ? this.multiply((QuantityDimension) that) : this.multiply(that);
+    return that instanceof QuantityDimension ? this.multiply((QuantityDimension) that) : this.multiply(that);
   }
 
   /**
@@ -249,7 +243,7 @@ public final class QuantityDimension implements Dimension, Serializable {
    * @return the result of raising this dimension to the exponent.
    * @since 1.0
    */
-  public final QuantityDimension pow(int n) {
+  public QuantityDimension pow(int n) {
     return new QuantityDimension(this.pseudoUnit.pow(n));
   }
 
@@ -263,7 +257,7 @@ public final class QuantityDimension implements Dimension, Serializable {
    *           if <code>n == 0</code>.
    * @since 1.0
    */
-  public final QuantityDimension root(int n) {
+  public QuantityDimension root(int n) {
     return new QuantityDimension(this.pseudoUnit.root(n));
   }
 
@@ -277,8 +271,9 @@ public final class QuantityDimension implements Dimension, Serializable {
   @SuppressWarnings("rawtypes")
   public Map<? extends Dimension, Integer> getBaseDimensions() {
     Map<? extends Unit, Integer> pseudoUnits = pseudoUnit.getBaseUnits();
-    if (pseudoUnits == null)
+    if (pseudoUnits == null) {
       return null;
+    }
     final Map<QuantityDimension, Integer> baseDimensions = new HashMap<>();
     for (Map.Entry<? extends Unit, Integer> entry : pseudoUnits.entrySet()) {
       baseDimensions.put(new QuantityDimension(entry.getKey()), entry.getValue());
