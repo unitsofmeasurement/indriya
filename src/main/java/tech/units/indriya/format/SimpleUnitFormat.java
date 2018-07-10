@@ -80,7 +80,7 @@ import tech.units.indriya.unit.Units;
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
  * @author Eric Russell
- * @version 1.4, April 26, 2018
+ * @version 1.4.1, July 10, 2018
  * @since 1.0
  */
 public abstract class SimpleUnitFormat extends AbstractUnitFormat {
@@ -544,14 +544,14 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
                 result = result.shift(d);
               }
             } else {
-              throw new MeasurementParseException("not a number", pos.getIndex());
+              throw new MeasurementParseException("not a number", csq, pos.getIndex());
             }
             break;
           case EOF:
           case CLOSE_PAREN:
             return result;
           default:
-            throw new MeasurementParseException("unexpected token " + token, pos.getIndex());
+            throw new MeasurementParseException("unexpected token " + token, csq, pos.getIndex());
         }
         token = nextToken(csq, pos);
       }
