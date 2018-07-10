@@ -102,7 +102,6 @@ public class TimeQuantitiesConcurrentTest {
 
   @Test
   public void toUnitTest() {
-
     TimeUnitQuantity day = TimeUnitQuantity.of(DAYS, 1);
     TimeUnitQuantity hour = TimeUnitQuantity.of(HOURS, 1);
     TimeUnitQuantity minute = TimeUnitQuantity.of(MINUTES, 1);
@@ -139,7 +138,6 @@ public class TimeQuantitiesConcurrentTest {
     verifyQuantity(microSecond.toQuantity(), TimeQuantities.MICROSECOND, 1);
     verifyQuantity(milliSecond.toQuantity(), TimeQuantities.MILLISECOND, 1);
     verifyQuantity(nanoSecond.toQuantity(), TimeQuantities.NANOSECOND, 1);
-
   }
 
   @Test
