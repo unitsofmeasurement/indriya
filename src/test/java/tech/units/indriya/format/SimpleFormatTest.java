@@ -37,6 +37,8 @@ import static tech.units.indriya.unit.Units.KILOGRAM;
 import static tech.units.indriya.unit.Units.METRE;
 
 import java.math.BigInteger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.measure.Unit;
 import javax.measure.format.MeasurementParseException;
@@ -59,7 +61,8 @@ import tech.units.indriya.unit.Units;
  *
  */
 public class SimpleFormatTest {
-
+	private static final Logger logger = Logger.getLogger(SimpleFormatTest.class.getName());
+	
 	private SimpleUnitFormat format;
 
 	@BeforeEach
@@ -131,7 +134,7 @@ public class SimpleFormatTest {
 			ServiceProvider.current().getFormatService().getUnitFormat().parse("1/s");
 		});
 
-		Unit onePerSecond = ServiceProvider.current().getFormatService().getUnitFormat().parse("one/s");
-		System.out.println(onePerSecond);
+		Unit<?> onePerSecond = ServiceProvider.current().getFormatService().getUnitFormat().parse("one/s");
+		logger.log(Level.FINER, onePerSecond.toString());
 	}
 }
