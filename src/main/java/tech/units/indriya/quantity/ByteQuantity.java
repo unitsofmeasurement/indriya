@@ -49,11 +49,8 @@ import tech.units.indriya.ComparableQuantity;
  * @version 0.1, $Date: 2017-05-28 $
  * @since 1.0.7
  */
-final class ByteQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
+final class ByteQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> implements JavaNumberQuantity<Q> {
 
-  /**
-     * 
-     */
   private static final long serialVersionUID = 6325849816534488248L;
 
   private final byte value;
@@ -96,11 +93,14 @@ final class ByteQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
   }
 
   private ComparableQuantity<Q> addRaw(Number a, Number b, Unit<Q> unit) {
-    return NumberQuantity.of(a.byteValue() + b.byteValue(), unit);
+    return new ByteQuantity<Q>((byte) (a.byteValue() + b.byteValue()), unit);
   }
 
   @Override
   public ComparableQuantity<Q> add(Quantity<Q> that) {
+    if (NumberQuantity.canWiden(this, that)) {
+      return NumberQuantity.widen(this, (JavaNumberQuantity<Q>) that).add(that);
+    }
     final Quantity<Q> thatConverted = that.to(getUnit());
     final Quantity<Q> thisConverted = this.to(that.getUnit());
     final double resultValueInThisUnit = getValue().doubleValue() + thatConverted.getValue().doubleValue();
@@ -124,37 +124,50 @@ final class ByteQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
 
   @Override
   public ComparableQuantity<Q> subtract(Quantity<Q> that) {
-    final Quantity<Q> thatNegated = NumberQuantity.of(-that.getValue().shortValue(), that.getUnit());
+    if (NumberQuantity.canWiden(this, that)) {
+      return NumberQuantity.widen(this, (JavaNumberQuantity<Q>) that).subtract(that);
+    }
+    final Quantity<Q> thatNegated = new ByteQuantity<Q>((byte) -that.getValue().byteValue(), that.getUnit());
     return add(thatNegated);
   }
 
+  @SuppressWarnings({ "unchecked", "rawtypes" })
   @Override
   public ComparableQuantity<?> divide(Quantity<?> that) {
-    return NumberQuantity.of((short) value / that.getValue().byteValue(), getUnit().divide(that.getUnit()));
+    if (NumberQuantity.canWiden(this, that)) {
+      return NumberQuantity.widen(this, (JavaNumberQuantity<?>) that).divide(that);
+    }
+    return new ByteQuantity((byte) (value / that.getValue().byteValue()), getUnit().divide(that.getUnit()));
   }
 
+  @SuppressWarnings({ "unchecked", "rawtypes" })
   @Override
   public ComparableQuantity<Q> divide(Number that) {
-    return NumberQuantity.of(value / that.byteValue(), getUnit());
+    return new ByteQuantity((byte) (value / that.byteValue()), getUnit());
   }
 
+  @SuppressWarnings({ "unchecked", "rawtypes" })
   @Override
   public ComparableQuantity<?> multiply(Quantity<?> multiplier) {
+    if (NumberQuantity.canWiden(this, multiplier)) {
+      return NumberQuantity.widen(this, (JavaNumberQuantity<?>) multiplier).multiply(multiplier);
+    }
     final double product = getValue().doubleValue() * multiplier.getValue().doubleValue();
     if (isOverflowing(product)) {
       throw new ArithmeticException();
     } else {
-      return NumberQuantity.of(value * multiplier.getValue().byteValue(), getUnit().multiply(multiplier.getUnit()));
+      return new ByteQuantity((byte) (value * multiplier.getValue().byteValue()), getUnit().multiply(multiplier.getUnit()));
     }
   }
 
+  @SuppressWarnings({ "unchecked", "rawtypes" })
   @Override
   public ComparableQuantity<Q> multiply(Number multiplier) {
     final double product = getValue().doubleValue() * multiplier.doubleValue();
     if (isOverflowing(product)) {
       throw new ArithmeticException();
     } else {
-      return NumberQuantity.of(value * multiplier.byteValue(), getUnit());
+      return new ByteQuantity((byte) (value * multiplier.byteValue()), getUnit());
     }
   }
 
@@ -173,5 +186,20 @@ final class ByteQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
       return Objects.equals(getUnit(), that.getUnit()) && Equalizer.hasEquality(value, that.getValue());
     }
     return false;
+  }
+
+  @Override
+  public boolean isDecimal() {
+    return false;
+  }
+
+  @Override
+  public int getSize() {
+    return Byte.SIZE;
+  }
+
+  @Override
+  public Class<?> getNumberType() {
+    return byte.class;
   }
 }

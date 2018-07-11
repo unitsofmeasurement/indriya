@@ -56,8 +56,7 @@ import tech.units.indriya.function.Calculus;
  * @version 1.0.2
  * @since 1.0
  */
-@SuppressWarnings({ "rawtypes", "unchecked" })
-final class DecimalQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> implements Serializable {
+final class DecimalQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> implements Serializable, JavaNumberQuantity<Q> {
 
   private static final long serialVersionUID = 6504081836032983882L;
 
@@ -106,6 +105,7 @@ final class DecimalQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> i
     return Quantities.getQuantity(value.subtract(Calculus.toBigDecimal(converted.getValue()), Calculus.MATH_CONTEXT), getUnit());
   }
 
+  @SuppressWarnings({ "unchecked", "rawtypes" })
   @Override
   public ComparableQuantity<?> multiply(Quantity<?> that) {
     return new DecimalQuantity(value.multiply(Calculus.toBigDecimal(that.getValue()), Calculus.MATH_CONTEXT), getUnit().multiply(that.getUnit()));
@@ -121,6 +121,7 @@ final class DecimalQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> i
     return Quantities.getQuantity(value.divide(Calculus.toBigDecimal(that), Calculus.MATH_CONTEXT), getUnit());
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public ComparableQuantity<Q> inverse() {
     return (ComparableQuantity<Q>) Quantities.getQuantity(BigDecimal.ONE.divide(value), getUnit().inverse());
@@ -140,16 +141,12 @@ final class DecimalQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> i
     return true;
   }
 
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   @Override
   public ComparableQuantity<?> divide(Quantity<?> that) {
     return new DecimalQuantity(value.divide(Calculus.toBigDecimal(that.getValue()), Calculus.MATH_CONTEXT), getUnit().divide(that.getUnit()));
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see AbstractQuantity#equals(java.lang.Object)
-   */
   @Override
   public boolean equals(Object obj) {
     if (obj == null)
@@ -161,5 +158,20 @@ final class DecimalQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> i
       return Objects.equals(getUnit(), that.getUnit()) && Equalizer.hasEquality(value, that.getValue());
     }
     return false;
+  }
+
+  @Override
+  public boolean isDecimal() {
+    return true;
+  }
+
+  @Override
+  public int getSize() {
+    return 0;
+  }
+
+  @Override
+  public Class<?> getNumberType() {
+    return BigDecimal.class;
   }
 }

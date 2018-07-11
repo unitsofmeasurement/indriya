@@ -59,6 +59,7 @@ public class DoubleQuantityTest {
   private static final DoubleQuantity<ElectricResistance> JUST_OVER_HALF_MAX_VALUE_OHM = createQuantity(Double.MAX_VALUE / 1.999999999999999,
       Units.OHM);
   private static final DoubleQuantity<ElectricResistance> ONE_MILLIOHM = createQuantity(1, MILLI(Units.OHM));
+  private static final DecimalQuantity<ElectricResistance> ONE_DECIMAL_OHM = new DecimalQuantity<ElectricResistance>(BigDecimal.ONE, Units.OHM);
 
   private static <Q extends Quantity<Q>> DoubleQuantity<Q> createQuantity(double d, Unit<Q> unit) {
     return new DoubleQuantity<Q>(Double.valueOf(d).doubleValue(), unit);
@@ -241,6 +242,22 @@ public class DoubleQuantityTest {
   }
 
   /**
+   * Verifies that a DoubleQuantity is decimal.
+   */
+  @Test
+  public void doubleQuantityIsDecimal() {
+    assertTrue(ONE_OHM.isDecimal());
+  }
+
+  /**
+   * Verifies that a DoubleQuantity has the size of Double.
+   */
+  @Test
+  public void doubleQuantityHasByteSize() {
+    assertEquals(Double.SIZE, ONE_OHM.getSize());
+  }
+
+  /**
    * Verifies that a quantity isn't equal to null.
    */
   @Test
@@ -372,6 +389,70 @@ public class DoubleQuantityTest {
     assertThrows(ArithmeticException.class, () -> {
       createQuantity(Long.MIN_VALUE - 1025.0, Units.OHM).longValue(Units.OHM);
     });
+  }
+
+  /**
+   * Verifies that addition with DoubleQuantity returns a DoubleQuantity.
+   */
+  @Test
+  public void additionWithDoubleQuantityDoesNotWiden() {
+    assertEquals(DoubleQuantity.class, ONE_OHM.add(ONE_OHM).getClass());
+  }
+
+  /**
+   * Verifies that addition with DecimalQuantity widens to DecimalQuantity.
+   */
+  @Test
+  public void additionWithDecimalQuantityWidensToDecimalQuantity() {
+    assertEquals(DecimalQuantity.class, ONE_OHM.add(ONE_DECIMAL_OHM).getClass());
+  }
+
+  /**
+   * Verifies that subtraction with DoubleQuantity returns a DoubleQuantity.
+   */
+  @Test
+  public void subtractionWithDoubleQuantityDoesNotWiden() {
+    assertEquals(DoubleQuantity.class, ONE_OHM.subtract(ONE_OHM).getClass());
+  }
+
+  /**
+   * Verifies that subtraction with DecimalQuantity widens to DecimalQuantity.
+   */
+  @Test
+  public void subtractionWithDecimalQuantityWidensToDecimalQuantity() {
+    assertEquals(DecimalQuantity.class, ONE_OHM.subtract(ONE_DECIMAL_OHM).getClass());
+  }
+
+  /**
+   * Verifies that multiplication with DoubleQuantity returns a DoubleQuantity.
+   */
+  @Test
+  public void multiplicationWithDoubleQuantityDoesNotWiden() {
+    assertEquals(DoubleQuantity.class, ONE_OHM.multiply(ONE_OHM).getClass());
+  }
+
+  /**
+   * Verifies that multiplication with DecimalQuantity widens to DecimalQuantity.
+   */
+  @Test
+  public void multiplicationWithDecimalQuantityWidensToDecimalQuantity() {
+    assertEquals(DecimalQuantity.class, ONE_OHM.multiply(ONE_DECIMAL_OHM).getClass());
+  }
+
+  /**
+   * Verifies that division with DoubleQuantity returns a DoubleQuantity.
+   */
+  @Test
+  public void divisionWithDoubleQuantityDoesNotWiden() {
+    assertEquals(DoubleQuantity.class, ONE_OHM.divide(ONE_OHM).getClass());
+  }
+
+  /**
+   * Verifies that division with DecimalQuantity widens to DecimalQuantity.
+   */
+  @Test
+  public void divisionWithDecimalQuantityWidensToDecimalQuantity() {
+    assertEquals(DecimalQuantity.class, ONE_OHM.divide(ONE_DECIMAL_OHM).getClass());
   }
 
   @Test

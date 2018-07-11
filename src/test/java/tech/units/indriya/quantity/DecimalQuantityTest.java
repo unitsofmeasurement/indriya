@@ -157,6 +157,22 @@ public class DecimalQuantityTest {
   }
 
   /**
+   * Verifies that a DecimalQuantity is decimal.
+   */
+  @Test
+  public void decimalQuantityIsDecimal() {
+    assertTrue(ONE_OHM.isDecimal());
+  }
+
+  /**
+   * Verifies the getSize method for DecimalQuantity returns 0.
+   */
+  @Test
+  public void decimalQuantityGetSizeReturnsZero() {
+    assertEquals(0, ONE_OHM.getSize());
+  }
+
+  /**
    * Verifies that the value is returned without conversion if doubleValue is called with the quantity's unit.
    */
   @Test

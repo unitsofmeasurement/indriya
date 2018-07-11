@@ -56,12 +56,8 @@ import tech.units.indriya.function.Calculus;
  * @version 0.3
  * @since 2.0
  */
-@SuppressWarnings({ "rawtypes", "unchecked" })
-final class BigIntegerQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> implements Serializable {
+final class BigIntegerQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> implements Serializable, JavaNumberQuantity<Q> {
 
-  /**
-   * 
-   */
   private static final long serialVersionUID = -593014349777834846L;
   private final BigInteger value;
 
@@ -83,8 +79,8 @@ final class BigIntegerQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q
    * 
    * @return
    */
-  public BigIntegerQuantity negate() {
-    return new BigIntegerQuantity(value.negate(), getUnit());
+  public BigIntegerQuantity<Q> negate() {
+    return new BigIntegerQuantity<Q>(value.negate(), getUnit());
   }
 
   @Override
@@ -119,8 +115,11 @@ final class BigIntegerQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q
 
   @Override
   public ComparableQuantity<Q> add(Quantity<Q> that) {
+    if (NumberQuantity.canWiden(this, that)) {
+      return NumberQuantity.widen(this, (JavaNumberQuantity<Q>) that).add(that);
+    }
     if (getUnit().equals(that.getUnit())) {
-      return Quantities.getQuantity(value.add(Calculus.toBigInteger(that.getValue())), getUnit());
+      return new BigIntegerQuantity<Q>(value.add(Calculus.toBigInteger(that.getValue())), getUnit());
     }
     // we need to decide which of the 2 units to pick for the result
     // 1) this.getUnit()
@@ -150,14 +149,21 @@ final class BigIntegerQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q
 
   @Override
   public ComparableQuantity<Q> subtract(Quantity<Q> that) {
+    if (NumberQuantity.canWiden(this, that)) {
+      return NumberQuantity.widen(this, (JavaNumberQuantity<Q>) that).subtract(that);
+    }
     if (that instanceof BigIntegerQuantity) {
-      return add(((BigIntegerQuantity) that).negate());
+      return add(((BigIntegerQuantity<Q>) that).negate());
     }
     return add(Quantities.getQuantity(Calculus.negate(that.getValue()), that.getUnit()));
   }
 
+  @SuppressWarnings({ "unchecked", "rawtypes" })
   @Override
   public ComparableQuantity<?> multiply(Quantity<?> that) {
+    if (NumberQuantity.canWiden(this, that)) {
+      return NumberQuantity.widen(this, (JavaNumberQuantity<Q>) that).multiply(that);
+    }
     return new BigIntegerQuantity(value.multiply(Calculus.toBigDecimal(that.getValue()).toBigInteger()), getUnit().multiply(that.getUnit()));
   }
 
@@ -171,6 +177,7 @@ final class BigIntegerQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q
     return Quantities.getQuantity(value.divide(Calculus.toBigDecimal(that).toBigInteger()), getUnit());
   }
 
+  @SuppressWarnings({ "unchecked" })
   @Override
   public ComparableQuantity<Q> inverse() {
     return (ComparableQuantity<Q>) Quantities.getQuantity(BigInteger.ONE.divide(value), getUnit().inverse());
@@ -190,16 +197,15 @@ final class BigIntegerQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q
     return true;
   }
 
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   @Override
   public ComparableQuantity<?> divide(Quantity<?> that) {
+    if (NumberQuantity.canWiden(this, that)) {
+      return NumberQuantity.widen(this, (JavaNumberQuantity<Q>) that).divide(that);
+    }
     return new BigIntegerQuantity(value.divide(Calculus.toBigInteger(that.getValue())), getUnit().divide(that.getUnit()));
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see AbstractQuantity#equals(java.lang.Object)
-   */
   @Override
   public boolean equals(Object obj) {
     if (obj == null)
@@ -211,5 +217,20 @@ final class BigIntegerQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q
       return Objects.equals(getUnit(), that.getUnit()) && Equalizer.hasEquality(value, that.getValue());
     }
     return false;
+  }
+
+  @Override
+  public boolean isDecimal() {
+    return false;
+  }
+
+  @Override
+  public int getSize() {
+    return 0;
+  }
+
+  @Override
+  public Class<?> getNumberType() {
+    return BigInteger.class;
   }
 }

@@ -30,6 +30,7 @@
 package tech.units.indriya.quantity;
 
 import java.io.Serializable;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Objects;
@@ -56,7 +57,6 @@ import tech.units.indriya.function.Calculus;
  * @version 1.0.1, $Date: 2017-05-28 $
  * @since 1.0
  */
-@SuppressWarnings({ "rawtypes", "unchecked" })
 public class NumberQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> implements Serializable {
 
   private static final long serialVersionUID = 7312161895652321241L;
@@ -120,9 +120,9 @@ public class NumberQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> i
     return toDecimalQuantity().divide(that);
   }
 
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   @Override
   public ComparableQuantity<Q> inverse() {
-
     return new NumberQuantity((getValue() instanceof BigDecimal ? BigDecimal.ONE.divide((BigDecimal) getValue()) : 1d / getValue().doubleValue()),
         getUnit().inverse());
   }
@@ -139,6 +139,32 @@ public class NumberQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> i
 
   private DecimalQuantity<Q> toDecimalQuantity() {
     return new DecimalQuantity<>(BigDecimal.valueOf(value.doubleValue()), getUnit());
+  }
+
+  /**
+   * Returns the scalar quantity for the specified <code>BigDecimal</code> stated in the specified unit.
+   *
+   * @param bigDecimal
+   *          the quantity value.
+   * @param unit
+   *          the measurement unit.
+   * @return the corresponding <code>DecimalQuantity</code> quantity.
+   */
+  static <Q extends Quantity<Q>> AbstractQuantity<Q> of(BigDecimal bigDecimal, Unit<Q> unit) {
+    return new DecimalQuantity<Q>(bigDecimal, unit);
+  }
+
+  /**
+   * Returns the scalar quantity for the specified <code>BigInteger</code> stated in the specified unit.
+   *
+   * @param bigInteger
+   *          the quantity value.
+   * @param unit
+   *          the measurement unit.
+   * @return the corresponding <code>BigIntegerQuantity</code> quantity.
+   */
+  static <Q extends Quantity<Q>> AbstractQuantity<Q> of(BigInteger bigInteger, Unit<Q> unit) {
+    return new BigIntegerQuantity<Q>(bigInteger, unit);
   }
 
   /**
@@ -231,4 +257,50 @@ public class NumberQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> i
     return false;
   }
 
+  static <Q extends Quantity<Q>> boolean canWiden(JavaNumberQuantity<Q> source, Quantity<?> target) {
+    if (target instanceof JavaNumberQuantity) {
+      JavaNumberQuantity<?> jnTarget = (JavaNumberQuantity<?>) target;
+      if (jnTarget.isDecimal() && !source.isDecimal()) {
+        return true;
+      }
+      if (source.isDecimal() && !jnTarget.isDecimal()) {
+        return false;
+      }
+      if (jnTarget.isBig() && !source.isBig()) {
+        return true;
+      }
+      return source.getSize() != 0 && jnTarget.getSize() > source.getSize();
+    }
+    return false;
+  }
+
+  @SuppressWarnings({ "unchecked" })
+  static <Q extends Quantity<Q>> ComparableQuantity<Q> widen(JavaNumberQuantity<Q> source, JavaNumberQuantity<?> target) {
+    try {
+      Method m = NumberQuantity.class.getDeclaredMethod("of", target.getNumberType(), Unit.class);
+      return (ComparableQuantity<Q>) m.invoke(null, widenValue(source, target), source.getUnit());
+    } catch (Exception e) {
+      return null;
+    }
+  }
+
+  private static <Q extends Quantity<Q>> Number widenValue(JavaNumberQuantity<Q> source, JavaNumberQuantity<?> target) {
+    Number value = source.getValue();
+    if (target.isBig() && !source.isBig()) {
+      if (target.getNumberType().equals(BigInteger.class)) {
+        value = BigInteger.valueOf(value.longValue());
+      } else {
+        value = BigDecimal.valueOf(value.doubleValue());
+      }
+    } else if (source.getNumberType().equals(BigInteger.class) && !target.isBig()) {
+      if (target.getNumberType().equals(float.class)) {
+        value = source.getValue().floatValue();
+      } else {
+        value = source.getValue().doubleValue();
+      }
+    } else if (source.getNumberType().equals(BigInteger.class) && target.getNumberType().equals(BigDecimal.class)) {
+      value = new BigDecimal((BigInteger) value);
+    }
+    return value;
+  }
 }

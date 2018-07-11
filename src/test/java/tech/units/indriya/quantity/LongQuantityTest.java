@@ -35,6 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 
 import javax.measure.MetricPrefix;
 import javax.measure.Quantity;
@@ -60,6 +61,7 @@ public class LongQuantityTest {
   private final LongQuantity<ElectricResistance> ONE_MILLIOHM = createQuantity(1L, MetricPrefix.MILLI(Units.OHM));
   private final LongQuantity<ElectricResistance> ONE_KILOOHM = createQuantity(1L, MetricPrefix.KILO(Units.OHM));
   private final LongQuantity<ElectricResistance> ONE_YOTTAOHM = createQuantity(1L, MetricPrefix.YOTTA(Units.OHM));
+  private static final BigIntegerQuantity<ElectricResistance> ONE_BIG_INTEGER_OHM = new BigIntegerQuantity<ElectricResistance>(BigInteger.ONE, Units.OHM);
 
   private <Q extends Quantity<Q>> LongQuantity<Q> createQuantity(long l, Unit<Q> unit) {
     return new LongQuantity<Q>(Long.valueOf(l).longValue(), unit);
@@ -273,6 +275,22 @@ public class LongQuantityTest {
   }
 
   /**
+   * Verifies that a LongQuantity isn't decimal.
+   */
+  @Test
+  public void longQuantityIsNotDecimal() {
+    assertFalse(ONE_OHM.isDecimal());
+  }
+
+  /**
+   * Verifies that a LongQuantity has the size of Long.
+   */
+  @Test
+  public void longQuantityHasByteSize() {
+    assertEquals(Long.SIZE, ONE_OHM.getSize());
+  }
+
+  /**
    * Verifies that a quantity isn't equal to null.
    */
   @Test
@@ -394,6 +412,70 @@ public class LongQuantityTest {
     assertThrows(ArithmeticException.class, () -> {
       createQuantity(Long.MIN_VALUE / 10L - 117L, MetricPrefix.DEKA(Units.OHM)).longValue(Units.OHM);
     });
+  }
+  
+  /**
+   * Verifies that addition with LongQuantity returns a LongQuantity.
+   */
+  @Test
+  public void additionWithLongQuantityDoesNotWiden() {
+    assertEquals(LongQuantity.class, ONE_OHM.add(ONE_OHM).getClass());
+  }
+
+  /**
+   * Verifies that addition with BigIntegerQuantity widens to BigIntegerQuantity.
+   */
+  @Test
+  public void additionWithBigIntegerQuantityWidensToBigIntegerQuantity() {
+    assertEquals(BigIntegerQuantity.class, ONE_OHM.add(ONE_BIG_INTEGER_OHM).getClass());
+  }
+
+  /**
+   * Verifies that subtraction with LongQuantity returns a LongQuantity.
+   */
+  @Test
+  public void subtractionWithLongQuantityDoesNotWiden() {
+    assertEquals(LongQuantity.class, ONE_OHM.subtract(ONE_OHM).getClass());
+  }
+
+  /**
+   * Verifies that subtraction with BigIntegerQuantity widens to BigIntegerQuantity.
+   */
+  @Test
+  public void subtractionWithBigIntegerQuantityWidensToBigIntegerQuantity() {
+    assertEquals(BigIntegerQuantity.class, ONE_OHM.subtract(ONE_BIG_INTEGER_OHM).getClass());
+  }
+
+  /**
+   * Verifies that multiplication with LongQuantity returns a LongQuantity.
+   */
+  @Test
+  public void multiplicationWithLongQuantityDoesNotWiden() {
+    assertEquals(LongQuantity.class, ONE_OHM.multiply(ONE_OHM).getClass());
+  }
+
+  /**
+   * Verifies that multiplication with BigIntegerQuantity widens to BigIntegerQuantity.
+   */
+  @Test
+  public void multiplicationWithBigIntegerQuantityWidensToBigIntegerQuantity() {
+    assertEquals(BigIntegerQuantity.class, ONE_OHM.multiply(ONE_BIG_INTEGER_OHM).getClass());
+  }
+
+  /**
+   * Verifies that division with LongQuantity returns a LongQuantity.
+   */
+  @Test
+  public void divisionWithLongQuantityDoesNotWiden() {
+    assertEquals(LongQuantity.class, ONE_OHM.divide(ONE_OHM).getClass());
+  }
+
+  /**
+   * Verifies that division with BigIntegerQuantity widens to BigIntegerQuantity.
+   */
+  @Test
+  public void divisionWithBigIntegerQuantityWidensToBigIntegerQuantity() {
+    assertEquals(BigIntegerQuantity.class, ONE_OHM.divide(ONE_BIG_INTEGER_OHM).getClass());
   }
 
   @Test
