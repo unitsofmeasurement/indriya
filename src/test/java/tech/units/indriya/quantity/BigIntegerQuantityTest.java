@@ -57,6 +57,7 @@ public class BigIntegerQuantityTest {
   private final BigIntegerQuantity<ElectricResistance> ONE_OHM = createQuantity(1L, Units.OHM);
   private final BigIntegerQuantity<ElectricResistance> TWO_OHM = createQuantity(2L, Units.OHM);
   private final BigIntegerQuantity<ElectricResistance> ONE_MILLIOHM = createQuantity(1L, MILLI(Units.OHM));
+  private static final FloatQuantity<ElectricResistance> ONE_FLOAT_OHM = new FloatQuantity<ElectricResistance>(1F, Units.OHM);
 
   private <Q extends Quantity<Q>> BigIntegerQuantity<Q> createQuantity(long l, Unit<Q> unit) {
     return new BigIntegerQuantity<Q>(l, unit);
@@ -137,6 +138,22 @@ public class BigIntegerQuantityTest {
   @Test
   public void bigIntegerQuantityIsBig() {
     assertTrue(ONE_OHM.isBig());
+  }
+
+  /**
+   * Verifies that a BigIntegerQuantity is not decimal.
+   */
+  @Test
+  public void bigIntegerQuantityIsNotDecimal() {
+    assertFalse(ONE_OHM.isDecimal());
+  }
+
+  /**
+   * Verifies the getSize method for BigIntegerQuantity returns 0.
+   */
+  @Test
+  public void bigIntegerQuantityGetSizeReturnsZero() {
+    assertEquals(0, ONE_OHM.getSize());
   }
 
   /**
@@ -317,4 +334,69 @@ public class BigIntegerQuantityTest {
     assertEquals(expected, ONE_OHM.subtract(operand));
     assertEquals(expected, operand.subtract(ONE_OHM).multiply(-1));
   }
+
+  /**
+   * Verifies that addition with BigIntegerQuantity returns a BigIntegerQuantity.
+   */
+  @Test
+  public void additionWithBigIntegerQuantityDoesNotWiden() {
+    assertEquals(BigIntegerQuantity.class, ONE_OHM.add(ONE_OHM).getClass());
+  }
+
+  /**
+   * Verifies that addition with FloatQuantity widens to FloatQuantity.
+   */
+  @Test
+  public void additionWithFloatQuantityWidensToFloatQuantity() {
+    assertEquals(FloatQuantity.class, ONE_OHM.add(ONE_FLOAT_OHM).getClass());
+  }
+
+  /**
+   * Verifies that subtraction with BigIntegerQuantity returns a BigIntegerQuantity.
+   */
+  @Test
+  public void subtractionWithBigIntegerQuantityDoesNotWiden() {
+    assertEquals(BigIntegerQuantity.class, ONE_OHM.subtract(ONE_OHM).getClass());
+  }
+
+  /**
+   * Verifies that subtraction with FloatQuantity widens to FloatQuantity.
+   */
+  @Test
+  public void subtractionWithFloatQuantityWidensToFloatQuantity() {
+    assertEquals(FloatQuantity.class, ONE_OHM.subtract(ONE_FLOAT_OHM).getClass());
+  }
+
+  /**
+   * Verifies that multiplication with BigIntegerQuantity returns a BigIntegerQuantity.
+   */
+  @Test
+  public void multiplicationWithBigIntegerQuantityDoesNotWiden() {
+    assertEquals(BigIntegerQuantity.class, ONE_OHM.multiply(ONE_OHM).getClass());
+  }
+
+  /**
+   * Verifies that multiplication with FloatQuantity widens to FloatQuantity.
+   */
+  @Test
+  public void multiplicationWithFloatQuantityWidensToFloatQuantity() {
+    assertEquals(FloatQuantity.class, ONE_OHM.multiply(ONE_FLOAT_OHM).getClass());
+  }
+
+  /**
+   * Verifies that division with BigIntegerQuantity returns a BigIntegerQuantity.
+   */
+  @Test
+  public void divisionWithBigIntegerQuantityDoesNotWiden() {
+    assertEquals(BigIntegerQuantity.class, ONE_OHM.divide(ONE_OHM).getClass());
+  }
+
+  /**
+   * Verifies that division with FloatQuantity widens to FloatQuantity.
+   */
+  @Test
+  public void divisionWithFloatQuantityWidensToFloatQuantity() {
+    assertEquals(FloatQuantity.class, ONE_OHM.divide(ONE_FLOAT_OHM).getClass());
+  }
+
 }

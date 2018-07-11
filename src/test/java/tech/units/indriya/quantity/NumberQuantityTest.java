@@ -30,6 +30,7 @@
 package tech.units.indriya.quantity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -52,6 +53,14 @@ import tech.units.indriya.unit.Units;
 
 public class NumberQuantityTest {
 
+  private static final ByteQuantity<Length> BYTE_QUANTITY = new ByteQuantity<Length>((byte) 1, Units.METRE);
+  private static final ShortQuantity<Length> SHORT_QUANTITY = new ShortQuantity<Length>((short) 1, Units.METRE);
+  private static final IntegerQuantity<Length> INTEGER_QUANTITY = new IntegerQuantity<Length>(1, Units.METRE);
+  private static final LongQuantity<Length> LONG_QUANTITY = new LongQuantity<Length>(1L, Units.METRE);
+  private static final FloatQuantity<Length> FLOAT_QUANTITY = new FloatQuantity<Length>(1F, Units.METRE);
+  private static final DoubleQuantity<Length> DOUBLE_QUANTITY = new DoubleQuantity<Length>(1D, Units.METRE);
+  private static final BigIntegerQuantity<Length> BIG_INTEGER_QUANTITY = new BigIntegerQuantity<Length>(BigInteger.ONE, Units.METRE);
+  private static final DecimalQuantity<Length> DECIMAL_QUANTITY = new DecimalQuantity<Length>(BigDecimal.ONE, Units.METRE);
   private final NumberQuantity<Length> ONE_METRE = new NumberQuantity<>(1L, Units.METRE);
 
   /**
@@ -124,11 +133,235 @@ public class NumberQuantityTest {
   /**
    * Verifies that the factory method using a byte value returns a ByteQuantity.
    */
-  @SuppressWarnings("rawtypes")
   @Test
   public void factoryMethodForByteSetsValueCorrectly() {
     Quantity<Length> byteQuantity = NumberQuantity.of((byte) 10, Units.METRE);
     assertEquals(ByteQuantity.class, byteQuantity.getClass());
+  }
+
+  /**
+   * Verifies that canWiden always returns the correct value for ByteQuantity as the source type.
+   */
+  @Test
+  public void canWidenReturnsCorrectResultForByteQuantity() {
+    assertFalse(NumberQuantity.canWiden(BYTE_QUANTITY, BYTE_QUANTITY));
+    assertTrue(NumberQuantity.canWiden(BYTE_QUANTITY, SHORT_QUANTITY));
+    assertTrue(NumberQuantity.canWiden(BYTE_QUANTITY, INTEGER_QUANTITY));
+    assertTrue(NumberQuantity.canWiden(BYTE_QUANTITY, LONG_QUANTITY));
+    assertTrue(NumberQuantity.canWiden(BYTE_QUANTITY, BIG_INTEGER_QUANTITY));
+    assertTrue(NumberQuantity.canWiden(BYTE_QUANTITY, FLOAT_QUANTITY));
+    assertTrue(NumberQuantity.canWiden(BYTE_QUANTITY, DOUBLE_QUANTITY));
+    assertTrue(NumberQuantity.canWiden(BYTE_QUANTITY, DECIMAL_QUANTITY));
+  }
+
+  /**
+   * Verifies that canWiden always returns the correct value for ShortQuantity as the source type.
+   */
+  @Test
+  public void canWidenReturnsCorrectResultForShortQuantity() {
+    assertFalse(NumberQuantity.canWiden(SHORT_QUANTITY, BYTE_QUANTITY));
+    assertFalse(NumberQuantity.canWiden(SHORT_QUANTITY, SHORT_QUANTITY));
+    assertTrue(NumberQuantity.canWiden(SHORT_QUANTITY, INTEGER_QUANTITY));
+    assertTrue(NumberQuantity.canWiden(SHORT_QUANTITY, LONG_QUANTITY));
+    assertTrue(NumberQuantity.canWiden(SHORT_QUANTITY, BIG_INTEGER_QUANTITY));
+    assertTrue(NumberQuantity.canWiden(SHORT_QUANTITY, FLOAT_QUANTITY));
+    assertTrue(NumberQuantity.canWiden(SHORT_QUANTITY, DOUBLE_QUANTITY));
+    assertTrue(NumberQuantity.canWiden(SHORT_QUANTITY, DECIMAL_QUANTITY));
+  }
+
+  /**
+   * Verifies that canWiden always returns the correct value for IntegerQuantity as the source type.
+   */
+  @Test
+  public void canWidenReturnsCorrectResultForIntegerQuantity() {
+    assertFalse(NumberQuantity.canWiden(INTEGER_QUANTITY, BYTE_QUANTITY));
+    assertFalse(NumberQuantity.canWiden(INTEGER_QUANTITY, SHORT_QUANTITY));
+    assertFalse(NumberQuantity.canWiden(INTEGER_QUANTITY, INTEGER_QUANTITY));
+    assertTrue(NumberQuantity.canWiden(INTEGER_QUANTITY, LONG_QUANTITY));
+    assertTrue(NumberQuantity.canWiden(INTEGER_QUANTITY, BIG_INTEGER_QUANTITY));
+    assertTrue(NumberQuantity.canWiden(INTEGER_QUANTITY, FLOAT_QUANTITY));
+    assertTrue(NumberQuantity.canWiden(INTEGER_QUANTITY, DOUBLE_QUANTITY));
+    assertTrue(NumberQuantity.canWiden(INTEGER_QUANTITY, DECIMAL_QUANTITY));
+  }
+
+  /**
+   * Verifies that canWiden always returns the correct value for LongQuantity as the source type.
+   */
+  @Test
+  public void canWidenReturnsCorrectResultForLongQuantity() {
+    assertFalse(NumberQuantity.canWiden(LONG_QUANTITY, BYTE_QUANTITY));
+    assertFalse(NumberQuantity.canWiden(LONG_QUANTITY, SHORT_QUANTITY));
+    assertFalse(NumberQuantity.canWiden(LONG_QUANTITY, INTEGER_QUANTITY));
+    assertFalse(NumberQuantity.canWiden(LONG_QUANTITY, LONG_QUANTITY));
+    assertTrue(NumberQuantity.canWiden(LONG_QUANTITY, BIG_INTEGER_QUANTITY));
+    assertTrue(NumberQuantity.canWiden(LONG_QUANTITY, FLOAT_QUANTITY));
+    assertTrue(NumberQuantity.canWiden(LONG_QUANTITY, DOUBLE_QUANTITY));
+    assertTrue(NumberQuantity.canWiden(LONG_QUANTITY, DECIMAL_QUANTITY));
+  }
+
+  /**
+   * Verifies that canWiden always returns the correct value for BigIntegerQuantity as the source type.
+   */
+  @Test
+  public void canWidenReturnsCorrectResultForBigIntegerQuantity() {
+    assertFalse(NumberQuantity.canWiden(BIG_INTEGER_QUANTITY, BYTE_QUANTITY));
+    assertFalse(NumberQuantity.canWiden(BIG_INTEGER_QUANTITY, SHORT_QUANTITY));
+    assertFalse(NumberQuantity.canWiden(BIG_INTEGER_QUANTITY, INTEGER_QUANTITY));
+    assertFalse(NumberQuantity.canWiden(BIG_INTEGER_QUANTITY, LONG_QUANTITY));
+    assertFalse(NumberQuantity.canWiden(BIG_INTEGER_QUANTITY, BIG_INTEGER_QUANTITY));
+    assertTrue(NumberQuantity.canWiden(BIG_INTEGER_QUANTITY, FLOAT_QUANTITY));
+    assertTrue(NumberQuantity.canWiden(BIG_INTEGER_QUANTITY, DOUBLE_QUANTITY));
+    assertTrue(NumberQuantity.canWiden(BIG_INTEGER_QUANTITY, DECIMAL_QUANTITY));
+  }
+
+  /**
+   * Verifies that canWiden always returns the correct value for FloatQuantity as the source type.
+   */
+  @Test
+  public void canWidenReturnsCorrectResultForFloatQuantity() {
+    assertFalse(NumberQuantity.canWiden(FLOAT_QUANTITY, BYTE_QUANTITY));
+    assertFalse(NumberQuantity.canWiden(FLOAT_QUANTITY, SHORT_QUANTITY));
+    assertFalse(NumberQuantity.canWiden(FLOAT_QUANTITY, INTEGER_QUANTITY));
+    assertFalse(NumberQuantity.canWiden(FLOAT_QUANTITY, LONG_QUANTITY));
+    assertFalse(NumberQuantity.canWiden(FLOAT_QUANTITY, BIG_INTEGER_QUANTITY));
+    assertFalse(NumberQuantity.canWiden(FLOAT_QUANTITY, FLOAT_QUANTITY));
+    assertTrue(NumberQuantity.canWiden(FLOAT_QUANTITY, DOUBLE_QUANTITY));
+    assertTrue(NumberQuantity.canWiden(FLOAT_QUANTITY, DECIMAL_QUANTITY));
+  }
+
+  /**
+   * Verifies that canWiden always returns the correct value for DoubleQuantity as the source type.
+   */
+  @Test
+  public void canWidenReturnsCorrectResultForDoubleQuantity() {
+    assertFalse(NumberQuantity.canWiden(DOUBLE_QUANTITY, BYTE_QUANTITY));
+    assertFalse(NumberQuantity.canWiden(DOUBLE_QUANTITY, SHORT_QUANTITY));
+    assertFalse(NumberQuantity.canWiden(DOUBLE_QUANTITY, INTEGER_QUANTITY));
+    assertFalse(NumberQuantity.canWiden(DOUBLE_QUANTITY, LONG_QUANTITY));
+    assertFalse(NumberQuantity.canWiden(DOUBLE_QUANTITY, BIG_INTEGER_QUANTITY));
+    assertFalse(NumberQuantity.canWiden(DOUBLE_QUANTITY, FLOAT_QUANTITY));
+    assertFalse(NumberQuantity.canWiden(DOUBLE_QUANTITY, DOUBLE_QUANTITY));
+    assertTrue(NumberQuantity.canWiden(DOUBLE_QUANTITY, DECIMAL_QUANTITY));
+  }
+
+  /**
+   * Verifies that canWiden always returns the correct value for DecimalQuantity as the source type.
+   */
+  @Test
+  public void canWidenReturnsCorrectResultForDecimalQuantity() {
+    assertFalse(NumberQuantity.canWiden(DECIMAL_QUANTITY, BYTE_QUANTITY));
+    assertFalse(NumberQuantity.canWiden(DECIMAL_QUANTITY, SHORT_QUANTITY));
+    assertFalse(NumberQuantity.canWiden(DECIMAL_QUANTITY, INTEGER_QUANTITY));
+    assertFalse(NumberQuantity.canWiden(DECIMAL_QUANTITY, LONG_QUANTITY));
+    assertFalse(NumberQuantity.canWiden(DECIMAL_QUANTITY, BIG_INTEGER_QUANTITY));
+    assertFalse(NumberQuantity.canWiden(DECIMAL_QUANTITY, FLOAT_QUANTITY));
+    assertFalse(NumberQuantity.canWiden(DECIMAL_QUANTITY, DOUBLE_QUANTITY));
+    assertFalse(NumberQuantity.canWiden(DECIMAL_QUANTITY, DECIMAL_QUANTITY));
+  }
+
+  /**
+   * Verifies that widen always returns the correct value for ByteQuantity as the source type.
+   */
+  @Test
+  public void widenReturnsCorrectResultForByteQuantity() {
+    assertEquals(SHORT_QUANTITY, NumberQuantity.widen(BYTE_QUANTITY, SHORT_QUANTITY));
+    assertEquals(ShortQuantity.class, NumberQuantity.widen(BYTE_QUANTITY, SHORT_QUANTITY).getClass());
+    assertEquals(INTEGER_QUANTITY, NumberQuantity.widen(BYTE_QUANTITY, INTEGER_QUANTITY));
+    assertEquals(IntegerQuantity.class, NumberQuantity.widen(BYTE_QUANTITY, INTEGER_QUANTITY).getClass());
+    assertEquals(LONG_QUANTITY, NumberQuantity.widen(BYTE_QUANTITY, LONG_QUANTITY));
+    assertEquals(LongQuantity.class, NumberQuantity.widen(BYTE_QUANTITY, LONG_QUANTITY).getClass());
+    assertEquals(BIG_INTEGER_QUANTITY, NumberQuantity.widen(BYTE_QUANTITY, BIG_INTEGER_QUANTITY));
+    assertEquals(BigIntegerQuantity.class, NumberQuantity.widen(BYTE_QUANTITY, BIG_INTEGER_QUANTITY).getClass());
+    assertEquals(FLOAT_QUANTITY, NumberQuantity.widen(BYTE_QUANTITY, FLOAT_QUANTITY));
+    assertEquals(FloatQuantity.class, NumberQuantity.widen(BYTE_QUANTITY, FLOAT_QUANTITY).getClass());
+    assertEquals(DOUBLE_QUANTITY, NumberQuantity.widen(BYTE_QUANTITY, DOUBLE_QUANTITY));
+    assertEquals(DoubleQuantity.class, NumberQuantity.widen(BYTE_QUANTITY, DOUBLE_QUANTITY).getClass());
+    assertEquals(DECIMAL_QUANTITY, NumberQuantity.widen(BYTE_QUANTITY, DECIMAL_QUANTITY));
+    assertEquals(DecimalQuantity.class, NumberQuantity.widen(BYTE_QUANTITY, DECIMAL_QUANTITY).getClass());
+  }
+
+  /**
+   * Verifies that widen always returns the correct value for ShortQuantity as the source type.
+   */
+  @Test
+  public void widenReturnsCorrectResultForShortQuantity() {
+    assertEquals(INTEGER_QUANTITY, NumberQuantity.widen(SHORT_QUANTITY, INTEGER_QUANTITY));
+    assertEquals(IntegerQuantity.class, NumberQuantity.widen(SHORT_QUANTITY, INTEGER_QUANTITY).getClass());
+    assertEquals(LONG_QUANTITY, NumberQuantity.widen(SHORT_QUANTITY, LONG_QUANTITY));
+    assertEquals(LongQuantity.class, NumberQuantity.widen(SHORT_QUANTITY, LONG_QUANTITY).getClass());
+    assertEquals(BIG_INTEGER_QUANTITY, NumberQuantity.widen(SHORT_QUANTITY, BIG_INTEGER_QUANTITY));
+    assertEquals(BigIntegerQuantity.class, NumberQuantity.widen(SHORT_QUANTITY, BIG_INTEGER_QUANTITY).getClass());
+    assertEquals(FLOAT_QUANTITY, NumberQuantity.widen(SHORT_QUANTITY, FLOAT_QUANTITY));
+    assertEquals(FloatQuantity.class, NumberQuantity.widen(SHORT_QUANTITY, FLOAT_QUANTITY).getClass());
+    assertEquals(DOUBLE_QUANTITY, NumberQuantity.widen(SHORT_QUANTITY, DOUBLE_QUANTITY));
+    assertEquals(DoubleQuantity.class, NumberQuantity.widen(SHORT_QUANTITY, DOUBLE_QUANTITY).getClass());
+    assertEquals(DECIMAL_QUANTITY, NumberQuantity.widen(SHORT_QUANTITY, DECIMAL_QUANTITY));
+    assertEquals(DecimalQuantity.class, NumberQuantity.widen(SHORT_QUANTITY, DECIMAL_QUANTITY).getClass());
+  }
+
+  /**
+   * Verifies that widen always returns the correct value for IntegerQuantity as the source type.
+   */
+  @Test
+  public void widenReturnsCorrectResultForIntegerQuantity() {
+    assertEquals(LONG_QUANTITY, NumberQuantity.widen(INTEGER_QUANTITY, LONG_QUANTITY));
+    assertEquals(LongQuantity.class, NumberQuantity.widen(INTEGER_QUANTITY, LONG_QUANTITY).getClass());
+    assertEquals(BIG_INTEGER_QUANTITY, NumberQuantity.widen(INTEGER_QUANTITY, BIG_INTEGER_QUANTITY));
+    assertEquals(BigIntegerQuantity.class, NumberQuantity.widen(INTEGER_QUANTITY, BIG_INTEGER_QUANTITY).getClass());
+    assertEquals(FLOAT_QUANTITY, NumberQuantity.widen(INTEGER_QUANTITY, FLOAT_QUANTITY));
+    assertEquals(FloatQuantity.class, NumberQuantity.widen(INTEGER_QUANTITY, FLOAT_QUANTITY).getClass());
+    assertEquals(DOUBLE_QUANTITY, NumberQuantity.widen(INTEGER_QUANTITY, DOUBLE_QUANTITY));
+    assertEquals(DoubleQuantity.class, NumberQuantity.widen(INTEGER_QUANTITY, DOUBLE_QUANTITY).getClass());
+    assertEquals(DECIMAL_QUANTITY, NumberQuantity.widen(INTEGER_QUANTITY, DECIMAL_QUANTITY));
+    assertEquals(DecimalQuantity.class, NumberQuantity.widen(INTEGER_QUANTITY, DECIMAL_QUANTITY).getClass());
+  }
+
+  /**
+   * Verifies that widen always returns the correct value for LongQuantity as the source type.
+   */
+  @Test
+  public void widenReturnsCorrectResultForLongQuantity() {
+    assertEquals(BIG_INTEGER_QUANTITY, NumberQuantity.widen(LONG_QUANTITY, BIG_INTEGER_QUANTITY));
+    assertEquals(BigIntegerQuantity.class, NumberQuantity.widen(LONG_QUANTITY, BIG_INTEGER_QUANTITY).getClass());
+    assertEquals(FLOAT_QUANTITY, NumberQuantity.widen(LONG_QUANTITY, FLOAT_QUANTITY));
+    assertEquals(FloatQuantity.class, NumberQuantity.widen(LONG_QUANTITY, FLOAT_QUANTITY).getClass());
+    assertEquals(DOUBLE_QUANTITY, NumberQuantity.widen(LONG_QUANTITY, DOUBLE_QUANTITY));
+    assertEquals(DoubleQuantity.class, NumberQuantity.widen(LONG_QUANTITY, DOUBLE_QUANTITY).getClass());
+    assertEquals(DECIMAL_QUANTITY, NumberQuantity.widen(LONG_QUANTITY, DECIMAL_QUANTITY));
+    assertEquals(DecimalQuantity.class, NumberQuantity.widen(LONG_QUANTITY, DECIMAL_QUANTITY).getClass());
+  }
+
+  /**
+   * Verifies that widen always returns the correct value for BigIntegerQuantity as the source type.
+   */
+  @Test
+  public void widenReturnsCorrectResultForBigIntegerQuantity() {
+    assertEquals(FLOAT_QUANTITY, NumberQuantity.widen(BIG_INTEGER_QUANTITY, FLOAT_QUANTITY));
+    assertEquals(FloatQuantity.class, NumberQuantity.widen(BIG_INTEGER_QUANTITY, FLOAT_QUANTITY).getClass());
+    assertEquals(DOUBLE_QUANTITY, NumberQuantity.widen(BIG_INTEGER_QUANTITY, DOUBLE_QUANTITY));
+    assertEquals(DoubleQuantity.class, NumberQuantity.widen(BIG_INTEGER_QUANTITY, DOUBLE_QUANTITY).getClass());
+    assertEquals(DECIMAL_QUANTITY, NumberQuantity.widen(BIG_INTEGER_QUANTITY, DECIMAL_QUANTITY));
+    assertEquals(DecimalQuantity.class, NumberQuantity.widen(BIG_INTEGER_QUANTITY, DECIMAL_QUANTITY).getClass());
+  }
+
+  /**
+   * Verifies that widen always returns the correct value for FloatQuantity as the source type.
+   */
+  @Test
+  public void widenReturnsCorrectResultForFloatQuantity() {
+    assertEquals(DOUBLE_QUANTITY, NumberQuantity.widen(FLOAT_QUANTITY, DOUBLE_QUANTITY));
+    assertEquals(DoubleQuantity.class, NumberQuantity.widen(FLOAT_QUANTITY, DOUBLE_QUANTITY).getClass());
+    assertEquals(DECIMAL_QUANTITY, NumberQuantity.widen(FLOAT_QUANTITY, DECIMAL_QUANTITY));
+    assertEquals(DecimalQuantity.class, NumberQuantity.widen(FLOAT_QUANTITY, DECIMAL_QUANTITY).getClass());
+  }
+
+  /**
+   * Verifies that widen always returns the correct value for DoubleQuantity as the source type.
+   */
+  @Test
+  public void widenReturnsCorrectResultForDoubleQuantity() {
+    assertEquals(DECIMAL_QUANTITY, NumberQuantity.widen(DOUBLE_QUANTITY, DECIMAL_QUANTITY));
+    assertEquals(DecimalQuantity.class, NumberQuantity.widen(DOUBLE_QUANTITY, DECIMAL_QUANTITY).getClass());
   }
 
   @Test

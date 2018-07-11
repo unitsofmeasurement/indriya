@@ -49,14 +49,11 @@ import tech.units.indriya.ComparableQuantity;
  * @version 0.3, $Date: 2017-05-28 $
  * @since 1.0.7
  */
-final class LongQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
+final class LongQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> implements JavaNumberQuantity<Q> {
 
   private static final BigDecimal LONG_MAX_VALUE_AS_BIG_DECIMAL = new BigDecimal(Long.MAX_VALUE);
   private static final BigDecimal LONG_MIN_VALUE_AS_BIG_DECIMAL = new BigDecimal(Long.MIN_VALUE);
 
-  /**
-     * 
-     */
   private static final long serialVersionUID = 3092808554937634365L;
 
   private final long value;
@@ -88,11 +85,15 @@ final class LongQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
     return value.compareTo(LONG_MAX_VALUE_AS_BIG_DECIMAL) > 0 || value.compareTo(LONG_MIN_VALUE_AS_BIG_DECIMAL) < 0;
   }
 
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   private ComparableQuantity<Q> addRaw(Number a, Number b, Unit<Q> unit) {
-    return NumberQuantity.of(a.longValue() + b.longValue(), unit);
+    return new LongQuantity(a.longValue() + b.longValue(), unit);
   }
 
   public ComparableQuantity<Q> add(Quantity<Q> that) {
+    if (NumberQuantity.canWiden(this, that)) {
+      return NumberQuantity.widen(this, (JavaNumberQuantity<Q>) that).add(that);
+    }
     final Quantity<Q> thatConverted = that.to(getUnit());
     final Quantity<Q> thisConverted = this.to(that.getUnit());
     final BigDecimal resultValueInThisUnit = new BigDecimal(getValue()).add(new BigDecimal(thatConverted.getValue().doubleValue()));
@@ -115,13 +116,20 @@ final class LongQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
     }
   }
 
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   public ComparableQuantity<Q> subtract(Quantity<Q> that) {
-    final Quantity<Q> thatNegated = NumberQuantity.of(-that.getValue().longValue(), that.getUnit());
+    if (NumberQuantity.canWiden(this, that)) {
+      return NumberQuantity.widen(this, (JavaNumberQuantity<Q>) that).subtract(that);
+    }
+    final Quantity<Q> thatNegated = new LongQuantity(-that.getValue().longValue(), that.getUnit());
     return add(thatNegated);
   }
 
   @SuppressWarnings({ "rawtypes", "unchecked" })
   public ComparableQuantity<?> multiply(Quantity<?> that) {
+    if (NumberQuantity.canWiden(this, that)) {
+      return NumberQuantity.widen(this, (JavaNumberQuantity<Q>) that).multiply(that);
+    }
     final BigDecimal product = new BigDecimal(getValue()).multiply(new BigDecimal(that.getValue().longValue()));
     if (isOverflowing(product)) {
       throw new ArithmeticException();
@@ -139,24 +147,23 @@ final class LongQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
     }
   }
 
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   public ComparableQuantity<?> divide(Quantity<?> that) {
-    return NumberQuantity.of((double) value / that.getValue().doubleValue(), getUnit().divide(that.getUnit()));
+    if (NumberQuantity.canWiden(this, that)) {
+      return NumberQuantity.widen(this, (JavaNumberQuantity<Q>) that).divide(that);
+    }
+    return new LongQuantity((long) (value / that.getValue().doubleValue()), getUnit().divide(that.getUnit()));
   }
 
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   public AbstractQuantity<Q> inverse() {
-    return (AbstractQuantity<Q>) NumberQuantity.of(1 / value, getUnit().inverse());
+    return (AbstractQuantity<Q>) new LongQuantity(1 / value, getUnit().inverse());
   }
 
   public ComparableQuantity<Q> divide(Number that) {
     return NumberQuantity.of(value / that.doubleValue(), getUnit());
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see AbstractQuantity#equals(java.lang.Object)
-   */
   @Override
   public boolean equals(Object obj) {
     if (obj == null)
@@ -178,5 +185,20 @@ final class LongQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
   @Override
   public BigDecimal decimalValue(Unit<Q> unit) {
     return BigDecimal.valueOf(doubleValue(unit));
+  }
+
+  @Override
+  public boolean isDecimal() {
+    return false;
+  }
+
+  @Override
+  public int getSize() {
+    return Long.SIZE;
+  }
+
+  @Override
+  public Class<?> getNumberType() {
+    return long.class;
   }
 }

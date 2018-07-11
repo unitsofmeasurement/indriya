@@ -49,11 +49,8 @@ import tech.units.indriya.ComparableQuantity;
  * @version 0.2, $Date: 2016-09-01 $
  * @since 1.0
  */
-final class ShortQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
+final class ShortQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> implements JavaNumberQuantity<Q> {
 
-  /**
-     * 
-     */
   private static final long serialVersionUID = 6325849816534488248L;
 
   private final short value;
@@ -96,11 +93,14 @@ final class ShortQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
   }
 
   private ComparableQuantity<Q> addRaw(Number a, Number b, Unit<Q> unit) {
-    return NumberQuantity.of(a.shortValue() + b.shortValue(), unit);
+    return new ShortQuantity<Q>((short) (a.shortValue() + b.shortValue()), unit);
   }
 
   @Override
   public ComparableQuantity<Q> add(Quantity<Q> that) {
+    if (NumberQuantity.canWiden(this, that)) {
+      return NumberQuantity.widen(this, (JavaNumberQuantity<Q>) that).add(that);
+    }
     final Quantity<Q> thatConverted = that.to(getUnit());
     final Quantity<Q> thisConverted = this.to(that.getUnit());
     final double resultValueInThisUnit = getValue().doubleValue() + thatConverted.getValue().doubleValue();
@@ -124,13 +124,20 @@ final class ShortQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
 
   @Override
   public ComparableQuantity<Q> subtract(Quantity<Q> that) {
-    final Quantity<Q> thatNegated = NumberQuantity.of(-that.getValue().shortValue(), that.getUnit());
+    if (NumberQuantity.canWiden(this, that)) {
+      return NumberQuantity.widen(this, (JavaNumberQuantity<Q>) that).subtract(that);
+    }
+    final Quantity<Q> thatNegated = new ShortQuantity<Q>((short)-that.getValue().shortValue(), that.getUnit());
     return add(thatNegated);
   }
 
+  @SuppressWarnings({ "unchecked", "rawtypes" })
   @Override
   public ComparableQuantity<?> divide(Quantity<?> that) {
-    return NumberQuantity.of((short) value / that.getValue().shortValue(), getUnit().divide(that.getUnit()));
+    if (NumberQuantity.canWiden(this, that)) {
+      return NumberQuantity.widen(this, (JavaNumberQuantity<Q>) that).divide(that);
+    }
+    return new ShortQuantity((short) (value / that.getValue().shortValue()), getUnit().divide(that.getUnit()));
   }
 
   @Override
@@ -138,13 +145,17 @@ final class ShortQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
     return NumberQuantity.of(value / that.shortValue(), getUnit());
   }
 
+  @SuppressWarnings({ "unchecked", "rawtypes" })
   @Override
   public ComparableQuantity<?> multiply(Quantity<?> multiplier) {
+    if (NumberQuantity.canWiden(this, multiplier)) {
+      return NumberQuantity.widen(this, (JavaNumberQuantity<Q>) multiplier).multiply(multiplier);
+    }
     final double product = getValue().doubleValue() * multiplier.getValue().doubleValue();
     if (isOverflowing(product)) {
       throw new ArithmeticException();
     } else {
-      return NumberQuantity.of(value * multiplier.getValue().shortValue(), getUnit().multiply(multiplier.getUnit()));
+      return new ShortQuantity((short) (value * multiplier.getValue().shortValue()), getUnit().multiply(multiplier.getUnit()));
     }
   }
 
@@ -173,5 +184,20 @@ final class ShortQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
       return Objects.equals(getUnit(), that.getUnit()) && Equalizer.hasEquality(value, that.getValue());
     }
     return false;
+  }
+
+  @Override
+  public boolean isDecimal() {
+    return false;
+  }
+
+  @Override
+  public int getSize() {
+    return Short.SIZE;
+  }
+
+  @Override
+  public Class<?> getNumberType() {
+    return short.class;
   }
 }

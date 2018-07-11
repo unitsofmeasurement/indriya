@@ -56,8 +56,7 @@ import tech.units.indriya.function.Calculus;
  * @see ComparableQuantity
  * @since 1.0
  */
-@SuppressWarnings({ "rawtypes", "unchecked" })
-final class DoubleQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> implements Serializable {
+final class DoubleQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> implements Serializable, JavaNumberQuantity<Q> {
 
   private static final long serialVersionUID = 8660843078156312278L;
 
@@ -104,6 +103,9 @@ final class DoubleQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> im
 
   @Override
   public ComparableQuantity<Q> add(Quantity<Q> that) {
+    if (NumberQuantity.canWiden(this, that)) {
+      return NumberQuantity.widen(this, (JavaNumberQuantity<Q>) that).add(that);
+    }
     final Quantity<Q> thatConverted = that.to(getUnit());
     final Quantity<Q> thisConverted = this.to(that.getUnit());
     final double resultValueInThisUnit = getValue().doubleValue() + thatConverted.getValue().doubleValue();
@@ -121,12 +123,19 @@ final class DoubleQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> im
 
   @Override
   public ComparableQuantity<Q> subtract(Quantity<Q> that) {
+    if (NumberQuantity.canWiden(this, that)) {
+      return NumberQuantity.widen(this, (JavaNumberQuantity<Q>) that).subtract(that);
+    }
     final Quantity<Q> thatNegated = NumberQuantity.of(-that.getValue().doubleValue(), that.getUnit());
     return add(thatNegated);
   }
 
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   @Override
   public ComparableQuantity<?> multiply(Quantity<?> that) {
+    if (NumberQuantity.canWiden(this, that)) {
+      return NumberQuantity.widen(this, (JavaNumberQuantity<Q>) that).multiply(that);
+    }
     final double product = value * that.getValue().doubleValue();
     if (Double.isInfinite(product)) {
       throw new ArithmeticException();
@@ -145,8 +154,12 @@ final class DoubleQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> im
     }
   }
 
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   @Override
   public ComparableQuantity<?> divide(Quantity<?> that) {
+    if (NumberQuantity.canWiden(this, that)) {
+      return NumberQuantity.widen(this, (JavaNumberQuantity<Q>) that).divide(that);
+    }
     final double quotient = value / that.getValue().doubleValue();
     if (Double.isInfinite(quotient)) {
       throw new ArithmeticException();
@@ -165,9 +178,10 @@ final class DoubleQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> im
     }
   }
 
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   @Override
   public AbstractQuantity<Q> inverse() {
-    return (AbstractQuantity<Q>) Quantities.getQuantity(1d / value, getUnit().inverse());
+    return (AbstractQuantity<Q>) new DoubleQuantity(1d / value, getUnit().inverse());
   }
 
   @Override
@@ -185,5 +199,20 @@ final class DoubleQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> im
       return Objects.equals(getUnit(), that.getUnit()) && Equalizer.hasEquality(value, that.getValue());
     }
     return false;
+  }
+
+  @Override
+  public boolean isDecimal() {
+    return true;
+  }
+
+  @Override
+  public int getSize() {
+    return Double.SIZE;
+  }
+
+  @Override
+  public Class<?> getNumberType() {
+    return double.class;
   }
 }

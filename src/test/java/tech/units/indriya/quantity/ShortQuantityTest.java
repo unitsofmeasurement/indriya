@@ -61,6 +61,7 @@ public class ShortQuantityTest {
   private final ShortQuantity<ElectricResistance> ONE_MILLIOHM = createQuantity((short) 1, MetricPrefix.MILLI(Units.OHM));
   private final ShortQuantity<ElectricResistance> ONE_KILOOHM = createQuantity((short) 1, MetricPrefix.KILO(Units.OHM));
   private final ShortQuantity<ElectricResistance> ONE_YOTTAOHM = createQuantity((short) 1, MetricPrefix.YOTTA(Units.OHM));
+  private static final IntegerQuantity<ElectricResistance> ONE_INTEGER_OHM = new IntegerQuantity<ElectricResistance>(1, Units.OHM);
 
   private <Q extends Quantity<Q>> ShortQuantity<Q> createQuantity(short s, Unit<Q> unit) {
     return new ShortQuantity<Q>(Short.valueOf(s).shortValue(), unit);
@@ -274,6 +275,22 @@ public class ShortQuantityTest {
   }
 
   /**
+   * Verifies that a ShortQuantity isn't decimal.
+   */
+  @Test
+  public void shortQuantityIsNotDecimal() {
+    assertFalse(ONE_OHM.isDecimal());
+  }
+
+  /**
+   * Verifies that a ShortQuantity has the size of Short.
+   */
+  @Test
+  public void shortQuantityHasByteSize() {
+    assertEquals(Short.SIZE, ONE_OHM.getSize());
+  }
+
+  /**
    * Verifies that a quantity isn't equal to null.
    */
   @Test
@@ -395,6 +412,70 @@ public class ShortQuantityTest {
     assertThrows(ArithmeticException.class, () -> {
       createQuantity((short) -9224, MetricPrefix.PETA(Units.OHM)).longValue(Units.OHM);
     });
+  }
+
+  /**
+   * Verifies that addition with ShortQuantity returns a ShortQuantity.
+   */
+  @Test
+  public void additionWithShortQuantityDoesNotWiden() {
+    assertEquals(ShortQuantity.class, ONE_OHM.add(ONE_OHM).getClass());
+  }
+
+  /**
+   * Verifies that addition with IntegerQuantity widens to IntegerQuantity.
+   */
+  @Test
+  public void additionWithIntegerQuantityWidensToIntegerQuantity() {
+    assertEquals(IntegerQuantity.class, ONE_OHM.add(ONE_INTEGER_OHM).getClass());
+  }
+
+  /**
+   * Verifies that subtraction with ShortQuantity returns a ShortQuantity.
+   */
+  @Test
+  public void subtractionWithShortQuantityDoesNotWiden() {
+    assertEquals(ShortQuantity.class, ONE_OHM.subtract(ONE_OHM).getClass());
+  }
+
+  /**
+   * Verifies that subtraction with IntegerQuantity widens to IntegerQuantity.
+   */
+  @Test
+  public void subtractionWithIntegerQuantityWidensToIntegerQuantity() {
+    assertEquals(IntegerQuantity.class, ONE_OHM.subtract(ONE_INTEGER_OHM).getClass());
+  }
+
+  /**
+   * Verifies that multiplication with ShortQuantity returns a ShortQuantity.
+   */
+  @Test
+  public void multiplicationWithShortQuantityDoesNotWiden() {
+    assertEquals(ShortQuantity.class, ONE_OHM.multiply(ONE_OHM).getClass());
+  }
+
+  /**
+   * Verifies that multiplication with IntegerQuantity widens to IntegerQuantity.
+   */
+  @Test
+  public void multiplicationWithIntegerQuantityWidensToIntegerQuantity() {
+    assertEquals(IntegerQuantity.class, ONE_OHM.multiply(ONE_INTEGER_OHM).getClass());
+  }
+
+  /**
+   * Verifies that division with ShortQuantity returns a ShortQuantity.
+   */
+  @Test
+  public void divisionWithShortQuantityDoesNotWiden() {
+    assertEquals(ShortQuantity.class, ONE_OHM.divide(ONE_OHM).getClass());
+  }
+
+  /**
+   * Verifies that division with IntegerQuantity widens to IntegerQuantity.
+   */
+  @Test
+  public void divisionWithIntegerQuantityWidensToIntegerQuantity() {
+    assertEquals(IntegerQuantity.class, ONE_OHM.divide(ONE_INTEGER_OHM).getClass());
   }
 
   @Test

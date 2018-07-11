@@ -51,11 +51,8 @@ import tech.units.indriya.function.Calculus;
  * @version 0.5, $Date: 2018-05-29 $
  * @since 1.0
  */
-final class FloatQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
+final class FloatQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> implements JavaNumberQuantity<Q> {
 
-  /**
-   * 
-   */
   private static final long serialVersionUID = 5992028803791009345L;
 
   final float value;
@@ -84,11 +81,15 @@ final class FloatQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
     return (long) result;
   }
 
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   private ComparableQuantity<Q> addRaw(Number a, Number b, Unit<Q> unit) {
-    return NumberQuantity.of(a.floatValue() + b.floatValue(), unit);
+    return new FloatQuantity(a.floatValue() + b.floatValue(), unit);
   }
 
   public ComparableQuantity<Q> add(Quantity<Q> that) {
+    if (NumberQuantity.canWiden(this, that)) {
+      return NumberQuantity.widen(this, (JavaNumberQuantity<Q>) that).add(that);
+    }
     final Quantity<Q> thatConverted = that.to(getUnit());
     final Quantity<Q> thisConverted = this.to(that.getUnit());
     final float resultValueInThisUnit = getValue().floatValue() + thatConverted.getValue().floatValue();
@@ -104,13 +105,21 @@ final class FloatQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
     }
   }
 
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   public ComparableQuantity<Q> subtract(Quantity<Q> that) {
-    final Quantity<Q> thatNegated = NumberQuantity.of(-that.getValue().floatValue(), that.getUnit());
+    if (NumberQuantity.canWiden(this, that)) {
+      return NumberQuantity.widen(this, (JavaNumberQuantity<Q>) that).subtract(that);
+    }
+    final Quantity<Q> thatNegated = new FloatQuantity(-that.getValue().floatValue(), that.getUnit());
     return add(thatNegated);
   }
 
+  @SuppressWarnings({ "unchecked", "rawtypes" })
   @Override
   public ComparableQuantity<?> multiply(Quantity<?> that) {
+    if (NumberQuantity.canWiden(this, that)) {
+      return NumberQuantity.widen(this, (JavaNumberQuantity<Q>) that).multiply(that);
+    }
     final float product = value * that.getValue().floatValue();
     if (Float.isInfinite(product)) {
       throw new ArithmeticException();
@@ -129,8 +138,12 @@ final class FloatQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
     }
   }
 
+  @SuppressWarnings({ "unchecked", "rawtypes" })
   @Override
   public ComparableQuantity<?> divide(Quantity<?> that) {
+    if (NumberQuantity.canWiden(this, that)) {
+      return NumberQuantity.widen(this, (JavaNumberQuantity<Q>) that).divide(that);
+    }
     final float quotient = value / that.getValue().floatValue();
     if (Float.isInfinite(quotient)) {
       throw new ArithmeticException();
@@ -139,9 +152,9 @@ final class FloatQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
     }
   }
 
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({ "unchecked", "rawtypes" })
   public ComparableQuantity<Q> inverse() {
-    return (AbstractQuantity<Q>) NumberQuantity.of(1f / value, getUnit().inverse());
+    return (AbstractQuantity<Q>) new FloatQuantity(1f / value, getUnit().inverse());
   }
 
   @Override
@@ -154,11 +167,6 @@ final class FloatQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
     }
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see AbstractQuantity#equals(java.lang.Object)
-   */
   @Override
   public boolean equals(Object obj) {
     if (obj == null)
@@ -181,5 +189,20 @@ final class FloatQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
   public BigDecimal decimalValue(Unit<Q> unit) throws ArithmeticException {
     final BigDecimal decimal = BigDecimal.valueOf(value);
     return Calculus.toBigDecimal(getUnit().getConverterTo(unit).convert(decimal));
+  }
+
+  @Override
+  public boolean isDecimal() {
+    return true;
+  }
+
+  @Override
+  public int getSize() {
+    return Float.SIZE;
+  }
+
+  @Override
+  public Class<?> getNumberType() {
+    return float.class;
   }
 }

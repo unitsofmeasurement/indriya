@@ -50,11 +50,8 @@ import tech.units.indriya.ComparableQuantity;
  * @version 0.4, $Date: 2017-05-28 $
  * @since 1.0.7
  */
-final class IntegerQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
+final class IntegerQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> implements JavaNumberQuantity<Q> {
 
-  /**
-   * 
-   */
   private static final long serialVersionUID = 1405915111744728289L;
 
   private final int value;
@@ -86,11 +83,15 @@ final class IntegerQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
     return value < Integer.MIN_VALUE || value > Integer.MAX_VALUE;
   }
 
+  @SuppressWarnings({ "unchecked", "rawtypes" })
   private ComparableQuantity<Q> addRaw(Number a, Number b, Unit<Q> unit) {
-    return NumberQuantity.of(a.intValue() + b.intValue(), unit);
+    return new IntegerQuantity(a.intValue() + b.intValue(), unit);
   }
 
   public ComparableQuantity<Q> add(Quantity<Q> that) {
+    if (NumberQuantity.canWiden(this, that)) {
+      return NumberQuantity.widen(this, (JavaNumberQuantity<Q>) that).add(that);
+    }
     final Quantity<Q> thatConverted = that.to(getUnit());
     final Quantity<Q> thisConverted = this.to(that.getUnit());
     final double resultValueInThisUnit = getValue().doubleValue() + thatConverted.getValue().doubleValue();
@@ -112,31 +113,44 @@ final class IntegerQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
     }
   }
 
+  @SuppressWarnings({ "unchecked", "rawtypes" })
   public ComparableQuantity<Q> subtract(Quantity<Q> that) {
-    final Quantity<Q> thatNegated = NumberQuantity.of(-that.getValue().intValue(), that.getUnit());
+    if (NumberQuantity.canWiden(this, that)) {
+      return NumberQuantity.widen(this, (JavaNumberQuantity<Q>) that).subtract(that);
+    }
+    final Quantity<Q> thatNegated = new IntegerQuantity(-that.getValue().intValue(), that.getUnit());
     return add(thatNegated);
   }
 
+  @SuppressWarnings({ "unchecked", "rawtypes" })
   public ComparableQuantity<?> multiply(Quantity<?> that) {
+    if (NumberQuantity.canWiden(this, that)) {
+      return NumberQuantity.widen(this, (JavaNumberQuantity<Q>) that).multiply(that);
+    }
     final double product = getValue().doubleValue() * that.getValue().doubleValue();
     if (isOverflowing(product)) {
       throw new ArithmeticException();
     } else {
-      return NumberQuantity.of(value * that.getValue().intValue(), getUnit().multiply(that.getUnit()));
+      return new IntegerQuantity(value * that.getValue().intValue(), getUnit().multiply(that.getUnit()));
     }
   }
 
+  @SuppressWarnings({ "unchecked", "rawtypes" })
   public ComparableQuantity<Q> multiply(Number that) {
     final double product = getValue().doubleValue() * that.doubleValue();
     if (isOverflowing(product)) {
       throw new ArithmeticException();
     } else {
-      return NumberQuantity.of(value * that.intValue(), getUnit());
+      return new IntegerQuantity(value * that.intValue(), getUnit());
     }
   }
 
+  @SuppressWarnings({ "unchecked", "rawtypes" })
   public ComparableQuantity<?> divide(Quantity<?> that) {
-    return NumberQuantity.of((double) value / that.getValue().doubleValue(), getUnit().divide(that.getUnit()));
+    if (NumberQuantity.canWiden(this, that)) {
+      return NumberQuantity.widen(this, (JavaNumberQuantity<Q>) that).divide(that);
+    }
+    return new IntegerQuantity((int) (value / that.getValue().doubleValue()), getUnit().divide(that.getUnit()));
   }
 
   @SuppressWarnings("unchecked")
@@ -148,11 +162,6 @@ final class IntegerQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
     return NumberQuantity.of(value / that.doubleValue(), getUnit());
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see AbstractQuantity#equals(java.lang.Object)
-   */
   @Override
   public boolean equals(Object obj) {
     if (obj == null)
@@ -174,5 +183,20 @@ final class IntegerQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
   @Override
   public BigDecimal decimalValue(Unit<Q> unit) throws ArithmeticException {
     return BigDecimal.valueOf(doubleValue(unit));
+  }
+
+  @Override
+  public boolean isDecimal() {
+    return false;
+  }
+
+  @Override
+  public int getSize() {
+    return Integer.SIZE;
+  }
+
+  @Override
+  public Class<Integer> getNumberType() {
+    return int.class;
   }
 }

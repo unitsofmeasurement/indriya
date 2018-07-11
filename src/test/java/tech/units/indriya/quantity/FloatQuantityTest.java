@@ -60,6 +60,7 @@ public class FloatQuantityTest {
   private static final FloatQuantity<ElectricResistance> MAX_VALUE_OHM = createQuantity(Float.MAX_VALUE, Units.OHM);
   private static final FloatQuantity<ElectricResistance> JUST_OVER_HALF_MAX_VALUE_OHM = createQuantity(Float.MAX_VALUE / 1.9999999F, Units.OHM);
   private static final FloatQuantity<ElectricResistance> ONE_MILLIOHM = createQuantity(1, MILLI(Units.OHM));
+  private static final DoubleQuantity<ElectricResistance> ONE_DOUBLE_OHM = new DoubleQuantity<ElectricResistance>(1D, Units.OHM);
 
   private static <Q extends Quantity<Q>> FloatQuantity<Q> createQuantity(float f, Unit<Q> unit) {
     return new FloatQuantity<Q>(Float.valueOf(f).floatValue(), unit);
@@ -241,7 +242,7 @@ public class FloatQuantityTest {
     FloatQuantity<Dimensionless> expected = createQuantity(1, AbstractUnit.ONE);
     assertEquals(expected, actual);
   }
-  
+
   /**
    * Verifies that the division of two quantities resulting in an overflow throws an exception.
    */
@@ -250,7 +251,7 @@ public class FloatQuantityTest {
     assertThrows(ArithmeticException.class, () -> {
       JUST_OVER_HALF_MAX_VALUE_OHM.divide(HALF_AN_OHM);
     });
-  }  
+  }
 
   /**
    * Verifies that the division with a number divides correctly.
@@ -260,7 +261,7 @@ public class FloatQuantityTest {
     Quantity<?> actual = TWO_OHM.divide(2);
     assertEquals(ONE_OHM, actual);
   }
-  
+
   /**
    * Verifies that the division with a number resulting in an overflow throws an exception.
    */
@@ -269,7 +270,7 @@ public class FloatQuantityTest {
     assertThrows(ArithmeticException.class, () -> {
       JUST_OVER_HALF_MAX_VALUE_OHM.divide(0.5F);
     });
-  }  
+  }
 
   @Test
   public void toTest() {
@@ -319,6 +320,22 @@ public class FloatQuantityTest {
   @Test
   public void floatQuantityIsNotBig() {
     assertFalse(ONE_OHM.isBig());
+  }
+
+  /**
+   * Verifies that a FloatQuantity is decimal.
+   */
+  @Test
+  public void floatQuantityIsDecimal() {
+    assertTrue(ONE_OHM.isDecimal());
+  }
+
+  /**
+   * Verifies that a FloatQuantity has the size of Float.
+   */
+  @Test
+  public void floatQuantityHasByteSize() {
+    assertEquals(Float.SIZE, ONE_OHM.getSize());
   }
 
   /**
@@ -375,5 +392,69 @@ public class FloatQuantityTest {
   @Test
   public void floatQuantityIsNotEqualToObjectOfDifferentClass() {
     assertFalse(ONE_OHM.equals(SQUARE_OHM));
+  }
+
+  /**
+   * Verifies that addition with FloatQuantity returns a FloatQuantity.
+   */
+  @Test
+  public void additionWithFloatQuantityDoesNotWiden() {
+    assertEquals(FloatQuantity.class, ONE_OHM.add(ONE_OHM).getClass());
+  }
+
+  /**
+   * Verifies that addition with DoubleQuantity widens to DoubleQuantity.
+   */
+  @Test
+  public void additionWithDoubleQuantityWidensToDoubleQuantity() {
+    assertEquals(DoubleQuantity.class, ONE_OHM.add(ONE_DOUBLE_OHM).getClass());
+  }
+
+  /**
+   * Verifies that subtraction with FloatQuantity returns a FloatQuantity.
+   */
+  @Test
+  public void subtractionWithFloatQuantityDoesNotWiden() {
+    assertEquals(FloatQuantity.class, ONE_OHM.subtract(ONE_OHM).getClass());
+  }
+
+  /**
+   * Verifies that subtraction with DoubleQuantity widens to DoubleQuantity.
+   */
+  @Test
+  public void subtractionWithDoubleQuantityWidensToDoubleQuantity() {
+    assertEquals(DoubleQuantity.class, ONE_OHM.subtract(ONE_DOUBLE_OHM).getClass());
+  }
+
+  /**
+   * Verifies that multiplication with FloatQuantity returns a FloatQuantity.
+   */
+  @Test
+  public void multiplicationWithFloatQuantityDoesNotWiden() {
+    assertEquals(FloatQuantity.class, ONE_OHM.multiply(ONE_OHM).getClass());
+  }
+
+  /**
+   * Verifies that multiplication with DoubleQuantity widens to DoubleQuantity.
+   */
+  @Test
+  public void multiplicationWithDoubleQuantityWidensToDoubleQuantity() {
+    assertEquals(DoubleQuantity.class, ONE_OHM.multiply(ONE_DOUBLE_OHM).getClass());
+  }
+
+  /**
+   * Verifies that division with FloatQuantity returns a FloatQuantity.
+   */
+  @Test
+  public void divisionWithFloatQuantityDoesNotWiden() {
+    assertEquals(FloatQuantity.class, ONE_OHM.divide(ONE_OHM).getClass());
+  }
+
+  /**
+   * Verifies that division with DoubleQuantity widens to DoubleQuantity.
+   */
+  @Test
+  public void divisionWithDoubleQuantityWidensToDoubleQuantity() {
+    assertEquals(DoubleQuantity.class, ONE_OHM.divide(ONE_DOUBLE_OHM).getClass());
   }
 }
