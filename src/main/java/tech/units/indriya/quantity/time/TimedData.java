@@ -96,16 +96,10 @@ public class TimedData<T> implements Nameable, Supplier<T> {
     return name;
   }
 
-  // @Override
   public T get() {
     return value;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.lang.Object#equals()
-   */
   @Override
   public boolean equals(Object obj) {
     if (this == obj) {
@@ -120,21 +114,11 @@ public class TimedData<T> implements Nameable, Supplier<T> {
     return false;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.lang.Object#hashCode()
-   */
   @Override
   public int hashCode() {
-    return Objects.hash(value, name);
+    return Objects.hash(value, timestamp, name);
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.lang.Object#toString()
-   */
   @Override
   public String toString() {
     final StringBuilder sb = new StringBuilder().append("data= ").append(get()).append(", timestamp= ").append(getTimestamp());
