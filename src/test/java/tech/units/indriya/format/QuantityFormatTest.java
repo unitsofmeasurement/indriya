@@ -29,11 +29,13 @@
  */
 package tech.units.indriya.format;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.*;
 import static javax.measure.MetricPrefix.*;
 import static tech.units.indriya.unit.Units.*;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;
@@ -119,14 +121,30 @@ public class QuantityFormatTest {
 		assertEquals("V U", patternFormat.getPattern());
 		assertEquals("10 m", patternFormat.format(sut));
 	}
-	
+
 	@Test
 	public void testSimpleBuilder() {
-		QuantityFormat quantFormat = 
-				new SimpleQuantityFormatBuilder()
-					.appendUnit(DAY)
-					.appendUnit(HOUR)
-					.appendUnit(MINUTE).build();
+		QuantityFormat quantFormat = new SimpleQuantityFormatBuilder().appendUnit(DAY).appendUnit(HOUR)
+				.appendUnit(MINUTE).build();
 		assertNotNull(quantFormat);
+	}
+
+	@Test
+	public void testParseCustom1() {
+		QuantityFormat format1 = NumberSpaceQuantityFormat.getInstance(DecimalFormat.getInstance(),
+				SimpleUnitFormat.getInstance());
+		Quantity<?> parsed1 = format1.parse("1 m");
+		assertEquals(1L, parsed1.getValue());
+		assertEquals(METRE, parsed1.getUnit());
+	}
+
+	@Test
+	public void testParseCustom2() {
+		assertThrows(IllegalArgumentException.class, () -> {
+			QuantityFormat format1 = NumberSpaceQuantityFormat.getInstance(DecimalFormat.getInstance(),
+					SimpleUnitFormat.getInstance());
+			@SuppressWarnings("unused")
+			Quantity<?> parsed1 = format1.parse("1");
+		});
 	}
 }

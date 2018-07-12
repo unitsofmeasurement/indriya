@@ -46,12 +46,18 @@ import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.Quantities;
 
 /**
- * An implementation of {@link javax.measure.format.QuantityFormat QuantityFormat} combining {@linkplain NumberFormat} and {@link UnitFormat}.
- * @version 1.1, $Date: 2018-06-25 $
+ * An implementation of {@link javax.measure.format.QuantityFormat
+ * QuantityFormat} combining {@linkplain NumberFormat} and {@link UnitFormat}.
+ * 
+ * @version 1.2, $Date: 2018-07-12 $
  * @since 1.0
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class NumberSpaceQuantityFormat extends AbstractQuantityFormat {
+	/**
+	 * The default separator.
+	 */
+	private static final String DEFAULT_SEPARATOR = " ";
 
 	/**
 	 * Holds the default format instance.
@@ -108,19 +114,22 @@ public class NumberSpaceQuantityFormat extends AbstractQuantityFormat {
 		dest.append(numberFormat.format(quantity.getValue()));
 		if (quantity.getUnit().equals(AbstractUnit.ONE))
 			return dest;
-		dest.append(' ');
+		dest.append(DEFAULT_SEPARATOR);
 		return unitFormat.format(quantity.getUnit(), dest);
 	}
 
 	@Override
 	public ComparableQuantity<?> parse(CharSequence csq, ParsePosition cursor)
 			throws IllegalArgumentException, MeasurementParseException {
-		String str = csq.toString();
-		Number number = numberFormat.parse(str, cursor);
+		final String str = csq.toString();
+		final Number number = numberFormat.parse(str, cursor);
 		if (number == null)
 			throw new IllegalArgumentException("Number cannot be parsed");
-
-		Unit unit = unitFormat.parse(csq);
+		final String[] parts = str.split(DEFAULT_SEPARATOR);
+		if (parts.length < 2) {
+			throw new IllegalArgumentException("No Unit found");
+		}
+		final Unit unit = unitFormat.parse(parts[1]);
 		return Quantities.getQuantity(number, unit);
 	}
 
@@ -157,9 +166,10 @@ public class NumberSpaceQuantityFormat extends AbstractQuantityFormat {
 			return DEFAULT;
 		}
 	}
-	
+
 	/**
 	 * Returns the default format.
+	 * 
 	 * @return the desired format.
 	 */
 	public static NumberSpaceQuantityFormat getInstance() {
