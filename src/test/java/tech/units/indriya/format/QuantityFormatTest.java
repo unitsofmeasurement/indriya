@@ -147,4 +147,14 @@ public class QuantityFormatTest {
 			Quantity<?> parsed1 = format1.parse("1");
 		});
 	}
+	
+	@Test
+	public void testParseCustom3() {
+		assertThrows(IllegalArgumentException.class, () -> {
+			QuantityFormat format1 = NumberSpaceQuantityFormat.getInstance(DecimalFormat.getInstance(),
+					SimpleUnitFormat.getInstance());
+			@SuppressWarnings("unused")
+			Quantity<?> parsed1 = format1.parse("m");
+		});
+	}
 }
