@@ -44,7 +44,7 @@ import tech.uom.lib.common.function.Nameable;
  *          The data value.
  * 
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 0.6
+ * @version 0.7
  * @since 1.0
  * @see <a href="http://en.wikipedia.org/wiki/Time_series"> Wikipedia: Time Series</a>
  */
@@ -69,15 +69,15 @@ public class TimedData<T> implements Nameable, Supplier<T> {
   }
 
   /**
-   * Returns an {@code MeasurementRange} with the specified values.
+   * Returns a {@code TimedData} with the specified values.
    *
    * @param <T>
    *          the class of the value
    * @param val
-   *          The minimum value for the measurement range.
+   *          The value for the timed data.
    * @param time
-   *          The maximum value for the measurement range.
-   * @return an {@code MeasurementRange} with the given values
+   *          The timestamp.
+   * @return an {@code TimedData} with the given values
    */
   public static <T> TimedData<T> of(T val, long time) {
     return new TimedData<>(val, time);
