@@ -31,6 +31,7 @@ package tech.units.indriya.quantity.time;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Instant;
@@ -106,7 +107,7 @@ public class TimedDataTest {
   @Test
   public void timedDataIsNotEqualToObjectOfDifferentClass() {
     TimedData<Double> td = TimedData.of(1D, 42L);
-    assertFalse(td.equals("a string"));
+    assertNotEquals("a string", String.valueOf(td));
   }
 
   /**
@@ -128,7 +129,7 @@ public class TimedDataTest {
     Double value = 42D;
     TimedData<Double> td1 = TimedData.of(value, 1L);
     TimedData<Double> td2 = TimedData.of(value, 2L);
-    assertFalse(td1.equals(td2));
+    assertNotEquals(td1, td2);
   }
 
   /**
@@ -140,7 +141,7 @@ public class TimedDataTest {
     long time = 1L;
     TimedData<Double> td1 = TimedData.of(value, time);
     TimedData<Double> td2 = TimedData.of(value, time);
-    assertTrue(td1.equals(td2));
+    assertEquals(td1, td2);
   }
 
   /**
