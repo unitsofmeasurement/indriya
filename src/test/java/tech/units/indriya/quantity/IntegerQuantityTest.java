@@ -492,9 +492,17 @@ public class IntegerQuantityTest {
 
   @Test
   public void testEquality() throws Exception {
-    Quantity<Length> value = Quantities.getQuantity(new Integer(10), Units.METRE);
-    Quantity<Length> anotherValue = Quantities.getQuantity(new Integer(10), Units.METRE);
+    Quantity<Length> value = Quantities.getQuantity(Integer.valueOf(10), Units.METRE);
+    Quantity<Length> anotherValue = Quantities.getQuantity(Integer.valueOf(10), Units.METRE);
     assertEquals(value, anotherValue);
+  }
+  
+  /**
+   * Tests negate()
+   */
+  @Test
+  public void negateTest() {
+    assertEquals(-1, ONE_OHM.negate().getValue());
   }
 
 }

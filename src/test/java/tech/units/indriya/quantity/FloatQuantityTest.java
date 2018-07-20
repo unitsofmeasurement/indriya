@@ -283,6 +283,14 @@ public class FloatQuantityTest {
     assertEquals(dayResult.getValue(), day.getValue());
     assertEquals(dayResult.getUnit(), day.getUnit());
   }
+  
+  /**
+   * Tests negate()
+   */
+  @Test
+  public void negateTest() {
+    assertEquals(-1f, ONE_OHM.negate().getValue());
+  }
 
   /**
    * Verifies that the inverse returns the correct reciprocal for a unit quantity.

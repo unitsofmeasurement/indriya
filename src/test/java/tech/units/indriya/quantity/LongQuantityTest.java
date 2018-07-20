@@ -489,4 +489,12 @@ public class LongQuantityTest {
     assertEquals(dayResult.getValue().intValue(), day.getValue().intValue());
     assertEquals(dayResult.getValue().intValue(), day.getValue().intValue());
   }
+  
+  /**
+   * Tests negate()
+   */
+  @Test
+  public void negateTest() {
+    assertEquals(-1L, ONE_OHM.negate().getValue());
+  }
 }
