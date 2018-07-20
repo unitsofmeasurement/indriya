@@ -489,4 +489,16 @@ public class NumberQuantityTest {
       assertEquals(value, anotherValue);
     });
   }
+  
+  @Test
+  public void testNegateBig() throws Exception {
+    final Quantity<Length> value = Quantities.getQuantity(BigInteger.valueOf(20), Units.METRE);
+    assertEquals(BigDecimal.valueOf(20).negate(), value.negate().getValue());
+  }
+  
+  @Test
+  public void testNegateDouble() throws Exception {
+    final Quantity<Length> value = Quantities.getQuantity(30d, Units.METRE);
+    assertEquals(-30d, value.negate().getValue());
+  }
 }

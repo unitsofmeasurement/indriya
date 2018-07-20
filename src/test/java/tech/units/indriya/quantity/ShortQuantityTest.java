@@ -496,4 +496,12 @@ public class ShortQuantityTest {
     Quantity<Length> anotherValue = Quantities.getQuantity(Short.valueOf("1"), Units.METRE);
     assertEquals(value, anotherValue);
   }
+  
+  /**
+   * Tests negate()
+   */
+  @Test
+  public void negateTest() {
+    assertEquals((short)-1, ONE_OHM.negate().getValue());
+  }
 }
