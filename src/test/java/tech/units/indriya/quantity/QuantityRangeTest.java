@@ -125,6 +125,11 @@ public class QuantityRangeTest {
     public Quantity<Mass> to(Unit<Mass> u) {
       return new NonComparableMassQuantity(getUnit().getConverterTo(u).convert(getValue()).doubleValue(), u);
     }
+
+	@Override
+	public Quantity<Mass> negate() {
+		return new NonComparableMassQuantity(-value.doubleValue(), unit);
+	}
   }
 
   /**

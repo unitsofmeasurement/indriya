@@ -59,12 +59,11 @@ public class TimeQuantitiesConcurrentTest {
 
   @Test
   public void ofTest() {
-
     TimeUnitQuantity day = TimeUnitQuantity.of(1, DAYS);
     TimeUnitQuantity hour = TimeUnitQuantity.of(HOURS, 1);
     TimeUnitQuantity minute = TimeUnitQuantity.of(MINUTES, 1);
     TimeUnitQuantity second = TimeUnitQuantity.of(SECONDS, 1);
-    TimeUnitQuantity microSecond = TimeUnitQuantity.of(MICROSECONDS, 1);
+    TimeUnitQuantity microSecond = TimeUnitQuantity.of(1, MICROSECONDS);
     TimeUnitQuantity milliSecond = TimeUnitQuantity.of(MILLISECONDS, 1);
     TimeUnitQuantity nanoSecond = TimeUnitQuantity.of(NANOSECONDS, 1);
 

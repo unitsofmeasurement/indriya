@@ -53,7 +53,7 @@ import tech.units.indriya.function.Calculus;
  * @see AbstractQuantity
  * @see Quantity
  * @see ComparableQuantity
- * @version 1.0.2
+ * @version 1.1
  * @since 1.0
  */
 final class DecimalQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> implements Serializable, JavaNumberQuantity<Q> {
@@ -173,5 +173,16 @@ final class DecimalQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> i
   @Override
   public Class<?> getNumberType() {
     return BigDecimal.class;
+  }
+  
+  /**
+   * <p>
+   * Returns a {@code DecimalQuantity} with same Unit, but whose value is {@code(-this.getValue())}.
+   * </p>
+   * 
+   * @return {@code -this}.
+   */
+  public DecimalQuantity<Q> negate() {
+    return new DecimalQuantity<Q>(value.negate(), getUnit());
   }
 }

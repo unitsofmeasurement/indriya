@@ -53,7 +53,7 @@ import tech.units.indriya.function.Calculus;
  * @see AbstractQuantity
  * @see Quantity
  * @see ComparableQuantity
- * @version 0.3
+ * @version 0.4
  * @since 2.0
  */
 final class BigIntegerQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> implements Serializable, JavaNumberQuantity<Q> {
@@ -72,12 +72,11 @@ final class BigIntegerQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q
   }
 
   /**
-   * Not-API (not yet)
    * <p>
-   * Returns a BigIntegerQuantity with same Unit, but whose value is (-this.getValue()).
+   * Returns a {@code BigIntegerQuantity} with same Unit, but whose value is {@code(-this.getValue())}.
    * </p>
    * 
-   * @return
+   * @return {@code -this}.
    */
   public BigIntegerQuantity<Q> negate() {
     return new BigIntegerQuantity<Q>(value.negate(), getUnit());

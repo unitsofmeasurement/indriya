@@ -57,248 +57,256 @@ import tech.units.indriya.unit.Units;
 /**
  * Class that represents {@link TemporalUnit} in Unit-API
  * 
- * @author keilw
+ * @author Werner Keil
+ * @version 1.0.2
  * @since 1.0
  */
 public final class TemporalQuantity extends AbstractQuantity<Time> {
-  /**
-     * 
-     */
-  private static final long serialVersionUID = 6835738653744691425L;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6835738653744691425L;
 
-  private final TemporalUnit timeUnit;
-  private final Integer value;
-  private final TemporalAmount amount;
+	private final TemporalUnit timeUnit;
+	private final Integer value;
+	private final TemporalAmount amount;
 
-  /**
-   * creates the {@link TemporalQuantity} using {@link TemporalUnit} and {@link Integer}
-   * 
-   * @param timeUnit
-   *          - time to be used
-   * @param value
-   *          - value to be used
-   */
-  TemporalQuantity(Integer value, TemporalUnit timeUnit) {
-    super(toUnit(timeUnit));
-    this.timeUnit = timeUnit;
-    this.amount = Duration.of(value, timeUnit);
-    this.value = value;
-  }
+	/**
+	 * creates the {@link TemporalQuantity} using {@link TemporalUnit} and
+	 * {@link Integer}
+	 * 
+	 * @param timeUnit - time to be used
+	 * @param value    - value to be used
+	 */
+	TemporalQuantity(Integer value, TemporalUnit timeUnit) {
+		super(toUnit(timeUnit));
+		this.timeUnit = timeUnit;
+		this.amount = Duration.of(value, timeUnit);
+		this.value = value;
+	}
 
-  /**
-   * creates the {@link TemporalQuantity} using {@link TemporalUnit} and {@link Integer}
-   * 
-   * @param value
-   *          - value to be used
-   * @param timeUnit
-   *          - time to be used
-   */
-  public static TemporalQuantity of(Integer number, TemporalUnit timeUnit) {
-    return new TemporalQuantity(Objects.requireNonNull(number), Objects.requireNonNull(timeUnit));
-  }
+	/**
+	 * creates the {@link TemporalQuantity} using {@link TemporalUnit} and
+	 * {@link Integer}
+	 * 
+	 * @param value    - value to be used
+	 * @param timeUnit - time to be used
+	 */
+	public static TemporalQuantity of(Integer number, TemporalUnit timeUnit) {
+		return new TemporalQuantity(Objects.requireNonNull(number), Objects.requireNonNull(timeUnit));
+	}
 
-  /**
-   * Creates a {@link TemporalQuantity} based a {@link Quantity<Time>} converted to {@link Units#SECOND}.
-   * 
-   * @param quantity
-   *          - quantity to be used
-   * @return the {@link TemporalQuantity} converted be quantity in seconds.
-   */
-  public static TemporalQuantity of(Quantity<Time> quantity) {
-    Quantity<Time> seconds = Objects.requireNonNull(quantity).to(SECOND);
-    return new TemporalQuantity(seconds.getValue().intValue(), ChronoUnit.SECONDS);
-  }
+	/**
+	 * Creates a {@link TemporalQuantity} based a {@link Quantity<Time>} converted
+	 * to {@link Units#SECOND}.
+	 * 
+	 * @param quantity - quantity to be used
+	 * @return the {@link TemporalQuantity} converted be quantity in seconds.
+	 */
+	public static TemporalQuantity of(Quantity<Time> quantity) {
+		Quantity<Time> seconds = Objects.requireNonNull(quantity).to(SECOND);
+		return new TemporalQuantity(seconds.getValue().intValue(), ChronoUnit.SECONDS);
+	}
 
-  /**
-   * get to {@link TemporalAmount}
-   * 
-   * @return the TemporalAmount
-   */
-  public TemporalAmount getTemporalAmount() {
-    return amount;
-  }
+	/**
+	 * get to {@link TemporalAmount}
+	 * 
+	 * @return the TemporalAmount
+	 */
+	public TemporalAmount getTemporalAmount() {
+		return amount;
+	}
 
-  /**
-   * get to {@link TemporalUnit}
-   * 
-   * @return the TemporalUnit
-   */
-  public TemporalUnit getTemporalUnit() {
-    return timeUnit;
-  }
+	/**
+	 * get to {@link TemporalUnit}
+	 * 
+	 * @return the TemporalUnit
+	 */
+	public TemporalUnit getTemporalUnit() {
+		return timeUnit;
+	}
 
-  /**
-   * get value expressed in {@link Integer}
-   * 
-   * @return the value
-   */
-  public Integer getValue() {
-    return value;
-  }
+	/**
+	 * get value expressed in {@link Integer}
+	 * 
+	 * @return the value
+	 */
+	public Integer getValue() {
+		return value;
+	}
 
-  /**
-   * converts the {@link TemporalUnit} to {@link Unit}
-   * 
-   * @return the {@link TemporalQuantity#getTemporalUnit()} converted to Unit
-   */
-  public Unit<Time> toUnit() {
-    return toUnit(timeUnit);
-  }
+	/**
+	 * converts the {@link TemporalUnit} to {@link Unit}
+	 * 
+	 * @return the {@link TemporalQuantity#getTemporalUnit()} converted to Unit
+	 */
+	public Unit<Time> toUnit() {
+		return toUnit(timeUnit);
+	}
 
-  /**
-   * Converts the {@link TemporalQuantity} to {@link Quantity<Time>}
-   * 
-   * @return this class converted to Quantity
-   */
-  public Quantity<Time> toQuantity() {
-    return Quantities.getQuantity(value, toUnit());
-  }
+	/**
+	 * Converts the {@link TemporalQuantity} to {@link Quantity<Time>}
+	 * 
+	 * @return this class converted to Quantity
+	 */
+	public Quantity<Time> toQuantity() {
+		return Quantities.getQuantity(value, toUnit());
+	}
 
-  public TemporalQuantity to(TemporalUnit timeUnit) {
-    Quantity<Time> time = toQuantity().to(toUnit(timeUnit));
-    return new TemporalQuantity(time.getValue().intValue(), timeUnit);
-  }
+	public TemporalQuantity to(TemporalUnit timeUnit) {
+		Quantity<Time> time = toQuantity().to(toUnit(timeUnit));
+		return new TemporalQuantity(time.getValue().intValue(), timeUnit);
+	}
 
-  private static Unit<Time> toUnit(TemporalUnit timeUnit) {
-    if (timeUnit instanceof ChronoUnit) {
-      ChronoUnit chronoUnit = (ChronoUnit) timeUnit;
-      switch (chronoUnit) {
-        case MICROS:
-          return TimeQuantities.MICROSECOND;
-        case MILLIS:
-          return TimeQuantities.MILLISECOND;
-        case NANOS:
-          return TimeQuantities.NANOSECOND;
-        case SECONDS:
-          return SECOND;
-        case MINUTES:
-          return MINUTE;
-        case HOURS:
-          return HOUR;
-        case DAYS:
-          return DAY;
-        default:
-          throw new IllegalArgumentException("TemporalQuantity only supports DAYS, HOURS, MICROS, MILLIS, MINUTES, NANOS, SECONDS ");
-      }
-    } else {
-      throw new IllegalArgumentException("TemporalQuantity only supports temporal units of type ChronoUnit");
+	private static Unit<Time> toUnit(TemporalUnit timeUnit) {
+		if (timeUnit instanceof ChronoUnit) {
+			ChronoUnit chronoUnit = (ChronoUnit) timeUnit;
+			switch (chronoUnit) {
+			case MICROS:
+				return TimeQuantities.MICROSECOND;
+			case MILLIS:
+				return TimeQuantities.MILLISECOND;
+			case NANOS:
+				return TimeQuantities.NANOSECOND;
+			case SECONDS:
+				return SECOND;
+			case MINUTES:
+				return MINUTE;
+			case HOURS:
+				return HOUR;
+			case DAYS:
+				return DAY;
+			default:
+				throw new IllegalArgumentException(
+						"TemporalQuantity only supports DAYS, HOURS, MICROS, MILLIS, MINUTES, NANOS, SECONDS ");
+			}
+		} else {
+			throw new IllegalArgumentException("TemporalQuantity only supports temporal units of type ChronoUnit");
 
-    }
-  }
+		}
+	}
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(timeUnit, value);
-  }
+	@Override
+	public int hashCode() {
+		return Objects.hash(timeUnit, value);
+	}
 
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (TemporalQuantity.class.isInstance(obj)) {
-      TemporalQuantity other = TemporalQuantity.class.cast(obj);
-      return Objects.equals(timeUnit, other.timeUnit) && Objects.equals(value, other.value);
-    }
-    if (obj instanceof Quantity<?>) {
-      Quantity<?> that = (Quantity<?>) obj;
-      return Objects.equals(getUnit(), that.getUnit()) && Equalizer.hasEquality(value, that.getValue());
-    }
-    return super.equals(obj);
-  }
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (TemporalQuantity.class.isInstance(obj)) {
+			TemporalQuantity other = TemporalQuantity.class.cast(obj);
+			return Objects.equals(timeUnit, other.timeUnit) && Objects.equals(value, other.value);
+		}
+		if (obj instanceof Quantity<?>) {
+			Quantity<?> that = (Quantity<?>) obj;
+			return Objects.equals(getUnit(), that.getUnit()) && Equalizer.hasEquality(value, that.getValue());
+		}
+		return super.equals(obj);
+	}
 
-  @Override
-  public String toString() {
-    return "Temporal unit:" + timeUnit + " value: " + value;
-  }
+	@Override
+	public String toString() {
+		return "Temporal unit:" + timeUnit + " value: " + value;
+	}
 
-  @Override
-  public ComparableQuantity<Time> add(Quantity<Time> that) {
-    if (getUnit().equals(that.getUnit())) {
-      return TimeQuantities.getQuantity(value + that.getValue().intValue(), timeUnit);
-    }
-    Quantity<Time> converted = that.to(getUnit());
-    return TimeQuantities.getQuantity(value + converted.getValue().intValue(), timeUnit);
-  }
+	@Override
+	public ComparableQuantity<Time> add(Quantity<Time> that) {
+		if (getUnit().equals(that.getUnit())) {
+			return TimeQuantities.getQuantity(value + that.getValue().intValue(), timeUnit);
+		}
+		Quantity<Time> converted = that.to(getUnit());
+		return TimeQuantities.getQuantity(value + converted.getValue().intValue(), timeUnit);
+	}
 
-  @Override
-  public ComparableQuantity<Time> subtract(Quantity<Time> that) {
-    if (getUnit().equals(that.getUnit())) {
-      return TimeQuantities.getQuantity(value - that.getValue().intValue(), timeUnit);
-    }
-    Quantity<Time> converted = that.to(getUnit());
-    return TimeQuantities.getQuantity(value - converted.getValue().intValue(), timeUnit);
-  }
+	@Override
+	public ComparableQuantity<Time> subtract(Quantity<Time> that) {
+		if (getUnit().equals(that.getUnit())) {
+			return TimeQuantities.getQuantity(value - that.getValue().intValue(), timeUnit);
+		}
+		Quantity<Time> converted = that.to(getUnit());
+		return TimeQuantities.getQuantity(value - converted.getValue().intValue(), timeUnit);
+	}
 
-  @Override
-  public ComparableQuantity<?> divide(Quantity<?> that) {
-    if (getUnit().equals(that.getUnit())) {
-      return TimeQuantities.getQuantity(value / that.getValue().intValue(), timeUnit);
-    }
-    Unit<?> divUnit = getUnit().divide(that.getUnit());
-    UnitConverter conv;
-    try {
-      conv = getUnit().getConverterToAny(divUnit);
-      return TimeQuantities.getQuantity(value / conv.convert(that.getValue()).intValue(), timeUnit);
-    } catch (UnconvertibleException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-      return TimeQuantities.getQuantity(value / that.getValue().intValue(), timeUnit);
-    } catch (IncommensurableException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-      return TimeQuantities.getQuantity(value / that.getValue().intValue(), timeUnit);
-    }
-  }
+	@Override
+	public ComparableQuantity<?> divide(Quantity<?> that) {
+		if (getUnit().equals(that.getUnit())) {
+			return TimeQuantities.getQuantity(value / that.getValue().intValue(), timeUnit);
+		}
+		Unit<?> divUnit = getUnit().divide(that.getUnit());
+		UnitConverter conv;
+		try {
+			conv = getUnit().getConverterToAny(divUnit);
+			return TimeQuantities.getQuantity(value / conv.convert(that.getValue()).intValue(), timeUnit);
+		} catch (UnconvertibleException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return TimeQuantities.getQuantity(value / that.getValue().intValue(), timeUnit);
+		} catch (IncommensurableException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return TimeQuantities.getQuantity(value / that.getValue().intValue(), timeUnit);
+		}
+	}
 
-  @Override
-  public ComparableQuantity<Time> divide(Number that) {
-    return TimeQuantities.getQuantity(value / that.intValue(), timeUnit);
-  }
+	@Override
+	public ComparableQuantity<Time> divide(Number that) {
+		return TimeQuantities.getQuantity(value / that.intValue(), timeUnit);
+	}
 
-  @Override
-  public ComparableQuantity<?> multiply(Quantity<?> multiplier) {
-    if (getUnit().equals(multiplier.getUnit())) {
-      return TimeQuantities.getQuantity(value * multiplier.getValue().intValue(), timeUnit);
-    }
-    Unit<?> mulUnit = getUnit().multiply(multiplier.getUnit());
-    UnitConverter conv;
-    try {
-      conv = getUnit().getConverterToAny(mulUnit);
-      return TimeQuantities.getQuantity(value * conv.convert(multiplier.getValue()).intValue(), timeUnit);
-    } catch (UnconvertibleException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-      return TimeQuantities.getQuantity(value * multiplier.getValue().intValue(), timeUnit);
-    } catch (IncommensurableException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-      return TimeQuantities.getQuantity(value * multiplier.getValue().intValue(), timeUnit);
-    }
-  }
+	@Override
+	public ComparableQuantity<?> multiply(Quantity<?> multiplier) {
+		if (getUnit().equals(multiplier.getUnit())) {
+			return TimeQuantities.getQuantity(value * multiplier.getValue().intValue(), timeUnit);
+		}
+		Unit<?> mulUnit = getUnit().multiply(multiplier.getUnit());
+		UnitConverter conv;
+		try {
+			conv = getUnit().getConverterToAny(mulUnit);
+			return TimeQuantities.getQuantity(value * conv.convert(multiplier.getValue()).intValue(), timeUnit);
+		} catch (UnconvertibleException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return TimeQuantities.getQuantity(value * multiplier.getValue().intValue(), timeUnit);
+		} catch (IncommensurableException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return TimeQuantities.getQuantity(value * multiplier.getValue().intValue(), timeUnit);
+		}
+	}
 
-  @Override
-  public ComparableQuantity<Time> multiply(Number multiplier) {
-    return TimeQuantities.getQuantity(value * multiplier.intValue(), timeUnit);
-  }
+	@Override
+	public ComparableQuantity<Time> multiply(Number multiplier) {
+		return TimeQuantities.getQuantity(value * multiplier.intValue(), timeUnit);
+	}
 
-  @Override
-  public ComparableQuantity<Frequency> inverse() {
-    return Quantities.getQuantity(1d / value.doubleValue(), toUnit(timeUnit).inverse()).asType(Frequency.class);
-  }
+	@Override
+	public ComparableQuantity<Frequency> inverse() {
+		return Quantities.getQuantity(1d / value.doubleValue(), toUnit(timeUnit).inverse()).asType(Frequency.class);
+	}
 
-  @Override
-  public boolean isBig() {
-    return true; // Duration backed by BigDecimal/BigInteger
-  }
+	@Override
+	public boolean isBig() {
+		return true; // Duration backed by BigDecimal/BigInteger
+	}
 
-  @Override
-  public BigDecimal decimalValue(Unit<Time> unit) throws ArithmeticException {
-    return BigDecimal.valueOf(value.doubleValue());
-  }
+	@Override
+	public BigDecimal decimalValue(Unit<Time> unit) throws ArithmeticException {
+		return BigDecimal.valueOf(value.doubleValue());
+	}
 
-  @Override
-  public double doubleValue(Unit<Time> unit) throws ArithmeticException {
-    return value.doubleValue();
-  }
+	@Override
+	public double doubleValue(Unit<Time> unit) throws ArithmeticException {
+		return value.doubleValue();
+	}
+
+	/**
+	 * @since 1.0.2
+	 */
+	@Override
+	public Quantity<Time> negate() {
+		return of(-value, getTemporalUnit());
+	}
 }

@@ -208,9 +208,23 @@ public class TimeQuantitiesTest {
 
   @Test
   public void inverseTemporalTest() {
-    TemporalQuantity tenSeconds = TemporalQuantity.of(10, SECONDS);
+    final TemporalQuantity tenSeconds = TemporalQuantity.of(10, SECONDS);
     Quantity<Frequency> perTenSeconds = tenSeconds.inverse();
     assertEquals(0.1d, perTenSeconds.getValue());
     assertEquals(HERTZ.getConverterTo(perTenSeconds.getUnit()), perTenSeconds.getUnit().getConverterTo(HERTZ));
+  }
+  
+  @Test
+  public void negateTest() {
+    final TimeUnitQuantity tenSeconds = TimeUnitQuantity.of(10, TimeUnit.SECONDS);
+    final Quantity<Time> negated = tenSeconds.negate();
+    assertEquals(-10, negated.getValue());
+  }
+  
+  @Test
+  public void negateTemporalTest() {
+	final TemporalQuantity tenSeconds = TemporalQuantity.of(10, SECONDS);
+    final Quantity<Time> negated = tenSeconds.negate();
+    assertEquals(-10, negated.getValue());
   }
 }

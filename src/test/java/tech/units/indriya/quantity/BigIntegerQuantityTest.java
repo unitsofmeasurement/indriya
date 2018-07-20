@@ -398,5 +398,12 @@ public class BigIntegerQuantityTest {
   public void divisionWithFloatQuantityWidensToFloatQuantity() {
     assertEquals(FloatQuantity.class, ONE_OHM.divide(ONE_FLOAT_OHM).getClass());
   }
-
+  
+  /**
+   * Tests negate() of BigIntegerQuantity.
+   */
+  @Test
+  public void negateTest() {
+    assertEquals(BigInteger.ONE.negate(), ONE_OHM.negate().getValue());
+  }
 }

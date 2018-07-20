@@ -489,6 +489,14 @@ public class ByteQuantityTest {
     assertEquals(dayResult.getValue().intValue(), day.getValue().intValue());
     assertEquals(dayResult.getValue().intValue(), day.getValue().intValue());
   }
+  
+  /**
+   * Tests negate()
+   */
+  @Test
+  public void negateTest() {
+    assertEquals((byte)-1, ONE_OHM.negate().getValue());
+  }
 
   @Test
   public void testEquality() throws Exception {
