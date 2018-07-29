@@ -129,7 +129,7 @@ public class SimpleFormatTest {
 	}
 
 	@Test
-	public void parseHertz() {
+	public void testParseHertz() {
 		assertThrows(MeasurementParseException.class, () -> {
 			ServiceProvider.current().getFormatService().getUnitFormat().parse("1/s");
 		});
