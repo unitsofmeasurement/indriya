@@ -52,7 +52,7 @@ public class TimedData<T> implements Nameable, Supplier<T> {
   private final T value;
   private final long timestamp;
   private final Instant instant;
-  private String name;
+  private final String name;
 
   /**
    * Construct an instance of TimedData with a value and timestamp.
@@ -63,9 +63,24 @@ public class TimedData<T> implements Nameable, Supplier<T> {
    *          The timestamp of the TimedData.
    */
   protected TimedData(T value, long time) {
+    this(value, time, null);
+  }
+
+  /**
+   * Construct an instance of TimedData with a value, a timestamp and a name.
+   *
+   * @param data
+   *          The value of the TimedData.
+   * @param time
+   *          The timestamp of the TimedData.
+   * @param name
+   *          The name of the TimedData.
+   */
+  protected TimedData(T value, long time, String name) {
     this.value = value;
     this.timestamp = time;
     this.instant = Instant.ofEpochMilli(time);
+    this.name = name;
   }
 
   /**
@@ -81,6 +96,23 @@ public class TimedData<T> implements Nameable, Supplier<T> {
    */
   public static <T> TimedData<T> of(T val, long time) {
     return new TimedData<>(val, time);
+  }
+
+  /**
+   * Returns a {@code TimedData} with the specified values.
+   *
+   * @param <T>
+   *          the class of the value
+   * @param val
+   *          The value for the timed data.
+   * @param time
+   *          The timestamp.
+   * @param name
+   *          The name.
+   * @return an {@code TimedData} with the given values
+   */
+  public static <T> TimedData<T> of(T val, long time, String name) {
+    return new TimedData<>(val, time, name);
   }
 
   /**
@@ -122,7 +154,7 @@ public class TimedData<T> implements Nameable, Supplier<T> {
   @Override
   public String toString() {
     final StringBuilder sb = new StringBuilder().append("data= ").append(get()).append(", timestamp= ").append(getTimestamp());
-    if (name != null && name.length() > 0) {
+    if (name != null) {
       sb.append(", name= ").append(getName());
     }
     return sb.toString();

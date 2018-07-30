@@ -32,6 +32,7 @@ package tech.units.indriya.quantity.time;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Instant;
@@ -44,23 +45,62 @@ import org.junit.jupiter.api.Test;
 public class TimedDataTest {
 
   /**
-   * Verifies that the factory method {@code of} has the value wired correctly.
+   * Verifies that the factory method {@code of} with a value and a time only has the value wired correctly.
    */
   @Test
-  public void valueWiredCorrectlyInFactoryMethodOf() {
+  public void valueWiredCorrectlyInFactoryMethodOfWithValueAndTimeOnly() {
     final Double testValue = 4.2;
     TimedData<Double> td = TimedData.of(testValue, 1L);
     assertEquals(testValue, td.get());
   }
 
   /**
-   * Verifies that the factory method {@code of} has the time wired correctly.
+   * Verifies that the factory method {@code of} with a value and a time only has the time wired correctly.
    */
   @Test
-  public void timeWiredCorrectlyInFactoryMethodOf() {
+  public void timeWiredCorrectlyInFactoryMethodOfWithValueAndTimeOnly() {
     final long time = 42L;
     TimedData<Double> td = TimedData.of(1.0D, time);
     assertEquals(time, td.getTimestamp());
+  }
+
+  /**
+   * Verifies that the factory method {@code of} with a value and a time only sets the name to {@code null}.
+   */
+  @Test
+  public void factoryMethodOfWithValueAndTimeOnlySetsNameToNull() {
+    TimedData<Double> td = TimedData.of(1.0D, 1L);
+    assertNull(td.getName());
+  }
+
+  /**
+   * Verifies that the factory method {@code of} with a value, a time and a name has the value wired correctly.
+   */
+  @Test
+  public void valueWiredCorrectlyInFactoryMethodOfWithValueTimeAndName() {
+    final Double testValue = 4.2;
+    TimedData<Double> td = TimedData.of(testValue, 1L, "name");
+    assertEquals(testValue, td.get());
+  }
+
+  /**
+   * Verifies that the factory method {@code of} with a value, a time and a name has the time wired correctly.
+   */
+  @Test
+  public void timeWiredCorrectlyInFactoryMethodOfWithValueTimeAndName() {
+    final long time = 42L;
+    TimedData<Double> td = TimedData.of(1.0D, time, "name");
+    assertEquals(time, td.getTimestamp());
+  }
+
+  /**
+   * Verifies that the factory method {@code of} with a value, a time and a name has the name wired correctly.
+   */
+  @Test
+  public void nameWiredCorrectlyInFactoryMethodOfWithValueTimeAndName() {
+    final String name = "name";
+    TimedData<Double> td = TimedData.of(1.0D, 1L, name);
+    assertEquals(name, td.getName());
   }
 
   /**
@@ -84,11 +124,20 @@ public class TimedDataTest {
   }
 
   /**
+   * Verifies that the {@code toString} method produces the correct result for a value, a timestamp and a name.
+   */
+  @Test
+  public void toStringProducesCorrectResultForValueTimestampAndName() {
+    TimedData<Double> td = TimedData.of(1D, 42L, "foo");
+    assertEquals("data= 1.0, timestamp= 42, name= foo", td.toString());
+  }
+
+  /**
    * Verifies that a {@code TimedData} instance is equal to itself.
    */
   @Test
   public void timedDataIsEqualToItself() {
-    TimedData<Double> td = TimedData.of(1D, 42L);
+    TimedData<Double> td = TimedData.of(1D, 42L, "foo");
     assertTrue(td.equals(td));
   }
 
@@ -116,8 +165,9 @@ public class TimedDataTest {
   @Test
   public void timedDataIsNotEqualToAnInstanceWithADifferentValue() {
     long time = 42L;
-    TimedData<Double> td1 = TimedData.of(1D, time);
-    TimedData<Double> td2 = TimedData.of(2D, time);
+    String name = "foo";
+    TimedData<Double> td1 = TimedData.of(1D, time, name);
+    TimedData<Double> td2 = TimedData.of(2D, time, name);
     assertFalse(td1.equals(td2));
   }
 
@@ -127,20 +177,34 @@ public class TimedDataTest {
   @Test
   public void timedDataIsNotEqualToAnInstanceWithADifferentTime() {
     Double value = 42D;
-    TimedData<Double> td1 = TimedData.of(value, 1L);
-    TimedData<Double> td2 = TimedData.of(value, 2L);
+    String name = "foo";
+    TimedData<Double> td1 = TimedData.of(value, 1L, name);
+    TimedData<Double> td2 = TimedData.of(value, 2L, name);
     assertNotEquals(td1, td2);
   }
 
   /**
-   * Verifies that a {@code TimedData} instance is equal to an instance with the same value and time.
+   * Verifies that a {@code TimedData} instance is not equal to an instance with a different name.
    */
   @Test
-  public void timedDataIsEqualToAnInstanceWithTheSameValueAndTimestamp() {
+  public void timedDataIsNotEqualToAnInstanceWithADifferentName() {
+    long time = 42L;
+    Double value = 42D;
+    TimedData<Double> td1 = TimedData.of(value, time, "foo");
+    TimedData<Double> td2 = TimedData.of(value, time, "bar");
+    assertNotEquals(td1, td2);
+  }
+
+  /**
+   * Verifies that a {@code TimedData} instance is equal to an instance with the same value, time and name.
+   */
+  @Test
+  public void timedDataIsEqualToAnInstanceWithTheSameValueTimestampAndName() {
     Double value = 42D;
     long time = 1L;
-    TimedData<Double> td1 = TimedData.of(value, time);
-    TimedData<Double> td2 = TimedData.of(value, time);
+    String name = "foo";
+    TimedData<Double> td1 = TimedData.of(value, time, name);
+    TimedData<Double> td2 = TimedData.of(value, time, name);
     assertEquals(td1, td2);
   }
 
@@ -148,11 +212,12 @@ public class TimedDataTest {
    * Verifies that two {@code TimedData} instances with the same value and time have the same hashCode.
    */
   @Test
-  public void timedDataInstancesWithTheSameValueAndTimestampHaveTheSameHashCode() {
+  public void timedDataInstancesWithTheSameValueTimestampAndNameHaveTheSameHashCode() {
     Double value = 42D;
     long time = 1L;
-    TimedData<Double> td1 = TimedData.of(value, time);
-    TimedData<Double> td2 = TimedData.of(value, time);
+    String name = "foo";
+    TimedData<Double> td1 = TimedData.of(value, time, name);
+    TimedData<Double> td2 = TimedData.of(value, time, name);
     assertEquals(td1.hashCode(), td2.hashCode());
   }
 
@@ -163,8 +228,9 @@ public class TimedDataTest {
   @Test
   public void hashCodeIsDifferentForInstanceWithADifferentValue() {
     long time = 42L;
-    TimedData<Double> td1 = TimedData.of(1D, time);
-    TimedData<Double> td2 = TimedData.of(2D, time);
+    String name = "foo";
+    TimedData<Double> td1 = TimedData.of(1D, time, name);
+    TimedData<Double> td2 = TimedData.of(2D, time, name);
     assertFalse(td1.hashCode() == td2.hashCode());
   }
 
@@ -175,8 +241,22 @@ public class TimedDataTest {
   @Test
   public void hashCodeIsDifferentForInstanceWithADifferentTime() {
     Double value = 42D;
-    TimedData<Double> td1 = TimedData.of(value, 1L);
-    TimedData<Double> td2 = TimedData.of(value, 2L);
+    String name = "foo";
+    TimedData<Double> td1 = TimedData.of(value, 1L, name);
+    TimedData<Double> td2 = TimedData.of(value, 2L, name);
+    assertFalse(td1.hashCode() == td2.hashCode());
+  }
+
+  /**
+   * Verifies that a {@code TimedData} instance is not equal to an instance with a different name. Notice that this isn't a strict requirement on the
+   * hashCode method, and that hash collisions may occur, but in general, objects that aren't equal shouldn't have an equal hash code.
+   */
+  @Test
+  public void hashCodeIsDifferentForInstanceWithADifferentName() {
+    Double value = 42D;
+    long time = 42L;
+    TimedData<Double> td1 = TimedData.of(value, time, "foo");
+    TimedData<Double> td2 = TimedData.of(value, time, "bar");
     assertFalse(td1.hashCode() == td2.hashCode());
   }
 }
