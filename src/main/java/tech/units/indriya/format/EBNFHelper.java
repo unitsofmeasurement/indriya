@@ -75,8 +75,8 @@ class EBNFHelper {
   static final int NOOP_PRECEDENCE = Integer.MAX_VALUE;
 
   /**
-   * Format the given unit to the given StringBuffer, then return the operator precedence of the outermost operator in the unit expression that was
-   * formatted. See {@link ConverterFormat} for the constants that define the various precedence values.
+   * Format the given unit to the given Appendable, then return the operator precedence of the outermost operator in the unit expression that was
+   * formatted. See {@link ConverterFormatter} for the constants that define the various precedence values.
    *
    * @param unit
    *          the unit to be formatted
@@ -84,7 +84,8 @@ class EBNFHelper {
    *          the <code>StringBuffer</code> to be written to
    * @return the operator precedence of the outermost operator in the unit expression that was output
    */
-  static int formatInternal(Unit<?> unit, Appendable buffer, SymbolMap symbolMap) throws IOException {
+  @SuppressWarnings({ "rawtypes", "unchecked" })
+static int formatInternal(Unit<?> unit, Appendable buffer, SymbolMap symbolMap) throws IOException {
     if (unit instanceof AnnotatedUnit<?>) {
       unit = ((AnnotatedUnit<?>) unit).getActualUnit();
     }

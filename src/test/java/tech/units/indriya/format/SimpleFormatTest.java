@@ -45,6 +45,7 @@ import javax.measure.format.MeasurementParseException;
 import javax.measure.format.UnitFormat;
 import javax.measure.quantity.Frequency;
 import javax.measure.quantity.Length;
+import javax.measure.quantity.LuminousIntensity;
 import javax.measure.quantity.Mass;
 import javax.measure.quantity.Speed;
 import javax.measure.spi.ServiceProvider;
@@ -53,6 +54,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.format.SimpleUnitFormat;
+import tech.units.indriya.function.ExpConverter;
 import tech.units.indriya.function.RationalConverter;
 import tech.units.indriya.unit.AlternateUnit;
 import tech.units.indriya.unit.ProductUnit;
@@ -181,5 +183,10 @@ public class SimpleFormatTest {
 	    System.out.println("Square Candela-Kelvin: " + formatter.format(cdK.pow(2)));
 	    System.out.println("Alt. Candela-Kelvin: " + formatter.format(aCdK));
 	    System.out.println("Square alt. Candela-Kelvin: " + formatter.format(aCdK.pow(2)));
+	    
+	    final UnitFormat formatter2 = EBNFUnitFormat.getInstance();
+	    Unit<LuminousIntensity> cdX = Units.CANDELA.transform(new ExpConverter(10));
+	    System.out.println("Candela-Exp: " + formatter.format(cdX));
+	    System.out.println("Candela-Exp E: " + formatter2.format(cdX));
 	}
 }
