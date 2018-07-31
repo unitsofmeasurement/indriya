@@ -42,6 +42,7 @@ import java.util.logging.Logger;
 
 import javax.measure.Unit;
 import javax.measure.format.MeasurementParseException;
+import javax.measure.format.UnitFormat;
 import javax.measure.quantity.Frequency;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
@@ -53,6 +54,8 @@ import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.format.SimpleUnitFormat;
 import tech.units.indriya.function.RationalConverter;
+import tech.units.indriya.unit.AlternateUnit;
+import tech.units.indriya.unit.ProductUnit;
 import tech.units.indriya.unit.TransformedUnit;
 import tech.units.indriya.unit.Units;
 
@@ -136,5 +139,47 @@ public class SimpleFormatTest {
 
 		Unit<?> onePerSecond = ServiceProvider.current().getFormatService().getUnitFormat().parse("one/s");
 		logger.log(Level.FINER, onePerSecond.toString());
+	}
+	
+	@Test
+	public void testFormatNewLabeledUnits() {
+	    final UnitFormat formatter = SimpleUnitFormat.getInstance();
+	    System.out.println("== Use case 1: playing with base units ==");
+	    AlternateUnit<?> aCd = new AlternateUnit<>(Units.CANDELA, "altCD");
+
+	    System.out.println("Candela: " + formatter.format(Units.CANDELA));
+	    System.out.println("Candela times 2: " + formatter.format(Units.CANDELA.multiply(2)));
+	    System.out.println("Square Candela: " + formatter.format(Units.CANDELA.pow(2)));
+	    System.out.println("Alt. Candela: " + formatter.format(aCd));
+	    System.out.println("Square alt. Candela: " + formatter.format(aCd.pow(2)));
+
+	    System.out.println("=> The Candela shall now be known as \"CD\"");
+	    formatter.label(Units.CANDELA, "CD");
+
+	    System.out.println("Candela: " + formatter.format(Units.CANDELA));
+	    System.out.println("Candela times 2: " + formatter.format(Units.CANDELA.multiply(2)));
+	    System.out.println("Square Candela: " + formatter.format(Units.CANDELA.pow(2)));
+	    System.out.println("Alt. Candela: " + formatter.format(aCd));
+	    System.out.println("Square alt. Candela: " + formatter.format(aCd.pow(2)));
+
+	    System.out.println();
+	    System.out.println("== Use case 2: playing with product units ==");
+	    ProductUnit<?> cdK = new ProductUnit<>(Units.CANDELA.multiply(Units.KELVIN));
+	    AlternateUnit<?> aCdK = new AlternateUnit<>(cdK, "altCDK");
+
+	    System.out.println("Candela-Kelvin: " + formatter.format(cdK));
+	    System.out.println("Candela-Kelvin times 2: " + formatter.format(cdK.multiply(2)));
+	    System.out.println("Square Candela-Kelvin: " + formatter.format(cdK.pow(2)));
+	    System.out.println("Alt. Candela-Kelvin: " + formatter.format(aCdK));
+	    System.out.println("Square alt. Candela-Kelvin: " + formatter.format(aCdK.pow(2)));
+
+	    System.out.println("=> The Candela-Kelvin shall now be known as \"CDK\"");
+	    formatter.label(cdK, "CDK");
+
+	    System.out.println("Candela-Kelvin: " + formatter.format(cdK));
+	    System.out.println("Candela-Kelvin times 2: " + formatter.format(cdK.multiply(2)));
+	    System.out.println("Square Candela-Kelvin: " + formatter.format(cdK.pow(2)));
+	    System.out.println("Alt. Candela-Kelvin: " + formatter.format(aCdK));
+	    System.out.println("Square alt. Candela-Kelvin: " + formatter.format(aCdK.pow(2)));
 	}
 }
