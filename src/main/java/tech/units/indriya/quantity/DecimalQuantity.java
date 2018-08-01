@@ -56,7 +56,7 @@ import tech.units.indriya.function.Calculus;
  * @version 1.1
  * @since 1.0
  */
-final class DecimalQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> implements Serializable, JavaNumberQuantity<Q> {
+final class DecimalQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> implements Serializable {
 
   private static final long serialVersionUID = 6504081836032983882L;
 
@@ -75,11 +75,6 @@ final class DecimalQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> i
   @Override
   public BigDecimal getValue() {
     return value;
-  }
-
-  @Override
-  public double doubleValue(Unit<Q> unit) {
-    return getUnit().equals(unit) ? value.doubleValue() : getUnit().getConverterTo(unit).convert(value.doubleValue());
   }
 
   @Override
@@ -128,15 +123,6 @@ final class DecimalQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> i
   }
 
   @Override
-  protected long longValue(Unit<Q> unit) {
-    double result = doubleValue(unit);
-    if (result < Long.MIN_VALUE || result > Long.MAX_VALUE) {
-      throw new ArithmeticException("Overflow (" + result + ")");
-    }
-    return (long) result;
-  }
-
-  @Override
   public boolean isBig() {
     return true;
   }
@@ -174,11 +160,10 @@ final class DecimalQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> i
   public Class<?> getNumberType() {
     return BigDecimal.class;
   }
-  
+
   /**
    * <p>
-   * Returns a {@code DecimalQuantity} with same Unit, but whose value is {@code(-this.getValue())}.
-   * </p>
+   * Returns a {@code DecimalQuantity} with same Unit, but whose value is {@code(-this.getValue())}. </p>
    * 
    * @return {@code -this}.
    */
