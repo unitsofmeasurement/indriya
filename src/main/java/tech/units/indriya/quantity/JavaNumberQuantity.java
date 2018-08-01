@@ -47,6 +47,8 @@ import tech.units.indriya.ComparableQuantity;
  */
 abstract class JavaNumberQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
 
+  private static final long serialVersionUID = -772486200565856789L;
+
   /**
    * Constructor calling the superclass's constructor.
    * 
@@ -56,8 +58,6 @@ abstract class JavaNumberQuantity<Q extends Quantity<Q>> extends AbstractQuantit
   protected JavaNumberQuantity(Unit<Q> unit) {
     super(unit);
   }
-
-  private static final long serialVersionUID = -772486200565856789L;
 
   /**
    * Indicates whether the quantity holds a decimal value {@link Number} type.
