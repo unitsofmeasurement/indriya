@@ -104,6 +104,11 @@ abstract class JavaNumberQuantity<Q extends Quantity<Q>> extends AbstractQuantit
     return (long) result;
   }
 
+  @Override
+  public ComparableQuantity<Q> subtract(Quantity<Q> that) {
+    return add(that.negate());
+  }
+
   boolean canWidenTo(Quantity<?> target) {
     if (target instanceof JavaNumberQuantity) {
       JavaNumberQuantity<?> jnTarget = (JavaNumberQuantity<?>) target;
@@ -121,11 +126,15 @@ abstract class JavaNumberQuantity<Q extends Quantity<Q>> extends AbstractQuantit
     return false;
   }
 
-  @SuppressWarnings({ "unchecked" })
   ComparableQuantity<Q> widenTo(JavaNumberQuantity<?> target) {
+    return createQuantity(target.getNumberType(), widenValue(this, target), getUnit());
+  }
+
+  @SuppressWarnings({ "unchecked" })
+  private ComparableQuantity<Q> createQuantity(Class<?> numberType, Number value, Unit<Q> unit) {
     try {
-      Method m = NumberQuantity.class.getDeclaredMethod("of", target.getNumberType(), Unit.class);
-      return (ComparableQuantity<Q>) m.invoke(null, widenValue(this, target), getUnit());
+      Method m = NumberQuantity.class.getDeclaredMethod("of", numberType, Unit.class);
+      return (ComparableQuantity<Q>) m.invoke(null, value, unit);
     } catch (Exception e) {
       return null;
     }

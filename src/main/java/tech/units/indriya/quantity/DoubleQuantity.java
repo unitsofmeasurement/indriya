@@ -101,15 +101,6 @@ final class DoubleQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> 
     }
   }
 
-  @Override
-  public ComparableQuantity<Q> subtract(Quantity<Q> that) {
-    if (canWidenTo(that)) {
-      return widenTo((JavaNumberQuantity<Q>) that).subtract(that);
-    }
-    final Quantity<Q> thatNegated = NumberQuantity.of(-that.getValue().doubleValue(), that.getUnit());
-    return add(thatNegated);
-  }
-
   @SuppressWarnings({ "rawtypes", "unchecked" })
   @Override
   public ComparableQuantity<?> multiply(Quantity<?> that) {

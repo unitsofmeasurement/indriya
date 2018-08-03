@@ -103,15 +103,6 @@ final class LongQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
   }
 
   @SuppressWarnings({ "rawtypes", "unchecked" })
-  public ComparableQuantity<Q> subtract(Quantity<Q> that) {
-    if (canWidenTo(that)) {
-      return widenTo((JavaNumberQuantity<Q>) that).subtract(that);
-    }
-    final Quantity<Q> thatNegated = new LongQuantity(-that.getValue().longValue(), that.getUnit());
-    return add(thatNegated);
-  }
-
-  @SuppressWarnings({ "rawtypes", "unchecked" })
   public ComparableQuantity<?> multiply(Quantity<?> that) {
     if (canWidenTo(that)) {
       return widenTo((JavaNumberQuantity<Q>) that).multiply(that);

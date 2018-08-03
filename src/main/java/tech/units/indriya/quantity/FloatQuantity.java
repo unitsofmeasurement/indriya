@@ -90,15 +90,6 @@ final class FloatQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
     }
   }
 
-  @SuppressWarnings({ "rawtypes", "unchecked" })
-  public ComparableQuantity<Q> subtract(Quantity<Q> that) {
-    if (canWidenTo(that)) {
-      return widenTo((JavaNumberQuantity<Q>) that).subtract(that);
-    }
-    final Quantity<Q> thatNegated = new FloatQuantity(-that.getValue().floatValue(), that.getUnit());
-    return add(thatNegated);
-  }
-
   @SuppressWarnings({ "unchecked", "rawtypes" })
   @Override
   public ComparableQuantity<?> multiply(Quantity<?> that) {

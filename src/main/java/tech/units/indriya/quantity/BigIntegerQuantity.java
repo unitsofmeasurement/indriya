@@ -135,17 +135,6 @@ final class BigIntegerQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity
     return Quantities.getQuantity(sumValue, pickedUnit);
   }
 
-  @Override
-  public ComparableQuantity<Q> subtract(Quantity<Q> that) {
-    if (canWidenTo(that)) {
-      return widenTo((JavaNumberQuantity<Q>) that).subtract(that);
-    }
-    if (that instanceof BigIntegerQuantity) {
-      return add(((BigIntegerQuantity<Q>) that).negate());
-    }
-    return add(Quantities.getQuantity(Calculus.negate(that.getValue()), that.getUnit()));
-  }
-
   @SuppressWarnings({ "unchecked", "rawtypes" })
   @Override
   public ComparableQuantity<?> multiply(Quantity<?> that) {

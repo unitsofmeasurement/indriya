@@ -100,15 +100,6 @@ final class IntegerQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q>
   }
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
-  public ComparableQuantity<Q> subtract(Quantity<Q> that) {
-    if (canWidenTo(that)) {
-      return widenTo((JavaNumberQuantity<Q>) that).subtract(that);
-    }
-    final Quantity<Q> thatNegated = new IntegerQuantity(-that.getValue().intValue(), that.getUnit());
-    return add(thatNegated);
-  }
-
-  @SuppressWarnings({ "unchecked", "rawtypes" })
   public ComparableQuantity<?> multiply(Quantity<?> that) {
     if (canWidenTo(that)) {
       return widenTo((JavaNumberQuantity<Q>) that).multiply(that);

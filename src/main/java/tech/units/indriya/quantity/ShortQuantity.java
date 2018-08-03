@@ -108,15 +108,6 @@ final class ShortQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
     }
   }
 
-  @Override
-  public ComparableQuantity<Q> subtract(Quantity<Q> that) {
-    if (canWidenTo(that)) {
-      return widenTo((JavaNumberQuantity<Q>) that).subtract(that);
-    }
-    final Quantity<Q> thatNegated = new ShortQuantity<Q>((short) -that.getValue().shortValue(), that.getUnit());
-    return add(thatNegated);
-  }
-
   @SuppressWarnings({ "unchecked", "rawtypes" })
   @Override
   public ComparableQuantity<?> divide(Quantity<?> that) {
