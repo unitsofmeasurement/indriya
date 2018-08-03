@@ -30,7 +30,6 @@
 package tech.units.indriya.quantity;
 
 import java.math.BigDecimal;
-import java.util.Objects;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;
@@ -159,18 +158,6 @@ final class ShortQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
   @Override
   public ComparableQuantity<?> inverse() {
     return NumberQuantity.of(1 / value, getUnit().inverse());
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj instanceof Quantity<?>) {
-      Quantity<?> that = (Quantity<?>) obj;
-      return Objects.equals(getUnit(), that.getUnit()) && Equalizer.hasEquality(value, that.getValue());
-    }
-    return false;
   }
 
   @Override

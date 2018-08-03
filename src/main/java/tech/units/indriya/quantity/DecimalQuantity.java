@@ -32,7 +32,6 @@ package tech.units.indriya.quantity;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.util.Objects;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;
@@ -131,19 +130,6 @@ final class DecimalQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q>
   @Override
   public ComparableQuantity<?> divide(Quantity<?> that) {
     return new DecimalQuantity(value.divide(Calculus.toBigDecimal(that.getValue()), Calculus.MATH_CONTEXT), getUnit().divide(that.getUnit()));
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (obj == null)
-      return false;
-    if (obj == this)
-      return true;
-    if (obj instanceof Quantity<?>) {
-      Quantity<?> that = (Quantity<?>) obj;
-      return Objects.equals(getUnit(), that.getUnit()) && Equalizer.hasEquality(value, that.getValue());
-    }
-    return false;
   }
 
   @Override

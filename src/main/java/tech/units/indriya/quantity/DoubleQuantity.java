@@ -31,7 +31,6 @@ package tech.units.indriya.quantity;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.Objects;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;
@@ -77,8 +76,6 @@ final class DoubleQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> 
     final BigDecimal decimal = BigDecimal.valueOf(value);
     return Calculus.toBigDecimal(getUnit().getConverterTo(unit).convert(decimal));
   }
-
-
 
   private ComparableQuantity<Q> addRaw(Number a, Number b, Unit<Q> unit) {
     return NumberQuantity.of(a.doubleValue() + b.doubleValue(), unit);
@@ -169,18 +166,6 @@ final class DoubleQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> 
 
   @Override
   public boolean isBig() {
-    return false;
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj instanceof Quantity<?>) {
-      Quantity<?> that = (Quantity<?>) obj;
-      return Objects.equals(getUnit(), that.getUnit()) && Equalizer.hasEquality(value, that.getValue());
-    }
     return false;
   }
 

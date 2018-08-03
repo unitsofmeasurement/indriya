@@ -32,6 +32,7 @@ package tech.units.indriya.quantity;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Objects;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;
@@ -148,5 +149,18 @@ abstract class JavaNumberQuantity<Q extends Quantity<Q>> extends AbstractQuantit
       value = new BigDecimal((BigInteger) value);
     }
     return value;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj == null)
+      return false;
+    if (obj == this)
+      return true;
+    if (obj instanceof Quantity<?>) {
+      Quantity<?> that = (Quantity<?>) obj;
+      return Objects.equals(getUnit(), that.getUnit()) && Equalizer.hasEquality(getValue(), that.getValue());
+    }
+    return false;
   }
 }

@@ -32,7 +32,6 @@ package tech.units.indriya.quantity;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Objects;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;
@@ -184,19 +183,6 @@ final class BigIntegerQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity
       return widenTo((JavaNumberQuantity<Q>) that).divide(that);
     }
     return new BigIntegerQuantity(value.divide(Calculus.toBigInteger(that.getValue())), getUnit().divide(that.getUnit()));
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (obj == null)
-      return false;
-    if (obj == this)
-      return true;
-    if (obj instanceof Quantity<?>) {
-      Quantity<?> that = (Quantity<?>) obj;
-      return Objects.equals(getUnit(), that.getUnit()) && Equalizer.hasEquality(value, that.getValue());
-    }
-    return false;
   }
 
   @Override

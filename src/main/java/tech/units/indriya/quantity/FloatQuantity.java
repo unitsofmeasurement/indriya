@@ -30,7 +30,6 @@
 package tech.units.indriya.quantity;
 
 import java.math.BigDecimal;
-import java.util.Objects;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;
@@ -151,19 +150,6 @@ final class FloatQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
     } else {
       return new FloatQuantity<Q>(quotient, getUnit());
     }
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (obj == null)
-      return false;
-    if (obj == this)
-      return true;
-    if (obj instanceof Quantity<?>) {
-      Quantity<?> that = (Quantity<?>) obj;
-      return Objects.equals(getUnit(), that.getUnit()) && Equalizer.hasEquality(value, that.getValue());
-    }
-    return false;
   }
 
   @Override
