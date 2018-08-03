@@ -50,10 +50,10 @@ import tech.units.indriya.ComparableQuantity;
  */
 final class LongQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
 
-  private static final BigDecimal LONG_MAX_VALUE_AS_BIG_DECIMAL = new BigDecimal(Long.MAX_VALUE);
-  private static final BigDecimal LONG_MIN_VALUE_AS_BIG_DECIMAL = new BigDecimal(Long.MIN_VALUE);
-
   private static final long serialVersionUID = 3092808554937634365L;
+
+  private static final BigDecimal LONG_MAX_VALUE = new BigDecimal(Long.MAX_VALUE);
+  private static final BigDecimal LONG_MIN_VALUE = new BigDecimal(Long.MIN_VALUE);
 
   private final long value;
 
@@ -67,8 +67,9 @@ final class LongQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
     return value;
   }
 
-  private boolean isOverflowing(BigDecimal value) {
-    return value.compareTo(LONG_MAX_VALUE_AS_BIG_DECIMAL) > 0 || value.compareTo(LONG_MIN_VALUE_AS_BIG_DECIMAL) < 0;
+  @Override
+  boolean isOverflowing(BigDecimal value) {
+    return value.compareTo(LONG_MIN_VALUE) < 0 || value.compareTo(LONG_MAX_VALUE) > 0;
   }
 
   @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -102,19 +103,6 @@ final class LongQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
     }
   }
 
-  @SuppressWarnings({ "rawtypes", "unchecked" })
-  public ComparableQuantity<?> multiply(Quantity<?> that) {
-    if (canWidenTo(that)) {
-      return widenTo((JavaNumberQuantity<Q>) that).multiply(that);
-    }
-    final BigDecimal product = new BigDecimal(getValue()).multiply(new BigDecimal(that.getValue().longValue()));
-    if (isOverflowing(product)) {
-      throw new ArithmeticException();
-    } else {
-      return new LongQuantity(product.longValue(), getUnit().multiply(that.getUnit()));
-    }
-  }
-
   public ComparableQuantity<Q> multiply(Number that) {
     final BigDecimal product = new BigDecimal(getValue()).multiply(new BigDecimal(that.longValue()));
     if (isOverflowing(product)) {
@@ -122,14 +110,6 @@ final class LongQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
     } else {
       return NumberQuantity.of(product.longValue(), getUnit());
     }
-  }
-
-  @SuppressWarnings({ "rawtypes", "unchecked" })
-  public ComparableQuantity<?> divide(Quantity<?> that) {
-    if (canWidenTo(that)) {
-      return widenTo((JavaNumberQuantity<Q>) that).divide(that);
-    }
-    return new LongQuantity((long) (value / that.getValue().doubleValue()), getUnit().divide(that.getUnit()));
   }
 
   @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -164,6 +144,11 @@ final class LongQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
   @Override
   public Class<?> getNumberType() {
     return long.class;
+  }
+
+  @Override
+  Number castFromBigDecimal(BigDecimal value) {
+    return value.longValue();
   }
 
   @Override

@@ -191,7 +191,7 @@ public class LongQuantityTest {
   @Test
   public void quantityMultiplicationResultingInOverflowThrowsException() {
     assertThrows(ArithmeticException.class, () -> {
-      Quantity<ElectricResistance> halfMaxValuePlusOne = createQuantity(1L + Long.MAX_VALUE / 2L, Units.OHM);
+      Quantity<ElectricResistance> halfMaxValuePlusOne = createQuantity(514L + Long.MAX_VALUE / 2L, Units.OHM);
       halfMaxValuePlusOne.multiply(TWO_OHM);
     });
   }

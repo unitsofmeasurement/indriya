@@ -54,6 +54,9 @@ final class FloatQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
 
   private static final long serialVersionUID = 5992028803791009345L;
 
+  private static final BigDecimal FLOAT_MIN_VALUE = new BigDecimal(Float.MIN_VALUE);
+  private static final BigDecimal FLOAT_MAX_VALUE = new BigDecimal(Float.MAX_VALUE);
+
   final float value;
 
   public FloatQuantity(float value, Unit<Q> unit) {
@@ -90,20 +93,6 @@ final class FloatQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
     }
   }
 
-  @SuppressWarnings({ "unchecked", "rawtypes" })
-  @Override
-  public ComparableQuantity<?> multiply(Quantity<?> that) {
-    if (canWidenTo(that)) {
-      return widenTo((JavaNumberQuantity<Q>) that).multiply(that);
-    }
-    final float product = value * that.getValue().floatValue();
-    if (Float.isInfinite(product)) {
-      throw new ArithmeticException();
-    } else {
-      return new FloatQuantity(product, getUnit().multiply(that.getUnit()));
-    }
-  }
-
   @Override
   public ComparableQuantity<Q> multiply(Number that) {
     final float product = value * that.floatValue();
@@ -111,20 +100,6 @@ final class FloatQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
       throw new ArithmeticException();
     } else {
       return new FloatQuantity<Q>(product, getUnit());
-    }
-  }
-
-  @SuppressWarnings({ "unchecked", "rawtypes" })
-  @Override
-  public ComparableQuantity<?> divide(Quantity<?> that) {
-    if (canWidenTo(that)) {
-      return widenTo((JavaNumberQuantity<Q>) that).divide(that);
-    }
-    final float quotient = value / that.getValue().floatValue();
-    if (Float.isInfinite(quotient)) {
-      throw new ArithmeticException();
-    } else {
-      return new FloatQuantity(quotient, getUnit().divide(that.getUnit()));
     }
   }
 
@@ -167,6 +142,16 @@ final class FloatQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
   @Override
   public Class<?> getNumberType() {
     return float.class;
+  }
+  
+  @Override
+  Number castFromBigDecimal(BigDecimal value) {
+    return (float) value.doubleValue();
+  }
+
+  @Override
+  boolean isOverflowing(BigDecimal value) {
+    return value.compareTo(FLOAT_MIN_VALUE) < 0 || value.compareTo(FLOAT_MAX_VALUE) > 0;
   }
 
   @Override

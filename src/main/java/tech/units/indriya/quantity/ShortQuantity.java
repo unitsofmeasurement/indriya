@@ -52,6 +52,9 @@ final class ShortQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
 
   private static final long serialVersionUID = 6325849816534488248L;
 
+  private static final BigDecimal SHORT_MIN_VALUE = new BigDecimal(Short.MIN_VALUE);
+  private static final BigDecimal SHORT_MAX_VALUE = new BigDecimal(Short.MAX_VALUE);
+
   private final short value;
 
   ShortQuantity(short value, Unit<Q> unit) {
@@ -108,32 +111,9 @@ final class ShortQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
     }
   }
 
-  @SuppressWarnings({ "unchecked", "rawtypes" })
-  @Override
-  public ComparableQuantity<?> divide(Quantity<?> that) {
-    if (canWidenTo(that)) {
-      return widenTo((JavaNumberQuantity<Q>) that).divide(that);
-    }
-    return new ShortQuantity((short) (value / that.getValue().shortValue()), getUnit().divide(that.getUnit()));
-  }
-
   @Override
   public ComparableQuantity<Q> divide(Number that) {
     return NumberQuantity.of(value / that.shortValue(), getUnit());
-  }
-
-  @SuppressWarnings({ "unchecked", "rawtypes" })
-  @Override
-  public ComparableQuantity<?> multiply(Quantity<?> multiplier) {
-    if (canWidenTo(multiplier)) {
-      return widenTo((JavaNumberQuantity<Q>) multiplier).multiply(multiplier);
-    }
-    final double product = getValue().doubleValue() * multiplier.getValue().doubleValue();
-    if (isOverflowing(product)) {
-      throw new ArithmeticException();
-    } else {
-      return new ShortQuantity((short) (value * multiplier.getValue().shortValue()), getUnit().multiply(multiplier.getUnit()));
-    }
   }
 
   @Override
@@ -167,7 +147,17 @@ final class ShortQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
   }
 
   @Override
+  boolean isOverflowing(BigDecimal value) {
+    return value.compareTo(SHORT_MIN_VALUE) < 0 || value.compareTo(SHORT_MAX_VALUE) > 0;
+  }
+
+  @Override
   public Quantity<Q> negate() {
     return new ShortQuantity<>((short) (-value), getUnit());
+  }
+
+  @Override
+  Number castFromBigDecimal(BigDecimal value) {
+    return (short) value.longValue();
   }
 }

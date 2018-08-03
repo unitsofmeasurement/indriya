@@ -52,6 +52,9 @@ final class ByteQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
 
   private static final long serialVersionUID = 6325849816534488248L;
 
+  private static final BigDecimal BYTE_MIN_VALUE = new BigDecimal(Byte.MIN_VALUE);
+  private static final BigDecimal BYTE_MAX_VALUE = new BigDecimal(Byte.MAX_VALUE);
+
   private final byte value;
 
   ByteQuantity(byte value, Unit<Q> unit) {
@@ -76,6 +79,11 @@ final class ByteQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
 
   private boolean isOverflowing(double value) {
     return value < Byte.MIN_VALUE || value > Byte.MAX_VALUE;
+  }
+
+  @Override
+  boolean isOverflowing(BigDecimal value) {
+    return value.compareTo(BYTE_MIN_VALUE) < 0 || value.compareTo(BYTE_MAX_VALUE) > 0;
   }
 
   private ComparableQuantity<Q> addRaw(Number a, Number b, Unit<Q> unit) {
@@ -110,31 +118,8 @@ final class ByteQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
   @Override
-  public ComparableQuantity<?> divide(Quantity<?> that) {
-    if (canWidenTo(that)) {
-      return widenTo((JavaNumberQuantity<?>) that).divide(that);
-    }
-    return new ByteQuantity((byte) (value / that.getValue().byteValue()), getUnit().divide(that.getUnit()));
-  }
-
-  @SuppressWarnings({ "unchecked", "rawtypes" })
-  @Override
   public ComparableQuantity<Q> divide(Number that) {
     return new ByteQuantity((byte) (value / that.byteValue()), getUnit());
-  }
-
-  @SuppressWarnings({ "unchecked", "rawtypes" })
-  @Override
-  public ComparableQuantity<?> multiply(Quantity<?> multiplier) {
-    if (canWidenTo(multiplier)) {
-      return widenTo((JavaNumberQuantity<?>) multiplier).multiply(multiplier);
-    }
-    final double product = getValue().doubleValue() * multiplier.getValue().doubleValue();
-    if (isOverflowing(product)) {
-      throw new ArithmeticException();
-    } else {
-      return new ByteQuantity((byte) (value * multiplier.getValue().byteValue()), getUnit().multiply(multiplier.getUnit()));
-    }
   }
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -166,6 +151,11 @@ final class ByteQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
   @Override
   public Class<?> getNumberType() {
     return byte.class;
+  }
+
+  @Override
+  Number castFromBigDecimal(BigDecimal value) {
+    return (byte) value.longValue();
   }
 
   @Override
