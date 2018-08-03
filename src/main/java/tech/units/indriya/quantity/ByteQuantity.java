@@ -30,7 +30,6 @@
 package tech.units.indriya.quantity;
 
 import java.math.BigDecimal;
-import java.util.Objects;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;
@@ -39,174 +38,138 @@ import tech.units.indriya.AbstractQuantity;
 import tech.units.indriya.ComparableQuantity;
 
 /**
- * An amount of quantity, consisting of a short and a Unit. ByteQuantity objects
- * are immutable.
+ * An amount of quantity, consisting of a short and a Unit. ByteQuantity objects are immutable.
  * 
  * @see AbstractQuantity
  * @see Quantity
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @param <Q> The type of the quantity.
+ * @param <Q>
+ *          The type of the quantity.
  * @version 0.2, $Date: 2018-07-20 $
  * @since 1.0.7
  */
-final class ByteQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> implements JavaNumberQuantity<Q> {
+final class ByteQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
 
-	private static final long serialVersionUID = 6325849816534488248L;
+  private static final long serialVersionUID = 6325849816534488248L;
 
-	private final byte value;
+  private final byte value;
 
-	ByteQuantity(byte value, Unit<Q> unit) {
-		super(unit);
-		this.value = value;
-	}
+  ByteQuantity(byte value, Unit<Q> unit) {
+    super(unit);
+    this.value = value;
+  }
 
-	@Override
-	public Byte getValue() {
-		return value;
-	}
+  @Override
+  public Byte getValue() {
+    return value;
+  }
 
-	public double doubleValue(Unit<Q> unit) {
-		return getUnit().equals(unit) ? value : getUnit().getConverterTo(unit).convert(value);
-	}
+  @Override
+  public boolean isBig() {
+    return false;
+  }
 
-	@Override
-	public long longValue(Unit<Q> unit) {
-		double result = doubleValue(unit);
-		if (result < Long.MIN_VALUE || result > Long.MAX_VALUE) {
-			throw new ArithmeticException("Overflow (" + result + ")");
-		}
-		return (long) result;
-	}
+  @Override
+  public BigDecimal decimalValue(Unit<Q> unit) {
+    return BigDecimal.valueOf(doubleValue(unit));
+  }
 
-	@Override
-	public boolean isBig() {
-		return false;
-	}
+  private boolean isOverflowing(double value) {
+    return value < Byte.MIN_VALUE || value > Byte.MAX_VALUE;
+  }
 
-	@Override
-	public BigDecimal decimalValue(Unit<Q> unit) {
-		return BigDecimal.valueOf(doubleValue(unit));
-	}
+  private ComparableQuantity<Q> addRaw(Number a, Number b, Unit<Q> unit) {
+    return new ByteQuantity<Q>((byte) (a.byteValue() + b.byteValue()), unit);
+  }
 
-	private boolean isOverflowing(double value) {
-		return value < Byte.MIN_VALUE || value > Byte.MAX_VALUE;
-	}
+  @Override
+  public ComparableQuantity<Q> add(Quantity<Q> that) {
+    if (canWidenTo(that)) {
+      return widenTo((JavaNumberQuantity<Q>) that).add(that);
+    }
+    final Quantity<Q> thatConverted = that.to(getUnit());
+    final Quantity<Q> thisConverted = this.to(that.getUnit());
+    final double resultValueInThisUnit = getValue().doubleValue() + thatConverted.getValue().doubleValue();
+    final double resultValueInThatUnit = thisConverted.getValue().doubleValue() + that.getValue().doubleValue();
+    final ComparableQuantity<Q> resultInThisUnit = addRaw(getValue(), thatConverted.getValue(), getUnit());
+    final ComparableQuantity<Q> resultInThatUnit = addRaw(thisConverted.getValue(), that.getValue(), that.getUnit());
+    if (isOverflowing(resultValueInThisUnit)) {
+      if (isOverflowing(resultValueInThatUnit)) {
+        throw new ArithmeticException();
+      } else {
+        return resultInThatUnit;
+      }
+    } else if (isOverflowing(resultValueInThatUnit)) {
+      return resultInThisUnit;
+    } else if (hasFraction(resultValueInThisUnit)) {
+      return resultInThatUnit;
+    } else {
+      return resultInThisUnit;
+    }
+  }
 
-	private ComparableQuantity<Q> addRaw(Number a, Number b, Unit<Q> unit) {
-		return new ByteQuantity<Q>((byte) (a.byteValue() + b.byteValue()), unit);
-	}
+  @SuppressWarnings({ "unchecked", "rawtypes" })
+  @Override
+  public ComparableQuantity<?> divide(Quantity<?> that) {
+    if (canWidenTo(that)) {
+      return widenTo((JavaNumberQuantity<?>) that).divide(that);
+    }
+    return new ByteQuantity((byte) (value / that.getValue().byteValue()), getUnit().divide(that.getUnit()));
+  }
 
-	@Override
-	public ComparableQuantity<Q> add(Quantity<Q> that) {
-		if (NumberQuantity.canWiden(this, that)) {
-			return NumberQuantity.widen(this, (JavaNumberQuantity<Q>) that).add(that);
-		}
-		final Quantity<Q> thatConverted = that.to(getUnit());
-		final Quantity<Q> thisConverted = this.to(that.getUnit());
-		final double resultValueInThisUnit = getValue().doubleValue() + thatConverted.getValue().doubleValue();
-		final double resultValueInThatUnit = thisConverted.getValue().doubleValue() + that.getValue().doubleValue();
-		final ComparableQuantity<Q> resultInThisUnit = addRaw(getValue(), thatConverted.getValue(), getUnit());
-		final ComparableQuantity<Q> resultInThatUnit = addRaw(thisConverted.getValue(), that.getValue(),
-				that.getUnit());
-		if (isOverflowing(resultValueInThisUnit)) {
-			if (isOverflowing(resultValueInThatUnit)) {
-				throw new ArithmeticException();
-			} else {
-				return resultInThatUnit;
-			}
-		} else if (isOverflowing(resultValueInThatUnit)) {
-			return resultInThisUnit;
-		} else if (hasFraction(resultValueInThisUnit)) {
-			return resultInThatUnit;
-		} else {
-			return resultInThisUnit;
-		}
-	}
+  @SuppressWarnings({ "unchecked", "rawtypes" })
+  @Override
+  public ComparableQuantity<Q> divide(Number that) {
+    return new ByteQuantity((byte) (value / that.byteValue()), getUnit());
+  }
 
-	@Override
-	public ComparableQuantity<Q> subtract(Quantity<Q> that) {
-		if (NumberQuantity.canWiden(this, that)) {
-			return NumberQuantity.widen(this, (JavaNumberQuantity<Q>) that).subtract(that);
-		}
-		final Quantity<Q> thatNegated = new ByteQuantity<Q>((byte) -that.getValue().byteValue(), that.getUnit());
-		return add(thatNegated);
-	}
+  @SuppressWarnings({ "unchecked", "rawtypes" })
+  @Override
+  public ComparableQuantity<?> multiply(Quantity<?> multiplier) {
+    if (canWidenTo(multiplier)) {
+      return widenTo((JavaNumberQuantity<?>) multiplier).multiply(multiplier);
+    }
+    final double product = getValue().doubleValue() * multiplier.getValue().doubleValue();
+    if (isOverflowing(product)) {
+      throw new ArithmeticException();
+    } else {
+      return new ByteQuantity((byte) (value * multiplier.getValue().byteValue()), getUnit().multiply(multiplier.getUnit()));
+    }
+  }
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	@Override
-	public ComparableQuantity<?> divide(Quantity<?> that) {
-		if (NumberQuantity.canWiden(this, that)) {
-			return NumberQuantity.widen(this, (JavaNumberQuantity<?>) that).divide(that);
-		}
-		return new ByteQuantity((byte) (value / that.getValue().byteValue()), getUnit().divide(that.getUnit()));
-	}
+  @SuppressWarnings({ "unchecked", "rawtypes" })
+  @Override
+  public ComparableQuantity<Q> multiply(Number multiplier) {
+    final double product = getValue().doubleValue() * multiplier.doubleValue();
+    if (isOverflowing(product)) {
+      throw new ArithmeticException();
+    } else {
+      return new ByteQuantity((byte) (value * multiplier.byteValue()), getUnit());
+    }
+  }
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	@Override
-	public ComparableQuantity<Q> divide(Number that) {
-		return new ByteQuantity((byte) (value / that.byteValue()), getUnit());
-	}
+  @Override
+  public ComparableQuantity<?> inverse() {
+    return NumberQuantity.of(1 / value, getUnit().inverse());
+  }
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	@Override
-	public ComparableQuantity<?> multiply(Quantity<?> multiplier) {
-		if (NumberQuantity.canWiden(this, multiplier)) {
-			return NumberQuantity.widen(this, (JavaNumberQuantity<?>) multiplier).multiply(multiplier);
-		}
-		final double product = getValue().doubleValue() * multiplier.getValue().doubleValue();
-		if (isOverflowing(product)) {
-			throw new ArithmeticException();
-		} else {
-			return new ByteQuantity((byte) (value * multiplier.getValue().byteValue()),
-					getUnit().multiply(multiplier.getUnit()));
-		}
-	}
+  @Override
+  public boolean isDecimal() {
+    return false;
+  }
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	@Override
-	public ComparableQuantity<Q> multiply(Number multiplier) {
-		final double product = getValue().doubleValue() * multiplier.doubleValue();
-		if (isOverflowing(product)) {
-			throw new ArithmeticException();
-		} else {
-			return new ByteQuantity((byte) (value * multiplier.byteValue()), getUnit());
-		}
-	}
+  @Override
+  public int getSize() {
+    return Byte.SIZE;
+  }
 
-	@Override
-	public ComparableQuantity<?> inverse() {
-		return NumberQuantity.of(1 / value, getUnit().inverse());
-	}
+  @Override
+  public Class<?> getNumberType() {
+    return byte.class;
+  }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj instanceof Quantity<?>) {
-			Quantity<?> that = (Quantity<?>) obj;
-			return Objects.equals(getUnit(), that.getUnit()) && Equalizer.hasEquality(value, that.getValue());
-		}
-		return false;
-	}
-
-	@Override
-	public boolean isDecimal() {
-		return false;
-	}
-
-	@Override
-	public int getSize() {
-		return Byte.SIZE;
-	}
-
-	@Override
-	public Class<?> getNumberType() {
-		return byte.class;
-	}
-
-	@Override
-	public Quantity<Q> negate() {
-		return new ByteQuantity<Q>((byte) (-value), getUnit());
-	}
+  @Override
+  public Quantity<Q> negate() {
+    return new ByteQuantity<Q>((byte) (-value), getUnit());
+  }
 }

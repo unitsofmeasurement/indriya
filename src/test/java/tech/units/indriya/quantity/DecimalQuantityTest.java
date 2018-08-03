@@ -36,7 +36,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 
 import javax.measure.MetricPrefix;
 import javax.measure.Quantity;
@@ -141,7 +140,7 @@ public class DecimalQuantityTest {
   public void negateTest() {
     assertEquals(BigDecimal.valueOf(1.0d).negate(), ONE_OHM.negate().getValue());
   }
-  
+
   @Test
   public void inverseTestLength() {
     @SuppressWarnings("unchecked")

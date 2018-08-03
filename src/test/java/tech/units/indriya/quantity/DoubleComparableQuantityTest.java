@@ -41,7 +41,6 @@ import javax.measure.quantity.Length;
 import javax.measure.quantity.Speed;
 import javax.measure.quantity.Time;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.ComparableQuantity;
@@ -65,8 +64,8 @@ public class DoubleComparableQuantityTest {
     ComparableQuantity<Length> metre = Quantities.getQuantity(10D, Units.METRE);
     ComparableQuantity<Time> time = Quantities.getQuantity(10D, Units.SECOND);
     assertThrows(ClassCastException.class, () -> {
-    	@SuppressWarnings("unused")
-    	ComparableQuantity<Area> area = metre.divide(time, Area.class);
+      @SuppressWarnings("unused")
+      ComparableQuantity<Area> area = metre.divide(time, Area.class);
     });
   }
 
@@ -83,8 +82,8 @@ public class DoubleComparableQuantityTest {
   public void multiplyOperationsExceptionTest() {
     ComparableQuantity<Length> metre = Quantities.getQuantity(10D, Units.METRE);
     assertThrows(ClassCastException.class, () -> {
-    	@SuppressWarnings("unused")
-    	ComparableQuantity<Speed> speed = metre.multiply(metre, Speed.class);
+      @SuppressWarnings("unused")
+      ComparableQuantity<Speed> speed = metre.multiply(metre, Speed.class);
     });
   }
 

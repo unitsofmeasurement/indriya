@@ -43,8 +43,6 @@ import javax.measure.spi.QuantityFactory;
 
 import org.junit.jupiter.api.Test;
 
-import tech.units.indriya.unit.Units;
-
 /**
  * @author Werner Keil
  */

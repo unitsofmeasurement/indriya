@@ -32,7 +32,6 @@ package tech.units.indriya.quantity;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.util.Objects;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;
@@ -56,7 +55,7 @@ import tech.units.indriya.function.Calculus;
  * @version 1.1
  * @since 1.0
  */
-final class DecimalQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> implements Serializable, JavaNumberQuantity<Q> {
+final class DecimalQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> implements Serializable {
 
   private static final long serialVersionUID = 6504081836032983882L;
 
@@ -78,11 +77,6 @@ final class DecimalQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> i
   }
 
   @Override
-  public double doubleValue(Unit<Q> unit) {
-    return getUnit().equals(unit) ? value.doubleValue() : getUnit().getConverterTo(unit).convert(value.doubleValue());
-  }
-
-  @Override
   public BigDecimal decimalValue(Unit<Q> unit) throws ArithmeticException {
     return Calculus.toBigDecimal(super.getUnit().getConverterTo(unit).convert(value));
   }
@@ -94,15 +88,6 @@ final class DecimalQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> i
     }
     Quantity<Q> converted = that.to(getUnit());
     return Quantities.getQuantity(value.add(Calculus.toBigDecimal(converted.getValue())), getUnit());
-  }
-
-  @Override
-  public ComparableQuantity<Q> subtract(Quantity<Q> that) {
-    if (getUnit().equals(that.getUnit())) {
-      return Quantities.getQuantity(value.subtract(Calculus.toBigDecimal(that.getValue()), Calculus.MATH_CONTEXT), getUnit());
-    }
-    Quantity<Q> converted = that.to(getUnit());
-    return Quantities.getQuantity(value.subtract(Calculus.toBigDecimal(converted.getValue()), Calculus.MATH_CONTEXT), getUnit());
   }
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -128,15 +113,6 @@ final class DecimalQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> i
   }
 
   @Override
-  protected long longValue(Unit<Q> unit) {
-    double result = doubleValue(unit);
-    if (result < Long.MIN_VALUE || result > Long.MAX_VALUE) {
-      throw new ArithmeticException("Overflow (" + result + ")");
-    }
-    return (long) result;
-  }
-
-  @Override
   public boolean isBig() {
     return true;
   }
@@ -145,19 +121,6 @@ final class DecimalQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> i
   @Override
   public ComparableQuantity<?> divide(Quantity<?> that) {
     return new DecimalQuantity(value.divide(Calculus.toBigDecimal(that.getValue()), Calculus.MATH_CONTEXT), getUnit().divide(that.getUnit()));
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (obj == null)
-      return false;
-    if (obj == this)
-      return true;
-    if (obj instanceof Quantity<?>) {
-      Quantity<?> that = (Quantity<?>) obj;
-      return Objects.equals(getUnit(), that.getUnit()) && Equalizer.hasEquality(value, that.getValue());
-    }
-    return false;
   }
 
   @Override
@@ -174,11 +137,10 @@ final class DecimalQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> i
   public Class<?> getNumberType() {
     return BigDecimal.class;
   }
-  
+
   /**
    * <p>
-   * Returns a {@code DecimalQuantity} with same Unit, but whose value is {@code(-this.getValue())}.
-   * </p>
+   * Returns a {@code DecimalQuantity} with same Unit, but whose value is {@code(-this.getValue())}. </p>
    * 
    * @return {@code -this}.
    */
