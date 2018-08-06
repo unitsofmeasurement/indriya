@@ -81,6 +81,25 @@ abstract class JavaNumberQuantity<Q extends Quantity<Q>> extends AbstractQuantit
    */
   abstract Class<?> getNumberType();
 
+  /**
+   * Casts a value from BigDecimal to the quantity's number type.
+   * 
+   * @param value
+   *          The value to be case.
+   * @return The value in the quantity's number type.
+   */
+  abstract Number castFromBigDecimal(BigDecimal value);
+
+  /**
+   * Returns whether a value is outside the valid range for the number type.
+   * 
+   * @param value
+   *          The value to be checked.
+   * @return True if the value is outside the range of the number type; false if the number type is big or the value is inside the range of the number
+   *         type.
+   */
+  abstract boolean isOverflowing(BigDecimal value);
+
   @Override
   public double doubleValue(Unit<Q> unit) {
     if (getUnit().equals(unit)) {
@@ -109,6 +128,40 @@ abstract class JavaNumberQuantity<Q extends Quantity<Q>> extends AbstractQuantit
     return add(that.negate());
   }
 
+  @SuppressWarnings({ "unchecked" })
+  public ComparableQuantity<?> multiply(Quantity<?> that) {
+    if (canWidenTo(that)) {
+      return widenTo((JavaNumberQuantity<Q>) that).multiply(that);
+    }
+    final BigDecimal thisValue = decimalValue(getUnit());
+    final BigDecimal thatValue = thatValueAsBigDecimal(that);
+    final BigDecimal product = thisValue.multiply(thatValue);
+    if (isOverflowing(product)) {
+      throw new ArithmeticException();
+    }
+    return createQuantity(getNumberType(), castFromBigDecimal(product), getUnit().multiply(that.getUnit()));
+  }
+
+  @SuppressWarnings({ "unchecked", "rawtypes" })
+  private BigDecimal thatValueAsBigDecimal(Quantity<?> that) {
+    return that instanceof JavaNumberQuantity ? ((JavaNumberQuantity) that).decimalValue(that.getUnit())
+        : new BigDecimal(that.getValue().doubleValue());
+  }
+
+  @SuppressWarnings({ "unchecked" })
+  public ComparableQuantity<?> divide(Quantity<?> that) {
+    if (canWidenTo(that)) {
+      return widenTo((JavaNumberQuantity<Q>) that).multiply(that);
+    }
+    final BigDecimal thisValue = decimalValue(getUnit());
+    final BigDecimal thatValue = thatValueAsBigDecimal(that);
+    final BigDecimal quotient = thisValue.divide(thatValue);
+    if (isOverflowing(quotient)) {
+      throw new ArithmeticException();
+    }
+    return createQuantity(getNumberType(), castFromBigDecimal(quotient), getUnit().divide(that.getUnit()));
+  }
+
   boolean canWidenTo(Quantity<?> target) {
     if (target instanceof JavaNumberQuantity) {
       JavaNumberQuantity<?> jnTarget = (JavaNumberQuantity<?>) target;
@@ -126,18 +179,22 @@ abstract class JavaNumberQuantity<Q extends Quantity<Q>> extends AbstractQuantit
     return false;
   }
 
-  ComparableQuantity<Q> widenTo(JavaNumberQuantity<?> target) {
-    return createQuantity(target.getNumberType(), widenValue(this, target), getUnit());
+  ComparableQuantity<Q> widenTo(JavaNumberQuantity<Q> target) {
+    return createTypedQuantity(target.getNumberType(), widenValue(this, target), getUnit());
   }
 
-  @SuppressWarnings({ "unchecked" })
-  private ComparableQuantity<Q> createQuantity(Class<?> numberType, Number value, Unit<Q> unit) {
+  private ComparableQuantity<?> createQuantity(Class<?> numberType, Number value, Unit<?> unit) {
     try {
       Method m = NumberQuantity.class.getDeclaredMethod("of", numberType, Unit.class);
-      return (ComparableQuantity<Q>) m.invoke(null, value, unit);
+      return (ComparableQuantity<?>) m.invoke(null, value, unit);
     } catch (Exception e) {
       return null;
     }
+  }
+
+  @SuppressWarnings({ "unchecked" })
+  private ComparableQuantity<Q> createTypedQuantity(Class<?> numberType, Number value, Unit<Q> unit) {
+    return (ComparableQuantity<Q>) createQuantity(numberType, value, unit);
   }
 
   private Number widenValue(JavaNumberQuantity<Q> source, JavaNumberQuantity<?> target) {

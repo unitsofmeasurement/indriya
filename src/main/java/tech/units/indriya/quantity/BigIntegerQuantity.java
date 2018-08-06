@@ -135,15 +135,6 @@ final class BigIntegerQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity
     return Quantities.getQuantity(sumValue, pickedUnit);
   }
 
-  @SuppressWarnings({ "unchecked", "rawtypes" })
-  @Override
-  public ComparableQuantity<?> multiply(Quantity<?> that) {
-    if (canWidenTo(that)) {
-      return widenTo((JavaNumberQuantity<Q>) that).multiply(that);
-    }
-    return new BigIntegerQuantity(value.multiply(Calculus.toBigDecimal(that.getValue()).toBigInteger()), getUnit().multiply(that.getUnit()));
-  }
-
   @Override
   public ComparableQuantity<Q> multiply(Number that) {
     return Quantities.getQuantity(value.multiply(Calculus.toBigInteger(that)), getUnit());
@@ -165,15 +156,6 @@ final class BigIntegerQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity
     return true;
   }
 
-  @SuppressWarnings({ "rawtypes", "unchecked" })
-  @Override
-  public ComparableQuantity<?> divide(Quantity<?> that) {
-    if (canWidenTo(that)) {
-      return widenTo((JavaNumberQuantity<Q>) that).divide(that);
-    }
-    return new BigIntegerQuantity(value.divide(Calculus.toBigInteger(that.getValue())), getUnit().divide(that.getUnit()));
-  }
-
   @Override
   public boolean isDecimal() {
     return false;
@@ -187,5 +169,15 @@ final class BigIntegerQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity
   @Override
   public Class<?> getNumberType() {
     return BigInteger.class;
+  }
+  
+  @Override
+  Number castFromBigDecimal(BigDecimal value) {
+    return value.toBigInteger();
+  }
+
+  @Override
+  boolean isOverflowing(BigDecimal value) {
+    return false;
   }
 }

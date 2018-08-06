@@ -90,12 +90,6 @@ final class DecimalQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q>
     return Quantities.getQuantity(value.add(Calculus.toBigDecimal(converted.getValue())), getUnit());
   }
 
-  @SuppressWarnings({ "unchecked", "rawtypes" })
-  @Override
-  public ComparableQuantity<?> multiply(Quantity<?> that) {
-    return new DecimalQuantity(value.multiply(Calculus.toBigDecimal(that.getValue()), Calculus.MATH_CONTEXT), getUnit().multiply(that.getUnit()));
-  }
-
   @Override
   public ComparableQuantity<Q> multiply(Number that) {
     return Quantities.getQuantity(value.multiply(Calculus.toBigDecimal(that), Calculus.MATH_CONTEXT), getUnit());
@@ -117,12 +111,6 @@ final class DecimalQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q>
     return true;
   }
 
-  @SuppressWarnings({ "rawtypes", "unchecked" })
-  @Override
-  public ComparableQuantity<?> divide(Quantity<?> that) {
-    return new DecimalQuantity(value.divide(Calculus.toBigDecimal(that.getValue()), Calculus.MATH_CONTEXT), getUnit().divide(that.getUnit()));
-  }
-
   @Override
   public boolean isDecimal() {
     return true;
@@ -138,6 +126,11 @@ final class DecimalQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q>
     return BigDecimal.class;
   }
 
+  @Override
+  Number castFromBigDecimal(BigDecimal value) {
+    return value;
+  }
+
   /**
    * <p>
    * Returns a {@code DecimalQuantity} with same Unit, but whose value is {@code(-this.getValue())}. </p>
@@ -146,5 +139,10 @@ final class DecimalQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q>
    */
   public DecimalQuantity<Q> negate() {
     return new DecimalQuantity<Q>(value.negate(), getUnit());
+  }
+
+  @Override
+  boolean isOverflowing(BigDecimal value) {
+    return false;
   }
 }

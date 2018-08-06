@@ -51,7 +51,7 @@ import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.quantity.ShortQuantity;
 import tech.units.indriya.unit.Units;
 
-public class ShortQuantityTest {
+public class ShortQuantityTest { 
 
   private static final Unit<?> SQUARE_OHM = Units.OHM.multiply(Units.OHM);
   private final ShortQuantity<ElectricResistance> ONE_OHM = createQuantity((short) 1, Units.OHM);
