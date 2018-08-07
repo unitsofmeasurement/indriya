@@ -30,7 +30,6 @@
 package tech.units.indriya.quantity;
 
 import java.math.BigDecimal;
-import java.util.Objects;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;
@@ -40,175 +39,123 @@ import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.function.Calculus;
 
 /**
- * An amount of quantity, consisting of a float and a Unit. FloatQuantity
- * objects are immutable.
+ * An amount of quantity, consisting of a float and a Unit. FloatQuantity objects are immutable.
  * 
  * @see AbstractQuantity
  * @see Quantity
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
  * @author Otavio de Santana
- * @param <Q> The type of the quantity.
+ * @param <Q>
+ *          The type of the quantity.
  * @version 0.6, $Date: 2018-07-20 $
  * @since 1.0
  */
-final class FloatQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> implements JavaNumberQuantity<Q> {
+final class FloatQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
 
-	private static final long serialVersionUID = 5992028803791009345L;
+  private static final long serialVersionUID = 5992028803791009345L;
 
-	final float value;
+  private static final BigDecimal FLOAT_MIN_VALUE = new BigDecimal(Float.MIN_VALUE);
+  private static final BigDecimal FLOAT_MAX_VALUE = new BigDecimal(Float.MAX_VALUE);
 
-	public FloatQuantity(float value, Unit<Q> unit) {
-		super(unit);
-		this.value = value;
-	}
+  final float value;
 
-	@Override
-	public Float getValue() {
-		return value;
-	}
+  public FloatQuantity(float value, Unit<Q> unit) {
+    super(unit);
+    this.value = value;
+  }
 
-	@Override
-	public double doubleValue(Unit<Q> unit) {
-		return getUnit().getConverterTo(unit).convert(value);
-	}
+  @Override
+  public Float getValue() {
+    return value;
+  }
 
-	@Override
-	public long longValue(Unit<Q> unit) {
-		final double result = getUnit().getConverterTo(unit).convert(value);
-		if (result < Long.MIN_VALUE || result > Long.MAX_VALUE) {
-			throw new ArithmeticException("Overflow (" + result + ")");
-		}
-		return (long) result;
-	}
+  @SuppressWarnings({ "rawtypes", "unchecked" })
+  private ComparableQuantity<Q> addRaw(Number a, Number b, Unit<Q> unit) {
+    return new FloatQuantity(a.floatValue() + b.floatValue(), unit);
+  }
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private ComparableQuantity<Q> addRaw(Number a, Number b, Unit<Q> unit) {
-		return new FloatQuantity(a.floatValue() + b.floatValue(), unit);
-	}
+  public ComparableQuantity<Q> add(Quantity<Q> that) {
+    if (canWidenTo(that)) {
+      return widenTo((JavaNumberQuantity<Q>) that).add(that);
+    }
+    final Quantity<Q> thatConverted = that.to(getUnit());
+    final Quantity<Q> thisConverted = this.to(that.getUnit());
+    final float resultValueInThisUnit = getValue().floatValue() + thatConverted.getValue().floatValue();
+    final float resultValueInThatUnit = thisConverted.getValue().floatValue() + that.getValue().floatValue();
+    final ComparableQuantity<Q> resultInThisUnit = addRaw(getValue(), thatConverted.getValue(), getUnit());
+    final ComparableQuantity<Q> resultInThatUnit = addRaw(thisConverted.getValue(), that.getValue(), that.getUnit());
+    if (Float.isInfinite(resultValueInThisUnit) && Float.isInfinite(resultValueInThatUnit)) {
+      throw new ArithmeticException();
+    } else if (Float.isInfinite(resultValueInThisUnit)) {
+      return resultInThatUnit;
+    } else {
+      return resultInThisUnit;
+    }
+  }
 
-	public ComparableQuantity<Q> add(Quantity<Q> that) {
-		if (NumberQuantity.canWiden(this, that)) {
-			return NumberQuantity.widen(this, (JavaNumberQuantity<Q>) that).add(that);
-		}
-		final Quantity<Q> thatConverted = that.to(getUnit());
-		final Quantity<Q> thisConverted = this.to(that.getUnit());
-		final float resultValueInThisUnit = getValue().floatValue() + thatConverted.getValue().floatValue();
-		final float resultValueInThatUnit = thisConverted.getValue().floatValue() + that.getValue().floatValue();
-		final ComparableQuantity<Q> resultInThisUnit = addRaw(getValue(), thatConverted.getValue(), getUnit());
-		final ComparableQuantity<Q> resultInThatUnit = addRaw(thisConverted.getValue(), that.getValue(),
-				that.getUnit());
-		if (Float.isInfinite(resultValueInThisUnit) && Float.isInfinite(resultValueInThatUnit)) {
-			throw new ArithmeticException();
-		} else if (Float.isInfinite(resultValueInThisUnit)) {
-			return resultInThatUnit;
-		} else {
-			return resultInThisUnit;
-		}
-	}
+  @Override
+  public ComparableQuantity<Q> multiply(Number that) {
+    final float product = value * that.floatValue();
+    if (Float.isInfinite(product)) {
+      throw new ArithmeticException();
+    } else {
+      return new FloatQuantity<Q>(product, getUnit());
+    }
+  }
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public ComparableQuantity<Q> subtract(Quantity<Q> that) {
-		if (NumberQuantity.canWiden(this, that)) {
-			return NumberQuantity.widen(this, (JavaNumberQuantity<Q>) that).subtract(that);
-		}
-		final Quantity<Q> thatNegated = new FloatQuantity(-that.getValue().floatValue(), that.getUnit());
-		return add(thatNegated);
-	}
+  @SuppressWarnings({ "unchecked", "rawtypes" })
+  public ComparableQuantity<Q> inverse() {
+    return (AbstractQuantity<Q>) new FloatQuantity(1f / value, getUnit().inverse());
+  }
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	@Override
-	public ComparableQuantity<?> multiply(Quantity<?> that) {
-		if (NumberQuantity.canWiden(this, that)) {
-			return NumberQuantity.widen(this, (JavaNumberQuantity<Q>) that).multiply(that);
-		}
-		final float product = value * that.getValue().floatValue();
-		if (Float.isInfinite(product)) {
-			throw new ArithmeticException();
-		} else {
-			return new FloatQuantity(product, getUnit().multiply(that.getUnit()));
-		}
-	}
+  @Override
+  public ComparableQuantity<Q> divide(Number that) {
+    final float quotient = value / that.floatValue();
+    if (Float.isInfinite(quotient)) {
+      throw new ArithmeticException();
+    } else {
+      return new FloatQuantity<Q>(quotient, getUnit());
+    }
+  }
 
-	@Override
-	public ComparableQuantity<Q> multiply(Number that) {
-		final float product = value * that.floatValue();
-		if (Float.isInfinite(product)) {
-			throw new ArithmeticException();
-		} else {
-			return new FloatQuantity<Q>(product, getUnit());
-		}
-	}
+  @Override
+  public boolean isBig() {
+    return false;
+  }
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	@Override
-	public ComparableQuantity<?> divide(Quantity<?> that) {
-		if (NumberQuantity.canWiden(this, that)) {
-			return NumberQuantity.widen(this, (JavaNumberQuantity<Q>) that).divide(that);
-		}
-		final float quotient = value / that.getValue().floatValue();
-		if (Float.isInfinite(quotient)) {
-			throw new ArithmeticException();
-		} else {
-			return new FloatQuantity(quotient, getUnit().divide(that.getUnit()));
-		}
-	}
+  @Override
+  public BigDecimal decimalValue(Unit<Q> unit) throws ArithmeticException {
+    final BigDecimal decimal = BigDecimal.valueOf(value);
+    return Calculus.toBigDecimal(getUnit().getConverterTo(unit).convert(decimal));
+  }
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public ComparableQuantity<Q> inverse() {
-		return (AbstractQuantity<Q>) new FloatQuantity(1f / value, getUnit().inverse());
-	}
+  @Override
+  public boolean isDecimal() {
+    return true;
+  }
 
-	@Override
-	public ComparableQuantity<Q> divide(Number that) {
-		final float quotient = value / that.floatValue();
-		if (Float.isInfinite(quotient)) {
-			throw new ArithmeticException();
-		} else {
-			return new FloatQuantity<Q>(quotient, getUnit());
-		}
-	}
+  @Override
+  public int getSize() {
+    return Float.SIZE;
+  }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (obj == null)
-			return false;
-		if (obj == this)
-			return true;
-		if (obj instanceof Quantity<?>) {
-			Quantity<?> that = (Quantity<?>) obj;
-			return Objects.equals(getUnit(), that.getUnit()) && Equalizer.hasEquality(value, that.getValue());
-		}
-		return false;
-	}
+  @Override
+  public Class<?> getNumberType() {
+    return float.class;
+  }
+  
+  @Override
+  Number castFromBigDecimal(BigDecimal value) {
+    return (float) value.doubleValue();
+  }
 
-	@Override
-	public boolean isBig() {
-		return false;
-	}
+  @Override
+  boolean isOverflowing(BigDecimal value) {
+    return value.compareTo(FLOAT_MIN_VALUE) < 0 || value.compareTo(FLOAT_MAX_VALUE) > 0;
+  }
 
-	@Override
-	public BigDecimal decimalValue(Unit<Q> unit) throws ArithmeticException {
-		final BigDecimal decimal = BigDecimal.valueOf(value);
-		return Calculus.toBigDecimal(getUnit().getConverterTo(unit).convert(decimal));
-	}
-
-	@Override
-	public boolean isDecimal() {
-		return true;
-	}
-
-	@Override
-	public int getSize() {
-		return Float.SIZE;
-	}
-
-	@Override
-	public Class<?> getNumberType() {
-		return float.class;
-	}
-
-	@Override
-	public Quantity<Q> negate() {
-		return new FloatQuantity<Q>(-value, getUnit());
-	}
+  @Override
+  public Quantity<Q> negate() {
+    return new FloatQuantity<Q>(-value, getUnit());
+  }
 }

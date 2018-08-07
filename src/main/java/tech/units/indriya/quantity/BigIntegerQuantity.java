@@ -32,7 +32,6 @@ package tech.units.indriya.quantity;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Objects;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;
@@ -56,7 +55,7 @@ import tech.units.indriya.function.Calculus;
  * @version 0.4
  * @since 2.0
  */
-final class BigIntegerQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> implements Serializable, JavaNumberQuantity<Q> {
+final class BigIntegerQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> implements Serializable {
 
   private static final long serialVersionUID = -593014349777834846L;
   private final BigInteger value;
@@ -73,8 +72,7 @@ final class BigIntegerQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q
 
   /**
    * <p>
-   * Returns a {@code BigIntegerQuantity} with same Unit, but whose value is {@code(-this.getValue())}.
-   * </p>
+   * Returns a {@code BigIntegerQuantity} with same Unit, but whose value is {@code(-this.getValue())}. </p>
    * 
    * @return {@code -this}.
    */
@@ -85,15 +83,6 @@ final class BigIntegerQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q
   @Override
   public BigInteger getValue() {
     return value;
-  }
-
-  @Override
-  public double doubleValue(Unit<Q> unit) {
-    if (getUnit().equals(unit)) {
-      return value.doubleValue();
-    } else {
-      return getUnit().getConverterTo(unit).convert(value.doubleValue());
-    }
   }
 
   @Override
@@ -114,8 +103,8 @@ final class BigIntegerQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q
 
   @Override
   public ComparableQuantity<Q> add(Quantity<Q> that) {
-    if (NumberQuantity.canWiden(this, that)) {
-      return NumberQuantity.widen(this, (JavaNumberQuantity<Q>) that).add(that);
+    if (canWidenTo(that)) {
+      return widenTo((JavaNumberQuantity<Q>) that).add(that);
     }
     if (getUnit().equals(that.getUnit())) {
       return new BigIntegerQuantity<Q>(value.add(Calculus.toBigInteger(that.getValue())), getUnit());
@@ -147,26 +136,6 @@ final class BigIntegerQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q
   }
 
   @Override
-  public ComparableQuantity<Q> subtract(Quantity<Q> that) {
-    if (NumberQuantity.canWiden(this, that)) {
-      return NumberQuantity.widen(this, (JavaNumberQuantity<Q>) that).subtract(that);
-    }
-    if (that instanceof BigIntegerQuantity) {
-      return add(((BigIntegerQuantity<Q>) that).negate());
-    }
-    return add(Quantities.getQuantity(Calculus.negate(that.getValue()), that.getUnit()));
-  }
-
-  @SuppressWarnings({ "unchecked", "rawtypes" })
-  @Override
-  public ComparableQuantity<?> multiply(Quantity<?> that) {
-    if (NumberQuantity.canWiden(this, that)) {
-      return NumberQuantity.widen(this, (JavaNumberQuantity<Q>) that).multiply(that);
-    }
-    return new BigIntegerQuantity(value.multiply(Calculus.toBigDecimal(that.getValue()).toBigInteger()), getUnit().multiply(that.getUnit()));
-  }
-
-  @Override
   public ComparableQuantity<Q> multiply(Number that) {
     return Quantities.getQuantity(value.multiply(Calculus.toBigInteger(that)), getUnit());
   }
@@ -183,39 +152,8 @@ final class BigIntegerQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q
   }
 
   @Override
-  protected long longValue(Unit<Q> unit) {
-    double result = doubleValue(unit);
-    if (result < Long.MIN_VALUE || result > Long.MAX_VALUE) {
-      throw new ArithmeticException("Overflow (" + result + ")");
-    }
-    return (long) result;
-  }
-
-  @Override
   public boolean isBig() {
     return true;
-  }
-
-  @SuppressWarnings({ "rawtypes", "unchecked" })
-  @Override
-  public ComparableQuantity<?> divide(Quantity<?> that) {
-    if (NumberQuantity.canWiden(this, that)) {
-      return NumberQuantity.widen(this, (JavaNumberQuantity<Q>) that).divide(that);
-    }
-    return new BigIntegerQuantity(value.divide(Calculus.toBigInteger(that.getValue())), getUnit().divide(that.getUnit()));
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (obj == null)
-      return false;
-    if (obj == this)
-      return true;
-    if (obj instanceof Quantity<?>) {
-      Quantity<?> that = (Quantity<?>) obj;
-      return Objects.equals(getUnit(), that.getUnit()) && Equalizer.hasEquality(value, that.getValue());
-    }
-    return false;
   }
 
   @Override
@@ -231,5 +169,15 @@ final class BigIntegerQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q
   @Override
   public Class<?> getNumberType() {
     return BigInteger.class;
+  }
+  
+  @Override
+  Number castFromBigDecimal(BigDecimal value) {
+    return value.toBigInteger();
+  }
+
+  @Override
+  boolean isOverflowing(BigDecimal value) {
+    return false;
   }
 }

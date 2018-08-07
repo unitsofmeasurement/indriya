@@ -30,7 +30,6 @@
 package tech.units.indriya.quantity;
 
 import java.math.BigDecimal;
-import java.util.Objects;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;
@@ -39,172 +38,126 @@ import tech.units.indriya.AbstractQuantity;
 import tech.units.indriya.ComparableQuantity;
 
 /**
- * An amount of quantity, consisting of a short and a Unit. ShortQuantity
- * objects are immutable.
+ * An amount of quantity, consisting of a short and a Unit. ShortQuantity objects are immutable.
  * 
  * @see AbstractQuantity
  * @see Quantity
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @param <Q> The type of the quantity.
+ * @param <Q>
+ *          The type of the quantity.
  * @version 0.3, $Date: 2018-07-21 $
  * @since 1.0
  */
-final class ShortQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> implements JavaNumberQuantity<Q> {
+final class ShortQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
 
-	private static final long serialVersionUID = 6325849816534488248L;
+  private static final long serialVersionUID = 6325849816534488248L;
 
-	private final short value;
+  private static final BigDecimal SHORT_MIN_VALUE = new BigDecimal(Short.MIN_VALUE);
+  private static final BigDecimal SHORT_MAX_VALUE = new BigDecimal(Short.MAX_VALUE);
 
-	ShortQuantity(short value, Unit<Q> unit) {
-		super(unit);
-		this.value = value;
-	}
+  private final short value;
 
-	@Override
-	public Short getValue() {
-		return value;
-	}
+  ShortQuantity(short value, Unit<Q> unit) {
+    super(unit);
+    this.value = value;
+  }
 
-	public double doubleValue(Unit<Q> unit) {
-		return getUnit().equals(unit) ? value : getUnit().getConverterTo(unit).convert(value);
-	}
+  @Override
+  public Short getValue() {
+    return value;
+  }
 
-	@Override
-	public long longValue(Unit<Q> unit) {
-		double result = doubleValue(unit);
-		if (result < Long.MIN_VALUE || result > Long.MAX_VALUE) {
-			throw new ArithmeticException("Overflow (" + result + ")");
-		}
-		return (long) result;
-	}
+  @Override
+  public boolean isBig() {
+    return false;
+  }
 
-	@Override
-	public boolean isBig() {
-		return false;
-	}
+  @Override
+  public BigDecimal decimalValue(Unit<Q> unit) {
+    return BigDecimal.valueOf(doubleValue(unit));
+  }
 
-	@Override
-	public BigDecimal decimalValue(Unit<Q> unit) {
-		return BigDecimal.valueOf(doubleValue(unit));
-	}
+  private boolean isOverflowing(double value) {
+    return value < Short.MIN_VALUE || value > Short.MAX_VALUE;
+  }
 
-	private boolean isOverflowing(double value) {
-		return value < Short.MIN_VALUE || value > Short.MAX_VALUE;
-	}
+  private ComparableQuantity<Q> addRaw(Number a, Number b, Unit<Q> unit) {
+    return new ShortQuantity<Q>((short) (a.shortValue() + b.shortValue()), unit);
+  }
 
-	private ComparableQuantity<Q> addRaw(Number a, Number b, Unit<Q> unit) {
-		return new ShortQuantity<Q>((short) (a.shortValue() + b.shortValue()), unit);
-	}
+  @Override
+  public ComparableQuantity<Q> add(Quantity<Q> that) {
+    if (canWidenTo(that)) {
+      return widenTo((JavaNumberQuantity<Q>) that).add(that);
+    }
+    final Quantity<Q> thatConverted = that.to(getUnit());
+    final Quantity<Q> thisConverted = this.to(that.getUnit());
+    final double resultValueInThisUnit = getValue().doubleValue() + thatConverted.getValue().doubleValue();
+    final double resultValueInThatUnit = thisConverted.getValue().doubleValue() + that.getValue().doubleValue();
+    final ComparableQuantity<Q> resultInThisUnit = addRaw(getValue(), thatConverted.getValue(), getUnit());
+    final ComparableQuantity<Q> resultInThatUnit = addRaw(thisConverted.getValue(), that.getValue(), that.getUnit());
+    if (isOverflowing(resultValueInThisUnit)) {
+      if (isOverflowing(resultValueInThatUnit)) {
+        throw new ArithmeticException();
+      } else {
+        return resultInThatUnit;
+      }
+    } else if (isOverflowing(resultValueInThatUnit)) {
+      return resultInThisUnit;
+    } else if (hasFraction(resultValueInThisUnit)) {
+      return resultInThatUnit;
+    } else {
+      return resultInThisUnit;
+    }
+  }
 
-	@Override
-	public ComparableQuantity<Q> add(Quantity<Q> that) {
-		if (NumberQuantity.canWiden(this, that)) {
-			return NumberQuantity.widen(this, (JavaNumberQuantity<Q>) that).add(that);
-		}
-		final Quantity<Q> thatConverted = that.to(getUnit());
-		final Quantity<Q> thisConverted = this.to(that.getUnit());
-		final double resultValueInThisUnit = getValue().doubleValue() + thatConverted.getValue().doubleValue();
-		final double resultValueInThatUnit = thisConverted.getValue().doubleValue() + that.getValue().doubleValue();
-		final ComparableQuantity<Q> resultInThisUnit = addRaw(getValue(), thatConverted.getValue(), getUnit());
-		final ComparableQuantity<Q> resultInThatUnit = addRaw(thisConverted.getValue(), that.getValue(),
-				that.getUnit());
-		if (isOverflowing(resultValueInThisUnit)) {
-			if (isOverflowing(resultValueInThatUnit)) {
-				throw new ArithmeticException();
-			} else {
-				return resultInThatUnit;
-			}
-		} else if (isOverflowing(resultValueInThatUnit)) {
-			return resultInThisUnit;
-		} else if (hasFraction(resultValueInThisUnit)) {
-			return resultInThatUnit;
-		} else {
-			return resultInThisUnit;
-		}
-	}
+  @Override
+  public ComparableQuantity<Q> divide(Number that) {
+    return NumberQuantity.of(value / that.shortValue(), getUnit());
+  }
 
-	@Override
-	public ComparableQuantity<Q> subtract(Quantity<Q> that) {
-		if (NumberQuantity.canWiden(this, that)) {
-			return NumberQuantity.widen(this, (JavaNumberQuantity<Q>) that).subtract(that);
-		}
-		final Quantity<Q> thatNegated = new ShortQuantity<Q>((short) -that.getValue().shortValue(), that.getUnit());
-		return add(thatNegated);
-	}
+  @Override
+  public ComparableQuantity<Q> multiply(Number multiplier) {
+    final double product = getValue().doubleValue() * multiplier.doubleValue();
+    if (isOverflowing(product)) {
+      throw new ArithmeticException();
+    } else {
+      return NumberQuantity.of(value * multiplier.shortValue(), getUnit());
+    }
+  }
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	@Override
-	public ComparableQuantity<?> divide(Quantity<?> that) {
-		if (NumberQuantity.canWiden(this, that)) {
-			return NumberQuantity.widen(this, (JavaNumberQuantity<Q>) that).divide(that);
-		}
-		return new ShortQuantity((short) (value / that.getValue().shortValue()), getUnit().divide(that.getUnit()));
-	}
+  @Override
+  public ComparableQuantity<?> inverse() {
+    return NumberQuantity.of(1 / value, getUnit().inverse());
+  }
 
-	@Override
-	public ComparableQuantity<Q> divide(Number that) {
-		return NumberQuantity.of(value / that.shortValue(), getUnit());
-	}
+  @Override
+  public boolean isDecimal() {
+    return false;
+  }
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	@Override
-	public ComparableQuantity<?> multiply(Quantity<?> multiplier) {
-		if (NumberQuantity.canWiden(this, multiplier)) {
-			return NumberQuantity.widen(this, (JavaNumberQuantity<Q>) multiplier).multiply(multiplier);
-		}
-		final double product = getValue().doubleValue() * multiplier.getValue().doubleValue();
-		if (isOverflowing(product)) {
-			throw new ArithmeticException();
-		} else {
-			return new ShortQuantity((short) (value * multiplier.getValue().shortValue()),
-					getUnit().multiply(multiplier.getUnit()));
-		}
-	}
+  @Override
+  public int getSize() {
+    return Short.SIZE;
+  }
 
-	@Override
-	public ComparableQuantity<Q> multiply(Number multiplier) {
-		final double product = getValue().doubleValue() * multiplier.doubleValue();
-		if (isOverflowing(product)) {
-			throw new ArithmeticException();
-		} else {
-			return NumberQuantity.of(value * multiplier.shortValue(), getUnit());
-		}
-	}
+  @Override
+  public Class<?> getNumberType() {
+    return short.class;
+  }
 
-	@Override
-	public ComparableQuantity<?> inverse() {
-		return NumberQuantity.of(1 / value, getUnit().inverse());
-	}
+  @Override
+  boolean isOverflowing(BigDecimal value) {
+    return value.compareTo(SHORT_MIN_VALUE) < 0 || value.compareTo(SHORT_MAX_VALUE) > 0;
+  }
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj instanceof Quantity<?>) {
-			Quantity<?> that = (Quantity<?>) obj;
-			return Objects.equals(getUnit(), that.getUnit()) && Equalizer.hasEquality(value, that.getValue());
-		}
-		return false;
-	}
+  @Override
+  public Quantity<Q> negate() {
+    return new ShortQuantity<>((short) (-value), getUnit());
+  }
 
-	@Override
-	public boolean isDecimal() {
-		return false;
-	}
-
-	@Override
-	public int getSize() {
-		return Short.SIZE;
-	}
-
-	@Override
-	public Class<?> getNumberType() {
-		return short.class;
-	}
-
-	@Override
-	public Quantity<Q> negate() {
-		return new ShortQuantity<>((short) (-value), getUnit());
-	}
+  @Override
+  Number castFromBigDecimal(BigDecimal value) {
+    return (short) value.longValue();
+  }
 }
