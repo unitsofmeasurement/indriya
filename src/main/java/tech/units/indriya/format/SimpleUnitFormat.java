@@ -80,7 +80,7 @@ import tech.units.indriya.unit.Units;
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
  * @author Eric Russell
- * @version 1.4.1, July 10, 2018
+ * @version 1.5, August 8, 2018
  * @since 1.0
  */
 public abstract class SimpleUnitFormat extends AbstractUnitFormat {
@@ -804,7 +804,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
     }
 
     @Override
-    protected Unit<?> parse(CharSequence csq, ParsePosition cursor) throws IllegalArgumentException {
+    public Unit<?> parse(CharSequence csq, ParsePosition cursor) throws IllegalArgumentException {
       return parseObject(csq.toString(), cursor);
     }
   }
