@@ -553,7 +553,7 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
 	 * @return the result of raising this unit to the exponent.
 	 */
 	@Override
-	public final Unit<?> pow(int n) {
+	public Unit<?> pow(int n) {
 		if (n > 0)
 			return this.multiply(this.pow(n - 1));
 		else if (n == 0)

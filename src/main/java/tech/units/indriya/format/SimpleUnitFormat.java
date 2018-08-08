@@ -719,6 +719,16 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
 
       // Product unit.
       ProductUnit<?> productUnit = (ProductUnit<?>) unit;
+
+      // Special case: self-powered product unit
+      if (productUnit.getUnitCount() == 1 && productUnit.getUnit(0) instanceof ProductUnit) {
+          final ProductUnit<?> powerUnit = (ProductUnit<?>) productUnit.getUnit(0);
+          // is the sub-unit known under a given label?
+          if (nameFor(powerUnit) == null)
+              // apply the power to the sub-units and format those instead
+              return format(ProductUnit.ofPow(powerUnit, productUnit.getUnitPow(0)), appendable);
+      }
+
       int invNbr = 0;
 
       // Write positive exponents first.

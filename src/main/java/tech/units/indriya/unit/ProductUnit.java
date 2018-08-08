@@ -211,6 +211,11 @@ public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
     return getInstance(unitElems, new Element[0]);
   }
 
+  @Override
+  public Unit<?> pow(int n) {
+      return new ProductUnit<>(new Element[] { new Element(this, n, 1) });
+  }
+
   /**
    * Returns the number of unit elements in this product.
    *
