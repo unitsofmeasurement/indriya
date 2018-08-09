@@ -205,6 +205,32 @@ public class BigIntegerQuantityTest {
   }
 
   /**
+   * Verifies that longValue can handle Long.MAX_VALUE.
+   */
+  @Test
+  public void longValueReturnsLongMaxValue() {
+    assertEquals(Long.MAX_VALUE, new BigIntegerQuantity<ElectricResistance>(BigInteger.valueOf(Long.MAX_VALUE), Units.OHM).longValue(Units.OHM));
+  }
+
+  /**
+   * Verifies that longValue can handle Long.MIN_VALUE.
+   */
+  @Test
+  public void longValueReturnsLongMinValue() {
+    assertEquals(Long.MIN_VALUE, new BigIntegerQuantity<ElectricResistance>(BigInteger.valueOf(Long.MIN_VALUE), Units.OHM).longValue(Units.OHM));
+  }
+
+  /**
+   * Verifies longValue throws an exception if the value is larger than Long.MAX_VALUE.
+   */
+  @Test
+  public void longValueThrowsExceptionOnPositiveOverflow() {
+    assertThrows(ArithmeticException.class, () -> {
+      new BigIntegerQuantity<ElectricResistance>(BigInteger.valueOf(Long.MAX_VALUE).add(BigInteger.ONE), Units.OHM).longValue(Units.OHM);
+    });
+  }
+
+  /**
    * Verifies that the value is correctly converted if longValue is called with the quantity's unit.
    */
   @Test
@@ -213,10 +239,20 @@ public class BigIntegerQuantityTest {
   }
 
   /**
+   * Verifies longValue throws an exception if the value is smaller than Long.MIN_VALUE.
+   */
+  @Test
+  public void longValueThrowsExceptionOnNegativeOverflow() {
+    assertThrows(ArithmeticException.class, () -> {
+      new BigIntegerQuantity<ElectricResistance>(BigInteger.valueOf(Long.MIN_VALUE).subtract(BigInteger.ONE), Units.OHM).longValue(Units.OHM);
+    });
+  }
+
+  /**
    * Verifies that an exception is thrown if the conversion for longValue results in a positive overflow.
    */
   @Test
-  public void longValueThrowsExceptionOnPositiveOverflow() {
+  public void longValueThrowsExceptionOnPositiveOverflowAfterConversion() {
     assertThrows(ArithmeticException.class, () -> {
       createQuantity(Long.MAX_VALUE / 10L + 117L, MetricPrefix.DEKA(Units.OHM)).longValue(Units.OHM);
     });
@@ -226,7 +262,7 @@ public class BigIntegerQuantityTest {
    * Verifies that an exception is thrown if the conversion for longValue results in a negative overflow.
    */
   @Test
-  public void longValueThrowsExceptionOnNegativeOverflow() {
+  public void longValueThrowsExceptionOnNegativeOverflowAfterConversion() {
     assertThrows(ArithmeticException.class, () -> {
       createQuantity(Long.MIN_VALUE / 10L - 117L, MetricPrefix.DEKA(Units.OHM)).longValue(Units.OHM);
     });
@@ -398,7 +434,7 @@ public class BigIntegerQuantityTest {
   public void divisionWithFloatQuantityWidensToFloatQuantity() {
     assertEquals(FloatQuantity.class, ONE_OHM.divide(ONE_FLOAT_OHM).getClass());
   }
-  
+
   /**
    * Tests negate() of BigIntegerQuantity.
    */
