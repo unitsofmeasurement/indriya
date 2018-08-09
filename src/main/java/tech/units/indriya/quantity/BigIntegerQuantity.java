@@ -37,7 +37,6 @@ import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.UnitConverter;
 
-import tech.units.indriya.AbstractConverter;
 import tech.units.indriya.AbstractQuantity;
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.function.Calculus;
@@ -86,22 +85,6 @@ final class BigIntegerQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity
   }
 
   @Override
-  public BigDecimal decimalValue(Unit<Q> unit) throws ArithmeticException {
-    if (getUnit().equals(unit)) {
-      return new BigDecimal(value);
-    } else {
-      final Number converted = ((AbstractConverter) getUnit().getConverterTo(unit)).convert(value);
-      if (converted instanceof BigDecimal) {
-        return (BigDecimal) converted;
-      } else if (converted instanceof BigInteger) {
-        return new BigDecimal((BigInteger) converted);
-      } else {
-        return BigDecimal.valueOf(converted.doubleValue());
-      }
-    }
-  }
-
-  @Override
   public ComparableQuantity<Q> add(Quantity<Q> that) {
     if (canWidenTo(that)) {
       return widenTo((JavaNumberQuantity<Q>) that).add(that);
@@ -135,16 +118,6 @@ final class BigIntegerQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity
     return Quantities.getQuantity(sumValue, pickedUnit);
   }
 
-  @Override
-  public ComparableQuantity<Q> multiply(Number that) {
-    return Quantities.getQuantity(value.multiply(Calculus.toBigInteger(that)), getUnit());
-  }
-
-  @Override
-  public ComparableQuantity<Q> divide(Number that) {
-    return Quantities.getQuantity(value.divide(Calculus.toBigDecimal(that).toBigInteger()), getUnit());
-  }
-
   @SuppressWarnings({ "unchecked" })
   @Override
   public ComparableQuantity<Q> inverse() {
@@ -170,7 +143,7 @@ final class BigIntegerQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity
   public Class<?> getNumberType() {
     return BigInteger.class;
   }
-  
+
   @Override
   Number castFromBigDecimal(BigDecimal value) {
     return value.toBigInteger();

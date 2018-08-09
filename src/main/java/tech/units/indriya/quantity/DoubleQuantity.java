@@ -37,7 +37,6 @@ import javax.measure.Unit;
 
 import tech.units.indriya.AbstractQuantity;
 import tech.units.indriya.ComparableQuantity;
-import tech.units.indriya.function.Calculus;
 
 /**
  * An amount of quantity, implementation of {@link ComparableQuantity} that uses {@link Double} as implementation of {@link Number}, this object is
@@ -74,12 +73,6 @@ final class DoubleQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> 
     return value;
   }
 
-  @Override
-  public BigDecimal decimalValue(Unit<Q> unit) throws ArithmeticException {
-    final BigDecimal decimal = BigDecimal.valueOf(value);
-    return Calculus.toBigDecimal(getUnit().getConverterTo(unit).convert(decimal));
-  }
-
   private ComparableQuantity<Q> addRaw(Number a, Number b, Unit<Q> unit) {
     return NumberQuantity.of(a.doubleValue() + b.doubleValue(), unit);
   }
@@ -101,26 +94,6 @@ final class DoubleQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> 
       return resultInThatUnit;
     } else {
       return resultInThisUnit;
-    }
-  }
-
-  @Override
-  public ComparableQuantity<Q> multiply(Number that) {
-    final double product = value * that.doubleValue();
-    if (Double.isInfinite(product)) {
-      throw new ArithmeticException();
-    } else {
-      return new DoubleQuantity<Q>(product, getUnit());
-    }
-  }
-
-  @Override
-  public ComparableQuantity<Q> divide(Number that) {
-    final double quotient = value / that.doubleValue();
-    if (Double.isInfinite(quotient)) {
-      throw new ArithmeticException();
-    } else {
-      return new DoubleQuantity<Q>(quotient, getUnit());
     }
   }
 

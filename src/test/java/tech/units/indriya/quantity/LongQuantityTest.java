@@ -61,7 +61,8 @@ public class LongQuantityTest {
   private final LongQuantity<ElectricResistance> ONE_MILLIOHM = createQuantity(1L, MetricPrefix.MILLI(Units.OHM));
   private final LongQuantity<ElectricResistance> ONE_KILOOHM = createQuantity(1L, MetricPrefix.KILO(Units.OHM));
   private final LongQuantity<ElectricResistance> ONE_YOTTAOHM = createQuantity(1L, MetricPrefix.YOTTA(Units.OHM));
-  private static final BigIntegerQuantity<ElectricResistance> ONE_BIG_INTEGER_OHM = new BigIntegerQuantity<ElectricResistance>(BigInteger.ONE, Units.OHM);
+  private static final BigIntegerQuantity<ElectricResistance> ONE_BIG_INTEGER_OHM = new BigIntegerQuantity<ElectricResistance>(BigInteger.ONE,
+      Units.OHM);
 
   private <Q extends Quantity<Q>> LongQuantity<Q> createQuantity(long l, Unit<Q> unit) {
     return new LongQuantity<Q>(Long.valueOf(l).longValue(), unit);
@@ -367,7 +368,7 @@ public class LongQuantityTest {
    */
   @Test
   public void decimalValueReturnsValueForSameUnit() {
-    assertEquals(BigDecimal.valueOf(1.0), ONE_OHM.decimalValue(Units.OHM));
+    assertEquals(BigDecimal.valueOf(1), ONE_OHM.decimalValue(Units.OHM));
   }
 
   /**
@@ -413,7 +414,7 @@ public class LongQuantityTest {
       createQuantity(Long.MIN_VALUE / 10L - 117L, MetricPrefix.DEKA(Units.OHM)).longValue(Units.OHM);
     });
   }
-  
+
   /**
    * Verifies that addition with LongQuantity returns a LongQuantity.
    */
@@ -489,7 +490,7 @@ public class LongQuantityTest {
     assertEquals(dayResult.getValue().intValue(), day.getValue().intValue());
     assertEquals(dayResult.getValue().intValue(), day.getValue().intValue());
   }
-  
+
   /**
    * Tests negate()
    */

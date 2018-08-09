@@ -72,11 +72,6 @@ final class ShortQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
     return false;
   }
 
-  @Override
-  public BigDecimal decimalValue(Unit<Q> unit) {
-    return BigDecimal.valueOf(doubleValue(unit));
-  }
-
   private boolean isOverflowing(double value) {
     return value < Short.MIN_VALUE || value > Short.MAX_VALUE;
   }
@@ -108,21 +103,6 @@ final class ShortQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
       return resultInThatUnit;
     } else {
       return resultInThisUnit;
-    }
-  }
-
-  @Override
-  public ComparableQuantity<Q> divide(Number that) {
-    return NumberQuantity.of(value / that.shortValue(), getUnit());
-  }
-
-  @Override
-  public ComparableQuantity<Q> multiply(Number multiplier) {
-    final double product = getValue().doubleValue() * multiplier.doubleValue();
-    if (isOverflowing(product)) {
-      throw new ArithmeticException();
-    } else {
-      return NumberQuantity.of(value * multiplier.shortValue(), getUnit());
     }
   }
 

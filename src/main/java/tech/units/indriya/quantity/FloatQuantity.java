@@ -36,7 +36,6 @@ import javax.measure.Unit;
 
 import tech.units.indriya.AbstractQuantity;
 import tech.units.indriya.ComparableQuantity;
-import tech.units.indriya.function.Calculus;
 
 /**
  * An amount of quantity, consisting of a float and a Unit. FloatQuantity objects are immutable.
@@ -93,40 +92,14 @@ final class FloatQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
     }
   }
 
-  @Override
-  public ComparableQuantity<Q> multiply(Number that) {
-    final float product = value * that.floatValue();
-    if (Float.isInfinite(product)) {
-      throw new ArithmeticException();
-    } else {
-      return new FloatQuantity<Q>(product, getUnit());
-    }
-  }
-
   @SuppressWarnings({ "unchecked", "rawtypes" })
   public ComparableQuantity<Q> inverse() {
     return (AbstractQuantity<Q>) new FloatQuantity(1f / value, getUnit().inverse());
   }
 
   @Override
-  public ComparableQuantity<Q> divide(Number that) {
-    final float quotient = value / that.floatValue();
-    if (Float.isInfinite(quotient)) {
-      throw new ArithmeticException();
-    } else {
-      return new FloatQuantity<Q>(quotient, getUnit());
-    }
-  }
-
-  @Override
   public boolean isBig() {
     return false;
-  }
-
-  @Override
-  public BigDecimal decimalValue(Unit<Q> unit) throws ArithmeticException {
-    final BigDecimal decimal = BigDecimal.valueOf(value);
-    return Calculus.toBigDecimal(getUnit().getConverterTo(unit).convert(decimal));
   }
 
   @Override
@@ -143,7 +116,7 @@ final class FloatQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
   public Class<?> getNumberType() {
     return float.class;
   }
-  
+
   @Override
   Number castFromBigDecimal(BigDecimal value) {
     return (float) value.doubleValue();

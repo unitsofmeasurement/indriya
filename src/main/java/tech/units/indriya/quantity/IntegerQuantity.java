@@ -107,33 +107,14 @@ final class IntegerQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q>
     }
   }
 
-  @SuppressWarnings({ "unchecked", "rawtypes" })
-  public ComparableQuantity<Q> multiply(Number that) {
-    final double product = getValue().doubleValue() * that.doubleValue();
-    if (isOverflowing(product)) {
-      throw new ArithmeticException();
-    } else {
-      return new IntegerQuantity(value * that.intValue(), getUnit());
-    }
-  }
-
   @SuppressWarnings("unchecked")
   public AbstractQuantity<Q> inverse() {
     return (AbstractQuantity<Q>) NumberQuantity.of(1 / value, getUnit().inverse());
   }
 
-  public ComparableQuantity<Q> divide(Number that) {
-    return NumberQuantity.of(value / that.doubleValue(), getUnit());
-  }
-
   @Override
   public boolean isBig() {
     return false;
-  }
-
-  @Override
-  public BigDecimal decimalValue(Unit<Q> unit) throws ArithmeticException {
-    return BigDecimal.valueOf(doubleValue(unit));
   }
 
   @Override

@@ -103,32 +103,14 @@ final class LongQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
     }
   }
 
-  public ComparableQuantity<Q> multiply(Number that) {
-    final BigDecimal product = new BigDecimal(getValue()).multiply(new BigDecimal(that.longValue()));
-    if (isOverflowing(product)) {
-      throw new ArithmeticException();
-    } else {
-      return NumberQuantity.of(product.longValue(), getUnit());
-    }
-  }
-
   @SuppressWarnings({ "rawtypes", "unchecked" })
   public ComparableQuantity<Q> inverse() {
     return (AbstractQuantity<Q>) new LongQuantity(1 / value, getUnit().inverse());
   }
 
-  public ComparableQuantity<Q> divide(Number that) {
-    return NumberQuantity.of(value / that.doubleValue(), getUnit());
-  }
-
   @Override
   public boolean isBig() {
     return false;
-  }
-
-  @Override
-  public BigDecimal decimalValue(Unit<Q> unit) {
-    return BigDecimal.valueOf(doubleValue(unit));
   }
 
   @Override

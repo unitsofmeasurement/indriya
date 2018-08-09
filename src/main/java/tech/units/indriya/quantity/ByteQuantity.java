@@ -72,11 +72,6 @@ final class ByteQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
     return false;
   }
 
-  @Override
-  public BigDecimal decimalValue(Unit<Q> unit) {
-    return BigDecimal.valueOf(doubleValue(unit));
-  }
-
   private boolean isOverflowing(double value) {
     return value < Byte.MIN_VALUE || value > Byte.MAX_VALUE;
   }
@@ -113,23 +108,6 @@ final class ByteQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
       return resultInThatUnit;
     } else {
       return resultInThisUnit;
-    }
-  }
-
-  @SuppressWarnings({ "unchecked", "rawtypes" })
-  @Override
-  public ComparableQuantity<Q> divide(Number that) {
-    return new ByteQuantity((byte) (value / that.byteValue()), getUnit());
-  }
-
-  @SuppressWarnings({ "unchecked", "rawtypes" })
-  @Override
-  public ComparableQuantity<Q> multiply(Number multiplier) {
-    final double product = getValue().doubleValue() * multiplier.doubleValue();
-    if (isOverflowing(product)) {
-      throw new ArithmeticException();
-    } else {
-      return new ByteQuantity((byte) (value * multiplier.byteValue()), getUnit());
     }
   }
 

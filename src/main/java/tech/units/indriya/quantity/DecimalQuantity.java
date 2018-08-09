@@ -77,27 +77,12 @@ final class DecimalQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q>
   }
 
   @Override
-  public BigDecimal decimalValue(Unit<Q> unit) throws ArithmeticException {
-    return Calculus.toBigDecimal(super.getUnit().getConverterTo(unit).convert(value));
-  }
-
-  @Override
   public ComparableQuantity<Q> add(Quantity<Q> that) {
     if (getUnit().equals(that.getUnit())) {
       return Quantities.getQuantity(value.add(Calculus.toBigDecimal(that.getValue()), Calculus.MATH_CONTEXT), getUnit());
     }
     Quantity<Q> converted = that.to(getUnit());
     return Quantities.getQuantity(value.add(Calculus.toBigDecimal(converted.getValue())), getUnit());
-  }
-
-  @Override
-  public ComparableQuantity<Q> multiply(Number that) {
-    return Quantities.getQuantity(value.multiply(Calculus.toBigDecimal(that), Calculus.MATH_CONTEXT), getUnit());
-  }
-
-  @Override
-  public ComparableQuantity<Q> divide(Number that) {
-    return Quantities.getQuantity(value.divide(Calculus.toBigDecimal(that), Calculus.MATH_CONTEXT), getUnit());
   }
 
   @SuppressWarnings("unchecked")
