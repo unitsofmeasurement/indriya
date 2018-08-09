@@ -53,7 +53,6 @@ final class FloatQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
 
   private static final long serialVersionUID = 5992028803791009345L;
 
-  private static final BigDecimal FLOAT_MIN_VALUE = new BigDecimal(Float.MIN_VALUE);
   private static final BigDecimal FLOAT_MAX_VALUE = new BigDecimal(Float.MAX_VALUE);
 
   final float value;
@@ -66,30 +65,6 @@ final class FloatQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
   @Override
   public Float getValue() {
     return value;
-  }
-
-  @SuppressWarnings({ "rawtypes", "unchecked" })
-  private ComparableQuantity<Q> addRaw(Number a, Number b, Unit<Q> unit) {
-    return new FloatQuantity(a.floatValue() + b.floatValue(), unit);
-  }
-
-  public ComparableQuantity<Q> add(Quantity<Q> that) {
-    if (canWidenTo(that)) {
-      return widenTo((JavaNumberQuantity<Q>) that).add(that);
-    }
-    final Quantity<Q> thatConverted = that.to(getUnit());
-    final Quantity<Q> thisConverted = this.to(that.getUnit());
-    final float resultValueInThisUnit = getValue().floatValue() + thatConverted.getValue().floatValue();
-    final float resultValueInThatUnit = thisConverted.getValue().floatValue() + that.getValue().floatValue();
-    final ComparableQuantity<Q> resultInThisUnit = addRaw(getValue(), thatConverted.getValue(), getUnit());
-    final ComparableQuantity<Q> resultInThatUnit = addRaw(thisConverted.getValue(), that.getValue(), that.getUnit());
-    if (Float.isInfinite(resultValueInThisUnit) && Float.isInfinite(resultValueInThatUnit)) {
-      throw new ArithmeticException();
-    } else if (Float.isInfinite(resultValueInThisUnit)) {
-      return resultInThatUnit;
-    } else {
-      return resultInThisUnit;
-    }
   }
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
@@ -124,7 +99,7 @@ final class FloatQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
 
   @Override
   boolean isOverflowing(BigDecimal value) {
-    return value.compareTo(FLOAT_MIN_VALUE) < 0 || value.compareTo(FLOAT_MAX_VALUE) > 0;
+    return value.compareTo(FLOAT_MAX_VALUE.negate()) < 0 || value.compareTo(FLOAT_MAX_VALUE) > 0;
   }
 
   @Override

@@ -38,7 +38,6 @@ import javax.measure.Unit;
 
 import tech.units.indriya.AbstractQuantity;
 import tech.units.indriya.ComparableQuantity;
-import tech.units.indriya.function.Calculus;
 
 /**
  * An amount of quantity, implementation of {@link ComparableQuantity} that uses {@link BigDecimal} as implementation of {@link Number}, this object
@@ -74,15 +73,6 @@ final class DecimalQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q>
   @Override
   public BigDecimal getValue() {
     return value;
-  }
-
-  @Override
-  public ComparableQuantity<Q> add(Quantity<Q> that) {
-    if (getUnit().equals(that.getUnit())) {
-      return Quantities.getQuantity(value.add(Calculus.toBigDecimal(that.getValue()), Calculus.MATH_CONTEXT), getUnit());
-    }
-    Quantity<Q> converted = that.to(getUnit());
-    return Quantities.getQuantity(value.add(Calculus.toBigDecimal(converted.getValue())), getUnit());
   }
 
   @SuppressWarnings("unchecked")

@@ -283,7 +283,7 @@ public class FloatQuantityTest {
     assertEquals(dayResult.getValue(), day.getValue());
     assertEquals(dayResult.getUnit(), day.getUnit());
   }
-  
+
   /**
    * Tests negate()
    */

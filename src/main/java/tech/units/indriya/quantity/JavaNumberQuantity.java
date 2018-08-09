@@ -136,6 +136,34 @@ abstract class JavaNumberQuantity<Q extends Quantity<Q>> extends AbstractQuantit
   }
 
   @Override
+  public ComparableQuantity<Q> add(Quantity<Q> that) {
+    if (canWidenTo(that)) {
+      return widenTo((JavaNumberQuantity<Q>) that).add(that);
+    }
+    final BigDecimal thisValueInThisUnit = decimalValue(getUnit());
+    final BigDecimal thatValueInThisUnit = convertedQuantityValueAsBigDecimal(that, this.getUnit());
+    final BigDecimal thisValueInThatUnit = decimalValue(that.getUnit());
+    final BigDecimal thatValueInThatUnit = quantityValueAsBigDecimal(that);
+    final BigDecimal resultValueInThisUnit = thisValueInThisUnit.add(thatValueInThisUnit, Calculus.MATH_CONTEXT);
+    final BigDecimal resultValueInThatUnit = thisValueInThatUnit.add(thatValueInThatUnit, Calculus.MATH_CONTEXT);
+    final ComparableQuantity<Q> resultInThisUnit = createTypedQuantity(getNumberType(), castFromBigDecimal(resultValueInThisUnit), getUnit());
+    final ComparableQuantity<Q> resultInThatUnit = createTypedQuantity(getNumberType(), castFromBigDecimal(resultValueInThatUnit), that.getUnit());
+    if (isOverflowing(resultValueInThisUnit)) {
+      if (isOverflowing(resultValueInThatUnit)) {
+        throw new ArithmeticException();
+      } else {
+        return resultInThatUnit;
+      }
+    } else if (isOverflowing(resultValueInThatUnit)) {
+      return resultInThisUnit;
+    } else if (!isDecimal() && hasFraction(resultValueInThisUnit)) {
+      return resultInThatUnit;
+    } else {
+      return resultInThisUnit;
+    }
+  }
+
+  @Override
   public ComparableQuantity<Q> subtract(Quantity<Q> that) {
     return add(that.negate());
   }
@@ -193,12 +221,16 @@ abstract class JavaNumberQuantity<Q extends Quantity<Q>> extends AbstractQuantit
     return applyMultiplicativeNumberOperation(that, BigDecimal::divide);
   }
 
+  private <R extends Quantity<R>> BigDecimal quantityValueAsBigDecimal(Quantity<R> that) {
+    return convertedQuantityValueAsBigDecimal(that, that.getUnit());
+  }
+
   @SuppressWarnings({ "unchecked", "rawtypes" })
-  private BigDecimal quantityValueAsBigDecimal(Quantity<?> that) {
+  private <R extends Quantity<R>> BigDecimal convertedQuantityValueAsBigDecimal(Quantity<R> that, Unit<R> unit) {
     if (that instanceof JavaNumberQuantity) {
-      return ((JavaNumberQuantity) that).decimalValue(that.getUnit());
+      return ((JavaNumberQuantity) that).decimalValue(unit);
     } else {
-      return new BigDecimal(that.getValue().doubleValue());
+      return (BigDecimal) that.getUnit().getConverterTo(unit).convert(numberAsBigDecimal(that.getValue()));
     }
   }
 
@@ -207,8 +239,10 @@ abstract class JavaNumberQuantity<Q extends Quantity<Q>> extends AbstractQuantit
       return (BigDecimal) that;
     } else if (that instanceof BigInteger) {
       return new BigDecimal((BigInteger) that);
-    } else {
+    } else if (that instanceof Double || that instanceof Float) {
       return new BigDecimal(that.doubleValue());
+    } else {
+      return new BigDecimal(that.longValue());
     }
   }
 

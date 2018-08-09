@@ -111,8 +111,9 @@ public class DoubleQuantityTest {
    */
   @Test
   public void additionWithLargerOverflowingMultipleCastsToLargerMultiple() {
-    Quantity<ElectricResistance> actual = ONE_MILLIOHM.add(MAX_VALUE_OHM);
-    assertEquals(MAX_VALUE_OHM, actual);
+    Quantity<ElectricResistance> largeValueOhm = MAX_VALUE_OHM.divide(2);
+    Quantity<ElectricResistance> actual = ONE_MILLIOHM.add(largeValueOhm);
+    assertEquals(largeValueOhm, actual);
   }
 
   /**
@@ -466,7 +467,7 @@ public class DoubleQuantityTest {
     assertEquals(dayResult.getValue().intValue(), day.getValue().intValue());
     assertEquals(dayResult.getValue().intValue(), day.getValue().intValue());
   }
-  
+
   /**
    * Tests negate()
    */

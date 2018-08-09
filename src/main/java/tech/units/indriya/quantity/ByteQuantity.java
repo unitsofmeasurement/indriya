@@ -72,43 +72,9 @@ final class ByteQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
     return false;
   }
 
-  private boolean isOverflowing(double value) {
-    return value < Byte.MIN_VALUE || value > Byte.MAX_VALUE;
-  }
-
   @Override
   boolean isOverflowing(BigDecimal value) {
     return value.compareTo(BYTE_MIN_VALUE) < 0 || value.compareTo(BYTE_MAX_VALUE) > 0;
-  }
-
-  private ComparableQuantity<Q> addRaw(Number a, Number b, Unit<Q> unit) {
-    return new ByteQuantity<Q>((byte) (a.byteValue() + b.byteValue()), unit);
-  }
-
-  @Override
-  public ComparableQuantity<Q> add(Quantity<Q> that) {
-    if (canWidenTo(that)) {
-      return widenTo((JavaNumberQuantity<Q>) that).add(that);
-    }
-    final Quantity<Q> thatConverted = that.to(getUnit());
-    final Quantity<Q> thisConverted = this.to(that.getUnit());
-    final double resultValueInThisUnit = getValue().doubleValue() + thatConverted.getValue().doubleValue();
-    final double resultValueInThatUnit = thisConverted.getValue().doubleValue() + that.getValue().doubleValue();
-    final ComparableQuantity<Q> resultInThisUnit = addRaw(getValue(), thatConverted.getValue(), getUnit());
-    final ComparableQuantity<Q> resultInThatUnit = addRaw(thisConverted.getValue(), that.getValue(), that.getUnit());
-    if (isOverflowing(resultValueInThisUnit)) {
-      if (isOverflowing(resultValueInThatUnit)) {
-        throw new ArithmeticException();
-      } else {
-        return resultInThatUnit;
-      }
-    } else if (isOverflowing(resultValueInThatUnit)) {
-      return resultInThisUnit;
-    } else if (hasFraction(resultValueInThisUnit)) {
-      return resultInThatUnit;
-    } else {
-      return resultInThisUnit;
-    }
   }
 
   @Override

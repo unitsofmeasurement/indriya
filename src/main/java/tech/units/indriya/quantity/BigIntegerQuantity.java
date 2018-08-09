@@ -35,11 +35,9 @@ import java.math.BigInteger;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;
-import javax.measure.UnitConverter;
 
 import tech.units.indriya.AbstractQuantity;
 import tech.units.indriya.ComparableQuantity;
-import tech.units.indriya.function.Calculus;
 
 /**
  * An amount of quantity, implementation of {@link ComparableQuantity} that uses {@link BigInteger} as implementation of {@link Number}, this object
@@ -82,40 +80,6 @@ final class BigIntegerQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity
   @Override
   public BigInteger getValue() {
     return value;
-  }
-
-  @Override
-  public ComparableQuantity<Q> add(Quantity<Q> that) {
-    if (canWidenTo(that)) {
-      return widenTo((JavaNumberQuantity<Q>) that).add(that);
-    }
-    if (getUnit().equals(that.getUnit())) {
-      return new BigIntegerQuantity<Q>(value.add(Calculus.toBigInteger(that.getValue())), getUnit());
-    }
-    // we need to decide which of the 2 units to pick for the result
-    // 1) this.getUnit()
-    // 2) that.getUnit()
-    // we pick the one, that yields higher precision
-
-    final UnitConverter thisUnitToThatUnitConverter = this.getUnit().getConverterTo(that.getUnit());
-
-    boolean thisUnitLargerThanThatUnit = Math.abs(thisUnitToThatUnitConverter.convert(1.0)) > 1.0;
-
-    final Unit<Q> pickedUnit;
-    final BigInteger sumValue;
-
-    if (thisUnitLargerThanThatUnit) {
-      pickedUnit = that.getUnit();
-      BigInteger thisValueConverted = Calculus.toBigInteger(thisUnitToThatUnitConverter.convert(getValue()));
-      sumValue = Calculus.toBigInteger(that.getValue()).add(thisValueConverted);
-    } else {
-      pickedUnit = this.getUnit();
-      UnitConverter thatUnitToThisUnitConverter = that.getUnit().getConverterTo(this.getUnit());
-      BigInteger thatValueConverted = Calculus.toBigInteger(thatUnitToThisUnitConverter.convert(that.getValue()));
-      sumValue = value.add(thatValueConverted);
-    }
-
-    return Quantities.getQuantity(sumValue, pickedUnit);
   }
 
   @SuppressWarnings({ "unchecked" })

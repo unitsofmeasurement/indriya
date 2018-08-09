@@ -73,37 +73,6 @@ final class LongQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
   }
 
   @SuppressWarnings({ "rawtypes", "unchecked" })
-  private ComparableQuantity<Q> addRaw(Number a, Number b, Unit<Q> unit) {
-    return new LongQuantity(a.longValue() + b.longValue(), unit);
-  }
-
-  public ComparableQuantity<Q> add(Quantity<Q> that) {
-    if (canWidenTo(that)) {
-      return widenTo((JavaNumberQuantity<Q>) that).add(that);
-    }
-    final Quantity<Q> thatConverted = that.to(getUnit());
-    final Quantity<Q> thisConverted = this.to(that.getUnit());
-    final BigDecimal resultValueInThisUnit = new BigDecimal(getValue()).add(new BigDecimal(thatConverted.getValue().doubleValue()));
-    final BigDecimal resultValueInThatUnit = new BigDecimal(thisConverted.getValue().doubleValue())
-        .add(new BigDecimal(that.getValue().doubleValue()));
-    final ComparableQuantity<Q> resultInThisUnit = addRaw(getValue(), thatConverted.getValue(), getUnit());
-    final ComparableQuantity<Q> resultInThatUnit = addRaw(thisConverted.getValue(), that.getValue(), that.getUnit());
-    if (isOverflowing(resultValueInThisUnit)) {
-      if (isOverflowing(resultValueInThatUnit)) {
-        throw new ArithmeticException();
-      } else {
-        return resultInThatUnit;
-      }
-    } else if (isOverflowing(resultValueInThatUnit)) {
-      return resultInThisUnit;
-    } else if (hasFraction(resultValueInThisUnit)) {
-      return resultInThatUnit;
-    } else {
-      return resultInThisUnit;
-    }
-  }
-
-  @SuppressWarnings({ "rawtypes", "unchecked" })
   public ComparableQuantity<Q> inverse() {
     return (AbstractQuantity<Q>) new LongQuantity(1 / value, getUnit().inverse());
   }

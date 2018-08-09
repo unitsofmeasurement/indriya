@@ -35,7 +35,6 @@ import javax.measure.Quantity;
 import javax.measure.Unit;
 
 import tech.units.indriya.AbstractQuantity;
-import tech.units.indriya.ComparableQuantity;
 
 /**
  * An amount of quantity, consisting of an integer and a Unit. IntegerQuantity objects are immutable.
@@ -68,43 +67,9 @@ final class IntegerQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q>
     return value;
   }
 
-  private boolean isOverflowing(double value) {
-    return value < Integer.MIN_VALUE || value > Integer.MAX_VALUE;
-  }
-
   @Override
   boolean isOverflowing(BigDecimal value) {
     return value.compareTo(INTEGER_MIN_VALUE) < 0 || value.compareTo(INTEGER_MAX_VALUE) > 0;
-  }
-
-  @SuppressWarnings({ "unchecked", "rawtypes" })
-  private ComparableQuantity<Q> addRaw(Number a, Number b, Unit<Q> unit) {
-    return new IntegerQuantity(a.intValue() + b.intValue(), unit);
-  }
-
-  public ComparableQuantity<Q> add(Quantity<Q> that) {
-    if (canWidenTo(that)) {
-      return widenTo((JavaNumberQuantity<Q>) that).add(that);
-    }
-    final Quantity<Q> thatConverted = that.to(getUnit());
-    final Quantity<Q> thisConverted = this.to(that.getUnit());
-    final double resultValueInThisUnit = getValue().doubleValue() + thatConverted.getValue().doubleValue();
-    final double resultValueInThatUnit = thisConverted.getValue().doubleValue() + that.getValue().doubleValue();
-    final ComparableQuantity<Q> resultInThisUnit = addRaw(getValue(), thatConverted.getValue(), getUnit());
-    final ComparableQuantity<Q> resultInThatUnit = addRaw(thisConverted.getValue(), that.getValue(), that.getUnit());
-    if (isOverflowing(resultValueInThisUnit)) {
-      if (isOverflowing(resultValueInThatUnit)) {
-        throw new ArithmeticException();
-      } else {
-        return resultInThatUnit;
-      }
-    } else if (isOverflowing(resultValueInThatUnit)) {
-      return resultInThisUnit;
-    } else if (hasFraction(resultValueInThisUnit)) {
-      return resultInThatUnit;
-    } else {
-      return resultInThisUnit;
-    }
   }
 
   @SuppressWarnings("unchecked")
