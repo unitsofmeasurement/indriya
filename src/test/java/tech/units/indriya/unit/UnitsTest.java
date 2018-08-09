@@ -249,7 +249,7 @@ public class UnitsTest {
   @Test
   public void testPow() {
     Unit<?> result = one.pow(10);
-    assertEquals(result, one);
+    assertEquals("one^10", result.toString());
   }
 
   @Test
