@@ -51,7 +51,7 @@ import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.quantity.ShortQuantity;
 import tech.units.indriya.unit.Units;
 
-public class ShortQuantityTest { 
+public class ShortQuantityTest {
 
   private static final Unit<?> SQUARE_OHM = Units.OHM.multiply(Units.OHM);
   private final ShortQuantity<ElectricResistance> ONE_OHM = createQuantity((short) 1, Units.OHM);
@@ -367,7 +367,7 @@ public class ShortQuantityTest {
    */
   @Test
   public void decimalValueReturnsValueForSameUnit() {
-    assertEquals(BigDecimal.valueOf(1.0), ONE_OHM.decimalValue(Units.OHM));
+    assertEquals(BigDecimal.valueOf(1), ONE_OHM.decimalValue(Units.OHM));
   }
 
   /**
@@ -496,12 +496,12 @@ public class ShortQuantityTest {
     Quantity<Length> anotherValue = Quantities.getQuantity(Short.valueOf("1"), Units.METRE);
     assertEquals(value, anotherValue);
   }
-  
+
   /**
    * Tests negate()
    */
   @Test
   public void negateTest() {
-    assertEquals((short)-1, ONE_OHM.negate().getValue());
+    assertEquals((short) -1, ONE_OHM.negate().getValue());
   }
 }

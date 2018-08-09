@@ -367,7 +367,7 @@ public class IntegerQuantityTest {
    */
   @Test
   public void decimalValueReturnsValueForSameUnit() {
-    assertEquals(BigDecimal.valueOf(1.0), ONE_OHM.decimalValue(Units.OHM));
+    assertEquals(BigDecimal.valueOf(1), ONE_OHM.decimalValue(Units.OHM));
   }
 
   /**

@@ -35,12 +35,9 @@ import java.math.BigInteger;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;
-import javax.measure.UnitConverter;
 
-import tech.units.indriya.AbstractConverter;
 import tech.units.indriya.AbstractQuantity;
 import tech.units.indriya.ComparableQuantity;
-import tech.units.indriya.function.Calculus;
 
 /**
  * An amount of quantity, implementation of {@link ComparableQuantity} that uses {@link BigInteger} as implementation of {@link Number}, this object
@@ -85,66 +82,6 @@ final class BigIntegerQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity
     return value;
   }
 
-  @Override
-  public BigDecimal decimalValue(Unit<Q> unit) throws ArithmeticException {
-    if (getUnit().equals(unit)) {
-      return new BigDecimal(value);
-    } else {
-      final Number converted = ((AbstractConverter) getUnit().getConverterTo(unit)).convert(value);
-      if (converted instanceof BigDecimal) {
-        return (BigDecimal) converted;
-      } else if (converted instanceof BigInteger) {
-        return new BigDecimal((BigInteger) converted);
-      } else {
-        return BigDecimal.valueOf(converted.doubleValue());
-      }
-    }
-  }
-
-  @Override
-  public ComparableQuantity<Q> add(Quantity<Q> that) {
-    if (canWidenTo(that)) {
-      return widenTo((JavaNumberQuantity<Q>) that).add(that);
-    }
-    if (getUnit().equals(that.getUnit())) {
-      return new BigIntegerQuantity<Q>(value.add(Calculus.toBigInteger(that.getValue())), getUnit());
-    }
-    // we need to decide which of the 2 units to pick for the result
-    // 1) this.getUnit()
-    // 2) that.getUnit()
-    // we pick the one, that yields higher precision
-
-    final UnitConverter thisUnitToThatUnitConverter = this.getUnit().getConverterTo(that.getUnit());
-
-    boolean thisUnitLargerThanThatUnit = Math.abs(thisUnitToThatUnitConverter.convert(1.0)) > 1.0;
-
-    final Unit<Q> pickedUnit;
-    final BigInteger sumValue;
-
-    if (thisUnitLargerThanThatUnit) {
-      pickedUnit = that.getUnit();
-      BigInteger thisValueConverted = Calculus.toBigInteger(thisUnitToThatUnitConverter.convert(getValue()));
-      sumValue = Calculus.toBigInteger(that.getValue()).add(thisValueConverted);
-    } else {
-      pickedUnit = this.getUnit();
-      UnitConverter thatUnitToThisUnitConverter = that.getUnit().getConverterTo(this.getUnit());
-      BigInteger thatValueConverted = Calculus.toBigInteger(thatUnitToThisUnitConverter.convert(that.getValue()));
-      sumValue = value.add(thatValueConverted);
-    }
-
-    return Quantities.getQuantity(sumValue, pickedUnit);
-  }
-
-  @Override
-  public ComparableQuantity<Q> multiply(Number that) {
-    return Quantities.getQuantity(value.multiply(Calculus.toBigInteger(that)), getUnit());
-  }
-
-  @Override
-  public ComparableQuantity<Q> divide(Number that) {
-    return Quantities.getQuantity(value.divide(Calculus.toBigDecimal(that).toBigInteger()), getUnit());
-  }
-
   @SuppressWarnings({ "unchecked" })
   @Override
   public ComparableQuantity<Q> inverse() {
@@ -170,7 +107,7 @@ final class BigIntegerQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity
   public Class<?> getNumberType() {
     return BigInteger.class;
   }
-  
+
   @Override
   Number castFromBigDecimal(BigDecimal value) {
     return value.toBigInteger();

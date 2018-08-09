@@ -31,7 +31,6 @@ package tech.units.indriya.internal.function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -48,58 +47,57 @@ import tech.uom.lib.common.function.QuantityFunctions;
 
 public class QuantityFunctionsTemperatureTest {
 
-	private Quantity<Temperature> temp1;
-	private Quantity<Temperature> temp2;
+  private Quantity<Temperature> temp1;
+  private Quantity<Temperature> temp2;
 
-	@BeforeEach
-	public void init() {
-		final QuantityFactory<Temperature> tempFactory =  
-				ServiceProvider.current().getQuantityFactory(Temperature.class);
-		temp1 = tempFactory.create(1, Units.CELSIUS);
-		temp2 = tempFactory.create(1, Units.KELVIN);
-	}
+  @BeforeEach
+  public void init() {
+    final QuantityFactory<Temperature> tempFactory = ServiceProvider.current().getQuantityFactory(Temperature.class);
+    temp1 = tempFactory.create(1, Units.CELSIUS);
+    temp2 = tempFactory.create(1, Units.KELVIN);
+  }
 
-	@Test
-	public void testSumTemperatureC() {
-		final List<Quantity<Temperature>> temps = new ArrayList<>(getList());
-		final Quantity<Temperature> sumTemp = temps.stream().reduce(QuantityFunctions.sum(Units.CELSIUS)).get();
-		assertEquals(Units.CELSIUS, sumTemp.getUnit());
-		assertEquals(BigDecimal.valueOf(-271.15), sumTemp.getValue());
-	}
+  @Test
+  public void testSumTemperatureC() {
+    final List<Quantity<Temperature>> temps = new ArrayList<>(getList());
+    final Quantity<Temperature> sumTemp = temps.stream().reduce(QuantityFunctions.sum(Units.CELSIUS)).get();
+    assertEquals(Units.CELSIUS, sumTemp.getUnit());
+    assertEquals(-271.15, sumTemp.getValue().doubleValue(), 0.00001);
+  }
 
-	@Test
-	public void testSumTemperatureK() {
-		final List<Quantity<Temperature>> temps = new ArrayList<>(getList());
-		final Quantity<Temperature> sumTemp = temps.stream().reduce(QuantityFunctions.sum(Units.KELVIN)).get();
-		assertEquals(Units.KELVIN, sumTemp.getUnit());
-		assertEquals(Double.valueOf(275.15), sumTemp.getValue());
-	}
+  @Test
+  public void testSumTemperatureK() {
+    final List<Quantity<Temperature>> temps = new ArrayList<>(getList());
+    final Quantity<Temperature> sumTemp = temps.stream().reduce(QuantityFunctions.sum(Units.KELVIN)).get();
+    assertEquals(Units.KELVIN, sumTemp.getUnit());
+    assertEquals(Double.valueOf(275.15), sumTemp.getValue());
+  }
 
-	@Test
-	public void testSumTemperatureK2C() {
-		final List<Quantity<Temperature>> temps = new ArrayList<>(getList());
-		final Quantity<Temperature> sumTemp = temps.stream().reduce(QuantityFunctions.sum(Units.KELVIN)).get();
-		assertEquals(Units.KELVIN, sumTemp.getUnit());
-		assertEquals(2.0, sumTemp.to(Units.CELSIUS).getValue());
-	}
+  @Test
+  public void testSumTemperatureK2C() {
+    final List<Quantity<Temperature>> temps = new ArrayList<>(getList());
+    final Quantity<Temperature> sumTemp = temps.stream().reduce(QuantityFunctions.sum(Units.KELVIN)).get();
+    assertEquals(Units.KELVIN, sumTemp.getUnit());
+    assertEquals(2.0, sumTemp.to(Units.CELSIUS).getValue());
+  }
 
-	@Test
-	public void testSumTemperatureEquality() {
-		final List<Quantity<Temperature>> temps = getList();
-		final List<Quantity<Temperature>> temps2 = getList(true);
-		final Quantity<Temperature> sumTemp = temps.stream().reduce(QuantityFunctions.sum(Units.KELVIN)).get();
-		final Quantity<Temperature> sumTemp2 = temps2.stream().reduce(QuantityFunctions.sum(Units.KELVIN)).get();
-		assertEquals(sumTemp, sumTemp2);
-	}
+  @Test
+  public void testSumTemperatureEquality() {
+    final List<Quantity<Temperature>> temps = getList();
+    final List<Quantity<Temperature>> temps2 = getList(true);
+    final Quantity<Temperature> sumTemp = temps.stream().reduce(QuantityFunctions.sum(Units.KELVIN)).get();
+    final Quantity<Temperature> sumTemp2 = temps2.stream().reduce(QuantityFunctions.sum(Units.KELVIN)).get();
+    assertEquals(sumTemp.getValue().doubleValue(), sumTemp2.getValue().doubleValue(), 0.00001);
+  }
 
-	private List<Quantity<Temperature>> getList(boolean reverse) {
-		if (reverse)
-			return Arrays.asList(temp2, temp1);
-		else
-			return Arrays.asList(temp1, temp2);
-	}
+  private List<Quantity<Temperature>> getList(boolean reverse) {
+    if (reverse)
+      return Arrays.asList(temp2, temp1);
+    else
+      return Arrays.asList(temp1, temp2);
+  }
 
-	private List<Quantity<Temperature>> getList() {
-		return getList(false);
-	}
+  private List<Quantity<Temperature>> getList() {
+    return getList(false);
+  }
 }

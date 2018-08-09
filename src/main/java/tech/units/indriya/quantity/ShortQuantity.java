@@ -73,60 +73,6 @@ final class ShortQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
   }
 
   @Override
-  public BigDecimal decimalValue(Unit<Q> unit) {
-    return BigDecimal.valueOf(doubleValue(unit));
-  }
-
-  private boolean isOverflowing(double value) {
-    return value < Short.MIN_VALUE || value > Short.MAX_VALUE;
-  }
-
-  private ComparableQuantity<Q> addRaw(Number a, Number b, Unit<Q> unit) {
-    return new ShortQuantity<Q>((short) (a.shortValue() + b.shortValue()), unit);
-  }
-
-  @Override
-  public ComparableQuantity<Q> add(Quantity<Q> that) {
-    if (canWidenTo(that)) {
-      return widenTo((JavaNumberQuantity<Q>) that).add(that);
-    }
-    final Quantity<Q> thatConverted = that.to(getUnit());
-    final Quantity<Q> thisConverted = this.to(that.getUnit());
-    final double resultValueInThisUnit = getValue().doubleValue() + thatConverted.getValue().doubleValue();
-    final double resultValueInThatUnit = thisConverted.getValue().doubleValue() + that.getValue().doubleValue();
-    final ComparableQuantity<Q> resultInThisUnit = addRaw(getValue(), thatConverted.getValue(), getUnit());
-    final ComparableQuantity<Q> resultInThatUnit = addRaw(thisConverted.getValue(), that.getValue(), that.getUnit());
-    if (isOverflowing(resultValueInThisUnit)) {
-      if (isOverflowing(resultValueInThatUnit)) {
-        throw new ArithmeticException();
-      } else {
-        return resultInThatUnit;
-      }
-    } else if (isOverflowing(resultValueInThatUnit)) {
-      return resultInThisUnit;
-    } else if (hasFraction(resultValueInThisUnit)) {
-      return resultInThatUnit;
-    } else {
-      return resultInThisUnit;
-    }
-  }
-
-  @Override
-  public ComparableQuantity<Q> divide(Number that) {
-    return NumberQuantity.of(value / that.shortValue(), getUnit());
-  }
-
-  @Override
-  public ComparableQuantity<Q> multiply(Number multiplier) {
-    final double product = getValue().doubleValue() * multiplier.doubleValue();
-    if (isOverflowing(product)) {
-      throw new ArithmeticException();
-    } else {
-      return NumberQuantity.of(value * multiplier.shortValue(), getUnit());
-    }
-  }
-
-  @Override
   public ComparableQuantity<?> inverse() {
     return NumberQuantity.of(1 / value, getUnit().inverse());
   }

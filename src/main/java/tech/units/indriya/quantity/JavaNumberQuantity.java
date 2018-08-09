@@ -32,13 +32,16 @@ package tech.units.indriya.quantity;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.MathContext;
 import java.util.Objects;
+import java.util.function.BiFunction;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;
 
 import tech.units.indriya.AbstractQuantity;
 import tech.units.indriya.ComparableQuantity;
+import tech.units.indriya.function.Calculus;
 
 /**
  * Abstract class extending {@link AbstractQuantity}, the superclass to all quantity classes that hold a Java {@link Number} to store the value.
@@ -49,6 +52,9 @@ import tech.units.indriya.ComparableQuantity;
 abstract class JavaNumberQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
 
   private static final long serialVersionUID = -772486200565856789L;
+
+  private static final BigDecimal LONG_MAX_VALUE = new BigDecimal(Long.MAX_VALUE);
+  private static final BigDecimal LONG_MIN_VALUE = new BigDecimal(Long.MIN_VALUE);
 
   /**
    * Constructor calling the superclass's constructor.
@@ -102,25 +108,59 @@ abstract class JavaNumberQuantity<Q extends Quantity<Q>> extends AbstractQuantit
 
   @Override
   public double doubleValue(Unit<Q> unit) {
-    if (getUnit().equals(unit)) {
-      return getValue().doubleValue();
+    final double result = getUnit().getConverterTo(unit).convert(getValue()).doubleValue();
+    if (Double.isInfinite(result)) {
+      throw new ArithmeticException();
     } else {
-      final double result = getUnit().getConverterTo(unit).convert(getValue()).doubleValue();
-      if (Double.isInfinite(result)) {
-        throw new ArithmeticException();
-      } else {
-        return result;
-      }
+      return result;
     }
   }
 
   @Override
   protected long longValue(Unit<Q> unit) {
-    final double result = getUnit().getConverterTo(unit).convert(getValue()).doubleValue();
-    if (result < Long.MIN_VALUE || result > Long.MAX_VALUE) {
+    final BigDecimal result = (BigDecimal) getUnit().getConverterTo(unit).convert(numberAsBigDecimal(getValue()));
+    if (result.compareTo(LONG_MIN_VALUE) < 0 || result.compareTo(LONG_MAX_VALUE) > 0) {
       throw new ArithmeticException("Overflow (" + result + ")");
+    } else {
+      return result.longValue();
     }
-    return (long) result;
+  }
+
+  @Override
+  public BigDecimal decimalValue(Unit<Q> unit) {
+    if (getUnit().equals(unit)) {
+      return numberAsBigDecimal(getValue());
+    } else {
+      return (BigDecimal) getUnit().getConverterTo(unit).convert(numberAsBigDecimal(getValue()));
+    }
+  }
+
+  @Override
+  public ComparableQuantity<Q> add(Quantity<Q> that) {
+    if (canWidenTo(that)) {
+      return widenTo((JavaNumberQuantity<Q>) that).add(that);
+    }
+    final BigDecimal thisValueInThisUnit = decimalValue(getUnit());
+    final BigDecimal thatValueInThisUnit = convertedQuantityValueAsBigDecimal(that, this.getUnit());
+    final BigDecimal thisValueInThatUnit = decimalValue(that.getUnit());
+    final BigDecimal thatValueInThatUnit = quantityValueAsBigDecimal(that);
+    final BigDecimal resultValueInThisUnit = thisValueInThisUnit.add(thatValueInThisUnit, Calculus.MATH_CONTEXT);
+    final BigDecimal resultValueInThatUnit = thisValueInThatUnit.add(thatValueInThatUnit, Calculus.MATH_CONTEXT);
+    final ComparableQuantity<Q> resultInThisUnit = createTypedQuantity(getNumberType(), castFromBigDecimal(resultValueInThisUnit), getUnit());
+    final ComparableQuantity<Q> resultInThatUnit = createTypedQuantity(getNumberType(), castFromBigDecimal(resultValueInThatUnit), that.getUnit());
+    if (isOverflowing(resultValueInThisUnit)) {
+      if (isOverflowing(resultValueInThatUnit)) {
+        throw new ArithmeticException();
+      } else {
+        return resultInThatUnit;
+      }
+    } else if (isOverflowing(resultValueInThatUnit)) {
+      return resultInThisUnit;
+    } else if (!isDecimal() && hasFraction(resultValueInThisUnit)) {
+      return resultInThatUnit;
+    } else {
+      return resultInThisUnit;
+    }
   }
 
   @Override
@@ -128,38 +168,82 @@ abstract class JavaNumberQuantity<Q extends Quantity<Q>> extends AbstractQuantit
     return add(that.negate());
   }
 
+  @FunctionalInterface
+  private interface TriFunction<R, A, B, C> {
+    R apply(A a, B b, C c);
+  }
+
   @SuppressWarnings({ "unchecked" })
-  public ComparableQuantity<?> multiply(Quantity<?> that) {
+  private ComparableQuantity<?> applyMultiplicativeQuantityOperation(Quantity<?> that,
+      BiFunction<ComparableQuantity<Q>, Quantity<?>, ComparableQuantity<?>> thisOperator,
+      TriFunction<BigDecimal, BigDecimal, BigDecimal, MathContext> valueOperator, BiFunction<Unit<?>, Unit<?>, Unit<?>> unitOperator) {
     if (canWidenTo(that)) {
-      return widenTo((JavaNumberQuantity<Q>) that).multiply(that);
+      return thisOperator.apply(widenTo((JavaNumberQuantity<Q>) that), that);
     }
     final BigDecimal thisValue = decimalValue(getUnit());
-    final BigDecimal thatValue = thatValueAsBigDecimal(that);
-    final BigDecimal product = thisValue.multiply(thatValue);
-    if (isOverflowing(product)) {
+    final BigDecimal thatValue = quantityValueAsBigDecimal(that);
+    final BigDecimal result = valueOperator.apply(thisValue, thatValue, Calculus.MATH_CONTEXT);
+    if (isOverflowing(result)) {
       throw new ArithmeticException();
     }
-    return createQuantity(getNumberType(), castFromBigDecimal(product), getUnit().multiply(that.getUnit()));
+    final Unit<?> resultUnit = unitOperator.apply(getUnit(), that.getUnit());
+    return createQuantity(getNumberType(), castFromBigDecimal(result), resultUnit);
+  }
+
+  @Override
+  public ComparableQuantity<?> multiply(Quantity<?> that) {
+    return applyMultiplicativeQuantityOperation(that, ComparableQuantity<Q>::multiply, BigDecimal::multiply, Unit::multiply);
+  }
+
+  @Override
+  public ComparableQuantity<?> divide(Quantity<?> that) {
+    return applyMultiplicativeQuantityOperation(that, ComparableQuantity<Q>::divide, BigDecimal::divide, Unit::divide);
+  }
+
+  private ComparableQuantity<Q> applyMultiplicativeNumberOperation(Number that,
+      TriFunction<BigDecimal, BigDecimal, BigDecimal, MathContext> valueOperator) {
+    final BigDecimal thisValue = decimalValue(getUnit());
+    final BigDecimal thatValue = numberAsBigDecimal(that);
+    final BigDecimal result = valueOperator.apply(thisValue, thatValue, Calculus.MATH_CONTEXT);
+    if (isOverflowing(result)) {
+      throw new ArithmeticException();
+    }
+    return createTypedQuantity(getNumberType(), castFromBigDecimal(result), getUnit());
+  }
+
+  @Override
+  public ComparableQuantity<Q> multiply(Number that) {
+    return applyMultiplicativeNumberOperation(that, BigDecimal::multiply);
+  }
+
+  @Override
+  public ComparableQuantity<Q> divide(Number that) {
+    return applyMultiplicativeNumberOperation(that, BigDecimal::divide);
+  }
+
+  private <R extends Quantity<R>> BigDecimal quantityValueAsBigDecimal(Quantity<R> that) {
+    return convertedQuantityValueAsBigDecimal(that, that.getUnit());
   }
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
-  private BigDecimal thatValueAsBigDecimal(Quantity<?> that) {
-    return that instanceof JavaNumberQuantity ? ((JavaNumberQuantity) that).decimalValue(that.getUnit())
-        : new BigDecimal(that.getValue().doubleValue());
+  private <R extends Quantity<R>> BigDecimal convertedQuantityValueAsBigDecimal(Quantity<R> that, Unit<R> unit) {
+    if (that instanceof JavaNumberQuantity) {
+      return ((JavaNumberQuantity) that).decimalValue(unit);
+    } else {
+      return (BigDecimal) that.getUnit().getConverterTo(unit).convert(numberAsBigDecimal(that.getValue()));
+    }
   }
 
-  @SuppressWarnings({ "unchecked" })
-  public ComparableQuantity<?> divide(Quantity<?> that) {
-    if (canWidenTo(that)) {
-      return widenTo((JavaNumberQuantity<Q>) that).multiply(that);
+  private BigDecimal numberAsBigDecimal(Number that) {
+    if (that instanceof BigDecimal) {
+      return (BigDecimal) that;
+    } else if (that instanceof BigInteger) {
+      return new BigDecimal((BigInteger) that);
+    } else if (that instanceof Double || that instanceof Float) {
+      return new BigDecimal(that.doubleValue());
+    } else {
+      return new BigDecimal(that.longValue());
     }
-    final BigDecimal thisValue = decimalValue(getUnit());
-    final BigDecimal thatValue = thatValueAsBigDecimal(that);
-    final BigDecimal quotient = thisValue.divide(thatValue);
-    if (isOverflowing(quotient)) {
-      throw new ArithmeticException();
-    }
-    return createQuantity(getNumberType(), castFromBigDecimal(quotient), getUnit().divide(that.getUnit()));
   }
 
   boolean canWidenTo(Quantity<?> target) {

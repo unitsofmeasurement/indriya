@@ -146,7 +146,7 @@ public class FloatQuantityTest {
    */
   @Test
   public void decimalValueReturnsValueForSameUnit() {
-    assertEquals(BigDecimal.valueOf(1.0), ONE_OHM.decimalValue(Units.OHM));
+    assertEquals(BigDecimal.valueOf(1), ONE_OHM.decimalValue(Units.OHM));
   }
 
   /**
@@ -283,7 +283,7 @@ public class FloatQuantityTest {
     assertEquals(dayResult.getValue(), day.getValue());
     assertEquals(dayResult.getUnit(), day.getUnit());
   }
-  
+
   /**
    * Tests negate()
    */
