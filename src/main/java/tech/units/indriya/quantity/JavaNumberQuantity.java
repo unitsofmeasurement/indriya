@@ -147,9 +147,10 @@ abstract class JavaNumberQuantity<Q extends Quantity<Q>> extends AbstractQuantit
 
   @SuppressWarnings({ "unchecked" })
   private ComparableQuantity<?> applyMultiplicativeQuantityOperation(Quantity<?> that,
+      BiFunction<ComparableQuantity<Q>, Quantity<?>, ComparableQuantity<?>> thisOperator,
       TriFunction<BigDecimal, BigDecimal, BigDecimal, MathContext> valueOperator, BiFunction<Unit<?>, Unit<?>, Unit<?>> unitOperator) {
     if (canWidenTo(that)) {
-      return widenTo((JavaNumberQuantity<Q>) that).multiply(that);
+      return thisOperator.apply(widenTo((JavaNumberQuantity<Q>) that), that);
     }
     final BigDecimal thisValue = decimalValue(getUnit());
     final BigDecimal thatValue = quantityValueAsBigDecimal(that);
@@ -163,12 +164,12 @@ abstract class JavaNumberQuantity<Q extends Quantity<Q>> extends AbstractQuantit
 
   @Override
   public ComparableQuantity<?> multiply(Quantity<?> that) {
-    return applyMultiplicativeQuantityOperation(that, BigDecimal::multiply, Unit::multiply);
+    return applyMultiplicativeQuantityOperation(that, ComparableQuantity<Q>::multiply, BigDecimal::multiply, Unit::multiply);
   }
 
   @Override
   public ComparableQuantity<?> divide(Quantity<?> that) {
-    return applyMultiplicativeQuantityOperation(that, BigDecimal::divide, Unit::divide);
+    return applyMultiplicativeQuantityOperation(that, ComparableQuantity<Q>::divide, BigDecimal::divide, Unit::divide);
   }
 
   private ComparableQuantity<Q> applyMultiplicativeNumberOperation(Number that,
@@ -194,8 +195,11 @@ abstract class JavaNumberQuantity<Q extends Quantity<Q>> extends AbstractQuantit
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
   private BigDecimal quantityValueAsBigDecimal(Quantity<?> that) {
-    return that instanceof JavaNumberQuantity ? ((JavaNumberQuantity) that).decimalValue(that.getUnit())
-        : new BigDecimal(that.getValue().doubleValue());
+    if (that instanceof JavaNumberQuantity) {
+      return ((JavaNumberQuantity) that).decimalValue(that.getUnit());
+    } else {
+      return new BigDecimal(that.getValue().doubleValue());
+    }
   }
 
   private BigDecimal numberAsBigDecimal(Number that) {
