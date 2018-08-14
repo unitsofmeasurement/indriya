@@ -119,7 +119,6 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
 		  .collect(Collectors.toList())
   		  .toArray(new UnitConverter[] {});
 
-
   /**
    * Holds the standard unit format.
    */
