@@ -80,7 +80,7 @@ import tech.units.indriya.unit.Units;
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
  * @author Eric Russell
- * @version 1.5, August 8, 2018
+ * @version 1.5.1, August 14, 2018
  * @since 1.0
  */
 public abstract class SimpleUnitFormat extends AbstractUnitFormat {
@@ -105,16 +105,16 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
       Units.HERTZ, Units.JOULE, Units.KATAL, Units.KELVIN, Units.LUMEN, Units.LUX, Units.METRE, Units.MOLE, Units.NEWTON, Units.OHM, Units.PASCAL,
       Units.RADIAN, Units.SECOND, Units.SIEMENS, Units.SIEVERT, Units.STERADIAN, Units.TESLA, Units.VOLT, Units.WATT, Units.WEBER };
 
-  private static final Prefix[] PREFIXES = MetricPrefix.values();
+  private static final Prefix[] METRIC_PREFIXES = MetricPrefix.values();
   
-  private static final String[] PREFIX_SYMBOLS =  
-		  Stream.of(PREFIXES)
+  private static final String[] METRIC_SYMBOLS =  
+		  Stream.of(METRIC_PREFIXES)
 		  .map(Prefix::getSymbol)
 		  .collect(Collectors.toList())
 		  .toArray(new String[] {});
 
-  private static final UnitConverter[] PREFIX_CONVERTERS =  
-		  Stream.of(PREFIXES)
+  private static final UnitConverter[] METRIC_CONVERTERS =  
+		  Stream.of(METRIC_PREFIXES)
 		  .map(PowerOfIntConverter::of)
 		  .collect(Collectors.toList())
   		  .toArray(new UnitConverter[] {});
@@ -439,9 +439,9 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
 
     // Returns the prefix for the specified unit converter.
     protected String prefixFor(UnitConverter converter) {
-      for (int i = 0; i < PREFIX_CONVERTERS.length; i++) {
-        if (PREFIX_CONVERTERS[i].equals(converter)) {
-          return PREFIX_SYMBOLS[i];
+      for (int i = 0; i < METRIC_CONVERTERS.length; i++) {
+        if (METRIC_CONVERTERS[i].equals(converter)) {
+          return METRIC_SYMBOLS[i];
         }
       }
       return null; // TODO or return blank?
@@ -917,10 +917,10 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
       DEFAULT.label(si, symbol);
       if (isAllASCII(symbol))
         ASCII.label(si, symbol);
-      for (int j = 0; j < PREFIX_SYMBOLS.length; j++) {
-        Unit<?> u = si.prefix(PREFIXES[j]);
-        DEFAULT.label(u, PREFIX_SYMBOLS[j] + symbol);
-        if ( "µ".equals(PREFIX_SYMBOLS[j]) ) {
+      for (int j = 0; j < METRIC_SYMBOLS.length; j++) {
+        Unit<?> u = si.prefix(METRIC_PREFIXES[j]);
+        DEFAULT.label(u, METRIC_SYMBOLS[j] + symbol);
+        if ( "µ".equals(METRIC_SYMBOLS[j]) ) {
           ASCII.label(u, "micro"); // + symbol);
         }
       }
@@ -928,33 +928,33 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
     
     // Special case for KILOGRAM.
     DEFAULT.label(Units.GRAM, "g");
-    for (int i = 0; i < PREFIX_SYMBOLS.length; i++) {
-      if (PREFIX_CONVERTERS[i] == MultiplyConverter.of(KILO)) // TODO should it better
+    for (int i = 0; i < METRIC_SYMBOLS.length; i++) {
+      if (METRIC_CONVERTERS[i] == MultiplyConverter.of(KILO)) // TODO should it better
         // be equals()?
         continue; // kg is already defined.
       
-      DEFAULT.label(Units.KILOGRAM.prefix(PREFIXES[i]).prefix(MILLI), PREFIX_SYMBOLS[i] + "g");
-      if ( "µ".equals(PREFIX_SYMBOLS[i]) ) {
-        ASCII.label(Units.KILOGRAM.prefix(PREFIXES[i]).prefix(MILLI), "microg");
+      DEFAULT.label(Units.KILOGRAM.prefix(METRIC_PREFIXES[i]).prefix(MILLI), METRIC_SYMBOLS[i] + "g");
+      if ( "µ".equals(METRIC_SYMBOLS[i]) ) {
+        ASCII.label(Units.KILOGRAM.prefix(METRIC_PREFIXES[i]).prefix(MILLI), "microg");
       }
     }
 
     // Alias and ASCIIFormat for Ohm
     DEFAULT.alias(Units.OHM, "Ohm");
     ASCII.label(Units.OHM, "Ohm");
-    for (int i = 0; i < PREFIX_SYMBOLS.length; i++) {
-      DEFAULT.alias(Units.OHM.prefix(PREFIXES[i]), PREFIX_SYMBOLS[i] + "Ohm");
-      ASCII.label(Units.OHM.prefix(PREFIXES[i]), asciiPrefix(PREFIX_SYMBOLS[i]) + "Ohm");
+    for (int i = 0; i < METRIC_SYMBOLS.length; i++) {
+      DEFAULT.alias(Units.OHM.prefix(METRIC_PREFIXES[i]), METRIC_SYMBOLS[i] + "Ohm");
+      ASCII.label(Units.OHM.prefix(METRIC_PREFIXES[i]), asciiPrefix(METRIC_SYMBOLS[i]) + "Ohm");
     }
 
     // Special case for DEGREE_CELSIUS.
     DEFAULT.label(Units.CELSIUS, "℃");
     DEFAULT.alias(Units.CELSIUS, "°C");
     ASCII.label(Units.CELSIUS, "Celsius");
-    for (int i = 0; i < PREFIX_SYMBOLS.length; i++) {
-      DEFAULT.label(Units.CELSIUS.prefix(PREFIXES[i]), PREFIX_SYMBOLS[i] + "℃");
-      DEFAULT.alias(Units.CELSIUS.prefix(PREFIXES[i]), PREFIX_SYMBOLS[i] + "°C");
-      ASCII.label(Units.CELSIUS.prefix(PREFIXES[i]), asciiPrefix(PREFIX_SYMBOLS[i]) + "Celsius");
+    for (int i = 0; i < METRIC_SYMBOLS.length; i++) {
+      DEFAULT.label(Units.CELSIUS.prefix(METRIC_PREFIXES[i]), METRIC_SYMBOLS[i] + "℃");
+      DEFAULT.alias(Units.CELSIUS.prefix(METRIC_PREFIXES[i]), METRIC_SYMBOLS[i] + "°C");
+      ASCII.label(Units.CELSIUS.prefix(METRIC_PREFIXES[i]), asciiPrefix(METRIC_SYMBOLS[i]) + "Celsius");
     }
 
     DEFAULT.label(Units.PERCENT, "%");
