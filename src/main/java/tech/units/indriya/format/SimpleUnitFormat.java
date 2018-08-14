@@ -104,17 +104,15 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
   private static final Unit<?>[] METRIC_UNITS = { Units.AMPERE, Units.BECQUEREL, Units.CANDELA, Units.COULOMB, Units.FARAD, Units.GRAY, Units.HENRY,
       Units.HERTZ, Units.JOULE, Units.KATAL, Units.KELVIN, Units.LUMEN, Units.LUX, Units.METRE, Units.MOLE, Units.NEWTON, Units.OHM, Units.PASCAL,
       Units.RADIAN, Units.SECOND, Units.SIEMENS, Units.SIEVERT, Units.STERADIAN, Units.TESLA, Units.VOLT, Units.WATT, Units.WEBER };
-
-  private static final Prefix[] METRIC_PREFIXES = MetricPrefix.values();
-  
+ 
   private static final String[] METRIC_SYMBOLS =  
-		  Stream.of(METRIC_PREFIXES)
+		  Stream.of(MetricPrefix.values())
 		  .map(Prefix::getSymbol)
 		  .collect(Collectors.toList())
 		  .toArray(new String[] {});
 
   private static final UnitConverter[] METRIC_CONVERTERS =  
-		  Stream.of(METRIC_PREFIXES)
+		  Stream.of(MetricPrefix.values())
 		  .map(PowerOfIntConverter::of)
 		  .collect(Collectors.toList())
   		  .toArray(new UnitConverter[] {});
@@ -917,7 +915,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
       if (isAllASCII(symbol))
         ASCII.label(si, symbol);
       for (int j = 0; j < METRIC_SYMBOLS.length; j++) {
-        Unit<?> u = si.prefix(METRIC_PREFIXES[j]);
+        Unit<?> u = si.prefix(MetricPrefix.values()[j]);
         DEFAULT.label(u, METRIC_SYMBOLS[j] + symbol);
         if ( "µ".equals(METRIC_SYMBOLS[j]) ) {
           ASCII.label(u, "micro"); // + symbol);
@@ -932,9 +930,9 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
         // be equals()?
         continue; // kg is already defined.
       
-      DEFAULT.label(Units.KILOGRAM.prefix(METRIC_PREFIXES[i]).prefix(MILLI), METRIC_SYMBOLS[i] + "g");
+      DEFAULT.label(Units.KILOGRAM.prefix(MetricPrefix.values()[i]).prefix(MILLI), METRIC_SYMBOLS[i] + "g");
       if ( "µ".equals(METRIC_SYMBOLS[i]) ) {
-        ASCII.label(Units.KILOGRAM.prefix(METRIC_PREFIXES[i]).prefix(MILLI), "microg");
+        ASCII.label(Units.KILOGRAM.prefix(MetricPrefix.values()[i]).prefix(MILLI), "microg");
       }
     }
 
@@ -942,8 +940,8 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
     DEFAULT.alias(Units.OHM, "Ohm");
     ASCII.label(Units.OHM, "Ohm");
     for (int i = 0; i < METRIC_SYMBOLS.length; i++) {
-      DEFAULT.alias(Units.OHM.prefix(METRIC_PREFIXES[i]), METRIC_SYMBOLS[i] + "Ohm");
-      ASCII.label(Units.OHM.prefix(METRIC_PREFIXES[i]), asciiPrefix(METRIC_SYMBOLS[i]) + "Ohm");
+      DEFAULT.alias(Units.OHM.prefix(MetricPrefix.values()[i]), METRIC_SYMBOLS[i] + "Ohm");
+      ASCII.label(Units.OHM.prefix(MetricPrefix.values()[i]), asciiPrefix(METRIC_SYMBOLS[i]) + "Ohm");
     }
 
     // Special case for DEGREE_CELSIUS.
@@ -951,9 +949,9 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
     DEFAULT.alias(Units.CELSIUS, "°C");
     ASCII.label(Units.CELSIUS, "Celsius");
     for (int i = 0; i < METRIC_SYMBOLS.length; i++) {
-      DEFAULT.label(Units.CELSIUS.prefix(METRIC_PREFIXES[i]), METRIC_SYMBOLS[i] + "℃");
-      DEFAULT.alias(Units.CELSIUS.prefix(METRIC_PREFIXES[i]), METRIC_SYMBOLS[i] + "°C");
-      ASCII.label(Units.CELSIUS.prefix(METRIC_PREFIXES[i]), asciiPrefix(METRIC_SYMBOLS[i]) + "Celsius");
+      DEFAULT.label(Units.CELSIUS.prefix(MetricPrefix.values()[i]), METRIC_SYMBOLS[i] + "℃");
+      DEFAULT.alias(Units.CELSIUS.prefix(MetricPrefix.values()[i]), METRIC_SYMBOLS[i] + "°C");
+      ASCII.label(Units.CELSIUS.prefix(MetricPrefix.values()[i]), asciiPrefix(METRIC_SYMBOLS[i]) + "Celsius");
     }
 
     DEFAULT.label(Units.PERCENT, "%");
