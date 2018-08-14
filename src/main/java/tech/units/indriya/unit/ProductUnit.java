@@ -39,7 +39,7 @@ import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.quantity.QuantityDimension;
 
 import java.io.Serializable;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -58,7 +58,7 @@ import java.util.Objects;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.4.2, November 7, 2017
+ * @version 1.5, August 14, 2018
  * @since 1.0
  */
 public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
@@ -266,7 +266,7 @@ public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
 
   @Override
   public Map<Unit<?>, Integer> getBaseUnits() {
-    final Map<Unit<?>, Integer> units = new HashMap<>();
+    final Map<Unit<?>, Integer> units = new LinkedHashMap<>();
     for (int i = 0; i < getUnitCount(); i++) {
       units.put(getUnit(i), getUnitPow(i));
     }
