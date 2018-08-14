@@ -101,7 +101,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
   
   // Initializes the standard unit database for SI units.
 
-  private static final Unit<?>[] SI_UNITS = { Units.AMPERE, Units.BECQUEREL, Units.CANDELA, Units.COULOMB, Units.FARAD, Units.GRAY, Units.HENRY,
+  private static final Unit<?>[] METRIC_UNITS = { Units.AMPERE, Units.BECQUEREL, Units.CANDELA, Units.COULOMB, Units.FARAD, Units.GRAY, Units.HENRY,
       Units.HERTZ, Units.JOULE, Units.KATAL, Units.KELVIN, Units.LUMEN, Units.LUX, Units.METRE, Units.MOLE, Units.NEWTON, Units.OHM, Units.PASCAL,
       Units.RADIAN, Units.SECOND, Units.SIEMENS, Units.SIEVERT, Units.STERADIAN, Units.TESLA, Units.VOLT, Units.WATT, Units.WEBER };
 
@@ -910,8 +910,8 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
   
   // Initializations
   static {
-    for (int i = 0; i < SI_UNITS.length; i++) {
-      Unit<?> si = SI_UNITS[i];
+    for (int i = 0; i < METRIC_UNITS.length; i++) {
+      Unit<?> si = METRIC_UNITS[i];
       String symbol = (si instanceof BaseUnit) ? ((BaseUnit<?>) si).getSymbol() : ((AlternateUnit<?>) si).getSymbol();
       DEFAULT.label(si, symbol);
       if (isAllASCII(symbol))
