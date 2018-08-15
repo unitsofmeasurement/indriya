@@ -67,8 +67,8 @@ import tech.units.indriya.unit.Units;
  */
 public class SimpleFormatTest {
 	private static final Logger logger = Logger.getLogger(SimpleFormatTest.class.getName());
-	
-	private SimpleUnitFormat format;
+	private static final Level LOG_LEVEL = Level.FINER;
+	private UnitFormat format;
 
 	@BeforeEach
 	public void init() {
@@ -140,53 +140,52 @@ public class SimpleFormatTest {
 		});
 
 		Unit<?> onePerSecond = ServiceProvider.current().getFormatService().getUnitFormat().parse("one/s");
-		logger.log(Level.FINER, onePerSecond.toString());
+		logger.log(LOG_LEVEL, onePerSecond.toString());
 	}
 	
 	@Test
 	public void testFormatNewLabeledUnits() {
 	    final UnitFormat formatter = SimpleUnitFormat.getInstance();
-	    System.out.println("== Use case 1: playing with base units ==");
-	    AlternateUnit<?> aCd = new AlternateUnit<>(Units.CANDELA, "altCD");
+	    logger.log(LOG_LEVEL, "== Use case 1: playing with base units ==");
+	    final AlternateUnit<?> aCd = new AlternateUnit<>(Units.CANDELA, "altCD");
 
-	    System.out.println("Candela: " + formatter.format(Units.CANDELA));
-	    System.out.println("Candela times 2: " + formatter.format(Units.CANDELA.multiply(2)));
-	    System.out.println("Square Candela: " + formatter.format(Units.CANDELA.pow(2)));
-	    System.out.println("Alt. Candela: " + formatter.format(aCd));
-	    System.out.println("Square alt. Candela: " + formatter.format(aCd.pow(2)));
+	    logger.log(LOG_LEVEL, "Candela: " + formatter.format(Units.CANDELA));
+	    logger.log(LOG_LEVEL, "Candela times 2: " + formatter.format(Units.CANDELA.multiply(2)));
+	    logger.log(LOG_LEVEL, "Square Candela: " + formatter.format(Units.CANDELA.pow(2)));
+	    logger.log(LOG_LEVEL, "Alt. Candela: " + formatter.format(aCd));
+	    logger.log(LOG_LEVEL, "Square alt. Candela: " + formatter.format(aCd.pow(2)));
 
-	    System.out.println("=> The Candela shall now be known as \"CD\"");
+	    logger.log(LOG_LEVEL, "=> The Candela shall now be known as \"CD\"");
 	    formatter.label(Units.CANDELA, "CD");
 
-	    System.out.println("Candela: " + formatter.format(Units.CANDELA));
-	    System.out.println("Candela times 2: " + formatter.format(Units.CANDELA.multiply(2)));
-	    System.out.println("Square Candela: " + formatter.format(Units.CANDELA.pow(2)));
-	    System.out.println("Alt. Candela: " + formatter.format(aCd));
-	    System.out.println("Square alt. Candela: " + formatter.format(aCd.pow(2)));
+	    logger.log(LOG_LEVEL, "Candela: " + formatter.format(Units.CANDELA));
+	    logger.log(LOG_LEVEL, "Candela times 2: " + formatter.format(Units.CANDELA.multiply(2)));
+	    logger.log(LOG_LEVEL, "Square Candela: " + formatter.format(Units.CANDELA.pow(2)));
+	    logger.log(LOG_LEVEL, "Alt. Candela: " + formatter.format(aCd));
+	    logger.log(LOG_LEVEL, "Square alt. Candela: " + formatter.format(aCd.pow(2)));
+	    
+	    logger.log(LOG_LEVEL, "== Use case 2: playing with product units ==");
+	    final ProductUnit<?> cdK = new ProductUnit<>(Units.CANDELA.multiply(Units.KELVIN));
+	    final AlternateUnit<?> aCdK = new AlternateUnit<>(cdK, "altCDK");
 
-	    System.out.println();
-	    System.out.println("== Use case 2: playing with product units ==");
-	    ProductUnit<?> cdK = new ProductUnit<>(Units.CANDELA.multiply(Units.KELVIN));
-	    AlternateUnit<?> aCdK = new AlternateUnit<>(cdK, "altCDK");
+	    logger.log(LOG_LEVEL, "Candela-Kelvin: " + formatter.format(cdK));
+	    logger.log(LOG_LEVEL, "Candela-Kelvin times 2: " + formatter.format(cdK.multiply(2)));
+	    logger.log(LOG_LEVEL, "Square Candela-Kelvin: " + formatter.format(cdK.pow(2)));
+	    logger.log(LOG_LEVEL, "Alt. Candela-Kelvin: " + formatter.format(aCdK));
+	    logger.log(LOG_LEVEL, "Square alt. Candela-Kelvin: " + formatter.format(aCdK.pow(2)));
 
-	    System.out.println("Candela-Kelvin: " + formatter.format(cdK));
-	    System.out.println("Candela-Kelvin times 2: " + formatter.format(cdK.multiply(2)));
-	    System.out.println("Square Candela-Kelvin: " + formatter.format(cdK.pow(2)));
-	    System.out.println("Alt. Candela-Kelvin: " + formatter.format(aCdK));
-	    System.out.println("Square alt. Candela-Kelvin: " + formatter.format(aCdK.pow(2)));
-
-	    System.out.println("=> The Candela-Kelvin shall now be known as \"CDK\"");
+	    logger.log(LOG_LEVEL, "=> The Candela-Kelvin shall now be known as \"CDK\"");
 	    formatter.label(cdK, "CDK");
 
-	    System.out.println("Candela-Kelvin: " + formatter.format(cdK));
-	    System.out.println("Candela-Kelvin times 2: " + formatter.format(cdK.multiply(2)));
-	    System.out.println("Square Candela-Kelvin: " + formatter.format(cdK.pow(2)));
-	    System.out.println("Alt. Candela-Kelvin: " + formatter.format(aCdK));
-	    System.out.println("Square alt. Candela-Kelvin: " + formatter.format(aCdK.pow(2)));
+	    logger.log(LOG_LEVEL, "Candela-Kelvin: " + formatter.format(cdK));
+	    logger.log(LOG_LEVEL, "Candela-Kelvin times 2: " + formatter.format(cdK.multiply(2)));
+	    logger.log(LOG_LEVEL, "Square Candela-Kelvin: " + formatter.format(cdK.pow(2)));
+	    logger.log(LOG_LEVEL, "Alt. Candela-Kelvin: " + formatter.format(aCdK));
+	    logger.log(LOG_LEVEL, "Square alt. Candela-Kelvin: " + formatter.format(aCdK.pow(2)));
 	    
 	    final UnitFormat formatter2 = EBNFUnitFormat.getInstance();
-	    Unit<LuminousIntensity> cdX = Units.CANDELA.transform(new ExpConverter(10));
-	    System.out.println("Candela-Exp: " + formatter.format(cdX));
-	    System.out.println("Candela-Exp E: " + formatter2.format(cdX));
+	    final Unit<LuminousIntensity> cdX = Units.CANDELA.transform(new ExpConverter(10));
+	    logger.log(LOG_LEVEL, "Candela-Exp: " + formatter.format(cdX));
+	    logger.log(LOG_LEVEL, "Candela-Exp E: " + formatter2.format(cdX));
 	}
 }

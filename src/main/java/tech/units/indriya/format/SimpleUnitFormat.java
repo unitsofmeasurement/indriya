@@ -80,7 +80,7 @@ import tech.units.indriya.unit.Units;
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
  * @author Eric Russell
- * @version 1.5.1, August 14, 2018
+ * @version 1.5.2, August 16, 2018
  * @since 1.0
  */
 public abstract class SimpleUnitFormat extends AbstractUnitFormat {
@@ -234,7 +234,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
    *          the identifier to be tested.
    * @return <code>true</code> if the name specified can be used as label or alias for this format;<code>false</code> otherwise.
    */
-  public abstract boolean isValidIdentifier(String name);
+  protected abstract boolean isValidIdentifier(String name);
 
   /**
    * Formats an unit and appends the resulting text to a given string buffer (implements <code>java.text.Format</code>).
@@ -307,16 +307,8 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
    * This class represents the standard format.
    */
   protected static class DefaultFormat extends SimpleUnitFormat {
-    private static final int EOF = 0;
-    private static final int IDENTIFIER = 1;
-    private static final int OPEN_PAREN = 2;
-    private static final int CLOSE_PAREN = 3;
-    private static final int EXPONENT = 4;
-    private static final int MULTIPLY = 5;
-    private static final int DIVIDE = 6;
-    private static final int PLUS = 7;
-    private static final int INTEGER = 8;
-    private static final int FLOAT = 9;
+	 private static enum Token { EOF, IDENTIFIER, OPEN_PAREN, CLOSE_PAREN, EXPONENT, MULTIPLY, DIVIDE, 
+		  PLUS, INTEGER, FLOAT };
 
     /**
      * Holds the name to unit mapping.
@@ -468,7 +460,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
     @Override
     public Unit<? extends Quantity> parseProductUnit(CharSequence csq, ParsePosition pos) throws MeasurementParseException {
       Unit result = AbstractUnit.ONE;
-      int token = nextToken(csq, pos);
+      Token token = nextToken(csq, pos);
       switch (token) {
         case IDENTIFIER:
           result = parseSingleUnit(csq, pos);
@@ -477,7 +469,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
           pos.setIndex(pos.getIndex() + 1);
           result = parseProductUnit(csq, pos);
           token = nextToken(csq, pos);
-          check(token == CLOSE_PAREN, "')' expected", csq, pos.getIndex());
+          check(token == Token.CLOSE_PAREN, "')' expected", csq, pos.getIndex());
           pos.setIndex(pos.getIndex() + 1);
           break;
       }
@@ -496,12 +488,12 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
           case MULTIPLY:
             pos.setIndex(pos.getIndex() + 1);
             token = nextToken(csq, pos);
-            if (token == INTEGER) {
+            if (token == Token.INTEGER) {
               long n = readLong(csq, pos);
               if (n != 1) {
                 result = result.multiply(n);
               }
-            } else if (token == FLOAT) {
+            } else if (token == Token.FLOAT) {
               double d = readDouble(csq, pos);
               if (d != 1.0) {
                 result = result.multiply(d);
@@ -513,12 +505,12 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
           case DIVIDE:
             pos.setIndex(pos.getIndex() + 1);
             token = nextToken(csq, pos);
-            if (token == INTEGER) {
+            if (token == Token.INTEGER) {
               long n = readLong(csq, pos);
               if (n != 1) {
                 result = result.divide(n);
               }
-            } else if (token == FLOAT) {
+            } else if (token == Token.FLOAT) {
               double d = readDouble(csq, pos);
               if (d != 1.0) {
                 result = result.divide(d);
@@ -530,12 +522,12 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
           case PLUS:
             pos.setIndex(pos.getIndex() + 1);
             token = nextToken(csq, pos);
-            if (token == INTEGER) {
+            if (token == Token.INTEGER) {
               long n = readLong(csq, pos);
               if (n != 1) {
                 result = result.shift(n);
               }
-            } else if (token == FLOAT) {
+            } else if (token == Token.FLOAT) {
               double d = readDouble(csq, pos);
               if (d != 1.0) {
                 result = result.shift(d);
@@ -553,45 +545,45 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
         token = nextToken(csq, pos);
       }
     }
-
-    private int nextToken(CharSequence csq, ParsePosition pos) {
+    
+    private Token nextToken(CharSequence csq, ParsePosition pos) {
       final int length = csq.length();
       while (pos.getIndex() < length) {
         char c = csq.charAt(pos.getIndex());
         if (isUnitIdentifierPart(c)) {
-          return IDENTIFIER;
+          return Token.IDENTIFIER;
         } else if (c == '(') {
-          return OPEN_PAREN;
+          return Token.OPEN_PAREN;
         } else if (c == ')') {
-          return CLOSE_PAREN;
+          return Token.CLOSE_PAREN;
         } else if ((c == '^') || (c == '\u00b9') || (c == '\u00b2') || (c == '\u00b3')) {
-          return EXPONENT;
+          return Token.EXPONENT;
         } else if (c == '*') {
           char c2 = csq.charAt(pos.getIndex() + 1);
           if (c2 == '*') {
-            return EXPONENT;
+            return Token.EXPONENT;
           } else {
-            return MULTIPLY;
+            return Token.MULTIPLY;
           }
         } else if (c == '\u00b7') {
-          return MULTIPLY;
+          return Token.MULTIPLY;
         } else if (c == '/') {
-          return DIVIDE;
+          return Token.DIVIDE;
         } else if (c == '+') {
-          return PLUS;
+          return Token.PLUS;
         } else if ((c == '-') || Character.isDigit(c)) {
           int index = pos.getIndex() + 1;
           while ((index < length) && (Character.isDigit(c) || (c == '-') || (c == '.') || (c == 'E'))) {
             c = csq.charAt(index++);
             if (c == '.') {
-              return FLOAT;
+              return Token.FLOAT;
             }
           }
-          return INTEGER;
+          return Token.INTEGER;
         }
         pos.setIndex(pos.getIndex() + 1);
       }
-      return EOF;
+      return Token.EOF;
     }
 
     private void check(boolean expr, String message, CharSequence csq, int index) throws MeasurementParseException {
