@@ -471,6 +471,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
           token = nextToken(csq, pos);
           check(token == Token.CLOSE_PAREN, "')' expected", csq, pos.getIndex());
           pos.setIndex(pos.getIndex() + 1);
+        default:
           break;
       }
       token = nextToken(csq, pos);
