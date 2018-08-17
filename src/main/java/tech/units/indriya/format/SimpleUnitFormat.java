@@ -560,6 +560,9 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
         } else if ((c == '^') || (c == '\u00b9') || (c == '\u00b2') || (c == '\u00b3')) {
           return Token.EXPONENT;
         } else if (c == '*') {
+          if (csq.length() == pos.getIndex() + 1) {
+        	  throw new MeasurementParseException("unexpected token " + Token.EOF, csq, pos.getIndex()); // return ;
+          }
           char c2 = csq.charAt(pos.getIndex() + 1);
           if (c2 == '*') {
             return Token.EXPONENT;
