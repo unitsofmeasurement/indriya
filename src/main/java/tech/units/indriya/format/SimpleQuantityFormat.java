@@ -44,7 +44,7 @@ import tech.units.indriya.quantity.Quantities;
 
 /**
  * A simple implementation of QuantityFormat
- * @version 0.9
+ * @version 0.9.1
  * @since 2.0
  */
 @SuppressWarnings("rawtypes")
@@ -129,7 +129,7 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
 		while ((endDecimal < csq.length()) && !Character.isWhitespace(csq.charAt(endDecimal))) {
 			endDecimal++;
 		}
-		Double decimal = new Double(csq.subSequence(startDecimal, endDecimal).toString());
+		Double decimal = Double.valueOf(csq.subSequence(startDecimal, endDecimal).toString());
 		Unit unit = SimpleUnitFormat.getInstance().parse(csq, index);
 		return NumberQuantity.of(decimal, unit);
 	}
