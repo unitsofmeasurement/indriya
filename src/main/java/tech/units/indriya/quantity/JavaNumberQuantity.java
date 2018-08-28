@@ -140,12 +140,12 @@ abstract class JavaNumberQuantity<Q extends Quantity<Q>> extends AbstractQuantit
     if (canWidenTo(that)) {
       return widenTo((JavaNumberQuantity<Q>) that).add(that);
     }
-    final BigDecimal thisValueInThisUnit = decimalValue(getUnit());
-    final BigDecimal thatValueInThisUnit = convertedQuantityValueAsBigDecimal(that, this.getUnit());
-    final BigDecimal thisValueInThatUnit = decimalValue(that.getUnit());
-    final BigDecimal thatValueInThatUnit = quantityValueAsBigDecimal(that);
-    final BigDecimal resultValueInThisUnit = thisValueInThisUnit.add(thatValueInThisUnit, Calculus.MATH_CONTEXT);
-    final BigDecimal resultValueInThatUnit = thisValueInThatUnit.add(thatValueInThatUnit, Calculus.MATH_CONTEXT);
+    final Unit<Q> systemUnit = getUnit().getSystemUnit();
+    final BigDecimal thisValueInSystemUnit = decimalValue(systemUnit);
+    final BigDecimal thatValueInSystemUnit = convertedQuantityValueAsBigDecimal(that, systemUnit);
+    final BigDecimal resultValueInSystemUnit = thisValueInSystemUnit.add(thatValueInSystemUnit, Calculus.MATH_CONTEXT);
+    final BigDecimal resultValueInThisUnit = numberAsBigDecimal(systemUnit.getConverterTo(getUnit()).convert(resultValueInSystemUnit));
+    final BigDecimal resultValueInThatUnit = numberAsBigDecimal(systemUnit.getConverterTo(that.getUnit()).convert(resultValueInSystemUnit));
     final ComparableQuantity<Q> resultInThisUnit = createTypedQuantity(getNumberType(), castFromBigDecimal(resultValueInThisUnit), getUnit());
     final ComparableQuantity<Q> resultInThatUnit = createTypedQuantity(getNumberType(), castFromBigDecimal(resultValueInThatUnit), that.getUnit());
     if (isOverflowing(resultValueInThisUnit)) {

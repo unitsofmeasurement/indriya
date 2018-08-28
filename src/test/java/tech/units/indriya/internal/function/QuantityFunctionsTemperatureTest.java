@@ -62,7 +62,7 @@ public class QuantityFunctionsTemperatureTest {
     final List<Quantity<Temperature>> temps = new ArrayList<>(getList());
     final Quantity<Temperature> sumTemp = temps.stream().reduce(QuantityFunctions.sum(Units.CELSIUS)).get();
     assertEquals(Units.CELSIUS, sumTemp.getUnit());
-    assertEquals(-271.15, sumTemp.getValue().doubleValue(), 0.00001);
+    assertEquals(2, sumTemp.getValue().doubleValue(), 0.00001);
   }
 
   @Test
