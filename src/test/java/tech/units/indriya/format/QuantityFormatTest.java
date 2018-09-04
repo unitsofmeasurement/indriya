@@ -100,6 +100,14 @@ public class QuantityFormatTest {
 		assertEquals(BigDecimal.valueOf(60), parsed1.getValue());
 		assertEquals(Units.METRE, parsed1.getUnit());
 	}
+	
+	@Test
+	public void testParseAsType() {
+		Quantity<Length> parsed1 = SimpleQuantityFormat.getInstance().parse("60 m").asType(Length.class);
+		assertNotNull(parsed1);
+		assertEquals(BigDecimal.valueOf(60), parsed1.getValue());
+		assertEquals(Units.METRE, parsed1.getUnit());
+	}
 
 	@Test
 	public void testParseSimple3() {
