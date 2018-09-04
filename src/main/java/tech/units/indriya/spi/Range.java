@@ -43,14 +43,14 @@ import tech.uom.lib.common.function.MinimumSupplier;
  *          The value of the range.
  * 
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.0, December 29, 2017
+ * @version 1.0.1, September 4, 2018
  * @since 1.0
  * @see <a href="http://en.wikipedia.org/wiki/Range">Wikipedia: Range</a>
  */
 public abstract class Range<T> implements MinimumSupplier<T>, MaximumSupplier<T> {
   // XXX do we keep null for min and max to represent infinity?
   // Java 8 Optional was evaluated, but caused conflict with the type-safe
-  // Quantity feature of this API, plus it won't work in CLDC8
+  // Quantity feature of this API
   private final T min;
   private final T max;
   private T res;
