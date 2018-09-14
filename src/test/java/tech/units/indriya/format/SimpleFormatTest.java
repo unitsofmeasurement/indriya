@@ -188,4 +188,10 @@ public class SimpleFormatTest {
 	    logger.log(LOG_LEVEL, "Candela-Exp: " + formatter.format(cdX));
 	    logger.log(LOG_LEVEL, "Candela-Exp E: " + formatter2.format(cdX));
 	}
+	
+	   @Test
+	    public void testParseInverseL() {
+	        Unit<?> u = format.parse("1/l");
+	        assertEquals("1/l", u.toString());
+	    }
 }
