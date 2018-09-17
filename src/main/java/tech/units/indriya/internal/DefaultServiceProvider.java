@@ -49,8 +49,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * This class extends the {@link javax.measure.spi.ServiceProvider} class and
- * hereby uses the JDK {@link java.util.ServiceLoader} to load the required
+ * This class extends the {@link javax.measure.spi.ServiceProvider} class and hereby uses the JDK {@link java.util.ServiceLoader} to load the required
  * services.
  *
  * @author Werner Keil
@@ -59,131 +58,136 @@ import java.util.logging.Logger;
  */
 @Named("Default")
 public class DefaultServiceProvider extends ServiceProvider implements Comparable<ServiceProvider> {
-	/**
-	 * List of services loaded, per class.
-	 */
-	@SuppressWarnings("rawtypes")
-	private final Map<Class, List<Object>> servicesLoaded = new ConcurrentHashMap<>();
+    /**
+     * List of services loaded, per class.
+     */
+    @SuppressWarnings("rawtypes")
+    private final Map<Class, List<Object>> servicesLoaded = new ConcurrentHashMap<>();
 
-	private static final Comparator<Object> SERVICE_COMPARATOR = DefaultServiceProvider::compareServices;
+    private static final Comparator<Object> SERVICE_COMPARATOR = DefaultServiceProvider::compareServices;
 
-	@SuppressWarnings("rawtypes")
-	private final Map<Class, QuantityFactory> QUANTITY_FACTORIES = new ConcurrentHashMap<>();
+    @SuppressWarnings("rawtypes")
+    private final Map<Class, QuantityFactory> QUANTITY_FACTORIES = new ConcurrentHashMap<>();
 
-	/**
-	 * Returns a priority value of 10.
-	 *
-	 * @return 10, overriding the default provider.
-	 */
-	@Override
-	public int getPriority() {
-		return 10;
-	}
+    /**
+     * Returns a priority value of 10.
+     *
+     * @return 10, overriding the default provider.
+     */
+    @Override
+    public int getPriority() {
+        return 10;
+    }
 
-	/**
-	 * Loads and registers services.
-	 *
-	 * @param serviceType
-	 *            The service type.
-	 * @param <T>
-	 *            the concrete type.
-	 * @return the items found, never {@code null}.
-	 */
-	protected <T> List<T> getServices(final Class<T> serviceType) {
-		@SuppressWarnings("unchecked")
-		List<T> found = (List<T>) servicesLoaded.get(serviceType);
-		if (found != null) {
-			return found;
-		}
-		return loadServices(serviceType);
-	}
+    /**
+     * Loads and registers services.
+     *
+     * @param serviceType
+     *            The service type.
+     * @param <T>
+     *            the concrete type.
+     * @return the items found, never {@code null}.
+     */
+    protected <T> List<T> getServices(final Class<T> serviceType) {
+        @SuppressWarnings("unchecked")
+        List<T> found = (List<T>) servicesLoaded.get(serviceType);
+        if (found != null) {
+            return found;
+        }
+        return loadServices(serviceType);
+    }
 
-	protected <T> T getService(Class<T> serviceType) {
-		List<T> services = getServices(serviceType);
-		if (services.isEmpty()) {
-			return null;
-		}
-		return services.get(0);
-	}
+    protected <T> T getService(Class<T> serviceType) {
+        List<T> services = getServices(serviceType);
+        if (services.isEmpty()) {
+            return null;
+        }
+        return services.get(0);
+    }
 
-	private static int compareServices(Object o1, Object o2) {
-		int prio1 = 0;
-		int prio2 = 0;
-		if (prio1 < prio2) {
-			return 1;
-		}
-		if (prio2 < prio1) {
-			return -1;
-		}
-		return o2.getClass().getSimpleName().compareTo(o1.getClass().getSimpleName());
-	}
+    private static int compareServices(Object o1, Object o2) {
+        int prio1 = 0;
+        int prio2 = 0;
+        if (prio1 < prio2) {
+            return 1;
+        }
+        if (prio2 < prio1) {
+            return -1;
+        }
+        return o2.getClass().getSimpleName().compareTo(o1.getClass().getSimpleName());
+    }
 
-	/**
-	 * Loads and registers services.
-	 *
-	 * @param serviceType
-	 *            The service type.
-	 * @param <T>
-	 *            the concrete type.
-	 * @return the items found, never {@code null}.
-	 */
-	private <T> List<T> loadServices(final Class<T> serviceType) {
-		List<T> services = new ArrayList<>();
-		try {
-			for (T t : ServiceLoader.load(serviceType)) {
-				services.add(t);
-			}
-			Collections.sort(services, SERVICE_COMPARATOR);
-			@SuppressWarnings("unchecked")
-			final List<T> previousServices = (List<T>) servicesLoaded.putIfAbsent(serviceType, (List<Object>) services);
-			return Collections.unmodifiableList(previousServices != null ? previousServices : services);
-		} catch (Exception e) {
-			Logger.getLogger(DefaultServiceProvider.class.getName()).log(Level.WARNING,
-					"Error loading services of type " + serviceType, e);
-			Collections.sort(services, SERVICE_COMPARATOR);
-			return services;
-		}
-	}
+    /**
+     * Loads and registers services.
+     *
+     * @param serviceType
+     *            The service type.
+     * @param <T>
+     *            the concrete type.
+     * @return the items found, never {@code null}.
+     */
+    private <T> List<T> loadServices(final Class<T> serviceType) {
+        List<T> services = new ArrayList<>();
+        try {
+            for (T t : ServiceLoader.load(serviceType)) {
+                services.add(t);
+            }
+            Collections.sort(services, SERVICE_COMPARATOR);
+            @SuppressWarnings("unchecked")
+            final List<T> previousServices = (List<T>) servicesLoaded.putIfAbsent(serviceType, (List<Object>) services);
+            return Collections.unmodifiableList(previousServices != null ? previousServices : services);
+        } catch (Exception e) {
+            Logger.getLogger(DefaultServiceProvider.class.getName()).log(Level.WARNING, "Error loading services of type " + serviceType, e);
+            Collections.sort(services, SERVICE_COMPARATOR);
+            return services;
+        }
+    }
 
-	@Override
-	public int compareTo(ServiceProvider o) {
-		return Integer.compare(getPriority(), o.getPriority());
-	}
+    @Override
+    public int compareTo(ServiceProvider o) {
+        return Integer.compare(getPriority(), o.getPriority());
+    }
 
-	@Override
-	public SystemOfUnitsService getSystemOfUnitsService() {
-		return getService(SystemOfUnitsService.class);
-	}
+    @Override
+    public SystemOfUnitsService getSystemOfUnitsService() {
+        return getService(SystemOfUnitsService.class);
+    }
 
-	@Override
-	public UnitFormatService getUnitFormatService() {
-		return getService(UnitFormatService.class);
-	}
-	
-	@Override
-	public FormatService getFormatService() {
-		return getService(FormatService.class);
-	}
+    @Override
+    public UnitFormatService getUnitFormatService() {
+        return getService(UnitFormatService.class);
+    }
 
-	 /**
-	   * Return a factory for this quantity
-	   * 
-	   * @param quantity
-	   *          the quantity type
-	   * @return the {@link QuantityFactory}
-	   * @throws NullPointerException
-	   */
-	  @Override
-	  @SuppressWarnings("unchecked")
-	  public final <Q extends Quantity<Q>> QuantityFactory<Q> getQuantityFactory(Class<Q> quantity) {
-	    if (quantity == null)
-	      throw new NullPointerException();
-	    if (!QUANTITY_FACTORIES.containsKey(quantity)) {
-	      synchronized (QUANTITY_FACTORIES) {
-	        QUANTITY_FACTORIES.put(quantity, DefaultQuantityFactory.getInstance(quantity));
-	    	//QUANTITY_FACTORIES.put(quantity, ProxyQuantityFactory.getInstance(quantity)); FIXME this currently fails because some Quantity methods are not implemented by the proxy
-	      }
-	    }
-	    return QUANTITY_FACTORIES.get(quantity);
-	  }
+    @Override
+    public FormatService getFormatService() {
+        return getService(FormatService.class);
+    }
+
+    /**
+     * Return a factory for this quantity
+     * 
+     * @param quantity
+     *            the quantity type
+     * @return the {@link QuantityFactory}
+     * @throws NullPointerException
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public final <Q extends Quantity<Q>> QuantityFactory<Q> getQuantityFactory(Class<Q> quantity) {
+        if (quantity == null)
+            throw new NullPointerException();
+        if (!QUANTITY_FACTORIES.containsKey(quantity)) {
+            synchronized (QUANTITY_FACTORIES) {
+                QUANTITY_FACTORIES.put(quantity, DefaultQuantityFactory.getInstance(quantity));
+                // QUANTITY_FACTORIES.put(quantity, ProxyQuantityFactory.getInstance(quantity)); FIXME this currently fails because some Quantity
+                // methods are not implemented by the proxy
+            }
+        }
+        return QUANTITY_FACTORIES.get(quantity);
+    }
+
+    @Override
+    public String toString() {
+        return "Default";
+    }
 }
