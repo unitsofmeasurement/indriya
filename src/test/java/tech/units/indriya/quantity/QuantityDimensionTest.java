@@ -96,6 +96,28 @@ public class QuantityDimensionTest {
   }
 
   /**
+   * Verifies that the division is done correctly on powered units. Relies on the toString method to
+   * verify the result.
+   */
+  @Test
+  public void divisionIsDoneCorrectlyOnPoweredBaseUnits() {
+    Dimension m2 = QuantityDimension.MASS.pow(2);
+    Dimension result = QuantityDimension.LENGTH.divide(m2);
+    assertEquals("[L]/[M]²", result.toString());
+  }
+
+  /**
+   * Verifies that the division is done correctly on powered units. Relies on the toString method to
+   * verify the result.
+   */
+  @Test
+  public void divisionIsDoneCorrectlyOnPoweredProductUnits() {
+    Dimension ml = QuantityDimension.MASS.multiply(QuantityDimension.LENGTH);
+    Dimension result = QuantityDimension.LENGTH.divide(ml);
+    assertEquals("1/[M]", result.toString());
+  }
+
+  /**
    * Verifies that raising to a power is done correctly by checking that multiplication with itself is the same as raising to the power of two.
    */
   @Test
