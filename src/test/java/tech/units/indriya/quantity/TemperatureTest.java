@@ -34,8 +34,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static tech.units.indriya.unit.Units.CELSIUS;
 import static tech.units.indriya.unit.Units.KELVIN;
 
-import java.math.BigDecimal;
-
 import javax.measure.Quantity;
 import javax.measure.quantity.Temperature;
 
@@ -44,7 +42,7 @@ import org.junit.jupiter.api.Test;
 public class TemperatureTest {
 
   @Test
-  public void testInstanciate() {
+  public void testInstantiate() {
     Quantity<Temperature> t = Quantities.getQuantity(23.0d, CELSIUS); // 23.0 °C
     assertEquals("23.0 ℃", t.toString());
   }
@@ -68,27 +66,5 @@ public class TemperatureTest {
     Quantity<Temperature> t2 = t.to(CELSIUS);
     assertEquals(Double.valueOf(-271.15d), t2.getValue());
   }
-
-  @Test
-  public void testAdd() {
-    Quantity<Temperature> t = Quantities.getQuantity(Double.valueOf(20d), CELSIUS);
-    Quantity<Temperature> t2 = Quantities.getQuantity(Double.valueOf(2d), CELSIUS);
-    Quantity<Temperature> result = t.add(t2);
-    assertEquals(Double.valueOf(22d), result.getValue());
-  }
-
-  @Test
-  public void testAdd2() {
-    Quantity<Temperature> t = Quantities.getQuantity(BigDecimal.valueOf(20d), CELSIUS);
-    Quantity<Temperature> t2 = Quantities.getQuantity(BigDecimal.valueOf(2d), KELVIN);
-    Quantity<Temperature> result = t.add(t2);
-    assertEquals(BigDecimal.valueOf(-251.15d), result.getValue());
-  }
-
-  public void testAdd3() {
-
-  }
-
-  // 1°C + 2°C = 274.15 K + 275.15 K
 
 }

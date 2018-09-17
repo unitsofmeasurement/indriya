@@ -37,12 +37,15 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import javax.measure.quantity.Length;
+import javax.measure.quantity.Temperature;
 
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.unit.Units;
 
 public class JavaNumberQuantityTest {
+
+  private static final DoubleQuantity<Temperature> ZERO_DEGREES_CELSIUS = new DoubleQuantity<Temperature>(0.0d, Units.CELSIUS);
 
   private static final ByteQuantity<Length> BYTE_QUANTITY = new ByteQuantity<Length>((byte) 1, Units.METRE);
   private static final ShortQuantity<Length> SHORT_QUANTITY = new ShortQuantity<Length>((short) 1, Units.METRE);
@@ -276,5 +279,15 @@ public class JavaNumberQuantityTest {
   public void widenReturnsCorrectResultForDoubleQuantity() {
     assertEquals(DECIMAL_QUANTITY, DOUBLE_QUANTITY.widenTo(DECIMAL_QUANTITY));
     assertEquals(DecimalQuantity.class, DOUBLE_QUANTITY.widenTo(DECIMAL_QUANTITY).getClass());
+  }
+
+  /**
+   * Verifies that addition is performed in the system unit. E.g. addition of two temperatures in degrees Celsius is done in Kelvin and converted back
+   * to Celsius.
+   */
+  @Test
+  public void additionIsPerformedInSystemUnit() {
+    DoubleQuantity<Temperature> expected = new DoubleQuantity<Temperature>(273.15d, Units.CELSIUS);
+    assertEquals(expected, ZERO_DEGREES_CELSIUS.add(ZERO_DEGREES_CELSIUS));
   }
 }
