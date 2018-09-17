@@ -29,6 +29,7 @@
  */
 package tech.units.indriya.internal;
 
+import javax.inject.Named;
 import javax.measure.Quantity;
 import javax.measure.spi.FormatService;
 import javax.measure.spi.QuantityFactory;
@@ -53,9 +54,10 @@ import java.util.logging.Logger;
  * services.
  *
  * @author Werner Keil
- * @version 1.2
+ * @version 1.3
  * @since 1.0
  */
+@Named("Default")
 public class DefaultServiceProvider extends ServiceProvider implements Comparable<ServiceProvider> {
 	/**
 	 * List of services loaded, per class.

@@ -31,7 +31,8 @@ module tech.units.indriya {
     requires transitive java.logging;
     requires transitive java.measure;
     requires transitive tech.uom.lib.common;
-
+    requires transitive javax.inject;
+    
     exports tech.units.indriya;
     exports tech.units.indriya.format;
     exports tech.units.indriya.function;
