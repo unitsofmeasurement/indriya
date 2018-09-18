@@ -35,6 +35,7 @@ import javax.measure.Unit;
 
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.unit.BaseUnit;
+import tech.units.indriya.unit.ProductUnit;
 import tech.units.indriya.unit.Units;
 
 import java.io.Serializable;
@@ -220,7 +221,7 @@ public final class QuantityDimension implements Dimension, Serializable {
    * @since 1.0
    */
   public Dimension divide(Dimension that) {
-    return this.multiply(that.pow(-1));
+      return that instanceof QuantityDimension ? this.divide((QuantityDimension) that) : this.divide(that);
   }
 
   /**
@@ -232,7 +233,7 @@ public final class QuantityDimension implements Dimension, Serializable {
    * @since 1.0
    */
   public QuantityDimension divide(QuantityDimension that) {
-    return this.multiply(that.pow(-1));
+    return new QuantityDimension(ProductUnit.ofQuotient(pseudoUnit, that.pseudoUnit));
   }
 
   /**
