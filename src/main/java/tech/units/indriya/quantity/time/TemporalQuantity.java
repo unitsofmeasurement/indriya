@@ -241,11 +241,9 @@ public final class TemporalQuantity extends AbstractQuantity<Time> {
 			conv = getUnit().getConverterToAny(divUnit);
 			return TimeQuantities.getQuantity(value / conv.convert(that.getValue()).intValue(), timeUnit);
 		} catch (UnconvertibleException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return TimeQuantities.getQuantity(value / that.getValue().intValue(), timeUnit);
 		} catch (IncommensurableException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return TimeQuantities.getQuantity(value / that.getValue().intValue(), timeUnit);
 		}
@@ -267,11 +265,9 @@ public final class TemporalQuantity extends AbstractQuantity<Time> {
 			conv = getUnit().getConverterToAny(mulUnit);
 			return TimeQuantities.getQuantity(value * conv.convert(multiplier.getValue()).intValue(), timeUnit);
 		} catch (UnconvertibleException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return TimeQuantities.getQuantity(value * multiplier.getValue().intValue(), timeUnit);
 		} catch (IncommensurableException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return TimeQuantities.getQuantity(value * multiplier.getValue().intValue(), timeUnit);
 		}
