@@ -35,7 +35,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.math.BigDecimal;
 import java.util.Collection;
-
 import javax.measure.BinaryPrefix;
 import javax.measure.MetricPrefix;
 import javax.measure.Prefix;
@@ -76,7 +75,7 @@ public class SystemOfUnitsServiceTest {
   @Test
   public void testGetMetricPrefixes() {
     assertNotNull(service);
-    Collection<Prefix> prefixes = service.getPrefixes(MetricPrefix.class);
+    Collection<MetricPrefix> prefixes = service.getPrefixes(MetricPrefix.class);
     assertNotNull(prefixes);
     assertEquals(20, prefixes.size());
   }
@@ -84,7 +83,7 @@ public class SystemOfUnitsServiceTest {
   @Test
   public void testGetBinaryPrefixes() {
     assertNotNull(service);
-    Collection<Prefix> prefixes = service.getPrefixes(BinaryPrefix.class);
+    Collection<BinaryPrefix> prefixes = service.getPrefixes(BinaryPrefix.class);
     assertNotNull(prefixes);
     assertEquals(8, prefixes.size());
   }
