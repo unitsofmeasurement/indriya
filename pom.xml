@@ -36,7 +36,7 @@
 	<!-- Build Settings -->
 	<!-- ======================================================= -->
 	<properties>
-		<jsr.version>2.0-EDR</jsr.version>
+		<jsr.version>2.0-SNAPSHOT</jsr.version>
 		<lib.version>2.0-EDR</lib.version>
 		<sourceEncoding>UTF-8</sourceEncoding>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
