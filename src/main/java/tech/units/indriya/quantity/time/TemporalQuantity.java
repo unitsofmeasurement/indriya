@@ -285,7 +285,7 @@ public final class TemporalQuantity extends AbstractQuantity<Time> {
 
 	@Override
 	public boolean isBig() {
-		return true; // Duration backed by BigDecimal/BigInteger
+		return false; // Duration backed by long
 	}
 
 	@Override

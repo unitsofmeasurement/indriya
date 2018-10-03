@@ -177,4 +177,12 @@ public class TemporalQuantityTest {
     assertTrue(FORTY_TWO_MINUTES.equals(TemporalQuantity.of(Quantities.getQuantity(42, Units.MINUTE))));
   }
 
+  /**
+   * Verifies that a TemporalQuantity isn't big.
+   */
+  @Test
+  public void floatQuantityIsNotBig() {
+    assertFalse(FORTY_TWO_MINUTES.isBig());
+  }
+  
 }
