@@ -178,11 +178,53 @@ public class TemporalQuantityTest {
   }
 
   /**
-   * Verifies that a TemporalQuantity isn't big.
+   * Verifies that a temporal quantity is not equal to another temporal quantity with a different value.
    */
   @Test
-  public void floatQuantityIsNotBig() {
-    assertFalse(FORTY_TWO_MINUTES.isBig());
+  public void temporalQuantityIsNotEqualToTemporalQuantityWithAnotherValue() {
+    assertFalse(FORTY_TWO_MINUTES.equals(TemporalQuantity.of(Quantities.getQuantity(43, Units.MINUTE))));
   }
-  
+
+  /**
+   * Verifies that a temporal quantity is not equal to another temporal quantity with a different unit.
+   */
+  @Test
+  public void temporalQuantityIsNotEqualToTemporalQuantityWithAnotherUnit() {
+    assertFalse(FORTY_TWO_MINUTES.equals(TemporalQuantity.of(Quantities.getQuantity(42, Units.HOUR))));
+  }
+
+  /**
+   * Verifies that a temporal quantity is not equal to an object of another class.
+   */
+  @Test
+  public void temporalQuantityIsNotEqualToObjectOfAnotherClass() {
+    assertFalse(FORTY_TWO_MINUTES.equals(Units.HOUR));
+  }
+
+  /**
+   * Verifies that a temporal quantity has the same hashCode as another temporal quantity instantiated from an equal quantity.
+   */
+  @Test
+  public void temporalQuantityHasSameHashCodeAsTemporalQuantityInstantiatedFromAnEqualQuantity() {
+    assertEquals(FORTY_TWO_MINUTES.hashCode(), TemporalQuantity.of(Quantities.getQuantity(42, Units.MINUTE)).hashCode());
+  }
+
+  /**
+   * Verifies that a temporal quantity doesn't have the same hashCode as another temporal quantity with a different value. Note that this isn't a
+   * requirement for the hashCode method, but generally a good property to have.
+   */
+  @Test
+  public void temporalQuantityHasDifferentHashCodeThanTemporalQuantityWithADifferentValue() {
+    assertFalse(FORTY_TWO_MINUTES.hashCode() == TemporalQuantity.of(Quantities.getQuantity(43, Units.MINUTE)).hashCode());
+  }
+
+  /**
+   * Verifies that a temporal quantity doesn't have the same hashCode as another temporal quantity with a different unit. Note that this isn't a
+   * requirement for the hashCode method, but generally a good property to have.
+   */
+  @Test
+  public void temporalQuantityHasDifferentHashCodeThanTemporalQuantityWithADifferentUnit() {
+    assertFalse(FORTY_TWO_MINUTES.hashCode() == TemporalQuantity.of(Quantities.getQuantity(42, Units.HOUR)).hashCode());
+  }
+
 }
