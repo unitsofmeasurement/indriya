@@ -35,6 +35,7 @@ import static tech.units.indriya.unit.Units.GRAM;
 import static tech.units.indriya.unit.Units.HERTZ;
 import static tech.units.indriya.unit.Units.KILOGRAM;
 import static tech.units.indriya.unit.Units.METRE;
+import static tech.units.indriya.format.SimpleUnitFormat.Flavor.ASCII;
 
 import java.math.BigInteger;
 import java.util.logging.Level;
@@ -194,6 +195,12 @@ public class SimpleFormatTest {
     @Disabled("SimpleUnitFormat cannot deal with expressions that start with 1 at this point")
     public void testParseInverseL() {
         Unit<?> u = format.parse("1/l");
+        assertEquals("1/l", u.toString());
+    }
+    
+    @Test
+    public void testParseM3() {
+        Unit<?> u = SimpleUnitFormat.getInstance(ASCII).parse("m3");
         assertEquals("1/l", u.toString());
     }
 }
