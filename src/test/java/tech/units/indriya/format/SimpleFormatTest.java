@@ -199,6 +199,8 @@ public class SimpleFormatTest {
     }
     
     @Test
+    @Disabled("Trying to address #141")
+
     public void testParseM3() {
         Unit<?> u = SimpleUnitFormat.getInstance(ASCII).parse("m3");
         assertEquals("1/l", u.toString());
