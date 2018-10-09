@@ -68,25 +68,25 @@ public class TimeQuantitiesConcurrentTest {
     TimeUnitQuantity nanoSecond = TimeUnitQuantity.of(NANOSECONDS, 1);
 
     assertEquals(DAYS, day.getTimeUnit());
-    assertEquals(Integer.valueOf(1), day.getValue());
+    assertEquals(Long.valueOf(1), day.getValue());
 
     assertEquals(HOURS, hour.getTimeUnit());
-    assertEquals(Integer.valueOf(1), hour.getValue());
+    assertEquals(Long.valueOf(1), hour.getValue());
 
     assertEquals(MINUTES, minute.getTimeUnit());
-    assertEquals(Integer.valueOf(1), minute.getValue());
+    assertEquals(Long.valueOf(1), minute.getValue());
 
     assertEquals(SECONDS, second.getTimeUnit());
-    assertEquals(Integer.valueOf(1), second.getValue());
+    assertEquals(Long.valueOf(1), second.getValue());
 
     assertEquals(MICROSECONDS, microSecond.getTimeUnit());
-    assertEquals(Integer.valueOf(1), microSecond.getValue());
+    assertEquals(Long.valueOf(1), microSecond.getValue());
 
     assertEquals(MILLISECONDS, milliSecond.getTimeUnit());
-    assertEquals(Integer.valueOf(1), milliSecond.getValue());
+    assertEquals(Long.valueOf(1), milliSecond.getValue());
 
     assertEquals(NANOSECONDS, nanoSecond.getTimeUnit());
-    assertEquals(Integer.valueOf(1), nanoSecond.getValue());
+    assertEquals(Long.valueOf(1), nanoSecond.getValue());
   }
 
   @Test
@@ -96,7 +96,7 @@ public class TimeQuantitiesConcurrentTest {
 
     assertEquals(TimeUnit.SECONDS, timeQuantity.getTimeUnit());
     assertEquals(SECOND, timeQuantity.toUnit());
-    assertEquals(Integer.valueOf(3600), timeQuantity.getValue());
+    assertEquals(Long.valueOf(3600), timeQuantity.getValue());
   }
 
   @Test
@@ -145,11 +145,11 @@ public class TimeQuantitiesConcurrentTest {
     TimeUnitQuantity hours = day.to(TimeUnit.HOURS);
 
     assertEquals(TimeUnit.HOURS, hours.getTimeUnit());
-    assertEquals(Integer.valueOf(24), hours.getValue());
+    assertEquals(Long.valueOf(24), hours.getValue());
 
     TimeUnitQuantity oneDay = hours.to(TimeUnit.DAYS);
     assertEquals(TimeUnit.DAYS, oneDay.getTimeUnit());
-    assertEquals(Integer.valueOf(1), oneDay.getValue());
+    assertEquals(Long.valueOf(1), oneDay.getValue());
   }
 
   private void verifyQuantity(Quantity<Time> quantity, Unit<Time> unit, Number number) {

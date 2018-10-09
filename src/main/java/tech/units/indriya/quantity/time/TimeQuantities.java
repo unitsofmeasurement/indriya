@@ -153,20 +153,20 @@ public final class TimeQuantities {
 	 * @param timeUnit
 	 *            - time to be used
 	 */
-	public static TimeUnitQuantity getQuantity(Integer number, TimeUnit timeUnit) {
+	public static TimeUnitQuantity getQuantity(Long number, TimeUnit timeUnit) {
 		return new TimeUnitQuantity(Objects.requireNonNull(timeUnit), Objects.requireNonNull(number));
 	}
 
 	/**
 	 * creates the {@link TemporalQuantity} using {@link TemporalUnit} and
-	 * {@link Integer}
+	 * {@link Long}
 	 * 
 	 * @param value
 	 *            - value to be used
 	 * @param timeUnit
 	 *            - time to be used
 	 */
-	public static TemporalQuantity getQuantity(Integer number, TemporalUnit temporalUnit) {
+	public static TemporalQuantity getQuantity(Long number, TemporalUnit temporalUnit) {
 		return new TemporalQuantity(Objects.requireNonNull(number), Objects.requireNonNull(temporalUnit));
 	}
 
@@ -180,7 +180,7 @@ public final class TimeQuantities {
 	 */
 	public static TimeUnitQuantity toTimeUnitSeconds(Quantity<Time> quantity) {
 		Quantity<Time> seconds = Objects.requireNonNull(quantity).to(SECOND);
-		return new TimeUnitQuantity(TimeUnit.SECONDS, seconds.getValue().intValue());
+		return new TimeUnitQuantity(TimeUnit.SECONDS, seconds.getValue().longValue());
 	}
 
 	/**

@@ -20,42 +20,80 @@ import tech.units.indriya.unit.Units;
  */
 public class TemporalQuantityTest {
 
-  private static final TemporalQuantity FORTY_TWO_MINUTES = TemporalQuantity.of(Quantities.getQuantity(42, Units.MINUTE));
+  private static final TemporalQuantity FORTY_TWO_MINUTES = TemporalQuantity.of(Quantities.getQuantity(42L, Units.MINUTE));
 
   /**
-   * Verifies that the factory method {@code of} with a value and a temporal unit has the value wired correctly.
+   * Verifies that the factory method {@code of} with a long value and a temporal unit has the value wired correctly.
    */
   @Test
-  public void valueWiredCorrectlyInFactoryMethodOfWithValueAndTemporalUnit() {
-    final Integer testValue = 42;
+  public void valueWiredCorrectlyInFactoryMethodOfWithLongValueAndTemporalUnit() {
+    final Long testValue = 42L;
     TemporalQuantity quantity = TemporalQuantity.of(testValue, ChronoUnit.MINUTES);
     assertEquals(testValue, quantity.getValue());
   }
 
   /**
-   * Verifies that the factory method {@code of} with a value and a temporal unit has the temporal unit wired correctly.
+   * Verifies that the factory method {@code of} with a long value and a temporal unit has the temporal unit wired correctly.
    */
   @Test
-  public void temporalUnitWiredCorrectlyInFactoryMethodOfWithValueAndTemporalUnit() {
+  public void temporalUnitWiredCorrectlyInFactoryMethodOfWithLongValueAndTemporalUnit() {
+    final TemporalUnit testUnit = ChronoUnit.MINUTES;
+    TemporalQuantity quantity = TemporalQuantity.of(42L, testUnit);
+    assertEquals(testUnit, quantity.getTemporalUnit());
+  }
+
+  /**
+   * Verifies that the temporal unit is converted to a unit by the factory method {@code of} with a long value and a temporal unit.
+   */
+  @Test
+  public void temporalUnitIsConvertedToAUnitInFactoryMethodWithLongValueAndTemporalUnit() {
+    TemporalQuantity quantity = TemporalQuantity.of(42L, ChronoUnit.MINUTES);
+    assertEquals(Units.MINUTE, quantity.getUnit());
+  }
+
+  /**
+   * Verifies that the temporal amount is calculated correctly by the factory method {@code of} with a long value and a temporal unit.
+   */
+  @Test
+  public void temporalAmountIsCalculatedCorrectlyByFactoryMethodWithLongValueAndTemporalUnit() {
+    TemporalQuantity quantity = TemporalQuantity.of(42L, ChronoUnit.MINUTES);
+    assertEquals(Duration.ofMinutes(42), quantity.getTemporalAmount());
+  }
+  
+  /**
+   * Verifies that the factory method {@code of} with an integer value and a temporal unit has the value wired correctly.
+   */
+  @Test
+  public void valueWiredCorrectlyInFactoryMethodOfWithIntegerValueAndTemporalUnit() {
+    final Integer testValue = 42;
+    TemporalQuantity quantity = TemporalQuantity.of(testValue, ChronoUnit.MINUTES);
+    assertEquals(Long.valueOf(testValue), quantity.getValue());
+  }
+
+  /**
+   * Verifies that the factory method {@code of} with an integer value and a temporal unit has the temporal unit wired correctly.
+   */
+  @Test
+  public void temporalUnitWiredCorrectlyInFactoryMethodOfWithIntegerValueAndTemporalUnit() {
     final TemporalUnit testUnit = ChronoUnit.MINUTES;
     TemporalQuantity quantity = TemporalQuantity.of(42, testUnit);
     assertEquals(testUnit, quantity.getTemporalUnit());
   }
 
   /**
-   * Verifies that the temporal unit is converted to a unit by the factory method {@code of} with a value and a temporal unit.
+   * Verifies that the temporal unit is converted to a unit by the factory method {@code of} with an integer value and a temporal unit.
    */
   @Test
-  public void temporalUnitIsConvertedToAUnitInFactoryMethodWithValueAndTemporalUnit() {
+  public void temporalUnitIsConvertedToAUnitInFactoryMethodWithIntegerValueAndTemporalUnit() {
     TemporalQuantity quantity = TemporalQuantity.of(42, ChronoUnit.MINUTES);
     assertEquals(Units.MINUTE, quantity.getUnit());
   }
 
   /**
-   * Verifies that the temporal amount is calculated correctly by the factory method {@code of} with a value and a temporal unit.
+   * Verifies that the temporal amount is calculated correctly by the factory method {@code of} with an integer value and a temporal unit.
    */
   @Test
-  public void temporalAmountIsCalculatedCorrectlyByFactoryMethodWithValueAndTemporalUnit() {
+  public void temporalAmountIsCalculatedCorrectlyByFactoryMethodWithIntegerValueAndTemporalUnit() {
     TemporalQuantity quantity = TemporalQuantity.of(42, ChronoUnit.MINUTES);
     assertEquals(Duration.ofMinutes(42), quantity.getTemporalAmount());
   }
@@ -66,7 +104,7 @@ public class TemporalQuantityTest {
   @Test
   public void valueIsCalculatedCorrectlyFromTimeQuantity() {
     TemporalQuantity quantity = FORTY_TWO_MINUTES;
-    final Integer expected = 42 * 60;
+    final Long expected = 42L * 60L;
     assertEquals(expected, quantity.getValue());
   }
 
@@ -174,7 +212,7 @@ public class TemporalQuantityTest {
    */
   @Test
   public void temporalQuantityIsEqualToTemporalQuantityInstantiatedFromAnEqualQuantity() {
-    assertTrue(FORTY_TWO_MINUTES.equals(TemporalQuantity.of(Quantities.getQuantity(42, Units.MINUTE))));
+    assertTrue(FORTY_TWO_MINUTES.equals(TemporalQuantity.of(Quantities.getQuantity(42L, Units.MINUTE))));
   }
 
   /**
@@ -182,7 +220,7 @@ public class TemporalQuantityTest {
    */
   @Test
   public void temporalQuantityIsNotEqualToTemporalQuantityWithAnotherValue() {
-    assertFalse(FORTY_TWO_MINUTES.equals(TemporalQuantity.of(Quantities.getQuantity(43, Units.MINUTE))));
+    assertFalse(FORTY_TWO_MINUTES.equals(TemporalQuantity.of(Quantities.getQuantity(43L, Units.MINUTE))));
   }
 
   /**
@@ -190,7 +228,7 @@ public class TemporalQuantityTest {
    */
   @Test
   public void temporalQuantityIsNotEqualToTemporalQuantityWithAnotherUnit() {
-    assertFalse(FORTY_TWO_MINUTES.equals(TemporalQuantity.of(Quantities.getQuantity(42, Units.HOUR))));
+    assertFalse(FORTY_TWO_MINUTES.equals(TemporalQuantity.of(Quantities.getQuantity(42L, Units.HOUR))));
   }
 
   /**
@@ -206,7 +244,7 @@ public class TemporalQuantityTest {
    */
   @Test
   public void temporalQuantityHasSameHashCodeAsTemporalQuantityInstantiatedFromAnEqualQuantity() {
-    assertEquals(FORTY_TWO_MINUTES.hashCode(), TemporalQuantity.of(Quantities.getQuantity(42, Units.MINUTE)).hashCode());
+    assertEquals(FORTY_TWO_MINUTES.hashCode(), TemporalQuantity.of(Quantities.getQuantity(42L, Units.MINUTE)).hashCode());
   }
 
   /**
@@ -215,7 +253,7 @@ public class TemporalQuantityTest {
    */
   @Test
   public void temporalQuantityHasDifferentHashCodeThanTemporalQuantityWithADifferentValue() {
-    assertFalse(FORTY_TWO_MINUTES.hashCode() == TemporalQuantity.of(Quantities.getQuantity(43, Units.MINUTE)).hashCode());
+    assertFalse(FORTY_TWO_MINUTES.hashCode() == TemporalQuantity.of(Quantities.getQuantity(43L, Units.MINUTE)).hashCode());
   }
 
   /**
@@ -224,7 +262,15 @@ public class TemporalQuantityTest {
    */
   @Test
   public void temporalQuantityHasDifferentHashCodeThanTemporalQuantityWithADifferentUnit() {
-    assertFalse(FORTY_TWO_MINUTES.hashCode() == TemporalQuantity.of(Quantities.getQuantity(42, Units.HOUR)).hashCode());
+    assertFalse(FORTY_TWO_MINUTES.hashCode() == TemporalQuantity.of(Quantities.getQuantity(42L, Units.HOUR)).hashCode());
+  }
+
+  /**
+   * Verifies that a TemporalQuantity isn't big.
+   */
+  @Test
+  public void temporalQuantityIsNotBig() {
+    assertFalse(FORTY_TWO_MINUTES.isBig());
   }
 
 }
