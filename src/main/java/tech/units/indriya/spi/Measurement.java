@@ -43,47 +43,50 @@ import tech.uom.lib.common.function.QuantitySupplier;
  * A Measurement contains a {@link Quantity} and a timestamp.
  *
  * <p>
- * A {@code Measurement} object is used for maintaining the tuple of quantity and time-stamp.
- * The value is represented as {@linkplain Quantity}
- * and the time as {@linkplain Instant} plus <type>long</type> for backward-compatibility.
+ * A {@code Measurement} object is used for maintaining the tuple of quantity and time-stamp. The value is represented as {@linkplain Quantity} and
+ * the time as {@linkplain Instant} plus <type>long</type> for backward-compatibility.
  * <p>
  *
  * @see {@link QuantitySupplier}
  * @author werner
- * @version 0.7
+ * @version 0.8
  * @param <Q>
  * @since 1.0
  */
 public interface Measurement<Q extends Quantity<Q>> extends QuantitySupplier<Q>, Serializable {
 
-	/**
-	 * Returns the timestamp of this {@link Measurement}.
-	 *
-	 * @return a timestamp.
-	 */
-	long getTimestamp();
+    /**
+     * Returns the timestamp of this {@link Measurement}.
+     *
+     * @return a timestamp.
+     */
+    long getTimestamp();
 
-	/**
-	 * Returns the {@linkplain Instant} as timestamp.
-	 *
-	 * @return an instant.
-	 */
-	Instant getInstant();
+    /**
+     * Returns the {@linkplain Instant} as timestamp.
+     *
+     * @return an instant.
+     */
+    Instant getInstant();
 
-	@SuppressWarnings({ })
-	static <Q extends Quantity<Q>> Measurement<Q> of(Quantity<Q> q) {
-		return new Default<>(q);
-	}
+    @SuppressWarnings({})
+    static <Q extends Quantity<Q>> Measurement<Q> of(Quantity<Q> q) {
+        return new Default<>(q);
+    }
 
-	static <Q extends Quantity<Q>> Measurement<Q> of(Quantity<Q> q, Instant i) {
-		return new Default<>(q, i);
-	}
+    static <Q extends Quantity<Q>> Measurement<Q> of(Quantity<Q> q, Instant i) {
+        return new Default<>(q, i);
+    }
 
-	static <Q extends Quantity<Q>> Measurement<Q> of(ComparableQuantity<Q> q) {
-		return new AbstractMeasurement.DefaultComparable<>(q);
-	}
+    static <Q extends Quantity<Q>> Measurement<Q> of(ComparableQuantity<Q> q) {
+        return new AbstractMeasurement.DefaultComparable<>(q);
+    }
 
-	static <Q extends Quantity<Q>> Measurement<Q> of(ComparableQuantity<Q> q, Instant i) {
-		return new AbstractMeasurement.DefaultComparable<>(q, i);
-	}
+    static <Q extends Quantity<Q>> Measurement<Q> of(ComparableQuantity<Q> q, Instant i) {
+        return new AbstractMeasurement.DefaultComparable<>(q, i);
+    }
+
+    static <Q extends Quantity<Q>> Measurement<Q> of(Quantity<Q> q, long l) {
+        return new Default<>(q, l);
+    }
 }

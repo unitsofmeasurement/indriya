@@ -31,9 +31,11 @@ package tech.units.indriya.spi;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static tech.units.indriya.unit.Units.KILOGRAM;
+import static tech.units.indriya.unit.Units.METRE;
 
 import java.time.Instant;
 
+import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
 
 import org.junit.jupiter.api.Test;
@@ -45,10 +47,18 @@ public class MeasurementTest {
 
   @Test
   public void testOf() {
-    Instant instant = Instant.now();
+    final Instant instant = Instant.now();
     Measurement<Mass> measurement = Measurement.of(Quantities.getQuantity(15, KILOGRAM), instant);
     assertEquals(Quantities.getQuantity(15, KILOGRAM), measurement.getQuantity());
     assertEquals(instant, measurement.getInstant());
     assertEquals(instant.toEpochMilli(), measurement.getTimestamp());
+  }
+  
+  @Test
+  public void testOfLong() {
+    final long timestamp = System.currentTimeMillis();
+    Measurement<Length> measurement = Measurement.of(Quantities.getQuantity(10, METRE), timestamp);
+    assertEquals(Quantities.getQuantity(10, METRE), measurement.getQuantity());
+    assertEquals(timestamp, measurement.getTimestamp());
   }
 }
