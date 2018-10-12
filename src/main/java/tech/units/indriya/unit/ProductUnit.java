@@ -58,7 +58,7 @@ import java.util.Objects;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.5, August 14, 2018
+ * @version 1.6, October 12, 2018
  * @since 1.0
  */
 public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
@@ -74,15 +74,10 @@ public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
   private final Element[] elements;
 
   /**
-   * Holds the symbol for this unit.
-   */
-  private final String symbol;
-
-  /**
    * DefaultQuantityFactory constructor (used solely to create <code>ONE</code> instance).
    */
   public ProductUnit() {
-    this.symbol = "";
+    super("");
     elements = new Element[0];
   }
 
@@ -95,7 +90,7 @@ public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
    *           if the specified unit is not a product unit.
    */
   public ProductUnit(Unit<?> productUnit) {
-    this.symbol = productUnit.getSymbol();
+    super(productUnit.getSymbol());
     this.elements = ((ProductUnit<?>) productUnit).elements;
   }
 
@@ -106,9 +101,9 @@ public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
    *          the product elements.
    */
   private ProductUnit(Element[] elements) {
+    super(null);
     this.elements = elements;
     // this.symbol = elements[0].getUnit().getSymbol(); // FIXME this should contain ALL elements
-    this.symbol = null;
   }
 
   /**
@@ -528,10 +523,5 @@ public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
       result = 31 * result + root;
       return result;
     }
-  }
-
-  @Override
-  public String getSymbol() {
-    return symbol;
   }
 }

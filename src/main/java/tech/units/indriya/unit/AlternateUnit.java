@@ -46,96 +46,100 @@ import java.util.Objects;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.3.1, August 06, 2017
+ * @version 1.4, October 12, 2018
  * @since 1.0
  */
 public final class AlternateUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
 
-  /**
+    /**
      * 
      */
-  private static final long serialVersionUID = 4696690756456282705L;
+    private static final long serialVersionUID = 4696690756456282705L;
 
-  /**
-   * Holds the parent unit (a system unit).
-   */
-  private final Unit<?> parentUnit;
+    /**
+     * Holds the parent unit (a system unit).
+     */
+    private final Unit<?> parentUnit;
 
-  /**
-   * Holds the symbol for this unit.
-   */
-  private final String symbol;
+    /**
+     * Holds the symbol for this unit.
+     */
+    private final String symbol;
 
-  /**
-   * Creates an alternate unit for the specified system unit identified by the specified name and symbol.
-   *
-   * @param parent
-   *          the system unit from which this alternate unit is derived.
-   * @param symbol
-   *          the symbol for this alternate unit.
-   * @throws IllegalArgumentException
-   *           if the specified parent unit is not an {@link AbstractUnit#isSystemUnit() system unit}
-   */
-  public AlternateUnit(Unit<?> parentUnit, String symbol) {
-    if (!((AbstractUnit) parentUnit).isSystemUnit())
-      throw new IllegalArgumentException("The parent unit: " + parentUnit + " is not an unscaled SI unit");
-    this.parentUnit = (parentUnit instanceof AlternateUnit) ? ((AlternateUnit) parentUnit).getParentUnit() : parentUnit;
-    this.symbol = symbol;
-  }
-
-  /**
-   * Returns the parent unit of this alternate unit, always a system unit and never an alternate unit.
-   *
-   * @return the parent unit.
-   */
-  public Unit<?> getParentUnit() {
-    return parentUnit;
-  }
-
-  @Override
-  public String getSymbol() {
-    return symbol;
-  }
-
-  @Override
-  public Dimension getDimension() {
-    return parentUnit.getDimension();
-  }
-
-  @Override
-  public UnitConverter getSystemConverter() {
-    return ((AbstractUnit) parentUnit).getSystemConverter();
-  }
-
-  @Override
-  public Unit<Q> toSystemUnit() {
-    return this; // Alternate units are SI units.
-  }
-
-  @Override
-  public Map<? extends Unit<?>, Integer> getBaseUnits() {
-    return parentUnit.getBaseUnits();
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hashCode(symbol);
-  }
-
-  @SuppressWarnings("rawtypes")
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
+    /**
+     * Creates an alternate unit for the specified system unit identified by the specified name and symbol.
+     *
+     * @param parent
+     *            the system unit from which this alternate unit is derived.
+     * @param symbol
+     *            the symbol for this alternate unit.
+     * @throws IllegalArgumentException
+     *             if the specified parent unit is not an {@link AbstractUnit#isSystemUnit() system unit}
+     */
+    @SuppressWarnings("rawtypes")
+    public AlternateUnit(Unit<?> parentUnit, String symbol) {
+        if (!(parentUnit instanceof AbstractUnit))
+            throw new IllegalArgumentException("The parent unit: " + parentUnit + " is not an AbstractUnit");
+        if (!((AbstractUnit) parentUnit).isSystemUnit())
+            throw new IllegalArgumentException("The parent unit: " + parentUnit + " is not an unscaled SI unit");
+        this.parentUnit = (parentUnit instanceof AlternateUnit) ? ((AlternateUnit) parentUnit).getParentUnit() : parentUnit;
+        this.symbol = symbol;
     }
-    if (obj instanceof AlternateUnit) {
-      AlternateUnit that = (AlternateUnit) obj;
-      return Objects.equals(parentUnit, that.parentUnit) && Objects.equals(symbol, that.symbol);
+
+    /**
+     * Returns the parent unit of this alternate unit, always a system unit and never an alternate unit.
+     *
+     * @return the parent unit.
+     */
+    public Unit<?> getParentUnit() {
+        return parentUnit;
     }
-    if (obj instanceof AbstractUnit) {
-      return AbstractUnit.Equalizer.areEqual(this, (AbstractUnit) obj);
-    } else {
-      return false;
+
+    @Override
+    public String getSymbol() {
+        return symbol;
     }
-  }
+
+    @Override
+    public Dimension getDimension() {
+        return parentUnit.getDimension();
+    }
+
+    @SuppressWarnings("rawtypes")
+    @Override
+    public UnitConverter getSystemConverter() {
+        return ((AbstractUnit) parentUnit).getSystemConverter();
+    }
+
+    @Override
+    public Unit<Q> toSystemUnit() {
+        return this; // Alternate units are SI units.
+    }
+
+    @Override
+    public Map<? extends Unit<?>, Integer> getBaseUnits() {
+        return parentUnit.getBaseUnits();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(symbol); // TODO why is parentUnit not used here?
+    }
+
+    @SuppressWarnings("rawtypes")
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj instanceof AlternateUnit) {
+            AlternateUnit that = (AlternateUnit) obj;
+            return Objects.equals(parentUnit, that.parentUnit) && Objects.equals(symbol, that.symbol);
+        }
+        if (obj instanceof AbstractUnit) {
+            return AbstractUnit.Equalizer.areEqual(this, (AbstractUnit) obj);
+        } else {
+            return false;
+        }
+    }
 }
