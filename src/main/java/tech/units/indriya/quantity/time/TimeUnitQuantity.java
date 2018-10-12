@@ -67,21 +67,33 @@ public final class TimeUnitQuantity extends AbstractQuantity<Time> {
 
 	private final TimeUnit timeUnit;
 
-	private final Integer value;
+	private final Long value;
 
 	/**
 	 * creates the {@link TimeUnitQuantity} using {@link TimeUnit} and
-	 * {@link Integer}
+	 * {@link Long}
 	 * 
 	 * @param timeUnit - time to be used
 	 * @param value    - value to be used
 	 */
-	TimeUnitQuantity(TimeUnit timeUnit, Integer value) {
+	TimeUnitQuantity(TimeUnit timeUnit, Long value) {
 		super(toUnit(timeUnit));
 		this.timeUnit = timeUnit;
 		this.value = value;
 	}
 
+	 /**
+   * creates the {@link TimeUnitQuantity} using {@link TimeUnit} and
+   * {@link Long}
+   * 
+   * @param timeUnit - time to be used
+   * @param value    - value to be used
+   * @since 1.0.9
+   */
+  public static TimeUnitQuantity of(Long number, TimeUnit timeUnit) {
+    return new TimeUnitQuantity(Objects.requireNonNull(timeUnit), Objects.requireNonNull(number));
+  }
+	
 	/**
 	 * creates the {@link TimeUnitQuantity} using {@link TimeUnit} and
 	 * {@link Integer}
@@ -91,7 +103,7 @@ public final class TimeUnitQuantity extends AbstractQuantity<Time> {
 	 * @since 1.0.9
 	 */
 	public static TimeUnitQuantity of(Integer number, TimeUnit timeUnit) {
-		return new TimeUnitQuantity(Objects.requireNonNull(timeUnit), Objects.requireNonNull(number));
+		return new TimeUnitQuantity(Objects.requireNonNull(timeUnit), Objects.requireNonNull(number).longValue());
 	}
 
 	/**
@@ -104,7 +116,7 @@ public final class TimeUnitQuantity extends AbstractQuantity<Time> {
 	 * @deprecated use #of(Integer, TimeUnit)
 	 */
 	public static TimeUnitQuantity of(TimeUnit timeUnit, Integer number) {
-		return new TimeUnitQuantity(Objects.requireNonNull(timeUnit), Objects.requireNonNull(number));
+		return new TimeUnitQuantity(Objects.requireNonNull(timeUnit), Objects.requireNonNull(number).longValue());
 	}
 
 	/**
@@ -117,7 +129,7 @@ public final class TimeUnitQuantity extends AbstractQuantity<Time> {
 	 */
 	public static TimeUnitQuantity of(Quantity<Time> quantity) {
 		Quantity<Time> seconds = Objects.requireNonNull(quantity).to(SECOND);
-		return new TimeUnitQuantity(TimeUnit.SECONDS, seconds.getValue().intValue());
+		return new TimeUnitQuantity(TimeUnit.SECONDS, seconds.getValue().longValue());
 	}
 
 	/**
@@ -131,12 +143,12 @@ public final class TimeUnitQuantity extends AbstractQuantity<Time> {
 	}
 
 	/**
-	 * get value expressed in {@link Integer}
+	 * get value expressed in {@link Long}
 	 * 
 	 * @return the value
 	 * @since 1.0
 	 */
-	public Integer getValue() {
+	public Long getValue() {
 		return value;
 	}
 
@@ -162,7 +174,7 @@ public final class TimeUnitQuantity extends AbstractQuantity<Time> {
 
 	public TimeUnitQuantity to(TimeUnit timeUnit) {
 		Quantity<Time> time = toQuantity().to(toUnit(timeUnit));
-		return new TimeUnitQuantity(timeUnit, time.getValue().intValue());
+		return new TimeUnitQuantity(timeUnit, time.getValue().longValue());
 	}
 
 	private static Unit<Time> toUnit(TimeUnit timeUnit) {
@@ -225,10 +237,10 @@ public final class TimeUnitQuantity extends AbstractQuantity<Time> {
 	@Override
 	public ComparableQuantity<Time> add(Quantity<Time> that) {
 		if (getUnit().equals(that.getUnit())) {
-			return TimeQuantities.getQuantity(value + that.getValue().intValue(), timeUnit);
+			return TimeQuantities.getQuantity(value + that.getValue().longValue(), timeUnit);
 		}
 		Quantity<Time> converted = that.to(getUnit());
-		return TimeQuantities.getQuantity(value + converted.getValue().intValue(), timeUnit);
+		return TimeQuantities.getQuantity(value + converted.getValue().longValue(), timeUnit);
 	}
 
 	/**
@@ -237,10 +249,10 @@ public final class TimeUnitQuantity extends AbstractQuantity<Time> {
 	@Override
 	public ComparableQuantity<Time> subtract(Quantity<Time> that) {
 		if (getUnit().equals(that.getUnit())) {
-			return TimeQuantities.getQuantity(value - that.getValue().intValue(), timeUnit);
+			return TimeQuantities.getQuantity(value - that.getValue().longValue(), timeUnit);
 		}
 		Quantity<Time> converted = that.to(getUnit());
-		return TimeQuantities.getQuantity(value - converted.getValue().intValue(), timeUnit);
+		return TimeQuantities.getQuantity(value - converted.getValue().longValue(), timeUnit);
 	}
 
 	/**
@@ -249,21 +261,21 @@ public final class TimeUnitQuantity extends AbstractQuantity<Time> {
 	@Override
 	public ComparableQuantity<?> divide(Quantity<?> that) {
 		if (getUnit().equals(that.getUnit())) {
-			return TimeQuantities.getQuantity(value / that.getValue().intValue(), timeUnit);
+			return TimeQuantities.getQuantity(value / that.getValue().longValue(), timeUnit);
 		}
 		Unit<?> divUnit = getUnit().divide(that.getUnit());
 		UnitConverter conv;
 		try {
 			conv = getUnit().getConverterToAny(divUnit);
-			return TimeQuantities.getQuantity(value / conv.convert(that.getValue()).intValue(), timeUnit);
+			return TimeQuantities.getQuantity(value / conv.convert(that.getValue()).longValue(), timeUnit);
 		} catch (UnconvertibleException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return TimeQuantities.getQuantity(value / that.getValue().intValue(), timeUnit);
+			return TimeQuantities.getQuantity(value / that.getValue().longValue(), timeUnit);
 		} catch (IncommensurableException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return TimeQuantities.getQuantity(value / that.getValue().intValue(), timeUnit);
+			return TimeQuantities.getQuantity(value / that.getValue().longValue(), timeUnit);
 		}
 	}
 
@@ -272,7 +284,7 @@ public final class TimeUnitQuantity extends AbstractQuantity<Time> {
 	 */
 	@Override
 	public ComparableQuantity<Time> divide(Number that) {
-		return TimeQuantities.getQuantity(value / that.intValue(), timeUnit);
+		return TimeQuantities.getQuantity(value / that.longValue(), timeUnit);
 	}
 
 	/**
@@ -281,21 +293,21 @@ public final class TimeUnitQuantity extends AbstractQuantity<Time> {
 	@Override
 	public ComparableQuantity<?> multiply(Quantity<?> multiplier) {
 		if (getUnit().equals(multiplier.getUnit())) {
-			return TimeQuantities.getQuantity(value * multiplier.getValue().intValue(), timeUnit);
+			return TimeQuantities.getQuantity(value * multiplier.getValue().longValue(), timeUnit);
 		}
 		Unit<?> mulUnit = getUnit().multiply(multiplier.getUnit());
 		UnitConverter conv;
 		try {
 			conv = getUnit().getConverterToAny(mulUnit);
-			return TimeQuantities.getQuantity(value * conv.convert(multiplier.getValue()).intValue(), timeUnit);
+			return TimeQuantities.getQuantity(value * conv.convert(multiplier.getValue()).longValue(), timeUnit);
 		} catch (UnconvertibleException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return TimeQuantities.getQuantity(value * multiplier.getValue().intValue(), timeUnit);
+			return TimeQuantities.getQuantity(value * multiplier.getValue().longValue(), timeUnit);
 		} catch (IncommensurableException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			return TimeQuantities.getQuantity(value * multiplier.getValue().intValue(), timeUnit);
+			return TimeQuantities.getQuantity(value * multiplier.getValue().longValue(), timeUnit);
 		}
 	}
 
@@ -304,7 +316,7 @@ public final class TimeUnitQuantity extends AbstractQuantity<Time> {
 	 */
 	@Override
 	public ComparableQuantity<Time> multiply(Number multiplier) {
-		return TimeQuantities.getQuantity(value * multiplier.intValue(), timeUnit);
+		return TimeQuantities.getQuantity(value * multiplier.longValue(), timeUnit);
 	}
 
 	/**
@@ -312,7 +324,7 @@ public final class TimeUnitQuantity extends AbstractQuantity<Time> {
 	 */
 	@Override
 	public ComparableQuantity<Frequency> inverse() {
-		return (Quantities.getQuantity(1.0 / value, toUnit(timeUnit).inverse())).asType(Frequency.class);
+		return Quantities.getQuantity(1.0 / value, toUnit(timeUnit).inverse()).asType(Frequency.class);
 	}
 
 	/**
