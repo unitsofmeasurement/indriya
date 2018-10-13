@@ -48,7 +48,6 @@ import javax.measure.quantity.Frequency;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.LuminousIntensity;
 import javax.measure.quantity.Mass;
-import javax.measure.quantity.Pressure;
 import javax.measure.quantity.Speed;
 import javax.measure.spi.ServiceProvider;
 
@@ -56,7 +55,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.format.SimpleUnitFormat;
 import tech.units.indriya.function.ExpConverter;
 import tech.units.indriya.function.RationalConverter;
@@ -149,9 +147,9 @@ public class SimpleFormatTest {
     
     @Test
     public void testParsePowerAndRoot() {
-      assertEquals("1/m^19:31", format.format(format.parse("m^12:31").divide(Units.METRE)));
-    }
-    
+      assertEquals("1/m^19:31", format.format(format.parse("m^12:31").divide(METRE)));
+    }    
+
     @Test
     public void testFormatNewLabeledUnits() {
         logger.log(LOG_LEVEL, "== Use case 1: playing with base units ==");
