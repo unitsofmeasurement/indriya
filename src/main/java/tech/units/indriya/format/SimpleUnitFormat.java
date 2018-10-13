@@ -603,52 +603,43 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
       final int length = csq.length();
       int pow = 0;
       boolean isPowNegative = false;
-      int root = 0;
-      boolean isRootNegative = false;
-      boolean isRoot = false;
-      while (pos.getIndex() < length) {
+      boolean parseRoot = false;
+      
+      POWERLOOP: while (pos.getIndex() < length) {
         c = csq.charAt(pos.getIndex());
-        if (c == '\u00b9') {
-          if (isRoot) {
-            root = root * 10 + 1;
-          } else {
-            pow = pow * 10 + 1;
-          }
-        } else if (c == '\u00b2') {
-          if (isRoot) {
-            root = root * 10 + 2;
-          } else {
-            pow = pow * 10 + 2;
-          }
-        } else if (c == '\u00b3') {
-          if (isRoot) {
-            root = root * 10 + 3;
-          } else {
-            pow = pow * 10 + 3;
-          }
-        } else if (c == '-') {
-          if (isRoot) {
-            isRootNegative = true;
-          } else {
-            isPowNegative = true;
-          }
-        } else if ((c >= '0') && (c <= '9')) {
-          if (isRoot) {
-            root = root * 10 + (c - '0');
-          } else {
-            pow = pow * 10 + (c - '0');
-          }
-        } else if (c == ':') {
-          isRoot = true;
-        } else {
-          break;
+        switch(c) {
+          case '-': isPowNegative = true; break;
+          case '\u00b9': pow = pow * 10 + 1; break;
+          case '\u00b2': pow = pow * 10 + 2; break;
+          case '\u00b3': pow = pow * 10 + 3; break;
+          case ':': parseRoot = true; break POWERLOOP; 
+          default: 
+            if (c >= '0' && c <= '9') pow = pow * 10 + (c - '0');  
+            else break POWERLOOP; 
         }
         pos.setIndex(pos.getIndex() + 1);
       }
-      if (pow == 0)
-        pow = 1;
-      if (root == 0)
-        root = 1;
+      if (pow == 0) pow = 1;
+      
+      int root = 0;
+      boolean isRootNegative = false;
+      if (parseRoot) {
+        pos.setIndex(pos.getIndex() + 1);
+        ROOTLOOP: while (pos.getIndex() < length) {
+          c = csq.charAt(pos.getIndex());
+          switch(c) {
+            case '-': isRootNegative = true; break;
+            case '\u00b9': root = root * 10 + 1; break;
+            case '\u00b2': root = root * 10 + 2; break;
+            case '\u00b3': root = root * 10 + 3; break;
+            default: 
+              if (c >= '0' && c <= '9') root = root * 10 + (c - '0');  
+              else break ROOTLOOP; 
+          }
+        }
+      }
+      if (root == 0) root = 1;
+      
       return new Exponent(isPowNegative ? -pow : pow, isRootNegative ? -root : root);
     }
 

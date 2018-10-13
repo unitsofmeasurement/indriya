@@ -712,7 +712,7 @@ public final class LocalUnitFormatParser {
         tok = tok.next;
       }
       if (tok != null)
-        jj_add_error_token(theKind, i);
+        addErrorToken(theKind, i);
     }
     if (scanpos.kind != theKind)
       return true;
@@ -761,7 +761,7 @@ public final class LocalUnitFormatParser {
 
   private int endpos;
 
-  private void jj_add_error_token(int theKind, int pos) {
+  private void addErrorToken(int theKind, int pos) {
     if (pos >= 100)
       return;
     if (pos == endpos + 1) {
@@ -811,7 +811,7 @@ public final class LocalUnitFormatParser {
     }
     endpos = 0;
     jj_rescan_token();
-    jj_add_error_token(0, 0);
+    addErrorToken(0, 0);
     int[][] exptokseq = new int[expentries.size()][];
     for (int i = 0; i < expentries.size(); i++) {
       exptokseq[i] = expentries.get(i);
