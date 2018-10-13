@@ -636,6 +636,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
               if (c >= '0' && c <= '9') root = root * 10 + (c - '0');  
               else break ROOTLOOP; 
           }
+          pos.setIndex(pos.getIndex() + 1);
         }
       }
       if (root == 0) root = 1;

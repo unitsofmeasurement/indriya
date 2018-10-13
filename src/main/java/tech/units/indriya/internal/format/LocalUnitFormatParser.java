@@ -206,15 +206,8 @@ public final class LocalUnitFormatParser {
       }
       consumeToken(CARET);
       result = atomicExpr();
-      double base;
-      if (theToken.kind == INTEGER) {
-        base = Integer.parseInt(theToken.image);
-      } else {
-        base = StrictMath.E;
-      }
-      {
-        return result.transform(new LogConverter(base).inverse());
-      }
+      double base = theToken.kind == INTEGER ? Integer.parseInt(theToken.image) : StrictMath.E;
+      return result.transform(new LogConverter(base).inverse());
     }
       switch ((nextTokenIndex == -1) ? jj_ntk() : nextTokenIndex) {
         case OPEN_PAREN:
@@ -238,9 +231,7 @@ public final class LocalUnitFormatParser {
               result = result.root(exponent.root);
             }
           }
-          {
-            return result;
-          }
+          return result;
         case LOG:
         case NAT_LOG:
           switch ((nextTokenIndex == -1) ? jj_ntk() : nextTokenIndex) {
@@ -273,9 +264,7 @@ public final class LocalUnitFormatParser {
               base = StrictMath.E;
             }
           }
-          {
-            return result.transform(new LogConverter(base));
-          }
+          return result.transform(new LogConverter(base));
         default:
           laA[9] = genInt;
           consumeToken(-1);
