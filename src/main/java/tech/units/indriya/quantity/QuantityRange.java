@@ -106,21 +106,17 @@ public class QuantityRange<Q extends Quantity<Q>> extends Range<Quantity<Q>> {
   }
 
   private boolean isAboveMinimum(final Quantity<Q> q) {
-    if (q instanceof ComparableQuantity) {
-      return ((ComparableQuantity<Q>) q).isGreaterThanOrEqualTo(getMinimum());
-    } else {
-      final Quantity<Q> qConverted = q.to(getMinimum().getUnit());
-      return qConverted.getValue().doubleValue() >= getMinimum().getValue().doubleValue();
-    }
+    if (q instanceof ComparableQuantity) return ((ComparableQuantity<Q>) q).isGreaterThanOrEqualTo(getMinimum());
+
+    final Quantity<Q> qConverted = q.to(getMinimum().getUnit());
+    return qConverted.getValue().doubleValue() >= getMinimum().getValue().doubleValue();
   }
 
   private boolean isBelowMaximum(final Quantity<Q> q) {
-    if (q instanceof ComparableQuantity) {
-      return ((ComparableQuantity<Q>) q).isLessThanOrEqualTo(getMaximum());
-    } else {
-      final Quantity<Q> qConverted = q.to(getMaximum().getUnit());
-      return qConverted.getValue().doubleValue() <= getMaximum().getValue().doubleValue();
-    }
+    if (q instanceof ComparableQuantity) return ((ComparableQuantity<Q>) q).isLessThanOrEqualTo(getMaximum());
+
+    final Quantity<Q> qConverted = q.to(getMaximum().getUnit());
+    return qConverted.getValue().doubleValue() <= getMaximum().getValue().doubleValue();
   }
 
   private boolean fulfillsMaximumConstraint(final Quantity<Q> q) {

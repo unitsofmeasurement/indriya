@@ -29,7 +29,6 @@
  */
 package tech.units.indriya.quantity;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
@@ -52,7 +51,7 @@ import tech.units.indriya.ComparableQuantity;
  * @version 0.4
  * @since 2.0
  */
-final class BigIntegerQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> implements Serializable {
+final class BigIntegerQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
 
   private static final long serialVersionUID = -593014349777834846L;
   private final BigInteger value;
@@ -109,12 +108,12 @@ final class BigIntegerQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity
   }
 
   @Override
-  Number castFromBigDecimal(BigDecimal value) {
-    return value.toBigInteger();
+  Number castFromBigDecimal(BigDecimal aValue) {
+    return aValue.toBigInteger();
   }
 
   @Override
-  boolean isOverflowing(BigDecimal value) {
+  boolean isOverflowing(BigDecimal aValue) {
     return false;
   }
 }

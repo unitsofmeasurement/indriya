@@ -91,10 +91,7 @@ public class QuantityFunctionsTemperatureTest {
   }
 
   private List<Quantity<Temperature>> getList(boolean reverse) {
-    if (reverse)
-      return Arrays.asList(temp2, temp1);
-    else
-      return Arrays.asList(temp1, temp2);
+    return reverse ? Arrays.asList(temp2, temp1) : Arrays.asList(temp1, temp2);
   }
 
   private List<Quantity<Temperature>> getList() {

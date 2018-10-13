@@ -111,11 +111,8 @@ public final class LogConverter extends AbstractConverter implements ValueSuppli
 
 	@Override
 	public final String transformationLiteral() {
-		if (base == Math.E) {
-			return "x -> ln(x)";
-		} else {
-			return String.format("x -> log(base=%s, x)", base);
-		}
+		if (base == Math.E) return "x -> ln(x)";
+		return String.format("x -> log(base=%s, x)", base);
 	}
 	
 	@Override

@@ -150,10 +150,10 @@ public class QuantityDimensionTest {
   @Test
   public void getBaseDimensionsReturnsCorrectMap() {
     Dimension dimension = QuantityDimension.LENGTH.pow(2).multiply(QuantityDimension.MASS);
-    Map baseDimensions = dimension.getBaseDimensions();
+    Map<? extends Dimension, Integer> baseDimensions = dimension.getBaseDimensions();
     assertEquals(2, baseDimensions.size());
-    assertEquals(1, baseDimensions.get(QuantityDimension.MASS));
-    assertEquals(2, baseDimensions.get(QuantityDimension.LENGTH));
+    assertEquals(1, baseDimensions.get(QuantityDimension.MASS).intValue());
+    assertEquals(2, baseDimensions.get(QuantityDimension.LENGTH).intValue());
   }
 
   /**

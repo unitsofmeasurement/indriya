@@ -29,7 +29,6 @@
  */
 package tech.units.indriya.quantity;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 
 import javax.measure.Quantity;
@@ -54,7 +53,7 @@ import tech.units.indriya.ComparableQuantity;
  * @see ComparableQuantity
  * @since 1.0
  */
-final class DoubleQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> implements Serializable {
+final class DoubleQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
 
   private static final long serialVersionUID = 8660843078156312278L;
 
@@ -75,7 +74,7 @@ final class DoubleQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> 
   @SuppressWarnings({ "rawtypes", "unchecked" })
   @Override
   public AbstractQuantity<Q> inverse() {
-    return (AbstractQuantity<Q>) new DoubleQuantity(1d / value, getUnit().inverse());
+    return new DoubleQuantity(1d / value, getUnit().inverse());
   }
 
   @Override
@@ -99,13 +98,13 @@ final class DoubleQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> 
   }
 
   @Override
-  Number castFromBigDecimal(BigDecimal value) {
-    return value.doubleValue();
+  Number castFromBigDecimal(BigDecimal aValue) {
+    return aValue.doubleValue();
   }
 
   @Override
-  boolean isOverflowing(BigDecimal value) {
-    return value.compareTo(DOUBLE_MAX_VALUE.negate()) < 0 || value.compareTo(DOUBLE_MAX_VALUE) > 0;
+  boolean isOverflowing(BigDecimal aValue) {
+    return aValue.compareTo(DOUBLE_MAX_VALUE.negate()) < 0 || aValue.compareTo(DOUBLE_MAX_VALUE) > 0;
   }
 
   @Override

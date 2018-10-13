@@ -77,25 +77,20 @@ class ConverterFormatter {
 		} else if (converter instanceof RationalConverter) {
 			return productPrecedence((RationalConverter) converter, continued, unitPrecedence, buffer);
 		} else if (converter instanceof PowerOfIntConverter) {
-			final Prefix prefix = symbolMap.getPrefix((PowerOfIntConverter) converter);
-			if ((prefix != null) && (unitPrecedence == EBNFHelper.NOOP_PRECEDENCE)) {
-				return noopPrecedence(buffer, symbolMap, prefix);
-			} else {
-				return productPrecedence((PowerOfIntConverter) converter, continued, unitPrecedence, buffer);
-			}
+			final Prefix prefix = symbolMap.getPrefix(converter);
+			if ((prefix != null) && (unitPrecedence == EBNFHelper.NOOP_PRECEDENCE)) return noopPrecedence(buffer, symbolMap, prefix);
+			return productPrecedence((PowerOfIntConverter) converter, continued, unitPrecedence, buffer);
 		} else if (converter instanceof AbstractConverter.Pair) {
 			AbstractConverter.Pair compound = (AbstractConverter.Pair) converter;
-			if (compound.getLeft() == AbstractConverter.IDENTITY) {
-				return formatConverter(compound.getRight(), true, unitPrecedence, buffer, symbolMap);
+			if (compound.getLeft() == AbstractConverter.IDENTITY) return formatConverter(compound.getRight(), true, unitPrecedence, buffer, symbolMap);
+
+			if (compound.getLeft() instanceof Formattable) {
+				return formatFormattable((Formattable) compound.getLeft(), unitPrecedence, buffer);
+			} else if (compound.getRight() instanceof Formattable) {
+				return formatFormattable((Formattable) compound.getRight(), unitPrecedence, buffer);
 			} else {
-				if (compound.getLeft() instanceof Formattable) {
-					return formatFormattable((Formattable) compound.getLeft(), unitPrecedence, buffer);
-				} else if (compound.getRight() instanceof Formattable) {
-					return formatFormattable((Formattable) compound.getRight(), unitPrecedence, buffer);
-				} else {
-					return formatConverter(compound.getLeft(), true, unitPrecedence, buffer, symbolMap);
-					// FIXME use getRight() here, too
-				}
+				return formatConverter(compound.getLeft(), true, unitPrecedence, buffer, symbolMap);
+				// FIXME use getRight() here, too
 			}
 			// return formatConverter(compound.getRight(), true,
 			// unitPrecedence, buffer);
@@ -107,8 +102,8 @@ class ConverterFormatter {
 				// converter.getClass()); //$NON-NLS-1$
 				buffer.replace(0, 1, converter.toString());
 				return EBNFHelper.NOOP_PRECEDENCE;
-			} else
-				throw new IllegalArgumentException("Unable to format, no UnitConverter given"); //$NON-NLS-1$
+			}
+			throw new IllegalArgumentException("Unable to format, no UnitConverter given"); //$NON-NLS-1$
 		}
 	}
 

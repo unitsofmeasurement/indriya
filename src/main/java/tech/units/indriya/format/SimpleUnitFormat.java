@@ -471,6 +471,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
           token = nextToken(csq, pos);
           check(token == Token.CLOSE_PAREN, "')' expected", csq, pos.getIndex());
           pos.setIndex(pos.getIndex() + 1);
+          break;
         default:
           break;
       }
@@ -547,7 +548,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
       }
     }
     
-    private Token nextToken(CharSequence csq, ParsePosition pos) {
+    private static Token nextToken(CharSequence csq, ParsePosition pos) {
       final int length = csq.length();
       while (pos.getIndex() < length) {
         char c = csq.charAt(pos.getIndex());
@@ -564,11 +565,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
         	  throw new MeasurementParseException("unexpected token " + Token.EOF, csq, pos.getIndex()); // return ;
           }
           char c2 = csq.charAt(pos.getIndex() + 1);
-          if (c2 == '*') {
-            return Token.EXPONENT;
-          } else {
-            return Token.MULTIPLY;
-          }
+          return c2 == '*' ? Token.EXPONENT : Token.MULTIPLY;
         } else if (c == '\u00b7') {
           return Token.MULTIPLY;
         } else if (c == '/') {
@@ -590,13 +587,13 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
       return Token.EOF;
     }
 
-    private void check(boolean expr, String message, CharSequence csq, int index) throws MeasurementParseException {
+    private static void check(boolean expr, String message, CharSequence csq, int index) throws MeasurementParseException {
       if (!expr) {
         throw new MeasurementParseException(message + " (in " + csq + " at index " + index + ")", index);
       }
     }
 
-    private Exponent readExponent(CharSequence csq, ParsePosition pos) {
+    private static Exponent readExponent(CharSequence csq, ParsePosition pos) {
       char c = csq.charAt(pos.getIndex());
       if (c == '^') {
         pos.setIndex(pos.getIndex() + 1);
@@ -655,7 +652,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
       return new Exponent(isPowNegative ? -pow : pow, isRootNegative ? -root : root);
     }
 
-    private long readLong(CharSequence csq, ParsePosition pos) {
+    private static long readLong(CharSequence csq, ParsePosition pos) {
       final int length = csq.length();
       int result = 0;
       boolean isNegative = false;
@@ -673,7 +670,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
       return isNegative ? -result : result;
     }
 
-    private double readDouble(CharSequence csq, ParsePosition pos) {
+    private static double readDouble(CharSequence csq, ParsePosition pos) {
       final int length = csq.length();
       int start = pos.getIndex();
       int end = start + 1;
@@ -687,7 +684,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
       return Double.parseDouble(csq.subSequence(start, end).toString());
     }
 
-    private String readIdentifier(CharSequence csq, ParsePosition pos) {
+    private static String readIdentifier(CharSequence csq, ParsePosition pos) {
       final int length = csq.length();
       int start = pos.getIndex();
       int i = start;
@@ -770,7 +767,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
       return appendable;
     }
 
-    private void append(Appendable appendable, CharSequence symbol, int pow, int root) throws IOException {
+    private static void append(Appendable appendable, CharSequence symbol, int pow, int root) throws IOException {
       appendable.append(symbol);
       if ((pow != 1) || (root != 1)) {
         // Write exponent.

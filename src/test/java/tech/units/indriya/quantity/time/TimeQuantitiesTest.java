@@ -156,7 +156,7 @@ public class TimeQuantitiesTest {
     assertEquals(Long.valueOf(1), oneDay.getValue());
   }
 
-  private void verifyQuantity(Quantity<Time> quantity, Unit<Time> unit, Number number) {
+  private static void verifyQuantity(Quantity<Time> quantity, Unit<Time> unit, Number number) {
     assertEquals(unit, quantity.getUnit());
     assertEquals(Integer.valueOf(number.intValue()), Integer.valueOf(quantity.getValue().intValue()));
   }

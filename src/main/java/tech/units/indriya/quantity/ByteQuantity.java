@@ -73,8 +73,8 @@ final class ByteQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
   }
 
   @Override
-  boolean isOverflowing(BigDecimal value) {
-    return value.compareTo(BYTE_MIN_VALUE) < 0 || value.compareTo(BYTE_MAX_VALUE) > 0;
+  boolean isOverflowing(BigDecimal aValue) {
+    return aValue.compareTo(BYTE_MIN_VALUE) < 0 || aValue.compareTo(BYTE_MAX_VALUE) > 0;
   }
 
   @Override
@@ -98,8 +98,8 @@ final class ByteQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
   }
 
   @Override
-  Number castFromBigDecimal(BigDecimal value) {
-    return (byte) value.longValue();
+  Number castFromBigDecimal(BigDecimal aValue) {
+    return (byte) aValue.longValue();
   }
 
   @Override

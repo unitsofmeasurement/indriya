@@ -322,8 +322,8 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
 
     @SuppressWarnings({ "rawtypes", "unchecked" })
     @Override
-    public final Unit<Q> alternate(String symbol) {
-        return new AlternateUnit(this, symbol);
+    public final Unit<Q> alternate(String newSymbol) {
+        return new AlternateUnit(this, newSymbol);
     }
 
     @Override
@@ -335,11 +335,7 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
         } else {
             cvtr = operation;
         }
-        if (cvtr.isIdentity()) {
-            return systemUnit;
-        } else {
-            return new TransformedUnit<>(null, this, systemUnit, cvtr);
-        }
+        return cvtr.isIdentity() ? systemUnit : new TransformedUnit<>(null, this, systemUnit, cvtr);
     }
 
     @Override
@@ -555,17 +551,10 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
         if (name != null && getSymbol() != null) {
             return name.compareTo(that.getName()) + getSymbol().compareTo(that.getSymbol());
         } else if (name == null) {
-            if (getSymbol() != null && that.getSymbol() != null) {
-                return getSymbol().compareTo(that.getSymbol());
-            } else {
-                return -1;
-            }
+            if (getSymbol() == null || that.getSymbol() == null) return -1;
+            return getSymbol().compareTo(that.getSymbol());
         } else if (getSymbol() == null) {
-            if (name != null) {
-                return name.compareTo(that.getName());
-            } else {
-                return -1;
-            }
+            return name == null ? -1 : name.compareTo(that.getName());
         } else {
             UnitConverter conv = getConverterTo(that);
             if (conv instanceof AbstractConverter) {

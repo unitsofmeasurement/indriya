@@ -350,7 +350,7 @@ public abstract class AbstractConverter
 	 * This class represents converters made up of two or more separate converters
 	 * (in matrix notation <code>[pair] = [left] x [right]</code>).
 	 */
-	public static final class Pair extends AbstractConverter implements Serializable {
+	public static final class Pair extends AbstractConverter {
 
 		/**
 		 * 

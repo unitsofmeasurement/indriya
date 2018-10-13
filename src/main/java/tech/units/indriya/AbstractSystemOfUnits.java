@@ -258,9 +258,9 @@ public abstract class AbstractSystemOfUnits implements SystemOfUnits, Nameable {
 					units.add(aUnit);
 					SimpleUnitFormat.getInstance().label(aUnit, text);
 					return (U) aUnit;
-				} else { // label in any case, returning below
-					SimpleUnitFormat.getInstance().label(unit, text);
-				}
+				} 
+				// label in any case, returning below
+				SimpleUnitFormat.getInstance().label(unit, text);
 				break;
 			case LABEL:
 				SimpleUnitFormat.getInstance().label(unit, text);

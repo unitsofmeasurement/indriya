@@ -55,6 +55,7 @@ import javax.measure.Unit;
  * @deprecated Moved to uom-lib-common
  * @since 1.0.9
  */
+@Deprecated
 public class UnitComparator<U extends Unit<?>> implements Comparator<U> {
 
   @Override

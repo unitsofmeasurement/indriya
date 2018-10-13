@@ -55,7 +55,7 @@ public class DecimalQuantityTest {
   private final DecimalQuantity<ElectricResistance> TWO_OHM = createQuantity(2L, Units.OHM);
   private final DecimalQuantity<ElectricResistance> ONE_MILLIOHM = createQuantity(1L, MILLI(Units.OHM));
 
-  private <Q extends Quantity<Q>> DecimalQuantity<Q> createQuantity(long l, Unit<Q> unit) {
+  private static <Q extends Quantity<Q>> DecimalQuantity<Q> createQuantity(long l, Unit<Q> unit) {
     return new DecimalQuantity<Q>(l, unit);
   }
 

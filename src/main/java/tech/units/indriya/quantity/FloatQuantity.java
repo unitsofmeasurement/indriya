@@ -69,7 +69,7 @@ final class FloatQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
   public ComparableQuantity<Q> inverse() {
-    return (AbstractQuantity<Q>) new FloatQuantity(1f / value, getUnit().inverse());
+    return new FloatQuantity(1f / value, getUnit().inverse());
   }
 
   @Override
@@ -93,13 +93,13 @@ final class FloatQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
   }
 
   @Override
-  Number castFromBigDecimal(BigDecimal value) {
-    return (float) value.doubleValue();
+  Number castFromBigDecimal(BigDecimal aValue) {
+    return (float) aValue.doubleValue();
   }
 
   @Override
-  boolean isOverflowing(BigDecimal value) {
-    return value.compareTo(FLOAT_MAX_VALUE.negate()) < 0 || value.compareTo(FLOAT_MAX_VALUE) > 0;
+  boolean isOverflowing(BigDecimal aValue) {
+    return aValue.compareTo(FLOAT_MAX_VALUE.negate()) < 0 || aValue.compareTo(FLOAT_MAX_VALUE) > 0;
   }
 
   @Override

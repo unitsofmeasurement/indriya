@@ -68,8 +68,8 @@ final class IntegerQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q>
   }
 
   @Override
-  boolean isOverflowing(BigDecimal value) {
-    return value.compareTo(INTEGER_MIN_VALUE) < 0 || value.compareTo(INTEGER_MAX_VALUE) > 0;
+  boolean isOverflowing(BigDecimal aValue) {
+    return aValue.compareTo(INTEGER_MIN_VALUE) < 0 || aValue.compareTo(INTEGER_MAX_VALUE) > 0;
   }
 
   @SuppressWarnings("unchecked")
@@ -98,8 +98,8 @@ final class IntegerQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q>
   }
 
   @Override
-  Number castFromBigDecimal(BigDecimal value) {
-    return (int) value.longValue();
+  Number castFromBigDecimal(BigDecimal aValue) {
+    return (int) aValue.longValue();
   }
 
   @Override

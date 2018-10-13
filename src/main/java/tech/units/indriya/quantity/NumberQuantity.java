@@ -29,7 +29,6 @@
  */
 package tech.units.indriya.quantity;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Objects;
@@ -56,7 +55,7 @@ import tech.units.indriya.function.Calculus;
  * @version 1.0.2, $Date: 2018-07-21 $
  * @since 1.0
  */
-public class NumberQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> implements Serializable {
+public class NumberQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
 
   private static final long serialVersionUID = 7312161895652321241L;
 

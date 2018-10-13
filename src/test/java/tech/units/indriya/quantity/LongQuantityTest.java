@@ -64,7 +64,7 @@ public class LongQuantityTest {
   private static final BigIntegerQuantity<ElectricResistance> ONE_BIG_INTEGER_OHM = new BigIntegerQuantity<ElectricResistance>(BigInteger.ONE,
       Units.OHM);
 
-  private <Q extends Quantity<Q>> LongQuantity<Q> createQuantity(long l, Unit<Q> unit) {
+  private static <Q extends Quantity<Q>> LongQuantity<Q> createQuantity(long l, Unit<Q> unit) {
     return new LongQuantity<Q>(Long.valueOf(l).longValue(), unit);
   }
 

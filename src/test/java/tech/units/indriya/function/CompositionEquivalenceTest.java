@@ -218,11 +218,11 @@ public class CompositionEquivalenceTest {
 
 	// -- HELPER
 
-	private UnitConverter identityOf(UnitConverter a) {
+	private static UnitConverter identityOf(UnitConverter a) {
 		return a.concatenate(a.inverse()); // a.(a^-1) == identity
 	}
 
-	private boolean commutes(UnitConverter a, UnitConverter b) {
+	private static boolean commutes(UnitConverter a, UnitConverter b) {
 		// a.b == (b^-1).(a^-1), must always hold
 		// a.b == (a^-1).(b^-1), only holds if a and b commute (a.b == b.a)
 		UnitConverter ab = a.concatenate(b);

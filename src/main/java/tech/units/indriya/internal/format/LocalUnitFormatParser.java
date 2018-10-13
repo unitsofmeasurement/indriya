@@ -43,6 +43,7 @@ import tech.units.indriya.function.MultiplyConverter;
 /**
  * @deprecated use {@link UnitFormatParser} FIXME there are some details e.g. Exception handling that are different, try to resolve or keep LUFP
  */
+@Deprecated
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public final class LocalUnitFormatParser {
 
@@ -95,7 +96,7 @@ public final class LocalUnitFormatParser {
     }
   }
 
-  final public Unit compoundExpr() throws TokenException {
+  final public static Unit compoundExpr() throws TokenException {
     throw new UnsupportedOperationException("Compound units not supported");
   }
 
@@ -189,14 +190,14 @@ public final class LocalUnitFormatParser {
   final public Unit exponentExpr() throws TokenException {
     Unit result = AbstractUnit.ONE;
     Exponent exponent = null;
-    Token token = null;
+    Token theToken = null;
     if (jj_2_2(2147483647)) {
       switch ((nextTokenIndex == -1) ? jj_ntk() : nextTokenIndex) {
         case INTEGER:
-          token = consumeToken(INTEGER);
+          theToken = consumeToken(INTEGER);
           break;
         case E:
-          token = consumeToken(E);
+          theToken = consumeToken(E);
           break;
         default:
           laA[5] = genInt;
@@ -206,15 +207,15 @@ public final class LocalUnitFormatParser {
       consumeToken(CARET);
       result = atomicExpr();
       double base;
-      if (token.kind == INTEGER) {
-        base = Integer.parseInt(token.image);
+      if (theToken.kind == INTEGER) {
+        base = Integer.parseInt(theToken.image);
       } else {
         base = StrictMath.E;
       }
       {
         return result.transform(new LogConverter(base).inverse());
       }
-    } else {
+    }
       switch ((nextTokenIndex == -1) ? jj_ntk() : nextTokenIndex) {
         case OPEN_PAREN:
         case INTEGER:
@@ -247,14 +248,14 @@ public final class LocalUnitFormatParser {
               consumeToken(LOG);
               switch ((nextTokenIndex == -1) ? jj_ntk() : nextTokenIndex) {
                 case INTEGER:
-                  token = consumeToken(INTEGER);
+                  theToken = consumeToken(INTEGER);
                   break;
                 default:
                   laA[7] = genInt;
               }
               break;
             case NAT_LOG:
-              token = consumeToken(NAT_LOG);
+              theToken = consumeToken(NAT_LOG);
               break;
             default:
               laA[8] = genInt;
@@ -265,10 +266,10 @@ public final class LocalUnitFormatParser {
           result = addExpr();
           consumeToken(CLOSE_PAREN);
           double base = 10;
-          if (token != null) {
-            if (token.kind == INTEGER) {
-              base = Integer.parseInt(token.image);
-            } else if (token.kind == NAT_LOG) {
+          if (theToken != null) {
+            if (theToken.kind == INTEGER) {
+              base = Integer.parseInt(theToken.image);
+            } else if (theToken.kind == NAT_LOG) {
               base = StrictMath.E;
             }
           }
@@ -280,55 +281,35 @@ public final class LocalUnitFormatParser {
           consumeToken(-1);
           throw new TokenException();
       }
-    }
   }
 
   final public Unit atomicExpr() throws TokenException {
     Unit result = AbstractUnit.ONE;
     Number n = null;
-    Token token = null;
+    Token theToken = null;
     switch ((nextTokenIndex == -1) ? jj_ntk() : nextTokenIndex) {
       case INTEGER:
       case FLOATING_POINT:
         n = numberExpr();
-        if (n instanceof Integer) {
-          {
-            return result.multiply(n.intValue());
-          }
-        } else {
-          {
-            return result.multiply(n.doubleValue());
-          }
-        }
+        return n instanceof Integer ? result.multiply(n.intValue()) : result.multiply(n.doubleValue());
       case UNIT_IDENTIFIER:
-        token = consumeToken(UNIT_IDENTIFIER);
-        Unit unit = symbols.getUnit(token.image);
+        theToken = consumeToken(UNIT_IDENTIFIER);
+        Unit unit = symbols.getUnit(theToken.image);
         if (unit == null) {
-          Prefix prefix = symbols.getPrefix(token.image);
+          Prefix prefix = symbols.getPrefix(theToken.image);
           if (prefix != null) {
             String prefixSymbol = symbols.getSymbol(prefix);
-            unit = symbols.getUnit(token.image.substring(prefixSymbol.length()));
-            if (unit != null) {
-              {
-                return unit.transform(MultiplyConverter.of(prefix));
-              }
-            }
+            unit = symbols.getUnit(theToken.image.substring(prefixSymbol.length()));
+            if (unit != null) return unit.transform(MultiplyConverter.of(prefix));
           }
-          {
-            throw new TokenException();
-          }
-        } else {
-          {
-            return unit;
-          }
+          throw new TokenException();
         }
+        return unit;
       case OPEN_PAREN:
         consumeToken(OPEN_PAREN);
         result = addExpr();
         consumeToken(CLOSE_PAREN);
-        {
-          return result;
-        }
+        return result;
       default:
         laA[10] = genInt;
         consumeToken(-1);
@@ -356,18 +337,14 @@ public final class LocalUnitFormatParser {
   }
 
   final public Number numberExpr() throws TokenException {
-    Token token = null;
+    Token theToken = null;
     switch ((nextTokenIndex == -1) ? jj_ntk() : nextTokenIndex) {
       case INTEGER:
-        token = consumeToken(INTEGER);
-        {
-          return Long.valueOf(token.image);
-        }
+        theToken = consumeToken(INTEGER);
+        return Long.valueOf(theToken.image);
       case FLOATING_POINT:
-        token = consumeToken(FLOATING_POINT);
-        {
-          return Double.valueOf(token.image);
-        }
+        theToken = consumeToken(FLOATING_POINT);
+        return Double.valueOf(theToken.image);
       default:
         laA[12] = genInt;
         consumeToken(-1);
@@ -685,14 +662,14 @@ public final class LocalUnitFormatParser {
     }
   }
 
-  private Token consumeToken(int kind) throws TokenException {
+  private Token consumeToken(int theKind) throws TokenException {
     Token oldToken;
     if ((oldToken = token).next != null)
       token = token.next;
     else
       token = token.next = tokenSource.getNextToken();
     nextTokenIndex = -1;
-    if (token.kind == kind) {
+    if (token.kind == theKind) {
       genInt++;
       if (++gcInt > 100) {
         gcInt = 0;
@@ -708,7 +685,7 @@ public final class LocalUnitFormatParser {
       return token;
     }
     token = oldToken;
-    this.kind = kind;
+    this.kind = theKind;
     throw raiseTokenException();
   }
 
@@ -716,7 +693,7 @@ public final class LocalUnitFormatParser {
     private static final long serialVersionUID = 2205332054119123041L;
   }
 
-  private boolean scanToken(int kind) {
+  private boolean scanToken(int theKind) {
     if (scanpos == lastpos) {
       laInt--;
       if (scanpos.next == null) {
@@ -735,9 +712,9 @@ public final class LocalUnitFormatParser {
         tok = tok.next;
       }
       if (tok != null)
-        jj_add_error_token(kind, i);
+        jj_add_error_token(theKind, i);
     }
-    if (scanpos.kind != kind)
+    if (scanpos.kind != theKind)
       return true;
     if (laInt == 0 && scanpos == lastpos)
       throw new LookaheadSuccess();
@@ -770,9 +747,8 @@ public final class LocalUnitFormatParser {
   private int jj_ntk() {
     if ((nextToken = token.next) == null) {
       return (nextTokenIndex = (token.next = tokenSource.getNextToken()).kind);
-    } else {
-      return (nextTokenIndex = nextToken.kind);
     }
+    return (nextTokenIndex = nextToken.kind);
   }
 
   private final java.util.List<int[]> expentries = new java.util.ArrayList<>();
@@ -785,11 +761,11 @@ public final class LocalUnitFormatParser {
 
   private int endpos;
 
-  private void jj_add_error_token(int kind, int pos) {
+  private void jj_add_error_token(int theKind, int pos) {
     if (pos >= 100)
       return;
     if (pos == endpos + 1) {
-      lastTokens[endpos++] = kind;
+      lastTokens[endpos++] = theKind;
     } else if (endpos != 0) {
       expentry = new int[endpos];
       System.arraycopy(lastTokens, 0, expentry, 0, endpos);
@@ -805,7 +781,7 @@ public final class LocalUnitFormatParser {
         }
       }
       if (pos != 0)
-        lastTokens[(endpos = pos) - 1] = kind;
+        lastTokens[(endpos = pos) - 1] = theKind;
     }
   }
 

@@ -63,7 +63,7 @@ public class IntegerQuantityTest {
   private final IntegerQuantity<ElectricResistance> ONE_YOTTAOHM = createQuantity(1, MetricPrefix.YOTTA(Units.OHM));
   private static final LongQuantity<ElectricResistance> ONE_LONG_OHM = new LongQuantity<ElectricResistance>(1L, Units.OHM);
 
-  private <Q extends Quantity<Q>> IntegerQuantity<Q> createQuantity(int i, Unit<Q> unit) {
+  private static <Q extends Quantity<Q>> IntegerQuantity<Q> createQuantity(int i, Unit<Q> unit) {
     return new IntegerQuantity<Q>(Integer.valueOf(i).intValue(), unit);
   }
 

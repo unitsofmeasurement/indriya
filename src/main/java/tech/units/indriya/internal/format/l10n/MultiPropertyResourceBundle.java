@@ -128,9 +128,9 @@ public class MultiPropertyResourceBundle extends ResourceBundle {
    * 
    * @param resourceBundle
    *          The <code>ResourceBundle</code> to merge the properties of.
-   * @param resourcePath
+   * @param aResourcePath
    */
-  public void merge(ResourceBundle resourceBundle, String resourcePath) {
+  public void merge(ResourceBundle resourceBundle, String aResourcePath) {
     if (resourceBundle != null) {
       Enumeration<String> keys = resourceBundle.getKeys();
       while (keys.hasMoreElements()) {
@@ -140,7 +140,7 @@ public class MultiPropertyResourceBundle extends ResourceBundle {
     }
 
     // Update the paths merged in this bundle
-    mergedBundlePaths.append(resourcePath);
+    mergedBundlePaths.append(aResourcePath);
     mergedBundlePaths.append(":");
   }
 
