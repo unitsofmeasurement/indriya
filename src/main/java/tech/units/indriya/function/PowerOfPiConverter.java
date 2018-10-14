@@ -43,7 +43,7 @@ import tech.uom.lib.common.function.IntExponentSupplier;
  * Pi to the power of an integer exponent (π^exponent).
  * @author Andi Huber
  * @author Werner Keil
- * @version 1.1, May 10, 2018
+ * @version 1.2, October 14, 2018
  * @since 2.0
  */
 public final class PowerOfPiConverter extends AbstractConverter 
@@ -54,6 +54,13 @@ public final class PowerOfPiConverter extends AbstractConverter
 	private final int hashCode;
 	private final double doubleFactor; // for double calculus only
 
+	/**
+     * A converter by Pi to the power of 1.
+     *
+     * @since  2.0
+     */
+    public static final PowerOfPiConverter ONE = of(1);
+	
 	/**
 	 * Creates a converter with the specified exponent.
 	 * 
@@ -157,5 +164,4 @@ public final class PowerOfPiConverter extends AbstractConverter
 	public int hashCode() {
 		return hashCode;
 	}
-
 }
