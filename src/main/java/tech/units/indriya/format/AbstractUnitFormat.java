@@ -88,14 +88,12 @@ public abstract class AbstractUnitFormat implements UnitFormat {
    *              if the Format cannot format the given object
    */
   public final String format(Unit<?> unit) {
-    if (unit instanceof AbstractUnit) {
-      return format((AbstractUnit<?>) unit, new StringBuilder()).toString();
-    } else {
-      try {
-        return (this.format(unit, new StringBuilder())).toString();
-      } catch (IOException ex) {
-        throw new MeasurementException(ex); // Should never happen.
-      }
+    if (unit instanceof AbstractUnit) return format((AbstractUnit<?>) unit, new StringBuilder()).toString();
+
+    try {
+      return (this.format(unit, new StringBuilder())).toString();
+    } catch (IOException ex) {
+      throw new MeasurementException(ex); // Should never happen.
     }
   }
 

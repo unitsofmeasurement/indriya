@@ -164,9 +164,9 @@ public final class TemporalQuantity extends AbstractQuantity<Time> {
 		return Quantities.getQuantity(value, toUnit());
 	}
 
-	public TemporalQuantity to(TemporalUnit timeUnit) {
-		Quantity<Time> time = toQuantity().to(toUnit(timeUnit));
-		return new TemporalQuantity(time.getValue().longValue(), timeUnit);
+	public TemporalQuantity to(TemporalUnit aTimeUnit) {
+		Quantity<Time> time = toQuantity().to(toUnit(aTimeUnit));
+		return new TemporalQuantity(time.getValue().longValue(), aTimeUnit);
 	}
 
 	private static Unit<Time> toUnit(TemporalUnit timeUnit) {
@@ -191,10 +191,8 @@ public final class TemporalQuantity extends AbstractQuantity<Time> {
 				throw new IllegalArgumentException(
 						"TemporalQuantity only supports DAYS, HOURS, MICROS, MILLIS, MINUTES, NANOS, SECONDS ");
 			}
-		} else {
-			throw new IllegalArgumentException("TemporalQuantity only supports temporal units of type ChronoUnit");
-
-		}
+		} 
+		throw new IllegalArgumentException("TemporalQuantity only supports temporal units of type ChronoUnit");
 	}
 
 	@Override

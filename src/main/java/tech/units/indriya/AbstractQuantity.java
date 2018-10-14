@@ -158,20 +158,20 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
    * <code>Measure.valueOf(doubleValue(unit), unit)</code> . If this quantity is already stated in the specified unit, then this quantity is returned
    * and no conversion is performed.
    *
-   * @param unit
+   * @param anotherUnit
    *          the unit in which the returned measure is stated.
    * @return this quantity or a new quantity equivalent to this quantity stated in the specified unit.
    * @throws ArithmeticException
    *           if the result is inexact and the quotient has a non-terminating decimal expansion.
    */
   @Override
-  public ComparableQuantity<Q> to(Unit<Q> unit) {
-    if (unit.equals(this.getUnit())) {
+  public ComparableQuantity<Q> to(Unit<Q> anotherUnit) {
+    if (anotherUnit.equals(this.getUnit())) {
       return this;
     }
-    UnitConverter t = getUnit().getConverterTo(unit);
+    UnitConverter t = getUnit().getConverterTo(anotherUnit);
     Number convertedValue = t.convert(getValue());
-    return Quantities.getQuantity(convertedValue, unit);
+    return Quantities.getQuantity(convertedValue, anotherUnit);
   }
 
 //  /**
@@ -290,28 +290,28 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
     return String.valueOf(getValue()) + " " + String.valueOf(getUnit());
   }
 
-  public abstract BigDecimal decimalValue(Unit<Q> unit) throws ArithmeticException;
+  public abstract BigDecimal decimalValue(Unit<Q> aUnit) throws ArithmeticException;
 
-  public abstract double doubleValue(Unit<Q> unit) throws ArithmeticException;
+  public abstract double doubleValue(Unit<Q> aUnit) throws ArithmeticException;
 
-  public final int intValue(Unit<Q> unit) throws ArithmeticException {
-    long longValue = longValue(unit);
+  public final int intValue(Unit<Q> aUnit) throws ArithmeticException {
+    long longValue = longValue(aUnit);
     if ((longValue < Integer.MIN_VALUE) || (longValue > Integer.MAX_VALUE)) {
       throw new ArithmeticException("Cannot convert " + longValue + " to int (overflow)");
     }
     return (int) longValue;
   }
 
-  protected long longValue(Unit<Q> unit) throws ArithmeticException {
-    double result = doubleValue(unit);
+  protected long longValue(Unit<Q> aUnit) throws ArithmeticException {
+    double result = doubleValue(aUnit);
     if ((result < Long.MIN_VALUE) || (result > Long.MAX_VALUE)) {
       throw new ArithmeticException("Overflow (" + result + ")");
     }
     return (long) result;
   }
 
-  protected final float floatValue(Unit<Q> unit) {
-    return (float) doubleValue(unit);
+  protected final float floatValue(Unit<Q> aUnit) {
+    return (float) doubleValue(aUnit);
   }
 
   @Override

@@ -147,8 +147,7 @@ public final class AnnotatedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> 
     }
     if (obj instanceof AbstractUnit) {
       return AbstractUnit.Equalizer.areEqual(this, (AbstractUnit) obj);
-    } else {
-      return false;
-    }
+    } 
+    return false;
   }
 }

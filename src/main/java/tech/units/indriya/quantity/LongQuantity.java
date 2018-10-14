@@ -68,13 +68,13 @@ final class LongQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
   }
 
   @Override
-  boolean isOverflowing(BigDecimal value) {
-    return value.compareTo(LONG_MIN_VALUE) < 0 || value.compareTo(LONG_MAX_VALUE) > 0;
+  boolean isOverflowing(BigDecimal aValue) {
+    return aValue.compareTo(LONG_MIN_VALUE) < 0 || aValue.compareTo(LONG_MAX_VALUE) > 0;
   }
 
   @SuppressWarnings({ "rawtypes", "unchecked" })
   public ComparableQuantity<Q> inverse() {
-    return (AbstractQuantity<Q>) new LongQuantity(1 / value, getUnit().inverse());
+    return new LongQuantity(1 / value, getUnit().inverse());
   }
 
   @Override
@@ -98,8 +98,8 @@ final class LongQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
   }
 
   @Override
-  Number castFromBigDecimal(BigDecimal value) {
-    return value.longValue();
+  Number castFromBigDecimal(BigDecimal aValue) {
+    return aValue.longValue();
   }
 
   @Override

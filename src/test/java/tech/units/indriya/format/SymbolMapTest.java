@@ -81,7 +81,7 @@ public class SymbolMapTest {
    */
   @Test
   public void parseWithEBNFUnitFormat() {
-    Unit u2 = EBNFUnitFormat.getInstance().parse("dag");
+    Unit<?> u2 = EBNFUnitFormat.getInstance().parse("dag");
 
     Assertions.assertTrue(u2.equals(MetricPrefix.DEKA(Units.GRAM)));
     Assertions.assertTrue(MetricPrefix.DEKA(Units.GRAM).equals(u2));

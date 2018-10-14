@@ -192,10 +192,9 @@ public final class TransformedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q
     		  && Objects.equals(converter, other.converter);
     }
     if (obj instanceof AbstractUnit) {
-      return AbstractUnit.Equalizer.areEqual(this, (AbstractUnit) obj);
-    } else {
-      return false;
-    }
+      return AbstractUnit.Equalizer.areEqual(this, (AbstractUnit<?>) obj);
+    } 
+    return false;
   }
 
   /**

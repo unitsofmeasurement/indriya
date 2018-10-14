@@ -34,6 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static javax.measure.MetricPrefix.*;
 import static tech.units.indriya.unit.Units.*;
 import javax.measure.quantity.Length;
+import javax.measure.quantity.Mass;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -74,31 +75,31 @@ public class AbsUnitTest {
 
   @Test
   public void testCompareTo() {
-    assertEquals(0, ((AbstractUnit) KILOGRAM).compareTo(KILOGRAM));
+    assertEquals(0, ((AbstractUnit<Mass>) KILOGRAM).compareTo(KILOGRAM));
   }
 
   @Test
   public void testCompareToOther() {
-    assertEquals(-1, ((AbstractUnit) KILOGRAM).compareTo(KILO(GRAM)));
+    assertEquals(-1, ((AbstractUnit<Mass>) KILOGRAM).compareTo(KILO(GRAM)));
   }
 
   @Test
   public void testEquivalent() {
-    assertTrue((((AbstractUnit) MICRO(GRAM))).isEquivalentOf(GRAM.divide(1_000_000)));
+    assertTrue((((AbstractUnit<Mass>) MICRO(GRAM))).isEquivalentOf(GRAM.divide(1_000_000)));
   }
   
   @Test
   public void testEquivalentWhenComposed() {
-    assertTrue((((AbstractUnit) MICRO(GRAM))).isEquivalentOf(GRAM.divide(1000).divide(1000)));
+    assertTrue((((AbstractUnit<Mass>) MICRO(GRAM))).isEquivalentOf(GRAM.divide(1000).divide(1000)));
   }
 
   @Test
   public void testAnnotate() {
-    assertEquals("g{Gr}", (((AbstractUnit) GRAM).annotate("Gr")).toString());
+    assertEquals("g{Gr}", (((AbstractUnit<Mass>) GRAM).annotate("Gr")).toString());
   }
 
   @Test
   public void testAnnotateClass() {
-    assertEquals("tech.units.indriya.unit.AnnotatedUnit", (((AbstractUnit) GRAM).annotate("Gr")).getClass().getName());
+    assertEquals("tech.units.indriya.unit.AnnotatedUnit", (((AbstractUnit<Mass>) GRAM).annotate("Gr")).getClass().getName());
   }
 }

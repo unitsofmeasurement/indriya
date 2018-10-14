@@ -39,7 +39,6 @@ import javax.measure.format.QuantityFormat;
 import javax.measure.spi.FormatService;
 import tech.units.indriya.format.NumberSpaceQuantityFormat;
 import tech.units.indriya.format.SimpleQuantityFormat;
-import tech.uom.lib.common.function.IntPrioritySupplier;
 
 /**
  * Default format service.
@@ -48,7 +47,7 @@ import tech.uom.lib.common.function.IntPrioritySupplier;
  * @version 0.6, April 6, 2018
  * @since 2.0
  */
-public class DefaultFormatService extends DefaultUnitFormatService implements FormatService, IntPrioritySupplier {
+public class DefaultFormatService extends DefaultUnitFormatService implements FormatService {
   static final int PRIO = 1000;
 
   private static final String DEFAULT_FORMAT = "Simple";

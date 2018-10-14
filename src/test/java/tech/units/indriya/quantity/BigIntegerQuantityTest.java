@@ -59,7 +59,7 @@ public class BigIntegerQuantityTest {
   private final BigIntegerQuantity<ElectricResistance> ONE_MILLIOHM = createQuantity(1L, MILLI(Units.OHM));
   private static final FloatQuantity<ElectricResistance> ONE_FLOAT_OHM = new FloatQuantity<ElectricResistance>(1F, Units.OHM);
 
-  private <Q extends Quantity<Q>> BigIntegerQuantity<Q> createQuantity(long l, Unit<Q> unit) {
+  private static <Q extends Quantity<Q>> BigIntegerQuantity<Q> createQuantity(long l, Unit<Q> unit) {
     return new BigIntegerQuantity<Q>(l, unit);
   }
 

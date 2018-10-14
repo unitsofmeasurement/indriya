@@ -284,9 +284,9 @@ public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
             if ((element.pow != elem.pow) || (element.root != elem.root))
               return false;
             else {
-              unitFound = true;
-              break;
-            }
+            unitFound = true;
+            break;
+          }
         }
         if (!unitFound)
           return false;
@@ -294,10 +294,9 @@ public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
       return true;
     }
     if (obj instanceof AbstractUnit) {
-      return AbstractUnit.Equalizer.areEqual(this, (AbstractUnit) obj);
-    } else {
-      return false;
-    }
+      return AbstractUnit.Equalizer.areEqual(this, (AbstractUnit<?>) obj);
+    } 
+    return false;
   }
 
   @Override
@@ -323,7 +322,7 @@ public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
     UnitConverter converter = AbstractConverter.IDENTITY;
     for (Element e : elements) {
       if (e.unit instanceof AbstractUnit) {
-        UnitConverter cvtr = ((AbstractUnit) e.unit).getSystemConverter();
+        UnitConverter cvtr = ((AbstractUnit<?>) e.unit).getSystemConverter();
         if (!(cvtr.isLinear()))
           throw new UnsupportedOperationException(e.unit + " is non-linear, cannot convert");
         if (e.root != 1)
@@ -426,10 +425,7 @@ public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
    * @return the greatest common divisor.
    */
   private static int gcd(int m, int n) {
-    if (n == 0)
-      return m;
-    else
-      return gcd(n, m % n);
+    return n == 0 ? m : gcd(n, m % n);
   }
 
   /**

@@ -63,7 +63,7 @@ public class ByteQuantityTest {
   private final ByteQuantity<ElectricResistance> ONE_DECIOHM = createQuantity((byte) 1, MetricPrefix.DECI(Units.OHM));
   private final ByteQuantity<ElectricResistance> ONE_YOTTAOHM = createQuantity((byte) 1, MetricPrefix.YOTTA(Units.OHM));
 
-  private <Q extends Quantity<Q>> ByteQuantity<Q> createQuantity(byte b, Unit<Q> unit) {
+  private static <Q extends Quantity<Q>> ByteQuantity<Q> createQuantity(byte b, Unit<Q> unit) {
     return new ByteQuantity<Q>(Byte.valueOf(b).byteValue(), unit);
   }
 

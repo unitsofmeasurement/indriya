@@ -93,8 +93,8 @@ final class ShortQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
   }
 
   @Override
-  boolean isOverflowing(BigDecimal value) {
-    return value.compareTo(SHORT_MIN_VALUE) < 0 || value.compareTo(SHORT_MAX_VALUE) > 0;
+  boolean isOverflowing(BigDecimal aValue) {
+    return aValue.compareTo(SHORT_MIN_VALUE) < 0 || aValue.compareTo(SHORT_MAX_VALUE) > 0;
   }
 
   @Override
@@ -103,7 +103,7 @@ final class ShortQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
   }
 
   @Override
-  Number castFromBigDecimal(BigDecimal value) {
-    return (short) value.longValue();
+  Number castFromBigDecimal(BigDecimal aValue) {
+    return (short) aValue.longValue();
   }
 }

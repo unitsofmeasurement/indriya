@@ -115,8 +115,9 @@ public final class TimeUnitQuantity extends AbstractQuantity<Time> {
 	 * @since 1.0
 	 * @deprecated use #of(Integer, TimeUnit)
 	 */
-	public static TimeUnitQuantity of(TimeUnit timeUnit, Integer number) {
-		return new TimeUnitQuantity(Objects.requireNonNull(timeUnit), Objects.requireNonNull(number).longValue());
+	@Deprecated
+    public static TimeUnitQuantity of(TimeUnit timeUnit, Integer number) {
+		return of(number, timeUnit);
 	}
 
 	/**
@@ -172,9 +173,9 @@ public final class TimeUnitQuantity extends AbstractQuantity<Time> {
 		return Quantities.getQuantity(value, toUnit());
 	}
 
-	public TimeUnitQuantity to(TimeUnit timeUnit) {
-		Quantity<Time> time = toQuantity().to(toUnit(timeUnit));
-		return new TimeUnitQuantity(timeUnit, time.getValue().longValue());
+	public TimeUnitQuantity to(TimeUnit aTimeUnit) {
+		Quantity<Time> time = toQuantity().to(toUnit(aTimeUnit));
+		return new TimeUnitQuantity(aTimeUnit, time.getValue().longValue());
 	}
 
 	private static Unit<Time> toUnit(TimeUnit timeUnit) {

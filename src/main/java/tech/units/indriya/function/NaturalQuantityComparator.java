@@ -56,6 +56,7 @@ import javax.measure.Quantity;
  * @since 1.0
  * @deprecated Moved to uom-lib-common
  */
+@Deprecated
 public class NaturalQuantityComparator<T extends Quantity<T>> implements Comparator<Quantity<T>> {
 
   @Override

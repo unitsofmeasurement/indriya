@@ -109,30 +109,22 @@ abstract class JavaNumberQuantity<Q extends Quantity<Q>> extends AbstractQuantit
   @Override
   public double doubleValue(Unit<Q> unit) {
     final double result = getUnit().getConverterTo(unit).convert(getValue()).doubleValue();
-    if (Double.isInfinite(result)) {
-      throw new ArithmeticException();
-    } else {
-      return result;
-    }
+    if (Double.isInfinite(result)) throw new ArithmeticException();
+    return result;
   }
 
   @Override
   protected long longValue(Unit<Q> unit) {
     final BigDecimal result = (BigDecimal) getUnit().getConverterTo(unit).convert(numberAsBigDecimal(getValue()));
-    if (result.compareTo(LONG_MIN_VALUE) < 0 || result.compareTo(LONG_MAX_VALUE) > 0) {
+    if (result.compareTo(LONG_MIN_VALUE) < 0 || result.compareTo(LONG_MAX_VALUE) > 0) 
       throw new ArithmeticException("Overflow (" + result + ")");
-    } else {
-      return result.longValue();
-    }
+    return result.longValue();
   }
 
   @Override
   public BigDecimal decimalValue(Unit<Q> unit) {
-    if (getUnit().equals(unit)) {
-      return numberAsBigDecimal(getValue());
-    } else {
-      return (BigDecimal) getUnit().getConverterTo(unit).convert(numberAsBigDecimal(getValue()));
-    }
+    if (getUnit().equals(unit)) return numberAsBigDecimal(getValue());
+    return (BigDecimal) getUnit().getConverterTo(unit).convert(numberAsBigDecimal(getValue()));
   }
 
   @Override
@@ -149,11 +141,8 @@ abstract class JavaNumberQuantity<Q extends Quantity<Q>> extends AbstractQuantit
     final ComparableQuantity<Q> resultInThisUnit = createTypedQuantity(getNumberType(), castFromBigDecimal(resultValueInThisUnit), getUnit());
     final ComparableQuantity<Q> resultInThatUnit = createTypedQuantity(getNumberType(), castFromBigDecimal(resultValueInThatUnit), that.getUnit());
     if (isOverflowing(resultValueInThisUnit)) {
-      if (isOverflowing(resultValueInThatUnit)) {
-        throw new ArithmeticException();
-      } else {
-        return resultInThatUnit;
-      }
+      if (isOverflowing(resultValueInThatUnit)) throw new ArithmeticException();
+      return resultInThatUnit;
     } else if (isOverflowing(resultValueInThatUnit)) {
       return resultInThisUnit;
     } else if (!isDecimal() && hasFraction(resultValueInThisUnit)) {
@@ -221,20 +210,17 @@ abstract class JavaNumberQuantity<Q extends Quantity<Q>> extends AbstractQuantit
     return applyMultiplicativeNumberOperation(that, BigDecimal::divide);
   }
 
-  private <R extends Quantity<R>> BigDecimal quantityValueAsBigDecimal(Quantity<R> that) {
+  private static <R extends Quantity<R>> BigDecimal quantityValueAsBigDecimal(Quantity<R> that) {
     return convertedQuantityValueAsBigDecimal(that, that.getUnit());
   }
 
   @SuppressWarnings({ "unchecked", "rawtypes" })
-  private <R extends Quantity<R>> BigDecimal convertedQuantityValueAsBigDecimal(Quantity<R> that, Unit<R> unit) {
-    if (that instanceof JavaNumberQuantity) {
-      return ((JavaNumberQuantity) that).decimalValue(unit);
-    } else {
-      return (BigDecimal) that.getUnit().getConverterTo(unit).convert(numberAsBigDecimal(that.getValue()));
-    }
+  private static <R extends Quantity<R>> BigDecimal convertedQuantityValueAsBigDecimal(Quantity<R> that, Unit<R> unit) {
+    if (that instanceof JavaNumberQuantity) return ((JavaNumberQuantity) that).decimalValue(unit);
+    return (BigDecimal) that.getUnit().getConverterTo(unit).convert(numberAsBigDecimal(that.getValue()));
   }
 
-  private BigDecimal numberAsBigDecimal(Number that) {
+  private static BigDecimal numberAsBigDecimal(Number that) {
     if (that instanceof BigDecimal) {
       return (BigDecimal) that;
     } else if (that instanceof BigInteger) {
@@ -267,7 +253,7 @@ abstract class JavaNumberQuantity<Q extends Quantity<Q>> extends AbstractQuantit
     return createTypedQuantity(target.getNumberType(), widenValue(this, target), getUnit());
   }
 
-  private ComparableQuantity<?> createQuantity(Class<?> numberType, Number value, Unit<?> unit) {
+  private static ComparableQuantity<?> createQuantity(Class<?> numberType, Number value, Unit<?> unit) {
     try {
       Method m = NumberQuantity.class.getDeclaredMethod("of", numberType, Unit.class);
       return (ComparableQuantity<?>) m.invoke(null, value, unit);
