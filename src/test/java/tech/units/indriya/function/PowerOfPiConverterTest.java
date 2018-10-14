@@ -80,14 +80,14 @@ public class PowerOfPiConverterTest {
 	public void testEquality() {
 		PowerOfPiConverter a = new PowerOfPiConverter(-1);
 		PowerOfPiConverter b = new PowerOfPiConverter(-1);
-		PowerOfPiConverter c = new PowerOfPiConverter(1);
+		PowerOfPiConverter c = PowerOfPiConverter.ONE;
 		assertTrue(a.equals(b)); 
 		assertFalse(a.equals(c));
 	}
 
 	@Test
 	public void isLinear() {
-		PowerOfPiConverter converter = new PowerOfPiConverter(-1);
+		PowerOfPiConverter converter = PowerOfPiConverter.of(-1);
 		assertTrue(converter.isLinear());
 	}
 
@@ -107,7 +107,7 @@ public class PowerOfPiConverterTest {
 
 	@Test
 	public void piBigDecimalExtendedPrecision() {
-		PowerOfPiConverter converter = new PowerOfPiConverter(1);
+		PowerOfPiConverter converter = PowerOfPiConverter.ONE;
 		Calculus.MATH_CONTEXT = new MathContext(MathContext.DECIMAL128.getPrecision() * 2);
 		BigDecimal value = (BigDecimal) converter.convert(BigDecimal.valueOf(1.));
 		//[ahuber] last digit should actually round to '2' instead of '0', 
@@ -122,5 +122,4 @@ public class PowerOfPiConverterTest {
 		PowerOfPiConverter converter = new PowerOfPiConverter(2);
 		assertEquals("PowerOfPi(x -> x * π^2)", converter.toString());
 	}
-
 }
