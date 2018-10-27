@@ -46,7 +46,6 @@ import javax.measure.UnitConverter;
 import tech.units.indriya.function.Calculus;
 import tech.units.indriya.function.PowerOfIntConverter;
 import tech.units.indriya.function.UnitComparator;
-import tech.units.indriya.internal.simplify.Simplifier;
 import tech.uom.lib.common.function.Converter;
 
 /**
@@ -57,7 +56,7 @@ import tech.uom.lib.common.function.Converter;
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
  * @author Andi Huber
- * @version 1.6, April 26, 2018
+ * @version 1.7, Oct. 27, 2018
  * @since 1.0
  */
 public abstract class AbstractConverter
@@ -69,11 +68,17 @@ public abstract class AbstractConverter
 	private static final long serialVersionUID = 5790242858468427131L;
 
 	/**
-	 * Holds identity converter.
+	 * Default identity converter implementing AbstractConverter.
+	 * <p>
+	 * Note: Checking whether a UnitConverter is an identity operator should be done with 
+	 * UnitConverter.isIdentity() rather then unitConverter == AbstractConverter.IDENTITY.
 	 */
-	// [ahuber] potentially misused: checking whether a UnitConverter is an identity operator
-	// should be done with unitConverter.isIdentity() rather then unitConverter == AbstractConverter.IDENTITY
 	public static final AbstractConverter IDENTITY = new Identity();
+	
+	/**
+	 * Allows for plug in of a custom UnitCompositionHandler.
+	 */
+	public static UnitCompositionHandler UNIT_COMPOSITION_HANDLER = UnitCompositionHandler.yieldingNormalForm();
 
 	/**
 	 * memoization for getConversionSteps
@@ -158,7 +163,9 @@ public abstract class AbstractConverter
 	 * Non-API
 	 * Guard for {@link #simpleCompose(AbstractConverter)}
 	 * @param that
-	 * @return whether or not a 'simple' composition of transformations is possible
+	 * @return whether or not a composition with given {@code that} is possible, such 
+	 * that no additional conversion steps are required, with respect to the steps already 
+	 * in place by this converter 
 	 */
 	protected abstract boolean isSimpleCompositionWith(AbstractConverter that);
 	
@@ -166,7 +173,7 @@ public abstract class AbstractConverter
 	 * Non-API
 	 * Guarded by {@link #isSimpleCompositionWith(AbstractConverter)}
 	 * @param that
-	 * @return a new AbstractConverter that adds no additional conversion step
+	 * @return a new AbstractConverter that adds no additional conversion steps
 	 */
 	protected AbstractConverter simpleCompose(AbstractConverter that) {
 		throw new IllegalStateException(
@@ -177,25 +184,25 @@ public abstract class AbstractConverter
 	
 	@Override
 	public final UnitConverter concatenate(UnitConverter converter) {
-		Objects.requireNonNull(converter, "Can not concatenate null.");
+		Objects.requireNonNull(converter, "Cannot compose with converter that is null.");
+		
 		if(converter instanceof AbstractConverter) {
-			// let Simplifier decide
-			AbstractConverter other = (AbstractConverter) converter;
-			return Simplifier.compose(this, other, 
-					AbstractConverter::isSimpleCompositionWith, 
-					AbstractConverter::simpleCompose);
+		    final AbstractConverter other = (AbstractConverter) converter;
+		    return UNIT_COMPOSITION_HANDLER.compose(this, other, 
+		            AbstractConverter::isSimpleCompositionWith,
+		            AbstractConverter::simpleCompose);
 		}
-		// converter is not known to this implementation ...
+		// converter is not a sub-class of AbstractConverter, we do the best we can ...
 		if(converter.isIdentity()) {
 			return this;
 		}
 		if(this.isIdentity()) {
 			return converter;
 		}
-		throw new IllegalArgumentException(
-				"Concatenate is currently only supported for sub-classes of AbstractConverter"); 
-		//[ahuber] we don't know how to simplify into a 'normal-form' with 'foreign' converters
-		//return new Pair(this, converter);
+		//[ahuber] we don't know how to reduce to a 'normal-form' with 'foreign' converters,
+		// so we just return the straightforward composition, which no longer allows for proper
+		// composition equivalence test
+		return new Pair(this, converter);
 	}
 
 	@Override
@@ -248,7 +255,7 @@ public abstract class AbstractConverter
 	
 	/**
 	 * @throws IllegalArgumentException
-	 *             if the value is </code>null</code>.
+	 *             if the value is <code>null</code>.
 	 */
 	@Override
 	public final Number convert(Number value) {
@@ -286,17 +293,17 @@ public abstract class AbstractConverter
 
 		@Override
 		public double convertWhenNotIdentity(double value) {
-			throw new IllegalStateException("code was reached, that is expected unreachable");
+		    throw unreachable();
 		}
 
 		@Override
 		public Number convertWhenNotIdentity(BigInteger value, MathContext ctx) {
-			throw new IllegalStateException("code was reached, that is expected unreachable");
+		    throw unreachable();
 		}
 		
 		@Override
 		public BigDecimal convertWhenNotIdentity(BigDecimal value, MathContext ctx) {
-			throw new IllegalStateException("code was reached, that is expected unreachable");
+		    throw unreachable();
 		}
 
 		@Override
@@ -324,22 +331,26 @@ public abstract class AbstractConverter
 
 		@Override
 		protected boolean isSimpleCompositionWith(AbstractConverter that) {
-			throw new IllegalStateException("code was reached, that is expected unreachable");
+		    throw unreachable();
 		}
 		
 		@Override
 		protected AbstractConverter simpleCompose(AbstractConverter that) {
-			throw new IllegalStateException("code was reached, that is expected unreachable");
+		    throw unreachable();
 		}
 
 		@Override
 		protected AbstractConverter inverseWhenNotIdentity() {
-			throw new IllegalStateException("code was reached, that is expected unreachable");
+			throw unreachable();
 		}
 		
 		@Override
 		protected String transformationLiteral() {
 			return null;
+		}
+		
+		private IllegalStateException unreachable() {
+		    return new IllegalStateException("code was reached, that is expected unreachable");
 		}
 		
 	}
@@ -422,7 +433,7 @@ public abstract class AbstractConverter
 		@Override
 		public Number convertWhenNotIdentity(BigInteger value, MathContext ctx) {
 			if (right instanceof AbstractConverter) {
-				//TODO [ahuber] assumes left is always instanceof AbstractConverter, why?
+			    //Implementation Note: assumes left is always instance of AbstractConverter
 				final AbstractConverter _left = (AbstractConverter) left;
 				final AbstractConverter _right = (AbstractConverter) right;
 				
@@ -441,7 +452,7 @@ public abstract class AbstractConverter
 		@Override
 		public BigDecimal convertWhenNotIdentity(BigDecimal value, MathContext ctx) {
 			if (right instanceof AbstractConverter) {
-				//TODO [ahuber] assumes left is always instanceof AbstractConverter, why?
+				//Implementation Note: assumes left is always instance of AbstractConverter
 				final AbstractConverter _left = (AbstractConverter) left;
 				final AbstractConverter _right = (AbstractConverter) right;
 				return _left.convertWhenNotIdentity(_right.convertWhenNotIdentity(value, ctx), ctx);

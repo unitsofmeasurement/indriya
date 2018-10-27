@@ -39,28 +39,34 @@ import javax.measure.UnitConverter;
 import tech.units.indriya.AbstractConverter;
 
 /**
- * Worker for the Simplifier.
+ * Package private normal-form yielding worker task. 
  * 
  * @author Andi Huber
- * @version 1.1
+ * @version 1.0
  * @since 2.0
  */
-final class SimplificationWorker {
+final class CompositionTask {
 
-	private final BiPredicate<AbstractConverter, AbstractConverter> simpleComposeTest;
-	private final BinaryOperator<AbstractConverter> simpleComposeAction;
+    private final BiPredicate<AbstractConverter, AbstractConverter> isNormalFormOrderWhenIdentity;
+    private final BiPredicate<AbstractConverter, AbstractConverter> isNormalFormOrderWhenCommutative;
+	private final BiPredicate<AbstractConverter, AbstractConverter> canSimpleCompose;
+	private final BinaryOperator<AbstractConverter> doSimpleCompose;
 	
 	private AbstractConverter[] arrayOfConverters;
 	
-	public SimplificationWorker(
-			BiPredicate<AbstractConverter, AbstractConverter> simpleComposeTest,
-			BinaryOperator<AbstractConverter> simpleComposeAction) {
-		
-		this.simpleComposeTest = simpleComposeTest;
-		this.simpleComposeAction = simpleComposeAction;
-	}
+	CompositionTask(
+	        BiPredicate<AbstractConverter, AbstractConverter> isNormalFormOrderWhenIdentity,
+            BiPredicate<AbstractConverter, AbstractConverter> isNormalFormOrderWhenCommutative,
+            BiPredicate<AbstractConverter, AbstractConverter> canSimpleCompose,
+            BinaryOperator<AbstractConverter> doSimpleCompose) {
+	    
+        this.isNormalFormOrderWhenIdentity = isNormalFormOrderWhenIdentity;
+        this.isNormalFormOrderWhenCommutative = isNormalFormOrderWhenCommutative;
+        this.canSimpleCompose = canSimpleCompose;
+        this.doSimpleCompose = doSimpleCompose;
+    }
 
-	/**
+    /**
 	 * Description of a brute-force approach:
 	 * <p>
 	 * Given 'conversionSteps' a list of converters, where order matters,
@@ -79,7 +85,7 @@ final class SimplificationWorker {
 	 * @param conversionSteps
 	 * @return
 	 */
-	public AbstractConverter simplify(List<? extends UnitConverter> conversionSteps) {
+	public AbstractConverter reduceToNormalForm(List<? extends UnitConverter> conversionSteps) {
 
 		arrayOfConverters = conversionSteps.toArray(new AbstractConverter[]{});
 		
@@ -92,9 +98,12 @@ final class SimplificationWorker {
 		return sequenceToConverter(arrayOfConverters);
 	}
 	
+	// -- HELPER
+	
+	/**@returns the number of simplifications that could be found and were applied*/
 	private int trySimplify() {
 		
-		final ArrayAdapter<AbstractConverter> adapter = ArrayAdapter.of(arrayOfConverters);
+		final CompositionTask_ArrayAdapter<AbstractConverter> adapter = CompositionTask_ArrayAdapter.of(arrayOfConverters);
 		int simplificationCount = adapter.visitSequentialPairsAndSimplify((a, b)->{
 			if(a.isIdentity()) {
 				return b;
@@ -102,7 +111,7 @@ final class SimplificationWorker {
 			if(b.isIdentity()) {
 				return a;
 			}
-			return simpleComposeTest.test(a, b) ? simpleComposeAction.apply(a, b) : null;
+			return canSimpleCompose.test(a, b) ? doSimpleCompose.apply(a, b) : null;
 		});
 		if(simplificationCount>0) {
 			arrayOfConverters = adapter.removeNulls(simplificationCount);
@@ -110,8 +119,9 @@ final class SimplificationWorker {
 		return simplificationCount;
 	}
 
-	private static void sortToNormalFormOrder(AbstractConverter[] arrayOfConverters) {
-		final BitScanner bitScanner = BitScanner.of(arrayOfConverters, UnitConverter::isLinear);
+	/**sorts an array of converters to normal-form order*/
+	private void sortToNormalFormOrder(AbstractConverter[] arrayOfConverters) {
+		final CompositionTask_BitScanner bitScanner = CompositionTask_BitScanner.of(arrayOfConverters, UnitConverter::isLinear);
 		// a bit-set 0-0-1-1-1-0 would indicate 3rd to 5th position are allowed to be put in arbitrary order
 		// we sort this sub-sequences of '1's according to normal-form-order
 		bitScanner.visitBitSequences((fromIndex, toIndex) -> {
@@ -119,7 +129,7 @@ final class SimplificationWorker {
 				
 				if(a.isIdentity()) {
 					if(b.isIdentity()) {
-						return Simplifier.isNormalFormOrderWhenIdentity(a, b) ? -1 : 1;
+						return isNormalFormOrderWhenIdentity.test(a, b) ? -1 : 1;
 					}
 					return -1;
 				}
@@ -127,27 +137,13 @@ final class SimplificationWorker {
 					return 1;
 				}
 				
-				return Simplifier.isNormalFormOrderWhenCommutative(a, b) ? -1 : 1;
+				return isNormalFormOrderWhenCommutative.test(a, b) ? -1 : 1;
 				
 			});
 		});
 	}
 
-//	private static AbstractConverter sequenceToConverter(List<AbstractConverter> sequence) {
-//		if(sequence.isEmpty()) {
-//			return AbstractConverter.IDENTITY;
-//		}
-//		if(sequence.size()==1) {
-//			final AbstractConverter singleton = sequence.get(0);
-//			return singleton;
-//		}
-//		// fold the sequence into a binary tree
-//		final AbstractConverter start = new AbstractConverter.Pair(sequence.get(0), sequence.get(1));
-//		return sequence.stream()
-//		.skip(2)
-//		.reduce(start, (tree, next)->new AbstractConverter.Pair(tree, next));
-//	}
-	
+	/**converts an array of converters to a single converter object*/
 	private static AbstractConverter sequenceToConverter(AbstractConverter[] sequence) {
 		if(sequence==null || sequence.length==0) {
 			return AbstractConverter.IDENTITY;

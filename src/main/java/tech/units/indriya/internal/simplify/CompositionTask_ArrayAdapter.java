@@ -34,36 +34,40 @@ import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
 
 /**
- * Array Utility for the Simplifier.
+ * Package private array element visitor utility for CompositionTask.
  * 
  * @author Andi Huber
  * @version 1.0
  * @since 2.0
  */
-final class ArrayAdapter<T> {
+final class CompositionTask_ArrayAdapter<T> {
 	
 	private final T[] array;
 	
-	public static <T> ArrayAdapter<T> of(T[] array){
-		return new ArrayAdapter<T>(array);
+	public static <T> CompositionTask_ArrayAdapter<T> of(T[] array){
+		return new CompositionTask_ArrayAdapter<T>(array);
 	}
 	
-	private ArrayAdapter(T[] array) {
+	private CompositionTask_ArrayAdapter(T[] array) {
 		this.array = array;
 	}
 	
-	public void visitSequentialPairs(BiConsumer<T,T> visitor) {
+	/**
+	 * For the underlying array visits all sequential pairs of elements.
+	 * @param visitor
+	 */
+	public void visitSequentialPairs(BiConsumer<T, T> visitor) {
 		if(array.length<2) {
 			return;
 		}
-		for(int i=1;i<array.length;++i) {
+		for(int i=1; i<array.length; ++i) {
 			visitor.accept(array[i-1], array[i]);
 		}
 	}
 	
 	/**
-	 * @param visitor returns either null (meaning no simplification) or a simplification 
-	 * @return simplificationCount
+	 * @param visitor must either return null (meaning no simplification found) or a simplification 
+	 * @return the number of simplifications that could be found and were applied
 	 */
 	public int visitSequentialPairsAndSimplify(BinaryOperator<T> visitor) {
 		if(array.length<2) {
@@ -84,6 +88,10 @@ final class ArrayAdapter<T> {
 		return simplificationCount;
 	}
 	
+	/**
+	 * @param nullCount since we know this number in advance, we use it to speed up this method
+	 * @return a new array with {@code nullCount} null-elements removed  
+	 */
 	public T[] removeNulls(int nullCount) {
 		final T[] result = Arrays.copyOf(array, array.length-nullCount);
 		int j=0;

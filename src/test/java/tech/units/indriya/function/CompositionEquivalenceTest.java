@@ -29,105 +29,36 @@
  */
 package tech.units.indriya.function;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
 import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
-import java.util.function.Supplier;
 
 import javax.measure.UnitConverter;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.extension.ExtensionContext;
-import org.junit.jupiter.api.extension.ParameterContext;
-import org.junit.jupiter.api.extension.ParameterResolutionException;
-import org.junit.jupiter.api.extension.ParameterResolver;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import tech.units.indriya.AbstractConverter;
+import tech.units.indriya.function.ConverterTypeUtil.ConverterType;
 
 @DisplayName("Testing Composition of UnitConverters")
-public class CompositionEquivalenceTest {
+class CompositionEquivalenceTest {
 
 	private Random random = new Random(0); // seed = 0, to make tests reproducible
 	private final static int RANDOM_VALUES_REPEAT_COUNT = 100;
 
-	public static enum ConverterType {
-		
-		ID(AbstractConverter.class, 
-				()->AbstractConverter.IDENTITY,
-				AbstractConverter.IDENTITY, 
-				AbstractConverter.IDENTITY	),
-		POWER(PowerOfIntConverter.class, 
-				()->PowerOfIntConverter.of(1, 0),
-				PowerOfIntConverter.of(3, 7), 
-				PowerOfIntConverter.of(7, -3)	),
-		RATIONAL(RationalConverter.class, 
-				()->RationalConverter.of(1, 1),
-				RationalConverter.of(17, 13),
-				RationalConverter.of(-34, 17)	),
-		MULTIPLY(MultiplyConverter.class, 
-				()->new MultiplyConverter(1.),
-				new MultiplyConverter(17.23),
-				new MultiplyConverter(-0.333) ),
-		ADD(AddConverter.class, 
-				()->new AddConverter(0.),
-				new AddConverter(-4.5),
-				new AddConverter(0.315) ),
-		LOG(LogConverter.class, 
-				null, // log has no identity variant
-				new LogConverter(4.5),
-				new LogConverter(0.1) ),
-		EXP(ExpConverter.class, 
-				null, // exp has no identity variant
-				new ExpConverter(4.5),
-				new ExpConverter(0.1) ),
-		PI(PowerOfPiConverter.class, 
-				()->PowerOfPiConverter.of(0), // log has no identity variant
-				PowerOfPiConverter.of(1),
-				PowerOfPiConverter.of(-1) ),
-		// when adding entries, also increment the typeCount!
-		;
-
-		public static final int typeCount = 8; // should be equal to ConverterType.values().length 
-		public static final int candidatesPerType = 2;
-		public static final int candidateCount = typeCount * candidatesPerType;
-
-		private final Class<? extends UnitConverter> type;
-		private final UnitConverter[] candidates;
-		private Supplier<? extends UnitConverter> identitySupplier;
-
-		public Class<? extends UnitConverter> getType() { return type; }
-		public UnitConverter[] getCandidates() { return candidates; }
-
-		@SafeVarargs
-		private <T extends UnitConverter> ConverterType(
-				Class<T> type,
-				Supplier<T> identitySupplier,
-				T ... instances) {
-			this.type = type;
-			this.identitySupplier = identitySupplier;
-			this.candidates = instances;
-		}
-
-		public boolean hasIdentity() {
-			return identitySupplier!=null;
-		}
-
-		public UnitConverter getIdentity() {
-			return identitySupplier.get();
-		}
-
-	}
-	
+	/**
+	 * Just to ensure ConverterType enum entry count and ConverterType.typeCount are consistent. 
+	 * This is a precondition to all the other tests within this class.
+	 */
 	@Test
 	@DisplayName("Setup for tests should include all converter types.")
 	public void setupForTestShouldIncludeAllTypes() throws Exception {
@@ -136,9 +67,15 @@ public class CompositionEquivalenceTest {
 
 	@Nested
 	@DisplayName("Any converter type should ...")
-	@ExtendWith(ConverterTypesForTests.class)
+	@ExtendWith(ConverterTypeUtil.ConverterTypesForTests.class)
 	public class ConverterTypeTests {
 
+	    
+	    /**
+	     * We cycle through all {@code ConverterType}s and for each such type test, whether 
+	     * the identity transformation (as expressed by the concrete sub-class implementing 
+	     * AbstractConverter) does actually behave like an identity transformation.
+	     */
 		@RepeatedTest(
 				value = ConverterType.typeCount, 
 				name = "{currentRepetition} of {totalRepetitions} candidates")
@@ -169,12 +106,30 @@ public class CompositionEquivalenceTest {
 
 	}
 
-
 	@Nested
 	@DisplayName("Any converter should ...")
-	@ExtendWith(UnitConverterForCompositionTests.class)
+	@ExtendWith(ConverterTypeUtil.UnitConverterForCompositionTests.class)
 	public class CompositionTests {
 
+	    /**
+	     * let
+	     * 
+	     * <ul>
+	     * <li>o ... transformation composition</li>
+         * <li>f^-1 ... inverse transformation of f</li>
+         * <li>𝟙  ... identity</li>
+         * <li>=== ... equivalence relation</li>
+         * </ul>
+	     * 
+	     * We cycle through all {@code ConverterType}s and take their concrete transformation
+	     * examples. For each such example transformation we test, whether
+	     * 
+	     * <ul>
+	     * <li>a o a^-1 === 𝟙 </li>
+	     * <li>a o b === b o a , given a==b (commute with itself)</li>
+	     * <li>a o 𝟙 === 𝟙 o a </li>
+	     * </ul>
+	     */
 		@RepeatedTest(
 				value = ConverterType.candidateCount, 
 				name = "{currentRepetition} of {totalRepetitions} candidates")
@@ -194,6 +149,11 @@ public class CompositionEquivalenceTest {
 			assertTrue(commutes(_I, u0), msg);
 		}
 
+		/**
+         * We cycle through all {@code ConverterType}s and take their concrete transformation
+         * examples. For each such example transformation we test, whether the composition
+         * a o a^-1 is equivalent to the identity transformation with respect to calculus. 
+		 */
 		@RepeatedTest(
 				value = ConverterType.candidateCount, 
 				name = "{currentRepetition} of {totalRepetitions} candidates")
@@ -203,7 +163,11 @@ public class CompositionEquivalenceTest {
 			assertIdentityCalculus(_I, RANDOM_VALUES_REPEAT_COUNT); 
 		}
 
-
+		/**
+         * Given all concrete transformation examples as defined by the {@code ConverterType}, 
+         * we cycle through all possible pairs {a, b} and test, whether 
+         * a o b === b o a, for cases when both (a and b) are scaling (a.isLinear and b.isLinear).
+         */
 		@RepeatedTest(value = ConverterType.candidateCount * ConverterType.candidateCount)
 		@DisplayName("(if scaling) commute with any other that is scaling")
 		public void commuteWithScaling(UnitConverter u1, UnitConverter u2) {
@@ -214,7 +178,44 @@ public class CompositionEquivalenceTest {
 		}
 
 	}
+	
+    @Test @DisplayName("(a o b) o (b^-1 o a) === a o a")
+    public void equivalenceHappyCase() {
+	    
+        AbstractConverter a = new AddConverter(3);
+        AbstractConverter b = new MultiplyConverter(2);
+        
+        AbstractConverter ab = (AbstractConverter) a.concatenate(b);
+        AbstractConverter Ba = (AbstractConverter) b.inverse().concatenate(a);
+        
+        {
+            // this demonstrates that (a o b) o (b^-1 o a) === a o a
+           
+            AbstractConverter left = (AbstractConverter) a.concatenate(a); 
+            AbstractConverter right = (AbstractConverter) ab.concatenate(Ba);
+            Assertions.assertEquals(left, right);
+        }
+        
+	}
 
+    @Test @DisplayName("Add(3) ○ Mul(2) ○ Add(-7) === Mul(2) ○ Add(-1)") @Disabled
+    public void equivalenceUnhappyCase() {
+        
+        AbstractConverter a = new AddConverter(3);
+        AbstractConverter b = new MultiplyConverter(2);
+        AbstractConverter c = new AddConverter(-7);
+        
+        {        
+            // this demonstrates, the limitations of the current implementation:
+            // even though Add(3) ○ Mul(2) ○ Add(-7) === Mul(2) ○ Add(-1)
+            // the test for equivalence fails
+            AbstractConverter left = (AbstractConverter) a.concatenate(b).concatenate(c); 
+            AbstractConverter right = (AbstractConverter) b.concatenate(new AddConverter(-1));
+            Assertions.assertEquals(left, right); // fails
+        }
+        
+    }
+    
 
 	// -- HELPER
 
@@ -292,69 +293,6 @@ public class CompositionEquivalenceTest {
 		}
 	}
 
-	// -- HELPER - PARAMETER PROVIDER - 1  
-
-	private static class ConverterTypesForTests implements ParameterResolver {
-
-		private Map<String, Integer> indexByContext = new HashMap<>();
-
-		@Override
-		public boolean supportsParameter(
-				ParameterContext parameterContext,
-				ExtensionContext extensionContext) throws ParameterResolutionException {
-			return parameterContext.getParameter().getType() == ConverterType.class;
-		}
-
-		@Override
-		public Object resolveParameter(
-				ParameterContext parameterContext,
-				ExtensionContext extensionContext) throws ParameterResolutionException {
-
-			String conextKey = parameterContext.getDeclaringExecutable().toString()+":"+parameterContext.getIndex();
-
-			int next = indexByContext.compute(conextKey, (__, index)->index!=null ? index+1 : 0);
-			int modulus = BigInteger.valueOf(ConverterType.candidateCount).pow(1+parameterContext.getIndex()).intValue();
-			int divisor = BigInteger.valueOf(ConverterType.candidateCount).pow(parameterContext.getIndex()).intValue();
-
-			next = (next % modulus) / divisor;
-
-			ConverterType candidate = ConverterType.values()[next%ConverterType.typeCount];
-
-			return candidate;
-		}
-	}
-
-	// -- HELPER - PARAMETER PROVIDER - 2  
-
-	private static class UnitConverterForCompositionTests implements ParameterResolver {
-
-		private Map<String, Integer> indexByContext = new HashMap<>();
-
-		@Override
-		public boolean supportsParameter(
-				ParameterContext parameterContext,
-				ExtensionContext extensionContext) throws ParameterResolutionException {
-			return parameterContext.getParameter().getType() == UnitConverter.class;
-		}
-
-		@Override
-		public Object resolveParameter(
-				ParameterContext parameterContext,
-				ExtensionContext extensionContext) throws ParameterResolutionException {
-
-			String conextKey = parameterContext.getDeclaringExecutable().toString()+":"+parameterContext.getIndex();
-
-			int next = indexByContext.compute(conextKey, (__, index)->index!=null ? index+1 : 0);
-			int modulus = BigInteger.valueOf(ConverterType.candidateCount).pow(1+parameterContext.getIndex()).intValue();
-			int divisor = BigInteger.valueOf(ConverterType.candidateCount).pow(parameterContext.getIndex()).intValue();
-
-			next = (next % modulus) / divisor;
-
-			UnitConverter candidate = ConverterType.values()[next/ConverterType.candidatesPerType]
-					.getCandidates()[next%ConverterType.candidatesPerType];
-
-			return candidate;
-		}
-	}
+	
 
 }
