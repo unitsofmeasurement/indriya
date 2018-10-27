@@ -161,23 +161,24 @@ public abstract class AbstractConverter
 
 	/**
 	 * Non-API
-	 * Guard for {@link #simpleCompose(AbstractConverter)}
+	 * Guard for {@link #reduce(AbstractConverter)}
 	 * @param that
 	 * @return whether or not a composition with given {@code that} is possible, such 
 	 * that no additional conversion steps are required, with respect to the steps already 
 	 * in place by this converter 
 	 */
-	protected abstract boolean isSimpleCompositionWith(AbstractConverter that);
+	protected abstract boolean canReduceWith(AbstractConverter that);
 	
 	/**
 	 * Non-API
-	 * Guarded by {@link #isSimpleCompositionWith(AbstractConverter)}
+	 * Guarded by {@link #canReduceWith(AbstractConverter)}
 	 * @param that
-	 * @return a new AbstractConverter that adds no additional conversion steps
+	 * @return a new AbstractConverter that adds no additional conversion steps, with respect 
+	 * to the steps already in place by this converter 
 	 */
-	protected AbstractConverter simpleCompose(AbstractConverter that) {
+	protected AbstractConverter reduce(AbstractConverter that) {
 		throw new IllegalStateException(
-				String.format("Concrete UnitConverter '%s' does not implement simpleCompose(...).", this)); 
+				String.format("Concrete UnitConverter '%s' does not implement reduce(...).", this)); 
 	}
 	
 	// -- COMPOSITION INTERFACE IMPLEMENTATION (FINAL)
@@ -189,8 +190,8 @@ public abstract class AbstractConverter
 		if(converter instanceof AbstractConverter) {
 		    final AbstractConverter other = (AbstractConverter) converter;
 		    return UNIT_COMPOSITION_HANDLER.compose(this, other, 
-		            AbstractConverter::isSimpleCompositionWith,
-		            AbstractConverter::simpleCompose);
+		            AbstractConverter::canReduceWith,
+		            AbstractConverter::reduce);
 		}
 		// converter is not a sub-class of AbstractConverter, we do the best we can ...
 		if(converter.isIdentity()) {
@@ -330,12 +331,12 @@ public abstract class AbstractConverter
 		}
 
 		@Override
-		protected boolean isSimpleCompositionWith(AbstractConverter that) {
+		protected boolean canReduceWith(AbstractConverter that) {
 		    throw unreachable();
 		}
 		
 		@Override
-		protected AbstractConverter simpleCompose(AbstractConverter that) {
+		protected AbstractConverter reduce(AbstractConverter that) {
 		    throw unreachable();
 		}
 
@@ -510,7 +511,7 @@ public abstract class AbstractConverter
 		
 
 		@Override
-		protected boolean isSimpleCompositionWith(AbstractConverter that) {
+		protected boolean canReduceWith(AbstractConverter that) {
 			return false;
 		}
 		

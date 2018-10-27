@@ -209,7 +209,7 @@ public final class RationalConverter extends AbstractConverter implements ValueS
 	}
 
 	@Override
-	protected boolean isSimpleCompositionWith(AbstractConverter that) {
+	protected boolean canReduceWith(AbstractConverter that) {
 		if (that instanceof RationalConverter) {
 			return true; 
 		}
@@ -217,7 +217,7 @@ public final class RationalConverter extends AbstractConverter implements ValueS
 	}
 
 	@Override
-	protected AbstractConverter simpleCompose(AbstractConverter that) {
+	protected AbstractConverter reduce(AbstractConverter that) {
 		if (that instanceof RationalConverter) {
 			return (AbstractConverter) composeSameType((RationalConverter) that); 
 		}

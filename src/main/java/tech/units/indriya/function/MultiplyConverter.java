@@ -97,12 +97,12 @@ public final class MultiplyConverter extends AbstractConverter implements ValueS
 	}
 
 	@Override
-	protected boolean isSimpleCompositionWith(AbstractConverter that) {
+	protected boolean canReduceWith(AbstractConverter that) {
 		return that instanceof MultiplyConverter;
 	}
 
 	@Override
-	protected AbstractConverter simpleCompose(AbstractConverter that) {
+	protected AbstractConverter reduce(AbstractConverter that) {
 		return new MultiplyConverter(factor * ((MultiplyConverter) that).factor);
 	}
 
