@@ -34,7 +34,6 @@ import java.util.Random;
 
 import javax.measure.UnitConverter;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -193,7 +192,7 @@ class CompositionEquivalenceTest {
            
             AbstractConverter left = (AbstractConverter) a.concatenate(a); 
             AbstractConverter right = (AbstractConverter) ab.concatenate(Ba);
-            Assertions.assertEquals(left, right);
+            assertEquals(left, right);
         }
         
 	}
@@ -211,7 +210,7 @@ class CompositionEquivalenceTest {
             // the test for equivalence fails
             AbstractConverter left = (AbstractConverter) a.concatenate(b).concatenate(c); 
             AbstractConverter right = (AbstractConverter) b.concatenate(new AddConverter(-1));
-            Assertions.assertEquals(left, right); // fails
+            assertEquals(left, right); // fails
         }
         
     }
