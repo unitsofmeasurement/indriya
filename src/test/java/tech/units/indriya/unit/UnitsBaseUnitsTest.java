@@ -60,7 +60,7 @@ public class UnitsBaseUnitsTest {
    * @param quantityClass
    *          The quantity class for which it is expected to be registered.
    */
-  private <Q extends Quantity<Q>> void parseSymbolAndAssertThatItIsTheBaseUnitRegisteredForTheQuantity(String symbol, Class<Q> quantityClass) {
+  private static <Q extends Quantity<Q>> void parseSymbolAndAssertThatItIsTheBaseUnitRegisteredForTheQuantity(String symbol, Class<Q> quantityClass) {
     Unit<?> parsedUnit = AbstractUnit.parse(symbol);
     assertEquals(BaseUnit.class, parsedUnit.getClass());
     assertEquals(Units.getInstance().getUnit(quantityClass), parsedUnit);

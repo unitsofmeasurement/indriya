@@ -39,7 +39,7 @@ import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.quantity.QuantityDimension;
 
 import java.io.Serializable;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -58,7 +58,7 @@ import java.util.Objects;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.4.2, November 7, 2017
+ * @version 1.6, October 12, 2018
  * @since 1.0
  */
 public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
@@ -74,15 +74,10 @@ public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
   private final Element[] elements;
 
   /**
-   * Holds the symbol for this unit.
-   */
-  private final String symbol;
-
-  /**
    * DefaultQuantityFactory constructor (used solely to create <code>ONE</code> instance).
    */
   public ProductUnit() {
-    this.symbol = "";
+    super("");
     elements = new Element[0];
   }
 
@@ -95,7 +90,7 @@ public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
    *           if the specified unit is not a product unit.
    */
   public ProductUnit(Unit<?> productUnit) {
-    this.symbol = productUnit.getSymbol();
+    super(productUnit.getSymbol());
     this.elements = ((ProductUnit<?>) productUnit).elements;
   }
 
@@ -106,9 +101,9 @@ public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
    *          the product elements.
    */
   private ProductUnit(Element[] elements) {
+    super(null);
     this.elements = elements;
     // this.symbol = elements[0].getUnit().getSymbol(); // FIXME this should contain ALL elements
-    this.symbol = null;
   }
 
   /**
@@ -211,6 +206,11 @@ public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
     return getInstance(unitElems, new Element[0]);
   }
 
+  @Override
+  public Unit<?> pow(int n) {
+      return new ProductUnit<>(new Element[] { new Element(this, n, 1) });
+  }
+
   /**
    * Returns the number of unit elements in this product.
    *
@@ -261,7 +261,7 @@ public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
 
   @Override
   public Map<Unit<?>, Integer> getBaseUnits() {
-    final Map<Unit<?>, Integer> units = new HashMap<>();
+    final Map<Unit<?>, Integer> units = new LinkedHashMap<>();
     for (int i = 0; i < getUnitCount(); i++) {
       units.put(getUnit(i), getUnitPow(i));
     }
@@ -284,9 +284,9 @@ public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
             if ((element.pow != elem.pow) || (element.root != elem.root))
               return false;
             else {
-              unitFound = true;
-              break;
-            }
+            unitFound = true;
+            break;
+          }
         }
         if (!unitFound)
           return false;
@@ -294,10 +294,9 @@ public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
       return true;
     }
     if (obj instanceof AbstractUnit) {
-      return AbstractUnit.Equalizer.areEqual(this, (AbstractUnit) obj);
-    } else {
-      return false;
-    }
+      return AbstractUnit.Equalizer.areEqual(this, (AbstractUnit<?>) obj);
+    } 
+    return false;
   }
 
   @Override
@@ -323,7 +322,7 @@ public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
     UnitConverter converter = AbstractConverter.IDENTITY;
     for (Element e : elements) {
       if (e.unit instanceof AbstractUnit) {
-        UnitConverter cvtr = ((AbstractUnit) e.unit).getSystemConverter();
+        UnitConverter cvtr = ((AbstractUnit<?>) e.unit).getSystemConverter();
         if (!(cvtr.isLinear()))
           throw new UnsupportedOperationException(e.unit + " is non-linear, cannot convert");
         if (e.root != 1)
@@ -426,10 +425,7 @@ public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
    * @return the greatest common divisor.
    */
   private static int gcd(int m, int n) {
-    if (n == 0)
-      return m;
-    else
-      return gcd(n, m % n);
+    return n == 0 ? m : gcd(n, m % n);
   }
 
   /**
@@ -523,10 +519,5 @@ public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
       result = 31 * result + root;
       return result;
     }
-  }
-
-  @Override
-  public String getSymbol() {
-    return symbol;
   }
 }

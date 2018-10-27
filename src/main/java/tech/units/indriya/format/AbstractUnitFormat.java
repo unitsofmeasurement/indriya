@@ -51,7 +51,7 @@ import tech.units.indriya.AbstractUnit;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.0.3, $Date: 2018-01-28 $
+ * @version 1.1, $Date: 2018-08-08 $
  * @since 1.0
  * 
  */
@@ -88,14 +88,12 @@ public abstract class AbstractUnitFormat implements UnitFormat {
    *              if the Format cannot format the given object
    */
   public final String format(Unit<?> unit) {
-    if (unit instanceof AbstractUnit) {
-      return format((AbstractUnit<?>) unit, new StringBuilder()).toString();
-    } else {
-      try {
-        return (this.format(unit, new StringBuilder())).toString();
-      } catch (IOException ex) {
-        throw new MeasurementException(ex); // Should never happen.
-      }
+    if (unit instanceof AbstractUnit) return format((AbstractUnit<?>) unit, new StringBuilder()).toString();
+
+    try {
+      return (this.format(unit, new StringBuilder())).toString();
+    } catch (IOException ex) {
+      throw new MeasurementException(ex); // Should never happen.
     }
   }
 
@@ -116,7 +114,7 @@ public abstract class AbstractUnitFormat implements UnitFormat {
    * @throws IllegalArgumentException
    *           if any problem occurs while parsing the specified character sequence (e.g. illegal syntax).
    */
-  protected abstract Unit<?> parse(CharSequence csq, ParsePosition cursor) throws IllegalArgumentException;
+  public abstract Unit<?> parse(CharSequence csq, ParsePosition cursor) throws IllegalArgumentException;
 
   /**
    * Parses a portion of the specified <code>CharSequence</code> from the specified position to produce a unit. If there is no unit to parse

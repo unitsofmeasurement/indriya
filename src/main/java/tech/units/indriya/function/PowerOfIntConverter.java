@@ -128,7 +128,7 @@ public final class PowerOfIntConverter extends AbstractConverter
 			} 
 		}
 		if (that instanceof RationalConverter) {
-			return (AbstractConverter) toRationalConverter().concatenate((RationalConverter) that);
+			return (AbstractConverter) toRationalConverter().concatenate(that);
 		}
 		throw new IllegalStateException(String.format(
 				"%s.simpleCompose() not handled for converter %s", 
@@ -170,7 +170,7 @@ public final class PowerOfIntConverter extends AbstractConverter
 
 		//[ahuber] thats where we are loosing 'exactness'
 		final BigDecimal bdecFactor = new BigDecimal(BigInteger.valueOf(base).pow(Math.abs(exponent)));
-		final BigDecimal bdecValue = (BigDecimal) value;
+		final BigDecimal bdecValue = value;
 		
 		return exponent>0 
 				? bdecValue.multiply(bdecFactor, ctx)

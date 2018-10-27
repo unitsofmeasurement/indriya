@@ -39,7 +39,6 @@ import java.io.IOException;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.format.MeasurementParseException;
-import javax.measure.format.ParserException;
 import javax.measure.format.UnitFormat;
 import javax.measure.quantity.Frequency;
 import javax.measure.quantity.Length;
@@ -96,10 +95,10 @@ public class UnitFormatTest {
 
   @Test
   public void testFormatLocal() {
-    final UnitFormat format = LocalUnitFormat.getInstance();
+    final UnitFormat localFormat = LocalUnitFormat.getInstance();
     final Appendable a = new StringBuilder();
     try {
-      format.format(METRE, a);
+      localFormat.format(METRE, a);
     } catch (IOException e) {
       fail(e.getMessage());
     }
@@ -110,7 +109,7 @@ public class UnitFormatTest {
     @SuppressWarnings("unchecked")
     Unit<Speed> v = (Unit<Speed>) METRE.divide(SECOND);
     try {
-      format.format(v, a2);
+      localFormat.format(v, a2);
     } catch (IOException e) {
       fail(e.getMessage());
     }
@@ -123,7 +122,7 @@ public class UnitFormatTest {
       Unit<?> u = format.parse("min");
       // assertEquals("min", u.getSymbol());
       assertEquals(MINUTE, u);
-    } catch (ParserException e) {
+    } catch (MeasurementParseException e) {
       fail(e.getMessage());
     }
   }
@@ -135,7 +134,7 @@ public class UnitFormatTest {
       assertNotNull(u);
       assertEquals("m", u.getSymbol());
       assertEquals(METRE, u);
-    } catch (ParserException e) {
+    } catch (MeasurementParseException e) {
       fail(e.getMessage());
     }
   }
@@ -146,7 +145,7 @@ public class UnitFormatTest {
       Unit<?> u = format.parse("kg");
       assertEquals("kg", u.getSymbol());
       assertEquals(KILOGRAM, u);
-    } catch (ParserException e) {
+    } catch (MeasurementParseException e) {
       fail(e.getMessage());
     }
   }
@@ -156,7 +155,7 @@ public class UnitFormatTest {
     try {
       Unit<?> u = format.parse("");
       assertEquals(ONE, u);
-    } catch (ParserException e) {
+    } catch (MeasurementParseException e) {
       fail(e.getMessage());
     }
   }
@@ -166,19 +165,19 @@ public class UnitFormatTest {
     try {
       Unit<?> u = format.parse("one");
       assertEquals(ONE, u);
-    } catch (ParserException e) {
+    } catch (MeasurementParseException e) {
       fail(e.getMessage());
     }
   }
 
   @Test
   public void testParseLocal() {
-    final UnitFormat format = LocalUnitFormat.getInstance();
+    final UnitFormat localFormat = LocalUnitFormat.getInstance();
     assertThrows(UnsupportedOperationException.class, () -> {
 	    try {
-	      Unit<?> u = format.parse("min");
+	      Unit<?> u = localFormat.parse("min");
 	      assertEquals("min", u.getSymbol());
-	    } catch (ParserException e) {
+	    } catch (MeasurementParseException e) {
 	      fail(e.getMessage());
 	    }
     });
@@ -186,9 +185,7 @@ public class UnitFormatTest {
 
   @Test
   public void testParseIrregularStringSimple() {
-    final UnitFormat format = SimpleUnitFormat.getInstance();
-    assertThrows(MeasurementParseException.class, () -> {
-    	Unit<?> u = format.parse("bl//^--1a");
-    });
+    final UnitFormat simpleFormat = SimpleUnitFormat.getInstance();
+    assertThrows(MeasurementParseException.class, () -> simpleFormat.parse("bl//^--1a"));
   }
 }

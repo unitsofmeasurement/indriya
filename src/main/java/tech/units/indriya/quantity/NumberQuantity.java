@@ -29,13 +29,11 @@
  */
 package tech.units.indriya.quantity;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Objects;
 
 import javax.measure.Quantity;
-import javax.measure.UnconvertibleException;
 import javax.measure.Unit;
 import javax.measure.UnitConverter;
 
@@ -54,11 +52,10 @@ import tech.units.indriya.function.Calculus;
  *          The type of the quantity.
  * @author otaviojava
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.0.1, $Date: 2017-05-28 $
+ * @version 1.0.2, $Date: 2018-07-21 $
  * @since 1.0
  */
-@SuppressWarnings({ "rawtypes", "unchecked" })
-public class NumberQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> implements Serializable {
+public class NumberQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
 
   private static final long serialVersionUID = 7312161895652321241L;
 
@@ -77,13 +74,8 @@ public class NumberQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> i
 
   @Override
   public double doubleValue(Unit<Q> unit) {
-    Unit<Q> myUnit = getUnit();
-    try {
-      UnitConverter converter = myUnit.getConverterTo(unit);
-      return converter.convert(getValue().doubleValue());
-    } catch (UnconvertibleException e) {
-      throw e;
-    }
+    UnitConverter converter = getUnit().getConverterTo(unit);
+    return converter.convert(getValue().doubleValue());
   }
 
   @Override
@@ -126,16 +118,16 @@ public class NumberQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> i
     return toDecimalQuantity().divide(that);
   }
 
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   @Override
   public ComparableQuantity<Q> inverse() {
-
     return new NumberQuantity((getValue() instanceof BigDecimal ? BigDecimal.ONE.divide((BigDecimal) getValue()) : 1d / getValue().doubleValue()),
         getUnit().inverse());
   }
 
   @Override
   public BigDecimal decimalValue(Unit<Q> unit) throws ArithmeticException {
-    return Calculus.toBigDecimal(value);
+    return Calculus.toBigDecimal(getUnit().getConverterTo(unit).convert(getValue()));
   }
 
   @Override
@@ -143,8 +135,60 @@ public class NumberQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> i
     return toDecimalQuantity().subtract(that);
   }
 
+  /**
+   * <p>
+   * Returns a {@code NumberQuantity} with same Unit, but whose value is {@code(-this.getValue())}. </p>
+   * 
+   * @return {@code -this}.
+   */
+  public Quantity<Q> negate() {
+    if (BigDecimal.class.isInstance(value)) {
+      return new DecimalQuantity<>(BigDecimal.class.cast(value).negate(), getUnit());
+    } else if (BigInteger.class.isInstance(value)) {
+      return new DecimalQuantity<>(new BigDecimal(BigInteger.class.cast(value)).negate(), getUnit());
+    } else if (Long.class.isInstance(value)) {
+      return new IntegerQuantity<>(-value.intValue(), getUnit());
+    } else if (Integer.class.isInstance(value)) {
+      return new IntegerQuantity<>(-value.intValue(), getUnit());
+    } else if (Float.class.isInstance(value)) {
+      return new FloatQuantity<>(-value.floatValue(), getUnit());
+    } else if (Short.class.isInstance(value)) {
+      return new ShortQuantity<>((short) -value.shortValue(), getUnit());
+    } else if (Byte.class.isInstance(value)) {
+      return new ByteQuantity<>((byte) -value.byteValue(), getUnit());
+    } else {
+      return new DoubleQuantity<>(-value.doubleValue(), getUnit());
+    }
+  }
+
   private DecimalQuantity<Q> toDecimalQuantity() {
     return new DecimalQuantity<>(BigDecimal.valueOf(value.doubleValue()), getUnit());
+  }
+
+  /**
+   * Returns the scalar quantity for the specified <code>BigDecimal</code> stated in the specified unit.
+   *
+   * @param bigDecimal
+   *          the quantity value.
+   * @param unit
+   *          the measurement unit.
+   * @return the corresponding <code>DecimalQuantity</code> quantity.
+   */
+  static <Q extends Quantity<Q>> AbstractQuantity<Q> of(BigDecimal bigDecimal, Unit<Q> unit) {
+    return new DecimalQuantity<Q>(bigDecimal, unit);
+  }
+
+  /**
+   * Returns the scalar quantity for the specified <code>BigInteger</code> stated in the specified unit.
+   *
+   * @param bigInteger
+   *          the quantity value.
+   * @param unit
+   *          the measurement unit.
+   * @return the corresponding <code>BigIntegerQuantity</code> quantity.
+   */
+  static <Q extends Quantity<Q>> AbstractQuantity<Q> of(BigInteger bigInteger, Unit<Q> unit) {
+    return new BigIntegerQuantity<Q>(bigInteger, unit);
   }
 
   /**
@@ -236,5 +280,4 @@ public class NumberQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> i
     }
     return false;
   }
-
 }

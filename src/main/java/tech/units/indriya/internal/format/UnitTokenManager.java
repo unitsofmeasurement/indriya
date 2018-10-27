@@ -347,10 +347,9 @@ final class UnitTokenManager {
 
   /** Switch to specified lex state. */
   public void switchTo(int lexState) {
-    if (lexState >= 1 || lexState < 0)
-      throw new TokenMgrError("Error: Ignoring invalid lexical state : " + lexState + ". State unchanged.", TokenMgrError.INVALID_LEXICAL_STATE);
-    else
-      curLexState = lexState;
+    if (lexState >= 1 || lexState < 0) throw new TokenMgrError("Error: Ignoring invalid lexical state : " + lexState + ". State unchanged.", TokenMgrError.INVALID_LEXICAL_STATE);
+    
+    curLexState = lexState;
   }
 
   protected Token jjFillToken() {
@@ -381,7 +380,7 @@ final class UnitTokenManager {
     Token matchedToken;
     int curPos = 0;
 
-    EOFLoop: for (;;) {
+    for (;;) {
       try {
         curChar = input_stream.beginToken();
       } catch (java.io.IOException e) {

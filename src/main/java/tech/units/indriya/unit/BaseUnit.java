@@ -39,6 +39,7 @@ import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.quantity.QuantityDimension;
 
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * <p>
@@ -53,7 +54,7 @@ import java.util.Map;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.2, August 06, 2017
+ * @version 1.3, October 12, 2018
  * @since 1.0
  */
 public final class BaseUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
@@ -62,11 +63,6 @@ public final class BaseUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
      * 
      */
   private static final long serialVersionUID = 1721629233768215930L;
-
-  /**
-   * Holds the symbol.
-   */
-  private final String symbol;
 
   /**
    * Holds the base unit dimension.
@@ -86,7 +82,7 @@ public final class BaseUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
    *          the symbol of this base unit.
    */
   public BaseUnit(String symbol, Dimension dimension, Q quant) {
-    this.symbol = symbol;
+    super(symbol);
     this.dimension = dimension;
     quantityType = quant;
   }
@@ -98,7 +94,7 @@ public final class BaseUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
    *          the symbol of this base unit.
    */
   public BaseUnit(String symbol, Dimension dimension) {
-    this.symbol = symbol;
+    super(symbol);
     this.dimension = dimension;
   }
 
@@ -109,7 +105,7 @@ public final class BaseUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
    *          the symbol of this base unit.
    */
   public BaseUnit(String symbol) {
-    this.symbol = symbol;
+    super(symbol);
     this.dimension = QuantityDimension.NONE;
   }
 
@@ -126,11 +122,6 @@ public final class BaseUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
   public BaseUnit(String symbol, String name) {
     this(symbol);
     this.name = name;
-  }
-
-  @Override
-  public String getSymbol() {
-    return symbol;
   }
 
   @Override
@@ -154,18 +145,17 @@ public final class BaseUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
       return true;
     if (obj instanceof BaseUnit) {
       BaseUnit<?> thatUnit = (BaseUnit<?>) obj;
-      return this.symbol.equals(thatUnit.symbol) && this.dimension.equals(thatUnit.dimension);
+      return Objects.equals(this.getSymbol(), thatUnit.getSymbol()) && this.dimension.equals(thatUnit.dimension);
     }
     if (obj instanceof AbstractUnit) {
-      return AbstractUnit.Equalizer.areEqual(this, (AbstractUnit) obj);
-    } else {
-      return false;
-    }
+      return AbstractUnit.Equalizer.areEqual(this, (AbstractUnit<?>) obj);
+    } 
+    return false;
   }
 
   @Override
   public final int hashCode() {
-    return symbol.hashCode();
+    return Objects.hashCode(getSymbol());
   }
 
   @Override
@@ -174,6 +164,4 @@ public final class BaseUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
     // 8)?
     return null;
   }
-
-
 }

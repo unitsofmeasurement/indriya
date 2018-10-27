@@ -124,14 +124,11 @@ public final class ExpConverter extends AbstractConverter implements ValueSuppli
 
 	@Override
 	public final String transformationLiteral() {
-		if (base == Math.E) {
-			return "x -> e^x";
-		} else {
-			if(base<0) {
-				return String.format("x -> (%s)^x", base);
-			}
-			return String.format("x -> %s^x", base);
-		}
+		if (base == Math.E) return "x -> e^x";
+
+		if (base<0) return String.format("x -> (%s)^x", base);
+
+		return String.format("x -> %s^x", base);
 	}
 
 	@Override

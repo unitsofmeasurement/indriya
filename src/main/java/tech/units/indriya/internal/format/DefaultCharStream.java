@@ -133,8 +133,8 @@ final class DefaultCharStream {
       if ((i = inputStream.read(buffer, maxNextCharInd, available - maxNextCharInd)) == -1) {
         inputStream.close();
         throw new java.io.IOException();
-      } else
-        maxNextCharInd += i;
+      }
+      maxNextCharInd += i;
     } catch (java.io.IOException e) {
       --bufpos;
       backup(0);
@@ -367,10 +367,8 @@ final class DefaultCharStream {
 
   /** Get token literal value. */
   public String getImage() {
-    if (bufpos >= tokenBegin)
-      return new String(buffer, tokenBegin, bufpos - tokenBegin + 1);
-    else
-      return new String(buffer, tokenBegin, bufsize - tokenBegin) + new String(buffer, 0, bufpos + 1);
+    if (bufpos >= tokenBegin) return new String(buffer, tokenBegin, bufpos - tokenBegin + 1);
+    return new String(buffer, tokenBegin, bufsize - tokenBegin) + new String(buffer, 0, bufpos + 1);
   }
 
   /** Get the suffix. */

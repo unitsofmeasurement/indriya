@@ -44,7 +44,7 @@ import tech.uom.lib.common.function.Nameable;
  *          The data value.
  * 
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 0.6
+ * @version 0.7
  * @since 1.0
  * @see <a href="http://en.wikipedia.org/wiki/Time_series"> Wikipedia: Time Series</a>
  */
@@ -52,7 +52,7 @@ public class TimedData<T> implements Nameable, Supplier<T> {
   private final T value;
   private final long timestamp;
   private final Instant instant;
-  private String name;
+  private final String name;
 
   /**
    * Construct an instance of TimedData with a value and timestamp.
@@ -63,24 +63,56 @@ public class TimedData<T> implements Nameable, Supplier<T> {
    *          The timestamp of the TimedData.
    */
   protected TimedData(T value, long time) {
-    this.value = value;
-    this.timestamp = time;
-    this.instant = Instant.ofEpochMilli(time);
+    this(value, time, null);
   }
 
   /**
-   * Returns an {@code MeasurementRange} with the specified values.
+   * Construct an instance of TimedData with a value, a timestamp and a name.
+   *
+   * @param data
+   *          The value of the TimedData.
+   * @param time
+   *          The timestamp of the TimedData.
+   * @param name
+   *          The name of the TimedData.
+   */
+  protected TimedData(T value, long time, String name) {
+    this.value = value;
+    this.timestamp = time;
+    this.instant = Instant.ofEpochMilli(time);
+    this.name = name;
+  }
+
+  /**
+   * Returns a {@code TimedData} with the specified values.
    *
    * @param <T>
    *          the class of the value
    * @param val
-   *          The minimum value for the measurement range.
+   *          The value for the timed data.
    * @param time
-   *          The maximum value for the measurement range.
-   * @return an {@code MeasurementRange} with the given values
+   *          The timestamp.
+   * @return an {@code TimedData} with the given values
    */
   public static <T> TimedData<T> of(T val, long time) {
     return new TimedData<>(val, time);
+  }
+
+  /**
+   * Returns a {@code TimedData} with the specified values.
+   *
+   * @param <T>
+   *          the class of the value
+   * @param val
+   *          The value for the timed data.
+   * @param time
+   *          The timestamp.
+   * @param name
+   *          The name.
+   * @return an {@code TimedData} with the given values
+   */
+  public static <T> TimedData<T> of(T val, long time, String name) {
+    return new TimedData<>(val, time, name);
   }
 
   /**
@@ -96,16 +128,10 @@ public class TimedData<T> implements Nameable, Supplier<T> {
     return name;
   }
 
-  // @Override
   public T get() {
     return value;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.lang.Object#equals()
-   */
   @Override
   public boolean equals(Object obj) {
     if (this == obj) {
@@ -120,25 +146,15 @@ public class TimedData<T> implements Nameable, Supplier<T> {
     return false;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.lang.Object#hashCode()
-   */
   @Override
   public int hashCode() {
-    return Objects.hash(value, name);
+    return Objects.hash(value, timestamp, name);
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.lang.Object#toString()
-   */
   @Override
   public String toString() {
     final StringBuilder sb = new StringBuilder().append("data= ").append(get()).append(", timestamp= ").append(getTimestamp());
-    if (name != null && name.length() > 0) {
+    if (name != null) {
       sb.append(", name= ").append(getName());
     }
     return sb.toString();

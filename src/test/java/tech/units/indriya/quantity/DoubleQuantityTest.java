@@ -52,12 +52,16 @@ import tech.units.indriya.unit.Units;
 public class DoubleQuantityTest {
 
   private static final Unit<?> SQUARE_OHM = Units.OHM.multiply(Units.OHM);
-  private final DoubleQuantity<ElectricResistance> ONE_OHM = createQuantity(1, Units.OHM);
-  private final DoubleQuantity<ElectricResistance> TWO_OHM = createQuantity(2, Units.OHM);
-  private final DoubleQuantity<ElectricResistance> MAX_VALUE_OHM = createQuantity(Double.MAX_VALUE, Units.OHM);
-  private final DoubleQuantity<ElectricResistance> ONE_MILLIOHM = createQuantity(1, MILLI(Units.OHM));
+  private static final DoubleQuantity<ElectricResistance> HALF_AN_OHM = createQuantity(0.5, Units.OHM);
+  private static final DoubleQuantity<ElectricResistance> ONE_OHM = createQuantity(1, Units.OHM);
+  private static final DoubleQuantity<ElectricResistance> TWO_OHM = createQuantity(2, Units.OHM);
+  private static final DoubleQuantity<ElectricResistance> MAX_VALUE_OHM = createQuantity(Double.MAX_VALUE, Units.OHM);
+  private static final DoubleQuantity<ElectricResistance> JUST_OVER_HALF_MAX_VALUE_OHM = createQuantity(Double.MAX_VALUE / 1.999999999999999,
+      Units.OHM);
+  private static final DoubleQuantity<ElectricResistance> ONE_MILLIOHM = createQuantity(1, MILLI(Units.OHM));
+  private static final DecimalQuantity<ElectricResistance> ONE_DECIMAL_OHM = new DecimalQuantity<ElectricResistance>(BigDecimal.ONE, Units.OHM);
 
-  private <Q extends Quantity<Q>> DoubleQuantity<Q> createQuantity(double d, Unit<Q> unit) {
+  private static <Q extends Quantity<Q>> DoubleQuantity<Q> createQuantity(double d, Unit<Q> unit) {
     return new DoubleQuantity<Q>(Double.valueOf(d).doubleValue(), unit);
   }
 
@@ -107,8 +111,9 @@ public class DoubleQuantityTest {
    */
   @Test
   public void additionWithLargerOverflowingMultipleCastsToLargerMultiple() {
-    Quantity<ElectricResistance> actual = ONE_MILLIOHM.add(MAX_VALUE_OHM);
-    assertEquals(MAX_VALUE_OHM, actual);
+    Quantity<ElectricResistance> largeValueOhm = MAX_VALUE_OHM.divide(2);
+    Quantity<ElectricResistance> actual = ONE_MILLIOHM.add(largeValueOhm);
+    assertEquals(largeValueOhm, actual);
   }
 
   /**
@@ -136,8 +141,7 @@ public class DoubleQuantityTest {
   @Test
   public void quantityMultiplicationResultingInOverflowThrowsException() {
     assertThrows(ArithmeticException.class, () -> {
-      Quantity<ElectricResistance> halfMaxValuePlusOne = createQuantity(Double.MAX_VALUE / 1.999999999999999, Units.OHM);
-      halfMaxValuePlusOne.multiply(TWO_OHM);
+      JUST_OVER_HALF_MAX_VALUE_OHM.multiply(TWO_OHM);
     });
   }
 
@@ -157,8 +161,7 @@ public class DoubleQuantityTest {
   @Test
   public void numberMultiplicationResultingInOverflowThrowsException() {
     assertThrows(ArithmeticException.class, () -> {
-      Quantity<ElectricResistance> halfMaxValuePlusOne = createQuantity(Double.MAX_VALUE / 1.999999999999999, Units.OHM);
-      halfMaxValuePlusOne.multiply(2);
+      JUST_OVER_HALF_MAX_VALUE_OHM.multiply(2);
     });
   }
 
@@ -173,12 +176,32 @@ public class DoubleQuantityTest {
   }
 
   /**
+   * Verifies that the division of two quantities resulting in an overflow throws an exception.
+   */
+  @Test
+  public void quantityDivisionResultingInOverflowThrowsException() {
+    assertThrows(ArithmeticException.class, () -> {
+      JUST_OVER_HALF_MAX_VALUE_OHM.divide(HALF_AN_OHM);
+    });
+  }
+
+  /**
    * Verifies that the division with a number divides correctly.
    */
   @Test
   public void numberDivisionDividesCorrectly() {
     Quantity<?> actual = TWO_OHM.divide(2);
     assertEquals(ONE_OHM, actual);
+  }
+
+  /**
+   * Verifies that the division with a number resulting in an overflow throws an exception.
+   */
+  @Test
+  public void numberDivisionResultingInOverflowThrowsException() {
+    assertThrows(ArithmeticException.class, () -> {
+      JUST_OVER_HALF_MAX_VALUE_OHM.divide(0.5);
+    });
   }
 
   /**
@@ -212,11 +235,27 @@ public class DoubleQuantityTest {
   }
 
   /**
-   * Verifies that a LongQuantity isn't big.
+   * Verifies that a DoubleQuantity isn't big.
    */
   @Test
   public void doubleQuantityIsNotBig() {
     assertFalse(ONE_OHM.isBig());
+  }
+
+  /**
+   * Verifies that a DoubleQuantity is decimal.
+   */
+  @Test
+  public void doubleQuantityIsDecimal() {
+    assertTrue(ONE_OHM.isDecimal());
+  }
+
+  /**
+   * Verifies that a DoubleQuantity has the size of Double.
+   */
+  @Test
+  public void doubleQuantityHasByteSize() {
+    assertEquals(Double.SIZE, ONE_OHM.getSize());
   }
 
   /**
@@ -306,7 +345,7 @@ public class DoubleQuantityTest {
    */
   @Test
   public void decimalValueReturnsValueForSameUnit() {
-    assertEquals(BigDecimal.valueOf(1.0), ONE_OHM.decimalValue(Units.OHM));
+    assertEquals(BigDecimal.valueOf(1), ONE_OHM.decimalValue(Units.OHM));
   }
 
   /**
@@ -353,6 +392,70 @@ public class DoubleQuantityTest {
     });
   }
 
+  /**
+   * Verifies that addition with DoubleQuantity returns a DoubleQuantity.
+   */
+  @Test
+  public void additionWithDoubleQuantityDoesNotWiden() {
+    assertEquals(DoubleQuantity.class, ONE_OHM.add(ONE_OHM).getClass());
+  }
+
+  /**
+   * Verifies that addition with DecimalQuantity widens to DecimalQuantity.
+   */
+  @Test
+  public void additionWithDecimalQuantityWidensToDecimalQuantity() {
+    assertEquals(DecimalQuantity.class, ONE_OHM.add(ONE_DECIMAL_OHM).getClass());
+  }
+
+  /**
+   * Verifies that subtraction with DoubleQuantity returns a DoubleQuantity.
+   */
+  @Test
+  public void subtractionWithDoubleQuantityDoesNotWiden() {
+    assertEquals(DoubleQuantity.class, ONE_OHM.subtract(ONE_OHM).getClass());
+  }
+
+  /**
+   * Verifies that subtraction with DecimalQuantity widens to DecimalQuantity.
+   */
+  @Test
+  public void subtractionWithDecimalQuantityWidensToDecimalQuantity() {
+    assertEquals(DecimalQuantity.class, ONE_OHM.subtract(ONE_DECIMAL_OHM).getClass());
+  }
+
+  /**
+   * Verifies that multiplication with DoubleQuantity returns a DoubleQuantity.
+   */
+  @Test
+  public void multiplicationWithDoubleQuantityDoesNotWiden() {
+    assertEquals(DoubleQuantity.class, ONE_OHM.multiply(ONE_OHM).getClass());
+  }
+
+  /**
+   * Verifies that multiplication with DecimalQuantity widens to DecimalQuantity.
+   */
+  @Test
+  public void multiplicationWithDecimalQuantityWidensToDecimalQuantity() {
+    assertEquals(DecimalQuantity.class, ONE_OHM.multiply(ONE_DECIMAL_OHM).getClass());
+  }
+
+  /**
+   * Verifies that division with DoubleQuantity returns a DoubleQuantity.
+   */
+  @Test
+  public void divisionWithDoubleQuantityDoesNotWiden() {
+    assertEquals(DoubleQuantity.class, ONE_OHM.divide(ONE_OHM).getClass());
+  }
+
+  /**
+   * Verifies that division with DecimalQuantity widens to DecimalQuantity.
+   */
+  @Test
+  public void divisionWithDecimalQuantityWidensToDecimalQuantity() {
+    assertEquals(DecimalQuantity.class, ONE_OHM.divide(ONE_DECIMAL_OHM).getClass());
+  }
+
   @Test
   public void toTest() {
     Quantity<Time> day = Quantities.getQuantity(1D, Units.DAY);
@@ -363,5 +466,13 @@ public class DoubleQuantityTest {
     Quantity<Time> dayResult = hour.to(Units.DAY);
     assertEquals(dayResult.getValue().intValue(), day.getValue().intValue());
     assertEquals(dayResult.getValue().intValue(), day.getValue().intValue());
+  }
+
+  /**
+   * Tests negate()
+   */
+  @Test
+  public void negateTest() {
+    assertEquals(-1d, ONE_OHM.negate().getValue());
   }
 }

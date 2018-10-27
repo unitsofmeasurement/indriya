@@ -61,8 +61,9 @@ public class IntegerQuantityTest {
   private final IntegerQuantity<ElectricResistance> ONE_MILLIOHM = createQuantity(1, MetricPrefix.MILLI(Units.OHM));
   private final IntegerQuantity<ElectricResistance> ONE_KILOOHM = createQuantity(1, MetricPrefix.KILO(Units.OHM));
   private final IntegerQuantity<ElectricResistance> ONE_YOTTAOHM = createQuantity(1, MetricPrefix.YOTTA(Units.OHM));
+  private static final LongQuantity<ElectricResistance> ONE_LONG_OHM = new LongQuantity<ElectricResistance>(1L, Units.OHM);
 
-  private <Q extends Quantity<Q>> IntegerQuantity<Q> createQuantity(int i, Unit<Q> unit) {
+  private static <Q extends Quantity<Q>> IntegerQuantity<Q> createQuantity(int i, Unit<Q> unit) {
     return new IntegerQuantity<Q>(Integer.valueOf(i).intValue(), unit);
   }
 
@@ -274,6 +275,22 @@ public class IntegerQuantityTest {
   }
 
   /**
+   * Verifies that a IntegerQuantity isn't decimal.
+   */
+  @Test
+  public void integerQuantityIsNotDecimal() {
+    assertFalse(ONE_OHM.isDecimal());
+  }
+
+  /**
+   * Verifies that a IntegerQuantity has the size of Integer.
+   */
+  @Test
+  public void integerQuantityHasByteSize() {
+    assertEquals(Integer.SIZE, ONE_OHM.getSize());
+  }
+
+  /**
    * Verifies that a quantity isn't equal to null.
    */
   @Test
@@ -350,7 +367,7 @@ public class IntegerQuantityTest {
    */
   @Test
   public void decimalValueReturnsValueForSameUnit() {
-    assertEquals(BigDecimal.valueOf(1.0), ONE_OHM.decimalValue(Units.OHM));
+    assertEquals(BigDecimal.valueOf(1), ONE_OHM.decimalValue(Units.OHM));
   }
 
   /**
@@ -396,6 +413,70 @@ public class IntegerQuantityTest {
       createQuantity(-9223373, MetricPrefix.TERA(Units.OHM)).longValue(Units.OHM);
     });
   }
+  
+  /**
+   * Verifies that addition with IntegerQuantity returns a IntegerQuantity.
+   */
+  @Test
+  public void additionWithIntegerQuantityDoesNotWiden() {
+    assertEquals(IntegerQuantity.class, ONE_OHM.add(ONE_OHM).getClass());
+  }
+
+  /**
+   * Verifies that addition with LongQuantity widens to LongQuantity.
+   */
+  @Test
+  public void additionWithLongQuantityWidensToLongQuantity() {
+    assertEquals(LongQuantity.class, ONE_OHM.add(ONE_LONG_OHM).getClass());
+  }
+
+  /**
+   * Verifies that subtraction with IntegerQuantity returns a IntegerQuantity.
+   */
+  @Test
+  public void subtractionWithIntegerQuantityDoesNotWiden() {
+    assertEquals(IntegerQuantity.class, ONE_OHM.subtract(ONE_OHM).getClass());
+  }
+
+  /**
+   * Verifies that subtraction with LongQuantity widens to LongQuantity.
+   */
+  @Test
+  public void subtractionWithLongQuantityWidensToLongQuantity() {
+    assertEquals(LongQuantity.class, ONE_OHM.subtract(ONE_LONG_OHM).getClass());
+  }
+
+  /**
+   * Verifies that multiplication with IntegerQuantity returns a IntegerQuantity.
+   */
+  @Test
+  public void multiplicationWithIntegerQuantityDoesNotWiden() {
+    assertEquals(IntegerQuantity.class, ONE_OHM.multiply(ONE_OHM).getClass());
+  }
+
+  /**
+   * Verifies that multiplication with LongQuantity widens to LongQuantity.
+   */
+  @Test
+  public void multiplicationWithLongQuantityWidensToLongQuantity() {
+    assertEquals(LongQuantity.class, ONE_OHM.multiply(ONE_LONG_OHM).getClass());
+  }
+
+  /**
+   * Verifies that division with IntegerQuantity returns a IntegerQuantity.
+   */
+  @Test
+  public void divisionWithIntegerQuantityDoesNotWiden() {
+    assertEquals(IntegerQuantity.class, ONE_OHM.divide(ONE_OHM).getClass());
+  }
+
+  /**
+   * Verifies that division with LongQuantity widens to LongQuantity.
+   */
+  @Test
+  public void divisionWithLongQuantityWidensToLongQuantity() {
+    assertEquals(LongQuantity.class, ONE_OHM.divide(ONE_LONG_OHM).getClass());
+  }
 
   @Test
   public void toTest() {
@@ -411,9 +492,17 @@ public class IntegerQuantityTest {
 
   @Test
   public void testEquality() throws Exception {
-    Quantity<Length> value = Quantities.getQuantity(new Integer(10), Units.METRE);
-    Quantity<Length> anotherValue = Quantities.getQuantity(new Integer(10), Units.METRE);
+    Quantity<Length> value = Quantities.getQuantity(Integer.valueOf(10), Units.METRE);
+    Quantity<Length> anotherValue = Quantities.getQuantity(Integer.valueOf(10), Units.METRE);
     assertEquals(value, anotherValue);
+  }
+  
+  /**
+   * Tests negate()
+   */
+  @Test
+  public void negateTest() {
+    assertEquals(-1, ONE_OHM.negate().getValue());
   }
 
 }

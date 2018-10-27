@@ -33,8 +33,7 @@ import javax.measure.Prefix;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.UnitConverter;
-import javax.measure.format.ParserException;
-
+import javax.measure.format.MeasurementParseException;
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.function.AddConverter;
 import tech.units.indriya.function.MultiplyConverter;
@@ -271,11 +270,11 @@ public class LocalUnitFormat extends AbstractUnitFormat {
     return true;
   }
 
-  protected Unit<?> parse(CharSequence csq, int index) throws ParserException {
+  protected Unit<?> parse(CharSequence csq, int index) throws MeasurementParseException {
     return parse(csq, new ParsePosition(index));
   }
 
-  public Unit<?> parse(CharSequence csq, ParsePosition cursor) throws ParserException {
+  public Unit<?> parse(CharSequence csq, ParsePosition cursor) throws MeasurementParseException {
     // Parsing reads the whole character sequence from the parse position.
     int start = cursor.getIndex();
     int end = csq.length();
@@ -302,12 +301,12 @@ public class LocalUnitFormat extends AbstractUnitFormat {
       // too?
     } catch (TokenMgrError e) {
       cursor.setErrorIndex(start);
-      throw new ParserException(e);
+      throw new MeasurementParseException(e);
     }
   }
 
   @Override
-  public Unit<? extends Quantity<?>> parse(CharSequence csq) throws ParserException {
+  public Unit<? extends Quantity<?>> parse(CharSequence csq) throws MeasurementParseException {
     return parse(csq, new ParsePosition(0));
   }
 

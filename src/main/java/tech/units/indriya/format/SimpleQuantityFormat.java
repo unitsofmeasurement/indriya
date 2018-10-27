@@ -32,7 +32,6 @@ package tech.units.indriya.format;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.ParsePosition;
-
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.format.MeasurementParseException;
@@ -45,6 +44,8 @@ import tech.units.indriya.quantity.Quantities;
 
 /**
  * A simple implementation of QuantityFormat
+ * @version 0.9.1
+ * @since 2.0
  */
 @SuppressWarnings("rawtypes")
 public class SimpleQuantityFormat extends AbstractQuantityFormat {
@@ -54,9 +55,40 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
 	private static final SimpleQuantityFormat DEFAULT = new SimpleQuantityFormat();
 
 	/**
+	 * The pattern string of this formatter. This is always a non-localized pattern.
+	 * May not be null. See class documentation for details.
+	 * 
+	 * @serial
+	 */
+	private String pattern;
+
+	/**
 	*
 	*/
 	private static final long serialVersionUID = 2758248665095734058L;
+
+	/**
+	 * Constructs a <code>SimpleQuantityFormat</code> using the given pattern.
+	 * <p>
+	 * 
+	 * @param pattern
+	 *            the pattern describing the quantity and unit format
+	 * @exception NullPointerException
+	 *                if the given pattern is null
+	 * @exception IllegalArgumentException
+	 *                if the given pattern is invalid
+	 */
+	public SimpleQuantityFormat(String pattern) {
+		this.pattern = pattern;
+	}
+
+	/**
+	 * Constructs a <code>SimpleQuantityFormat</code> using the default pattern. For
+	 * full coverage, use the factory methods.
+	 */
+	public SimpleQuantityFormat() {
+		this("");
+	}
 
 	@Override
 	public Appendable format(Quantity quantity, Appendable dest) throws IOException {
@@ -97,7 +129,7 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
 		while ((endDecimal < csq.length()) && !Character.isWhitespace(csq.charAt(endDecimal))) {
 			endDecimal++;
 		}
-		Double decimal = new Double(csq.subSequence(startDecimal, endDecimal).toString());
+		Double decimal = Double.valueOf(csq.subSequence(startDecimal, endDecimal).toString());
 		Unit unit = SimpleUnitFormat.getInstance().parse(csq, index);
 		return NumberQuantity.of(decimal, unit);
 	}
@@ -108,12 +140,30 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
 	}
 
 	/**
-   * Returns the quantity format for the default locale. The default format assumes the quantity is composed of a decimal number and a {@link Unit}
-   * separated by whitespace(s).
-   *
-   * @return <code>MeasureFormat.getInstance(NumberFormat.getInstance(), UnitFormat.getInstance())</code>
-   */
-  public static SimpleQuantityFormat getInstance() {
-    return DEFAULT;
-  }
+	 * Returns the quantity format for the default locale. The default format
+	 * assumes the quantity is composed of a decimal number and a {@link Unit}
+	 * separated by whitespace(s).
+	 *
+	 * @return <code>MeasureFormat.getInstance(NumberFormat.getInstance(), UnitFormat.getInstance())</code>
+	 */
+	public static SimpleQuantityFormat getInstance() {
+		return DEFAULT;
+	}
+	
+	/**
+	 * Returns a <code>SimpleQuantityFormat</code> using the given pattern.
+	 * <p>
+	 * 
+	 * @param pattern
+	 *            the pattern describing the quantity and unit format
+	 *
+	 * @return <code>MeasureFormat.getInstance(NumberFormat.getInstance(), UnitFormat.getInstance())</code>
+	 */
+	public static SimpleQuantityFormat getInstance(String pattern) {
+		return new SimpleQuantityFormat(pattern);
+	}
+
+	public String getPattern() {
+		return pattern;
+	}
 }

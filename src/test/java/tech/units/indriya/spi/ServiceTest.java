@@ -33,34 +33,57 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 
+import javax.measure.spi.FormatService;
 import javax.measure.spi.ServiceProvider;
-import javax.measure.spi.UnitFormatService;
-
 import org.junit.jupiter.api.Test;
 
 /**
- * Tests for services provided via {@link ServiceProvider}.
+ * Tests for the {@link ServiceProvider} and services provided by it.
  */
 public class ServiceTest {
 
-  @Test
-  public void testGetServices() throws Exception {
-    List<ServiceProvider> services = ServiceProvider.available();
-    assertNotNull(services);
-    assertFalse(services.isEmpty());
-    // assertTrue(services.contains("service1"));
-    assertTrue(services.size() > 0);
-    // assertTrue(services.contains("service2"));
-    // services = Collection.class.cast(Bootstrap.getServices(Runtime.class));
-    // assertNotNull(services);
-    // assertTrue(services.isEmpty());
-  }
+    @Test
+    public void testGetServices() throws Exception {
+        final List<ServiceProvider> services = ServiceProvider.available();
+        assertNotNull(services);
+        assertFalse(services.isEmpty());
+        // assertTrue(services.contains("service1"));
+        assertTrue(services.size() > 0);
+        // assertTrue(services.contains("service2"));
+        // services = Collection.class.cast(Bootstrap.getServices(Runtime.class));
+        // assertNotNull(services);
+        // assertTrue(services.isEmpty());
+    }
 
-  @Test
-  public void testGetService() throws Exception {
-    UnitFormatService ufs = ServiceProvider.current().getUnitFormatService();
-    assertNotNull(ufs);
-    assertNotNull(ufs.getUnitFormat());
-    assertEquals("DefaultFormat", ufs.getUnitFormat().getClass().getSimpleName());
-  }
+    @Test
+    public void testGetFormatService() throws Exception {
+        final FormatService fs = ServiceProvider.current().getFormatService();
+        assertNotNull(fs);
+        assertNotNull(fs.getUnitFormat());
+        assertEquals("DefaultFormat", fs.getUnitFormat().getClass().getSimpleName());
+    }
+
+    @Test
+    public void testOf() throws Exception {
+        final ServiceProvider provider = ServiceProvider.of("Default");
+        assertNotNull(provider);
+        assertEquals("Default", provider.toString());
+        assertEquals("DefaultServiceProvider", provider.getClass().getSimpleName());
+    }
+
+    @Test
+    public void testOfNull() {
+        assertThrows(NullPointerException.class, () -> {
+            @SuppressWarnings("unused")
+            ServiceProvider provider = ServiceProvider.of(null);
+        });
+    }
+
+    @Test
+    public void testOfNotFound() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            @SuppressWarnings("unused")
+            ServiceProvider provider = ServiceProvider.of("ThisServiceProviderWontExistHere");
+        });
+    }
 }

@@ -57,8 +57,9 @@ public class BigIntegerQuantityTest {
   private final BigIntegerQuantity<ElectricResistance> ONE_OHM = createQuantity(1L, Units.OHM);
   private final BigIntegerQuantity<ElectricResistance> TWO_OHM = createQuantity(2L, Units.OHM);
   private final BigIntegerQuantity<ElectricResistance> ONE_MILLIOHM = createQuantity(1L, MILLI(Units.OHM));
+  private static final FloatQuantity<ElectricResistance> ONE_FLOAT_OHM = new FloatQuantity<ElectricResistance>(1F, Units.OHM);
 
-  private <Q extends Quantity<Q>> BigIntegerQuantity<Q> createQuantity(long l, Unit<Q> unit) {
+  private static <Q extends Quantity<Q>> BigIntegerQuantity<Q> createQuantity(long l, Unit<Q> unit) {
     return new BigIntegerQuantity<Q>(l, unit);
   }
 
@@ -140,6 +141,22 @@ public class BigIntegerQuantityTest {
   }
 
   /**
+   * Verifies that a BigIntegerQuantity is not decimal.
+   */
+  @Test
+  public void bigIntegerQuantityIsNotDecimal() {
+    assertFalse(ONE_OHM.isDecimal());
+  }
+
+  /**
+   * Verifies the getSize method for BigIntegerQuantity returns 0.
+   */
+  @Test
+  public void bigIntegerQuantityGetSizeReturnsZero() {
+    assertEquals(0, ONE_OHM.getSize());
+  }
+
+  /**
    * Verifies that the value is returned without conversion if doubleValue is called with the quantity's unit.
    */
   @Test
@@ -188,6 +205,32 @@ public class BigIntegerQuantityTest {
   }
 
   /**
+   * Verifies that longValue can handle Long.MAX_VALUE.
+   */
+  @Test
+  public void longValueReturnsLongMaxValue() {
+    assertEquals(Long.MAX_VALUE, new BigIntegerQuantity<ElectricResistance>(BigInteger.valueOf(Long.MAX_VALUE), Units.OHM).longValue(Units.OHM));
+  }
+
+  /**
+   * Verifies that longValue can handle Long.MIN_VALUE.
+   */
+  @Test
+  public void longValueReturnsLongMinValue() {
+    assertEquals(Long.MIN_VALUE, new BigIntegerQuantity<ElectricResistance>(BigInteger.valueOf(Long.MIN_VALUE), Units.OHM).longValue(Units.OHM));
+  }
+
+  /**
+   * Verifies longValue throws an exception if the value is larger than Long.MAX_VALUE.
+   */
+  @Test
+  public void longValueThrowsExceptionOnPositiveOverflow() {
+    assertThrows(ArithmeticException.class, () -> {
+      new BigIntegerQuantity<ElectricResistance>(BigInteger.valueOf(Long.MAX_VALUE).add(BigInteger.ONE), Units.OHM).longValue(Units.OHM);
+    });
+  }
+
+  /**
    * Verifies that the value is correctly converted if longValue is called with the quantity's unit.
    */
   @Test
@@ -196,10 +239,20 @@ public class BigIntegerQuantityTest {
   }
 
   /**
+   * Verifies longValue throws an exception if the value is smaller than Long.MIN_VALUE.
+   */
+  @Test
+  public void longValueThrowsExceptionOnNegativeOverflow() {
+    assertThrows(ArithmeticException.class, () -> {
+      new BigIntegerQuantity<ElectricResistance>(BigInteger.valueOf(Long.MIN_VALUE).subtract(BigInteger.ONE), Units.OHM).longValue(Units.OHM);
+    });
+  }
+
+  /**
    * Verifies that an exception is thrown if the conversion for longValue results in a positive overflow.
    */
   @Test
-  public void longValueThrowsExceptionOnPositiveOverflow() {
+  public void longValueThrowsExceptionOnPositiveOverflowAfterConversion() {
     assertThrows(ArithmeticException.class, () -> {
       createQuantity(Long.MAX_VALUE / 10L + 117L, MetricPrefix.DEKA(Units.OHM)).longValue(Units.OHM);
     });
@@ -209,7 +262,7 @@ public class BigIntegerQuantityTest {
    * Verifies that an exception is thrown if the conversion for longValue results in a negative overflow.
    */
   @Test
-  public void longValueThrowsExceptionOnNegativeOverflow() {
+  public void longValueThrowsExceptionOnNegativeOverflowAfterConversion() {
     assertThrows(ArithmeticException.class, () -> {
       createQuantity(Long.MIN_VALUE / 10L - 117L, MetricPrefix.DEKA(Units.OHM)).longValue(Units.OHM);
     });
@@ -316,5 +369,77 @@ public class BigIntegerQuantityTest {
 
     assertEquals(expected, ONE_OHM.subtract(operand));
     assertEquals(expected, operand.subtract(ONE_OHM).multiply(-1));
+  }
+
+  /**
+   * Verifies that addition with BigIntegerQuantity returns a BigIntegerQuantity.
+   */
+  @Test
+  public void additionWithBigIntegerQuantityDoesNotWiden() {
+    assertEquals(BigIntegerQuantity.class, ONE_OHM.add(ONE_OHM).getClass());
+  }
+
+  /**
+   * Verifies that addition with FloatQuantity widens to FloatQuantity.
+   */
+  @Test
+  public void additionWithFloatQuantityWidensToFloatQuantity() {
+    assertEquals(FloatQuantity.class, ONE_OHM.add(ONE_FLOAT_OHM).getClass());
+  }
+
+  /**
+   * Verifies that subtraction with BigIntegerQuantity returns a BigIntegerQuantity.
+   */
+  @Test
+  public void subtractionWithBigIntegerQuantityDoesNotWiden() {
+    assertEquals(BigIntegerQuantity.class, ONE_OHM.subtract(ONE_OHM).getClass());
+  }
+
+  /**
+   * Verifies that subtraction with FloatQuantity widens to FloatQuantity.
+   */
+  @Test
+  public void subtractionWithFloatQuantityWidensToFloatQuantity() {
+    assertEquals(FloatQuantity.class, ONE_OHM.subtract(ONE_FLOAT_OHM).getClass());
+  }
+
+  /**
+   * Verifies that multiplication with BigIntegerQuantity returns a BigIntegerQuantity.
+   */
+  @Test
+  public void multiplicationWithBigIntegerQuantityDoesNotWiden() {
+    assertEquals(BigIntegerQuantity.class, ONE_OHM.multiply(ONE_OHM).getClass());
+  }
+
+  /**
+   * Verifies that multiplication with FloatQuantity widens to FloatQuantity.
+   */
+  @Test
+  public void multiplicationWithFloatQuantityWidensToFloatQuantity() {
+    assertEquals(FloatQuantity.class, ONE_OHM.multiply(ONE_FLOAT_OHM).getClass());
+  }
+
+  /**
+   * Verifies that division with BigIntegerQuantity returns a BigIntegerQuantity.
+   */
+  @Test
+  public void divisionWithBigIntegerQuantityDoesNotWiden() {
+    assertEquals(BigIntegerQuantity.class, ONE_OHM.divide(ONE_OHM).getClass());
+  }
+
+  /**
+   * Verifies that division with FloatQuantity widens to FloatQuantity.
+   */
+  @Test
+  public void divisionWithFloatQuantityWidensToFloatQuantity() {
+    assertEquals(FloatQuantity.class, ONE_OHM.divide(ONE_FLOAT_OHM).getClass());
+  }
+
+  /**
+   * Tests negate() of BigIntegerQuantity.
+   */
+  @Test
+  public void negateTest() {
+    assertEquals(BigInteger.ONE.negate(), ONE_OHM.negate().getValue());
   }
 }

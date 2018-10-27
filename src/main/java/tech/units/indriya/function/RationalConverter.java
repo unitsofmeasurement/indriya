@@ -219,10 +219,10 @@ public final class RationalConverter extends AbstractConverter implements ValueS
 	@Override
 	protected AbstractConverter reduce(AbstractConverter that) {
 		if (that instanceof RationalConverter) {
-			return (AbstractConverter) composeSameType((RationalConverter) that); 
+			return composeSameType((RationalConverter) that); 
 		}
 		if (that instanceof PowerOfIntConverter) {
-			return (AbstractConverter) composeSameType(((PowerOfIntConverter) that).toRationalConverter()); 
+			return composeSameType(((PowerOfIntConverter) that).toRationalConverter()); 
 		}
 		throw new IllegalStateException(String.format(
 				"%s.simpleCompose() not handled for converter %s", 

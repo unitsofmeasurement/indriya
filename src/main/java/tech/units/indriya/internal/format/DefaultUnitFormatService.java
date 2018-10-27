@@ -51,6 +51,7 @@ import tech.uom.lib.common.function.IntPrioritySupplier;
  * @since 1.0
  * @deprecated For backward-compatibility, to be removed in a future version.
  */
+@Deprecated
 public class DefaultUnitFormatService implements UnitFormatService, IntPrioritySupplier {
   static final int PRIO = 1000;
 

@@ -36,7 +36,6 @@ package tech.units.indriya.format;
  * @version 1.0
  * @since 1.0.1
  */
-// TODO @since should be 1.0 for Indriya here (this is based on uom-se)
 public enum UnitStyle {
 
   /**

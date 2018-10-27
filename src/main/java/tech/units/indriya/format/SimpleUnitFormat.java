@@ -80,7 +80,7 @@ import tech.units.indriya.unit.Units;
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
  * @author Eric Russell
- * @version 1.4, April 26, 2018
+ * @version 1.5.2, August 16, 2018
  * @since 1.0
  */
 public abstract class SimpleUnitFormat extends AbstractUnitFormat {
@@ -101,24 +101,21 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
   
   // Initializes the standard unit database for SI units.
 
-  private static final Unit<?>[] SI_UNITS = { Units.AMPERE, Units.BECQUEREL, Units.CANDELA, Units.COULOMB, Units.FARAD, Units.GRAY, Units.HENRY,
+  private static final Unit<?>[] METRIC_UNITS = { Units.AMPERE, Units.BECQUEREL, Units.CANDELA, Units.COULOMB, Units.FARAD, Units.GRAY, Units.HENRY,
       Units.HERTZ, Units.JOULE, Units.KATAL, Units.KELVIN, Units.LUMEN, Units.LUX, Units.METRE, Units.MOLE, Units.NEWTON, Units.OHM, Units.PASCAL,
       Units.RADIAN, Units.SECOND, Units.SIEMENS, Units.SIEVERT, Units.STERADIAN, Units.TESLA, Units.VOLT, Units.WATT, Units.WEBER };
-
-  private static final Prefix[] PREFIXES = MetricPrefix.values();
-  
-  private static final String[] PREFIX_SYMBOLS =  
-		  Stream.of(PREFIXES)
+ 
+  private static final String[] METRIC_SYMBOLS =  
+		  Stream.of(MetricPrefix.values())
 		  .map(Prefix::getSymbol)
 		  .collect(Collectors.toList())
 		  .toArray(new String[] {});
 
-  private static final UnitConverter[] PREFIX_CONVERTERS =  
-		  Stream.of(PREFIXES)
+  private static final UnitConverter[] METRIC_CONVERTERS =  
+		  Stream.of(MetricPrefix.values())
 		  .map(PowerOfIntConverter::of)
 		  .collect(Collectors.toList())
   		  .toArray(new UnitConverter[] {});
-
 
   /**
    * Holds the standard unit format.
@@ -237,7 +234,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
    *          the identifier to be tested.
    * @return <code>true</code> if the name specified can be used as label or alias for this format;<code>false</code> otherwise.
    */
-  public abstract boolean isValidIdentifier(String name);
+  protected abstract boolean isValidIdentifier(String name);
 
   /**
    * Formats an unit and appends the resulting text to a given string buffer (implements <code>java.text.Format</code>).
@@ -310,16 +307,8 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
    * This class represents the standard format.
    */
   protected static class DefaultFormat extends SimpleUnitFormat {
-    private static final int EOF = 0;
-    private static final int IDENTIFIER = 1;
-    private static final int OPEN_PAREN = 2;
-    private static final int CLOSE_PAREN = 3;
-    private static final int EXPONENT = 4;
-    private static final int MULTIPLY = 5;
-    private static final int DIVIDE = 6;
-    private static final int PLUS = 7;
-    private static final int INTEGER = 8;
-    private static final int FLOAT = 9;
+	 private static enum Token { EOF, IDENTIFIER, OPEN_PAREN, CLOSE_PAREN, EXPONENT, MULTIPLY, DIVIDE, 
+		  PLUS, INTEGER, FLOAT };
 
     /**
      * Holds the name to unit mapping.
@@ -439,9 +428,9 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
 
     // Returns the prefix for the specified unit converter.
     protected String prefixFor(UnitConverter converter) {
-      for (int i = 0; i < PREFIX_CONVERTERS.length; i++) {
-        if (PREFIX_CONVERTERS[i].equals(converter)) {
-          return PREFIX_SYMBOLS[i];
+      for (int i = 0; i < METRIC_CONVERTERS.length; i++) {
+        if (METRIC_CONVERTERS[i].equals(converter)) {
+          return METRIC_SYMBOLS[i];
         }
       }
       return null; // TODO or return blank?
@@ -471,7 +460,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
     @Override
     public Unit<? extends Quantity> parseProductUnit(CharSequence csq, ParsePosition pos) throws MeasurementParseException {
       Unit result = AbstractUnit.ONE;
-      int token = nextToken(csq, pos);
+      Token token = nextToken(csq, pos);
       switch (token) {
         case IDENTIFIER:
           result = parseSingleUnit(csq, pos);
@@ -480,8 +469,10 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
           pos.setIndex(pos.getIndex() + 1);
           result = parseProductUnit(csq, pos);
           token = nextToken(csq, pos);
-          check(token == CLOSE_PAREN, "')' expected", csq, pos.getIndex());
+          check(token == Token.CLOSE_PAREN, "')' expected", csq, pos.getIndex());
           pos.setIndex(pos.getIndex() + 1);
+          break;
+        default:
           break;
       }
       token = nextToken(csq, pos);
@@ -499,12 +490,12 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
           case MULTIPLY:
             pos.setIndex(pos.getIndex() + 1);
             token = nextToken(csq, pos);
-            if (token == INTEGER) {
+            if (token == Token.INTEGER) {
               long n = readLong(csq, pos);
               if (n != 1) {
                 result = result.multiply(n);
               }
-            } else if (token == FLOAT) {
+            } else if (token == Token.FLOAT) {
               double d = readDouble(csq, pos);
               if (d != 1.0) {
                 result = result.multiply(d);
@@ -516,12 +507,12 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
           case DIVIDE:
             pos.setIndex(pos.getIndex() + 1);
             token = nextToken(csq, pos);
-            if (token == INTEGER) {
+            if (token == Token.INTEGER) {
               long n = readLong(csq, pos);
               if (n != 1) {
                 result = result.divide(n);
               }
-            } else if (token == FLOAT) {
+            } else if (token == Token.FLOAT) {
               double d = readDouble(csq, pos);
               if (d != 1.0) {
                 result = result.divide(d);
@@ -533,77 +524,76 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
           case PLUS:
             pos.setIndex(pos.getIndex() + 1);
             token = nextToken(csq, pos);
-            if (token == INTEGER) {
+            if (token == Token.INTEGER) {
               long n = readLong(csq, pos);
               if (n != 1) {
                 result = result.shift(n);
               }
-            } else if (token == FLOAT) {
+            } else if (token == Token.FLOAT) {
               double d = readDouble(csq, pos);
               if (d != 1.0) {
                 result = result.shift(d);
               }
             } else {
-              throw new MeasurementParseException("not a number", pos.getIndex());
+              throw new MeasurementParseException("not a number", csq, pos.getIndex());
             }
             break;
           case EOF:
           case CLOSE_PAREN:
             return result;
           default:
-            throw new MeasurementParseException("unexpected token " + token, pos.getIndex());
+            throw new MeasurementParseException("unexpected token " + token, csq, pos.getIndex());
         }
         token = nextToken(csq, pos);
       }
     }
-
-    private int nextToken(CharSequence csq, ParsePosition pos) {
+    
+    private static Token nextToken(CharSequence csq, ParsePosition pos) {
       final int length = csq.length();
       while (pos.getIndex() < length) {
         char c = csq.charAt(pos.getIndex());
         if (isUnitIdentifierPart(c)) {
-          return IDENTIFIER;
+          return Token.IDENTIFIER;
         } else if (c == '(') {
-          return OPEN_PAREN;
+          return Token.OPEN_PAREN;
         } else if (c == ')') {
-          return CLOSE_PAREN;
+          return Token.CLOSE_PAREN;
         } else if ((c == '^') || (c == '\u00b9') || (c == '\u00b2') || (c == '\u00b3')) {
-          return EXPONENT;
+          return Token.EXPONENT;
         } else if (c == '*') {
-          char c2 = csq.charAt(pos.getIndex() + 1);
-          if (c2 == '*') {
-            return EXPONENT;
-          } else {
-            return MULTIPLY;
+          if (csq.length() == pos.getIndex() + 1) {
+        	  throw new MeasurementParseException("unexpected token " + Token.EOF, csq, pos.getIndex()); // return ;
           }
+          char c2 = csq.charAt(pos.getIndex() + 1);
+          return c2 == '*' ? Token.EXPONENT : Token.MULTIPLY;
         } else if (c == '\u00b7') {
-          return MULTIPLY;
+          return Token.MULTIPLY;
         } else if (c == '/') {
-          return DIVIDE;
+          return Token.DIVIDE;
         } else if (c == '+') {
-          return PLUS;
+          return Token.PLUS;
         } else if ((c == '-') || Character.isDigit(c)) {
           int index = pos.getIndex() + 1;
           while ((index < length) && (Character.isDigit(c) || (c == '-') || (c == '.') || (c == 'E'))) {
             c = csq.charAt(index++);
             if (c == '.') {
-              return FLOAT;
+              return Token.FLOAT;
             }
           }
-          return INTEGER;
+          return Token.INTEGER;
         }
         pos.setIndex(pos.getIndex() + 1);
       }
-      return EOF;
+      return Token.EOF;
     }
 
-    private void check(boolean expr, String message, CharSequence csq, int index) throws MeasurementParseException {
+    private static void check(boolean expr, String message, CharSequence csq, int index) throws MeasurementParseException {
       if (!expr) {
         throw new MeasurementParseException(message + " (in " + csq + " at index " + index + ")", index);
       }
     }
 
-    private Exponent readExponent(CharSequence csq, ParsePosition pos) {
+    private static Exponent readExponent(CharSequence csq, ParsePosition pos) {
       char c = csq.charAt(pos.getIndex());
       if (c == '^') {
         pos.setIndex(pos.getIndex() + 1);
@@ -613,56 +603,48 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
       final int length = csq.length();
       int pow = 0;
       boolean isPowNegative = false;
-      int root = 0;
-      boolean isRootNegative = false;
-      boolean isRoot = false;
-      while (pos.getIndex() < length) {
+      boolean parseRoot = false;
+      
+      POWERLOOP: while (pos.getIndex() < length) {
         c = csq.charAt(pos.getIndex());
-        if (c == '\u00b9') {
-          if (isRoot) {
-            root = root * 10 + 1;
-          } else {
-            pow = pow * 10 + 1;
-          }
-        } else if (c == '\u00b2') {
-          if (isRoot) {
-            root = root * 10 + 2;
-          } else {
-            pow = pow * 10 + 2;
-          }
-        } else if (c == '\u00b3') {
-          if (isRoot) {
-            root = root * 10 + 3;
-          } else {
-            pow = pow * 10 + 3;
-          }
-        } else if (c == '-') {
-          if (isRoot) {
-            isRootNegative = true;
-          } else {
-            isPowNegative = true;
-          }
-        } else if ((c >= '0') && (c <= '9')) {
-          if (isRoot) {
-            root = root * 10 + (c - '0');
-          } else {
-            pow = pow * 10 + (c - '0');
-          }
-        } else if (c == ':') {
-          isRoot = true;
-        } else {
-          break;
+        switch(c) {
+          case '-': isPowNegative = true; break;
+          case '\u00b9': pow = pow * 10 + 1; break;
+          case '\u00b2': pow = pow * 10 + 2; break;
+          case '\u00b3': pow = pow * 10 + 3; break;
+          case ':': parseRoot = true; break POWERLOOP; 
+          default: 
+            if (c >= '0' && c <= '9') pow = pow * 10 + (c - '0');  
+            else break POWERLOOP; 
         }
         pos.setIndex(pos.getIndex() + 1);
       }
-      if (pow == 0)
-        pow = 1;
-      if (root == 0)
-        root = 1;
+      if (pow == 0) pow = 1;
+      
+      int root = 0;
+      boolean isRootNegative = false;
+      if (parseRoot) {
+        pos.setIndex(pos.getIndex() + 1);
+        ROOTLOOP: while (pos.getIndex() < length) {
+          c = csq.charAt(pos.getIndex());
+          switch(c) {
+            case '-': isRootNegative = true; break;
+            case '\u00b9': root = root * 10 + 1; break;
+            case '\u00b2': root = root * 10 + 2; break;
+            case '\u00b3': root = root * 10 + 3; break;
+            default: 
+              if (c >= '0' && c <= '9') root = root * 10 + (c - '0');  
+              else break ROOTLOOP; 
+          }
+          pos.setIndex(pos.getIndex() + 1);
+        }
+      }
+      if (root == 0) root = 1;
+      
       return new Exponent(isPowNegative ? -pow : pow, isRootNegative ? -root : root);
     }
 
-    private long readLong(CharSequence csq, ParsePosition pos) {
+    private static long readLong(CharSequence csq, ParsePosition pos) {
       final int length = csq.length();
       int result = 0;
       boolean isNegative = false;
@@ -680,7 +662,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
       return isNegative ? -result : result;
     }
 
-    private double readDouble(CharSequence csq, ParsePosition pos) {
+    private static double readDouble(CharSequence csq, ParsePosition pos) {
       final int length = csq.length();
       int start = pos.getIndex();
       int end = start + 1;
@@ -694,7 +676,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
       return Double.parseDouble(csq.subSequence(start, end).toString());
     }
 
-    private String readIdentifier(CharSequence csq, ParsePosition pos) {
+    private static String readIdentifier(CharSequence csq, ParsePosition pos) {
       final int length = csq.length();
       int start = pos.getIndex();
       int i = start;
@@ -719,6 +701,16 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
 
       // Product unit.
       ProductUnit<?> productUnit = (ProductUnit<?>) unit;
+
+      // Special case: self-powered product unit
+      if (productUnit.getUnitCount() == 1 && productUnit.getUnit(0) instanceof ProductUnit) {
+          final ProductUnit<?> powerUnit = (ProductUnit<?>) productUnit.getUnit(0);
+          // is the sub-unit known under a given label?
+          if (nameFor(powerUnit) == null)
+              // apply the power to the sub-units and format those instead
+              return format(ProductUnit.ofPow(powerUnit, productUnit.getUnitPow(0)), appendable);
+      }
+
       int invNbr = 0;
 
       // Write positive exponents first.
@@ -767,7 +759,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
       return appendable;
     }
 
-    private void append(Appendable appendable, CharSequence symbol, int pow, int root) throws IOException {
+    private static void append(Appendable appendable, CharSequence symbol, int pow, int root) throws IOException {
       appendable.append(symbol);
       if ((pow != 1) || (root != 1)) {
         // Write exponent.
@@ -804,7 +796,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
     }
 
     @Override
-    protected Unit<?> parse(CharSequence csq, ParsePosition cursor) throws IllegalArgumentException {
+    public Unit<?> parse(CharSequence csq, ParsePosition cursor) throws IllegalArgumentException {
       return parseObject(csq.toString(), cursor);
     }
   }
@@ -901,16 +893,16 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
   
   // Initializations
   static {
-    for (int i = 0; i < SI_UNITS.length; i++) {
-      Unit<?> si = SI_UNITS[i];
+    for (int i = 0; i < METRIC_UNITS.length; i++) {
+      Unit<?> si = METRIC_UNITS[i];
       String symbol = (si instanceof BaseUnit) ? ((BaseUnit<?>) si).getSymbol() : ((AlternateUnit<?>) si).getSymbol();
       DEFAULT.label(si, symbol);
       if (isAllASCII(symbol))
         ASCII.label(si, symbol);
-      for (int j = 0; j < PREFIX_SYMBOLS.length; j++) {
-        Unit<?> u = si.prefix(PREFIXES[j]);
-        DEFAULT.label(u, PREFIX_SYMBOLS[j] + symbol);
-        if ( "µ".equals(PREFIX_SYMBOLS[j]) ) {
+      for (int j = 0; j < METRIC_SYMBOLS.length; j++) {
+        Unit<?> u = si.prefix(MetricPrefix.values()[j]);
+        DEFAULT.label(u, METRIC_SYMBOLS[j] + symbol);
+        if ( "µ".equals(METRIC_SYMBOLS[j]) ) {
           ASCII.label(u, "micro"); // + symbol);
         }
       }
@@ -918,33 +910,33 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
     
     // Special case for KILOGRAM.
     DEFAULT.label(Units.GRAM, "g");
-    for (int i = 0; i < PREFIX_SYMBOLS.length; i++) {
-      if (PREFIX_CONVERTERS[i] == MultiplyConverter.of(KILO)) // TODO should it better
+    for (int i = 0; i < METRIC_SYMBOLS.length; i++) {
+      if (METRIC_CONVERTERS[i] == MultiplyConverter.of(KILO)) // TODO should it better
         // be equals()?
         continue; // kg is already defined.
       
-      DEFAULT.label(Units.KILOGRAM.prefix(PREFIXES[i]).prefix(MILLI), PREFIX_SYMBOLS[i] + "g");
-      if ( "µ".equals(PREFIX_SYMBOLS[i]) ) {
-        ASCII.label(Units.KILOGRAM.prefix(PREFIXES[i]).prefix(MILLI), "microg");
+      DEFAULT.label(Units.KILOGRAM.prefix(MetricPrefix.values()[i]).prefix(MILLI), METRIC_SYMBOLS[i] + "g");
+      if ( "µ".equals(METRIC_SYMBOLS[i]) ) {
+        ASCII.label(Units.KILOGRAM.prefix(MetricPrefix.values()[i]).prefix(MILLI), "microg");
       }
     }
 
     // Alias and ASCIIFormat for Ohm
     DEFAULT.alias(Units.OHM, "Ohm");
     ASCII.label(Units.OHM, "Ohm");
-    for (int i = 0; i < PREFIX_SYMBOLS.length; i++) {
-      DEFAULT.alias(Units.OHM.prefix(PREFIXES[i]), PREFIX_SYMBOLS[i] + "Ohm");
-      ASCII.label(Units.OHM.prefix(PREFIXES[i]), asciiPrefix(PREFIX_SYMBOLS[i]) + "Ohm");
+    for (int i = 0; i < METRIC_SYMBOLS.length; i++) {
+      DEFAULT.alias(Units.OHM.prefix(MetricPrefix.values()[i]), METRIC_SYMBOLS[i] + "Ohm");
+      ASCII.label(Units.OHM.prefix(MetricPrefix.values()[i]), asciiPrefix(METRIC_SYMBOLS[i]) + "Ohm");
     }
 
     // Special case for DEGREE_CELSIUS.
     DEFAULT.label(Units.CELSIUS, "℃");
     DEFAULT.alias(Units.CELSIUS, "°C");
     ASCII.label(Units.CELSIUS, "Celsius");
-    for (int i = 0; i < PREFIX_SYMBOLS.length; i++) {
-      DEFAULT.label(Units.CELSIUS.prefix(PREFIXES[i]), PREFIX_SYMBOLS[i] + "℃");
-      DEFAULT.alias(Units.CELSIUS.prefix(PREFIXES[i]), PREFIX_SYMBOLS[i] + "°C");
-      ASCII.label(Units.CELSIUS.prefix(PREFIXES[i]), asciiPrefix(PREFIX_SYMBOLS[i]) + "Celsius");
+    for (int i = 0; i < METRIC_SYMBOLS.length; i++) {
+      DEFAULT.label(Units.CELSIUS.prefix(MetricPrefix.values()[i]), METRIC_SYMBOLS[i] + "℃");
+      DEFAULT.alias(Units.CELSIUS.prefix(MetricPrefix.values()[i]), METRIC_SYMBOLS[i] + "°C");
+      ASCII.label(Units.CELSIUS.prefix(MetricPrefix.values()[i]), asciiPrefix(METRIC_SYMBOLS[i]) + "Celsius");
     }
 
     DEFAULT.label(Units.PERCENT, "%");

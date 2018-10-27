@@ -127,7 +127,7 @@ public class QuantitySummaryStatisticsTest {
     assertEquals(4L, summary.getAverage().getValue().longValue());
   }
 
-  private QuantitySummaryStatistics<Time> createSummaryTime() {
+  private static QuantitySummaryStatistics<Time> createSummaryTime() {
     QuantitySummaryStatistics<Time> summary = new QuantitySummaryStatistics<>(Units.DAY);
 
     summary.accept(Quantities.getQuantity(9, Units.DAY));

@@ -52,8 +52,10 @@ import javax.measure.Unit;
  *         Quantity<Time> seconds = timeFactory.create(100, Units.HOUR);
  *         </p>
  *         will return: seconds, minutes, hours, day
+ * @deprecated Moved to uom-lib-common
  * @since 1.0.9
  */
+@Deprecated
 public class UnitComparator<U extends Unit<?>> implements Comparator<U> {
 
   @Override

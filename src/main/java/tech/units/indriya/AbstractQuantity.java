@@ -42,10 +42,10 @@ import javax.measure.quantity.Dimensionless;
 import tech.units.indriya.format.SimpleQuantityFormat;
 import tech.units.indriya.format.SimpleUnitFormat;
 import tech.units.indriya.function.Calculus;
-import tech.units.indriya.function.NaturalQuantityComparator;
 import tech.units.indriya.quantity.Quantities;
 import tech.uom.lib.common.function.UnitSupplier;
 import tech.uom.lib.common.function.ValueSupplier;
+import tech.uom.lib.common.util.NaturalQuantityComparator;
 
 /**
  * <p>
@@ -105,7 +105,7 @@ import tech.uom.lib.common.function.ValueSupplier;
  * </p>
  *
  * @author <a href="mailto:werner@uom.technology">Werner Keil</a>
- * @version 1.3.1, June 5, 2018
+ * @version 1.4, July 4, 2018
  * @since 1.0
  */
 @SuppressWarnings("unchecked")
@@ -158,20 +158,20 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
    * <code>Measure.valueOf(doubleValue(unit), unit)</code> . If this quantity is already stated in the specified unit, then this quantity is returned
    * and no conversion is performed.
    *
-   * @param unit
+   * @param anotherUnit
    *          the unit in which the returned measure is stated.
    * @return this quantity or a new quantity equivalent to this quantity stated in the specified unit.
    * @throws ArithmeticException
    *           if the result is inexact and the quotient has a non-terminating decimal expansion.
    */
   @Override
-  public ComparableQuantity<Q> to(Unit<Q> unit) {
-    if (unit.equals(this.getUnit())) {
+  public ComparableQuantity<Q> to(Unit<Q> anotherUnit) {
+    if (anotherUnit.equals(this.getUnit())) {
       return this;
     }
-    UnitConverter t = getUnit().getConverterTo(unit);
+    UnitConverter t = getUnit().getConverterTo(anotherUnit);
     Number convertedValue = t.convert(getValue());
-    return Quantities.getQuantity(convertedValue, unit);
+    return Quantities.getQuantity(convertedValue, anotherUnit);
   }
 
 //  /**
@@ -259,27 +259,11 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
     if (this == obj) {
       return true;
     }
-    if (obj instanceof AbstractQuantity<?>) {
-      AbstractQuantity<?> that = (AbstractQuantity<?>) obj;
-      return Objects.equals(getUnit(), that.getUnit()) && Objects.equals(getValue(), that.getValue());
+    if (obj instanceof Quantity<?>) {
+    	Quantity<?> that = (Quantity<?>) obj;
+    	return Objects.equals(getUnit(), that.getUnit()) && Objects.equals(getValue(), that.getValue());
     }
     return false;
-  }
-
-  /**
-   * Compares this quantity and the specified quantity to the given accuracy. Quantities are considered approximately equals if their absolute
-   * differences when stated in the same specified unit is less than the specified epsilon.
-   *
-   * @param that
-   *          the quantity to compare with.
-   * @param epsilon
-   *          the absolute error stated in epsilonUnit.
-   * @param epsilonUnit
-   *          the epsilon unit.
-   * @return <code>abs(this.doubleValue(epsilonUnit) - that.doubleValue(epsilonUnit)) &lt;= epsilon</code>
-   */
-  public boolean equals(AbstractQuantity<Q> that, double epsilon, Unit<Q> epsilonUnit) {
-    return Math.abs(this.doubleValue(epsilonUnit) - that.doubleValue(epsilonUnit)) <= epsilon;
   }
 
   /**
@@ -306,28 +290,28 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
     return String.valueOf(getValue()) + " " + String.valueOf(getUnit());
   }
 
-  public abstract BigDecimal decimalValue(Unit<Q> unit) throws ArithmeticException;
+  public abstract BigDecimal decimalValue(Unit<Q> aUnit) throws ArithmeticException;
 
-  public abstract double doubleValue(Unit<Q> unit) throws ArithmeticException;
+  public abstract double doubleValue(Unit<Q> aUnit) throws ArithmeticException;
 
-  public final int intValue(Unit<Q> unit) throws ArithmeticException {
-    long longValue = longValue(unit);
+  public final int intValue(Unit<Q> aUnit) throws ArithmeticException {
+    long longValue = longValue(aUnit);
     if ((longValue < Integer.MIN_VALUE) || (longValue > Integer.MAX_VALUE)) {
       throw new ArithmeticException("Cannot convert " + longValue + " to int (overflow)");
     }
     return (int) longValue;
   }
 
-  protected long longValue(Unit<Q> unit) throws ArithmeticException {
-    double result = doubleValue(unit);
+  protected long longValue(Unit<Q> aUnit) throws ArithmeticException {
+    double result = doubleValue(aUnit);
     if ((result < Long.MIN_VALUE) || (result > Long.MAX_VALUE)) {
       throw new ArithmeticException("Overflow (" + result + ")");
     }
     return (long) result;
   }
 
-  protected final float floatValue(Unit<Q> unit) {
-    return (float) doubleValue(unit);
+  protected final float floatValue(Unit<Q> aUnit) {
+    return (float) doubleValue(aUnit);
   }
 
   @Override

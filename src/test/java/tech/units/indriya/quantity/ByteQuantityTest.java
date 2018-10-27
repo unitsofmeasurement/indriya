@@ -53,6 +53,7 @@ import tech.units.indriya.unit.Units;
 
 public class ByteQuantityTest {
 
+  private static final ShortQuantity<ElectricResistance> ONE_SHORT_OHM = new ShortQuantity<ElectricResistance>((short) 1, Units.OHM);
   private static final Unit<?> SQUARE_OHM = Units.OHM.multiply(Units.OHM);
   private final ByteQuantity<ElectricResistance> ONE_OHM = createQuantity((byte) 1, Units.OHM);
   private final ByteQuantity<ElectricResistance> TWO_OHM = createQuantity((byte) 2, Units.OHM);
@@ -62,7 +63,7 @@ public class ByteQuantityTest {
   private final ByteQuantity<ElectricResistance> ONE_DECIOHM = createQuantity((byte) 1, MetricPrefix.DECI(Units.OHM));
   private final ByteQuantity<ElectricResistance> ONE_YOTTAOHM = createQuantity((byte) 1, MetricPrefix.YOTTA(Units.OHM));
 
-  private <Q extends Quantity<Q>> ByteQuantity<Q> createQuantity(byte b, Unit<Q> unit) {
+  private static <Q extends Quantity<Q>> ByteQuantity<Q> createQuantity(byte b, Unit<Q> unit) {
     return new ByteQuantity<Q>(Byte.valueOf(b).byteValue(), unit);
   }
 
@@ -274,6 +275,22 @@ public class ByteQuantityTest {
   }
 
   /**
+   * Verifies that a ByteQuantity isn't decimal.
+   */
+  @Test
+  public void byteQuantityIsNotDecimal() {
+    assertFalse(ONE_OHM.isDecimal());
+  }
+
+  /**
+   * Verifies that a ByteQuantity has the size of Byte.
+   */
+  @Test
+  public void byteQuantityHasByteSize() {
+    assertEquals(Byte.SIZE, ONE_OHM.getSize());
+  }
+
+  /**
    * Verifies that a quantity isn't equal to null.
    */
   @Test
@@ -350,7 +367,7 @@ public class ByteQuantityTest {
    */
   @Test
   public void decimalValueReturnsValueForSameUnit() {
-    assertEquals(BigDecimal.valueOf(1.0), ONE_OHM.decimalValue(Units.OHM));
+    assertEquals(BigDecimal.valueOf(1), ONE_OHM.decimalValue(Units.OHM));
   }
 
   /**
@@ -397,6 +414,70 @@ public class ByteQuantityTest {
     });
   }
 
+  /**
+   * Verifies that addition with ByteQuantity returns a ByteQuantity.
+   */
+  @Test
+  public void additionWithByteQuantityDoesNotWiden() {
+    assertEquals(ByteQuantity.class, ONE_OHM.add(ONE_OHM).getClass());
+  }
+
+  /**
+   * Verifies that addition with ShortQuantity widens to ShortQuantity.
+   */
+  @Test
+  public void additionWithShortQuantityWidensToShortQuantity() {
+    assertEquals(ShortQuantity.class, ONE_OHM.add(ONE_SHORT_OHM).getClass());
+  }
+
+  /**
+   * Verifies that subtraction with ByteQuantity returns a ByteQuantity.
+   */
+  @Test
+  public void subtractionWithByteQuantityDoesNotWiden() {
+    assertEquals(ByteQuantity.class, ONE_OHM.subtract(ONE_OHM).getClass());
+  }
+
+  /**
+   * Verifies that subtraction with ShortQuantity widens to ShortQuantity.
+   */
+  @Test
+  public void subtractionWithShortQuantityWidensToShortQuantity() {
+    assertEquals(ShortQuantity.class, ONE_OHM.subtract(ONE_SHORT_OHM).getClass());
+  }
+
+  /**
+   * Verifies that multiplication with ByteQuantity returns a ByteQuantity.
+   */
+  @Test
+  public void multiplicationWithByteQuantityDoesNotWiden() {
+    assertEquals(ByteQuantity.class, ONE_OHM.multiply(ONE_OHM).getClass());
+  }
+
+  /**
+   * Verifies that multiplication with ShortQuantity widens to ShortQuantity.
+   */
+  @Test
+  public void multiplicationWithShortQuantityWidensToShortQuantity() {
+    assertEquals(ShortQuantity.class, ONE_OHM.multiply(ONE_SHORT_OHM).getClass());
+  }
+
+  /**
+   * Verifies that division with ByteQuantity returns a ByteQuantity.
+   */
+  @Test
+  public void divisionWithByteQuantityDoesNotWiden() {
+    assertEquals(ByteQuantity.class, ONE_OHM.divide(ONE_OHM).getClass());
+  }
+
+  /**
+   * Verifies that division with ShortQuantity widens to ShortQuantity.
+   */
+  @Test
+  public void divisionWithShortQuantityWidensToShortQuantity() {
+    assertEquals(ShortQuantity.class, ONE_OHM.divide(ONE_SHORT_OHM).getClass());
+  }
+
   @Test
   public void toTest() {
     Quantity<Time> day = Quantities.getQuantity(1D, Units.DAY);
@@ -407,6 +488,14 @@ public class ByteQuantityTest {
     Quantity<Time> dayResult = hour.to(Units.DAY);
     assertEquals(dayResult.getValue().intValue(), day.getValue().intValue());
     assertEquals(dayResult.getValue().intValue(), day.getValue().intValue());
+  }
+
+  /**
+   * Tests negate()
+   */
+  @Test
+  public void negateTest() {
+    assertEquals((byte) -1, ONE_OHM.negate().getValue());
   }
 
   @Test

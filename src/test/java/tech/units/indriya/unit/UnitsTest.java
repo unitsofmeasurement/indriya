@@ -39,6 +39,7 @@ import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Mass;
 import javax.measure.quantity.Power;
 import javax.measure.quantity.Time;
+import javax.measure.spi.SystemOfUnits;
 
 import org.junit.After;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,13 +47,15 @@ import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.AbstractConverter;
 import tech.units.indriya.AbstractUnit;
+import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.TransformedUnit;
 import tech.units.indriya.unit.Units;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static tech.units.indriya.unit.Units.GRAM;
 import static tech.units.indriya.unit.Units.METRE;
+import static tech.units.indriya.unit.Units.GRAM;
+import static tech.units.indriya.unit.Units.KILOGRAM;
 import static tech.units.indriya.unit.Units.WATT;
 import static javax.measure.MetricPrefix.*;
 
@@ -63,8 +66,9 @@ import static javax.measure.MetricPrefix.*;
 public class UnitsTest {
   static final Logger logger = Logger.getLogger(UnitsTest.class.getName());
 
-  Unit<Dimensionless> one;
-
+  private Unit<Dimensionless> one;
+  private SystemOfUnits sou;
+  
   /*
    * (non-Javadoc)
    * 
@@ -74,6 +78,7 @@ public class UnitsTest {
   public void setUp() throws Exception {
     // super.setUp();
     one = AbstractUnit.ONE;
+    sou = Units.getInstance();
   }
 
   /*
@@ -244,20 +249,19 @@ public class UnitsTest {
   @Test
   public void testPow() {
     Unit<?> result = one.pow(10);
-    assertEquals(result, one);
+    assertEquals("one^10", result.toString());
   }
 
   @Test
   public void testKiloIsAThousand() {
-    // FIXME: Need to find the org.hamcrest assertion libs
-    Quantity<Power> w2000 = Quantities.getQuantity(2000, WATT);
+    ComparableQuantity<Power> w2000 = Quantities.getQuantity(2000, WATT);
     Quantity<Power> kW2 = Quantities.getQuantity(2, KILO(WATT));
-    // assertThat(w2000, is(kW2));
+    assertTrue(w2000.isEquivalentTo(kW2));
   }
 
   @Test
   public void testOf() {
-    assertEquals(KILO(Units.GRAM).toString(), AbstractUnit.parse("kg").toString());
+    assertEquals(KILO(GRAM).toString(), AbstractUnit.parse("kg").toString());
   }
 
   @Test
@@ -273,27 +277,54 @@ public class UnitsTest {
 
   @Test
   public void testToString() {
-    assertEquals("kg", KILO(Units.GRAM).toString());
+    assertEquals("kg", KILO(GRAM).toString());
   }
 
   @Test
   public void testGetSymbol() {
     // TODO see https://github.com/unitsofmeasurement/uom-se/issues/54 /
-    // https://java.net/jira/browse/UNITSOFMEASUREMENT-109
-    assertEquals("kg", Units.KILOGRAM.getSymbol());
-    assertNull(Units.GRAM.getSymbol());
+    assertEquals("kg", KILOGRAM.getSymbol());
+    assertNull(GRAM.getSymbol());
   }
 
   @Test
   public void testGetParentUnit() {
-    assertEquals("TransformedUnit", Units.GRAM.getClass().getSimpleName());
-    assertEquals("kg", ((TransformedUnit<Mass>) Units.GRAM).getParentUnit().getSymbol());
+    assertEquals("TransformedUnit", GRAM.getClass().getSimpleName());
+    assertEquals("kg", ((TransformedUnit<Mass>) GRAM).getParentUnit().getSymbol());
   }
 
   @Test
   public void testByClassTime() {
-    Unit result = Units.getInstance().getUnit(Time.class);
+    Unit<?> result = sou.getUnit(Time.class);
     assertNotNull(result);
     assertEquals("s", result.toString());
+  }
+  
+  @Test
+  public void testByStringM() {
+	  final Unit<?> u = sou.getUnit("m");
+	  assertNotNull(u);
+	  assertEquals(METRE, u);
+  }
+  
+  @Test
+  public void testByStringG() {
+	  final Unit<?> u = sou.getUnit("g");
+	  assertNotNull(u);
+	  assertEquals(GRAM, u);
+  }
+  
+  @Test
+  public void testByStringKg() {
+	  final Unit<?> u = sou.getUnit("kg");
+	  assertNotNull(u);
+	  assertEquals(KILOGRAM, u);
+  }
+  
+  @Test
+  public void testByStringW() {	
+	  final Unit<?> u = sou.getUnit("W");
+	  assertNotNull(u);
+	  assertEquals(WATT, u);
   }
 }

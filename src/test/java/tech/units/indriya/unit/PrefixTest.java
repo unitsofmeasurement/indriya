@@ -42,7 +42,6 @@ import static tech.units.indriya.unit.Units.METRE;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.List;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;
@@ -165,10 +164,11 @@ public class PrefixTest {
     assertEquals(MICRO(GRAM), GRAM.divide(1_000_000));
   }
   
-  @Test
+  @SuppressWarnings({ "unchecked", "rawtypes" })
+@Test
   public void testEquivalence() {
-	  ComparableUnit a = (ComparableUnit) MICRO(GRAM); 
-	  ComparableUnit b = (ComparableUnit) GRAM.divide(1_000_000);
+	final ComparableUnit a = (ComparableUnit) MICRO(GRAM); 
+	final ComparableUnit b = (ComparableUnit) GRAM.divide(1_000_000);
 	  assertEquals(true, a.isEquivalentOf(b));
 	  assertEquals(true, b.isEquivalentOf(a));
   }
@@ -179,17 +179,15 @@ public class PrefixTest {
     Unit<Mass> m1 = MICRO(GRAM);
     Unit<Mass> m2 = GRAM.divide(1000).divide(1000);
     UnitConverter c1 = m1.getConverterTo(m2);
-    List steps1 = c1.getConversionSteps();
     UnitConverter c2 = m2.getConverterTo(m1);
-    List steps2 = c2.getConversionSteps();
     assertEquals(c1, c2);
     assertEquals(m1, m2);
   }
   
   @Test
   public void testNestedEquivalence() {
-	  ComparableUnit a = (ComparableUnit) MICRO(GRAM);
-	  ComparableUnit b = (ComparableUnit) GRAM.divide(1000).divide(1000);
+	  ComparableUnit<Mass> a = (ComparableUnit<Mass>) MICRO(GRAM);
+	  ComparableUnit<Mass> b = (ComparableUnit<Mass>) GRAM.divide(1000).divide(1000);
 	  assertEquals(true, a.isEquivalentOf(b));
 	  assertEquals(true, b.isEquivalentOf(a));
   }
@@ -199,9 +197,7 @@ public class PrefixTest {
     Unit<Mass> m1 = MICRO(GRAM);
     Unit<Mass> m2 = GRAM.divide(1000).divide(2000);
     UnitConverter c1 = m1.getConverterTo(m2);
-    List steps1 = c1.getConversionSteps();
     UnitConverter c2 = m2.getConverterTo(m1);
-    List steps2 = c2.getConversionSteps();
     assertNotEquals(c1, c2);
     assertNotEquals(m1, m2);
   }
@@ -317,5 +313,8 @@ public class PrefixTest {
 	  }
   }
   
-  
+  @Test
+  public void testPrefixMethod() {
+    assertEquals(CENTI(METRE), METRE.prefix(CENTI));
+  }
 }

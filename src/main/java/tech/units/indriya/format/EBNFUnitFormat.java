@@ -145,7 +145,7 @@ import java.util.ResourceBundle;
  * 
  * @author <a href="mailto:eric-r@northwestern.edu">Eric Russell</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.1, $Date: 2018-04-05 $
+ * @version 1.2, $Date: 2018-08-08 $
  * @since 1.0
  */
 public class EBNFUnitFormat extends AbstractUnitFormat {
@@ -241,7 +241,7 @@ public class EBNFUnitFormat extends AbstractUnitFormat {
   }
 
   @Override
-  protected Unit<? extends Quantity<?>> parse(CharSequence csq, ParsePosition cursor) throws MeasurementParseException {
+  public Unit<? extends Quantity<?>> parse(CharSequence csq, ParsePosition cursor) throws MeasurementParseException {
     // Parsing reads the whole character sequence from the parse position.
     int start = cursor != null ? cursor.getIndex() : 0;
     int end = csq.length();
