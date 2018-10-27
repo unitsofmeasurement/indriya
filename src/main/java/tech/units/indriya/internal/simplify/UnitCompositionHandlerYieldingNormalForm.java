@@ -73,8 +73,8 @@ public class UnitCompositionHandlerYieldingNormalForm implements UnitComposition
     public AbstractConverter compose(
             AbstractConverter a, 
             AbstractConverter b,
-            BiPredicate<AbstractConverter, AbstractConverter> canSimpleCompose,
-            BinaryOperator<AbstractConverter> doSimpleCompose) {
+            BiPredicate<AbstractConverter, AbstractConverter> canReduce,
+            BinaryOperator<AbstractConverter> doReduce) {
         
         if(a.isIdentity()) {
             if(b.isIdentity()) {
@@ -86,8 +86,8 @@ public class UnitCompositionHandlerYieldingNormalForm implements UnitComposition
             return a;
         }
         
-        if(canSimpleCompose.test(a, b)) {
-            return doSimpleCompose.apply(a, b);
+        if(canReduce.test(a, b)) {
+            return doReduce.apply(a, b);
         }
         
         final boolean commutative = a.isLinear() && b.isLinear(); 
@@ -100,8 +100,8 @@ public class UnitCompositionHandlerYieldingNormalForm implements UnitComposition
         return new CompositionTask(
                 this::isNormalFormOrderWhenIdentity,
                 this::isNormalFormOrderWhenCommutative,
-                canSimpleCompose, 
-                doSimpleCompose)
+                canReduce, 
+                doReduce)
                 .reduceToNormalForm(nonSimplifiedForm.getConversionSteps());
         
     }

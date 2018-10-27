@@ -56,15 +56,15 @@ public interface UnitCompositionHandler {
      *  
      * @param left
      * @param right
-     * @param canSimpleCompose
-     * @param doSimpleCompose
+     * @param canReduce
+     * @param doReduce
      * @return
      */
     public AbstractConverter compose(
             AbstractConverter left, 
             AbstractConverter right,
-            BiPredicate<AbstractConverter, AbstractConverter> canSimpleCompose,
-            BinaryOperator<AbstractConverter> doSimpleCompose);
+            BiPredicate<AbstractConverter, AbstractConverter> canReduce,
+            BinaryOperator<AbstractConverter> doReduce);
     
     // -- FACTORIES (BUILT-IN) 
     
