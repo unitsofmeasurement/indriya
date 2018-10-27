@@ -71,7 +71,8 @@ public abstract class AbstractConverter
 	 * Default identity converter implementing AbstractConverter.
 	 * <p>
 	 * Note: Checking whether a UnitConverter is an identity operator should be done with 
-	 * UnitConverter.isIdentity() rather then unitConverter == AbstractConverter.IDENTITY.
+	 * {@code UnitConverter.isIdentity()} rather than checking for object identity 
+	 * {@code unitConverter == AbstractConverter.IDENTITY}.
 	 */
 	public static final AbstractConverter IDENTITY = new Identity();
 	
