@@ -33,26 +33,33 @@ import java.util.BitSet;
 import java.util.function.Predicate;
 
 /**
- * BitSet Utility for the Simplifier.
+ * Package private bit mask utility for CompositionTask.
  * 
  * @author Andi Huber
- * @version 1.1
+ * @version 1.0
  * @since 2.0
  */
-final class BitScanner {
+final class CompositionTask_BitScanner {
 	
 	@FunctionalInterface
-	protected static interface BiIntConsumer {
-		void accept(int i, int j); 
+	public static interface BiIntConsumer {
+		public void accept(int i, int j); 
 	}
 	
 	private final BitSet bitSet;
 	
-	private BitScanner(BitSet bitSet) {
+	private CompositionTask_BitScanner(BitSet bitSet) {
 		this.bitSet = bitSet;
 	}
 	
-	protected static <T> BitScanner of(T[] array, Predicate<T> bitTest) {
+	/**
+	 * @param array
+	 * @param bitTest
+	 * @return BitScanner, that holds internally a BitSet, that represents with zeros 
+	 * and ones, whether the specified predicate {@code bitTest} is false or true 
+	 * with respect to the elements of the specified {@code array}  
+	 */
+	public static <T> CompositionTask_BitScanner of(T[] array, Predicate<T> bitTest) {
 		final BitSet mask = new BitSet(array.length);
 		int bitIndex = 0;
 		for(T element : array) {
@@ -61,10 +68,24 @@ final class BitScanner {
 			}
 			bitIndex++;
 		}
-		return new BitScanner(mask);
+		return new CompositionTask_BitScanner(mask);
 	}
 	
-	protected void visitBitSequences(BiIntConsumer visitor) {
+	/**
+	 * This BitScanner holds internally a BitSet. The specified {@code visitor} is called 
+	 * for each sequence of consecutive ones, where each such call passes over 2 int parameters
+	 * i, j.<p>
+	 * i .. zero based start index of the processed one-sequence<br/>
+	 * j .. length of the processed one-sequence<br/>
+	 * <p>
+	 * Eg. given an internal BitSet represented by eg. 0-0-1-0-1-1-1-0, the resulting visitor
+	 * calls would be:<br/>
+	 * visitor.accept(2, 1) - start at 2, length = 1<br/>
+	 * visitor.accept(4, 3) - start at 4, length = 3<br/>
+	 * 
+	 * @param visitor
+	 */
+	public void visitBitSequences(BiIntConsumer visitor) {
 		int scanPointer = 0;
 		int nextSetBit;
 		while((nextSetBit = bitSet.nextSetBit(scanPointer))>-1) {

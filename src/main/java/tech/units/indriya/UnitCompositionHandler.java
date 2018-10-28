@@ -27,72 +27,53 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package tech.units.indriya.internal.simplify;
+package tech.units.indriya;
 
-import java.util.Arrays;
-import java.util.function.BiConsumer;
+import java.util.function.BiPredicate;
 import java.util.function.BinaryOperator;
 
+import tech.units.indriya.internal.simplify.UnitCompositionHandlerYieldingNormalForm;
+
 /**
- * Array Utility for the Simplifier.
+ * Functional interface for handling the composition (concatenation) of two unit-conversion.
  * 
  * @author Andi Huber
  * @version 1.0
  * @since 2.0
  */
-final class ArrayAdapter<T> {
-	
-	private final T[] array;
-	
-	public static <T> ArrayAdapter<T> of(T[] array){
-		return new ArrayAdapter<T>(array);
-	}
-	
-	private ArrayAdapter(T[] array) {
-		this.array = array;
-	}
-	
-	public void visitSequentialPairs(BiConsumer<T,T> visitor) {
-		if(array.length<2) {
-			return;
-		}
-		for(int i=1;i<array.length;++i) {
-			visitor.accept(array[i-1], array[i]);
-		}
-	}
-	
-	/**
-	 * @param visitor returns either null (meaning no simplification) or a simplification 
-	 * @return simplificationCount
-	 */
-	public int visitSequentialPairsAndSimplify(BinaryOperator<T> visitor) {
-		if(array.length<2) {
-			return 0;
-		}
-		int simplificationCount = 0;
-		for(int i=1;i<array.length;++i) {
-			if(array[i-1]==null) {
-				continue;
-			}
-			T simplification = visitor.apply(array[i-1], array[i]);
-			if(simplification!=null) {
-				array[i-1] = simplification;
-				array[i] = null;
-				++simplificationCount;
-			}
-		}
-		return simplificationCount;
-	}
-	
-	public T[] removeNulls(int nullCount) {
-		final T[] result = Arrays.copyOf(array, array.length-nullCount);
-		int j=0;
-		for(int i=0;i<array.length;++i) {
-			if(array[i]!=null) {
-				result[j++] = array[i];	
-			}
-		}
-		return result;
-	}
-	
+public interface UnitCompositionHandler {
+
+    /**
+     * Takes two converters {@code left}, {@code right} and returns a (not necessarily new) 
+     * converter that is equivalent to the mathematical composition of these:
+     * <p>
+     * compose(left, right) === left o right 
+     * 
+     * <p>
+     * Implementation Note: Instead of using AbstractConverter as parameter 
+     * and result types, this could be generalized to UnitConverter, but that 
+     * would require some careful changes within AbstractConverter itself.
+     *  
+     * @param left
+     * @param right
+     * @param canReduce
+     * @param doReduce
+     * @return
+     */
+    public AbstractConverter compose(
+            AbstractConverter left, 
+            AbstractConverter right,
+            BiPredicate<AbstractConverter, AbstractConverter> canReduce,
+            BinaryOperator<AbstractConverter> doReduce);
+    
+    // -- FACTORIES (BUILT-IN) 
+    
+    /**
+     * @return the default built-in UnitCompositionHandler which is yielding a normal-form, 
+     * required to decide whether two UnitConverters are equivalent
+     */
+    public static UnitCompositionHandler yieldingNormalForm() {
+        return new UnitCompositionHandlerYieldingNormalForm();
+    }
+
 }

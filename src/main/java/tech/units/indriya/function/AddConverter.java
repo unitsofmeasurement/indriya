@@ -83,12 +83,12 @@ public final class AddConverter extends AbstractConverter implements ValueSuppli
   }
 
   @Override
-  protected boolean isSimpleCompositionWith(AbstractConverter that) {
+  protected boolean canReduceWith(AbstractConverter that) {
   	return that instanceof AddConverter;
   }
 
   @Override
-  protected AbstractConverter simpleCompose(AbstractConverter that) {
+  protected AbstractConverter reduce(AbstractConverter that) {
     return new AddConverter(offset + ((AddConverter)that).offset);
   }
   

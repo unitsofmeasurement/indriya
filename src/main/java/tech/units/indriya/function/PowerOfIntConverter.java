@@ -112,7 +112,7 @@ public final class PowerOfIntConverter extends AbstractConverter
 	}
 
 	@Override
-	protected boolean isSimpleCompositionWith(AbstractConverter that) {
+	protected boolean canReduceWith(AbstractConverter that) {
 		if (that instanceof PowerOfIntConverter) {
 			return ((PowerOfIntConverter) that).base == this.base;
 		}
@@ -120,7 +120,7 @@ public final class PowerOfIntConverter extends AbstractConverter
 	}
 
 	@Override
-	protected AbstractConverter simpleCompose(AbstractConverter that) {
+	protected AbstractConverter reduce(AbstractConverter that) {
 		if (that instanceof PowerOfIntConverter) {
 			PowerOfIntConverter other = (PowerOfIntConverter) that;
 			if(this.base == other.base) { // always true due to guard above

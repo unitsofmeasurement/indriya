@@ -113,12 +113,12 @@ public final class PowerOfPiConverter extends AbstractConverter
 	}
 
 	@Override
-	protected boolean isSimpleCompositionWith(AbstractConverter that) {
+	protected boolean canReduceWith(AbstractConverter that) {
 		return that instanceof PowerOfPiConverter;
 	}
 
 	@Override
-	protected AbstractConverter simpleCompose(AbstractConverter that) {
+	protected AbstractConverter reduce(AbstractConverter that) {
 		return new PowerOfPiConverter(this.exponent + ((PowerOfPiConverter)that).exponent);
 	}
 
