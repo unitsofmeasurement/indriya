@@ -37,7 +37,6 @@ import javax.measure.spi.ServiceProvider;
 import javax.measure.spi.SystemOfUnitsService;
 import javax.measure.spi.UnitFormatService;
 
-import tech.units.indriya.quantity.DefaultQuantityFactory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;

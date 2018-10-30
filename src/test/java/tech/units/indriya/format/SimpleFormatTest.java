@@ -31,6 +31,7 @@ package tech.units.indriya.format;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static javax.measure.MetricPrefix.*;
+import static tech.units.indriya.unit.Units.CANDELA;
 import static tech.units.indriya.unit.Units.GRAM;
 import static tech.units.indriya.unit.Units.HERTZ;
 import static tech.units.indriya.unit.Units.KILOGRAM;
@@ -153,25 +154,25 @@ public class SimpleFormatTest {
     @Test
     public void testFormatNewLabeledUnits() {
         logger.log(LOG_LEVEL, "== Use case 1: playing with base units ==");
-        final AlternateUnit<?> aCd = new AlternateUnit<>(Units.CANDELA, "altCD");
+        final AlternateUnit<?> aCd = new AlternateUnit<>(CANDELA, "altCD");
 
-        logger.log(LOG_LEVEL, "Candela: " + format.format(Units.CANDELA));
-        logger.log(LOG_LEVEL, "Candela times 2: " + format.format(Units.CANDELA.multiply(2)));
-        logger.log(LOG_LEVEL, "Square Candela: " + format.format(Units.CANDELA.pow(2)));
+        logger.log(LOG_LEVEL, "Candela: " + format.format(CANDELA));
+        logger.log(LOG_LEVEL, "Candela times 2: " + format.format(CANDELA.multiply(2)));
+        logger.log(LOG_LEVEL, "Square Candela: " + format.format(CANDELA.pow(2)));
         logger.log(LOG_LEVEL, "Alt. Candela: " + format.format(aCd));
         logger.log(LOG_LEVEL, "Square alt. Candela: " + format.format(aCd.pow(2)));
 
         logger.log(LOG_LEVEL, "=> The Candela shall now be known as \"CD\"");
-        format.label(Units.CANDELA, "CD");
+        format.label(CANDELA, "CD");
 
-        logger.log(LOG_LEVEL, "Candela: " + format.format(Units.CANDELA));
-        logger.log(LOG_LEVEL, "Candela times 2: " + format.format(Units.CANDELA.multiply(2)));
-        logger.log(LOG_LEVEL, "Square Candela: " + format.format(Units.CANDELA.pow(2)));
+        logger.log(LOG_LEVEL, "Candela: " + format.format(CANDELA));
+        logger.log(LOG_LEVEL, "Candela times 2: " + format.format(CANDELA.multiply(2)));
+        logger.log(LOG_LEVEL, "Square Candela: " + format.format(CANDELA.pow(2)));
         logger.log(LOG_LEVEL, "Alt. Candela: " + format.format(aCd));
         logger.log(LOG_LEVEL, "Square alt. Candela: " + format.format(aCd.pow(2)));
 
         logger.log(LOG_LEVEL, "== Use case 2: playing with product units ==");
-        final ProductUnit<?> cdK = new ProductUnit<>(Units.CANDELA.multiply(Units.KELVIN));
+        final ProductUnit<?> cdK = new ProductUnit<>(CANDELA.multiply(Units.KELVIN));
         final AlternateUnit<?> aCdK = new AlternateUnit<>(cdK, "altCDK");
 
         logger.log(LOG_LEVEL, "Candela-Kelvin: " + format.format(cdK));
@@ -190,9 +191,11 @@ public class SimpleFormatTest {
         logger.log(LOG_LEVEL, "Square alt. Candela-Kelvin: " + format.format(aCdK.pow(2)));
 
         final UnitFormat formatter2 = EBNFUnitFormat.getInstance();
-        final Unit<LuminousIntensity> cdX = Units.CANDELA.transform(new ExpConverter(10));
+        final Unit<LuminousIntensity> cdX = CANDELA.transform(new ExpConverter(10));
         logger.log(LOG_LEVEL, "Candela-Exp: " + format.format(cdX));
         logger.log(LOG_LEVEL, "Candela-Exp E: " + formatter2.format(cdX));
+    
+        format.label(CANDELA, "cd"); // cleanup, UnitFormat.label() applies for the entire VM, and the order of JUnit tests is not guaranteed
     }
 
     @Test

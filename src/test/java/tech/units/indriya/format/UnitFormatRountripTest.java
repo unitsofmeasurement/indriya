@@ -77,7 +77,7 @@ class UnitFormatRountripTest {
     @DisplayName("SimpleUnitFormat")
     public class SimpleUnitFormatTest {
         
-        UnitFormat format = SimpleUnitFormat.getInstance();
+        final UnitFormat format = SimpleUnitFormat.getInstance();
 
         /**
          * We cycle through all {@code FormatTestingUtil.NonPrefixedUnits} and 
