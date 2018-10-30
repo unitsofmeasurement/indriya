@@ -46,6 +46,7 @@ import javax.measure.UnitConverter;
 import tech.units.indriya.function.Calculus;
 import tech.units.indriya.function.PowerOfIntConverter;
 import tech.units.indriya.function.UnitComparator;
+import tech.units.indriya.function.UnitCompositionHandler;
 import tech.uom.lib.common.function.Converter;
 
 /**

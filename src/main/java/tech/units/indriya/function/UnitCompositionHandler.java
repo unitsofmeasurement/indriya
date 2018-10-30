@@ -27,18 +27,20 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package tech.units.indriya;
+package tech.units.indriya.function;
 
 import java.util.function.BiPredicate;
 import java.util.function.BinaryOperator;
 
+import tech.units.indriya.AbstractConverter;
 import tech.units.indriya.internal.simplify.UnitCompositionHandlerYieldingNormalForm;
 
 /**
- * Functional interface for handling the composition (concatenation) of two unit-conversion.
+ * Functional interface for handling the composition (concatenation) of two unit converters.
  * 
  * @author Andi Huber
- * @version 1.0
+ * @author Werner Keil
+ * @version 1.1
  * @since 2.0
  */
 public interface UnitCompositionHandler {

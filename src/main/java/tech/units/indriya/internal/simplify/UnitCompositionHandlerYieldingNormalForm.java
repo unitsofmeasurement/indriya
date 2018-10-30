@@ -36,7 +36,6 @@ import java.util.function.BiPredicate;
 import java.util.function.BinaryOperator;
 
 import tech.units.indriya.AbstractConverter;
-import tech.units.indriya.UnitCompositionHandler;
 import tech.units.indriya.function.AddConverter;
 import tech.units.indriya.function.ExpConverter;
 import tech.units.indriya.function.LogConverter;
@@ -44,6 +43,7 @@ import tech.units.indriya.function.MultiplyConverter;
 import tech.units.indriya.function.PowerOfIntConverter;
 import tech.units.indriya.function.PowerOfPiConverter;
 import tech.units.indriya.function.RationalConverter;
+import tech.units.indriya.function.UnitCompositionHandler;
 
 /**
  * UnitCompositionHandler yielding a normal-form.
