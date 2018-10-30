@@ -31,7 +31,6 @@ package tech.units.indriya.format;
 
 import javax.measure.format.UnitFormat;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -48,13 +47,9 @@ import tech.units.indriya.format.FormatTestingUtil.NonPrefixedUnits;
  */
 class UnitFormatRountripTest {
 
-  @BeforeEach
-  public void init() {
-
-  }
 
   @Nested
-  @DisplayName("EBNFUnitFormat") @Disabled("yet too many errors")
+  @DisplayName("EBNFUnitFormat") @Disabled("yet too many errors") 
   public class EBNFUnitFormatTest {
 
     UnitFormat format = EBNFUnitFormat.getInstance();
@@ -88,17 +83,6 @@ class UnitFormatRountripTest {
     @DisplayName("should parse and format as expected")
     @EnumSource(NonPrefixedUnits.class)
     public void formatingAndParsing(NonPrefixedUnits testCandidate) {
-
-      //TODO roundtrips currently fail for Gram, Celsius and Litre
-      //            if(testCandidate == NonPrefixedUnits.Gram
-      //                    || testCandidate == NonPrefixedUnits.Celsius
-      //                    || testCandidate == NonPrefixedUnits.Litre) {
-      //                
-      //                System.err.println(String.format("WARNING: ommiting test-candidate: %s in %s",
-      //                        testCandidate.name(),
-      //                        this.getClass().getName()));
-      //                return;
-      //            }
 
       testCandidate.roundtrip(format);
 
