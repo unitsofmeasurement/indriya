@@ -43,7 +43,7 @@ import tech.units.indriya.function.MultiplyConverter;
 import tech.units.indriya.function.PowerOfIntConverter;
 import tech.units.indriya.function.PowerOfPiConverter;
 import tech.units.indriya.function.RationalConverter;
-import tech.units.indriya.function.UnitCompositionHandler;
+import tech.units.indriya.function.ConverterCompositionHandler;
 
 /**
  * UnitCompositionHandler yielding a normal-form.
@@ -53,7 +53,7 @@ import tech.units.indriya.function.UnitCompositionHandler;
  * @version 1.0
  * @since 2.0
  */
-public class UnitCompositionHandlerYieldingNormalForm implements UnitCompositionHandler {
+public class UnitCompositionHandlerYieldingNormalForm implements ConverterCompositionHandler {
 
   private final Map<Class<?>, Integer> normalFormOrder = new HashMap<>(9);
 

@@ -44,10 +44,10 @@ import javax.measure.Prefix;
 import javax.measure.UnitConverter;
 
 import tech.units.indriya.function.Calculus;
+import tech.units.indriya.function.ConverterCompositionHandler;
 import tech.units.indriya.function.PowerOfIntConverter;
-import tech.units.indriya.function.UnitComparator;
-import tech.units.indriya.function.UnitCompositionHandler;
 import tech.uom.lib.common.function.Converter;
+import tech.uom.lib.common.util.UnitComparator;
 
 /**
  * <p>
@@ -80,7 +80,7 @@ public abstract class AbstractConverter
 	/**
 	 * Allows for plug in of a custom UnitCompositionHandler.
 	 */
-	public static UnitCompositionHandler UNIT_COMPOSITION_HANDLER = UnitCompositionHandler.yieldingNormalForm();
+	public static ConverterCompositionHandler UNIT_COMPOSITION_HANDLER = ConverterCompositionHandler.yieldingNormalForm();
 
 	/**
 	 * memoization for getConversionSteps
@@ -366,6 +366,9 @@ public abstract class AbstractConverter
 	 */
 	public static final class Pair extends AbstractConverter implements Serializable {
 
+	  @SuppressWarnings("rawtypes")
+    private final static Comparator unitComparator = new UnitComparator<>();
+	  
 		/**
 		 * 
 		 */
@@ -496,9 +499,9 @@ public abstract class AbstractConverter
 			}
 			if (obj instanceof Pair) {
 				Pair that = (Pair) obj;
-				@SuppressWarnings("rawtypes")
-				Comparator c = new UnitComparator<>();
-				return Objects.compare(left, that.left, c) + Objects.compare(right, that.right, c);
+				
+				return Objects.compare(left, that.left, unitComparator) 
+				    + Objects.compare(right, that.right, unitComparator);
 			}
 			return -1;
 		}
