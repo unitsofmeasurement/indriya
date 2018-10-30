@@ -32,6 +32,7 @@ package tech.units.indriya.quantity;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import javax.measure.LevelOfMeasurement;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 
@@ -43,77 +44,81 @@ import tech.units.indriya.ComparableQuantity;
  * is immutable. Note: all operations which involves {@link Number}, this implementation will convert to {@link BigInteger}.
  *
  * @param <Q>
- *          The type of the quantity.
+ *            The type of the quantity.
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
  * @see AbstractQuantity
  * @see Quantity
  * @see ComparableQuantity
- * @version 0.4
+ * @version 0.5
  * @since 2.0
  */
 final class BigIntegerQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
 
-  private static final long serialVersionUID = -593014349777834846L;
-  private final BigInteger value;
+    private static final long serialVersionUID = -593014349777834846L;
+    private final BigInteger value;
 
-  public BigIntegerQuantity(BigInteger value, Unit<Q> unit) {
-    super(unit);
-    this.value = value;
-  }
+    public BigIntegerQuantity(BigInteger value, Unit<Q> unit, LevelOfMeasurement level) {
+        super(unit, level);
+        this.value = value;
+    }
 
-  public BigIntegerQuantity(long value, Unit<Q> unit) {
-    super(unit);
-    this.value = BigInteger.valueOf(value);
-  }
+    public BigIntegerQuantity(BigInteger value, Unit<Q> unit) {
+        super(unit);
+        this.value = value;
+    }
 
-  /**
-   * <p>
-   * Returns a {@code BigIntegerQuantity} with same Unit, but whose value is {@code(-this.getValue())}. </p>
-   * 
-   * @return {@code -this}.
-   */
-  public BigIntegerQuantity<Q> negate() {
-    return new BigIntegerQuantity<Q>(value.negate(), getUnit());
-  }
+    public BigIntegerQuantity(long value, Unit<Q> unit) {
+        this(BigInteger.valueOf(value), unit);
+    }
 
-  @Override
-  public BigInteger getValue() {
-    return value;
-  }
+    /**
+     * <p>
+     * Returns a {@code BigIntegerQuantity} with same Unit, but whose value is {@code(-this.getValue())}. </p>
+     * 
+     * @return {@code -this}.
+     */
+    public BigIntegerQuantity<Q> negate() {
+        return new BigIntegerQuantity<Q>(value.negate(), getUnit());
+    }
 
-  @SuppressWarnings({ "unchecked" })
-  @Override
-  public ComparableQuantity<Q> inverse() {
-    return (ComparableQuantity<Q>) Quantities.getQuantity(BigInteger.ONE.divide(value), getUnit().inverse());
-  }
+    @Override
+    public BigInteger getValue() {
+        return value;
+    }
 
-  @Override
-  public boolean isBig() {
-    return true;
-  }
+    @SuppressWarnings({ "unchecked" })
+    @Override
+    public ComparableQuantity<Q> inverse() {
+        return (ComparableQuantity<Q>) Quantities.getQuantity(BigInteger.ONE.divide(value), getUnit().inverse());
+    }
 
-  @Override
-  public boolean isDecimal() {
-    return false;
-  }
+    @Override
+    public boolean isBig() {
+        return true;
+    }
 
-  @Override
-  public int getSize() {
-    return 0;
-  }
+    @Override
+    public boolean isDecimal() {
+        return false;
+    }
 
-  @Override
-  public Class<?> getNumberType() {
-    return BigInteger.class;
-  }
+    @Override
+    public int getSize() {
+        return 0;
+    }
 
-  @Override
-  Number castFromBigDecimal(BigDecimal aValue) {
-    return aValue.toBigInteger();
-  }
+    @Override
+    public Class<?> getNumberType() {
+        return BigInteger.class;
+    }
 
-  @Override
-  boolean isOverflowing(BigDecimal aValue) {
-    return false;
-  }
+    @Override
+    Number castFromBigDecimal(BigDecimal aValue) {
+        return aValue.toBigInteger();
+    }
+
+    @Override
+    boolean isOverflowing(BigDecimal aValue) {
+        return false;
+    }
 }

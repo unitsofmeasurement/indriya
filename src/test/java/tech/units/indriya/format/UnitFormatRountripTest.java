@@ -46,49 +46,46 @@ import tech.units.indriya.format.FormatTestingUtil.NonPrefixedUnits;
  * @author Andi Huber
  */
 class UnitFormatRountripTest {
+	
+	@Nested
+    @DisplayName("EBNFUnitFormat") @Disabled("yet too many errors")
+    public class EBNFUnitFormatTest {
+	    
+	  final UnitFormat format = EBNFUnitFormat.getInstance();
 
+        /**
+         * We cycle through all {@code FormatTestingUtil.NonPrefixedUnits} and 
+         * for each such candidate test, whether parsing and formating are 
+         * consistent with expected behavior.
+         */
+	    @ParameterizedTest(name = "{index} => unit=''{0}''")
+        @DisplayName("should parse and format as expected")
+        @EnumSource(NonPrefixedUnits.class)
+        public void formatingAndParsing(NonPrefixedUnits testCandidate) {
+	        testCandidate.roundtrip(format);
+        }       
 
-  @Nested
-  @DisplayName("EBNFUnitFormat") @Disabled("yet too many errors") 
-  public class EBNFUnitFormatTest {
+    }
+	
+	@Nested
+    @DisplayName("SimpleUnitFormat")
+    public class SimpleUnitFormatTest {
+        
+        final UnitFormat format = SimpleUnitFormat.getInstance();
 
-    UnitFormat format = EBNFUnitFormat.getInstance();
+        /**
+         * We cycle through all {@code FormatTestingUtil.NonPrefixedUnits} and 
+         * for each such candidate test, whether parsing and formating are 
+         * consistent with expected behavior.
+         */
+        @ParameterizedTest(name = "{index} => unit=''{0}''")
+        @DisplayName("should parse and format as expected")
+        @EnumSource(NonPrefixedUnits.class)
+        public void formatingAndParsing(NonPrefixedUnits testCandidate) {
+            testCandidate.roundtrip(format);
+        }       
 
-    /**
-     * We cycle through all {@code FormatTestingUtil.NonPrefixedUnits} and 
-     * for each such candidate test, whether parsing and formating are 
-     * consistent with expected behavior.
-     */
-    @ParameterizedTest(name = "{index} => unit=''{0}''")
-    @DisplayName("should parse and format as expected")
-    @EnumSource(NonPrefixedUnits.class)
-    public void formatingAndParsing(NonPrefixedUnits testCandidate) {
-      testCandidate.roundtrip(format);
-    }       
+    }
 
-  }
-
-  @Nested
-  @DisplayName("SimpleUnitFormat")
-  public class SimpleUnitFormatTest {
-
-    UnitFormat format = SimpleUnitFormat.getInstance();
-
-    /**
-     * We cycle through all {@code FormatTestingUtil.NonPrefixedUnits} and 
-     * for each such candidate test, whether parsing and formating are 
-     * consistent with expected behavior.
-     */
-    @ParameterizedTest(name = "{index} => unit=''{0}''")
-    @DisplayName("should parse and format as expected")
-    @EnumSource(NonPrefixedUnits.class)
-    public void formatingAndParsing(NonPrefixedUnits testCandidate) {
-
-      testCandidate.roundtrip(format);
-
-    }       
-
-  }
-
-
+	
 }

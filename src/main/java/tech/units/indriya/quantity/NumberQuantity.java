@@ -33,6 +33,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Objects;
 
+import javax.measure.LevelOfMeasurement;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.UnitConverter;
@@ -52,7 +53,7 @@ import tech.units.indriya.function.Calculus;
  *          The type of the quantity.
  * @author otaviojava
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.0.2, $Date: 2018-07-21 $
+ * @version 1.1, $Date: 2018-10-31 $
  * @since 1.0
  */
 public class NumberQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
@@ -66,10 +67,17 @@ public class NumberQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
    */
   private final boolean isBig;
 
-  protected NumberQuantity(Number number, Unit<Q> unit) {
-    super(unit);
+  /**
+   * @since 2.0
+   */
+  protected NumberQuantity(Number number, Unit<Q> unit, LevelOfMeasurement level) {
+    super(unit, level);
     value = number;
     isBig = number instanceof BigDecimal || number instanceof BigInteger;
+  }
+  
+  protected NumberQuantity(Number number, Unit<Q> unit) {
+      this(number, unit, LevelOfMeasurement.RATIO); // Impl Note, we assume a default here, too but avoid code duplication
   }
 
   @Override

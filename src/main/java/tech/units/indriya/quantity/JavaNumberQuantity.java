@@ -36,6 +36,7 @@ import java.math.MathContext;
 import java.util.Objects;
 import java.util.function.BiFunction;
 
+import javax.measure.LevelOfMeasurement;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 
@@ -48,6 +49,9 @@ import tech.units.indriya.function.Calculus;
  * 
  * @param <Q>
  *          The type of the quantity.
+ * @author Filip van Laenen
+ * @since 2.0
+ * 
  */
 abstract class JavaNumberQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
 
@@ -55,7 +59,18 @@ abstract class JavaNumberQuantity<Q extends Quantity<Q>> extends AbstractQuantit
 
   private static final BigDecimal LONG_MAX_VALUE = new BigDecimal(Long.MAX_VALUE);
   private static final BigDecimal LONG_MIN_VALUE = new BigDecimal(Long.MIN_VALUE);
-
+  /**
+   * Constructor calling the superclass's constructor.
+   * 
+   * @param unit
+   *          The unit.
+   * @param level
+   *          The level.
+   */
+  protected JavaNumberQuantity(Unit<Q> unit, LevelOfMeasurement level) {
+    super(unit, level);
+  }
+  
   /**
    * Constructor calling the superclass's constructor.
    * 
