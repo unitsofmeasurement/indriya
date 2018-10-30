@@ -45,141 +45,141 @@ import tech.units.indriya.AbstractConverter;
 
 class ConverterTypeUtil {
 
-    /**
-     * Complete set of built-in unit converters, with their individual identity transformations and 
-     * some concrete examples.  
-     */
-    public static enum ConverterType {
+  /**
+   * Complete set of built-in unit converters, with their individual identity transformations and 
+   * some concrete examples.  
+   */
+  public static enum ConverterType {
 
-        ID(AbstractConverter.class, 
-                ()->AbstractConverter.IDENTITY, // identity as expressed by this type
-                AbstractConverter.IDENTITY, // concrete example a
-                AbstractConverter.IDENTITY  ), // concrete example b
-        POWER(PowerOfIntConverter.class, 
-                ()->PowerOfIntConverter.of(1, 0), // identity as expressed by this type ... x -> 1^0 * x
-                PowerOfIntConverter.of(3, 7), // concrete example a ... x -> 3^7 * x
-                PowerOfIntConverter.of(7, -3)   ), // concrete example b ... x -> 7^-3 * x
-        RATIONAL(RationalConverter.class, 
-                ()->RationalConverter.of(1, 1), // identity as expressed by this type ... x -> 1/1 * x
-                RationalConverter.of(17, 13), // concrete example a ... x -> 17/13 * x
-                RationalConverter.of(-34, 17)   ), // concrete example b ... x -> -34/17 * x
-        MULTIPLY(MultiplyConverter.class, 
-                ()->new MultiplyConverter(1.), // identity as expressed by this type ... x -> 1.0 * x
-                new MultiplyConverter(17.23), // concrete example a ... x -> 17.23 * x
-                new MultiplyConverter(-0.333) ), // concrete example b ... x -> -0.333 * x
-        ADD(AddConverter.class, 
-                ()->new AddConverter(0.), // identity as expressed by this type ... x -> 0 + x
-                new AddConverter(-4.5), // concrete example a ... x -> -4.5 + x
-                new AddConverter(0.315) ), // concrete example b ... x -> 0.315 + x
-        LOG(LogConverter.class, 
-                null, // log has no identity
-                new LogConverter(4.5), // concrete example a ... x -> Log(base=4.5, x)
-                new LogConverter(0.1) ), // concrete example b ... x -> Log(base=0.1, x)
-        EXP(ExpConverter.class, 
-                null, // exp has no identity
-                new ExpConverter(4.5), // concrete example a ... x -> 4.5^x
-                new ExpConverter(0.1) ), // concrete example b ... x -> 0.1^x
-        PI(PowerOfPiConverter.class, 
-                ()->PowerOfPiConverter.of(0), // identity as expressed by this type ... x -> π^0 * x
-                PowerOfPiConverter.of(1), // concrete example a ... x -> π^1
-                PowerOfPiConverter.of(-1) ), // concrete example b ... x -> π^-1
-        // when adding entries, also increment the typeCount!
-        ;
+    ID(AbstractConverter.class, 
+        ()->AbstractConverter.IDENTITY, // identity as expressed by this type
+        AbstractConverter.IDENTITY, // concrete example a
+        AbstractConverter.IDENTITY  ), // concrete example b
+    POWER(PowerOfIntConverter.class, 
+        ()->PowerOfIntConverter.of(1, 0), // identity as expressed by this type ... x -> 1^0 * x
+        PowerOfIntConverter.of(3, 7), // concrete example a ... x -> 3^7 * x
+        PowerOfIntConverter.of(7, -3)   ), // concrete example b ... x -> 7^-3 * x
+    RATIONAL(RationalConverter.class, 
+        ()->RationalConverter.of(1, 1), // identity as expressed by this type ... x -> 1/1 * x
+        RationalConverter.of(17, 13), // concrete example a ... x -> 17/13 * x
+        RationalConverter.of(-34, 17)   ), // concrete example b ... x -> -34/17 * x
+    MULTIPLY(MultiplyConverter.class, 
+        ()->new MultiplyConverter(1.), // identity as expressed by this type ... x -> 1.0 * x
+        new MultiplyConverter(17.23), // concrete example a ... x -> 17.23 * x
+        new MultiplyConverter(-0.333) ), // concrete example b ... x -> -0.333 * x
+    ADD(AddConverter.class, 
+        ()->new AddConverter(0.), // identity as expressed by this type ... x -> 0 + x
+        new AddConverter(-4.5), // concrete example a ... x -> -4.5 + x
+        new AddConverter(0.315) ), // concrete example b ... x -> 0.315 + x
+    LOG(LogConverter.class, 
+        null, // log has no identity
+        new LogConverter(4.5), // concrete example a ... x -> Log(base=4.5, x)
+        new LogConverter(0.1) ), // concrete example b ... x -> Log(base=0.1, x)
+    EXP(ExpConverter.class, 
+        null, // exp has no identity
+        new ExpConverter(4.5), // concrete example a ... x -> 4.5^x
+        new ExpConverter(0.1) ), // concrete example b ... x -> 0.1^x
+    PI(PowerOfPiConverter.class, 
+        ()->PowerOfPiConverter.of(0), // identity as expressed by this type ... x -> π^0 * x
+        PowerOfPiConverter.of(1), // concrete example a ... x -> π^1
+        PowerOfPiConverter.of(-1) ), // concrete example b ... x -> π^-1
+    // when adding entries, also increment the typeCount!
+    ;
 
-        public static final int typeCount = 8; // should be equal to ConverterType.values().length 
-        public static final int candidatesPerType = 2;
-        public static final int candidateCount = typeCount * candidatesPerType;
+    public static final int typeCount = 8; // should be equal to ConverterType.values().length 
+    public static final int candidatesPerType = 2;
+    public static final int candidateCount = typeCount * candidatesPerType;
 
-        private final Class<? extends UnitConverter> type;
-        private final UnitConverter[] candidates;
-        private Supplier<? extends UnitConverter> identitySupplier;
+    private final Class<? extends UnitConverter> type;
+    private final UnitConverter[] candidates;
+    private Supplier<? extends UnitConverter> identitySupplier;
 
-        public Class<? extends UnitConverter> getType() { return type; }
-        public UnitConverter[] getCandidates() { return candidates; }
+    public Class<? extends UnitConverter> getType() { return type; }
+    public UnitConverter[] getCandidates() { return candidates; }
 
-        @SafeVarargs
-        private <T extends UnitConverter> ConverterType(
-                Class<T> type,
-                Supplier<T> identitySupplier,
-                T ... instances) {
-            this.type = type;
-            this.identitySupplier = identitySupplier;
-            this.candidates = instances;
-        }
-
-        public boolean hasIdentity() {
-            return identitySupplier!=null;
-        }
-
-        public UnitConverter getIdentity() {
-            return identitySupplier.get();
-        }
-
+    @SafeVarargs
+    private <T extends UnitConverter> ConverterType(
+        Class<T> type,
+        Supplier<T> identitySupplier,
+        T ... instances) {
+      this.type = type;
+      this.identitySupplier = identitySupplier;
+      this.candidates = instances;
     }
 
-    // -- HELPER - PARAMETER PROVIDER - 1  
-
-    static class ConverterTypesForTests implements ParameterResolver {
-
-        private Map<String, Integer> indexByContext = new HashMap<>();
-
-        @Override
-        public boolean supportsParameter(
-                ParameterContext parameterContext,
-                ExtensionContext extensionContext) throws ParameterResolutionException {
-            return parameterContext.getParameter().getType() == ConverterType.class;
-        }
-
-        @Override
-        public Object resolveParameter(
-                ParameterContext parameterContext,
-                ExtensionContext extensionContext) throws ParameterResolutionException {
-
-            String conextKey = parameterContext.getDeclaringExecutable().toString()+":"+parameterContext.getIndex();
-
-            int next = indexByContext.compute(conextKey, (__, index)->index!=null ? index+1 : 0);
-            int modulus = BigInteger.valueOf(ConverterType.candidateCount).pow(1+parameterContext.getIndex()).intValue();
-            int divisor = BigInteger.valueOf(ConverterType.candidateCount).pow(parameterContext.getIndex()).intValue();
-
-            next = (next % modulus) / divisor;
-
-            ConverterType candidate = ConverterType.values()[next%ConverterType.typeCount];
-
-            return candidate;
-        }
+    public boolean hasIdentity() {
+      return identitySupplier!=null;
     }
 
-    // -- HELPER - PARAMETER PROVIDER - 2  
-
-    static class UnitConverterForCompositionTests implements ParameterResolver {
-
-        private Map<String, Integer> indexByContext = new HashMap<>();
-
-        @Override
-        public boolean supportsParameter(
-                ParameterContext parameterContext,
-                ExtensionContext extensionContext) throws ParameterResolutionException {
-            return parameterContext.getParameter().getType() == UnitConverter.class;
-        }
-
-        @Override
-        public Object resolveParameter(
-                ParameterContext parameterContext,
-                ExtensionContext extensionContext) throws ParameterResolutionException {
-
-            String conextKey = parameterContext.getDeclaringExecutable().toString()+":"+parameterContext.getIndex();
-
-            int next = indexByContext.compute(conextKey, (__, index)->index!=null ? index+1 : 0);
-            int modulus = BigInteger.valueOf(ConverterType.candidateCount).pow(1+parameterContext.getIndex()).intValue();
-            int divisor = BigInteger.valueOf(ConverterType.candidateCount).pow(parameterContext.getIndex()).intValue();
-
-            next = (next % modulus) / divisor;
-
-            UnitConverter candidate = ConverterType.values()[next/ConverterType.candidatesPerType]
-                    .getCandidates()[next%ConverterType.candidatesPerType];
-
-            return candidate;
-        }
+    public UnitConverter getIdentity() {
+      return identitySupplier.get();
     }
+
+  }
+
+  // -- HELPER - PARAMETER PROVIDER - 1  
+
+  static class ConverterTypesForTests implements ParameterResolver {
+
+    private Map<String, Integer> indexByContext = new HashMap<>();
+
+    @Override
+    public boolean supportsParameter(
+        ParameterContext parameterContext,
+        ExtensionContext extensionContext) throws ParameterResolutionException {
+      return parameterContext.getParameter().getType() == ConverterType.class;
+    }
+
+    @Override
+    public Object resolveParameter(
+        ParameterContext parameterContext,
+        ExtensionContext extensionContext) throws ParameterResolutionException {
+
+      String conextKey = parameterContext.getDeclaringExecutable().toString()+":"+parameterContext.getIndex();
+
+      int next = indexByContext.compute(conextKey, (__, index)->index!=null ? index+1 : 0);
+      int modulus = BigInteger.valueOf(ConverterType.candidateCount).pow(1+parameterContext.getIndex()).intValue();
+      int divisor = BigInteger.valueOf(ConverterType.candidateCount).pow(parameterContext.getIndex()).intValue();
+
+      next = (next % modulus) / divisor;
+
+      ConverterType candidate = ConverterType.values()[next%ConverterType.typeCount];
+
+      return candidate;
+    }
+  }
+
+  // -- HELPER - PARAMETER PROVIDER - 2  
+
+  static class UnitConverterForCompositionTests implements ParameterResolver {
+
+    private Map<String, Integer> indexByContext = new HashMap<>();
+
+    @Override
+    public boolean supportsParameter(
+        ParameterContext parameterContext,
+        ExtensionContext extensionContext) throws ParameterResolutionException {
+      return parameterContext.getParameter().getType() == UnitConverter.class;
+    }
+
+    @Override
+    public Object resolveParameter(
+        ParameterContext parameterContext,
+        ExtensionContext extensionContext) throws ParameterResolutionException {
+
+      String conextKey = parameterContext.getDeclaringExecutable().toString()+":"+parameterContext.getIndex();
+
+      int next = indexByContext.compute(conextKey, (__, index)->index!=null ? index+1 : 0);
+      int modulus = BigInteger.valueOf(ConverterType.candidateCount).pow(1+parameterContext.getIndex()).intValue();
+      int divisor = BigInteger.valueOf(ConverterType.candidateCount).pow(parameterContext.getIndex()).intValue();
+
+      next = (next % modulus) / divisor;
+
+      UnitConverter candidate = ConverterType.values()[next/ConverterType.candidatesPerType]
+          .getCandidates()[next%ConverterType.candidatesPerType];
+
+      return candidate;
+    }
+  }
 
 }

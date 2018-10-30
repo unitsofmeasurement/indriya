@@ -43,95 +43,95 @@ import static tech.units.indriya.unit.Units.*;
  * @author Andi Huber
  */
 class FormatTestingUtil {
-    
-    /**
-     * Complete set of built-in non-prefixed Units.
-     */
-    static enum NonPrefixedUnits {
 
-        Ampere(AMPERE),
-        Candela(CANDELA),
-        Kelvin(KELVIN),
-        Metre(METRE),
-        Mole(MOLE),
-        Second(SECOND),
-        Gram(GRAM),
-        Radian(RADIAN),
-        Steradian(STERADIAN),
-        Hertz(HERTZ),
-        Newton(NEWTON),
-        Pascal(PASCAL),
-        Joule(JOULE),
-        Watt(WATT),
-        Coulomb(COULOMB),
-        Volt(VOLT),
-        Farad(FARAD),
-        Ohm(OHM),
-        Siemens(SIEMENS),
-        Weber(WEBER),
-        Tesla(TESLA),
-        Henry(HENRY),
-        Celsius(CELSIUS),
-        Lumen(LUMEN),
-        Lux(LUX),
-        Becquerel(BECQUEREL),
-        Gray(GRAY),
-        Sievert(SIEVERT),
-        Katal(KATAL),
-        //SQUARE_METRE
-        //CUBIC_METRE
-        //PERCENT
-        //MINUTE
-        //HOUR
-        //DAY
-        //WEEK
-        //YEAR
-        Litre(LITRE)
-        
-        ;
-        
-        final Unit<?> unit;
-        final String unitLiteral;
-        final String onFailureMsg = String.format("testing %s", this.name());
-        
-        private NonPrefixedUnits(Unit<?> unit) {
-            this.unit = unit;
-            this.unitLiteral = unit.getSymbol();
-        }
-        
-        void roundtrip(final UnitFormat format) {
-            
-            test(format);
-                        
-            for(Prefix prefix : MetricPrefix.values()) {
-                test(format, prefix);
-            }
-            
-        }
-        
-        private void test(final UnitFormat format) {
-            
-            // parsing
-            assertEquals(unit, format.parse(unitLiteral), onFailureMsg);
-            
-            // formatting
-            assertEquals(unitLiteral, format.format(unit), onFailureMsg);
-        }
-        
-        private void test(final UnitFormat format, Prefix prefix) {
-            
-            final Unit<?> prefixedUnit = unit.prefix(prefix);
-            final String prefixedUnitLiteral = prefix.getSymbol()+unitLiteral;
-            
-            // parsing
-            assertEquals(prefixedUnit, format.parse(prefixedUnitLiteral), onFailureMsg);
-            
-            // formatting
-            assertEquals(prefixedUnitLiteral, format.format(prefixedUnit), onFailureMsg);
-            
-        }
-       
+  /**
+   * Complete set of built-in non-prefixed Units.
+   */
+  static enum NonPrefixedUnits {
+
+    Ampere(AMPERE),
+    Candela(CANDELA),
+    Kelvin(KELVIN),
+    Metre(METRE),
+    Mole(MOLE),
+    Second(SECOND),
+    Gram(GRAM),
+    Radian(RADIAN),
+    Steradian(STERADIAN),
+    Hertz(HERTZ),
+    Newton(NEWTON),
+    Pascal(PASCAL),
+    Joule(JOULE),
+    Watt(WATT),
+    Coulomb(COULOMB),
+    Volt(VOLT),
+    Farad(FARAD),
+    Ohm(OHM),
+    Siemens(SIEMENS),
+    Weber(WEBER),
+    Tesla(TESLA),
+    Henry(HENRY),
+    Celsius(CELSIUS),
+    Lumen(LUMEN),
+    Lux(LUX),
+    Becquerel(BECQUEREL),
+    Gray(GRAY),
+    Sievert(SIEVERT),
+    Katal(KATAL),
+    //SQUARE_METRE
+    //CUBIC_METRE
+    //PERCENT
+    //MINUTE
+    //HOUR
+    //DAY
+    //WEEK
+    //YEAR
+    Litre(LITRE)
+
+    ;
+
+    final Unit<?> unit;
+    final String unitLiteral;
+    final String onFailureMsg = String.format("testing %s", this.name());
+
+    private NonPrefixedUnits(Unit<?> unit) {
+      this.unit = unit;
+      this.unitLiteral = unit.getSymbol();
     }
-    
+
+    void roundtrip(final UnitFormat format) {
+
+      test(format);
+
+      for(Prefix prefix : MetricPrefix.values()) {
+        test(format, prefix);
+      }
+
+    }
+
+    private void test(final UnitFormat format) {
+
+      // parsing
+      assertEquals(unit, format.parse(unitLiteral), onFailureMsg);
+
+      // formatting
+      assertEquals(unitLiteral, format.format(unit), onFailureMsg);
+    }
+
+    private void test(final UnitFormat format, Prefix prefix) {
+
+      final Unit<?> prefixedUnit = unit.prefix(prefix);
+      final String prefixedUnitLiteral = prefix.getSymbol()+unitLiteral;
+
+      // parsing
+      assertEquals(prefixedUnit, format.parse(prefixedUnitLiteral), onFailureMsg);
+
+      // formatting
+      assertEquals(prefixedUnitLiteral, format.format(prefixedUnit), onFailureMsg);
+
+    }
+
+  }
+
 
 }
