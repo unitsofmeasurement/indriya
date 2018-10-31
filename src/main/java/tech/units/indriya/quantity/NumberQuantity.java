@@ -77,7 +77,7 @@ public class NumberQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
   }
   
   protected NumberQuantity(Number number, Unit<Q> unit) {
-      this(number, unit, LevelOfMeasurement.RATIO); // Impl Note, we assume a default here, too but avoid code duplication
+      this(number, unit, LevelOfMeasurement.RATIO); // TODO we use RATIO for now, should be replaced by some Unit to Level mapping for known cases (e.g. Fahrenheit or Celsius)
   }
 
   @Override

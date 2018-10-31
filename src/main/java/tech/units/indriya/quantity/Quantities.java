@@ -45,92 +45,95 @@ import tech.units.indriya.format.SimpleQuantityFormat;
 
 /**
  * Singleton class for accessing {@link Quantity} instances.
- * @version 1.1.1
+ * 
+ * @version 1.2
  * @author werner
  * @author otaviojava
  * @since 1.0
  */
 public final class Quantities {
-  /**
-   * Private singleton constructor.
-   */
-  private Quantities() {
-  }
+    /**
+     * Private singleton constructor.
+     */
+    private Quantities() {
+    }
 
-  /**
-   * Returns the {@link #valueOf(java.math.BigDecimal, javax.measure.unit.Unit) decimal} quantity of unknown type corresponding to the specified
-   * representation. This method can be used to parse dimensionless quantities.<br>
-   * <code>
-   *     Quantity<Dimensionless> proportion = Quantities.getQuantity("0.234").asType(Dimensionless.class);
-   * </code>
-   *
-   * <p>
-   * Note: This method handles only Locale-neutral quantity formatting and parsing are handled by the {@link AbstractQuantityFormat} class and its
-   * subclasses.
-   * </p>
-   *
-   * @param csq
-   *          the decimal value and its unit (if any) separated by space(s).
-   * @return <code>QuantityFormat.getInstance(LOCALE_NEUTRAL).parse(csq, new ParsePosition(0))</code>
-   */
-  public static ComparableQuantity<?> getQuantity(CharSequence csq) {
-    try {
-      return SimpleQuantityFormat.getInstance().parse(csq, new ParsePosition(0));
-    } catch (MeasurementParseException e) {
-      throw new IllegalArgumentException(e.getParsedString());
+    /**
+     * Returns the {@link #valueOf(java.math.BigDecimal, javax.measure.unit.Unit) decimal} quantity of unknown type corresponding to the specified
+     * representation. This method can be used to parse dimensionless quantities.<br>
+     * <code>
+     *     Quantity<Dimensionless> proportion = Quantities.getQuantity("0.234").asType(Dimensionless.class);
+     * </code>
+     *
+     * <p>
+     * Note: This method handles only Locale-neutral quantity formatting and parsing are handled by the {@link AbstractQuantityFormat} class and its
+     * subclasses.
+     * </p>
+     *
+     * @param csq
+     *            the decimal value and its unit (if any) separated by space(s).
+     * @return <code>QuantityFormat.getInstance(LOCALE_NEUTRAL).parse(csq, new ParsePosition(0))</code>
+     */
+    public static ComparableQuantity<?> getQuantity(CharSequence csq) {
+        try {
+            return SimpleQuantityFormat.getInstance().parse(csq, new ParsePosition(0));
+        } catch (MeasurementParseException e) {
+            throw new IllegalArgumentException(e.getParsedString());
+        }
     }
-  }
 
-  /**
-   * Returns the scalar quantity. When the {@link Number} was {@link BigDecimal} or {@link BigInteger} will uses {@link DecimalQuantity}, when the
-   * {@link Number} was {@link Double} will {@link DoubleQuantity} otherwise will {@link NumberQuantity}. in the specified unit.
-   * 
-   * @param value
-   *          the measurement value.
-   * @param unit
-   *          the measurement unit.
-   * @param level
-   *          the measurement level.
-   * @return the corresponding <code>numeric</code> quantity.
-   * @throws NullPointerException
-   *           when value or unit were null
-   */
-  public static <Q extends Quantity<Q>> ComparableQuantity<Q> getQuantity(Number value, Unit<Q> unit, LevelOfMeasurement level) {
-    Objects.requireNonNull(value);
-    Objects.requireNonNull(unit);
-    Objects.requireNonNull(level);
-    if (Double.class.isInstance(value)) {
-      return new DoubleQuantity<>(Double.class.cast(value), unit);
-    } else if (BigDecimal.class.isInstance(value)) {
-      return new DecimalQuantity<>(BigDecimal.class.cast(value), unit);
-    } else if (BigInteger.class.isInstance(value)) {
-      return new DecimalQuantity<>(new BigDecimal(BigInteger.class.cast(value)), unit);
+    /**
+     * Returns the scalar quantity. When the {@link Number} was {@link BigDecimal} or {@link BigInteger} will uses {@link DecimalQuantity}, when the
+     * {@link Number} was {@link Double} will {@link DoubleQuantity} otherwise will {@link NumberQuantity}. in the specified unit.
+     * 
+     * @param value
+     *            the measurement value.
+     * @param unit
+     *            the measurement unit.
+     * @param level
+     *            the measurement level.
+     * @return the corresponding <code>numeric</code> quantity.
+     * @throws NullPointerException
+     *             if value, unit or level were null
+     * @since 2.0
+     */
+    public static <Q extends Quantity<Q>> ComparableQuantity<Q> getQuantity(Number value, Unit<Q> unit, LevelOfMeasurement level) {
+        Objects.requireNonNull(value);
+        Objects.requireNonNull(unit);
+        Objects.requireNonNull(level);
+        if (Double.class.isInstance(value)) {
+            return new DoubleQuantity<>(Double.class.cast(value), unit, level);
+        } else if (Long.class.isInstance(value)) {
+            return new LongQuantity<Q>(Long.class.cast(value), unit, level);
+        } else if (Short.class.isInstance(value)) {
+            return new ShortQuantity<Q>(Short.class.cast(value), unit, level);
+        } else if (Byte.class.isInstance(value)) {
+            return new ByteQuantity<Q>(Byte.class.cast(value), unit, level);
+//        } else if (Integer.class.isInstance(value)) { FIXME IntegerQuantity has issues
+//            return new IntegerQuantity<Q>(Integer.class.cast(value), unit);
+//        } else if (Float.class.isInstance(value)) { FIXME FloatQuantity has issues
+//            return new FloatQuantity<Q>(Float.class.cast(value), unit);
+        } else if (BigDecimal.class.isInstance(value)) {
+            return new DecimalQuantity<>(BigDecimal.class.cast(value), unit, level);
+        } else if (BigInteger.class.isInstance(value)) {
+            return new BigIntegerQuantity<>(BigInteger.class.cast(value), unit, level);
+        }
+        return new NumberQuantity<>(value, unit, level);
     }
-    return new NumberQuantity<>(value, unit, level);
-  }
-  
-  /**
-   * Returns the scalar quantity. When the {@link Number} was {@link BigDecimal} or {@link BigInteger} will uses {@link DecimalQuantity}, when the
-   * {@link Number} was {@link Double} will {@link DoubleQuantity} otherwise will {@link NumberQuantity}. in the specified unit.
-   * 
-   * @param value
-   *          the measurement value.
-   * @param unit
-   *          the measurement unit.
-   * @return the corresponding <code>numeric</code> quantity.
-   * @throws NullPointerException
-   *           when value or unit were null
-   */
-  public static <Q extends Quantity<Q>> ComparableQuantity<Q> getQuantity(Number value, Unit<Q> unit) {
-    Objects.requireNonNull(value);
-    Objects.requireNonNull(unit);
-    if (Double.class.isInstance(value)) {
-      return new DoubleQuantity<>(Double.class.cast(value), unit);
-    } else if (BigDecimal.class.isInstance(value)) {
-      return new DecimalQuantity<>(BigDecimal.class.cast(value), unit);
-    } else if (BigInteger.class.isInstance(value)) {
-      return new DecimalQuantity<>(new BigDecimal(BigInteger.class.cast(value)), unit);
+
+    /**
+     * Returns the scalar quantity. When the {@link Number} was {@link BigDecimal} or {@link BigInteger} will uses {@link DecimalQuantity}, when the
+     * {@link Number} was {@link Double} will {@link DoubleQuantity} otherwise will {@link NumberQuantity}. in the specified unit.
+     * 
+     * @param value
+     *            the measurement value.
+     * @param unit
+     *            the measurement unit.
+     * @return the corresponding <code>numeric</code> quantity.
+     * @throws NullPointerException
+     *             when value or unit were null
+     */
+    public static <Q extends Quantity<Q>> ComparableQuantity<Q> getQuantity(Number value, Unit<Q> unit) {
+        return getQuantity(value, unit, LevelOfMeasurement.RATIO); // TODO we use RATIO for now, should be replaced by some Unit to Level mapping for known cases (e.g. Fahrenheit or Celsius)
     }
-    return new NumberQuantity<>(value, unit);
-  }
 }

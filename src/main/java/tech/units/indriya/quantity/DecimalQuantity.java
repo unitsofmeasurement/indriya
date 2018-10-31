@@ -32,6 +32,7 @@ package tech.units.indriya.quantity;
 import java.math.BigDecimal;
 import java.math.MathContext;
 
+import javax.measure.LevelOfMeasurement;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 
@@ -50,7 +51,7 @@ import tech.units.indriya.ComparableQuantity;
  * @see AbstractQuantity
  * @see Quantity
  * @see ComparableQuantity
- * @version 1.1
+ * @version 1.2
  * @since 1.0
  */
 final class DecimalQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
@@ -59,6 +60,11 @@ final class DecimalQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q>
 
   private final BigDecimal value;
 
+  public DecimalQuantity(BigDecimal value, Unit<Q> unit, LevelOfMeasurement level) {
+      super(unit, level);
+      this.value = value;
+  }
+  
   public DecimalQuantity(BigDecimal value, Unit<Q> unit) {
     super(unit);
     this.value = value;

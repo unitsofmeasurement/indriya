@@ -31,6 +31,7 @@ package tech.units.indriya.quantity;
 
 import java.math.BigDecimal;
 
+import javax.measure.LevelOfMeasurement;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 
@@ -44,66 +45,71 @@ import tech.units.indriya.ComparableQuantity;
  * @see Quantity
  * @author <a href="mailto:werner@uom.technology">Werner Keil</a>
  * @param <Q>
- *          The type of the quantity.
- * @version 0.4, $Date: 2018-07-21 $
- * @since 1.0.7
+ *            The type of the quantity.
+ * @version 0.5, $Date: 2018-10-31 $
+ * @since 1.0
  */
 final class LongQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
 
-  private static final long serialVersionUID = 3092808554937634365L;
+    private static final long serialVersionUID = 3092808554937634365L;
 
-  private static final BigDecimal LONG_MAX_VALUE = new BigDecimal(Long.MAX_VALUE);
-  private static final BigDecimal LONG_MIN_VALUE = new BigDecimal(Long.MIN_VALUE);
+    private static final BigDecimal LONG_MAX_VALUE = new BigDecimal(Long.MAX_VALUE);
+    private static final BigDecimal LONG_MIN_VALUE = new BigDecimal(Long.MIN_VALUE);
 
-  private final long value;
+    private final long value;
 
-  public LongQuantity(long value, Unit<Q> unit) {
-    super(unit);
-    this.value = value;
-  }
+    LongQuantity(long value, Unit<Q> unit, LevelOfMeasurement level) {
+        super(unit, level);
+        this.value = value;
+    }
 
-  @Override
-  public Long getValue() {
-    return value;
-  }
+    LongQuantity(long value, Unit<Q> unit) {
+        super(unit);
+        this.value = value;
+    }
 
-  @Override
-  boolean isOverflowing(BigDecimal aValue) {
-    return aValue.compareTo(LONG_MIN_VALUE) < 0 || aValue.compareTo(LONG_MAX_VALUE) > 0;
-  }
+    @Override
+    public Long getValue() {
+        return value;
+    }
 
-  @SuppressWarnings({ "rawtypes", "unchecked" })
-  public ComparableQuantity<Q> inverse() {
-    return new LongQuantity(1 / value, getUnit().inverse());
-  }
+    @Override
+    boolean isOverflowing(BigDecimal aValue) {
+        return aValue.compareTo(LONG_MIN_VALUE) < 0 || aValue.compareTo(LONG_MAX_VALUE) > 0;
+    }
 
-  @Override
-  public boolean isBig() {
-    return false;
-  }
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public ComparableQuantity<Q> inverse() {
+        return new LongQuantity(1 / value, getUnit().inverse());
+    }
 
-  @Override
-  public boolean isDecimal() {
-    return false;
-  }
+    @Override
+    public boolean isBig() {
+        return false;
+    }
 
-  @Override
-  public int getSize() {
-    return Long.SIZE;
-  }
+    @Override
+    public boolean isDecimal() {
+        return false;
+    }
 
-  @Override
-  public Class<?> getNumberType() {
-    return long.class;
-  }
+    @Override
+    public int getSize() {
+        return Long.SIZE;
+    }
 
-  @Override
-  Number castFromBigDecimal(BigDecimal aValue) {
-    return aValue.longValue();
-  }
+    @Override
+    public Class<?> getNumberType() {
+        return long.class;
+    }
 
-  @Override
-  public Quantity<Q> negate() {
-    return new LongQuantity<Q>(-value, getUnit());
-  }
+    @Override
+    Number castFromBigDecimal(BigDecimal aValue) {
+        return aValue.longValue();
+    }
+
+    @Override
+    public Quantity<Q> negate() {
+        return new LongQuantity<Q>(-value, getUnit());
+    }
 }

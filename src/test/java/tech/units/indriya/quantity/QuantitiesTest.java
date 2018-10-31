@@ -31,7 +31,9 @@ package tech.units.indriya.quantity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static tech.units.indriya.unit.Units.CELSIUS;
 import static tech.units.indriya.unit.Units.PASCAL;
+import static javax.measure.LevelOfMeasurement.INTERVAL;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -39,6 +41,7 @@ import java.math.RoundingMode;
 
 import javax.measure.Quantity;
 import javax.measure.quantity.Pressure;
+import javax.measure.quantity.Temperature;
 import javax.measure.quantity.Time;
 
 import org.junit.jupiter.api.Test;
@@ -80,20 +83,59 @@ public class QuantitiesTest {
     assertTrue(Integer.class.isInstance(intQuantity.getValue()));
     assertTrue(Float.class.isInstance(floatQuantity.getValue()));
     assertTrue(Double.class.isInstance(doubleQuantity.getValue()));
-    assertTrue(BigDecimal.class.isInstance(bigIntegerQuantity.getValue()));
+    assertTrue(BigInteger.class.isInstance(bigIntegerQuantity.getValue()));
     assertTrue(BigDecimal.class.isInstance(bigDecimalQuantity.getValue()));
 
-    assertTrue(NumberQuantity.class.isInstance(shortQuantity));
-    assertTrue(NumberQuantity.class.isInstance(byteQuantity));
-    assertTrue(NumberQuantity.class.isInstance(longQuantity));
-    assertTrue(NumberQuantity.class.isInstance(intQuantity));
-    assertTrue(NumberQuantity.class.isInstance(floatQuantity));
+    assertTrue(ShortQuantity.class.isInstance(shortQuantity));
+    assertTrue(ByteQuantity.class.isInstance(byteQuantity));
+    assertTrue(LongQuantity.class.isInstance(longQuantity));
+    assertTrue(NumberQuantity.class.isInstance(intQuantity)); // workaround
+    assertTrue(NumberQuantity.class.isInstance(floatQuantity)); // workaround
     assertTrue(DoubleQuantity.class.isInstance(doubleQuantity));
-    assertTrue(DecimalQuantity.class.isInstance(bigIntegerQuantity));
+    assertTrue(BigIntegerQuantity.class.isInstance(bigIntegerQuantity));
     assertTrue(DecimalQuantity.class.isInstance(bigDecimalQuantity));
-
   }
 
+  @Test
+  public void intervalTest() {
+    Quantity<Temperature> bigDecimalQuantity = Quantities.getQuantity(BigDecimal.ONE, CELSIUS, INTERVAL);
+    Quantity<Temperature> bigIntegerQuantity = Quantities.getQuantity(BigInteger.ONE, CELSIUS, INTERVAL);
+
+    Quantity<Temperature> shortQuantity = Quantities.getQuantity(Short.valueOf("2"), CELSIUS, INTERVAL);
+    Quantity<Temperature> byteQuantity = Quantities.getQuantity(Byte.valueOf("2"), CELSIUS, INTERVAL);
+    Quantity<Temperature> longQuantity = Quantities.getQuantity(Long.valueOf("2"), CELSIUS, INTERVAL);
+    Quantity<Temperature> intQuantity = Quantities.getQuantity(Integer.valueOf("2"), CELSIUS, INTERVAL);
+    Quantity<Temperature> floatQuantity = Quantities.getQuantity(Float.valueOf("2"), CELSIUS, INTERVAL);
+    Quantity<Temperature> doubleQuantity = Quantities.getQuantity(Double.valueOf("2"), CELSIUS, INTERVAL);
+
+    assertTrue(Short.class.isInstance(shortQuantity.getValue()));
+    assertTrue(Byte.class.isInstance(byteQuantity.getValue()));
+    assertTrue(Long.class.isInstance(longQuantity.getValue()));
+    assertTrue(Integer.class.isInstance(intQuantity.getValue()));
+    assertTrue(Float.class.isInstance(floatQuantity.getValue()));
+    assertTrue(Double.class.isInstance(doubleQuantity.getValue()));
+    assertTrue(BigInteger.class.isInstance(bigIntegerQuantity.getValue()));
+    assertTrue(BigDecimal.class.isInstance(bigDecimalQuantity.getValue()));
+
+    assertTrue(ShortQuantity.class.isInstance(shortQuantity));
+    assertTrue(ByteQuantity.class.isInstance(byteQuantity));
+    assertTrue(LongQuantity.class.isInstance(longQuantity));
+    assertTrue(NumberQuantity.class.isInstance(intQuantity)); // workaround
+    assertTrue(NumberQuantity.class.isInstance(floatQuantity)); // workaround
+    assertTrue(DoubleQuantity.class.isInstance(doubleQuantity));
+    assertTrue(BigIntegerQuantity.class.isInstance(bigIntegerQuantity));
+    assertTrue(DecimalQuantity.class.isInstance(bigDecimalQuantity));
+    
+    assertEquals(INTERVAL, shortQuantity.getLevel());
+    assertEquals(INTERVAL, byteQuantity.getLevel());
+    assertEquals(INTERVAL, longQuantity.getLevel());
+    assertEquals(INTERVAL, intQuantity.getLevel());
+    assertEquals(INTERVAL, floatQuantity.getLevel());
+    assertEquals(INTERVAL, doubleQuantity.getLevel());
+    assertEquals(INTERVAL, bigIntegerQuantity.getLevel());
+    assertEquals(INTERVAL, bigDecimalQuantity.getLevel());
+  }
+  
   @Test
   public void toTest() {
     Quantity<Time> minute = Quantities.getQuantity(BigDecimal.ONE, Units.YEAR);

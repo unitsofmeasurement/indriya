@@ -29,15 +29,21 @@
  */
 package tech.units.indriya.quantity;
 
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static tech.units.indriya.unit.Units.CELSIUS;
+import static tech.units.indriya.unit.Units.KELVIN;
 import static tech.units.indriya.unit.Units.KILOGRAM;
 import static tech.units.indriya.unit.Units.METRE;
 import static tech.units.indriya.unit.Units.MINUTE;
 import static tech.units.indriya.unit.Units.SECOND;
+import static javax.measure.LevelOfMeasurement.INTERVAL;
+import static javax.measure.LevelOfMeasurement.RATIO;
 
 import javax.measure.Quantity;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
+import javax.measure.quantity.Temperature;
 import javax.measure.quantity.Time;
 import javax.measure.spi.ServiceProvider;
 
@@ -89,5 +95,25 @@ public class QuantityFactoryProviderTest {
     assertEquals("min", t.getUnit().getSymbol()); // TODO see
     // https://github.com/unitsofmeasurement/uom-se/issues/54
     assertEquals("40 min", t.toString());
+  }
+  
+  @Test
+  public void testTemperatureKelvin() {
+    Quantity<Temperature> t = service.getQuantityFactory(Temperature.class).create(50, KELVIN); // 50 K
+    assertEquals(50, t.getValue());
+    assertEquals(KELVIN, t.getUnit());
+    assertEquals("K", t.getUnit().getSymbol());
+    assertEquals("50 K", t.toString());
+    assertEquals(RATIO, t.getLevel());
+  }
+  
+  @Test
+  public void testTemperatureCelsius() {
+    Quantity<Temperature> t = service.getQuantityFactory(Temperature.class).create(60, CELSIUS, INTERVAL); // 60 °C
+    assertEquals(60, t.getValue());
+    assertEquals(CELSIUS, t.getUnit());
+    assertEquals("60 ℃", t.toString());
+    assertEquals(INTERVAL, t.getLevel());
+    assertTrue(RATIO.isGreaterThanOrEqualTo(t.getLevel()));
   }
 }

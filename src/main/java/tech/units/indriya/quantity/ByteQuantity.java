@@ -31,6 +31,7 @@ package tech.units.indriya.quantity;
 
 import java.math.BigDecimal;
 
+import javax.measure.LevelOfMeasurement;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 
@@ -44,66 +45,71 @@ import tech.units.indriya.ComparableQuantity;
  * @see Quantity
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
  * @param <Q>
- *          The type of the quantity.
- * @version 0.2, $Date: 2018-07-20 $
- * @since 1.0.7
+ *            The type of the quantity.
+ * @version 0.3, $Date: 2018-10-31 $
+ * @since 1.0
  */
 final class ByteQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
 
-  private static final long serialVersionUID = 6325849816534488248L;
+    private static final long serialVersionUID = 6325849816534488248L;
 
-  private static final BigDecimal BYTE_MIN_VALUE = new BigDecimal(Byte.MIN_VALUE);
-  private static final BigDecimal BYTE_MAX_VALUE = new BigDecimal(Byte.MAX_VALUE);
+    private static final BigDecimal BYTE_MIN_VALUE = new BigDecimal(Byte.MIN_VALUE);
+    private static final BigDecimal BYTE_MAX_VALUE = new BigDecimal(Byte.MAX_VALUE);
 
-  private final byte value;
+    private final byte value;
 
-  ByteQuantity(byte value, Unit<Q> unit) {
-    super(unit);
-    this.value = value;
-  }
+    ByteQuantity(byte value, Unit<Q> unit, LevelOfMeasurement level) {
+        super(unit, level);
+        this.value = value;
+    }
 
-  @Override
-  public Byte getValue() {
-    return value;
-  }
+    ByteQuantity(byte value, Unit<Q> unit) {
+        super(unit);
+        this.value = value;
+    }
 
-  @Override
-  public boolean isBig() {
-    return false;
-  }
+    @Override
+    public Byte getValue() {
+        return value;
+    }
 
-  @Override
-  boolean isOverflowing(BigDecimal aValue) {
-    return aValue.compareTo(BYTE_MIN_VALUE) < 0 || aValue.compareTo(BYTE_MAX_VALUE) > 0;
-  }
+    @Override
+    public boolean isBig() {
+        return false;
+    }
 
-  @Override
-  public ComparableQuantity<?> inverse() {
-    return NumberQuantity.of(1 / value, getUnit().inverse());
-  }
+    @Override
+    boolean isOverflowing(BigDecimal aValue) {
+        return aValue.compareTo(BYTE_MIN_VALUE) < 0 || aValue.compareTo(BYTE_MAX_VALUE) > 0;
+    }
 
-  @Override
-  public boolean isDecimal() {
-    return false;
-  }
+    @Override
+    public ComparableQuantity<?> inverse() {
+        return NumberQuantity.of(1 / value, getUnit().inverse());
+    }
 
-  @Override
-  public int getSize() {
-    return Byte.SIZE;
-  }
+    @Override
+    public boolean isDecimal() {
+        return false;
+    }
 
-  @Override
-  public Class<?> getNumberType() {
-    return byte.class;
-  }
+    @Override
+    public int getSize() {
+        return Byte.SIZE;
+    }
 
-  @Override
-  Number castFromBigDecimal(BigDecimal aValue) {
-    return (byte) aValue.longValue();
-  }
+    @Override
+    public Class<?> getNumberType() {
+        return byte.class;
+    }
 
-  @Override
-  public Quantity<Q> negate() {
-    return new ByteQuantity<Q>((byte) (-value), getUnit());
-  }
+    @Override
+    Number castFromBigDecimal(BigDecimal aValue) {
+        return (byte) aValue.longValue();
+    }
+
+    @Override
+    public Quantity<Q> negate() {
+        return new ByteQuantity<Q>((byte) (-value), getUnit());
+    }
 }

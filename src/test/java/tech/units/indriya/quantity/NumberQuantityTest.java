@@ -151,7 +151,7 @@ public class NumberQuantityTest {
     Quantity<Length> m4 = Quantities.getQuantity(5L, Units.METRE);
     Quantity<Length> result = m.add(m2).add(m3).add(m4);
     assertTrue(result.getValue().doubleValue() == 30.0);
-    assertEquals(result.getUnit(), Units.METRE);
+    assertEquals(Units.METRE, result.getUnit());
   }
 
   @Test
@@ -159,8 +159,8 @@ public class NumberQuantityTest {
     Quantity<Time> day = Quantities.getQuantity(1, Units.DAY);
     Quantity<Time> hours = Quantities.getQuantity(12, Units.HOUR);
     Quantity<Time> result = day.add(hours);
-    assertTrue(result.getValue().doubleValue() == 1.5);
-    assertEquals(result.getUnit(), Units.DAY);
+    assertEquals(1.5d, result.getValue().doubleValue());
+    assertEquals(Units.DAY, result.getUnit());
   }
 
   @Test
@@ -177,7 +177,7 @@ public class NumberQuantityTest {
     Quantity<Time> day = Quantities.getQuantity(1, Units.DAY);
     Quantity<Time> hours = Quantities.getQuantity(12, Units.HOUR);
     Quantity<Time> result = day.subtract(hours);
-    assertTrue(result.getValue().doubleValue() == 0.5);
+    assertEquals(0.5d, result.getValue().doubleValue());
     assertEquals(result.getUnit(), Units.DAY);
   }
 
@@ -259,7 +259,7 @@ public class NumberQuantityTest {
   @Test
   public void testNegateBig() throws Exception {
     final Quantity<Length> value = Quantities.getQuantity(BigInteger.valueOf(20), Units.METRE);
-    assertEquals(BigDecimal.valueOf(20).negate(), value.negate().getValue());
+    assertEquals(BigInteger.valueOf(20).negate(), value.negate().getValue());
   }
 
   @Test

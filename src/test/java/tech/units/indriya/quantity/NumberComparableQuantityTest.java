@@ -116,8 +116,8 @@ public class NumberComparableQuantityTest {
     ComparableQuantity<Time> day = Quantities.getQuantity(1, Units.DAY);
     ComparableQuantity<Time> hours = Quantities.getQuantity(12, Units.HOUR);
     ComparableQuantity<Time> result = day.add(hours);
-    assertTrue(result.getValue().doubleValue() == 1.5);
-    assertEquals(result.getUnit(), Units.DAY);
+    assertEquals(1.5d, result.getValue().doubleValue());
+    assertEquals(Units.DAY, result.getUnit());
   }
 
   @Test
@@ -134,8 +134,8 @@ public class NumberComparableQuantityTest {
     ComparableQuantity<Time> day = Quantities.getQuantity(1, Units.DAY);
     ComparableQuantity<Time> hours = Quantities.getQuantity(12, Units.HOUR);
     ComparableQuantity<Time> result = day.subtract(hours);
-    assertTrue(result.getValue().doubleValue() == 0.5);
-    assertEquals(result.getUnit(), Units.DAY);
+    assertEquals(0.5d, result.getValue().doubleValue());
+    assertEquals(Units.DAY, result.getUnit());
   }
 
   @Test

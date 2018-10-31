@@ -57,7 +57,7 @@ final class FloatQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
 
   final float value;
 
-  public FloatQuantity(float value, Unit<Q> unit) {
+  FloatQuantity(float value, Unit<Q> unit) {
     super(unit);
     this.value = value;
   }

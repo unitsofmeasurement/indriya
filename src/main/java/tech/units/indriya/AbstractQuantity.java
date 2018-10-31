@@ -146,7 +146,7 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
      * @param unit a unit
      */
     protected AbstractQuantity(Unit<Q> unit) {
-        this(unit, LevelOfMeasurement.RATIO);
+        this(unit, LevelOfMeasurement.RATIO); // TODO we use RATIO for now, should be replaced by some Unit to Level mapping for known cases (e.g. Fahrenheit or Celsius)
     }
 
     /**
