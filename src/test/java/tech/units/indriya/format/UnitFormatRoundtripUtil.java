@@ -80,10 +80,10 @@ import javax.measure.format.UnitFormat;
  *   
  * @author Andi Huber
  */
-class FormatTestingUtil {
+class UnitFormatRoundtripUtil {
 
   /**
-   * Complete set of built-in non-prefixed Units.
+   * (Supposed) complete set of built-in non-prefixed Units.
    */
   static enum NonPrefixedUnits {
 
@@ -135,6 +135,13 @@ class FormatTestingUtil {
     }
 
     /**
+     * Does round-trip testing of the given UnitFormat {@code format}.
+     * <p>
+     * For each built-in non-prefixed Unit we verify, whether this assertion holds:
+     * <p>
+     * {@code format(unit) === format(parse(format(unit)))}
+     * <p>
+     * We are doing this for the non-prefixed case as well as all metric-prefixed cases.  
      * 
      * @param format
      */
@@ -153,12 +160,12 @@ class FormatTestingUtil {
     /** whether the UnitFormat {@code format} can correctly handle the non-prefixed unit */
     private void test(final UnitFormat format) {
 
-      // formatting
+      // (1) formatting
       final String unitLiteral = format.format(unit);
       assertNotNull(unitLiteral);
       assertTrue(unitLiteral.length()>0);
       
-      // parsing
+      // (2) parsing
       Unit<?> parsedUnit;
       try {
         parsedUnit = format.parse(unitLiteral);
@@ -170,8 +177,15 @@ class FormatTestingUtil {
         return;
       }
       
-      assertEquals(unit, parsedUnit, 
-          ()->String.format("testing '%s'", this.name()));
+      assertEquivalent(unit, parsedUnit, null);
+      
+      // (3) and formatting again
+      String unitLiteralAfterRountrip = format.format(parsedUnit);
+      
+      assertEquals(unitLiteral, unitLiteralAfterRountrip, 
+          ()->String.format("testing '%s', unit literal diverted after roundtrip '%s' -> '%s'", 
+              this.name(), unitLiteral, unitLiteralAfterRountrip));
+      
       
     }
 
@@ -196,13 +210,39 @@ class FormatTestingUtil {
         return;
       }
       
-      assertTrue(areEquivalent(prefixedUnit.getBaseUnits(), parsedPrefixedUnit.getBaseUnits()), 
-          ()->String.format("testing '%s' with prefix '%s', base unit mismatch", this.name(), prefix.getName()));
-      
-      assertTrue(areEquivalent(prefixedUnit, parsedPrefixedUnit), 
-          ()->String.format("testing '%s' with prefix '%s'", this.name(), prefix.getName()));
+      assertEquivalent(prefixedUnit, parsedPrefixedUnit, prefix);
 
     }
+    
+    /**
+     * Fails with detailed message in case given units a and b are not equivalent.
+     * @param a
+     * @param b
+     * @param prefix nullable
+     */
+    private <Q1 extends Quantity<Q1>, Q2 extends Quantity<Q2>> void assertEquivalent(
+        Unit<Q1> a, Unit<Q2> b, Prefix prefix) {
+      
+      if(prefix!=null) {
+      
+        assertTrue(areEquivalent(a.getBaseUnits(), b.getBaseUnits()), 
+            ()->String.format("testing '%s' with prefix '%s', base unit mismatch", this.name(), prefix.getName()));
+        
+        assertTrue(areEquivalent(a, b), 
+            ()->String.format("testing '%s' with prefix '%s'", this.name(), prefix.getName()));
+        
+      } else {
+        
+        assertTrue(areEquivalent(a.getBaseUnits(), b.getBaseUnits()), 
+            ()->String.format("testing '%s' w/o prefix, base unit mismatch", this.name()));
+        
+        assertTrue(areEquivalent(a, b), 
+            ()->String.format("testing '%s' w/o prefix", this.name()));
+        
+      }
+            
+    }
+    
     
     /** unit equivalence test */
     private <Q1 extends Quantity<Q1>, Q2 extends Quantity<Q2>> boolean areEquivalent(Unit<Q1> a, Unit<Q2> b) {
@@ -220,6 +260,10 @@ class FormatTestingUtil {
       
       if(a==null) {
         return b==null;
+      }
+      
+      if(b==null) {
+        return false;
       }
       
       if(a.size()!=b.size()) {
