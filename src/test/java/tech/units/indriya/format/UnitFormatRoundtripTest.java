@@ -37,7 +37,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 
-import tech.units.indriya.format.FormatTestingUtil.NonPrefixedUnits;
+import tech.units.indriya.format.UnitFormatRoundtripUtil.NonPrefixedUnits;
 
 /**
  * Testing (almost) all built-in units and their prefixed variants
@@ -45,7 +45,7 @@ import tech.units.indriya.format.FormatTestingUtil.NonPrefixedUnits;
  * 
  * @author Andi Huber
  */
-class UnitFormatRountripTest {
+class UnitFormatRoundtripTest {
 	
 	@Nested
     @DisplayName("EBNFUnitFormat") @Disabled("yet too many errors")
