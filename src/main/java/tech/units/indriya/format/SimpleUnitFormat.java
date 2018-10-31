@@ -29,11 +29,8 @@
  */
 package tech.units.indriya.format;
 
-import static javax.measure.MetricPrefix.CENTI;
-import static javax.measure.MetricPrefix.DECI;
 import static javax.measure.MetricPrefix.KILO;
 import static javax.measure.MetricPrefix.MICRO;
-import static javax.measure.MetricPrefix.MILLI;
 
 import java.io.IOException;
 import java.text.FieldPosition;
@@ -908,18 +905,37 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
       }
     }
     
-    // Special case for KILOGRAM.
+    // -- GRAM/KILOGRAM
+    
+    ASCII.label(Units.GRAM, "g");
     DEFAULT.label(Units.GRAM, "g");
-    for (int i = 0; i < METRIC_SYMBOLS.length; i++) {
-      if (METRIC_CONVERTERS[i] == MultiplyConverter.of(KILO)) // TODO should it better
-        // be equals()?
-        continue; // kg is already defined.
-      
-      DEFAULT.label(Units.KILOGRAM.prefix(MetricPrefix.values()[i]).prefix(MILLI), METRIC_SYMBOLS[i] + "g");
-      if ( "µ".equals(METRIC_SYMBOLS[i]) ) {
-        ASCII.label(Units.KILOGRAM.prefix(MetricPrefix.values()[i]).prefix(MILLI), "microg");
+    for(Prefix prefix : MetricPrefix.values()) {
+      if(prefix==KILO) {
+        DEFAULT.label(Units.KILOGRAM, "kg");
+        ASCII.label(Units.KILOGRAM, "kg");
+        continue;
       }
+      if(prefix==MICRO) {
+        ASCII.label(MICRO(Units.LITRE), "microg"); // instead of 'µg' -> 'microg'
+      } else {
+        ASCII.label(Units.GRAM.prefix(prefix), prefix.getSymbol()+"g");
+      }
+      DEFAULT.label(Units.GRAM.prefix(prefix), prefix.getSymbol()+"g");
     }
+  
+  //TODO [ahuber] remove
+  // Special case for KILOGRAM.
+//    DEFAULT.label(Units.GRAM, "g");
+//    for (int i = 0; i < METRIC_SYMBOLS.length; i++) {
+//      if (METRIC_CONVERTERS[i] == MultiplyConverter.of(KILO)) // TODO should it better
+//        // be equals()?
+//        continue; // kg is already defined.
+//      
+//      DEFAULT.label(Units.KILOGRAM.prefix(MetricPrefix.values()[i]).prefix(MILLI), METRIC_SYMBOLS[i] + "g");
+//      if ( "µ".equals(METRIC_SYMBOLS[i]) ) {
+//        ASCII.label(Units.KILOGRAM.prefix(MetricPrefix.values()[i]).prefix(MILLI), "microg");
+//      }
+//    }
 
     // Alias and ASCIIFormat for Ohm
     DEFAULT.alias(Units.OHM, "Ohm");
@@ -940,8 +956,6 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
     }
 
     DEFAULT.label(Units.PERCENT, "%");
-    DEFAULT.label(Units.KILOGRAM, "kg");
-    ASCII.label(Units.KILOGRAM, "kg");
     DEFAULT.label(Units.METRE, "m");
     ASCII.label(Units.METRE, "m");
     DEFAULT.label(Units.SECOND, "s");
@@ -957,16 +971,30 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
     DEFAULT.label(Units.KILOMETRE_PER_HOUR, "km/h");
     DEFAULT.label(Units.CUBIC_METRE, "\u33A5");
     ASCII.label(Units.CUBIC_METRE, "m3");
+    
+    // -- LITRE
+    
     ASCII.label(Units.LITRE, "l");
     DEFAULT.label(Units.LITRE, "l");
-    DEFAULT.label(MICRO(Units.LITRE), "µl");
-    ASCII.label(MICRO(Units.LITRE), "microL");
-    ASCII.label(MILLI(Units.LITRE), "mL");
-    DEFAULT.label(MILLI(Units.LITRE), "ml");
-    ASCII.label(CENTI(Units.LITRE), "cL");
-    DEFAULT.label(CENTI(Units.LITRE), "cl");
-    ASCII.label(DECI(Units.LITRE), "dL");
-    DEFAULT.label(DECI(Units.LITRE), "dl");
+    for(Prefix prefix : MetricPrefix.values()) {
+      if(prefix==MICRO) {
+        ASCII.label(MICRO(Units.LITRE), "microL"); // instead of 'µL' -> 'microL'
+      } else {
+        ASCII.label(Units.LITRE.prefix(prefix), prefix.getSymbol()+"L");
+      }
+      DEFAULT.label(Units.LITRE.prefix(prefix), prefix.getSymbol()+"l");
+    }
+    
+    
+//TODO [ahuber] remove    
+//    DEFAULT.label(MICRO(Units.LITRE), "µl");
+//    ASCII.label(MILLI(Units.LITRE), "mL");
+//    DEFAULT.label(MILLI(Units.LITRE), "ml");
+//    ASCII.label(CENTI(Units.LITRE), "cL");
+//    DEFAULT.label(CENTI(Units.LITRE), "cl");
+//    ASCII.label(DECI(Units.LITRE), "dL");
+//    DEFAULT.label(DECI(Units.LITRE), "dl");
+    
     DEFAULT.label(Units.NEWTON, "N");
     ASCII.label(Units.NEWTON, "N");
     DEFAULT.label(Units.RADIAN, "rad");

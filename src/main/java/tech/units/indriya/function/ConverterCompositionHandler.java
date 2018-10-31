@@ -40,10 +40,10 @@ import tech.units.indriya.internal.simplify.UnitCompositionHandlerYieldingNormal
  * 
  * @author Andi Huber
  * @author Werner Keil
- * @version 1.1
+ * @version 1.2
  * @since 2.0
  */
-public interface UnitCompositionHandler {
+public interface ConverterCompositionHandler {
 
     /**
      * Takes two converters {@code left}, {@code right} and returns a (not necessarily new) 
@@ -74,7 +74,7 @@ public interface UnitCompositionHandler {
      * @return the default built-in UnitCompositionHandler which is yielding a normal-form, 
      * required to decide whether two UnitConverters are equivalent
      */
-    public static UnitCompositionHandler yieldingNormalForm() {
+    public static ConverterCompositionHandler yieldingNormalForm() {
         return new UnitCompositionHandlerYieldingNormalForm();
     }
 
