@@ -34,6 +34,7 @@ import static tech.units.indriya.unit.Units.GRAM;
 import static tech.units.indriya.unit.Units.KILOGRAM;
 import static tech.units.indriya.unit.Units.METRE;
 
+import javax.measure.LevelOfMeasurement;
 import javax.measure.MetricPrefix;
 import javax.measure.Quantity;
 import javax.measure.Unit;
@@ -130,6 +131,11 @@ public class QuantityRangeTest {
 	public Quantity<Mass> negate() {
 		return new NonComparableMassQuantity(-value.doubleValue(), unit);
 	}
+
+    @Override
+    public LevelOfMeasurement getLevel() {
+        return LevelOfMeasurement.RATIO;
+    }
   }
 
   /**
