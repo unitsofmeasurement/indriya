@@ -29,28 +29,20 @@
  */
 package tech.units.indriya.quantity;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static tech.units.indriya.unit.Units.CELSIUS;
-import static tech.units.indriya.unit.Units.PASCAL;
-import static javax.measure.LevelOfMeasurement.INTERVAL;
+import org.junit.jupiter.api.Test;
+import tech.units.indriya.ComparableQuantity;
+import tech.units.indriya.unit.Units;
 
+import javax.measure.Quantity;
+import javax.measure.quantity.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 
-import javax.measure.Quantity;
-import javax.measure.quantity.Pressure;
-import javax.measure.quantity.Temperature;
-import javax.measure.quantity.Time;
-
-import org.junit.jupiter.api.Test;
-
-import tech.units.indriya.quantity.DecimalQuantity;
-import tech.units.indriya.quantity.DoubleQuantity;
-import tech.units.indriya.quantity.NumberQuantity;
-import tech.units.indriya.quantity.Quantities;
-import tech.units.indriya.unit.Units;
+import static javax.measure.LevelOfMeasurement.INTERVAL;
+import static org.junit.jupiter.api.Assertions.*;
+import static tech.units.indriya.unit.Units.CELSIUS;
+import static tech.units.indriya.unit.Units.PASCAL;
 
 /**
  *
@@ -144,5 +136,12 @@ public class QuantitiesTest {
     value.setScale(4, RoundingMode.HALF_EVEN);
     BigDecimal expected = BigDecimal.valueOf(31556952);
     assertEquals(expected.setScale(4, RoundingMode.HALF_EVEN), value.setScale(4, RoundingMode.HALF_EVEN));
+  }
+
+  @Test
+  public void equalityValuesTest() {
+   ComparableQuantity<Speed> shouldBe = Quantities.getQuantity(15.0, Units.KILOMETRE_PER_HOUR);
+   ComparableQuantity<Speed> parsedSpeed = (ComparableQuantity<Speed>) Quantities.getQuantity("15.0 km/h");
+   assertEquals(shouldBe, parsedSpeed);
   }
 }
