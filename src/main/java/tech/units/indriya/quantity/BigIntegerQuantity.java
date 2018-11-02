@@ -52,7 +52,7 @@ import tech.units.indriya.ComparableQuantity;
  * @version 0.5
  * @since 2.0
  */
-final class BigIntegerQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
+final class BigIntegerQuantity<Q extends Quantity<Q>> extends JavaNumericQuantity<Q> {
 
     private static final long serialVersionUID = -593014349777834846L;
     private final BigInteger value;

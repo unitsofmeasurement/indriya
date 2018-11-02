@@ -31,6 +31,7 @@ package tech.units.indriya.quantity;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.text.NumberFormat;
 
 import javax.measure.LevelOfMeasurement;
 import javax.measure.Quantity;
@@ -54,7 +55,7 @@ import tech.units.indriya.ComparableQuantity;
  * @version 1.2
  * @since 1.0
  */
-final class DecimalQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
+final class DecimalQuantity<Q extends Quantity<Q>> extends JavaNumericQuantity<Q> {
 
   private static final long serialVersionUID = 6504081836032983882L;
 
@@ -119,6 +120,18 @@ final class DecimalQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q>
    */
   public DecimalQuantity<Q> negate() {
     return new DecimalQuantity<Q>(value.negate(), getUnit());
+  }
+  
+  /**
+   * Returns the <code>String</code> representation of this quantity. The string produced for a given quantity is always the same; it is not
+   * affected by locale. This means that it can be used as a canonical string representation for exchanging quantity, or as a key for a Hashtable,
+   * etc. Locale-sensitive quantity formatting and parsing is handled by the {@link QuantityFormat} implementations and its subclasses.
+   *
+   * @return <code>UnitFormat.getInternational().format(this)</code>
+   */
+  @Override
+  public String toString() {
+      return NumberFormat.getInstance().format(value) + " " + String.valueOf(getUnit());
   }
 
   @Override

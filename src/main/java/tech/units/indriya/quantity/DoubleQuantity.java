@@ -54,7 +54,7 @@ import tech.units.indriya.ComparableQuantity;
  * @see ComparableQuantity
  * @since 1.0
  */
-final class DoubleQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
+final class DoubleQuantity<Q extends Quantity<Q>> extends JavaNumericQuantity<Q> {
 
   private static final long serialVersionUID = 8660843078156312278L;
 

@@ -49,7 +49,7 @@ import tech.units.indriya.ComparableQuantity;
  * @version 0.5, $Date: 2018-10-31 $
  * @since 1.0
  */
-final class LongQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
+final class LongQuantity<Q extends Quantity<Q>> extends JavaNumericQuantity<Q> {
 
     private static final long serialVersionUID = 3092808554937634365L;
 

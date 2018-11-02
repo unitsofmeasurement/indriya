@@ -48,7 +48,7 @@ import tech.units.indriya.AbstractQuantity;
  * @version 0.5, $Date: 2018-07-20 $
  * @since 1.0.7
  */
-final class IntegerQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
+final class IntegerQuantity<Q extends Quantity<Q>> extends JavaNumericQuantity<Q> {
 
   private static final long serialVersionUID = 1405915111744728289L;
 

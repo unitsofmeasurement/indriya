@@ -49,7 +49,7 @@ import tech.units.indriya.ComparableQuantity;
  * @version 0.6, $Date: 2018-07-20 $
  * @since 1.0
  */
-final class FloatQuantity<Q extends Quantity<Q>> extends JavaNumberQuantity<Q> {
+final class FloatQuantity<Q extends Quantity<Q>> extends JavaNumericQuantity<Q> {
 
   private static final long serialVersionUID = 5992028803791009345L;
 
