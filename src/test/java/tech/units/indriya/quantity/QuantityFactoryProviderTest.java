@@ -114,6 +114,6 @@ public class QuantityFactoryProviderTest {
     assertEquals(CELSIUS, t.getUnit());
     assertEquals("60 ℃", t.toString());
     assertEquals(INTERVAL, t.getLevel());
-    assertTrue(RATIO.isGreaterThanOrEqualTo(t.getLevel()));
+    assertTrue(RATIO.compareTo(t.getLevel()) >=0 );
   }
 }
