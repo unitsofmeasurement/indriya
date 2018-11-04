@@ -14,3 +14,10 @@ buildNumber.properties
 /.classpath
 /.project
 /bin/
+
+# IntelliJ #
+.idea/
+*.iml
+
+ # OS Files #
+.DS_Store
