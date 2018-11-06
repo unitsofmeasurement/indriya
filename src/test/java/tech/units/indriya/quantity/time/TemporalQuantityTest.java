@@ -11,8 +11,11 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalUnit;
 
+import javax.measure.quantity.Time;
+
 import org.junit.jupiter.api.Test;
 
+import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.Units;
 
@@ -21,6 +24,11 @@ import tech.units.indriya.unit.Units;
  */
 public class TemporalQuantityTest {
 
+  private static final TemporalQuantity ONE_CHRONO_MILLISECOND = TemporalQuantity.of(1, ChronoUnit.MILLIS);
+  private static final TemporalQuantity ONE_CHRONO_SECOND = TemporalQuantity.of(1, ChronoUnit.SECONDS);
+  private static final TemporalQuantity THOUSAND_ONE_CHRONO_MILLISECONDS = TemporalQuantity.of(1001, ChronoUnit.MILLIS);
+  private static final TemporalQuantity MAX_VALUE_CHRONO_MILLISECONDS = TemporalQuantity.of(Long.MAX_VALUE, ChronoUnit.MILLIS);
+  private static final TemporalQuantity FORTY_TWO_CHRONO_MINUTES = TemporalQuantity.of(42, ChronoUnit.MINUTES);
   private static final TemporalQuantity FORTY_TWO_MINUTES = TemporalQuantity.of(Quantities.getQuantity(42L, Units.MINUTE));
 
   /**
@@ -60,7 +68,7 @@ public class TemporalQuantityTest {
     TemporalQuantity quantity = TemporalQuantity.of(42L, ChronoUnit.MINUTES);
     assertEquals(Duration.ofMinutes(42), quantity.getTemporalAmount());
   }
-  
+
   /**
    * Verifies that the factory method {@code of} with an integer value and a temporal unit has the value wired correctly.
    */
@@ -86,7 +94,7 @@ public class TemporalQuantityTest {
    */
   @Test
   public void temporalUnitIsConvertedToAUnitInFactoryMethodWithIntegerValueAndTemporalUnit() {
-    TemporalQuantity quantity = TemporalQuantity.of(42, ChronoUnit.MINUTES);
+    TemporalQuantity quantity = FORTY_TWO_CHRONO_MINUTES;
     assertEquals(Units.MINUTE, quantity.getUnit());
   }
 
@@ -95,7 +103,7 @@ public class TemporalQuantityTest {
    */
   @Test
   public void temporalAmountIsCalculatedCorrectlyByFactoryMethodWithIntegerValueAndTemporalUnit() {
-    TemporalQuantity quantity = TemporalQuantity.of(42, ChronoUnit.MINUTES);
+    TemporalQuantity quantity = FORTY_TWO_CHRONO_MINUTES;
     assertEquals(Duration.ofMinutes(42), quantity.getTemporalAmount());
   }
 
@@ -273,7 +281,7 @@ public class TemporalQuantityTest {
   public void temporalQuantityIsNotBig() {
     assertFalse(FORTY_TWO_MINUTES.isBig());
   }
-  
+
   /**
    * Verifies that the value is returned without conversion if decimalValue is called with the quantity's unit.
    */
@@ -289,7 +297,7 @@ public class TemporalQuantityTest {
   public void decimalValueReturnsConvertedValueForOtherUnit() {
     assertEquals(BigDecimal.valueOf(0.7), FORTY_TWO_MINUTES.decimalValue(Units.HOUR));
   }
-  
+
   /**
    * Verifies that the value is returned without conversion if doubleValue is called with the quantity's unit.
    */
@@ -304,6 +312,64 @@ public class TemporalQuantityTest {
   @Test
   public void doubleValueReturnsConvertedValueForOtherUnit() {
     assertEquals(0.7, FORTY_TWO_MINUTES.doubleValue(Units.HOUR));
+  }
+
+  /**
+   * Verifies that addition with a quantity with the same chrono unit preserves the chrono unit.
+   */
+  @Test
+  public void additionWithSameChronoUnitPreservesChronoUnit() {
+    ComparableQuantity<Time> actual = FORTY_TWO_CHRONO_MINUTES.add(FORTY_TWO_CHRONO_MINUTES);
+    ComparableQuantity<Time> expected = TemporalQuantity.of(84, ChronoUnit.MINUTES);
+    assertEquals(expected, actual);
+  }
+
+  /**
+   * Verifies that the addition of two quantities with the same chrono unit resulting in an overflow throws an exception.
+   */
+  @Test
+  public void additionWithSameChronoUnitResultingInOverflowThrowsException() {
+    assertThrows(ArithmeticException.class, () -> {
+      ONE_CHRONO_MILLISECOND.add(MAX_VALUE_CHRONO_MILLISECONDS);
+    });
+  }
+
+  /**
+   * Verifies that adding a quantity with a larger chrono unit keeps the result to the smaller chrono unit.
+   */
+  @Test
+  public void additionWithLargerChronoUnitKeepsSmallerChronoUnit() {
+    ComparableQuantity<Time> actual = ONE_CHRONO_MILLISECOND.add(ONE_CHRONO_SECOND);
+    assertEquals(THOUSAND_ONE_CHRONO_MILLISECONDS, actual);
+  }
+
+  /**
+   * Verifies that adding a quantity with a smaller chrono unit casts the result to the smaller chrono unit.
+   */
+  @Test
+  public void additionWithSmallerChronoUnitCastsToSmallerChronoUnitIfNeeded() {
+    ComparableQuantity<Time> actual = ONE_CHRONO_SECOND.add(ONE_CHRONO_MILLISECOND);
+    assertEquals(THOUSAND_ONE_CHRONO_MILLISECONDS, actual);
+  }
+
+  /**
+   * Verifies that adding a quantity with a larger chrono unit resulting in an overflowing sum casts the result to the larger chrono unit.
+   */
+  @Test
+  public void additionWithLargerChronoUnitAndOverflowingResultCastsToLargerChronoUnit() {
+    ComparableQuantity<Time> actual = MAX_VALUE_CHRONO_MILLISECONDS.add(ONE_CHRONO_SECOND);
+    ComparableQuantity<Time> expected = TemporalQuantity.of(1 + Long.MAX_VALUE / 1000, ChronoUnit.SECONDS);
+    assertEquals(expected, actual);
+  }
+  
+  /**
+   * Subtraction subtracts correctly.
+   */
+  @Test
+  public void subtractionSubtractsCorrectly() {
+    ComparableQuantity<Time> actual = FORTY_TWO_CHRONO_MINUTES.subtract(TemporalQuantity.of(1, ChronoUnit.MINUTES));
+    ComparableQuantity<Time> expected = TemporalQuantity.of(41, ChronoUnit.MINUTES);
+    assertEquals(expected, actual);
   }
 
 }

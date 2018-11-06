@@ -35,6 +35,7 @@ import static tech.units.indriya.unit.Units.MINUTE;
 import static tech.units.indriya.unit.Units.SECOND;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAmount;
@@ -51,6 +52,8 @@ import javax.measure.quantity.Time;
 
 import tech.units.indriya.AbstractQuantity;
 import tech.units.indriya.ComparableQuantity;
+import tech.units.indriya.function.Calculus;
+import tech.units.indriya.quantity.NumberQuantity;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.Units;
 
@@ -66,6 +69,9 @@ public final class TemporalQuantity extends AbstractQuantity<Time> {
    * 
    */
   private static final long serialVersionUID = 6835738653744691425L;
+
+  private static final BigDecimal LONG_MAX_VALUE = new BigDecimal(Long.MAX_VALUE);
+  private static final BigDecimal LONG_MIN_VALUE = new BigDecimal(Long.MIN_VALUE);
 
   private final TemporalUnit timeUnit;
   private final Long value;
@@ -223,22 +229,47 @@ public final class TemporalQuantity extends AbstractQuantity<Time> {
     return "Temporal unit:" + timeUnit + " value: " + value;
   }
 
+  private static BigDecimal numberAsBigDecimal(Number that) {
+    if (that instanceof BigDecimal) {
+      return (BigDecimal) that;
+    } else if (that instanceof BigInteger) {
+      return new BigDecimal((BigInteger) that);
+    } else if (that instanceof Double || that instanceof Float) {
+      return new BigDecimal(that.doubleValue());
+    } else {
+      return new BigDecimal(that.longValue());
+    }
+  }
+
+  boolean isOverflowing(BigDecimal aValue) {
+    return aValue.compareTo(LONG_MIN_VALUE) < 0 || aValue.compareTo(LONG_MAX_VALUE) > 0;
+  }
+
   @Override
   public ComparableQuantity<Time> add(Quantity<Time> that) {
-    if (getUnit().equals(that.getUnit())) {
-      return TimeQuantities.getQuantity(value + that.getValue().longValue(), timeUnit);
+    final BigDecimal thisValueInSystemUnit = decimalValue(Units.SECOND);
+    final BigDecimal thatValueInSystemUnit = (BigDecimal) that.getUnit().getConverterTo(Units.SECOND).convert(numberAsBigDecimal(that.getValue()));
+    final BigDecimal resultValueInSystemUnit = thisValueInSystemUnit.add(thatValueInSystemUnit, Calculus.MATH_CONTEXT);
+    final BigDecimal resultValueInThisUnit = numberAsBigDecimal(Units.SECOND.getConverterTo(getUnit()).convert(resultValueInSystemUnit));
+    final BigDecimal resultValueInThatUnit = numberAsBigDecimal(Units.SECOND.getConverterTo(that.getUnit()).convert(resultValueInSystemUnit));
+    final TemporalQuantity resultInThisUnit = TimeQuantities.getQuantity(resultValueInThisUnit.longValue(), timeUnit);
+    final ComparableQuantity<Time> resultInThatUnit = NumberQuantity.of(resultValueInThatUnit.longValue(), that.getUnit());
+    if (isOverflowing(resultValueInThisUnit)) {
+      if (isOverflowing(resultValueInThatUnit))
+        throw new ArithmeticException();
+      return resultInThatUnit;
+    } else if (isOverflowing(resultValueInThatUnit)) {
+      return resultInThisUnit;
+    } else if (hasFraction(resultValueInThisUnit)) {
+      return resultInThatUnit;
+    } else {
+      return resultInThisUnit;
     }
-    Quantity<Time> converted = that.to(getUnit());
-    return TimeQuantities.getQuantity(value + converted.getValue().longValue(), timeUnit);
   }
 
   @Override
   public ComparableQuantity<Time> subtract(Quantity<Time> that) {
-    if (getUnit().equals(that.getUnit())) {
-      return TimeQuantities.getQuantity(value - that.getValue().longValue(), timeUnit);
-    }
-    Quantity<Time> converted = that.to(getUnit());
-    return TimeQuantities.getQuantity(value - converted.getValue().longValue(), timeUnit);
+    return add(that.negate());
   }
 
   @Override
