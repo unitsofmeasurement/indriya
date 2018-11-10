@@ -71,7 +71,7 @@ class AbsoluteVsRelativeDraft {
   
   @Test
   @DisplayName("UnitConvert[Quantity[3., 'DegreesFahrenheit'] *2, 'Kelvins'] -> 258.706 K")
-  void in1() {
+  public void in1() {
     
     final Quantity<Temperature> t_f = Quantities.getQuantity(3., DegreesFahrenheit);
     final Quantity<Temperature> t_k =  t_f.multiply(2.).to(Units.KELVIN);
@@ -81,7 +81,7 @@ class AbsoluteVsRelativeDraft {
   
   @Test
   @DisplayName("UnitConvert[Quantity[3., 'DegreesFahrenheit'], 'Kelvins']*2 -> 514.078 K")
-  void in2() {
+  public void in2() {
     
     final Quantity<Temperature> t_f = Quantities.getQuantity(3., DegreesFahrenheit);
     final Quantity<Temperature> t_k =  t_f.to(Units.KELVIN).multiply(2.);
@@ -91,7 +91,7 @@ class AbsoluteVsRelativeDraft {
   
   @Test
   @DisplayName("UnitConvert[Quantity[3., 'DegreesFahrenheitDifference'], 'KelvinsDifference']*2 -> 3.333333 K")
-  void in3() {
+  public void in3() {
     
     final Quantity<Temperature> t_f = Quantities.getQuantity(3., DegreesFahrenheitDifference);
     final Quantity<Temperature> t_k =  t_f.to(KelvinsDifference).multiply(2.);
@@ -101,7 +101,7 @@ class AbsoluteVsRelativeDraft {
   
   @Test
   @DisplayName("UnitConvert[Quantity[3., 'DegreesFahrenheitDifference']*2, 'KelvinsDifference'] -> 3.333333 K")
-  void in4() {
+  public void in4() {
     
     final Quantity<Temperature> t_f = Quantities.getQuantity(3., DegreesFahrenheitDifference);
     final Quantity<Temperature> t_k =  t_f.to(KelvinsDifference).multiply(2.);
@@ -113,7 +113,7 @@ class AbsoluteVsRelativeDraft {
   
   @Test
   @DisplayName("Quantity[3, 'DegreesFahrenheit'] + Quantity[2, 'DegreesFahrenheitDifference'] -> 5 °F")
-  void in5() {
+  public void in5() {
     
     final Quantity<Temperature> t_f1 = Quantities.getQuantity(3., DegreesFahrenheit);
     final Quantity<Temperature> t_f2 = Quantities.getQuantity(2., DegreesFahrenheitDifference);
@@ -124,7 +124,7 @@ class AbsoluteVsRelativeDraft {
   
   @Test
   @DisplayName("Quantity[3, 'DegreesFahrenheitDifference'] + Quantity[2, 'DegreesCelsiusDifference'] -> 33/5 °F")
-  void in6() {
+  public void in6() {
     
     final Quantity<Temperature> t_f1 = Quantities.getQuantity(3., DegreesFahrenheitDifference);
     final Quantity<Temperature> t_c = Quantities.getQuantity(2., DegreesCelsiusDifference);
@@ -133,21 +133,20 @@ class AbsoluteVsRelativeDraft {
     assertEquals(33./5., t_f.getValue().doubleValue(), 1E-3);
   }
   
-  @Test
+  @Test @Disabled("Indriya actually calulates this!")
   @DisplayName("Quantity[3, 'DegreesFahrenheit'] + Quantity[2, 'DegreesCelsius'] -> ???")
-  void in7() {
+  public void in7() {
     
     final Quantity<Temperature> t_f1 = Quantities.getQuantity(3., DegreesFahrenheit);
     final Quantity<Temperature> t_c = Quantities.getQuantity(2., Units.CELSIUS);
     
     //TODO should throw, or return something like a NonEvaluatedQuantity 
-    t_f1.add(t_c);
-    
+    assertThrows(Exception.class, ()->t_f1.add(t_c));
   }
   
   @Test @Disabled("Indriya does implicit conversion to Kelvin before addition") //TODO questionable
   @DisplayName("Quantity[3, 'DegreesFahrenheit'] + Quantity[2, 'DegreesFahrenheit'] -> 5 °F")
-  void in8() {
+  public void in8() {
     
     final Quantity<Temperature> t_f1 = Quantities.getQuantity(3., DegreesFahrenheit);
     final Quantity<Temperature> t_f2 = Quantities.getQuantity(2., DegreesFahrenheit);
@@ -158,7 +157,7 @@ class AbsoluteVsRelativeDraft {
   
   @Test
   @DisplayName("Quantity[3, 'Kilokelvins'] + Quantity[4, 'Kelvins'] -> 751/250 K")
-  void in9() {
+  public void in9() {
     
     final Quantity<Temperature> t_k1 = Quantities.getQuantity(3., KILO(Units.KELVIN));
     final Quantity<Temperature> t_k2 = Quantities.getQuantity(4., Units.KELVIN);
@@ -171,7 +170,7 @@ class AbsoluteVsRelativeDraft {
   
   @Test
   @DisplayName("UnitConvert[Quantity[3., 'DegreesCelsius'] *18.2, 'Kelvins'] -> 327.75 K")
-  void in10() {
+  public void in10() {
     
     final Quantity<Temperature> t_c = Quantities.getQuantity(3., Units.CELSIUS);
     final Quantity<Temperature> t_k =  t_c.multiply(18.2).to(Units.KELVIN);
@@ -181,7 +180,7 @@ class AbsoluteVsRelativeDraft {
   
   @Test
   @DisplayName("UnitConvert[Quantity[3., 'DegreesCelsius'], 'Kelvins']*18.2 -> 5025.93 K")
-  void in11() {
+  public void in11() {
     
     final Quantity<Temperature> t_c = Quantities.getQuantity(3., Units.CELSIUS);
     final Quantity<Temperature> t_k =  t_c.to(Units.KELVIN).multiply(18.2);
@@ -191,7 +190,7 @@ class AbsoluteVsRelativeDraft {
   
   @Test @Disabled("Indriya actually calulates this!")
   @DisplayName("Quantity[1.4, 'DegreesCelsius']/Quantity[8, 'DegreesFahrenheit'] -> ???")
-  void in12() {
+  public void in12() {
     
     final Quantity<Temperature> t_c = Quantities.getQuantity(1.4, Units.CELSIUS);
     final Quantity<Temperature> t_f = Quantities.getQuantity(8., DegreesFahrenheit);
@@ -203,7 +202,7 @@ class AbsoluteVsRelativeDraft {
   @Test
   @DisplayName("UnitConvert[Quantity[1.4, 'DegreesCelsius'], 'Kelvins'] /" + 
       " UnitConvert[Quantity[8, 'DegreesFahrenheit'], 'Kelvins'] -> 1.05671")
-  void in13() {
+  public void in13() {
     
     final Quantity<Temperature> t_c = Quantities.getQuantity(1.4, Units.CELSIUS);
     final Quantity<Temperature> t_f = Quantities.getQuantity(8., DegreesFahrenheit);
