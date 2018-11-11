@@ -184,19 +184,6 @@ public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
     }
 
     /**
-     * Returns a parameterized product unit.
-     *
-     * @param unit
-     *            the product unit source.
-     * @throws ClassCastException
-     *             if the specified unit is not a product unit.
-     */
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public static Unit<?> of(Unit<?> unit) {
-        return new ProductUnit(unit);
-    }
-
-    /**
      * Returns the product unit corresponding to this unit raised to the specified exponent.
      *
      * @param unit
