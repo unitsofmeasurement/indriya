@@ -15,10 +15,7 @@ This implementation aims at **Java SE 8** and above.
 
 ## Planning
 
-[![GitHub issues](https://img.shields.io/github/issues-raw/unitsofmeasurement/indriya.svg)](https://github.com/unitsofmeasurement/indriya/issues) 
-[![GitHub issues](https://img.shields.io/github/issues-closed-raw/unitsofmeasurement/indriya.svg)](https://github.com/unitsofmeasurement/indriya/issues?q=is%3Aissue+is%3Aclosed)
-
-[![GitHub pull requests](https://img.shields.io/github/issues-pr-raw/unitsofmeasurement/indriya.svg)](https://github.com/unitsofmeasurement/indriya/pulls)
-[![GitHub closed pull requests](https://img.shields.io/github/issues-pr-closed-raw/unitsofmeasurement/indriya.svg)](https://github.com/unitsofmeasurement/indriya/pulls)
+[![Average time to resolve an issue](http://isitmaintained.com/badge/resolution/unitsofmeasurement/indriya.svg)](http://isitmaintained.com/project/unitsofmeasurement/indriya "Average time to resolve an issue")
+[![Percentage of issues still open](http://isitmaintained.com/badge/open/unitsofmeasurement/indriya.svg)](http://isitmaintained.com/project/unitsofmeasurement/indriya "Percentage of issues still open")
 
 [![Waffle.io - Columns and their card count](https://badge.waffle.io/unitsofmeasurement/indriya.png?columns=all)](https://waffle.io/unitsofmeasurement/indriya?utm_source=badge)
