@@ -218,7 +218,5 @@ class AbsoluteVsRelativeDraft {
     
     assertEquals(1.05671, dimensionless.getValue().doubleValue(), 1E-3);
   }
-  
 
-  
 }
