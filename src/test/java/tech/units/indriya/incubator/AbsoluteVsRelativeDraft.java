@@ -31,6 +31,7 @@ package tech.units.indriya.incubator;
 
 import static javax.measure.MetricPrefix.KILO;
 import static javax.measure.LevelOfMeasurement.INTERVAL;
+import static javax.measure.LevelOfMeasurement.RATIO;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -77,6 +78,8 @@ class AbsoluteVsRelativeDraft {
     final Quantity<Temperature> t_f = Quantities.getQuantity(3., DegreesFahrenheit, INTERVAL);
     final Quantity<Temperature> t_k =  t_f.multiply(2.).to(Units.KELVIN);
     
+    assertEquals(INTERVAL, t_f.getLevel());
+    assertEquals(RATIO, t_k.getLevel());
     assertEquals(258.706, t_k.getValue().doubleValue(), 1E-3);
   }       
   
