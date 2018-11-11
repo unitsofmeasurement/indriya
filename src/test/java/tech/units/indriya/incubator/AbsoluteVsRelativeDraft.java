@@ -30,6 +30,7 @@
 package tech.units.indriya.incubator;
 
 import static javax.measure.MetricPrefix.KILO;
+import static javax.measure.LevelOfMeasurement.INTERVAL;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -73,7 +74,7 @@ class AbsoluteVsRelativeDraft {
   @DisplayName("UnitConvert[Quantity[3., 'DegreesFahrenheit'] *2, 'Kelvins'] -> 258.706 K")
   public void in1() {
     
-    final Quantity<Temperature> t_f = Quantities.getQuantity(3., DegreesFahrenheit);
+    final Quantity<Temperature> t_f = Quantities.getQuantity(3., DegreesFahrenheit, INTERVAL);
     final Quantity<Temperature> t_k =  t_f.multiply(2.).to(Units.KELVIN);
     
     assertEquals(258.706, t_k.getValue().doubleValue(), 1E-3);
@@ -137,19 +138,19 @@ class AbsoluteVsRelativeDraft {
   @DisplayName("Quantity[3, 'DegreesFahrenheit'] + Quantity[2, 'DegreesCelsius'] -> ???")
   public void in7() {
     
-    final Quantity<Temperature> t_f1 = Quantities.getQuantity(3., DegreesFahrenheit);
-    final Quantity<Temperature> t_c = Quantities.getQuantity(2., Units.CELSIUS);
+    final Quantity<Temperature> t_f1 = Quantities.getQuantity(3., DegreesFahrenheit, INTERVAL);
+    final Quantity<Temperature> t_c = Quantities.getQuantity(2., Units.CELSIUS, INTERVAL);
     
     //TODO should throw, or return something like a NonEvaluatedQuantity 
     assertThrows(Exception.class, ()->t_f1.add(t_c));
   }
   
-  @Test @Disabled("Indriya does implicit conversion to Kelvin before addition") //TODO questionable
+  @Test @Disabled("Indriya does implicit conversion to Kelvin before addition") //TODO this could already be done based on LevelOfMeasurement
   @DisplayName("Quantity[3, 'DegreesFahrenheit'] + Quantity[2, 'DegreesFahrenheit'] -> 5 °F")
   public void in8() {
     
-    final Quantity<Temperature> t_f1 = Quantities.getQuantity(3., DegreesFahrenheit);
-    final Quantity<Temperature> t_f2 = Quantities.getQuantity(2., DegreesFahrenheit);
+    final Quantity<Temperature> t_f1 = Quantities.getQuantity(3., DegreesFahrenheit, INTERVAL);
+    final Quantity<Temperature> t_f2 = Quantities.getQuantity(2., DegreesFahrenheit, INTERVAL);
     final Quantity<Temperature> t_f =  t_f1.add(t_f2);
     
     assertEquals(5., t_f.getValue().doubleValue(), 1E-3);
