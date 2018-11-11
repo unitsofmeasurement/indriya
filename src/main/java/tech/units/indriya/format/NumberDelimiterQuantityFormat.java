@@ -47,28 +47,28 @@ import tech.units.indriya.quantity.Quantities;
 
 /**
  * An implementation of {@link javax.measure.format.QuantityFormat
- * QuantityFormat} combining {@linkplain NumberFormat} and {@link UnitFormat}.
+ * QuantityFormat} combining {@linkplain NumberFormat} and {@link UnitFormat} separated by a delimiter.
  * 
- * @version 1.2, $Date: 2018-07-12 $
- * @since 1.0
+ * @version 1.3, $Date: 2018-11-11 $
+ * @since 2.0
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
-public class NumberSpaceQuantityFormat extends AbstractQuantityFormat {
+public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
 	/**
-	 * The default separator.
+	 * The default delimiter.
 	 */
-	private static final String DEFAULT_SEPARATOR = " ";
+	private static final String DEFAULT_DELIMITER = " ";
 
 	/**
 	 * Holds the default format instance.
 	 */
-	private static final NumberSpaceQuantityFormat DEFAULT = new NumberSpaceQuantityFormat(NumberFormat.getInstance(),
+	private static final NumberDelimiterQuantityFormat DEFAULT = new NumberDelimiterQuantityFormat(NumberFormat.getInstance(),
 			EBNFUnitFormat.getInstance());
 
 	/**
 	 * Holds the localized format instance.
 	 */
-	private static final NumberSpaceQuantityFormat LOCAL = new NumberSpaceQuantityFormat(NumberFormat.getInstance(),
+	private static final NumberDelimiterQuantityFormat LOCAL = new NumberDelimiterQuantityFormat(NumberFormat.getInstance(),
 			LocalUnitFormat.getInstance());
 
 	/**
@@ -80,7 +80,7 @@ public class NumberSpaceQuantityFormat extends AbstractQuantityFormat {
 
 	private final UnitFormat unitFormat;
 
-	NumberSpaceQuantityFormat(NumberFormat numberFormat, UnitFormat unitFormat) {
+	NumberDelimiterQuantityFormat(NumberFormat numberFormat, UnitFormat unitFormat) {
 		this.numberFormat = numberFormat;
 		this.unitFormat = unitFormat;
 	}
@@ -114,7 +114,7 @@ public class NumberSpaceQuantityFormat extends AbstractQuantityFormat {
 		dest.append(numberFormat.format(quantity.getValue()));
 		if (quantity.getUnit().equals(AbstractUnit.ONE))
 			return dest;
-		dest.append(DEFAULT_SEPARATOR);
+		dest.append(DEFAULT_DELIMITER);
 		return unitFormat.format(quantity.getUnit(), dest);
 	}
 
@@ -125,7 +125,7 @@ public class NumberSpaceQuantityFormat extends AbstractQuantityFormat {
 		final Number number = numberFormat.parse(str, cursor);
 		if (number == null)
 			throw new IllegalArgumentException("Number cannot be parsed");
-		final String[] parts = str.split(DEFAULT_SEPARATOR);
+		final String[] parts = str.split(DEFAULT_DELIMITER);
 		if (parts.length < 2) {
 			throw new IllegalArgumentException("No Unit found");
 		}
@@ -156,7 +156,7 @@ public class NumberSpaceQuantityFormat extends AbstractQuantityFormat {
 	 *            the format style to apply.
 	 * @return the desired format.
 	 */
-	public static NumberSpaceQuantityFormat getInstance(FormatBehavior style) {
+	public static NumberDelimiterQuantityFormat getInstance(FormatBehavior style) {
 		switch (style) {
 		case LOCALE_NEUTRAL:
 			return DEFAULT;
@@ -172,7 +172,7 @@ public class NumberSpaceQuantityFormat extends AbstractQuantityFormat {
 	 * 
 	 * @return the desired format.
 	 */
-	public static NumberSpaceQuantityFormat getInstance() {
+	public static NumberDelimiterQuantityFormat getInstance() {
 		return getInstance(LOCALE_NEUTRAL);
 	}
 
@@ -186,7 +186,7 @@ public class NumberSpaceQuantityFormat extends AbstractQuantityFormat {
 	 *            the unit format.
 	 * @return the corresponding format.
 	 */
-	public static NumberSpaceQuantityFormat getInstance(NumberFormat numberFormat, UnitFormat unitFormat) {
-		return new NumberSpaceQuantityFormat(numberFormat, unitFormat);
+	public static NumberDelimiterQuantityFormat getInstance(NumberFormat numberFormat, UnitFormat unitFormat) {
+		return new NumberDelimiterQuantityFormat(numberFormat, unitFormat);
 	}
 }

@@ -37,7 +37,7 @@ import java.util.Set;
 
 import javax.measure.format.QuantityFormat;
 import javax.measure.spi.FormatService;
-import tech.units.indriya.format.NumberSpaceQuantityFormat;
+import tech.units.indriya.format.NumberDelimiterQuantityFormat;
 import tech.units.indriya.format.SimpleQuantityFormat;
 
 /**
@@ -57,8 +57,8 @@ public class DefaultFormatService extends DefaultUnitFormatService implements Fo
   public DefaultFormatService() {
     super();
     quantityFormats.put(DEFAULT_FORMAT, SimpleQuantityFormat.getInstance());
-    quantityFormats.put("NumberSpace", NumberSpaceQuantityFormat.getInstance());
-    quantityFormats.put("Local", NumberSpaceQuantityFormat.getInstance(LOCALE_SENSITIVE));
+    quantityFormats.put("NumberSpace", NumberDelimiterQuantityFormat.getInstance());
+    quantityFormats.put("Local", NumberDelimiterQuantityFormat.getInstance(LOCALE_SENSITIVE));
   }
 
   @Override

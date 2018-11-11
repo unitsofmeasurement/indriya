@@ -139,7 +139,7 @@ public class QuantityFormatTest {
 
 	@Test
 	public void testParseCustom1() {
-		QuantityFormat format1 = NumberSpaceQuantityFormat.getInstance(DecimalFormat.getInstance(),
+		QuantityFormat format1 = NumberDelimiterQuantityFormat.getInstance(DecimalFormat.getInstance(),
 				SimpleUnitFormat.getInstance());
 		Quantity<?> parsed1 = format1.parse("1 m");
 		assertEquals(1L, parsed1.getValue());
@@ -149,7 +149,7 @@ public class QuantityFormatTest {
 	@Test
 	public void testParseCustom2() {
 		assertThrows(IllegalArgumentException.class, () -> {
-			QuantityFormat format1 = NumberSpaceQuantityFormat.getInstance(DecimalFormat.getInstance(),
+			QuantityFormat format1 = NumberDelimiterQuantityFormat.getInstance(DecimalFormat.getInstance(),
 					SimpleUnitFormat.getInstance());
 			@SuppressWarnings("unused")
 			Quantity<?> parsed1 = format1.parse("1");
@@ -159,7 +159,7 @@ public class QuantityFormatTest {
 	@Test
 	public void testParseCustom3() {
 		assertThrows(IllegalArgumentException.class, () -> {
-			QuantityFormat format1 = NumberSpaceQuantityFormat.getInstance(DecimalFormat.getInstance(),
+			QuantityFormat format1 = NumberDelimiterQuantityFormat.getInstance(DecimalFormat.getInstance(),
 					SimpleUnitFormat.getInstance());
 			@SuppressWarnings("unused")
 			Quantity<?> parsed1 = format1.parse("m");
