@@ -146,10 +146,10 @@ class AbsoluteVsRelativeDraft {
     final Quantity<Temperature> t_c = Quantities.getQuantity(2., Units.CELSIUS, INTERVAL);
     
     //TODO should throw, or return something like a NonEvaluatedQuantity 
-    assertThrows(Exception.class, ()->t_f1.add(t_c));
+    assertThrows(MeasurementException.class, ()->t_f1.add(t_c));
   }
   
-  @Test @Disabled("Indriya does implicit conversion to Kelvin before addition") //TODO this could already be done based on LevelOfMeasurement
+  @Test @Disabled("Indriya does implicit conversion to Kelvin before addition") //TODO this could be done e.g. based on LevelOfMeasurement
   @DisplayName("Quantity[3, 'DegreesFahrenheit'] + Quantity[2, 'DegreesFahrenheit'] -> 5 °F")
   public void in8() {
     
@@ -197,10 +197,11 @@ class AbsoluteVsRelativeDraft {
   @DisplayName("Quantity[1.4, 'DegreesCelsius']/Quantity[8, 'DegreesFahrenheit'] -> ???")
   public void in12() {
     
-    final Quantity<Temperature> t_c = Quantities.getQuantity(1.4, Units.CELSIUS);
-    final Quantity<Temperature> t_f = Quantities.getQuantity(8., DegreesFahrenheit);
+    final Quantity<Temperature> t_c = Quantities.getQuantity(1.4, Units.CELSIUS, INTERVAL);
+    final Quantity<Temperature> t_f = Quantities.getQuantity(8., DegreesFahrenheit, INTERVAL);
     
     //TODO should throw, or return something like a NonEvaluatedQuantity 
+    //This could be done e.g. based on LevelOfMeasurement
     assertThrows(MeasurementException.class, ()->t_c.divide(t_f));
   }
   
