@@ -35,6 +35,7 @@ import static javax.measure.LevelOfMeasurement.RATIO;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import javax.measure.MeasurementException;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.quantity.Temperature;
@@ -137,7 +138,7 @@ class AbsoluteVsRelativeDraft {
     assertEquals(33./5., t_f.getValue().doubleValue(), 1E-3);
   }
   
-  @Test @Disabled("Indriya actually calulates this!")
+  @Test @Disabled("Indriya actually calculates this!")
   @DisplayName("Quantity[3, 'DegreesFahrenheit'] + Quantity[2, 'DegreesCelsius'] -> ???")
   public void in7() {
     
@@ -192,7 +193,7 @@ class AbsoluteVsRelativeDraft {
     assertEquals(5025.93, t_k.getValue().doubleValue(), 1E-3);
   }
   
-  @Test @Disabled("Indriya actually calulates this!")
+  @Test @Disabled("Indriya actually calculates this!")
   @DisplayName("Quantity[1.4, 'DegreesCelsius']/Quantity[8, 'DegreesFahrenheit'] -> ???")
   public void in12() {
     
@@ -200,7 +201,7 @@ class AbsoluteVsRelativeDraft {
     final Quantity<Temperature> t_f = Quantities.getQuantity(8., DegreesFahrenheit);
     
     //TODO should throw, or return something like a NonEvaluatedQuantity 
-    assertThrows(Exception.class, ()->t_c.divide(t_f));
+    assertThrows(MeasurementException.class, ()->t_c.divide(t_f));
   }
   
   @Test
