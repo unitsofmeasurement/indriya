@@ -53,9 +53,10 @@ import tech.units.indriya.function.Calculus;
  *          The type of the quantity.
  * @author otaviojava
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.1, $Date: 2018-10-31 $
+ * @version 1.1.1, $Date: 2018-11-14 $
  * @since 1.0
  */
+// TODO could we make this extend JavaNumericQuantity for consistency?
 public class NumberQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
 
   private static final long serialVersionUID = 7312161895652321241L;

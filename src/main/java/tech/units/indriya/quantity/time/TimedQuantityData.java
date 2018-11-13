@@ -31,6 +31,7 @@ package tech.units.indriya.quantity.time;
 
 import javax.measure.Quantity;
 
+// TODO make this class final?
 public class TimedQuantityData<Q extends Quantity<Q>> extends TimedData<Quantity<Q>> {
 
 	protected TimedQuantityData(Quantity<Q> value, long time) {
