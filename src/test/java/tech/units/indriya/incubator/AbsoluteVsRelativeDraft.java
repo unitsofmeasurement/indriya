@@ -59,16 +59,16 @@ import tech.units.indriya.unit.Units;
 class AbsoluteVsRelativeDraft {
 
   public static final Unit<Temperature> DegreesFahrenheit = 
-      new TransformedUnit<>(Units.KELVIN, new RationalConverter(5, 9).concatenate(new AddConverter(459.67)));
+      new TransformedUnit<>(Units.KELVIN, RationalConverter.of(5, 9).concatenate(new AddConverter(459.67)));
   
   public static final Unit<Temperature> DegreesFahrenheitDifference = 
-      new TransformedUnit<>(Units.KELVIN, new RationalConverter(5, 9));
+      new TransformedUnit<>(Units.KELVIN, RationalConverter.of(5, 9));
   
   public static final Unit<Temperature> KelvinsDifference = 
-      new TransformedUnit<>(Units.KELVIN, new RationalConverter(1, 1));
+      new TransformedUnit<>(Units.KELVIN, RationalConverter.of(1, 1));
   
   public static final Unit<Temperature> DegreesCelsiusDifference = 
-      new TransformedUnit<>(Units.KELVIN, new RationalConverter(1, 1));
+      new TransformedUnit<>(Units.KELVIN, RationalConverter.of(1, 1));
   
   // -- (1) -- Absolute Temperature versus Temperature Difference
   
