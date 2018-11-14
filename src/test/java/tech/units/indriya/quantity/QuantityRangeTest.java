@@ -131,6 +131,11 @@ public class QuantityRangeTest {
 	public Quantity<Mass> negate() {
 		return new NonComparableMassQuantity(-value.doubleValue(), unit);
 	}
+	
+	@Override
+	public boolean isAbsolute() {
+	    return true;
+	}
   }
 
   /**
