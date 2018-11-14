@@ -211,8 +211,8 @@ public class DefaultQuantityFactory<Q extends Quantity<Q>> implements QuantityFa
     }
 
     @Override
-    public Quantity<Q> create(Number value, Unit<Q> unit, LevelOfMeasurement level) {
-        return Quantities.getQuantity(value, unit, level);
+    public Quantity<Q> create(Number value, Unit<Q> unit, boolean abs) {
+        return Quantities.getQuantity(value, unit, abs);
     }
 
     public Unit<Q> getSystemUnit() {

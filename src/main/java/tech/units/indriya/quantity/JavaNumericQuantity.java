@@ -36,7 +36,6 @@ import java.math.MathContext;
 import java.util.Objects;
 import java.util.function.BiFunction;
 
-import javax.measure.LevelOfMeasurement;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 
@@ -50,6 +49,7 @@ import tech.units.indriya.function.Calculus;
  * @param <Q>
  *            The type of the quantity.
  * @author Filip van Laenen
+ * @author Werner Keil
  * @since 2.0
  * 
  */
@@ -68,8 +68,8 @@ abstract class JavaNumericQuantity<Q extends Quantity<Q>> extends AbstractQuanti
      * @param level
      *            The level.
      */
-    protected JavaNumericQuantity(Unit<Q> unit, LevelOfMeasurement level) {
-        super(unit, level);
+    protected JavaNumericQuantity(Unit<Q> unit, boolean abs) {
+        super(unit, abs);
     }
 
     /**

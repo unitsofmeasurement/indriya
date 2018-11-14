@@ -71,14 +71,14 @@ public class NumberQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
   /**
    * @since 2.0
    */
-  protected NumberQuantity(Number number, Unit<Q> unit, LevelOfMeasurement level) {
-    super(unit, level);
+  protected NumberQuantity(Number number, Unit<Q> unit, boolean abs) {
+    super(unit, abs);
     value = number;
     isBig = number instanceof BigDecimal || number instanceof BigInteger;
   }
   
   protected NumberQuantity(Number number, Unit<Q> unit) {
-      this(number, unit, LevelOfMeasurement.RATIO); // TODO we use RATIO for now, should be replaced by some Unit to Level mapping for known cases (e.g. Fahrenheit or Celsius)
+      this(number, unit, true); 
   }
 
   @Override

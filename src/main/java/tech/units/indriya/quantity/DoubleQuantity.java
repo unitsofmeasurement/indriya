@@ -31,7 +31,6 @@ package tech.units.indriya.quantity;
 
 import java.math.BigDecimal;
 
-import javax.measure.LevelOfMeasurement;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 
@@ -48,7 +47,7 @@ import tech.units.indriya.ComparableQuantity;
  *          The type of the quantity.
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
  * @author Otavio de Santana
- * @version 0.6, $Date: 2018-10-31 $
+ * @version 0.7, $Date: 2018-11-14 $
  * @see AbstractQuantity
  * @see Quantity
  * @see ComparableQuantity
@@ -62,8 +61,8 @@ final class DoubleQuantity<Q extends Quantity<Q>> extends JavaNumericQuantity<Q>
 
   private final double value;
 
-  public DoubleQuantity(double value, Unit<Q> unit, LevelOfMeasurement level) {
-    super(unit, level);
+  public DoubleQuantity(double value, Unit<Q> unit, boolean abs) {
+    super(unit, abs);
     this.value = value;
   }
   

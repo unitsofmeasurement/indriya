@@ -33,7 +33,6 @@ import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.Objects;
 
-import javax.measure.LevelOfMeasurement;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.UnitConverter;
@@ -106,7 +105,7 @@ import tech.uom.lib.common.util.NaturalQuantityComparator;
  * </p>
  *
  * @author <a href="mailto:werner@uom.technology">Werner Keil</a>
- * @version 1.5, October 30, 2018
+ * @version 1.6, November 14, 2018
  * @since 1.0
  */
 @SuppressWarnings("unchecked")
@@ -119,7 +118,7 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
 
     private final Unit<Q> unit;
 
-    private final LevelOfMeasurement level;
+    private final boolean level;
 
     /**
      * Holds a dimensionless quantity of none (exact).
@@ -134,11 +133,11 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
     /**
      * Constructor.
      * @param unit a unit
-     * @param level a level of measurement
+     * @param abs absolute or relative
      */
-    protected AbstractQuantity(Unit<Q> unit, LevelOfMeasurement level) {
+    protected AbstractQuantity(Unit<Q> unit, boolean abs) {
         this.unit = unit;
-        this.level = level;
+        this.level = abs;
     }
 
     /**
@@ -146,7 +145,7 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
      * @param unit a unit
      */
     protected AbstractQuantity(Unit<Q> unit) {
-        this(unit, LevelOfMeasurement.RATIO); // TODO we use RATIO for now, should be replaced by some Unit to Level mapping for known cases (e.g. Fahrenheit or Celsius)
+        this(unit, true);
     }
 
     /**
@@ -168,12 +167,12 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
     }
 
     /**
-     * Returns the measurement level.
+     * Returns the absolute or relative characteristics.
      *
-     * @return the measurement level.
+     * @return the characteristics.
      */
     @Override
-    public LevelOfMeasurement getLevel() {
+    public boolean isAbsolute() {
         return level;
     }
 
@@ -286,7 +285,7 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
         }
         if (obj instanceof Quantity<?>) {
             Quantity<?> that = (Quantity<?>) obj;
-            return Objects.equals(getUnit(), that.getUnit()) && Objects.equals(getLevel(), that.getLevel()) && Objects.equals(getValue(), that.getValue());
+            return Objects.equals(getUnit(), that.getUnit()) && isAbsolute() == that.isAbsolute() && Objects.equals(getValue(), that.getValue());
         }
         return false;
     }

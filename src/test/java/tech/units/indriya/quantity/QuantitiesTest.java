@@ -40,7 +40,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 
-import static javax.measure.LevelOfMeasurement.INTERVAL;
 import static org.junit.jupiter.api.Assertions.*;
 import static tech.units.indriya.unit.Units.CELSIUS;
 import static tech.units.indriya.unit.Units.PASCAL;
@@ -48,7 +47,7 @@ import static tech.units.indriya.unit.Units.PASCAL;
 /**
  *
  * @author Werner Keil
- * @version 0.3
+ * @version 0.4
  */
 public class QuantitiesTest {
 
@@ -91,15 +90,15 @@ public class QuantitiesTest {
 
   @Test
   public void intervalTest() {
-    Quantity<Temperature> bigDecimalQuantity = Quantities.getQuantity(BigDecimal.ONE, CELSIUS, INTERVAL);
-    Quantity<Temperature> bigIntegerQuantity = Quantities.getQuantity(BigInteger.ONE, CELSIUS, INTERVAL);
+    Quantity<Temperature> bigDecimalQuantity = Quantities.getQuantity(BigDecimal.ONE, CELSIUS, false);
+    Quantity<Temperature> bigIntegerQuantity = Quantities.getQuantity(BigInteger.ONE, CELSIUS, false);
 
-    Quantity<Temperature> shortQuantity = Quantities.getQuantity(Short.valueOf("2"), CELSIUS, INTERVAL);
-    Quantity<Temperature> byteQuantity = Quantities.getQuantity(Byte.valueOf("2"), CELSIUS, INTERVAL);
-    Quantity<Temperature> longQuantity = Quantities.getQuantity(Long.valueOf("2"), CELSIUS, INTERVAL);
-    Quantity<Temperature> intQuantity = Quantities.getQuantity(Integer.valueOf("2"), CELSIUS, INTERVAL);
-    Quantity<Temperature> floatQuantity = Quantities.getQuantity(Float.valueOf("2"), CELSIUS, INTERVAL);
-    Quantity<Temperature> doubleQuantity = Quantities.getQuantity(Double.valueOf("2"), CELSIUS, INTERVAL);
+    Quantity<Temperature> shortQuantity = Quantities.getQuantity(Short.valueOf("2"), CELSIUS, false);
+    Quantity<Temperature> byteQuantity = Quantities.getQuantity(Byte.valueOf("2"), CELSIUS, false);
+    Quantity<Temperature> longQuantity = Quantities.getQuantity(Long.valueOf("2"), CELSIUS, false);
+    Quantity<Temperature> intQuantity = Quantities.getQuantity(Integer.valueOf("2"), CELSIUS, false);
+    Quantity<Temperature> floatQuantity = Quantities.getQuantity(Float.valueOf("2"), CELSIUS, false);
+    Quantity<Temperature> doubleQuantity = Quantities.getQuantity(Double.valueOf("2"), CELSIUS, false);
 
     assertTrue(Short.class.isInstance(shortQuantity.getValue()));
     assertTrue(Byte.class.isInstance(byteQuantity.getValue()));
@@ -119,14 +118,14 @@ public class QuantitiesTest {
     assertTrue(BigIntegerQuantity.class.isInstance(bigIntegerQuantity));
     assertTrue(DecimalQuantity.class.isInstance(bigDecimalQuantity));
     
-    assertEquals(INTERVAL, shortQuantity.getLevel());
-    assertEquals(INTERVAL, byteQuantity.getLevel());
-    assertEquals(INTERVAL, longQuantity.getLevel());
-    assertEquals(INTERVAL, intQuantity.getLevel());
-    assertEquals(INTERVAL, floatQuantity.getLevel());
-    assertEquals(INTERVAL, doubleQuantity.getLevel());
-    assertEquals(INTERVAL, bigIntegerQuantity.getLevel());
-    assertEquals(INTERVAL, bigDecimalQuantity.getLevel());
+    assertEquals(false, shortQuantity.isAbsolute());
+    assertEquals(false, byteQuantity.isAbsolute());
+    assertEquals(false, longQuantity.isAbsolute());
+    assertEquals(false, intQuantity.isAbsolute());
+    assertEquals(false, floatQuantity.isAbsolute());
+    assertEquals(false, doubleQuantity.isAbsolute());
+    assertEquals(false, bigIntegerQuantity.isAbsolute());
+    assertEquals(false, bigDecimalQuantity.isAbsolute());
   }
   
   @Test

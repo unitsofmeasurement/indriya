@@ -37,8 +37,6 @@ import static tech.units.indriya.unit.Units.KILOGRAM;
 import static tech.units.indriya.unit.Units.METRE;
 import static tech.units.indriya.unit.Units.MINUTE;
 import static tech.units.indriya.unit.Units.SECOND;
-import static javax.measure.LevelOfMeasurement.INTERVAL;
-import static javax.measure.LevelOfMeasurement.RATIO;
 
 import javax.measure.Quantity;
 import javax.measure.quantity.Length;
@@ -104,16 +102,16 @@ public class QuantityFactoryProviderTest {
     assertEquals(KELVIN, t.getUnit());
     assertEquals("K", t.getUnit().getSymbol());
     assertEquals("50 K", t.toString());
-    assertEquals(RATIO, t.getLevel());
+    assertEquals(true, t.isAbsolute());
   }
   
   @Test
   public void testTemperatureCelsius() {
-    Quantity<Temperature> t = service.getQuantityFactory(Temperature.class).create(60, CELSIUS, INTERVAL); // 60 °C
+    Quantity<Temperature> t = service.getQuantityFactory(Temperature.class).create(60, CELSIUS, false); // 60 °C
     assertEquals(60, t.getValue());
     assertEquals(CELSIUS, t.getUnit());
     assertEquals("60 ℃", t.toString());
-    assertEquals(INTERVAL, t.getLevel());
-    assertTrue(RATIO.compareTo(t.getLevel()) >=0 );
+    assertEquals(false, t.isAbsolute());
+    //assertTrue(RATIO.compareTo(t.isAbsolute()) >=0 );
   }
 }

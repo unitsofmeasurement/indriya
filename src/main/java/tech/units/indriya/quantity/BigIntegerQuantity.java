@@ -57,8 +57,8 @@ final class BigIntegerQuantity<Q extends Quantity<Q>> extends JavaNumericQuantit
     private static final long serialVersionUID = -593014349777834846L;
     private final BigInteger value;
 
-    public BigIntegerQuantity(BigInteger value, Unit<Q> unit, LevelOfMeasurement level) {
-        super(unit, level);
+    public BigIntegerQuantity(BigInteger value, Unit<Q> unit, boolean abs) {
+        super(unit, abs);
         this.value = value;
     }
 

@@ -31,7 +31,6 @@ package tech.units.indriya.quantity;
 
 import java.math.BigDecimal;
 
-import javax.measure.LevelOfMeasurement;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 
@@ -58,8 +57,8 @@ final class ByteQuantity<Q extends Quantity<Q>> extends JavaNumericQuantity<Q> {
 
     private final byte value;
 
-    ByteQuantity(byte value, Unit<Q> unit, LevelOfMeasurement level) {
-        super(unit, level);
+    ByteQuantity(byte value, Unit<Q> unit, boolean abs) {
+        super(unit, abs);
         this.value = value;
     }
 

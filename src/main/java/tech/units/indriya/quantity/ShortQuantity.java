@@ -31,7 +31,6 @@ package tech.units.indriya.quantity;
 
 import java.math.BigDecimal;
 
-import javax.measure.LevelOfMeasurement;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 
@@ -46,7 +45,7 @@ import tech.units.indriya.ComparableQuantity;
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
  * @param <Q>
  *            The type of the quantity.
- * @version 0.4, $Date: 2018-10-31 $
+ * @version 0.5, $Date: 2018-11-14 $
  * @since 1.0
  */
 final class ShortQuantity<Q extends Quantity<Q>> extends JavaNumericQuantity<Q> {
@@ -58,8 +57,8 @@ final class ShortQuantity<Q extends Quantity<Q>> extends JavaNumericQuantity<Q> 
 
     private final short value;
 
-    ShortQuantity(short value, Unit<Q> unit, LevelOfMeasurement level) {
-        super(unit, level);
+    ShortQuantity(short value, Unit<Q> unit, boolean abs) {
+        super(unit, abs);
         this.value = value;
     }
 
