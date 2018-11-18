@@ -78,7 +78,7 @@ import javax.measure.spi.SystemOfUnits;
  * This class defines commonly used units.
  *
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.2, June 29, 2018
+ * @version 1.3, November 18, 2018
  * @since 1.0
  */
 public class Units extends AbstractSystemOfUnits {
@@ -127,10 +127,14 @@ public class Units extends AbstractSystemOfUnits {
   public static final Unit<Temperature> KELVIN = addUnit(new BaseUnit<Temperature>("K", QuantityDimension.TEMPERATURE), Temperature.class);
 
   /**
-   * The SI base unit for mass quantities (standard name <code>kg</code>). It is the only SI unit with a prefix as part of its name and symbol. The
-   * kilogram is equal to the mass of an international prototype in the form of a platinum-iridium cylinder kept at Sevres in France.
+   * The SI base unit for mass quantities (standard name <code>kg</code>). It is the only SI unit with a prefix as part of its name and symbol.
+   * The kilogram is defined by taking the fixed numerical value of the Planck constant h to be 6.62607015×10−34 when expressed in the unit J⋅s, which is equal to kg⋅m2⋅s−1, where the metre and the second are defined in terms of c and ΔνCs.<br>
+   * Before the <a href="https://en.wikipedia.org/wiki/2019_redefinition_of_SI_base_units">2019 redefinition of SI base units</a>, the kilogram was equal to the mass of an international prototype in the form of a platinum-iridium cylinder kept at Sevres in France.
    * 
+   * @see <a href="https://en.wikipedia.org/wiki/Kilogram">Wikipedia: Kilogram</a>
    * @see #GRAM
+   * @see #METRE
+   * @see #SECOND
    *
    * @implNote SI Base Unit
    */
