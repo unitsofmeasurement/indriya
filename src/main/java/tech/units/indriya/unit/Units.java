@@ -78,7 +78,7 @@ import javax.measure.spi.SystemOfUnits;
  * This class defines commonly used units.
  *
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.3, November 18, 2018
+ * @version 1.3.1, November 20, 2018
  * @since 1.0
  */
 public class Units extends AbstractSystemOfUnits {
@@ -119,16 +119,18 @@ public class Units extends AbstractSystemOfUnits {
       LuminousIntensity.class);
 
   /**
-   * The SI base unit for thermodynamic temperature quantities (standard name <code>K</code>). The kelvin is the 1/273.16th of the thermodynamic
+   * The SI base unit for thermodynamic temperature quantities (standard name <code>K</code>). It is defined by the <a href="https://en.wikipedia.org/wiki/Boltzmann_constant">Boltzmann constant</a> <code>k</code> having a value of <code>1.3806505×10−23 J/K</code><br>
+   * Before the <a href="https://en.wikipedia.org/wiki/2019_redefinition_of_SI_base_units">2019 redefinition of SI base units</a>, the kelvin was the 1/273.16th of the thermodynamic
    * temperature of the triple point of water. It is named after the Scottish mathematician and physicist William Thomson 1st Lord Kelvin (1824-1907)
    * 
+   * @see #JOULE
    * @implNote SI Base Unit
    */
   public static final Unit<Temperature> KELVIN = addUnit(new BaseUnit<Temperature>("K", QuantityDimension.TEMPERATURE), Temperature.class);
 
   /**
    * The SI base unit for mass quantities (standard name <code>kg</code>). It is the only SI unit with a prefix as part of its name and symbol.
-   * The kilogram is defined by taking the fixed numerical value of the Planck constant h to be 6.62607015×10−34 when expressed in the unit J⋅s, which is equal to kg⋅m2⋅s−1, where the metre and the second are defined in terms of c and ΔνCs.<br>
+   * The kilogram is defined by taking the fixed numerical value of the <a href="https://en.wikipedia.org/wiki/Planck_constant">Planck constant</a> <code>h</code> to be <code>6.62607015×10−34</code> when expressed in the unit <code>J⋅s</code>, which is equal to <code>kg⋅m2⋅s−1</code>, where the <code>metre</code> and the <code>second</code> are defined in terms of <code>c</code> and <code>ΔνCs</code>.<br>
    * Before the <a href="https://en.wikipedia.org/wiki/2019_redefinition_of_SI_base_units">2019 redefinition of SI base units</a>, the kilogram was equal to the mass of an international prototype in the form of a platinum-iridium cylinder kept at Sevres in France.
    * 
    * @see <a href="https://en.wikipedia.org/wiki/Kilogram">Wikipedia: Kilogram</a>
