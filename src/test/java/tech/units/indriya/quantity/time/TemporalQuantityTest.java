@@ -11,11 +11,17 @@ import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.time.temporal.TemporalUnit;
 
+import javax.measure.Quantity;
+import javax.measure.Unit;
+import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Time;
 
 import org.junit.jupiter.api.Test;
 
+import tech.units.indriya.AbstractQuantity;
+import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.ComparableQuantity;
+import tech.units.indriya.quantity.NumberQuantity;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.Units;
 
@@ -23,6 +29,8 @@ import tech.units.indriya.unit.Units;
  * Unit tests on the {@code TemporalQuantity} class.
  */
 public class TemporalQuantityTest {
+
+  private static final Unit<?> SQUARE_MINUTE = Units.MINUTE.multiply(Units.MINUTE);
 
   private static final TemporalQuantity ONE_CHRONO_MILLISECOND = TemporalQuantity.of(1, ChronoUnit.MILLIS);
   private static final TemporalQuantity ONE_CHRONO_SECOND = TemporalQuantity.of(1, ChronoUnit.SECONDS);
@@ -361,7 +369,7 @@ public class TemporalQuantityTest {
     ComparableQuantity<Time> expected = TemporalQuantity.of(1 + Long.MAX_VALUE / 1000, ChronoUnit.SECONDS);
     assertEquals(expected, actual);
   }
-  
+
   /**
    * Subtraction subtracts correctly.
    */
@@ -369,6 +377,68 @@ public class TemporalQuantityTest {
   public void subtractionSubtractsCorrectly() {
     ComparableQuantity<Time> actual = FORTY_TWO_CHRONO_MINUTES.subtract(TemporalQuantity.of(1, ChronoUnit.MINUTES));
     ComparableQuantity<Time> expected = TemporalQuantity.of(41, ChronoUnit.MINUTES);
+    assertEquals(expected, actual);
+  }
+
+  /**
+   * Verifies that the multiplication of two quantities multiplies correctly.
+   */
+  @Test
+  public void quantityMultiplicationMultipliesCorrectly() {
+    Quantity<?> actual = FORTY_TWO_CHRONO_MINUTES.multiply(FORTY_TWO_CHRONO_MINUTES);
+    AbstractQuantity<?> expected = NumberQuantity.of(1764L, SQUARE_MINUTE);
+    assertEquals(expected, actual);
+  }
+  
+  /**
+   * Verifies that the multiplication of two quantities resulting in an overflow throws an exception.
+   */
+  @Test
+  public void quantityMultiplicationResultingInOverflowThrowsException() {
+    assertThrows(ArithmeticException.class, () -> {
+      TemporalQuantity halfMaxValuePlusOne = TemporalQuantity.of(514L + Long.MAX_VALUE / 2L,  ChronoUnit.SECONDS);
+      halfMaxValuePlusOne.multiply(TemporalQuantity.of(2L, ChronoUnit.SECONDS));
+    });
+  }
+  
+  /**
+   * Verifies that the division of two quantities divides correctly.
+   */
+  @Test
+  public void quantityDivisionDividesCorrectly() {
+    Quantity<?> actual = FORTY_TWO_CHRONO_MINUTES.divide(FORTY_TWO_CHRONO_MINUTES);
+    AbstractQuantity<Dimensionless> expected = NumberQuantity.of(1L, AbstractUnit.ONE);
+    assertEquals(expected, actual);
+  }
+  
+  /**
+   * Verifies that the multiplication with a number multiplies correctly.
+   */
+  @Test
+  public void numberMultiplicationMultipliesCorrectly() {
+    Quantity<?> actual = FORTY_TWO_CHRONO_MINUTES.multiply(2L);
+    TemporalQuantity expected = TemporalQuantity.of(84L, ChronoUnit.MINUTES);
+    assertEquals(expected, actual);
+  }
+
+  /**
+   * Verifies that the multiplication with a number resulting in an overflow throws an exception.
+   */
+  @Test
+  public void numberMultiplicationResultingInOverflowThrowsException() {
+    assertThrows(ArithmeticException.class, () -> {
+      TemporalQuantity halfMaxValuePlusOne = TemporalQuantity.of(514L + Long.MAX_VALUE / 2L,  ChronoUnit.SECONDS);
+      halfMaxValuePlusOne.multiply(2L);
+    });
+  }
+  
+  /**
+   * Verifies that the division with a number divides correctly.
+   */
+  @Test
+  public void numberDivisionDividesCorrectly() {
+    Quantity<?> actual = FORTY_TWO_CHRONO_MINUTES.divide(2L);
+    TemporalQuantity expected = TemporalQuantity.of(21, ChronoUnit.MINUTES);
     assertEquals(expected, actual);
   }
 
