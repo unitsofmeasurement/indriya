@@ -60,7 +60,8 @@ import tech.units.indriya.unit.Units;
  * Class that represents {@link TemporalUnit} in Unit-API
  * 
  * @author Werner Keil
- * @version 1.0.2
+ * @author Filip van Laenen
+ * @version 1.1
  * @since 1.0
  */
 public final class TemporalQuantity extends AbstractQuantity<Time> {
