@@ -51,10 +51,10 @@ import java.util.logging.Logger;
  * </p>
  *
  * <p>
- * The dimension associated to any given quantity are given by the published {@link DimensionService} instances. For convenience, a static method
- * {@link QuantityDimension#of(Class) aggregating the results of all
+ * The dimension associated to any given quantity are given by the published {@link Dimension} instances. For convenience, a static method
+ * <code>QuantityDimension.of(Class)</code> aggregating the results of all
  * 
- * @link DimensionService} instances is provided.<br>
+ * {@link Dimension} instances is provided.<br>
  *       <br>
  *       <code>
  *        QuantityDimension speedDimension
@@ -64,7 +64,7 @@ import java.util.logging.Logger;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.1.1, $Date: 2018-06-05 $
+ * @version 1.2, $Date: 2018-11-21 $
  * @since 1.0
  */
 public final class QuantityDimension implements Dimension, Serializable {
