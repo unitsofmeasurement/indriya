@@ -173,7 +173,7 @@ public final class QuantityDimension implements Dimension, Serializable {
    *          the associated symbol.
    */
   @SuppressWarnings("rawtypes")
-  QuantityDimension(char symbol) {
+  private QuantityDimension(char symbol) {
     pseudoUnit = new BaseUnit("[" + symbol + ']', NONE);
   }
 
@@ -208,7 +208,7 @@ public final class QuantityDimension implements Dimension, Serializable {
    * @return <code>this * that</code>
    * @since 1.0
    */
-  public QuantityDimension multiply(QuantityDimension that) {
+  private QuantityDimension multiply(QuantityDimension that) {
     return new QuantityDimension(this.pseudoUnit.multiply(that.pseudoUnit));
   }
 
@@ -232,7 +232,7 @@ public final class QuantityDimension implements Dimension, Serializable {
    * @return <code>this.multiply(that.pow(-1))</code>
    * @since 1.0
    */
-  public QuantityDimension divide(QuantityDimension that) {
+  private QuantityDimension divide(QuantityDimension that) {
     return new QuantityDimension(ProductUnit.ofQuotient(pseudoUnit, that.pseudoUnit));
   }
 
