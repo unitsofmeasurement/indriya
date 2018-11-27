@@ -341,7 +341,7 @@ public final class TimeUnitQuantity extends AbstractQuantity<Time> {
 	 */
 	@Override
 	public BigDecimal decimalValue(Unit<Time> unit) throws ArithmeticException {
-		return BigDecimal.valueOf(value.doubleValue());
+	  return (BigDecimal) getUnit().getConverterTo(unit).convert(BigDecimal.valueOf(value));
 	}
 
 	/**
@@ -349,7 +349,10 @@ public final class TimeUnitQuantity extends AbstractQuantity<Time> {
 	 */
 	@Override
 	public double doubleValue(Unit<Time> unit) throws ArithmeticException {
-		return value.doubleValue();
+    final double result = getUnit().getConverterTo(unit).convert(getValue()).doubleValue();
+    if (Double.isInfinite(result))
+      throw new ArithmeticException();
+    return result;
 	}
 
 	/**
