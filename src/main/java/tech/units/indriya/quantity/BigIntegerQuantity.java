@@ -32,7 +32,6 @@ package tech.units.indriya.quantity;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-import javax.measure.LevelOfMeasurement;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 
@@ -49,7 +48,7 @@ import tech.units.indriya.ComparableQuantity;
  * @see AbstractQuantity
  * @see Quantity
  * @see ComparableQuantity
- * @version 0.5
+ * @version 0.6
  * @since 2.0
  */
 final class BigIntegerQuantity<Q extends Quantity<Q>> extends JavaNumericQuantity<Q> {
@@ -57,8 +56,8 @@ final class BigIntegerQuantity<Q extends Quantity<Q>> extends JavaNumericQuantit
     private static final long serialVersionUID = -593014349777834846L;
     private final BigInteger value;
 
-    public BigIntegerQuantity(BigInteger value, Unit<Q> unit, boolean abs) {
-        super(unit, abs);
+    public BigIntegerQuantity(BigInteger value, Unit<Q> unit, Scale sc) {
+        super(unit, sc);
         this.value = value;
     }
 

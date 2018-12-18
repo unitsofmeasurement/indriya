@@ -61,8 +61,8 @@ final class DoubleQuantity<Q extends Quantity<Q>> extends JavaNumericQuantity<Q>
 
   private final double value;
 
-  public DoubleQuantity(double value, Unit<Q> unit, boolean abs) {
-    super(unit, abs);
+  public DoubleQuantity(double value, Unit<Q> unit, Scale sc) {
+    super(unit, sc);
     this.value = value;
   }
   

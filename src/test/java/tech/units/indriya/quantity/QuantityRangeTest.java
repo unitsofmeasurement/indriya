@@ -33,8 +33,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static tech.units.indriya.unit.Units.GRAM;
 import static tech.units.indriya.unit.Units.KILOGRAM;
 import static tech.units.indriya.unit.Units.METRE;
+import static javax.measure.Quantity.Scale.*;
 
-import javax.measure.LevelOfMeasurement;
 import javax.measure.MetricPrefix;
 import javax.measure.Quantity;
 import javax.measure.Unit;
@@ -66,10 +66,16 @@ public class QuantityRangeTest {
 
     private final Number value;
     private final Unit<Mass> unit;
-
+    private final Scale scale;
+    
+    NonComparableMassQuantity(double value, Unit<Mass> unit, Scale sc) {
+        this.value = value;
+        this.unit = unit;
+        this.scale = sc;
+      }
+    
     NonComparableMassQuantity(double value, Unit<Mass> unit) {
-      this.value = value;
-      this.unit = unit;
+        this(value, unit, ABSOLUTE);
     }
 
     @Override
@@ -133,8 +139,8 @@ public class QuantityRangeTest {
 	}
 	
 	@Override
-	public boolean isAbsolute() {
-	    return true;
+	public Scale getScale() {
+	    return scale;
 	}
   }
 

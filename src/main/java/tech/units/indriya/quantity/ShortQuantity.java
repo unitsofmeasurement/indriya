@@ -57,8 +57,8 @@ final class ShortQuantity<Q extends Quantity<Q>> extends JavaNumericQuantity<Q> 
 
     private final short value;
 
-    ShortQuantity(short value, Unit<Q> unit, boolean abs) {
-        super(unit, abs);
+    ShortQuantity(short value, Unit<Q> unit, Scale sc) {
+        super(unit, sc);
         this.value = value;
     }
 

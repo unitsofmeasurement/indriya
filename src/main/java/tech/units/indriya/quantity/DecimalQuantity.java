@@ -60,8 +60,8 @@ final class DecimalQuantity<Q extends Quantity<Q>> extends JavaNumericQuantity<Q
 
   private final BigDecimal value;
 
-  public DecimalQuantity(BigDecimal value, Unit<Q> unit, boolean abs) {
-      super(unit, abs);
+  public DecimalQuantity(BigDecimal value, Unit<Q> unit,  Scale sc) {
+      super(unit, sc);
       this.value = value;
   }
   

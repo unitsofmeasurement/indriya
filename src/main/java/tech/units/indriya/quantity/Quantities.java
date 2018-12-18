@@ -29,12 +29,15 @@
  */
 package tech.units.indriya.quantity;
 
+import static javax.measure.Quantity.Scale.ABSOLUTE;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.ParsePosition;
 import java.util.Objects;
 
 import javax.measure.Quantity;
+import javax.measure.Quantity.Scale;
 import javax.measure.Unit;
 import javax.measure.format.MeasurementParseException;
 
@@ -45,7 +48,7 @@ import tech.units.indriya.format.SimpleQuantityFormat;
 /**
  * Singleton class for accessing {@link Quantity} instances.
  * 
- * @version 1.3
+ * @version 1.4
  * @author werner
  * @author otaviojava
  * @since 1.0
@@ -96,28 +99,28 @@ public final class Quantities {
      *             if value, unit or level were null
      * @since 2.0
      */
-    public static <Q extends Quantity<Q>> ComparableQuantity<Q> getQuantity(Number value, Unit<Q> unit, boolean abs) {
+    public static <Q extends Quantity<Q>> ComparableQuantity<Q> getQuantity(Number value, Unit<Q> unit, Scale scale) {
         Objects.requireNonNull(value);
         Objects.requireNonNull(unit);
         //Objects.requireNonNull(level);
         if (Double.class.isInstance(value)) {
-            return new DoubleQuantity<>(Double.class.cast(value), unit, abs);
+            return new DoubleQuantity<>(Double.class.cast(value), unit, scale);
         } else if (Long.class.isInstance(value)) {
-            return new LongQuantity<Q>(Long.class.cast(value), unit, abs);
+            return new LongQuantity<Q>(Long.class.cast(value), unit, scale);
         } else if (Short.class.isInstance(value)) {
-            return new ShortQuantity<Q>(Short.class.cast(value), unit, abs);
+            return new ShortQuantity<Q>(Short.class.cast(value), unit, scale);
         } else if (Byte.class.isInstance(value)) {
-            return new ByteQuantity<Q>(Byte.class.cast(value), unit, abs);
+            return new ByteQuantity<Q>(Byte.class.cast(value), unit, scale);
 //        } else if (Integer.class.isInstance(value)) { FIXME IntegerQuantity has issues
 //            return new IntegerQuantity<Q>(Integer.class.cast(value), unit);
 //        } else if (Float.class.isInstance(value)) { FIXME FloatQuantity has issues
 //            return new FloatQuantity<Q>(Float.class.cast(value), unit);
         } else if (BigDecimal.class.isInstance(value)) {
-            return new DecimalQuantity<>(BigDecimal.class.cast(value), unit, abs);
+            return new DecimalQuantity<>(BigDecimal.class.cast(value), unit, scale);
         } else if (BigInteger.class.isInstance(value)) {
-            return new BigIntegerQuantity<>(BigInteger.class.cast(value), unit, abs);
+            return new BigIntegerQuantity<>(BigInteger.class.cast(value), unit, scale);
         }
-        return new NumberQuantity<>(value, unit, abs);
+        return new NumberQuantity<>(value, unit, scale);
     }
 
     /**
@@ -133,6 +136,6 @@ public final class Quantities {
      *             when value or unit were null
      */
     public static <Q extends Quantity<Q>> ComparableQuantity<Q> getQuantity(Number value, Unit<Q> unit) {
-        return getQuantity(value, unit, true);
+        return getQuantity(value, unit, ABSOLUTE);
     }
 }

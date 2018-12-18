@@ -29,11 +29,12 @@
  */
 package tech.units.indriya.quantity;
 
+import static javax.measure.Quantity.Scale.ABSOLUTE;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Objects;
 
-import javax.measure.LevelOfMeasurement;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.UnitConverter;
@@ -71,14 +72,14 @@ public class NumberQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
   /**
    * @since 2.0
    */
-  protected NumberQuantity(Number number, Unit<Q> unit, boolean abs) {
-    super(unit, abs);
+  protected NumberQuantity(Number number, Unit<Q> unit, Scale sc) {
+    super(unit, sc);
     value = number;
     isBig = number instanceof BigDecimal || number instanceof BigInteger;
   }
   
   protected NumberQuantity(Number number, Unit<Q> unit) {
-      this(number, unit, true); 
+      this(number, unit, ABSOLUTE); 
   }
 
   @Override

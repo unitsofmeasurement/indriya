@@ -57,8 +57,8 @@ final class ByteQuantity<Q extends Quantity<Q>> extends JavaNumericQuantity<Q> {
 
     private final byte value;
 
-    ByteQuantity(byte value, Unit<Q> unit, boolean abs) {
-        super(unit, abs);
+    ByteQuantity(byte value, Unit<Q> unit, Scale sc) {
+        super(unit, sc);
         this.value = value;
     }
 

@@ -30,6 +30,7 @@
 package tech.units.indriya.incubator;
 
 import static javax.measure.MetricPrefix.KILO;
+import static javax.measure.Quantity.Scale.*;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -37,6 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import javax.measure.MeasurementException;
 import javax.measure.Quantity;
+import javax.measure.Quantity.Scale;
 import javax.measure.Unit;
 import javax.measure.quantity.Temperature;
 
@@ -76,11 +78,11 @@ class AbsoluteVsRelativeDraft {
   @DisplayName("UnitConvert[Quantity[3., 'DegreesFahrenheit'] *2, 'Kelvins'] -> 258.706 K")
   public void in1() {
     
-    final Quantity<Temperature> t_f = Quantities.getQuantity(3., DegreesFahrenheit, false);
+    final Quantity<Temperature> t_f = Quantities.getQuantity(3., DegreesFahrenheit, RELATIVE);
     final Quantity<Temperature> t_k =  t_f.multiply(2.).to(Units.KELVIN);
     
-    assertFalse(t_f.isAbsolute());
-    assertTrue(t_k.isAbsolute());
+    assertEquals(RELATIVE, t_f.getScale());
+    assertEquals(ABSOLUTE, t_k.getScale());
     assertEquals(258.706, t_k.getValue().doubleValue(), 1E-3);
   }       
   
@@ -142,8 +144,8 @@ class AbsoluteVsRelativeDraft {
   @DisplayName("Quantity[3, 'DegreesFahrenheit'] + Quantity[2, 'DegreesCelsius'] -> ???")
   public void in7() {
     
-    final Quantity<Temperature> t_f1 = Quantities.getQuantity(3., DegreesFahrenheit, false);
-    final Quantity<Temperature> t_c = Quantities.getQuantity(2., Units.CELSIUS, false);
+    final Quantity<Temperature> t_f1 = Quantities.getQuantity(3., DegreesFahrenheit, RELATIVE);
+    final Quantity<Temperature> t_c = Quantities.getQuantity(2., Units.CELSIUS, RELATIVE);
     
     //TODO should throw, or return something like a NonEvaluatedQuantity 
     assertThrows(MeasurementException.class, ()->t_f1.add(t_c));
@@ -153,8 +155,8 @@ class AbsoluteVsRelativeDraft {
   @DisplayName("Quantity[3, 'DegreesFahrenheit'] + Quantity[2, 'DegreesFahrenheit'] -> 5 °F")
   public void in8() {
     
-    final Quantity<Temperature> t_f1 = Quantities.getQuantity(3., DegreesFahrenheit, false);
-    final Quantity<Temperature> t_f2 = Quantities.getQuantity(2., DegreesFahrenheit, false);
+    final Quantity<Temperature> t_f1 = Quantities.getQuantity(3., DegreesFahrenheit, RELATIVE);
+    final Quantity<Temperature> t_f2 = Quantities.getQuantity(2., DegreesFahrenheit, RELATIVE);
     final Quantity<Temperature> t_f =  t_f1.add(t_f2);
     
     assertEquals(5., t_f.getValue().doubleValue(), 1E-3);
@@ -177,7 +179,7 @@ class AbsoluteVsRelativeDraft {
   @DisplayName("UnitConvert[Quantity[3., 'DegreesCelsius'] *18.2, 'Kelvins'] -> 327.75 K")
   public void in10() {
     
-    final Quantity<Temperature> t_c = Quantities.getQuantity(3., Units.CELSIUS);
+    final Quantity<Temperature> t_c = Quantities.getQuantity(3d, Units.CELSIUS);
     final Quantity<Temperature> t_k =  t_c.multiply(18.2).to(Units.KELVIN);
     
     assertEquals(327.75, t_k.getValue().doubleValue(), 1E-3);
@@ -197,8 +199,8 @@ class AbsoluteVsRelativeDraft {
   @DisplayName("Quantity[1.4, 'DegreesCelsius']/Quantity[8, 'DegreesFahrenheit'] -> ???")
   public void in12() {
     
-    final Quantity<Temperature> t_c = Quantities.getQuantity(1.4, Units.CELSIUS, false);
-    final Quantity<Temperature> t_f = Quantities.getQuantity(8., DegreesFahrenheit, false);
+    final Quantity<Temperature> t_c = Quantities.getQuantity(1.4, Units.CELSIUS, RELATIVE);
+    final Quantity<Temperature> t_f = Quantities.getQuantity(8., DegreesFahrenheit, RELATIVE);
     
     //TODO should throw, or return something like a NonEvaluatedQuantity 
     //This could be done e.g. based on LevelOfMeasurement

@@ -57,8 +57,8 @@ final class LongQuantity<Q extends Quantity<Q>> extends JavaNumericQuantity<Q> {
 
     private final long value;
 
-    LongQuantity(long value, Unit<Q> unit, boolean abs) {
-        super(unit, abs);
+    LongQuantity(long value, Unit<Q> unit,  Scale sc) {
+        super(unit, sc);
         this.value = value;
     }
 

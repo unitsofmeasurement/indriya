@@ -68,8 +68,8 @@ abstract class JavaNumericQuantity<Q extends Quantity<Q>> extends AbstractQuanti
      * @param level
      *            The level.
      */
-    protected JavaNumericQuantity(Unit<Q> unit, boolean abs) {
-        super(unit, abs);
+    protected JavaNumericQuantity(Unit<Q> unit, Scale sc) {
+        super(unit, sc);
     }
 
     /**

@@ -29,6 +29,8 @@
  */
 package tech.units.indriya;
 
+import static javax.measure.Quantity.Scale.ABSOLUTE;
+
 import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.Objects;
@@ -105,21 +107,21 @@ import tech.uom.lib.common.util.NaturalQuantityComparator;
  * </p>
  *
  * @author <a href="mailto:werner@uom.technology">Werner Keil</a>
- * @version 1.6, November 14, 2018
+ * @version 1.7, December 18, 2018
  * @since 1.0
  */
 @SuppressWarnings("unchecked")
 public abstract class AbstractQuantity<Q extends Quantity<Q>> implements ComparableQuantity<Q>, UnitSupplier<Q>, ValueSupplier<Number> {
 
-    /**
+   /**
     * 
     */
     private static final long serialVersionUID = 293852425369811882L;
 
     private final Unit<Q> unit;
 
-    private final boolean level;
-
+    private final Scale scale;
+    
     /**
      * Holds a dimensionless quantity of none (exact).
      */
@@ -133,19 +135,19 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
     /**
      * Constructor.
      * @param unit a unit
-     * @param abs absolute or relative
+     * @param sca the scale, absolute or relative
      */
-    protected AbstractQuantity(Unit<Q> unit, boolean abs) {
+    protected AbstractQuantity(Unit<Q> unit, Scale sca) {
         this.unit = unit;
-        this.level = abs;
+        this.scale = sca;
     }
 
     /**
-     * Constructor. Applies {@code RATIO}, the highest {@link LevelOfMeasurement} if none was given.
+     * Constructor. Applies {@code ABSOLUTE} {@code Scale} if none was given.
      * @param unit a unit
      */
     protected AbstractQuantity(Unit<Q> unit) {
-        this(unit, true);
+        this(unit, ABSOLUTE);
     }
 
     /**
@@ -167,13 +169,13 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
     }
 
     /**
-     * Returns the absolute or relative characteristics.
+     * Returns the absolute or relative scale.
      *
-     * @return the characteristics.
+     * @return the scale.
      */
     @Override
-    public boolean isAbsolute() {
-        return level;
+    public Scale getScale() {
+        return scale;
     }
 
     /**
@@ -285,7 +287,7 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
         }
         if (obj instanceof Quantity<?>) {
             Quantity<?> that = (Quantity<?>) obj;
-            return Objects.equals(getUnit(), that.getUnit()) && isAbsolute() == that.isAbsolute() && Objects.equals(getValue(), that.getValue());
+            return Objects.equals(getUnit(), that.getUnit()) && Objects.equals(getScale(), that.getScale()) && Objects.equals(getValue(), that.getValue());
         }
         return false;
     }

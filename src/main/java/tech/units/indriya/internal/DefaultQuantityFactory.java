@@ -69,8 +69,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import javax.measure.LevelOfMeasurement;
 import javax.measure.Quantity;
+import javax.measure.Quantity.Scale;
 import javax.measure.Unit;
 import javax.measure.quantity.*;
 import javax.measure.spi.QuantityFactory;
@@ -211,8 +211,8 @@ public class DefaultQuantityFactory<Q extends Quantity<Q>> implements QuantityFa
     }
 
     @Override
-    public Quantity<Q> create(Number value, Unit<Q> unit, boolean abs) {
-        return Quantities.getQuantity(value, unit, abs);
+    public Quantity<Q> create(Number value, Unit<Q> unit, Scale sc) {
+        return Quantities.getQuantity(value, unit, sc);
     }
 
     public Unit<Q> getSystemUnit() {

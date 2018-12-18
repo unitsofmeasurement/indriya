@@ -29,8 +29,8 @@
  */
 package tech.units.indriya.quantity;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static javax.measure.Quantity.Scale.*;
 import static tech.units.indriya.unit.Units.CELSIUS;
 import static tech.units.indriya.unit.Units.KELVIN;
 import static tech.units.indriya.unit.Units.KILOGRAM;
@@ -102,16 +102,16 @@ public class QuantityFactoryProviderTest {
     assertEquals(KELVIN, t.getUnit());
     assertEquals("K", t.getUnit().getSymbol());
     assertEquals("50 K", t.toString());
-    assertEquals(true, t.isAbsolute());
+    assertEquals(ABSOLUTE, t.getScale());
   }
   
   @Test
   public void testTemperatureCelsius() {
-    Quantity<Temperature> t = service.getQuantityFactory(Temperature.class).create(60, CELSIUS, false); // 60 °C
+    Quantity<Temperature> t = service.getQuantityFactory(Temperature.class).create(60, CELSIUS, RELATIVE); // 60 °C
     assertEquals(60, t.getValue());
     assertEquals(CELSIUS, t.getUnit());
     assertEquals("60 ℃", t.toString());
-    assertEquals(false, t.isAbsolute());
+    assertEquals(RELATIVE, t.getScale());
     //assertTrue(RATIO.compareTo(t.isAbsolute()) >=0 );
   }
 }
