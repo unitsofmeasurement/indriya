@@ -76,7 +76,7 @@ public final class BaseUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
   }
 
   /**
-   * Creates a base unit having the specified symbol and dimension.
+   * Creates a base unit having the specified symbol, dimension and quantity type.
    *
    * @param symbol
    *          the symbol of this base unit.
@@ -140,7 +140,7 @@ public final class BaseUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
   }
 
   @Override
-  public final boolean equals(Object obj) {
+  public boolean equals(Object obj) {
     if (this == obj)
       return true;
     if (obj instanceof BaseUnit) {
@@ -154,8 +154,8 @@ public final class BaseUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
   }
 
   @Override
-  public final int hashCode() {
-    return Objects.hashCode(getSymbol());
+  public int hashCode() {
+    return Objects.hash(getSymbol(), getDimension());
   }
 
   @Override
