@@ -582,31 +582,4 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
   @Override
   public abstract int hashCode();
 
-  /**
-   * Utility class for number comparison and equality
-   */
-  protected static final class Equalizer {
-    /**
-     * Indicates if this unit is considered equals to the specified object. order).
-     *
-     * @param obj
-     *            the object to compare for equality.
-     * @return <code>true</code> if <code>this</code> and <code>obj</code> are considered equal; <code>false</code>otherwise.
-     */
-    public static boolean areEqual(@SuppressWarnings("rawtypes") AbstractUnit u1, @SuppressWarnings("rawtypes") AbstractUnit u2) {
-      /*
-       * if (u1 != null && u2 != null) { if (u1.getName() != null && u1.getSymbol() !=
-       * null) { return u1.getName().equals(u2.getName()) &&
-       * u1.getSymbol().equals(u2.getSymbol()) && u1.internalIsCompatible(u2, false);
-       * } else if (u1.getSymbol() != null) { return
-       * u1.getSymbol().equals(u2.getSymbol()) && u1.internalIsCompatible(u2, false);
-       * } else { return u1.toString().equals(u2.toString()) &&
-       * u1.internalIsCompatible(u2, false); } } else {
-       */
-      if (u1 == u2)
-        return true;
-      return false;
-    }
-  }
-
 }

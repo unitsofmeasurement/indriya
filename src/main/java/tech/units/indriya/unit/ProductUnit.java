@@ -293,9 +293,6 @@ public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
             }
             return true;
         }
-        if (obj instanceof AbstractUnit) {
-            return AbstractUnit.Equalizer.areEqual(this, (AbstractUnit<?>) obj);
-        }
         return false;
     }
 
