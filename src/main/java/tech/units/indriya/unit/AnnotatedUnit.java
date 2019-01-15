@@ -83,7 +83,7 @@ public final class AnnotatedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> 
    * @return the annotated unit.
    */
   public AnnotatedUnit(AbstractUnit<Q> actualUnit, String annotation) {
-    this.actualUnit = (actualUnit instanceof AnnotatedUnit) ? ((AnnotatedUnit<Q>) actualUnit).actualUnit : actualUnit;
+    this.actualUnit = actualUnit instanceof AnnotatedUnit ? ((AnnotatedUnit<Q>) actualUnit).actualUnit : actualUnit;
     this.annotation = annotation;
   }
 
