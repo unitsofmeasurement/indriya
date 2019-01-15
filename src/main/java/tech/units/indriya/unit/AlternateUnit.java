@@ -136,10 +136,6 @@ public final class AlternateUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> 
             AlternateUnit that = (AlternateUnit) obj;
             return Objects.equals(parentUnit, that.parentUnit) && Objects.equals(symbol, that.symbol);
         }
-        if (obj instanceof AbstractUnit) {
-            return AbstractUnit.Equalizer.areEqual(this, (AbstractUnit) obj);
-        } else {
-            return false;
-        }
+        return false;
     }
 }

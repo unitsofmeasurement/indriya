@@ -142,7 +142,7 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
   @Override
   public boolean isSystemUnit() {
     Unit<Q> sys = this.toSystemUnit();
-    return (this == sys) || this.equals(sys);
+    return this == sys || this.equals(sys);
   }
 
   /**
@@ -271,7 +271,7 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
   @Override
   public final <T extends Quantity<T>> AbstractUnit<T> asType(Class<T> type) {
     Dimension typeDimension = QuantityDimension.of(type);
-    if ((typeDimension != null) && (!typeDimension.equals(this.getDimension())))
+    if (typeDimension != null && !typeDimension.equals(this.getDimension()))
       throw new ClassCastException("The unit: " + this + " is not compatible with quantities of type " + type);
     return (AbstractUnit<T>) this;
   }
@@ -357,7 +357,7 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
    */
   private final boolean internalIsCompatible(Unit<?> that, boolean checkEquals) {
     if (checkEquals) {
-      if ((this == that) || this.equals(that))
+      if (this == that || this.equals(that))
         return true;
     } else {
       if (this == that)
@@ -378,7 +378,7 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
 
   private final UnitConverter internalGetConverterTo(Unit<Q> that, boolean useEquals) throws UnconvertibleException {
     if (useEquals) {
-      if ((this == that) || this.equals(that))
+      if (this == that || this.equals(that))
         return AbstractConverter.IDENTITY;
     } else {
       if (this == that)
@@ -398,7 +398,7 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
   }
 
   private static boolean isLongValue(double value) {
-    return !((value < Long.MIN_VALUE) || (value > Long.MAX_VALUE)) && Math.floor(value) == value;
+    return !(value < Long.MIN_VALUE || value > Long.MAX_VALUE) && Math.floor(value) == value;
   }
 
   private static UnitConverter converterOf(double factor) {
@@ -581,32 +581,5 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
 
   @Override
   public abstract int hashCode();
-
-  /**
-   * Utility class for number comparison and equality
-   */
-  protected static final class Equalizer {
-    /**
-     * Indicates if this unit is considered equals to the specified object. order).
-     *
-     * @param obj
-     *            the object to compare for equality.
-     * @return <code>true</code> if <code>this</code> and <code>obj</code> are considered equal; <code>false</code>otherwise.
-     */
-    public static boolean areEqual(@SuppressWarnings("rawtypes") AbstractUnit u1, @SuppressWarnings("rawtypes") AbstractUnit u2) {
-      /*
-       * if (u1 != null && u2 != null) { if (u1.getName() != null && u1.getSymbol() !=
-       * null) { return u1.getName().equals(u2.getName()) &&
-       * u1.getSymbol().equals(u2.getSymbol()) && u1.internalIsCompatible(u2, false);
-       * } else if (u1.getSymbol() != null) { return
-       * u1.getSymbol().equals(u2.getSymbol()) && u1.internalIsCompatible(u2, false);
-       * } else { return u1.toString().equals(u2.toString()) &&
-       * u1.internalIsCompatible(u2, false); } } else {
-       */
-      if (u1 == u2)
-        return true;
-      return false;
-    }
-  }
 
 }

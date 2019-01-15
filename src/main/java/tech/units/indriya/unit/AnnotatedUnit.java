@@ -83,7 +83,7 @@ public final class AnnotatedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> 
    * @return the annotated unit.
    */
   public AnnotatedUnit(AbstractUnit<Q> actualUnit, String annotation) {
-    this.actualUnit = (actualUnit instanceof AnnotatedUnit) ? ((AnnotatedUnit<Q>) actualUnit).actualUnit : actualUnit;
+    this.actualUnit = actualUnit instanceof AnnotatedUnit ? ((AnnotatedUnit<Q>) actualUnit).actualUnit : actualUnit;
     this.annotation = annotation;
   }
 
@@ -135,7 +135,6 @@ public final class AnnotatedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> 
     return Objects.hash(actualUnit, annotation);
   }
 
-  @SuppressWarnings("rawtypes")
   @Override
   public boolean equals(Object obj) {
     if (this == obj) {
@@ -145,9 +144,6 @@ public final class AnnotatedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> 
       AnnotatedUnit<?> other = (AnnotatedUnit<?>) obj;
       return Objects.equals(actualUnit, other.actualUnit) && Objects.equals(annotation, other.annotation);
     }
-    if (obj instanceof AbstractUnit) {
-      return AbstractUnit.Equalizer.areEqual(this, (AbstractUnit) obj);
-    } 
     return false;
   }
 }

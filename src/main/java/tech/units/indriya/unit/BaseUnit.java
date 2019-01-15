@@ -147,9 +147,6 @@ public final class BaseUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
       BaseUnit<?> thatUnit = (BaseUnit<?>) obj;
       return Objects.equals(this.getSymbol(), thatUnit.getSymbol()) && this.dimension.equals(thatUnit.dimension);
     }
-    if (obj instanceof AbstractUnit) {
-      return AbstractUnit.Equalizer.areEqual(this, (AbstractUnit<?>) obj);
-    } 
     return false;
   }
 
