@@ -54,38 +54,20 @@ import java.util.Objects;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.3, October 12, 2018
+ * @version 1.4, January 15, 2019
  * @since 1.0
  */
 public final class BaseUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
 
   /**
-     * 
-     */
+   * 
+   */
   private static final long serialVersionUID = 1721629233768215930L;
 
   /**
    * Holds the base unit dimension.
    */
   private final Dimension dimension;
-
-  private Q quantityType;
-
-  protected Q getQuantityType() {
-    return quantityType;
-  }
-
-  /**
-   * Creates a base unit having the specified symbol, dimension and quantity type.
-   *
-   * @param symbol
-   *          the symbol of this base unit.
-   */
-  public BaseUnit(String symbol, Dimension dimension, Q quant) {
-    super(symbol);
-    this.dimension = dimension;
-    quantityType = quant;
-  }
 
   /**
    * Creates a base unit having the specified symbol and dimension.
@@ -157,8 +139,7 @@ public final class BaseUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
 
   @Override
   public Map<? extends AbstractUnit<Q>, Integer> getBaseUnits() {
-    // TODO Shall we return null, empty list or what (e.g. Optional in SE
-    // 8)?
+    // TODO Shall we return null, empty list or what (e.g. Optional from Java 8)?
     return null;
   }
 }
