@@ -31,14 +31,11 @@ package tech.units.indriya.incubator;
 
 import static javax.measure.MetricPrefix.KILO;
 import static javax.measure.Quantity.Scale.*;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import javax.measure.MeasurementException;
 import javax.measure.Quantity;
-import javax.measure.Quantity.Scale;
 import javax.measure.Unit;
 import javax.measure.quantity.Temperature;
 
@@ -56,7 +53,7 @@ import tech.units.indriya.unit.Units;
  * Playground inspired by
  *  <a href="https://reference.wolfram.com/language/tutorial/TemperatureUnits.html">Mathematica/Wolfram examples</a>
  *  , what would it look like in Java?
- * 
+ * @author Andi Huber
  */
 class AbsoluteVsRelativeDraft {
 
