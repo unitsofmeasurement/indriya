@@ -49,7 +49,7 @@ import tech.units.indriya.quantity.Quantities;
  * An implementation of {@link javax.measure.format.QuantityFormat
  * QuantityFormat} combining {@linkplain NumberFormat} and {@link UnitFormat} separated by a delimiter.
  * 
- * @version 1.3, $Date: 2018-11-11 $
+ * @version 1.3.1, $Date: 2019-01-19 $
  * @since 2.0
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -154,7 +154,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
 	 *
 	 * @param style
 	 *            the format style to apply.
-	 * @return the desired format.
+	 * @return <code>NumberDelimiterQuantityFormat.getInstance(NumberFormat.getInstance(), UnitFormat.getInstance())</code>
 	 */
 	public static NumberDelimiterQuantityFormat getInstance(FormatBehavior style) {
 		switch (style) {

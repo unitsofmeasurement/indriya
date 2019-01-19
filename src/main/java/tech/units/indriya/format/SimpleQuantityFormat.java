@@ -44,7 +44,7 @@ import tech.units.indriya.quantity.Quantities;
 
 /**
  * A simple implementation of QuantityFormat
- * @version 0.9.1
+ * @version 0.9.2
  * @since 2.0
  */
 @SuppressWarnings("rawtypes")
@@ -144,7 +144,7 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
 	 * assumes the quantity is composed of a decimal number and a {@link Unit}
 	 * separated by whitespace(s).
 	 *
-	 * @return <code>MeasureFormat.getInstance(NumberFormat.getInstance(), UnitFormat.getInstance())</code>
+	 * @return a default <code>SimpleQuantityFormat</code> instance.
 	 */
 	public static SimpleQuantityFormat getInstance() {
 		return DEFAULT;
