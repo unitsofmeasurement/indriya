@@ -72,7 +72,7 @@ public class LocalFormatTest {
 
   @Test
   public void testParseIrregularStringLocal() {
-	  assertThrows(UnsupportedOperationException.class, () -> {
+	  assertThrows(IllegalArgumentException.class, () -> { // TODO should behave like EBNFUnitFormat (throwing a MeasurementParseException)
     final UnitFormat format = LocalUnitFormat.getInstance();
     @SuppressWarnings("unused")
 	Unit<?> u = format.parse("bl//^--1a");

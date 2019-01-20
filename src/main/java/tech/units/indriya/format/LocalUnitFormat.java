@@ -38,9 +38,9 @@ import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.function.AddConverter;
 import tech.units.indriya.function.MultiplyConverter;
 import tech.units.indriya.function.RationalConverter;
-import tech.units.indriya.internal.format.LocalUnitFormatParser;
 import tech.units.indriya.internal.format.TokenException;
 import tech.units.indriya.internal.format.TokenMgrError;
+import tech.units.indriya.internal.format.UnitFormatParser;
 import tech.units.indriya.unit.AlternateUnit;
 import tech.units.indriya.unit.AnnotatedUnit;
 import tech.units.indriya.unit.BaseUnit;
@@ -159,7 +159,7 @@ import java.util.ResourceBundle;
  *
  * @author <a href="mailto:eric-r@northwestern.edu">Eric Russell</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.0.2, April 30, 2017
+ * @version 1.1, January 20, 2019
  * @since 1.0
  */
 public class LocalUnitFormat extends AbstractUnitFormat {
@@ -286,7 +286,7 @@ public class LocalUnitFormat extends AbstractUnitFormat {
       return AbstractUnit.ONE;
     }
     try {
-      LocalUnitFormatParser parser = new LocalUnitFormatParser(symbolMap, new StringReader(source));
+      UnitFormatParser parser = new UnitFormatParser(symbolMap, new StringReader(source));
       Unit<?> result = parser.parseUnit();
       cursor.setIndex(end);
       return result;

@@ -173,14 +173,14 @@ public class UnitFormatTest {
   @Test
   public void testParseLocal() {
     final UnitFormat localFormat = LocalUnitFormat.getInstance();
-    assertThrows(UnsupportedOperationException.class, () -> {
+    //assertThrows(UnsupportedOperationException.class, () -> {
 	    try {
 	      Unit<?> u = localFormat.parse("min");
 	      assertEquals("min", u.getSymbol());
 	    } catch (MeasurementParseException e) {
 	      fail(e.getMessage());
 	    }
-    });
+    //});
   }
 
   @Test
