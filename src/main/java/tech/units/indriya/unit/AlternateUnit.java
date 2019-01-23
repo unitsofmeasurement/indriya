@@ -82,7 +82,7 @@ public final class AlternateUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> 
             throw new IllegalArgumentException("The parent unit: " + parentUnit + " is not an AbstractUnit");
         if (!((AbstractUnit) parentUnit).isSystemUnit())
             throw new IllegalArgumentException("The parent unit: " + parentUnit + " is not an unscaled SI unit");
-        this.parentUnit = (parentUnit instanceof AlternateUnit) ? ((AlternateUnit) parentUnit).getParentUnit() : parentUnit;
+        this.parentUnit = parentUnit instanceof AlternateUnit ? ((AlternateUnit) parentUnit).getParentUnit() : parentUnit;
         this.symbol = symbol;
     }
 
@@ -123,7 +123,7 @@ public final class AlternateUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> 
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(symbol); // TODO why is parentUnit not used here?
+        return Objects.hash(parentUnit, symbol);
     }
 
     @SuppressWarnings("rawtypes")
