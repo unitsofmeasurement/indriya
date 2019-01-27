@@ -53,8 +53,8 @@ import tech.units.indriya.function.Calculus;
  * @param <Q>
  *          The type of the quantity.
  * @author otaviojava
- * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.1.1, $Date: 2018-11-14 $
+ * @author <a href="mailto:werner@units.tech">Werner Keil</a>
+ * @version 1.2, $Date: 2019-01-27 $
  * @since 1.0
  */
 // TODO could we make this extend JavaNumericQuantity for consistency?
@@ -184,7 +184,7 @@ public class NumberQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
    *          the measurement unit.
    * @return the corresponding <code>DecimalQuantity</code> quantity.
    */
-  static <Q extends Quantity<Q>> AbstractQuantity<Q> of(BigDecimal bigDecimal, Unit<Q> unit) {
+  public static <Q extends Quantity<Q>> AbstractQuantity<Q> of(BigDecimal bigDecimal, Unit<Q> unit) {
     return new DecimalQuantity<Q>(bigDecimal, unit);
   }
 
@@ -197,7 +197,7 @@ public class NumberQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
    *          the measurement unit.
    * @return the corresponding <code>BigIntegerQuantity</code> quantity.
    */
-  static <Q extends Quantity<Q>> AbstractQuantity<Q> of(BigInteger bigInteger, Unit<Q> unit) {
+  public static <Q extends Quantity<Q>> AbstractQuantity<Q> of(BigInteger bigInteger, Unit<Q> unit) {
     return new BigIntegerQuantity<Q>(bigInteger, unit);
   }
 
