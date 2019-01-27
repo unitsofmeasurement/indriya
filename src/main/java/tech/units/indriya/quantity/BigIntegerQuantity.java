@@ -48,7 +48,8 @@ import tech.units.indriya.ComparableQuantity;
  * @see AbstractQuantity
  * @see Quantity
  * @see ComparableQuantity
- * @version 0.6
+ * @see BigInteger
+ * @version 1.0
  * @since 2.0
  */
 final class BigIntegerQuantity<Q extends Quantity<Q>> extends JavaNumericQuantity<Q> {
