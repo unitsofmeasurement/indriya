@@ -40,6 +40,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import javax.measure.BinaryPrefix;
 import javax.measure.MetricPrefix;
 import javax.measure.Prefix;
 import javax.measure.Quantity;
@@ -66,8 +67,8 @@ import tech.units.indriya.unit.Units;
  * </p>
  * 
  * <p>
- * For all SI units, the 20 SI prefixes used to form decimal multiples and sub-multiples of SI units are recognized. {@link Units} are directly
- * recognized. For example:<br>
+ * For all SI units, the <b>20 SI prefixes</b> used to form decimal multiples and sub-multiples are recognized. As well as the <b>8 binary prefixes</b>.<br>
+ * {@link Units} are directly recognized. For example:<br>
  * <code>
  *        AbstractUnit.parse("m°C").equals(MetricPrefix.MILLI(Units.CELSIUS))
  *        AbstractUnit.parse("kW").equals(MetricPrefix.KILO(Units.WATT))
@@ -77,7 +78,7 @@ import tech.units.indriya.unit.Units;
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
  * @author Eric Russell
- * @version 1.5.2, August 16, 2018
+ * @version 1.6, January 29, 2019
  * @since 1.0
  */
 public abstract class SimpleUnitFormat extends AbstractUnitFormat {
@@ -108,11 +109,24 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
 		  .collect(Collectors.toList())
 		  .toArray(new String[] {});
 
+  // TODO try to consolidate those
   private static final UnitConverter[] METRIC_CONVERTERS =  
 		  Stream.of(MetricPrefix.values())
 		  .map(PowerOfIntConverter::of)
 		  .collect(Collectors.toList())
   		  .toArray(new UnitConverter[] {});
+  
+  private static final UnitConverter[] BINARY_CONVERTERS =  
+          Stream.of(BinaryPrefix.values())
+          .map(PowerOfIntConverter::of)
+          .collect(Collectors.toList())
+          .toArray(new UnitConverter[] {});
+  
+  private static final String[] BINARY_SYMBOLS =  
+          Stream.of(BinaryPrefix.values())
+          .map(Prefix::getSymbol)
+          .collect(Collectors.toList())
+          .toArray(new String[] {});
 
   /**
    * Holds the standard unit format.
@@ -429,6 +443,11 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
         if (METRIC_CONVERTERS[i].equals(converter)) {
           return METRIC_SYMBOLS[i];
         }
+      }
+      for (int j = 0; j < BINARY_CONVERTERS.length; j++) {
+          if (BINARY_CONVERTERS[j].equals(converter)) {
+            return BINARY_SYMBOLS[j];
+          }
       }
       return null; // TODO or return blank?
     }
