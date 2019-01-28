@@ -30,6 +30,7 @@
 package tech.units.indriya.format;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static javax.measure.BinaryPrefix.*;
 import static javax.measure.MetricPrefix.*;
 import static tech.units.indriya.unit.Units.CANDELA;
 import static tech.units.indriya.unit.Units.GRAM;
@@ -112,6 +113,13 @@ public class SimpleFormatTest {
         String s = format.format(m);
         assertEquals("ng", s);
     }
+    
+    @Test
+    public void testKibi() {
+        Unit<Mass> m = KIBI(GRAM);
+        String s = format.format(m);
+        assertEquals("Kig", s);
+    }
 
     @Test
     public void testFormatHz2() {
@@ -125,6 +133,13 @@ public class SimpleFormatTest {
         Unit<Frequency> hz = KILO(HERTZ);
         String s = format.format(hz);
         assertEquals("kHz", s);
+    }
+    
+    @Test
+    public void testFormatHz4() {
+        Unit<Frequency> hz = TEBI(HERTZ);
+        String s = format.format(hz);
+        assertEquals("TiHz", s);
     }
 
     @Test
