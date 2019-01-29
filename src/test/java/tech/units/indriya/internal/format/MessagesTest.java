@@ -37,15 +37,16 @@ import java.util.ResourceBundle;
 import org.junit.jupiter.api.Test;
 
 public class MessagesTest {
+    private static final int BUNDLE_ENTRIES = 72;
 
-  @Test
-  public void testMessageBundle() {
-    Locale locale = new Locale("en");
+    @Test
+    public void testMessageBundle() {
+        Locale locale = new Locale("en");
 
-    ResourceBundle bundle = ResourceBundle.getBundle("tech.units.indriya.format.messages", locale);
-    assertNotNull(bundle);
-    String text = bundle.getString("tech.units.indriya.unit.Units.KILOMETRE_PER_HOUR");
-    assertEquals("km/h", text);
-    assertEquals(64, bundle.keySet().size());
-  }
+        ResourceBundle bundle = ResourceBundle.getBundle("tech.units.indriya.format.messages", locale);
+        assertNotNull(bundle);
+        String text = bundle.getString("tech.units.indriya.unit.Units.KILOMETRE_PER_HOUR");
+        assertEquals("km/h", text);
+        assertEquals(BUNDLE_ENTRIES, bundle.keySet().size());
+    }
 }
