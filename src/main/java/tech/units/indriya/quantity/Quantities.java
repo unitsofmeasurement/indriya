@@ -152,24 +152,36 @@ public final class Quantities {
      *            the measurement scale.
      * @return the corresponding <code>numeric</code> quantity.
      * @throws NullPointerException
-     *             if value, unit or level were null
+     *             if value or scale were null
+     * @throws IllegalArgumentException
+     *             if unit is not a CompoundUnit
      * @since 2.0
      */
-    @SuppressWarnings("deprecation")
     public static <Q extends Quantity<Q>> ComparableQuantity<Q> getCompoundQuantity(Number[] values, Unit<Q> unit, Scale scale) {
         if (unit instanceof CompoundUnit) {
-            CompoundUnit<Q> compUnit =  (CompoundUnit<Q>)unit;
-            ComparableQuantity<Q> result;
-            if (values.length == 2) {
-                result = getQuantity(values[0], compUnit.getUpper(), scale);
-                result = result.add(getQuantity(values[1], compUnit.getLower(), scale));
+            final CompoundUnit<Q> compUnit =  (CompoundUnit<Q>) unit;
+            //ComparableQuantity<Q> result = null;
+            if (values.length == compUnit.getUnits().size()) {
+                /*
+                for (int i = 0; i < values.length; i++) {
+                    Number value = values[i];
+                    if (result == null) {
+                        result = getQuantity(value, compUnit.getUnits().get(i), scale);
+                    } else {
+                        result = result.add(getQuantity(value, compUnit.getUnits().get(i), scale));
+                    }
+                }
                 return result;
+                 */
+                return new CompoundQuantity<Q>(values, unit, scale);
             } else {
-                throw new IllegalArgumentException(String.format("%s does not match Compound Unit", values.length));
+                throw new IllegalArgumentException(String.format("%s values don't match %s in Compound Unit", values.length, compUnit.getUnits().size()));
             }
         } else {
             throw new IllegalArgumentException(String.format("%s not a Compound Unit", unit));
         }
+       
+        
     }
     
     /**

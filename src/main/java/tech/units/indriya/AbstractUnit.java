@@ -32,7 +32,9 @@ package tech.units.indriya;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.measure.Dimension;
@@ -556,7 +558,19 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
    * @return the corresponding compound unit.
    */
   public final Unit<Q> compound(Unit<Q> that) {
-      return new CompoundUnit<Q>(this, that);
+      if (this instanceof CompoundUnit) {
+          final CompoundUnit<Q> thisComp = (CompoundUnit<Q>) this;
+          final List<Unit<Q>> comps = new ArrayList<>();
+          comps.addAll(thisComp.getUnits());
+          comps.add(that);
+          @SuppressWarnings("unchecked")
+          final Unit<Q>[] compArray = new Unit[comps.size()];
+          comps.toArray(compArray);
+          return new CompoundUnit<Q>(compArray);
+          // TODO special case for that being a CompoundUnit as well
+      } else {
+          return new CompoundUnit<Q>(this, that);
+      }
   }
 
   /**

@@ -35,6 +35,8 @@ import java.util.logging.Logger;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.quantity.Length;
+import javax.measure.quantity.Time;
+
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.AbstractUnit;
@@ -56,7 +58,7 @@ public class CompoundUnitTest {
     Unit<Length> compLen =  ((AbstractUnit<Length>)Units.METRE).compound(CENTI(Units.METRE));
     Quantity<Length> l1 = Quantities.getQuantity(1.70, compLen);
     assertEquals(1.7d, l1.getValue());
-    assertEquals("m:cm", l1.getUnit().toString()); // TODO this does not make much sense yet
+    assertEquals("m;cm", l1.getUnit().toString()); // TODO this does not make much sense yet
   }
   
   @Test
@@ -65,7 +67,27 @@ public class CompoundUnitTest {
     Number[] numList = {1, 70};
     Quantity<Length> l1 = Quantities.getCompoundQuantity(numList, compLen);
     assertEquals(BigDecimal.valueOf(1.7d), l1.getValue());
-    assertEquals("m", l1.getUnit().toString());
+    assertEquals("m;cm", l1.getUnit().toString());
+  }
+ 
+  @Test
+  public void testNoCompound() {
+    Number[] numList = {1, 70};
+    assertThrows(IllegalArgumentException.class, () -> {
+        @SuppressWarnings("unused")
+        Quantity<Time> t1 = Quantities.getCompoundQuantity(numList, Units.DAY);
+    });
+  }
+  
+  @Test
+  public void testSizeMismatch() {
+      Unit<Time> compTime =  ((AbstractUnit<Time>)((AbstractUnit<Time>)Units.HOUR).
+              compound(Units.MINUTE)).compound(Units.SECOND);
+      Number[] numList = {1, 70};
+    assertThrows(IllegalArgumentException.class, () -> {
+        @SuppressWarnings("unused")
+        Quantity<Time> t1 = Quantities.getCompoundQuantity(numList, compTime);
+    });
   }
   
   @Test

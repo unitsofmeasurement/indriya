@@ -86,6 +86,9 @@ public class CompoundQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q>
         isBig = tmpBig;
     }
 
+    /**
+     * @since 2.0
+     */
     protected CompoundQuantity(Number[] numbers, Unit<Q> unit) {
         this(numbers, unit, ABSOLUTE);
     }
@@ -98,11 +101,30 @@ public class CompoundQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q>
 
     @Override
     public Number getValue() {
-       BigDecimal result = BigDecimal.ZERO;
-       for (Number value: values) {
-           result.add(Calculus.toBigDecimal(value));
-       }
-       return result;
+//       BigDecimal result = BigDecimal.ZERO;
+//       for (Number value: values) {
+//           result.add(Calculus.toBigDecimal(value));
+//       }
+//       return result;
+        if (getUnit() instanceof CompoundUnit) {
+            final CompoundUnit<Q> compUnit =  (CompoundUnit<Q>) getUnit();
+            ComparableQuantity<Q> result = null;
+            if (values.length == compUnit.getUnits().size()) {
+                for (int i = 0; i < values.length; i++) {
+                    Number value = values[i];
+                    if (result == null) {
+                        result = Quantities.getQuantity(value, compUnit.getUnits().get(i), getScale());
+                    } else {
+                        result = result.add(Quantities.getQuantity(value, compUnit.getUnits().get(i), getScale()));
+                    }
+                }
+                return result.getValue();
+            } else {
+                throw new IllegalArgumentException(String.format("%s values don't match %s in Compound Unit", values.length, compUnit.getUnits().size()));
+            }
+        } else {
+            throw new IllegalArgumentException(String.format("%s not a Compound Unit", getUnit()));
+        }
     }
 
     public Number[] getValues() {

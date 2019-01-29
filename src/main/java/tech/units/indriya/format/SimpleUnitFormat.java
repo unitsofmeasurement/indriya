@@ -79,7 +79,7 @@ import tech.units.indriya.unit.Units;
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
  * @author Eric Russell
- * @version 1.6.1, January 29, 2019
+ * @version 1.6.2, January 29, 2019
  * @since 1.0
  */
 public abstract class SimpleUnitFormat extends AbstractUnitFormat {
@@ -266,17 +266,14 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
         format((Unit<?>) unit, (Appendable) dest);
       } else { // When retroweaver is used to produce 1.4 binaries. TODO is this still relevant?
         format((Unit<?>) unit, new Appendable() {
-
           public Appendable append(char arg0) throws IOException {
             toAppendTo.append(arg0);
             return null;
           }
-
           public Appendable append(CharSequence arg0) throws IOException {
             toAppendTo.append(arg0);
             return null;
           }
-
           public Appendable append(CharSequence arg0, int arg1, int arg2) throws IOException {
             toAppendTo.append(arg0.subSequence(arg1, arg2));
             return null;
@@ -439,9 +436,14 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
       if (unit instanceof CompoundUnit) {
         CompoundUnit<?> cpdUnit = (CompoundUnit<?>) unit;
         final StringBuilder compoundable = new StringBuilder();
-        compoundable.append(nameFor(cpdUnit.getUpper()));
-        compoundable.append(":"); // FIXME we need a more flexible pattern here
-        compoundable.append(nameFor(cpdUnit.getLower()));
+        final int partSize = cpdUnit.getUnits().size();
+        int pos = 0;
+        for (Unit<?> part : cpdUnit.getUnits()) {
+            compoundable.append(nameFor(part));
+            pos++;
+            if (compoundable.length() > 0 && pos < partSize) 
+                compoundable.append(";"); // FIXME we need a more flexible pattern here
+        }
         return compoundable.toString();
       }
       return null; // Product unit.

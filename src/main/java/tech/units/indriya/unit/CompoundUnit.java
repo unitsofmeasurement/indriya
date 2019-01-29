@@ -33,7 +33,10 @@ import javax.measure.UnitConverter;
 
 import tech.units.indriya.AbstractUnit;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import javax.measure.Dimension;
 import javax.measure.Quantity;
@@ -52,107 +55,98 @@ import javax.measure.Unit;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.8, April 11, 2018
+ * @version 1.9, January 29, 2019
  * @since 2.0
- * @deprecated It does not seem to add value compared to the CompoundQuantity (or another name) approach
  */
 public final class CompoundUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
 
-  /**
-   * 
-   */
-  private static final long serialVersionUID = -6588505921476784171L;
+    /**
+     * 
+     */
+    private static final long serialVersionUID = -6588505921476784171L;
 
-  /**
-   * Holds the upper unit.
-   */
-  private final Unit<Q> upper;
+    /**
+     * Holds the upper unit.
+     */
+    private final List<Unit<Q>> units;
 
-  /**
-   * Holds the lower unit.
-   */
-  private final Unit<Q> lower;
-
-  /**
-   * Creates a compound unit from the specified units.
-   *
-   * @param up
-   *          the upper unit.
-   * @param low
-   *          the lower unit(s)
-   * @throws IllegalArgumentException
-   *           if both units do not the same system unit.
-   */
-  public CompoundUnit(Unit<Q> up, Unit<Q> low) {
-    if (!up.getSystemUnit().equals(low.getSystemUnit()))
-      throw new IllegalArgumentException("Both units do not have the same system unit");
-    upper = up;
-    lower = low;
-  }
-
-  /**
-   * Returns the lower unit of this compound unit.
-   *
-   * @return the lower unit.
-   */
-  public Unit<Q> getLower() {
-    return lower;
-  }
-
-  /**
-   * Returns the upper unit of this compound unit.
-   *
-   * @return the upper unit.
-   */
-  public Unit<Q> getUpper() {
-    return upper;
-  }
-
-  /**
-   * Indicates if this compound unit is considered equals to the specified object (both are compound units with same composing units in the same
-   * order).
-   *
-   * @param obj
-   *          the object to compare for equality.
-   * @return <code>true</code> if <code>this</code> and <code>obj</code> are considered equal; <code>false</code>otherwise.
-   */
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
+    /**
+     * Creates a compound unit from the specified units.
+     *
+     * @param units
+     *            the units.
+     * @throws IllegalArgumentException
+     *             if all units do not have the same system unit.
+     */
+    @SafeVarargs
+    public CompoundUnit(final Unit<Q>... units) {
+        Objects.requireNonNull(units);
+        final Unit<Q> systemUnit = units[0].getSystemUnit();
+        for (Unit<Q> unit : units) {
+            if (!systemUnit.equals(unit.getSystemUnit()))
+                throw new IllegalArgumentException("Units do not have the same system unit");
+        }
+        this.units = Arrays.asList(units);
     }
-    if (obj instanceof CompoundUnit) {
-      CompoundUnit<?> thatUnit = (CompoundUnit<?>) obj;
-      return this.upper.equals(thatUnit.upper) && this.lower.equals(thatUnit.lower);
+
+    /**
+     * Returns the list of units uniquely defining the value of this CompoundUnit. The list is a snapshot of the units at the time {@code getUnits} is
+     * called and is not mutable. The units are ordered in as they were added to this CompoundUnit.
+     *
+     * implSpec The list of units completely and uniquely represents the state of the object without omissions, overlaps or duplication. The units are
+     * in order they were added.
+     *
+     * @return the List of {@code Units}; not null
+     */
+    public List<Unit<Q>> getUnits() {
+        return units;
     }
-    if (obj instanceof AbstractUnit) {
-      return AbstractUnit.Equalizer.areEqual(this, (AbstractUnit<?>) obj);
-    } else {
-      return false;
+
+    /**
+     * Indicates if this compound unit is considered equals to the specified object (both are compound units with same composing units in the same
+     * order).
+     *
+     * @param obj
+     *            the object to compare for equality.
+     * @return <code>true</code> if <code>this</code> and <code>obj</code> are considered equal; <code>false</code>otherwise.
+     */
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj instanceof CompoundUnit) {
+            CompoundUnit<?> thatUnit = (CompoundUnit<?>) obj;
+            return Objects.equals(units, thatUnit.getUnits());
+        }
+        if (obj instanceof AbstractUnit) {
+            return AbstractUnit.Equalizer.areEqual(this, (AbstractUnit<?>) obj);
+        } else {
+            return false;
+        }
     }
-  }
 
-  @Override
-  public int hashCode() {
-    return upper.hashCode() ^ lower.hashCode();
-  }
+    @Override
+    public int hashCode() {
+        return Objects.hash(units);
+    }
 
-  @Override
-  public UnitConverter getSystemConverter() {
-    return ((AbstractUnit<?>) lower).getSystemConverter();
-  }
+    @Override
+    public UnitConverter getSystemConverter() {
+        return ((AbstractUnit<Q>) units.get(0)).getSystemConverter();
+    }
 
-  @Override
-  protected Unit<Q> toSystemUnit() {
-    return lower.getSystemUnit();
-  }
+    @Override
+    protected Unit<Q> toSystemUnit() {
+        return units.get(0).getSystemUnit();
+    }
 
-  @Override
-  public Map<? extends Unit<?>, Integer> getBaseUnits() {
-    return lower.getBaseUnits();
-  }
+    @Override
+    public Map<? extends Unit<?>, Integer> getBaseUnits() {
+        return units.get(0).getBaseUnits();
+    }
 
-  @Override
-  public Dimension getDimension() {
-    return lower.getDimension();
-  }
+    @Override
+    public Dimension getDimension() {
+        return units.get(0).getDimension();
+    }
 }
