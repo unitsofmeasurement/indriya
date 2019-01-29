@@ -54,6 +54,7 @@ import tech.units.indriya.quantity.QuantityDimension;
 import tech.units.indriya.spi.DimensionalModel;
 import tech.units.indriya.unit.AlternateUnit;
 import tech.units.indriya.unit.AnnotatedUnit;
+import tech.units.indriya.unit.CompoundUnit;
 import tech.units.indriya.unit.ProductUnit;
 import tech.units.indriya.unit.TransformedUnit;
 import tech.units.indriya.unit.Units;
@@ -74,7 +75,7 @@ import tech.uom.lib.common.function.SymbolSupplier;
  * @see <a href= "http://en.wikipedia.org/wiki/International_System_of_Units">Wikipedia: International System of Units</a>
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.3.1, October 12, 2018
+ * @version 1.4, January 29, 2019
  * @since 1.0
  */
 public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableUnit<Q>, Nameable, SymbolSupplier {
@@ -541,12 +542,29 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
   public Unit<Q> prefix(Prefix prefix) {
     return this.transform(PowerOfIntConverter.of(prefix));
   }
+  
+  /**
+   * Returns the combination of this unit with the specified sub-unit. Compound
+   * units are typically used for formatting purpose. Examples of compound
+   * units:<code> 
+   *     Unit<Length> FOOT_INCH = FOOT.compound(INCH);
+   *     Unit<Time> HOUR_MINUTE_SECOND = HOUR.compound(MINUTE).compound(SECOND);
+   * </code>
+   * 
+   * @param that
+   *            the least significant unit to combine with this unit.
+   * @return the corresponding compound unit.
+   */
+  public final Unit<Q> compound(Unit<Q> that) {
+      return new CompoundUnit<Q>(this, that);
+  }
 
   /**
    * Compares this unit to the specified unit. The default implementation compares the name and symbol of both this unit and the specified unit.
    *
    * @return a negative integer, zero, or a positive integer as this unit is less than, equal to, or greater than the specified unit.
    */
+  @Override
   public int compareTo(Unit<Q> that) {
     if (name != null && getSymbol() != null) {
       return name.compareTo(that.getName()) + getSymbol().compareTo(that.getSymbol());
@@ -582,4 +600,31 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
   @Override
   public abstract int hashCode();
 
+  /**
+   * Utility class for number comparison and equality
+   */
+  protected static final class Equalizer {
+      /**
+       * Indicates if this unit is considered equals to the specified object. order).
+       *
+       * @param obj
+       *            the object to compare for equality.
+       * @return <code>true</code> if <code>this</code> and <code>obj</code> are
+       *         considered equal; <code>false</code>otherwise.
+       */
+      public static boolean areEqual(@SuppressWarnings("rawtypes") AbstractUnit u1, @SuppressWarnings("rawtypes") AbstractUnit u2) {
+          /*
+           * if (u1 != null && u2 != null) { if (u1.getName() != null && u1.getSymbol() !=
+           * null) { return u1.getName().equals(u2.getName()) &&
+           * u1.getSymbol().equals(u2.getSymbol()) && u1.internalIsCompatible(u2, false);
+           * } else if (u1.getSymbol() != null) { return
+           * u1.getSymbol().equals(u2.getSymbol()) && u1.internalIsCompatible(u2, false);
+           * } else { return u1.toString().equals(u2.toString()) &&
+           * u1.internalIsCompatible(u2, false); } } else {
+           */
+          if (u1 == u2)
+              return true;
+          return false;
+      }
+  }
 }

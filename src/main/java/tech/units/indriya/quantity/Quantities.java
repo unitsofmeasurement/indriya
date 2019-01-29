@@ -44,11 +44,12 @@ import javax.measure.format.MeasurementParseException;
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.format.AbstractQuantityFormat;
 import tech.units.indriya.format.SimpleQuantityFormat;
+import tech.units.indriya.unit.CompoundUnit;
 
 /**
  * Singleton class for accessing {@link Quantity} instances.
  * 
- * @version 1.4
+ * @version 1.5
  * @author werner
  * @author otaviojava
  * @since 1.0
@@ -92,8 +93,8 @@ public final class Quantities {
      *            the measurement value.
      * @param unit
      *            the measurement unit.
-     * @param level
-     *            the measurement level.
+     * @param scale
+     *            the measurement scale.
      * @return the corresponding <code>numeric</code> quantity.
      * @throws NullPointerException
      *             if value, unit or level were null
@@ -138,4 +139,54 @@ public final class Quantities {
     public static <Q extends Quantity<Q>> ComparableQuantity<Q> getQuantity(Number value, Unit<Q> unit) {
         return getQuantity(value, unit, ABSOLUTE);
     }
+    
+    /**
+     * Returns the compound quantity. When the {@link Number} was {@link BigDecimal} or {@link BigInteger} will uses {@link DecimalQuantity}, when the
+     * {@link Number} was {@link Double} will {@link DoubleQuantity} otherwise will {@link NumberQuantity}. in the specified unit.
+     * 
+     * @param value
+     *            the measurement value.
+     * @param unit
+     *            the measurement unit.
+     * @param scale
+     *            the measurement scale.
+     * @return the corresponding <code>numeric</code> quantity.
+     * @throws NullPointerException
+     *             if value, unit or level were null
+     * @since 2.0
+     */
+    @SuppressWarnings("deprecation")
+    public static <Q extends Quantity<Q>> ComparableQuantity<Q> getCompoundQuantity(Number[] values, Unit<Q> unit, Scale scale) {
+        if (unit instanceof CompoundUnit) {
+            CompoundUnit<Q> compUnit =  (CompoundUnit<Q>)unit;
+            ComparableQuantity<Q> result;
+            if (values.length == 2) {
+                result = getQuantity(values[0], compUnit.getUpper(), scale);
+                result = result.add(getQuantity(values[1], compUnit.getLower(), scale));
+                return result;
+            } else {
+                throw new IllegalArgumentException(String.format("%s does not match Compound Unit", values.length));
+            }
+        } else {
+            throw new IllegalArgumentException(String.format("%s not a Compound Unit", unit));
+        }
+    }
+    
+    /**
+     * Returns the compound quantity. When the {@link Number} was {@link BigDecimal} or {@link BigInteger} will uses {@link DecimalQuantity}, when the
+     * {@link Number} was {@link Double} will {@link DoubleQuantity} otherwise will {@link NumberQuantity}. in the specified unit.
+     * 
+     * @param value
+     *            the measurement value.
+     * @param unit
+     *            the measurement unit.
+     * @return the corresponding <code>numeric</code> quantity.
+     * @throws NullPointerException
+     *             if value, unit or level were null
+     * @since 2.0
+     */
+    public static <Q extends Quantity<Q>> ComparableQuantity<Q> getCompoundQuantity(Number[] values, Unit<Q> unit) {
+        return getCompoundQuantity(values, unit, ABSOLUTE);
+    }
+
 }
