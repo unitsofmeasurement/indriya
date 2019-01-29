@@ -42,6 +42,7 @@ import javax.measure.UnitConverter;
 import tech.units.indriya.AbstractQuantity;
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.function.Calculus;
+import tech.units.indriya.unit.CompoundUnit;
 
 /**
  * An amount of quantity, implementation of {@link ComparableQuantity} that keep {@link Number} as possible otherwise converts to
@@ -289,5 +290,24 @@ public class NumberQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
       return Objects.equals(getUnit(), that.getUnit()) && Equalizer.hasEquality(value, that.getValue());
     }
     return false;
+  }
+  
+  /**
+   * Returns this quantity after conversion to specified unit. The default implementation returns
+   * <code>NumberQuantity.of(doubleValue(unit), unit)</code> . If this quantity is already stated in the specified unit, then this quantity is
+   * returned and no conversion is performed.
+   *
+   * @param anotherUnit
+   *            the unit in which the returned measure is stated.
+   * @return this quantity or a new quantity equivalent to this quantity stated in the specified unit.
+   * @throws ArithmeticException
+   *             if the result is inexact and the quotient has a non-terminating decimal expansion.
+   */
+  @Override
+  public ComparableQuantity<Q> to(Unit<Q> anotherUnit) {
+      if (anotherUnit instanceof CompoundUnit) {
+          // FIXME decompose into CompoundQuantity
+      }
+      return super.to(anotherUnit);
   }
 }
