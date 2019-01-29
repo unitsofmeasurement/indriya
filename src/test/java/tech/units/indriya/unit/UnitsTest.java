@@ -93,16 +93,6 @@ public class UnitsTest {
   }
 
   /**
-   * Test method for {@link javax.measure.Unit#toMetric()}.
-   */
-  // @Test
-  // public void testToMetric() {
-  // AbstractUnit<? extends QuantityAmount> su = (AbstractUnit<? extends
-  // QuantityAmount>) one.toMetric();
-  // assertTrue(su.isUnscaledMetric());
-  // }
-
-  /**
    * Test method for {@link javax.measure.Unit#getConverterTo}.
    */
   @Test
@@ -247,9 +237,18 @@ public class UnitsTest {
    * Test method for {@link javax.measure.Unit#pow(int)}.
    */
   @Test
-  public void testPow() {
+  public void testPowOnOne() {
     Unit<?> result = one.pow(10);
-    assertEquals("one^10", result.toString());
+    assertEquals("one", result.toString());
+  }
+  
+  /**
+   * Test method for {@link javax.measure.Unit#pow(int)}.
+   */
+  @Test
+  public void testPow() {
+    Unit<?> result = WATT.pow(10);
+    assertEquals("W^10", result.toString());
   }
 
   @Test

@@ -103,7 +103,6 @@ public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
     private ProductUnit(Element[] elements) {
         super(null);
         this.elements = elements;
-        // this.symbol = elements[0].getUnit().getSymbol(); // FIXME this should contain ALL elements
     }
 
     /**
@@ -208,7 +207,7 @@ public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
 
     @Override
     public Unit<?> pow(int n) {
-        return new ProductUnit<>(new Element[] { new Element(this, n, 1) });
+      return ofPow(this, n);
     }
 
     /**
@@ -281,7 +280,7 @@ public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
                 boolean unitFound = false;
                 for (Element elem : elems) {
                     if (element.unit.equals(elem.unit))
-                        if ((element.pow != elem.pow) || (element.root != elem.root))
+                        if (element.pow != elem.pow || element.root != elem.root)
                             return false;
                         else {
                             unitFound = true;
@@ -378,7 +377,7 @@ public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
                     break; // No duplicate.
                 }
             }
-            int pow = (p1 * r2) + (p2 * r1);
+            int pow = p1 * r2 + p2 * r1;
             int root = r1 * r2;
             if (pow != 0) {
                 int gcd = gcd(Math.abs(pow), root);
@@ -403,7 +402,7 @@ public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
         // Returns or creates instance.
         if (resultIndex == 0)
             return AbstractUnit.ONE;
-        else if ((resultIndex == 1) && (result[0].pow == result[0].root))
+        else if (resultIndex == 1 && result[0].pow == result[0].root)
             return result[0].unit;
         else {
             Element[] elems = new Element[resultIndex];
@@ -505,7 +504,7 @@ public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
             if (pow != element.pow) {
                 return false;
             }
-            return root == element.root && (unit != null ? unit.equals(element.unit) : element.unit == null);
+            return root == element.root && unit != null ? unit.equals(element.unit) : element.unit == null;
 
         }
 
