@@ -61,6 +61,7 @@ import tech.units.indriya.unit.ProductUnit;
 import tech.units.indriya.unit.TransformedUnit;
 import tech.units.indriya.unit.Units;
 import tech.uom.lib.common.function.Nameable;
+import tech.uom.lib.common.function.PrefixOperator;
 import tech.uom.lib.common.function.SymbolSupplier;
 
 /**
@@ -77,10 +78,10 @@ import tech.uom.lib.common.function.SymbolSupplier;
  * @see <a href= "http://en.wikipedia.org/wiki/International_System_of_Units">Wikipedia: International System of Units</a>
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.4, January 29, 2019
+ * @version 1.5, January 31, 2019
  * @since 1.0
  */
-public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableUnit<Q>, Nameable, SymbolSupplier {
+public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableUnit<Q>, Nameable, PrefixOperator, SymbolSupplier {
 
   /**
    * 
