@@ -68,6 +68,10 @@ public class CompoundUnitTest {
     Quantity<Length> l1 = Quantities.getCompoundQuantity(numList, compLen);
     assertEquals(BigDecimal.valueOf(1.7d), l1.getValue());
     assertEquals("m;cm", l1.getUnit().toString());
+    Quantity<Length> l2 = l1.to(Units.METRE);
+    assertEquals(BigDecimal.valueOf(1.7d), l2.getValue());
+    Quantity<Length> l3 = l1.to(CENTI(Units.METRE));
+    assertEquals(BigDecimal.valueOf(170d), l3.getValue());
   }
  
   @Test
