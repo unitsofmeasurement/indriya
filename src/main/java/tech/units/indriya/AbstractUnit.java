@@ -81,7 +81,7 @@ import tech.uom.lib.common.function.SymbolSupplier;
  * @version 1.5, January 31, 2019
  * @since 1.0
  */
-public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableUnit<Q>, Nameable, PrefixOperator, SymbolSupplier {
+public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableUnit<Q>, Nameable, PrefixOperator<Q>, SymbolSupplier {
 
   /**
    * 
