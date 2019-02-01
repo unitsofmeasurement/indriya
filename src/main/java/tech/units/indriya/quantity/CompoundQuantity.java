@@ -47,15 +47,15 @@ import tech.units.indriya.function.Calculus;
 import tech.units.indriya.unit.CompoundUnit;
 
 /**
- * An amount of quantity, implementation of {@link ComparableQuantity} that keep {@link Number} as possible otherwise converts to
- * {@link DecimalQuantity}, this object is immutable.
+ * An implementation of {@link ComparableQuantity} that represents multi-radix quantities (like "1 hour:20 min:45 sec" or "6 ft, 4 in").
+ * This object is immutable.
  *
  * @see AbstractQuantity
  * @see Quantity
  * @see ComparableQuantity
+ * @see CompoundUnit
  * @param <Q>
  *            The type of the quantity.
- * @author otaviojava
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @version 1.0, $Date: 2019-02-01 $
  * @since 2.0
@@ -259,7 +259,7 @@ public class CompoundQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q>
     @Override
     public ComparableQuantity<Q> to(Unit<Q> anotherUnit) {
         if (anotherUnit instanceof CompoundUnit) {
-
+            // TODO test for the array size of the target CompoundUnit compared to this one.
         }
         return super.to(anotherUnit);
     }
