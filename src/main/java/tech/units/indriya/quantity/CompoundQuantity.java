@@ -77,6 +77,7 @@ public class CompoundQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q>
      */
     protected CompoundQuantity(Number[] numbers, Unit<Q> unit, Scale sc) {
         super(unit, sc);
+        Objects.requireNonNull(numbers);
         values = numbers;
         boolean tmpBig = false;
         for (Number number : numbers) {
@@ -101,11 +102,6 @@ public class CompoundQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q>
 
     @Override
     public Number getValue() {
-//       BigDecimal result = BigDecimal.ZERO;
-//       for (Number value: values) {
-//           result.add(Calculus.toBigDecimal(value));
-//       }
-//       return result;
         if (getUnit() instanceof CompoundUnit) {
             final CompoundUnit<Q> compUnit =  (CompoundUnit<Q>) getUnit();
             ComparableQuantity<Q> result = null;
@@ -223,13 +219,13 @@ public class CompoundQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q>
     }
 
     /**
-     * Returns the compound quantity for the specified <code>double</code> stated in the specified unit.
+     * Returns the compound quantity for the specified <code>Number</code> array stated in the specified unit.
      *
      * @param values
      *            the measurement values.
      * @param unit
      *            the measurement unit.
-     * @return the corresponding <code>double</code> quantity.
+     * @return the corresponding compound quantity.
      */
     public static <Q extends Quantity<Q>> AbstractQuantity<Q> of(Number[] values, Unit<Q> unit) {
         return new CompoundQuantity<Q>(values, unit);

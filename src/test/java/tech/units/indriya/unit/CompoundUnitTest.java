@@ -29,10 +29,6 @@
  */
 package tech.units.indriya.unit;
 
-import java.math.BigDecimal;
-import java.util.logging.Logger;
-
-import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Time;
@@ -40,7 +36,6 @@ import javax.measure.quantity.Time;
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.AbstractUnit;
-import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.Units;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -51,57 +46,17 @@ import static javax.measure.MetricPrefix.*;
  * @author Werner Keil
  */
 public class CompoundUnitTest {
-  static final Logger logger = Logger.getLogger(CompoundUnitTest.class.getName());
 
   @Test
   public void testLength() {
-    Unit<Length> compLen =  ((AbstractUnit<Length>)Units.METRE).compound(CENTI(Units.METRE));
-    Quantity<Length> l1 = Quantities.getQuantity(1.70, compLen);
-    assertEquals(1.7d, l1.getValue());
-    assertEquals("m;cm", l1.getUnit().toString()); // TODO this does not make much sense yet
+    final Unit<Length> compLen =  ((AbstractUnit<Length>)Units.METRE).compound(CENTI(Units.METRE));
+    assertEquals("m;cm", compLen.toString());
   }
   
   @Test
-  public void testLengths() {
-    Unit<Length> compLen =  ((AbstractUnit<Length>)Units.METRE).compound(CENTI(Units.METRE));
-    Number[] numList = {1, 70};
-    Quantity<Length> l1 = Quantities.getCompoundQuantity(numList, compLen);
-    assertEquals(BigDecimal.valueOf(1.7d), l1.getValue());
-    assertEquals("m;cm", l1.getUnit().toString());
-    Quantity<Length> l2 = l1.to(Units.METRE);
-    assertEquals(BigDecimal.valueOf(1.7d), l2.getValue());
-    Quantity<Length> l3 = l1.to(CENTI(Units.METRE));
-    assertEquals(BigDecimal.valueOf(170d), l3.getValue());
-  }
- 
-  @Test
-  public void testNoCompound() {
-    Number[] numList = {1, 70};
-    assertThrows(IllegalArgumentException.class, () -> {
-        @SuppressWarnings("unused")
-        Quantity<Time> t1 = Quantities.getCompoundQuantity(numList, Units.DAY);
-    });
-  }
-  
-  @Test
-  public void testSizeMismatch() {
-      Unit<Time> compTime =  ((AbstractUnit<Time>)((AbstractUnit<Time>)Units.HOUR).
+  public void testTime() {
+    final Unit<Time> compTime =  ((AbstractUnit<Time>)((AbstractUnit<Time>)Units.HOUR).
               compound(Units.MINUTE)).compound(Units.SECOND);
-      Number[] numList = {1, 70};
-    assertThrows(IllegalArgumentException.class, () -> {
-        @SuppressWarnings("unused")
-        Quantity<Time> t1 = Quantities.getCompoundQuantity(numList, compTime);
-    });
+    assertEquals("h;min;s", compTime.toString());
   }
-  
-  @Test
-  public void testConvert() {
-    Unit<Length> compLen =  ((AbstractUnit<Length>)Units.METRE).compound(CENTI(Units.METRE));
-    Quantity<Length> l1 = Quantities.getQuantity(170, CENTI(Units.METRE));
-    assertEquals(170, l1.getValue());
-    assertEquals("cm", l1.getUnit().toString());
-    Quantity<Length> l2 = l1.to(compLen);
-    logger.info(String.valueOf(l2));
-  }
-
 }

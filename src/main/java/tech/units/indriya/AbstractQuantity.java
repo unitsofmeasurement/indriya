@@ -107,7 +107,7 @@ import tech.uom.lib.common.util.NaturalQuantityComparator;
  * </p>
  *
  * @author <a href="mailto:werner@uom.technology">Werner Keil</a>
- * @version 1.7, December 18, 2018
+ * @version 1.8, February 1, 2019
  * @since 1.0
  */
 @SuppressWarnings("unchecked")
@@ -180,11 +180,11 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
 
     /**
      * Returns this quantity after conversion to specified unit. The default implementation returns
-     * <code>Measure.valueOf(doubleValue(unit), unit)</code> . If this quantity is already stated in the specified unit, then this quantity is
+     * <code>NumberQuantity.of(doubleValue(unit), unit)</code> . If this quantity is already stated in the specified unit, then this quantity is
      * returned and no conversion is performed.
      *
      * @param anotherUnit
-     *            the unit in which the returned measure is stated.
+     *            the unit in which the returned quantity is stated.
      * @return this quantity or a new quantity equivalent to this quantity stated in the specified unit.
      * @throws ArithmeticException
      *             if the result is inexact and the quotient has a non-terminating decimal expansion.
@@ -198,28 +198,6 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
         Number convertedValue = t.convert(getValue());
         return Quantities.getQuantity(convertedValue, anotherUnit);
     }
-
-    // /**
-    // * Returns this measure after conversion to specified unit. The default implementation returns
-    // * <code>Measure.valueOf(decimalValue(unit, ctx), unit)</code>. If this measure is already stated
-    // * in the specified unit, then this measure is returned and no conversion is performed.
-    // *
-    // * @param unit
-    // * the unit in which the returned measure is stated.
-    // * @param ctx
-    // * the math context to use for conversion.
-    // * @return this measure or a new measure equivalent to this measure but stated in the specified unit.
-    // * @throws ArithmeticException
-    // * if the result is inexact but the rounding mode is <code>UNNECESSARY</code> or
-    // * <code>mathContext.precision == 0</code> and the quotient
-    // * has a non-terminating decimal expansion.
-    // */
-    // public Quantity<Q> to(Unit<Q> unit) {
-    // if (unit.equals(this.getUnit())) {
-    // return this;
-    // }
-    // return Quantities.getQuantity(decimalValue(unit), unit);
-    // }
 
     @Override
     public boolean isGreaterThan(Quantity<Q> that) {
@@ -247,10 +225,10 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
     }
 
     /**
-     * Compares this measure to the specified Measurement quantity. The default implementation compares the {@link AbstractQuantity#doubleValue(Unit)}
-     * of both this measure and the specified Measurement stated in the same unit (this measure's {@link #getUnit() unit}).
+     * Compares this quantity to the specified quantity. The default implementation compares the {@link AbstractQuantity#doubleValue(Unit)}
+     * of both this quantity and the specified quantity stated in the same unit (this quantity's {@link #getUnit() unit}).
      *
-     * @return a negative integer, zero, or a positive integer as this measure is less than, equal to, or greater than the specified Measurement
+     * @return a negative integer, zero, or a positive integer as this quantity is less than, equal to, or greater than the specified Measurement
      *         quantity.
      * @see {@link NaturalQuantityComparator}
      */
@@ -309,11 +287,11 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
      * affected by locale. This means that it can be used as a canonical string representation for exchanging quantity, or as a key for a Hashtable,
      * etc. Locale-sensitive quantity formatting and parsing is handled by the {@link QuantityFormat} implementations and its subclasses.
      *
-     * @return <code>UnitFormat.getInternational().format(this)</code>
+     * @return <code>SimpleQuantityFormat.getInstance().format(this)</code>
      */
     @Override
     public String toString() {
-        return String.valueOf(getValue()) + " " + String.valueOf(getUnit());
+        return SimpleQuantityFormat.getInstance().format(this);
     }
 
     public abstract BigDecimal decimalValue(Unit<Q> aUnit) throws ArithmeticException;
