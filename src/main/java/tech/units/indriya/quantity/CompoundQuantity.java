@@ -38,9 +38,11 @@ import java.util.Objects;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.UnitConverter;
+import javax.measure.format.QuantityFormat;
 
 import tech.units.indriya.AbstractQuantity;
 import tech.units.indriya.ComparableQuantity;
+import tech.units.indriya.format.SimpleQuantityFormat;
 import tech.units.indriya.function.Calculus;
 import tech.units.indriya.unit.CompoundUnit;
 
@@ -55,7 +57,7 @@ import tech.units.indriya.unit.CompoundUnit;
  *            The type of the quantity.
  * @author otaviojava
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 0.9, $Date: 2019-01-29 $
+ * @version 1.0, $Date: 2019-02-01 $
  * @since 2.0
  */
 public class CompoundQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
@@ -260,5 +262,31 @@ public class CompoundQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q>
 
         }
         return super.to(anotherUnit);
+    }
+    
+    /**
+     * Returns the <code>String</code> representation of this quantity. The string produced for a given quantity is always the same; it is not
+     * affected by locale. This means that it can be used as a canonical string representation for exchanging quantity, or as a key for a Hashtable,
+     * etc. Locale-sensitive quantity formatting and parsing is handled by the {@link QuantityFormat} implementations and its subclasses.
+     *
+     * @return <code>SimpleQuantityFormat.getInstance().format(this)</code>
+     */
+    @Override
+    public String toString() {
+        if (getUnit() instanceof CompoundUnit) {
+            final CompoundUnit<Q> compUnit = (CompoundUnit<Q>)getUnit();
+            final String DELIM = " ";
+            final StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < values.length; i++) {
+               sb.append(SimpleQuantityFormat.getInstance().format(
+                       Quantities.getQuantity(values[i], compUnit.getUnits().get(i), getScale())));
+               if (i < values.length-1) {
+                   sb.append(DELIM);
+               }
+            }
+            return sb.toString();
+        } else {
+            return super.toString();
+        }
     }
 }

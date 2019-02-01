@@ -49,7 +49,7 @@ import tech.units.indriya.unit.CompoundUnit;
 /**
  * Singleton class for accessing {@link Quantity} instances.
  * 
- * @version 1.5
+ * @version 1.6, February 1, 2019
  * @author werner
  * @author otaviojava
  * @since 1.0
@@ -162,17 +162,6 @@ public final class Quantities {
             final CompoundUnit<Q> compUnit =  (CompoundUnit<Q>) unit;
             //ComparableQuantity<Q> result = null;
             if (values.length == compUnit.getUnits().size()) {
-                /*
-                for (int i = 0; i < values.length; i++) {
-                    Number value = values[i];
-                    if (result == null) {
-                        result = getQuantity(value, compUnit.getUnits().get(i), scale);
-                    } else {
-                        result = result.add(getQuantity(value, compUnit.getUnits().get(i), scale));
-                    }
-                }
-                return result;
-                 */
                 return new CompoundQuantity<Q>(values, unit, scale);
             } else {
                 throw new IllegalArgumentException(String.format("%s values don't match %s in Compound Unit", values.length, compUnit.getUnits().size()));
@@ -180,8 +169,6 @@ public final class Quantities {
         } else {
             throw new IllegalArgumentException(String.format("%s not a Compound Unit", unit));
         }
-       
-        
     }
     
     /**
@@ -200,5 +187,4 @@ public final class Quantities {
     public static <Q extends Quantity<Q>> ComparableQuantity<Q> getCompoundQuantity(Number[] values, Unit<Q> unit) {
         return getCompoundQuantity(values, unit, ABSOLUTE);
     }
-
 }
