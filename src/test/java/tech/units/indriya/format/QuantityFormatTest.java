@@ -47,6 +47,7 @@ import javax.measure.quantity.Length;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.Units;
 
@@ -56,7 +57,7 @@ import tech.units.indriya.unit.Units;
  */
 public class QuantityFormatTest {
 	private Quantity<Length> sut;
-	private QuantityFormat format;
+	private SimpleQuantityFormat format;
 
 	@BeforeEach
 	public void init() {
@@ -70,21 +71,77 @@ public class QuantityFormatTest {
 	@Test
 	public void testFormat() {
 		Unit<Frequency> hz = HERTZ;
-		assertEquals("Hz", hz.toString());
+		Quantity<Frequency> tenHz = Quantities.getQuantity(10, hz);
+		assertEquals("10 Hz", format.format(tenHz));
 	}
 
 	@Test
 	public void testFormat2() {
 		Unit<Frequency> mhz = MEGA(HERTZ);
-		assertEquals("MHz", mhz.toString());
+		Quantity<Frequency> oneMHz = Quantities.getQuantity(1, mhz);
+		assertEquals("1 MHz", oneMHz.toString());
 	}
 
 	@Test
 	public void testFormat3() {
 		Unit<Frequency> khz = KILO(HERTZ);
-		assertEquals("kHz", khz.toString());
+		Quantity<Frequency> fiveKhz = Quantities.getQuantity(5, khz);
+		assertEquals("5 kHz", format.format(fiveKhz));
 	}
 
+    @Test
+    public void testFormatDelim() {
+        final NumberDelimiterQuantityFormat format1 = NumberDelimiterQuantityFormat.getInstance(DecimalFormat.getInstance(),
+                SimpleUnitFormat.getInstance(), "_");
+        final Unit<Length> cm =  CENTI(Units.METRE);
+        final Quantity<Length> l1 = Quantities.getQuantity(150, cm);
+        assertEquals("150_cm", format1.format(l1));
+    }
+	
+    @Test
+    public void testFormatCompound1() {
+        final NumberDelimiterQuantityFormat format1 = NumberDelimiterQuantityFormat.getInstance(DecimalFormat.getInstance(),
+                SimpleUnitFormat.getInstance());
+        final Unit<Length> compLen =  ((AbstractUnit<Length>)Units.METRE).compound(CENTI(Units.METRE));
+        final Number[] numList = {1, 70};
+        final Quantity<Length> l1 = Quantities.getCompoundQuantity(numList, compLen);
+
+        assertEquals("1 m 70 cm", format1.format(l1));
+    }
+    
+    @Test
+    public void testFormatCompound2() {
+        final NumberDelimiterQuantityFormat format1 = NumberDelimiterQuantityFormat.getInstance(new DecimalFormat("#.000"),
+                SimpleUnitFormat.getInstance());
+        final Unit<Length> compLen =  ((AbstractUnit<Length>)Units.METRE).compound(CENTI(Units.METRE));
+        final Number[] numList = {1, 70};
+        final Quantity<Length> l1 = Quantities.getCompoundQuantity(numList, compLen);
+
+        assertEquals("1.000 m 70.000 cm", format1.format(l1));
+    }
+	
+    @Test
+    public void testFormatCompoundDelim() {
+        final NumberDelimiterQuantityFormat format1 = NumberDelimiterQuantityFormat.getCompoundInstance(DecimalFormat.getInstance(),
+                SimpleUnitFormat.getInstance(), "_");
+        final Unit<Length> compLen =  ((AbstractUnit<Length>)Units.METRE).compound(CENTI(Units.METRE));
+        final Number[] numList = {1, 70};
+        final Quantity<Length> l1 = Quantities.getCompoundQuantity(numList, compLen);
+
+        assertEquals("1_m_70_cm", format1.format(l1));
+    }
+    
+    @Test
+    public void testFormatCompoundDelims() {
+        final NumberDelimiterQuantityFormat format1 = NumberDelimiterQuantityFormat.getCompoundInstance(DecimalFormat.getInstance(),
+                SimpleUnitFormat.getInstance(), "_", " ");
+        final Unit<Length> compLen =  ((AbstractUnit<Length>)Units.METRE).compound(CENTI(Units.METRE));
+        final Number[] numList = {1, 70};
+        final Quantity<Length> l1 = Quantities.getCompoundQuantity(numList, compLen);
+
+        assertEquals("1_m 70_cm", format1.format(l1));
+    }
+    
 	@Test
 	public void testParseSimple1() {
 		Quantity<?> parsed1 = SimpleQuantityFormat.getInstance().parse("10 min");
@@ -95,7 +152,7 @@ public class QuantityFormatTest {
 
 	@Test
 	public void testParse2() {
-		Quantity<?> parsed1 = SimpleQuantityFormat.getInstance().parse("60 m");
+		Quantity<?> parsed1 = format.parse("60 m");
 		assertNotNull(parsed1);
 		assertEquals(BigDecimal.valueOf(60), parsed1.getValue());
 		assertEquals(Units.METRE, parsed1.getUnit());

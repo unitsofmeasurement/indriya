@@ -36,6 +36,7 @@ import java.math.BigInteger;
 import java.text.ParsePosition;
 import java.util.Objects;
 
+import javax.measure.MeasurementException;
 import javax.measure.Quantity;
 import javax.measure.Quantity.Scale;
 import javax.measure.Unit;
@@ -49,7 +50,7 @@ import tech.units.indriya.unit.CompoundUnit;
 /**
  * Singleton class for accessing {@link Quantity} instances.
  * 
- * @version 1.6, February 1, 2019
+ * @version 1.6.1, February 3, 2019
  * @author werner
  * @author otaviojava
  * @since 1.0
@@ -97,13 +98,13 @@ public final class Quantities {
      *            the measurement scale.
      * @return the corresponding <code>numeric</code> quantity.
      * @throws NullPointerException
-     *             if value, unit or level were null
+     *             if value, unit or scale were null
      * @since 2.0
      */
     public static <Q extends Quantity<Q>> ComparableQuantity<Q> getQuantity(Number value, Unit<Q> unit, Scale scale) {
         Objects.requireNonNull(value);
         Objects.requireNonNull(unit);
-        //Objects.requireNonNull(level);
+        Objects.requireNonNull(scale);
         if (Double.class.isInstance(value)) {
             return new DoubleQuantity<>(Double.class.cast(value), unit, scale);
         } else if (Long.class.isInstance(value)) {
@@ -154,6 +155,8 @@ public final class Quantities {
      * @throws NullPointerException
      *             if value or scale were null
      * @throws IllegalArgumentException
+     *             if unit is a CompoundUnit but the number of given values don't match its parts. 
+     * @throws MeasurementException
      *             if unit is not a CompoundUnit
      * @since 2.0
      */
@@ -167,7 +170,7 @@ public final class Quantities {
                 throw new IllegalArgumentException(String.format("%s values don't match %s in Compound Unit", values.length, compUnit.getUnits().size()));
             }
         } else {
-            throw new IllegalArgumentException(String.format("%s not a Compound Unit", unit));
+            throw new MeasurementException(String.format("%s not a Compound Unit", unit));
         }
     }
     

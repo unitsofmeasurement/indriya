@@ -159,7 +159,7 @@ import java.util.ResourceBundle;
  *
  * @author <a href="mailto:eric-r@northwestern.edu">Eric Russell</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.1, January 20, 2019
+ * @version 1.2, February 3, 2019
  * @since 1.0
  */
 public class LocalUnitFormat extends AbstractUnitFormat {
@@ -319,45 +319,6 @@ public class LocalUnitFormat extends AbstractUnitFormat {
    * @param buffer
    *          the <code>StringBuilder</code> to be written to
    * @return the operator precedence of the outermost operator in the unit expression that was output
-   */
-  /*
-   * private int formatInternal(Unit<?> unit, Appendable buffer) throws
-   * IOException { if (unit instanceof AnnotatedUnit) { unit =
-   * ((AnnotatedUnit) unit).getActualUnit(); } String symbol =
-   * symbolMap.getSymbol((AbstractUnit<?>) unit); if (symbol != null) {
-   * buffer.append(symbol); return NOOP_PRECEDENCE; } else if
-   * (unit.getBaseUnits() != null) { Map<? extends Unit, Integer> productUnits
-   * = unit.getBaseUnits(); int negativeExponentCount = 0; // Write positive
-   * exponents first... boolean start = true; for (Unit u :
-   * productUnits.keySet()) { int pow = productUnits.get(u); if (pow >= 0) {
-   * formatExponent(u, pow, 1, !start, buffer); start = false; } else {
-   * negativeExponentCount += 1; } } // ..then write negative exponents. if
-   * (negativeExponentCount > 0) { if (start) { buffer.append('1'); }
-   * buffer.append('/'); if (negativeExponentCount > 1) { buffer.append('(');
-   * } start = true; for (Unit u : productUnits.keySet()) { int pow =
-   * productUnits.get(u); if (pow < 0) { formatExponent(u, -pow, 1, !start,
-   * buffer); start = false; } } if (negativeExponentCount > 1) {
-   * buffer.append(')'); } } return PRODUCT_PRECEDENCE; } else if
-   * ((!((AbstractUnit)unit).isSystemUnit()) || unit.equals(Units.KILOGRAM)) {
-   * UnitConverter converter = null; boolean printSeparator = false;
-   * StringBuffer temp = new StringBuffer(); int unitPrecedence =
-   * NOOP_PRECEDENCE; if (unit.equals(Units.KILOGRAM)) { // A special case
-   * because KILOGRAM is a BaseUnit instead of // a transformed unit, even
-   * though it has a prefix. converter = MetricPrefix.KILO.getConverter();
-   * unitPrecedence = formatInternal(Units.GRAM, temp); printSeparator = true;
-   * } else { Unit parentUnit = unit.getSystemUnit(); converter =
-   * unit.getConverterTo(parentUnit); if (parentUnit.equals(Units.KILOGRAM)) {
-   * // More special-case hackery to work around gram/kilogram // incosistency
-   * parentUnit = Units.GRAM; converter =
-   * converter.concatenate(MetricPrefix.KILO.getConverter()); } unitPrecedence
-   * = formatInternal(parentUnit, temp); printSeparator =
-   * !parentUnit.equals(Units.ONE); } int result = formatConverter(converter,
-   * printSeparator, unitPrecedence, temp); buffer.append(temp); return
-   * result; } else if (unit.getSymbol() != null) {
-   * buffer.append(unit.getSymbol()); return NOOP_PRECEDENCE; } else { throw
-   * new IllegalArgumentException(
-   * "Cannot format the given Object as a Unit (unsupported unit type " +
-   * unit.getClass().getName() + ")"); } }
    */
   @SuppressWarnings({ "rawtypes", "unchecked" })
   private int formatInternal(Unit<?> unit, Appendable buffer) throws IOException {

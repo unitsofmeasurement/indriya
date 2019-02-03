@@ -38,6 +38,7 @@ import javax.measure.Unit;
  * Builder to create quantity formatters.
  * <p>
  * This allows a {@code SimpleQuantityFormat} to be created.
+ * @deprecated we may not need this any more
  */
 public class SimpleQuantityFormatBuilder {
 	// TODO maybe typing with Q similar to CompoundQuantity is required here, too?

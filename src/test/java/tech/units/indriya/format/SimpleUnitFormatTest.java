@@ -69,8 +69,8 @@ import tech.units.indriya.unit.Units;
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
  *
  */
-public class SimpleFormatTest {
-    private static final Logger logger = Logger.getLogger(SimpleFormatTest.class.getName());
+public class SimpleUnitFormatTest {
+    private static final Logger logger = Logger.getLogger(SimpleUnitFormatTest.class.getName());
     private static final Level LOG_LEVEL = Level.FINER;
     private UnitFormat format;
 

@@ -32,6 +32,8 @@ package tech.units.indriya.format;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.ParsePosition;
+
+import javax.measure.MeasurementException;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.format.MeasurementParseException;
@@ -39,12 +41,14 @@ import javax.measure.format.MeasurementParseException;
 import tech.units.indriya.AbstractQuantity;
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.ComparableQuantity;
+import tech.units.indriya.quantity.CompoundQuantity;
 import tech.units.indriya.quantity.NumberQuantity;
 import tech.units.indriya.quantity.Quantities;
+import tech.units.indriya.unit.CompoundUnit;
 
 /**
  * A simple implementation of QuantityFormat
- * @version 0.9.2
+ * @version 0.9.3, $Date: 2019-02-03 $
  * @since 2.0
  */
 @SuppressWarnings("rawtypes")
@@ -86,19 +90,41 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
 	 * Constructs a <code>SimpleQuantityFormat</code> using the default pattern. For
 	 * full coverage, use the factory methods.
 	 */
-	public SimpleQuantityFormat() {
+	protected SimpleQuantityFormat() {
 		this("");
 	}
 
 	@Override
-	public Appendable format(Quantity quantity, Appendable dest) throws IOException {
-		Unit unit = quantity.getUnit();
-
-		dest.append(quantity.getValue().toString());
-		if (quantity.getUnit().equals(AbstractUnit.ONE))
-			return dest;
-		dest.append(' ');
-		return SimpleUnitFormat.getInstance().format(unit, dest);
+	public Appendable format(Quantity<?> quantity, Appendable dest) throws IOException {
+		final Unit unit = quantity.getUnit();
+        if (unit instanceof CompoundUnit) {
+            if (quantity instanceof CompoundQuantity) {
+                final CompoundQuantity<?> compQuant = (CompoundQuantity<?>) quantity;
+                final CompoundUnit<?> compUnit = (CompoundUnit<?>) unit;
+                final Number[] values = compQuant.getValues();
+                if (values.length == compUnit.getUnits().size()) {
+                    final StringBuffer sb = new StringBuffer(); // we use StringBuffer here because of java.text.Format compatibility
+                    for (int i = 0; i < values.length; i++) {
+                       sb.append(SimpleQuantityFormat.getInstance().format(
+                               Quantities.getQuantity(values[i], compUnit.getUnits().get(i), compQuant.getScale())));
+                       if (i < values.length-1) {
+                           sb.append(DEFAULT_DELIMITER);
+                       }
+                    }
+                    return sb;
+                } else {
+                    throw new IllegalArgumentException(String.format("%s values don't match %s in Compound Unit", values.length, compUnit.getUnits().size()));
+                }
+            } else {
+                throw new MeasurementException("The quantity is not a Compound Quantity");
+            }
+        } else {
+    		dest.append(quantity.getValue().toString());
+    		if (quantity.getUnit().equals(AbstractUnit.ONE))
+    			return dest;
+    		dest.append(DEFAULT_DELIMITER);
+    		return SimpleUnitFormat.getInstance().format(unit, dest);
+        }
 	}
 
 	@SuppressWarnings("unchecked")
