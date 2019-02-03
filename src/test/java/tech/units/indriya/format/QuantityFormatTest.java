@@ -43,6 +43,7 @@ import javax.measure.format.MeasurementParseException;
 import javax.measure.format.QuantityFormat;
 import javax.measure.quantity.Frequency;
 import javax.measure.quantity.Length;
+import javax.measure.quantity.Time;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -140,6 +141,17 @@ public class QuantityFormatTest {
         final Quantity<Length> l1 = Quantities.getCompoundQuantity(numList, compLen);
 
         assertEquals("1_m 70_cm", format1.format(l1));
+    }
+    
+    @Test
+    public void testFormatCompoundDelims2() {
+        final NumberDelimiterQuantityFormat format1 = NumberDelimiterQuantityFormat.getCompoundInstance(DecimalFormat.getInstance(),
+                SimpleUnitFormat.getInstance(), " ", ":");
+        Unit<Time> compTime =  ((AbstractUnit<Time>)((AbstractUnit<Time>)Units.HOUR).
+                compound(Units.MINUTE)).compound(Units.SECOND);
+        final Number[] numList = {1, 40, 10};
+        final Quantity<Time> t1 = Quantities.getCompoundQuantity(numList, compTime);
+        assertEquals("1 h:40 min:10 s", format1.format(t1));
     }
     
 	@Test

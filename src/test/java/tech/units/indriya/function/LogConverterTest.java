@@ -30,6 +30,7 @@
 package tech.units.indriya.function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -54,8 +55,8 @@ public class LogConverterTest {
   @Test
   public void testEqualityOfTwoLogConverter() {
     LogConverter logConverter = new LogConverter(10.);
-    assertTrue(logConverter.equals(logConverterBase10));
-    assertTrue(!logConverter.equals(null));
+    assertNotNull(logConverter);
+    assertEquals(logConverter, logConverterBase10);
   }
 
   @Test
