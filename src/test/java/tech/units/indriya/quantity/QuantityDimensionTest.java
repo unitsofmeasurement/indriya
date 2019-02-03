@@ -31,6 +31,7 @@ package tech.units.indriya.quantity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -161,7 +162,7 @@ public class QuantityDimensionTest {
    */
   @Test
   public void quantityDimensionIsNotEqualToNull() {
-    assertFalse(QuantityDimension.LENGTH.equals(null));
+    assertNotNull(QuantityDimension.LENGTH);
   }
 
   /**
