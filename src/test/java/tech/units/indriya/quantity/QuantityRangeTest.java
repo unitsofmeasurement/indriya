@@ -416,7 +416,7 @@ public class QuantityRangeTest {
    */
   @Test
   public void quantityRangeIsNotEqualToNull() {
-    assertFalse(oneToTenKilogram.equals(null));
+    assertNotNull(oneToTenKilogram);
   }
 
   /**
@@ -424,7 +424,7 @@ public class QuantityRangeTest {
    */
   @Test
   public void quantityRangeIsEqualToItself() {
-    assertTrue(oneToTenKilogram.equals(oneToTenKilogram));
+    assertEquals(oneToTenKilogram, oneToTenKilogram);
   }
 
   /**
@@ -483,6 +483,6 @@ public class QuantityRangeTest {
    */
   @Test
   public void quantityRangeIsNotEqualToObjectOfDifferentClass() {
-    assertFalse(oneToTenKilogram.equals(oneKilogram));
+    assertNotEquals(oneToTenKilogram, oneKilogram);
   }
 }
