@@ -97,9 +97,16 @@ public class Units extends AbstractSystemOfUnits {
 	// //////////////
 
 	/**
-	 * The SI base unit for electric current quantities (standard name <code>A</code>). The Ampere is that constant current which, if maintained in two
-	 * straight parallel conductors of infinite length, of negligible circular cross-section, and placed 1 meter apart in vacuum, would produce between
-	 * these conductors a force equal to 2 * 10-7 newton per meter of length. It is named after the French physicist Andre Ampere (1775-1836).
+	 * The ampere, symbol A, is the SI unit of electric current. It is defined by taking the
+	 * fixed numerical value of the elementary charge e to be 1.602 176 634 × 10⁻¹⁹ when
+	 * expressed in the unit C, which is equal to A s, where the second is defined in terms
+	 * of ∆νCs.
+	 *
+	 * This definition implies the exact relation e = 1.602 176 634 × 10⁻¹⁹ A s. Inverting this
+	 * relation gives an exact expression for the unit ampere in terms of the defining constants e
+	 * and ∆νCs:
+	 *
+	 * 1 A = (e / 1.602 176 634 × 10⁻¹⁹) s⁻¹
 	 *
 	 * @implNote SI Base Unit
 	 */
@@ -107,9 +114,17 @@ public class Units extends AbstractSystemOfUnits {
 		ElectricCurrent.class);
 
 	/**
-	 * The SI base unit for luminous intensity quantities (standard name <code>cd</code>). The candela is the luminous intensity, in a given direction,
-	 * of a source that emits monochromatic radiation of frequency 540 * 1012 hertz and that has a radiant intensity in that direction of 1/683 watt per
-	 * steradian
+	 * The candela, symbol cd, is the SI unit of luminous intensity in a given direction. It is
+	 * defined by taking the fixed numerical value of the luminous efficacy of
+	 * monochromatic radiation of frequency 540 × 10¹² Hz, Kcd, to be 683 when expressed
+	 * in the unit lm W−1, which is equal to cd sr W⁻¹, or cd sr kg⁻¹ m⁻² s³, where the kilogram,
+	 * metre and second are defined in terms of h, c and ∆νCs.
+	 *
+	 * This definition implies the exact relation Kcd = 683 cd sr kg⁻¹ m⁻² s³ for monochromatic
+	 * radiation of frequency ν = 540 × 10¹² Hz. Inverting this relation gives an exact expression
+	 * for the candela in terms of the defining constants Kcd, h and ∆νCs:
+	 *
+	 * 1 cd = (Kcd / 683) kg m² s⁻³ sr⁻¹
 	 *
 	 * @see <a href="http://en.wikipedia.org/wiki/Candela"> Wikipedia: Candela</a>
 	 *
@@ -119,9 +134,16 @@ public class Units extends AbstractSystemOfUnits {
 		LuminousIntensity.class);
 
 	/**
-	 * The SI base unit for thermodynamic temperature quantities (standard name <code>K</code>). It is defined by the <a href="https://en.wikipedia.org/wiki/Boltzmann_constant">Boltzmann constant</a> <code>k</code> having a value of <code>1.3806505×10−23 J/K</code><br>
-	 * Before the <a href="https://en.wikipedia.org/wiki/2019_redefinition_of_SI_base_units">2019 redefinition of SI base units</a>, the kelvin was the 1/273.16th of the thermodynamic
-	 * temperature of the triple point of water. It is named after the Scottish mathematician and physicist William Thomson 1st Lord Kelvin (1824-1907)
+	 * The kelvin, symbol K, is the SI unit of thermodynamic temperature. It is defined by
+	 * taking the fixed numerical value of the Boltzmann constant k to be 1.380 649 × 10−²³
+	 * when expressed in the unit J K⁻¹, which is equal to kg m² s⁻² K⁻¹, where the
+	 * kilogram, metre and second are defined in terms of h, c and ∆νCs.
+	 *
+	 * This definition implies the exact relation k = 1.380 649 × 10⁻²³ kg m² s⁻² K⁻¹. Inverting this
+	 * relation gives an exact expression for the kelvin in terms of the defining constants k, h and
+	 * ∆νCs:
+	 *
+	 * 1 K = (1.380 649 / k) × 10⁻²³ kg m² s⁻²
 	 *
 	 * @see #JOULE
 	 * @implNote SI Base Unit
@@ -129,9 +151,16 @@ public class Units extends AbstractSystemOfUnits {
 	public static final Unit<Temperature> KELVIN = addUnit(new BaseUnit<Temperature>("K", QuantityDimension.TEMPERATURE), Temperature.class);
 
 	/**
-	 * The SI base unit for mass quantities (standard name <code>kg</code>). It is the only SI unit with a prefix as part of its name and symbol.
-	 * The kilogram is defined by taking the fixed numerical value of the <a href="https://en.wikipedia.org/wiki/Planck_constant">Planck constant</a> <code>h</code> to be <code>6.62607015×10−34</code> when expressed in the unit <code>J⋅s</code>, which is equal to <code>kg⋅m2⋅s−1</code>, where the <code>metre</code> and the <code>second</code> are defined in terms of <code>c</code> and <code>ΔνCs</code>.<br>
-	 * Before the <a href="https://en.wikipedia.org/wiki/2019_redefinition_of_SI_base_units">2019 redefinition of SI base units</a>, the kilogram was equal to the mass of an international prototype in the form of a platinum-iridium cylinder kept at Sevres in France.
+	 * The kilogram, symbol kg, is the SI unit of mass. It is defined by taking the fixed
+	 * numerical value of the Planck constant h to be 6.626 070 15 × 10⁻³⁴ when expressed
+	 * in the unit J s, which is equal to kg m² s−1, where the metre and the second are
+	 * defined in terms of c and ∆νCs.
+	 *
+	 * This definition implies the exact relation h = 6.626 070 15 × 10−34 kg m² s⁻¹. Inverting this
+	 * relation gives an exact expression for the kilogram in terms of the three defining constants
+	 * h, ∆νCs and c:
+	 *
+	 * 1 kg = (h / 6.626 070 15 × 10⁻³⁴) m⁻² s
 	 *
 	 * @see <a href="https://en.wikipedia.org/wiki/Kilogram">Wikipedia: Kilogram</a>
 	 * @see #GRAM
@@ -143,25 +172,49 @@ public class Units extends AbstractSystemOfUnits {
 	public static final Unit<Mass> KILOGRAM = addUnit(new BaseUnit<Mass>("kg", QuantityDimension.MASS), Mass.class);
 
 	/**
-	 * The SI base unit for length quantities (standard name <code>m</code>). One metre was redefined in 1983 as the distance traveled by light in a
-	 * vacuum in 1/299,792,458 of a second.
+	 * The metre, symbol m, is the SI unit of length. It is defined by taking the fixed
+	 * numerical value of the speed of light in vacuum c to be 299 792 458 when expressed
+	 * in the unit m s⁻¹, where the second is defined in terms of the caesium frequency
+	 * ∆νCs.
+	 *
+	 * This definition implies the exact relation c = 299 792 458 m s⁻¹. Inverting this relation
+	 * gives an exact expression for the metre in terms of the defining constants c and ∆νCs:
+	 *
+	 * 1 m = (c / 299 792 458)s = 9 192 631 770 c / 299 792 458 ∆νCs ≈ 30.663 319 c / ∆νCs
 	 *
 	 * @implNote SI Base Unit
 	 */
 	public static final Unit<Length> METRE = addUnit(new BaseUnit<>("m", QuantityDimension.LENGTH), Length.class);
 
 	/**
-	 * The SI base unit for amount of substance quantities (standard name <code>mol</code>). The mole is the amount of substance of a system which
-	 * contains as many elementary entities as there are atoms in 0.012 kilogram of carbon 12.
+	 * The mole, symbol mol, is the SI unit of amount of substance. One mole contains
+	 * exactly 6.022 140 76 × 10²³ elementary entities. This number is the fixed numerical
+	 * value of the Avogadro constant, NA, when expressed in the unit mol⁻¹ and is called
+	 * the Avogadro number.
+	 *
+	 * The amount of substance, symbol n, of a system is a measure of the number of
+	 * specified elementary entities. An elementary entity may be an atom, a molecule, an
+	 * ion, an electron, any other particle or specified group of particles.
+	 * This definition implies the exact relation Nₐ = 6.022 140 76 × 10²³ mol⁻¹.
+	 *
+	 * Inverting this relation gives an exact expression for the mole in terms of the defining constant NA:
+	 *
+	 * 1 mol = 6.02214076 × 10²³ / Nₐ
 	 *
 	 * @implNote SI Base Unit
 	 */
 	public static final Unit<AmountOfSubstance> MOLE = addUnit(new BaseUnit<>("mol", QuantityDimension.AMOUNT_OF_SUBSTANCE), AmountOfSubstance.class);
 
 	/**
-	 * The SI base unit for duration quantities (standard name <code>s</code>). It is defined as the duration of 9,192,631,770 cycles of radiation
-	 * corresponding to the transition between two hyperfine levels of the ground state of cesium (1967 Standard).
+	 * The second, symbol s, is the SI unit of time. It is defined by taking the fixed
+	 * numerical value of the caesium frequency ∆νCs, the unperturbed ground-state
+	 * hyperfine transition frequency of the caesium 133 atom, to be 9 192 631 770 when
+	 * expressed in the unit Hz, which is equal to s⁻¹.
 	 *
+	 * This definition implies the exact relation ∆νCs = 9 192 631 770 Hz. Inverting this relation
+	 * gives an expression for the unit second in terms of the defining constant ∆νCs:
+	 *
+	 * 1 Hz = ∆νCs / 9 192 631 770  or  1 s = 9 192 631 770 / ∆νCs
 	 * @implNote SI Base Unit
 	 */
 	public static final Unit<Time> SECOND = addUnit(new BaseUnit<>("s", QuantityDimension.TIME), Time.class);
