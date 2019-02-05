@@ -40,6 +40,7 @@ public class ProductUnitTest {
   private static final ProductUnit<?> KILOGRAM_METRE = (ProductUnit<?>) ProductUnit.ofProduct(Units.KILOGRAM, Units.METRE);
   private static final ProductUnit<?> SECOND_CANDELA = (ProductUnit<?>) ProductUnit.ofProduct(Units.SECOND, Units.CANDELA);
   private static final ProductUnit<?> KILOGRAM_PER_METRE = (ProductUnit<?>) ProductUnit.ofQuotient(Units.KILOGRAM, Units.METRE);
+  private static final ProductUnit<?> KILOGRAM_METRE_SECOND_CANDELA = (ProductUnit<?>) ProductUnit.ofProduct(KILOGRAM_METRE, SECOND_CANDELA);
 
   /**
    * Verifies that the empty constructor creates an empty product unit.
@@ -81,8 +82,7 @@ public class ProductUnitTest {
    */
   @Test
   public void productOfTwoProductUnitsWithEachTwoDifferentSystemUnitsProducesAProductUnitOfSizeFour() {
-    ProductUnit<?> product = (ProductUnit<?>) ProductUnit.ofProduct(KILOGRAM_METRE, SECOND_CANDELA);
-    assertEquals(4, product.getUnitCount());
+    assertEquals(4, KILOGRAM_METRE_SECOND_CANDELA.getUnitCount());
   }
 
   /**
@@ -99,7 +99,7 @@ public class ProductUnitTest {
    */
   @Test
   public void divisionLeadingToEliminationOfAUnitResultsInLowerUnitCount() {
-    ProductUnit<?> product = (ProductUnit<?>) ProductUnit.ofQuotient(ProductUnit.ofProduct(KILOGRAM_METRE, SECOND_CANDELA), Units.METRE);
+    ProductUnit<?> product = (ProductUnit<?>) ProductUnit.ofQuotient(KILOGRAM_METRE_SECOND_CANDELA, Units.METRE);
     assertEquals(3, product.getUnitCount());
   }
 
@@ -156,5 +156,116 @@ public class ProductUnitTest {
     ProductUnit<?> square1 = (ProductUnit<?>) KILOGRAM_METRE.pow(2);
     ProductUnit<?> square2 = (ProductUnit<?>) ProductUnit.ofPow(KILOGRAM_METRE, 2);
     assertEquals(square1, square2);
+  }
+
+  /**
+   * Verifies that a product unit is equal to itself.
+   */
+  @Test
+  public void productUnitIsEqualToItself() {
+    assertEquals(KILOGRAM_METRE, KILOGRAM_METRE);
+  }
+
+  /**
+   * Verifies that a product unit is equal to another product unit composed in the same manner.
+   */
+  @Test
+  public void productUnitIsEqualToAnotherProductUnitComposedOfTheSameUnits() {
+    ProductUnit<?> otherKilogramMetre = (ProductUnit<?>) ProductUnit.ofProduct(Units.KILOGRAM, Units.METRE);
+    assertEquals(KILOGRAM_METRE, otherKilogramMetre);
+  }
+
+  /**
+   * Verifies that a product unit is equal to another product unit composed with the same units but in a different order.
+   */
+  @Test
+  public void productUnitIsEqualToAnotherProductUnitComposedOfTheSameUnitsInADifferentOrder() {
+    ProductUnit<?> otherKilogramMetre = (ProductUnit<?>) ProductUnit.ofProduct(Units.METRE, Units.KILOGRAM);
+    assertEquals(KILOGRAM_METRE, otherKilogramMetre);
+  }
+
+  /**
+   * Verifies that a product unit is not equal to another product unit with a different number of units.
+   */
+  @Test
+  public void productUnitIsNotEqualToAnotherProductUnitWithADifferentNumberOfUnits() {
+    assertNotEquals(KILOGRAM_METRE, KILOGRAM_METRE_SECOND_CANDELA);
+  }
+
+  /**
+   * Verifies that a product unit is not equal to another product unit with a different units.
+   */
+  @Test
+  public void productUnitIsNotEqualToAnotherProductUnitWithDifferentUnits() {
+    assertNotEquals(KILOGRAM_METRE, SECOND_CANDELA);
+  }
+
+  /**
+   * Verifies that a product unit is not equal to another product unit with the same units but a different power.
+   */
+  @Test
+  public void productUnitIsNotEqualToAnotherProductUnitWithADifferentPowerForAUnit() {
+    assertNotEquals(KILOGRAM_METRE, KILOGRAM_PER_METRE);
+  }
+
+  /**
+   * Verifies that a product unit is not equal to an object of another class, like a string.
+   */
+  @Test
+  public void productUnitIsNotEqualToAString() {
+    assertNotEquals(KILOGRAM_METRE, "a string");
+  }
+
+  /**
+   * Verifies that a product unit is not equal to null.
+   */
+  @Test
+  public void productUnitIsNotEqualNull() {
+    assertNotEquals(KILOGRAM_METRE, null);
+  }
+
+  /**
+   * Verifies that a product unit has the same hash code as another product unit composed in the same manner.
+   */
+  @Test
+  public void productUnitHasTheSameHashCodeAsAnotherProductUnitComposedOfTheSameUnits() {
+    ProductUnit<?> otherKilogramMetre = (ProductUnit<?>) ProductUnit.ofProduct(Units.KILOGRAM, Units.METRE);
+    assertEquals(KILOGRAM_METRE.hashCode(), otherKilogramMetre.hashCode());
+  }
+
+  /**
+   * Verifies that a product unit has the same hash code as another product unit composed with the same units but in a different order.
+   */
+  @Test
+  public void productUnitHasTheSameHashCodeAsAnotherProductUnitComposedOfTheSameUnitsInADifferentOrder() {
+    ProductUnit<?> otherKilogramMetre = (ProductUnit<?>) ProductUnit.ofProduct(Units.METRE, Units.KILOGRAM);
+    assertEquals(KILOGRAM_METRE.hashCode(), otherKilogramMetre.hashCode());
+  }
+
+  /**
+   * Verifies that a product unit doesn't have the same hash code as another product unit with a different number of units. Note that this isn't a
+   * requirement for the hashCode method, but generally a good property to have.
+   */
+  @Test
+  public void productUnitDoesNotHaveTheSameHashCodeAsAnotherProductUnitWithADifferentNumberOfUnits() {
+    assertNotEquals(KILOGRAM_METRE.hashCode(), KILOGRAM_METRE_SECOND_CANDELA.hashCode());
+  }
+
+  /**
+   * Verifies that a product unit doesn't have the same hash code as another product unit with a different units. Note that this isn't a requirement
+   * for the hashCode method, but generally a good property to have.
+   */
+  @Test
+  public void productUnitDoesNotHaveTheSameHashCodeAsAnotherProductUnitWithDifferentUnits() {
+    assertNotEquals(KILOGRAM_METRE.hashCode(), SECOND_CANDELA.hashCode());
+  }
+
+  /**
+   * Verifies that a product unit doesn't have the same hash code as another product unit with the same units but a different power. Note that this
+   * isn't a requirement for the hashCode method, but generally a good property to have.
+   */
+  @Test
+  public void productUnitDoesNotHaveTheSameHashCodeAsAnotherProductUnitWithADifferentPowerForAUnit() {
+    assertNotEquals(KILOGRAM_METRE.hashCode(), KILOGRAM_PER_METRE.hashCode());
   }
 }
