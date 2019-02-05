@@ -39,6 +39,8 @@ import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.quantity.QuantityDimension;
 
 import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -297,6 +299,11 @@ public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
 
     @Override
     public int hashCode() {
+        Arrays.sort(elements, new Comparator<Element>() {
+          @Override
+          public int compare(Element e0, Element e1) {
+            return e0.getUnit().getSystemUnit().getSymbol().compareTo(e1.getUnit().getSystemUnit().getSymbol());
+          }});
         return Objects.hash((Object[]) elements);
     }
 
@@ -510,10 +517,7 @@ public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
 
         @Override
         public int hashCode() {
-            int result = unit != null ? unit.hashCode() : 0;
-            result = 31 * result + pow;
-            result = 31 * result + root;
-            return result;
+            return Objects.hash(unit, pow, root);
         }
     }
 }
