@@ -35,7 +35,6 @@ import javax.measure.quantity.Time;
 
 import org.junit.jupiter.api.Test;
 
-import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.unit.Units;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -49,14 +48,14 @@ public class CompoundUnitTest {
 
   @Test
   public void testLength() {
-    final Unit<Length> compLen =  ((AbstractUnit<Length>)Units.METRE).compound(CENTI(Units.METRE));
+    final Unit<Length> compLen =  Units.METRE.compound(CENTI(Units.METRE));
     assertEquals("m;cm", compLen.toString());
   }
   
   @Test
   public void testTime() {
-    final Unit<Time> compTime =  ((AbstractUnit<Time>)((AbstractUnit<Time>)Units.HOUR).
-              compound(Units.MINUTE)).compound(Units.SECOND);
+    final Unit<Time> compTime =  Units.HOUR.
+              compound(Units.MINUTE).compound(Units.SECOND);
     assertEquals("h;min;s", compTime.toString());
   }
 }

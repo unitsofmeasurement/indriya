@@ -56,7 +56,7 @@ public class CompoundQuantityTest {
 
   @Test
   public void testLength() {
-    Unit<Length> compLen =  ((AbstractUnit<Length>)Units.METRE).compound(CENTI(Units.METRE));
+    Unit<Length> compLen = Units.METRE.compound(CENTI(Units.METRE));
     Quantity<Length> l1 = Quantities.getQuantity(1.70, compLen);
     assertEquals(1.7d, l1.getValue());
     assertEquals("m;cm", l1.getUnit().toString()); // TODO this does not make much sense yet
@@ -64,7 +64,7 @@ public class CompoundQuantityTest {
   
   @Test
   public void testLengths() {
-    Unit<Length> compLen =  ((AbstractUnit<Length>)Units.METRE).compound(CENTI(Units.METRE));
+    Unit<Length> compLen = Units.METRE.compound(CENTI(Units.METRE));
     Number[] numList = {1, 70};
     Quantity<Length> l1 = Quantities.getCompoundQuantity(numList, compLen);
     assertEquals(BigDecimal.valueOf(1.7d), l1.getValue());
@@ -87,8 +87,8 @@ public class CompoundQuantityTest {
   
   @Test
   public void testSizeMismatch() {
-      Unit<Time> compTime =  ((AbstractUnit<Time>)((AbstractUnit<Time>)Units.HOUR).
-              compound(Units.MINUTE)).compound(Units.SECOND);
+      Unit<Time> compTime = Units.HOUR.
+              compound(Units.MINUTE).compound(Units.SECOND);
       Number[] numList = {1, 70};
     assertThrows(IllegalArgumentException.class, () -> {
         @SuppressWarnings("unused")
@@ -98,7 +98,7 @@ public class CompoundQuantityTest {
   
   @Test
   public void testConvert() {
-    Unit<Length> compLen =  ((AbstractUnit<Length>)Units.METRE).compound(CENTI(Units.METRE));
+    Unit<Length> compLen = Units.METRE.compound(CENTI(Units.METRE));
     Quantity<Length> l1 = Quantities.getQuantity(170, CENTI(Units.METRE));
     assertEquals(170, l1.getValue());
     assertEquals("cm", l1.getUnit().toString());
@@ -108,5 +108,4 @@ public class CompoundQuantityTest {
         logger.info(String.valueOf(l2));
     });
   }
-
 }
