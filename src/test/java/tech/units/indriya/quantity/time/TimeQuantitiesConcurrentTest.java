@@ -42,8 +42,6 @@ import static tech.units.indriya.unit.Units.HOUR;
 import static tech.units.indriya.unit.Units.MINUTE;
 import static tech.units.indriya.unit.Units.SECOND;
 
-import java.util.concurrent.TimeUnit;
-
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.quantity.Time;
@@ -53,7 +51,6 @@ import org.junit.jupiter.api.Test;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.quantity.time.TimeQuantities;
 import tech.units.indriya.quantity.time.TimeUnitQuantity;
-import tech.units.indriya.unit.Units;
 
 public class TimeQuantitiesConcurrentTest {
 
@@ -91,10 +88,10 @@ public class TimeQuantitiesConcurrentTest {
 
   @Test
   public void ofQuantityTest() {
-    Quantity<Time> hour = Quantities.getQuantity(1, Units.HOUR);
+    Quantity<Time> hour = Quantities.getQuantity(1, HOUR);
     TimeUnitQuantity timeQuantity = TimeUnitQuantity.of(hour);
 
-    assertEquals(TimeUnit.SECONDS, timeQuantity.getTimeUnit());
+    assertEquals(SECONDS, timeQuantity.getTimeUnit());
     assertEquals(SECOND, timeQuantity.toUnit());
     assertEquals(Long.valueOf(3600), timeQuantity.getValue());
   }
@@ -142,13 +139,13 @@ public class TimeQuantitiesConcurrentTest {
   @Test
   public void convertTest() {
     TimeUnitQuantity day = TimeUnitQuantity.of(1, DAYS);
-    TimeUnitQuantity hours = day.to(TimeUnit.HOURS);
+    TimeUnitQuantity hours = day.to(HOURS);
 
-    assertEquals(TimeUnit.HOURS, hours.getTimeUnit());
+    assertEquals(HOURS, hours.getTimeUnit());
     assertEquals(Long.valueOf(24), hours.getValue());
 
-    TimeUnitQuantity oneDay = hours.to(TimeUnit.DAYS);
-    assertEquals(TimeUnit.DAYS, oneDay.getTimeUnit());
+    TimeUnitQuantity oneDay = hours.to(DAYS);
+    assertEquals(DAYS, oneDay.getTimeUnit());
     assertEquals(Long.valueOf(1), oneDay.getValue());
   }
 
