@@ -48,7 +48,50 @@ import tech.units.indriya.unit.CompoundUnit;
 
 /**
  * A simple implementation of QuantityFormat
- * @version 0.9.3, $Date: 2019-02-03 $
+ * 
+ * <p>
+ * The following pattern letters are defined:
+ * <blockquote>
+ * <table class="striped">
+ * <caption style="display:none">Chart shows pattern letters, date/time component, presentation, and examples.</caption>
+ * <thead>
+ *     <tr>
+ *         <th style="text-align:left">Letter
+ *         <th style="text-align:left">Quantity Component
+ *         <th style="text-align:left">Presentation
+ *         <th style="text-align:left">Examples
+ * </thead>
+ * <tbody>
+ *     <tr>
+ *         <td><code>n</code>
+ *         <td>Numeric value
+ *         <td><a href="#number">Number</a>
+ *         <td><code>27</code>
+ *     <tr>
+ *         <td><code>u</code>
+ *         <td>Unit
+ *         <td><a href="#text">Text</a>
+ *         <td><code>m</code>; <code>h</code>
+ * </tbody>
+ * </table>
+ * </blockquote>
+ * Pattern letters are usually repeated, as their number determines the
+ * exact presentation:
+ * <ul>
+ * <li><strong><a id="text">Text:</a></strong>
+ *     For formatting, if the number of pattern letters is 4 or more,
+ *     the full form is used; otherwise a short or abbreviated form
+ *     is used if available.
+ *     For parsing, both forms are accepted, independent of the number
+ *     of pattern letters.<br><br></li>
+ * <li><strong><a id="number">Number:</a></strong>
+ *     For formatting, the number of pattern letters is the minimum
+ *     number of digits, and shorter numbers are zero-padded to this amount.
+ *     For parsing, the number of pattern letters is ignored unless
+ *     it's needed to separate two adjacent fields.<br><br></li>
+ * </ul>
+ * </p>
+ * @version 0.9.4, $Date: 2019-02-05 $
  * @since 2.0
  */
 @SuppressWarnings("rawtypes")
@@ -58,13 +101,18 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
 	 */
 	private static final SimpleQuantityFormat DEFAULT = new SimpleQuantityFormat();
 
+	private static final String NUM_PART = "n";
+	private static final String UNIT_PART = "u";
+
 	/**
 	 * The pattern string of this formatter. This is always a non-localized pattern.
 	 * May not be null. See class documentation for details.
 	 * 
 	 * @serial
 	 */
-	private String pattern;
+	private final String pattern;
+	
+	private String delimiter;
 
 	/**
 	*
@@ -84,6 +132,9 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
 	 */
 	public SimpleQuantityFormat(String pattern) {
 		this.pattern = pattern;
+		if (pattern != null && !pattern.isEmpty()) {
+		   delimiter = pattern.substring(pattern.indexOf(NUM_PART)+1, pattern.indexOf(UNIT_PART));
+		}
 	}
 
 	/**
@@ -91,7 +142,7 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
 	 * full coverage, use the factory methods.
 	 */
 	protected SimpleQuantityFormat() {
-		this("");
+		this("n u");
 	}
 
 	@Override
@@ -108,7 +159,7 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
                        sb.append(SimpleQuantityFormat.getInstance().format(
                                Quantities.getQuantity(values[i], compUnit.getUnits().get(i), compQuant.getScale())));
                        if (i < values.length-1) {
-                           sb.append(DEFAULT_DELIMITER);
+                           sb.append(delimiter);
                        }
                     }
                     return sb;
@@ -122,7 +173,7 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
     		dest.append(quantity.getValue().toString());
     		if (quantity.getUnit().equals(AbstractUnit.ONE))
     			return dest;
-    		dest.append(DEFAULT_DELIMITER);
+    		dest.append(delimiter);
     		return SimpleUnitFormat.getInstance().format(unit, dest);
         }
 	}
@@ -183,7 +234,7 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
 	 * @param pattern
 	 *            the pattern describing the quantity and unit format
 	 *
-	 * @return <code>MeasureFormat.getInstance(NumberFormat.getInstance(), UnitFormat.getInstance())</code>
+	 * @return <code>SimpleQuantityFormat.getInstance(a pattern)</code>
 	 */
 	public static SimpleQuantityFormat getInstance(String pattern) {
 		return new SimpleQuantityFormat(pattern);

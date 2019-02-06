@@ -75,19 +75,21 @@ import tech.units.indriya.unit.Units;
  *        AbstractUnit.parse("kW").equals(MetricPrefix.KILO(Units.WATT))
  *        AbstractUnit.parse("ft").equals(Units.METRE.multiply(0.3048))</code>
  * </p>
- *
+ * 
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
  * @author Eric Russell
- * @version 1.6.2, January 29, 2019
+ * @version 1.6.3, February 5, 2019
  * @since 1.0
  */
 public abstract class SimpleUnitFormat extends AbstractUnitFormat {
   /**
    * 
    */
-  // private static final long serialVersionUID = 4149424034841739785L;
-	
+  // private static final long serialVersionUID = 4149424034841739785L;#
+    
+  private static final char MIDDLE_DOT = '\u00b7';
+  
   /**
    * Flavor of this format
    *
@@ -352,16 +354,12 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
     public boolean isValidIdentifier(String name) {
       if ((name == null) || (name.length() == 0))
         return false;
-      /*
-       * for (int i = 0; i < name.length(); i++) { if
-       * (!isUnitIdentifierPart(name.charAt(i))) return false; }
-       */
       return isUnitIdentifierPart(name.charAt(0));
     }
 
     protected static boolean isUnitIdentifierPart(char ch) {
       return Character.isLetter(ch)
-          || (!Character.isWhitespace(ch) && !Character.isDigit(ch) && (ch != '\u00b7') && (ch != '*') && (ch != '/') && (ch != '(') && (ch != ')')
+          || (!Character.isWhitespace(ch) && !Character.isDigit(ch) && (ch != MIDDLE_DOT) && (ch != '*') && (ch != '/') && (ch != '(') && (ch != ')')
               && (ch != '[') && (ch != ']') && (ch != '\u00b9') && (ch != '\u00b2') && (ch != '\u00b3') && (ch != '^') && (ch != '+') && (ch != '-'));
     }
 
@@ -385,7 +383,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
         StringBuilder result = new StringBuilder();
         String baseUnitName = baseUnit.toString();
         String prefix = prefixFor(cvtr);
-        if ((baseUnitName.indexOf('\u00b7') >= 0) || (baseUnitName.indexOf('*') >= 0) || (baseUnitName.indexOf('/') >= 0)) {
+        if ((baseUnitName.indexOf(MIDDLE_DOT) >= 0) || (baseUnitName.indexOf('*') >= 0) || (baseUnitName.indexOf('/') >= 0)) {
           // We could use parentheses whenever baseUnits is an
           // instanceof ProductUnit, but most ProductUnits have
           // aliases,
@@ -594,7 +592,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
           }
           char c2 = csq.charAt(pos.getIndex() + 1);
           return c2 == '*' ? Token.EXPONENT : Token.MULTIPLY;
-        } else if (c == '\u00b7') {
+        } else if (c == MIDDLE_DOT) {
           return Token.MULTIPLY;
         } else if (c == '/') {
           return Token.DIVIDE;
@@ -747,7 +745,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
         int pow = productUnit.getUnitPow(i);
         if (pow >= 0) {
           if (!start) {
-            appendable.append('\u00b7'); // Separator.
+            appendable.append(MIDDLE_DOT); // Separator.
           }
           name = nameFor(productUnit.getUnit(i));
           int root = productUnit.getUnitRoot(i);
@@ -774,7 +772,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
             name = nameFor(productUnit.getUnit(i));
             int root = productUnit.getUnitRoot(i);
             if (!start) {
-              appendable.append('\u00b7'); // Separator.
+              appendable.append(MIDDLE_DOT); // Separator.
             }
             append(appendable, name, -pow, root);
             start = false;

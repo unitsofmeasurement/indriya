@@ -75,7 +75,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
      */
     private static final long serialVersionUID = 3546952599885869402L;
 
-    private final NumberFormat numberFormat;
+    private final transient NumberFormat numberFormat;
 
     private final UnitFormat unitFormat;
     

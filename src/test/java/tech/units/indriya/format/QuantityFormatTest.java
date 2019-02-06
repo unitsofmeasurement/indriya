@@ -57,181 +57,190 @@ import tech.units.indriya.unit.Units;
  *
  */
 public class QuantityFormatTest {
-	private Quantity<Length> sut;
-	private SimpleQuantityFormat format;
+    private Quantity<Length> sut;
+    private SimpleQuantityFormat format;
 
-	@BeforeEach
-	public void init() {
-		// sut =
-		// DefaultQuantityFactoryService.getQuantityFactory(Length.class).create(10,
-		// METRE);
-		sut = Quantities.getQuantity(10, METRE);
-		format = SimpleQuantityFormat.getInstance();
-	}
+    @BeforeEach
+    public void init() {
+        // sut =
+        // DefaultQuantityFactoryService.getQuantityFactory(Length.class).create(10,
+        // METRE);
+        sut = Quantities.getQuantity(10, METRE);
+        format = SimpleQuantityFormat.getInstance();
+    }
 
-	@Test
-	public void testFormat() {
-		Unit<Frequency> hz = HERTZ;
-		Quantity<Frequency> tenHz = Quantities.getQuantity(10, hz);
-		assertEquals("10 Hz", format.format(tenHz));
-	}
+    @Test
+    public void testFormat() {
+        Unit<Frequency> hz = HERTZ;
+        Quantity<Frequency> tenHz = Quantities.getQuantity(10, hz);
+        assertEquals("10 Hz", format.format(tenHz));
+    }
 
-	@Test
-	public void testFormat2() {
-		Unit<Frequency> mhz = MEGA(HERTZ);
-		Quantity<Frequency> oneMHz = Quantities.getQuantity(1, mhz);
-		assertEquals("1 MHz", oneMHz.toString());
-	}
+    @Test
+    public void testFormat2() {
+        Unit<Frequency> mhz = MEGA(HERTZ);
+        Quantity<Frequency> oneMHz = Quantities.getQuantity(1, mhz);
+        assertEquals("1 MHz", oneMHz.toString());
+    }
 
-	@Test
-	public void testFormat3() {
-		Unit<Frequency> khz = KILO(HERTZ);
-		Quantity<Frequency> fiveKhz = Quantities.getQuantity(5, khz);
-		assertEquals("5 kHz", format.format(fiveKhz));
-	}
+    @Test
+    public void testFormat3() {
+        Unit<Frequency> khz = KILO(HERTZ);
+        Quantity<Frequency> fiveKhz = Quantities.getQuantity(5, khz);
+        assertEquals("5 kHz", format.format(fiveKhz));
+    }
 
     @Test
     public void testFormatDelim() {
         final NumberDelimiterQuantityFormat format1 = NumberDelimiterQuantityFormat.getInstance(DecimalFormat.getInstance(),
                 SimpleUnitFormat.getInstance(), "_");
-        final Unit<Length> cm =  CENTI(Units.METRE);
+        final Unit<Length> cm = CENTI(Units.METRE);
         final Quantity<Length> l1 = Quantities.getQuantity(150, cm);
         assertEquals("150_cm", format1.format(l1));
     }
-	
+
     @Test
     public void testFormatCompound1() {
         final NumberDelimiterQuantityFormat format1 = NumberDelimiterQuantityFormat.getInstance(DecimalFormat.getInstance(),
                 SimpleUnitFormat.getInstance());
         final Unit<Length> compLen = Units.METRE.compound(CENTI(Units.METRE));
-        final Number[] numList = {1, 70};
+        final Number[] numList = { 1, 70 };
         final Quantity<Length> l1 = Quantities.getCompoundQuantity(numList, compLen);
 
         assertEquals("1 m 70 cm", format1.format(l1));
     }
-    
+
     @Test
     public void testFormatCompound2() {
         final NumberDelimiterQuantityFormat format1 = NumberDelimiterQuantityFormat.getInstance(new DecimalFormat("#.000"),
                 SimpleUnitFormat.getInstance());
-        final Unit<Length> compLen =  Units.METRE.compound(CENTI(Units.METRE));
-        final Number[] numList = {1, 70};
+        final Unit<Length> compLen = Units.METRE.compound(CENTI(Units.METRE));
+        final Number[] numList = { 1, 70 };
         final Quantity<Length> l1 = Quantities.getCompoundQuantity(numList, compLen);
 
         assertEquals("1.000 m 70.000 cm", format1.format(l1));
     }
-	
+
     @Test
     public void testFormatCompoundDelim() {
         final NumberDelimiterQuantityFormat format1 = NumberDelimiterQuantityFormat.getCompoundInstance(DecimalFormat.getInstance(),
                 SimpleUnitFormat.getInstance(), "_");
-        final Unit<Length> compLen =  Units.METRE.compound(CENTI(Units.METRE));
-        final Number[] numList = {1, 70};
+        final Unit<Length> compLen = Units.METRE.compound(CENTI(Units.METRE));
+        final Number[] numList = { 1, 70 };
         final Quantity<Length> l1 = Quantities.getCompoundQuantity(numList, compLen);
 
         assertEquals("1_m_70_cm", format1.format(l1));
     }
-    
+
     @Test
     public void testFormatCompoundDelims() {
         final NumberDelimiterQuantityFormat format1 = NumberDelimiterQuantityFormat.getCompoundInstance(DecimalFormat.getInstance(),
                 SimpleUnitFormat.getInstance(), "_", " ");
-        final Unit<Length> compLen =  Units.METRE.compound(CENTI(Units.METRE));
-        final Number[] numList = {1, 70};
+        final Unit<Length> compLen = Units.METRE.compound(CENTI(Units.METRE));
+        final Number[] numList = { 1, 70 };
         final Quantity<Length> l1 = Quantities.getCompoundQuantity(numList, compLen);
 
         assertEquals("1_m 70_cm", format1.format(l1));
     }
-    
+
     @Test
     public void testFormatCompoundDelims2() {
         final NumberDelimiterQuantityFormat format1 = NumberDelimiterQuantityFormat.getCompoundInstance(DecimalFormat.getInstance(),
                 SimpleUnitFormat.getInstance(), " ", ":");
-        Unit<Time> compTime =  Units.HOUR.
-                compound(Units.MINUTE).compound(Units.SECOND);
-        final Number[] numList = {1, 40, 10};
+        Unit<Time> compTime = Units.HOUR.compound(Units.MINUTE).compound(Units.SECOND);
+        final Number[] numList = { 1, 40, 10 };
         final Quantity<Time> t1 = Quantities.getCompoundQuantity(numList, compTime);
         assertEquals("1 h:40 min:10 s", format1.format(t1));
     }
+
+    @Test
+    public void testParseSimple1() {
+        Quantity<?> parsed1 = SimpleQuantityFormat.getInstance().parse("10 min");
+        assertNotNull(parsed1);
+        assertEquals(BigDecimal.valueOf(10), parsed1.getValue());
+        assertEquals(Units.MINUTE, parsed1.getUnit());
+    }
+
+    @Test
+    public void testParse2() {
+        Quantity<?> parsed1 = format.parse("60 m");
+        assertNotNull(parsed1);
+        assertEquals(BigDecimal.valueOf(60), parsed1.getValue());
+        assertEquals(Units.METRE, parsed1.getUnit());
+    }
+
+    @Test
+    public void testParseAsType() {
+        Quantity<Length> parsed1 = SimpleQuantityFormat.getInstance().parse("60 m").asType(Length.class);
+        assertNotNull(parsed1);
+        assertEquals(BigDecimal.valueOf(60), parsed1.getValue());
+        assertEquals(Units.METRE, parsed1.getUnit());
+    }
+
+    @Test
+    public void testParseSimple3() {
+        try {
+            Quantity<?> parsed1 = format.parse("5 kg");
+            assertNotNull(parsed1);
+            assertEquals(BigDecimal.valueOf(5), parsed1.getValue());
+            assertNotNull(parsed1.getUnit());
+            assertEquals("kg", parsed1.getUnit().getSymbol());
+            assertEquals(KILOGRAM, parsed1.getUnit());
+        } catch (MeasurementParseException e) {
+            fail(e.getMessage());
+        }
+    }
+
+    @Test
+    public void testPattern() {
+        final SimpleQuantityFormat patternFormat = SimpleQuantityFormat.getInstance("n u");
+        assertEquals("n u", patternFormat.getPattern());
+        assertEquals("10 m", patternFormat.format(sut));
+    }
+
+    @Test
+    public void testAnotherPattern() {
+        final SimpleQuantityFormat patternFormat = SimpleQuantityFormat.getInstance("n_u");
+        assertEquals("n_u", patternFormat.getPattern());
+        assertEquals("10_m", patternFormat.format(sut));
+    }
     
-	@Test
-	public void testParseSimple1() {
-		Quantity<?> parsed1 = SimpleQuantityFormat.getInstance().parse("10 min");
-		assertNotNull(parsed1);
-		assertEquals(BigDecimal.valueOf(10), parsed1.getValue());
-		assertEquals(Units.MINUTE, parsed1.getUnit());
-	}
+    @Test
+    public void testCondensedPattern() {
+        final SimpleQuantityFormat patternFormat = SimpleQuantityFormat.getInstance("nu");
+        assertEquals("nu", patternFormat.getPattern());
+        assertEquals("10m", patternFormat.format(sut));
+    }
 
-	@Test
-	public void testParse2() {
-		Quantity<?> parsed1 = format.parse("60 m");
-		assertNotNull(parsed1);
-		assertEquals(BigDecimal.valueOf(60), parsed1.getValue());
-		assertEquals(Units.METRE, parsed1.getUnit());
-	}
-	
-	@Test
-	public void testParseAsType() {
-		Quantity<Length> parsed1 = SimpleQuantityFormat.getInstance().parse("60 m").asType(Length.class);
-		assertNotNull(parsed1);
-		assertEquals(BigDecimal.valueOf(60), parsed1.getValue());
-		assertEquals(Units.METRE, parsed1.getUnit());
-	}
+    @Test
+    public void testSimpleBuilder() {
+        QuantityFormat quantFormat = new SimpleQuantityFormatBuilder().appendUnit(DAY).appendUnit(HOUR).appendUnit(MINUTE).build();
+        assertNotNull(quantFormat);
+    }
 
-	@Test
-	public void testParseSimple3() {
-		try {
-			Quantity<?> parsed1 = format.parse("5 kg");
-			assertNotNull(parsed1);
-			assertEquals(BigDecimal.valueOf(5), parsed1.getValue());
-			assertNotNull(parsed1.getUnit());
-			assertEquals("kg", parsed1.getUnit().getSymbol());
-			assertEquals(KILOGRAM, parsed1.getUnit());
-		} catch (MeasurementParseException e) {
-			fail(e.getMessage());
-		}
-	}
+    @Test
+    public void testParseCustom1() {
+        QuantityFormat format1 = NumberDelimiterQuantityFormat.getInstance(DecimalFormat.getInstance(), SimpleUnitFormat.getInstance());
+        Quantity<?> parsed1 = format1.parse("1 m");
+        assertEquals(1L, parsed1.getValue());
+        assertEquals(METRE, parsed1.getUnit());
+    }
 
-	@Test
-	public void testPattern() {
-		final SimpleQuantityFormat patternFormat = SimpleQuantityFormat.getInstance("V U");
-		assertEquals("V U", patternFormat.getPattern());
-		assertEquals("10 m", patternFormat.format(sut));
-	}
+    @Test
+    public void testParseCustom2() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            QuantityFormat format1 = NumberDelimiterQuantityFormat.getInstance(DecimalFormat.getInstance(), SimpleUnitFormat.getInstance());
+            @SuppressWarnings("unused")
+            Quantity<?> parsed1 = format1.parse("1");
+        });
+    }
 
-	@Test
-	public void testSimpleBuilder() {
-		QuantityFormat quantFormat = new SimpleQuantityFormatBuilder().appendUnit(DAY).appendUnit(HOUR)
-				.appendUnit(MINUTE).build();
-		assertNotNull(quantFormat);
-	}
-
-	@Test
-	public void testParseCustom1() {
-		QuantityFormat format1 = NumberDelimiterQuantityFormat.getInstance(DecimalFormat.getInstance(),
-				SimpleUnitFormat.getInstance());
-		Quantity<?> parsed1 = format1.parse("1 m");
-		assertEquals(1L, parsed1.getValue());
-		assertEquals(METRE, parsed1.getUnit());
-	}
-
-	@Test
-	public void testParseCustom2() {
-		assertThrows(IllegalArgumentException.class, () -> {
-			QuantityFormat format1 = NumberDelimiterQuantityFormat.getInstance(DecimalFormat.getInstance(),
-					SimpleUnitFormat.getInstance());
-			@SuppressWarnings("unused")
-			Quantity<?> parsed1 = format1.parse("1");
-		});
-	}
-	
-	@Test
-	public void testParseCustom3() {
-		assertThrows(IllegalArgumentException.class, () -> {
-			QuantityFormat format1 = NumberDelimiterQuantityFormat.getInstance(DecimalFormat.getInstance(),
-					SimpleUnitFormat.getInstance());
-			@SuppressWarnings("unused")
-			Quantity<?> parsed1 = format1.parse("m");
-		});
-	}
+    @Test
+    public void testParseCustom3() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            QuantityFormat format1 = NumberDelimiterQuantityFormat.getInstance(DecimalFormat.getInstance(), SimpleUnitFormat.getInstance());
+            @SuppressWarnings("unused")
+            Quantity<?> parsed1 = format1.parse("m");
+        });
+    }
 }
