@@ -30,7 +30,6 @@
 package tech.units.indriya.function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -55,7 +54,7 @@ public class MultiplyConverterTest {
 
   @Test
   public void testEqualityOfTwoLogConverter() {
-    assertFalse(converter.equals(null));
+    assertNotNull(converter);
     assertEquals(new MultiplyConverter(2), converter);
   }
 

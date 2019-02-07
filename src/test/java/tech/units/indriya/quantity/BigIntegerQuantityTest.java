@@ -32,6 +32,8 @@ package tech.units.indriya.quantity;
 import static javax.measure.MetricPrefix.MILLI;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -273,7 +275,7 @@ public class BigIntegerQuantityTest {
    */
   @Test
   public void bigIntegerQuantityIsNotEqualToNull() {
-    assertFalse(ONE_OHM.equals(null));
+    assertNotNull(ONE_OHM);
   }
 
   /**
@@ -281,7 +283,7 @@ public class BigIntegerQuantityTest {
    */
   @Test
   public void bigIntegerQuantityIsEqualToItself() {
-    assertTrue(ONE_OHM.equals(ONE_OHM));
+    assertEquals(ONE_OHM, ONE_OHM);
   }
 
   /**
@@ -305,7 +307,7 @@ public class BigIntegerQuantityTest {
    */
   @Test
   public void bigIntegerQuantityIsNotEqualToQuantityWithDifferentValue() {
-    assertFalse(ONE_OHM.equals(TWO_OHM));
+    assertNotEquals(ONE_OHM, TWO_OHM);
   }
 
   /**
@@ -313,7 +315,7 @@ public class BigIntegerQuantityTest {
    */
   @Test
   public void bigIntegerQuantityIsNotEqualToQuantityWithDifferentUnit() {
-    assertFalse(ONE_OHM.equals(ONE_MILLIOHM));
+      assertNotEquals(ONE_OHM, ONE_MILLIOHM);
   }
 
   /**
@@ -321,7 +323,7 @@ public class BigIntegerQuantityTest {
    */
   @Test
   public void bigIntegerQuantityIsNotEqualToObjectOfDifferentClass() {
-    assertFalse(ONE_OHM.equals(SQUARE_OHM));
+      assertNotEquals(ONE_OHM, SQUARE_OHM);
   }
 
   @Test
