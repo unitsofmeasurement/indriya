@@ -62,9 +62,9 @@ import tech.units.indriya.unit.CompoundUnit;
 public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
 
     /**
-     * Holds the default format instance.
+     * Holds the default format instance (EBNFUnitFormat).
      */
-    private static final NumberDelimiterQuantityFormat DEFAULT = new NumberDelimiterQuantityFormat(NumberFormat.getInstance(),
+    private static final NumberDelimiterQuantityFormat EBNF = new NumberDelimiterQuantityFormat(NumberFormat.getInstance(),
             EBNFUnitFormat.getInstance());
 
     /**
@@ -94,7 +94,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
     }
     
     private NumberDelimiterQuantityFormat(NumberFormat numberFormat, UnitFormat unitFormat, String delim) {
-        this(numberFormat, unitFormat, delim, DEFAULT_DELIMITER);
+        this(numberFormat, unitFormat, delim, null);
     }
 
     private NumberDelimiterQuantityFormat(NumberFormat numberFormat, UnitFormat unitFormat) {
@@ -227,11 +227,11 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
     public static NumberDelimiterQuantityFormat getInstance(FormatBehavior style) {
         switch (style) {
             case LOCALE_NEUTRAL:
-                return DEFAULT;
+                return EBNF;
             case LOCALE_SENSITIVE:
                 return LOCAL;
             default:
-                return DEFAULT;
+                return EBNF;
         }
     }
 
