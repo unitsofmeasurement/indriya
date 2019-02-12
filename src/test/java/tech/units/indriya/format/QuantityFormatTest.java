@@ -48,7 +48,7 @@ import javax.measure.quantity.Time;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import tech.units.indriya.AbstractUnit;
+import tech.units.indriya.quantity.CompoundQuantity;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.Units;
 
@@ -124,7 +124,7 @@ public class QuantityFormatTest {
     @Test
     public void testFormatCompoundDelim() {
         final NumberDelimiterQuantityFormat format1 = NumberDelimiterQuantityFormat.getCompoundInstance(DecimalFormat.getInstance(),
-                SimpleUnitFormat.getInstance(), "_");
+                SimpleUnitFormat.getInstance(), "_", "_");
         final Unit<Length> compLen = Units.METRE.compound(CENTI(Units.METRE));
         final Number[] numList = { 1, 70 };
         final Quantity<Length> l1 = Quantities.getCompoundQuantity(numList, compLen);
@@ -219,7 +219,7 @@ public class QuantityFormatTest {
     }
 
     @Test
-    public void testParseCustom1() {
+    public void testParseDelim1() {
         QuantityFormat format1 = NumberDelimiterQuantityFormat.getInstance(DecimalFormat.getInstance(), SimpleUnitFormat.getInstance());
         Quantity<?> parsed1 = format1.parse("1 m");
         assertEquals(1L, parsed1.getValue());
@@ -227,7 +227,7 @@ public class QuantityFormatTest {
     }
 
     @Test
-    public void testParseCustom2() {
+    public void testParseDelim2() {
         assertThrows(IllegalArgumentException.class, () -> {
             QuantityFormat format1 = NumberDelimiterQuantityFormat.getInstance(DecimalFormat.getInstance(), SimpleUnitFormat.getInstance());
             @SuppressWarnings("unused")
@@ -236,11 +236,21 @@ public class QuantityFormatTest {
     }
 
     @Test
-    public void testParseCustom3() {
+    public void testParseDelim3() {
         assertThrows(IllegalArgumentException.class, () -> {
             QuantityFormat format1 = NumberDelimiterQuantityFormat.getInstance(DecimalFormat.getInstance(), SimpleUnitFormat.getInstance());
             @SuppressWarnings("unused")
             Quantity<?> parsed1 = format1.parse("m");
         });
+    }
+    
+    @Test
+    public void testParseCompound2() {
+        QuantityFormat format1 = NumberDelimiterQuantityFormat.getCompoundInstance(DecimalFormat.getInstance(), SimpleUnitFormat.getInstance(), " ", ";");
+        Quantity<?> parsed1 = format1.parse("1 m;30 cm");
+        assertEquals(130L, parsed1.getValue());
+        assertEquals(METRE.compound(CENTI(METRE)), parsed1.getUnit());
+        assertTrue(parsed1 instanceof CompoundQuantity);
+        assertEquals(2, ((CompoundQuantity<?>)parsed1).getValues().length);
     }
 }

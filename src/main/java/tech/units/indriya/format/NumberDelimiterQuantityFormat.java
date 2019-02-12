@@ -34,7 +34,10 @@ import static tech.units.indriya.format.FormatBehavior.LOCALE_NEUTRAL;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
+import java.text.ParseException;
 import java.text.ParsePosition;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.measure.MeasurementException;
 import javax.measure.Quantity;
@@ -52,7 +55,7 @@ import tech.units.indriya.unit.CompoundUnit;
  * An implementation of {@link javax.measure.format.QuantityFormat QuantityFormat} combining {@linkplain NumberFormat} and {@link UnitFormat}
  * separated by a delimiter.
  * 
- * @version 1.4, $Date: 2019-02-03 $
+ * @version 1.5, $Date: 2019-02-12 $
  * @since 2.0
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -167,6 +170,29 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
     @Override
     public ComparableQuantity<?> parse(CharSequence csq, ParsePosition cursor) throws IllegalArgumentException, MeasurementParseException {
         final String str = csq.toString();
+        if (compoundDelimiter != null && !compoundDelimiter.equals(delimiter)) {
+            final String[] compParts = str.split(compoundDelimiter);
+            Unit unit = null;
+            final List<Number> nums = new ArrayList<>();
+            for (String compStr: compParts) {
+                final String[] parts = compStr.split(delimiter);
+                if (parts.length < 2) {
+                    throw new IllegalArgumentException("No Unit found");
+                } else {
+                    try {
+                        nums.add(numberFormat.parse(parts[0]));
+                    } catch (ParseException pe) {
+                        throw new MeasurementParseException(pe);
+                    }
+                    unit = (unit == null) ? 
+                            unitFormat.parse(parts[1]) : 
+                            unit.compound(unitFormat.parse(parts[1]));
+                }
+            }
+            final Number[] numArray = new Number[nums.size()];
+            nums.toArray(numArray);
+            return CompoundQuantity.of(numArray, unit);
+        } 
         final Number number = numberFormat.parse(str, cursor);
         if (number == null)
             throw new IllegalArgumentException("Number cannot be parsed");
@@ -258,7 +284,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
      * @return the corresponding format.
      */
     public static NumberDelimiterQuantityFormat getCompoundInstance(NumberFormat numberFormat, UnitFormat unitFormat, String delimiter) {
-        return new NumberDelimiterQuantityFormat(numberFormat, unitFormat, delimiter, delimiter);
+        return new NumberDelimiterQuantityFormat(numberFormat, unitFormat, delimiter, null);
     }
     
     /**
