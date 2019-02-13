@@ -245,6 +245,20 @@ public class QuantityFormatTest {
     }
     
     @Test
+    public void testParseCompound1() {
+        QuantityFormat format1 = SimpleQuantityFormat.getInstance("n u~:");
+        Quantity<?> parsed1 = format1.parse("1 h:30 min:10 s");
+        assertEquals(5410L, parsed1.getValue());
+        assertEquals(HOUR.compound(MINUTE).compound(SECOND), parsed1.getUnit());
+        assertTrue(parsed1 instanceof CompoundQuantity);
+        final Number[] values = ((CompoundQuantity<?>)parsed1).getValues();
+        assertEquals(3, values.length);
+        assertEquals(1L, values[0]);
+        assertEquals(30L, values[1]);
+        assertEquals(10L, values[2]);
+    }
+    
+    @Test
     public void testParseCompound2() {
         QuantityFormat format1 = NumberDelimiterQuantityFormat.getCompoundInstance(DecimalFormat.getInstance(), SimpleUnitFormat.getInstance(), " ", ";");
         Quantity<?> parsed1 = format1.parse("1 m;30 cm");

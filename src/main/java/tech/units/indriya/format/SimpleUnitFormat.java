@@ -31,6 +31,7 @@ package tech.units.indriya.format;
 
 import static javax.measure.MetricPrefix.KILO;
 import static javax.measure.MetricPrefix.MICRO;
+import static tech.units.indriya.format.FormatConstants.MIDDLE_DOT;
 
 import java.io.IOException;
 import java.text.FieldPosition;
@@ -79,7 +80,7 @@ import tech.units.indriya.unit.Units;
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
  * @author Eric Russell
- * @version 1.6.3, February 5, 2019
+ * @version 1.6.4, February 14, 2019
  * @since 1.0
  */
 public abstract class SimpleUnitFormat extends AbstractUnitFormat {
@@ -88,8 +89,6 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
    */
   // private static final long serialVersionUID = 4149424034841739785L;#
     
-  private static final char MIDDLE_DOT = '\u00b7';
-  
   /**
    * Flavor of this format
    *

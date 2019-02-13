@@ -29,8 +29,11 @@
  */
 package tech.units.indriya.format;
 
+import static tech.units.indriya.format.CommonFormatter.parseCompound;
+
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.NumberFormat;
 import java.text.ParsePosition;
 
 import javax.measure.MeasurementException;
@@ -71,7 +74,12 @@ import tech.units.indriya.unit.CompoundUnit;
  *         <td><code>u</code>
  *         <td>Unit
  *         <td><a href="#text">Text</a>
- *         <td><code>m</code>; <code>h</code>
+ *         <td><code>m</code>
+ *    <tr>
+ *         <td><code>~</code>
+ *         <td>Compound
+ *         <td><a href="#text">Text</a>
+ *         <td><code>m</code>; <code>cm</code>
  * </tbody>
  * </table>
  * </blockquote>
@@ -91,7 +99,7 @@ import tech.units.indriya.unit.CompoundUnit;
  *     it's needed to separate two adjacent fields.<br><br></li>
  * </ul>
  * </p>
- * @version 0.9.4, $Date: 2019-02-05 $
+ * @version 0.9.5, $Date: 2019-02-14 $
  * @since 2.0
  */
 @SuppressWarnings("rawtypes")
@@ -103,7 +111,8 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
 
 	private static final String NUM_PART = "n";
 	private static final String UNIT_PART = "u";
-
+	private static final String COMPOUND_SWITCH = "~";
+	
 	/**
 	 * The pattern string of this formatter. This is always a non-localized pattern.
 	 * May not be null. See class documentation for details.
@@ -113,6 +122,8 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
 	private final String pattern;
 	
 	private String delimiter;
+	
+	private String compoundDelimiter;
 
 	/**
 	*
@@ -133,7 +144,13 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
 	public SimpleQuantityFormat(String pattern) {
 		this.pattern = pattern;
 		if (pattern != null && !pattern.isEmpty()) {
-		   delimiter = pattern.substring(pattern.indexOf(NUM_PART)+1, pattern.indexOf(UNIT_PART));
+		   if (pattern.contains(COMPOUND_SWITCH)) {
+		       final String singlePattern = pattern.substring(0, pattern.indexOf(COMPOUND_SWITCH));
+		       compoundDelimiter = pattern.substring(pattern.indexOf(COMPOUND_SWITCH) + 1);
+		       delimiter = singlePattern.substring(pattern.indexOf(NUM_PART)+1, pattern.indexOf(UNIT_PART));
+		   } else {
+		       delimiter = pattern.substring(pattern.indexOf(NUM_PART)+1, pattern.indexOf(UNIT_PART));
+		   }
 		}
 	}
 
@@ -181,7 +198,10 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
 	@SuppressWarnings("unchecked")
 	@Override
 	public ComparableQuantity<?> parse(CharSequence csq, ParsePosition cursor) throws MeasurementParseException {
-		int startDecimal = cursor.getIndex();
+        if (compoundDelimiter != null && !compoundDelimiter.equals(delimiter)) {
+            return parseCompound(csq.toString(), NumberFormat.getInstance(), SimpleUnitFormat.getInstance(), delimiter, compoundDelimiter);
+        }
+	    int startDecimal = cursor.getIndex();
 		while ((startDecimal < csq.length()) && Character.isWhitespace(csq.charAt(startDecimal))) {
 			startDecimal++;
 		}

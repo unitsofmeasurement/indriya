@@ -29,15 +29,14 @@
  */
 package tech.units.indriya.format;
 
-import javax.measure.Prefix;
+import static tech.units.indriya.format.ConverterFormatter.formatConverterLocal;
+import static tech.units.indriya.format.FormatConstants.*;
+
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.UnitConverter;
 import javax.measure.format.MeasurementParseException;
 import tech.units.indriya.AbstractUnit;
-import tech.units.indriya.function.AddConverter;
-import tech.units.indriya.function.MultiplyConverter;
-import tech.units.indriya.function.RationalConverter;
 import tech.units.indriya.internal.format.TokenException;
 import tech.units.indriya.internal.format.TokenMgrError;
 import tech.units.indriya.internal.format.UnitFormatParser;
@@ -53,7 +52,6 @@ import static tech.units.indriya.unit.Units.LITRE;
 
 import java.io.IOException;
 import java.io.StringReader;
-import java.math.BigInteger;
 import java.text.ParsePosition;
 import java.util.Locale;
 import java.util.Map;
@@ -159,7 +157,7 @@ import java.util.ResourceBundle;
  *
  * @author <a href="mailto:eric-r@northwestern.edu">Eric Russell</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.2, February 3, 2019
+ * @version 1.2.1, February 14, 2019
  * @since 1.0
  */
 public class LocalUnitFormat extends AbstractUnitFormat {
@@ -172,27 +170,6 @@ public class LocalUnitFormat extends AbstractUnitFormat {
    */
   private static final LocalUnitFormat DEFAULT_INSTANCE = new LocalUnitFormat(SymbolMap.of(ResourceBundle.getBundle(LocalUnitFormat.class
       .getPackage().getName() + ".messages")));
-  /**
-   * Multiplicand character
-   */
-  private static final char MIDDLE_DOT = '\u00b7';
-  /**
-   * Operator precedence for the addition and subtraction operations
-   */
-  private static final int ADDITION_PRECEDENCE = 0;
-  /**
-   * Operator precedence for the multiplication and division operations
-   */
-  private static final int PRODUCT_PRECEDENCE = ADDITION_PRECEDENCE + 2;
-  /**
-   * Operator precedence for the exponentiation and logarithm operations
-   */
-  private static final int EXPONENT_PRECEDENCE = PRODUCT_PRECEDENCE + 2;
-  /**
-   * Operator precedence for a unit identifier containing no mathematical operations (i.e., consisting exclusively of an identifier and possibly a
-   * prefix). Defined to be <code>Integer.MAX_VALUE</code> so that no operator can have a higher precedence.
-   */
-  private static final int NOOP_PRECEDENCE = Integer.MAX_VALUE;
 
   // /////////////////
   // Class methods //
@@ -412,7 +389,7 @@ public class LocalUnitFormat extends AbstractUnitFormat {
 
       unitPrecedence = formatInternal(parentUnit, temp);
       printSeparator = !parentUnit.equals(AbstractUnit.ONE);
-      int result = formatConverter(converter, printSeparator, unitPrecedence, temp);
+      int result = formatConverterLocal(converter, printSeparator, unitPrecedence, temp, symbolMap);
       buffer.append(temp);
       return result;
     }
@@ -492,86 +469,6 @@ public class LocalUnitFormat extends AbstractUnitFormat {
       buffer.append('/');
       buffer.append(String.valueOf(root));
       buffer.append(')');
-    }
-  }
-
-  /**
-   * Formats the given converter to the given StringBuffer and returns the operator precedence of the converter's mathematical operation. This is the
-   * default implementation, which supports all built-in UnitConverter implementations. Note that it recursively calls itself in the case of a
-   * {@link javax.measure.converter.UnitConverter.Compound Compound} converter.
-   * 
-   * @param converter
-   *          the converter to be formatted
-   * @param continued
-   *          <code>true</code> if the converter expression should begin with an operator, otherwise <code>false</code>.
-   * @param unitPrecedence
-   *          the operator precedence of the operation expressed by the unit being modified by the given converter.
-   * @param buffer
-   *          the <code>StringBuffer</code> to append to.
-   * @return the operator precedence of the given UnitConverter
-   */
-  private int formatConverter(UnitConverter converter, boolean continued, int unitPrecedence, StringBuilder buffer) {
-    Prefix prefix = symbolMap.getPrefix(converter);
-    if ((prefix != null) && (unitPrecedence == NOOP_PRECEDENCE)) {
-      buffer.insert(0, symbolMap.getSymbol(prefix));
-      return NOOP_PRECEDENCE;
-    } else if (converter instanceof AddConverter) {
-      if (unitPrecedence < ADDITION_PRECEDENCE) {
-        buffer.insert(0, '(');
-        buffer.append(')');
-      }
-      double offset = ((AddConverter) converter).getOffset();
-      if (offset < 0) {
-        buffer.append("-");
-        offset = -offset;
-      } else if (continued) {
-        buffer.append("+");
-      }
-      long lOffset = (long) offset;
-      if (lOffset == offset) {
-        buffer.append(lOffset);
-      } else {
-        buffer.append(offset);
-      }
-      return ADDITION_PRECEDENCE;
-    } else if (converter instanceof MultiplyConverter) {
-      if (unitPrecedence < PRODUCT_PRECEDENCE) {
-        buffer.insert(0, '(');
-        buffer.append(')');
-      }
-      if (continued) {
-        buffer.append(MIDDLE_DOT);
-      }
-      double factor = ((MultiplyConverter) converter).getFactor();
-      long lFactor = (long) factor;
-      if (lFactor == factor) {
-        buffer.append(lFactor);
-      } else {
-        buffer.append(factor);
-      }
-      return PRODUCT_PRECEDENCE;
-    } else if (converter instanceof RationalConverter) {
-      if (unitPrecedence < PRODUCT_PRECEDENCE) {
-        buffer.insert(0, '(');
-        buffer.append(')');
-      }
-      RationalConverter rationalConverter = (RationalConverter) converter;
-      if (!rationalConverter.getDividend().equals(BigInteger.ONE)) {
-        if (continued) {
-          buffer.append(MIDDLE_DOT);
-        }
-        buffer.append(rationalConverter.getDividend());
-      }
-      if (!rationalConverter.getDivisor().equals(BigInteger.ONE)) {
-        buffer.append('/');
-        buffer.append(rationalConverter.getDivisor());
-      }
-      return PRODUCT_PRECEDENCE;
-    } else { // All other converter type (e.g. exponential) we use the
-      // string representation.
-      buffer.insert(0, converter.toString() + "(");
-      buffer.append(")");
-      return EXPONENT_PRECEDENCE;
     }
   }
 }

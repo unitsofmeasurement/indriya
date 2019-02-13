@@ -30,15 +30,12 @@
 package tech.units.indriya.format;
 
 import static tech.units.indriya.format.FormatBehavior.LOCALE_NEUTRAL;
+import static tech.units.indriya.format.CommonFormatter.*;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.NumberFormat;
-import java.text.ParseException;
 import java.text.ParsePosition;
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.measure.MeasurementException;
 import javax.measure.Quantity;
 import javax.measure.Unit;
@@ -171,27 +168,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
     public ComparableQuantity<?> parse(CharSequence csq, ParsePosition cursor) throws IllegalArgumentException, MeasurementParseException {
         final String str = csq.toString();
         if (compoundDelimiter != null && !compoundDelimiter.equals(delimiter)) {
-            final String[] compParts = str.split(compoundDelimiter);
-            Unit unit = null;
-            final List<Number> nums = new ArrayList<>();
-            for (String compStr: compParts) {
-                final String[] parts = compStr.split(delimiter);
-                if (parts.length < 2) {
-                    throw new IllegalArgumentException("No Unit found");
-                } else {
-                    try {
-                        nums.add(numberFormat.parse(parts[0]));
-                    } catch (ParseException pe) {
-                        throw new MeasurementParseException(pe);
-                    }
-                    unit = (unit == null) ? 
-                            unitFormat.parse(parts[1]) : 
-                            unit.compound(unitFormat.parse(parts[1]));
-                }
-            }
-            final Number[] numArray = new Number[nums.size()];
-            nums.toArray(numArray);
-            return CompoundQuantity.of(numArray, unit);
+            return parseCompound(str, numberFormat, unitFormat, delimiter, compoundDelimiter);
         } 
         final Number number = numberFormat.parse(str, cursor);
         if (number == null)
