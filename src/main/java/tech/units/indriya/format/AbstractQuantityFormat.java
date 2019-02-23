@@ -34,7 +34,9 @@ import java.text.FieldPosition;
 import java.text.Format;
 import java.text.ParsePosition;
 
+import javax.measure.MeasurementException;
 import javax.measure.Quantity;
+import javax.measure.Unit;
 import javax.measure.format.MeasurementParseException;
 import javax.measure.format.QuantityFormat;
 import tech.units.indriya.AbstractQuantity;
@@ -48,7 +50,7 @@ import tech.uom.lib.common.function.Parser;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:werner@uom.technology">Werner Keil</a>
- * @version 1.2, $Date: 2019-02-03 $
+ * @version 1.3, $Date: 2019-02-23 $
  * @since 1.0
  * 
  */
@@ -130,13 +132,9 @@ public abstract class AbstractQuantityFormat extends Format implements QuantityF
             throw new IllegalArgumentException("obj: Not an instance of Quantity");
         if ((toAppendTo == null) || (pos == null))
             throw new NullPointerException();
-        try {
-            return (StringBuffer) format((AbstractQuantity<?>) obj, toAppendTo);
-        } catch (IOException ex) {
-            throw new Error(ex); // Cannot happen.
-        }
+        return (StringBuffer) format((AbstractQuantity<?>) obj, toAppendTo);
     }
-
+    
     @Override
     public final Quantity<?> parseObject(String source, ParsePosition pos) {
         try {
@@ -147,6 +145,25 @@ public abstract class AbstractQuantityFormat extends Format implements QuantityF
     }
 
     /**
+     * Formats an object to produce a string. This is equivalent to <blockquote> {@link #format(Unit, StringBuilder) format}<code>(unit,
+     *         new StringBuilder()).toString();</code> </blockquote>
+     *
+     * @param quantity
+     *          The quantity to format
+     * @return Formatted string.
+     */
+    @Override
+    public final String format(Quantity<?> quantity) {
+      if (quantity instanceof AbstractQuantity) return format((AbstractQuantity<?>) quantity, new StringBuffer()).toString();
+
+      try {
+        return (this.format(quantity, new StringBuffer())).toString();
+      } catch (IOException ex) {
+        throw new MeasurementException(ex); // Should never happen.
+      }
+    }
+    
+    /**
      * Convenience method equivalent to {@link #format(AbstractQuantity, Appendable)} except it does not raise an IOException.
      *
      * @param quantity
@@ -155,9 +172,9 @@ public abstract class AbstractQuantityFormat extends Format implements QuantityF
      *            the appendable destination.
      * @return the specified <code>StringBuilder</code>.
      */
-    protected final StringBuilder format(AbstractQuantity<?> quantity, StringBuilder dest) {
+    protected final StringBuffer format(AbstractQuantity<?> quantity, StringBuffer dest) {
         try {
-            return (StringBuilder) this.format(quantity, (Appendable) dest);
+            return (StringBuffer) this.format(quantity, (Appendable) dest);
         } catch (IOException ex) {
             throw new RuntimeException(ex); // Should not happen.
         }
