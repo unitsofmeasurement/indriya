@@ -44,14 +44,16 @@ import tech.units.indriya.AbstractUnit;
  * </p>
  *
  * <p>
- * For all metric units, the 20 SI prefixes used to form decimal multiples and sub-multiples of SI units are recognized. For example:<code>
+ * For all metric units, the 20 <b>SI prefixes</b> used to form decimal multiples and sub-multiples of SI units are recognized.<br>
+ * As well as the 8 <b>Binary prefixes</b>.<br>
+ * For example:<code>
  *        AbstractUnit.parse("m°C").equals(MetricPrefix.MILLI(Units.CELSIUS))
  *        AbstractUnit.parse("kW").equals(MetricPrefix.KILO(Units.WATT))</code>
  * </p>
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.1, $Date: 2018-08-08 $
+ * @version 1.2, $Date: 2019-02-23 $
  * @since 1.0
  * 
  */
@@ -139,11 +141,11 @@ public abstract class AbstractUnitFormat implements UnitFormat {
    *          the appendable destination.
    * @return the specified <code>StringBuilder</code>.
    */
-  final StringBuilder format(AbstractUnit<?> unit, StringBuilder dest) {
+  private final StringBuilder format(AbstractUnit<?> unit, StringBuilder dest) {
     try {
       return (StringBuilder) this.format(unit, (Appendable) dest);
     } catch (IOException ex) {
-      throw new Error(ex); // Can never happen.
+      throw new MeasurementException(ex); // Can never happen.
     }
   }
 
