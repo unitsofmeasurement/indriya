@@ -136,7 +136,7 @@ public class QuantityFormatTest {
 
     @Test
     public void testFormatCompoundDelims() {
-        final NumberDelimiterQuantityFormat format1 = NumberDelimiterQuantityFormat.getCompoundInstance(DecimalFormat.getInstance(),
+        final NumberDelimiterQuantityFormat format1 = NumberDelimiterQuantityFormat.getCompoundInstance(DecimalFormat.getInstance(Locale.ENGLISH),
                 SimpleUnitFormat.getInstance(), "_", " ");
         final Unit<Length> compLen = Units.METRE.compound(CENTI(Units.METRE));
         final Number[] numList = { 1, 70 };
@@ -147,7 +147,7 @@ public class QuantityFormatTest {
 
     @Test
     public void testFormatCompoundDelims2() {
-        final NumberDelimiterQuantityFormat format1 = NumberDelimiterQuantityFormat.getCompoundInstance(DecimalFormat.getInstance(),
+        final NumberDelimiterQuantityFormat format1 = NumberDelimiterQuantityFormat.getCompoundInstance(DecimalFormat.getInstance(Locale.ENGLISH),
                 SimpleUnitFormat.getInstance(), " ", ":");
         Unit<Time> compTime = Units.HOUR.compound(Units.MINUTE).compound(Units.SECOND);
         final Number[] numList = { 1, 40, 10 };
