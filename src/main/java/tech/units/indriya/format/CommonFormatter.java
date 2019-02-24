@@ -51,7 +51,7 @@ abstract class CommonFormatter {
 
     @SuppressWarnings("unchecked")
     static ComparableQuantity<?> parseCompound(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final String delimiter,
-            final String compoundDelimiter) throws IllegalArgumentException, MeasurementParseException {
+            final String compoundDelimiter, final int position) throws IllegalArgumentException, MeasurementParseException {
         final String[] compParts = str.split(compoundDelimiter);
         @SuppressWarnings("rawtypes")
         Unit unit = null;
@@ -72,5 +72,10 @@ abstract class CommonFormatter {
         final Number[] numArray = new Number[nums.size()];
         nums.toArray(numArray);
         return CompoundQuantity.of(numArray, unit);
+    }
+    
+    static ComparableQuantity<?> parseCompound(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final String delimiter,
+            final String compoundDelimiter) throws IllegalArgumentException, MeasurementParseException {
+        return parseCompound(str, numberFormat, unitFormat, delimiter, compoundDelimiter, 0);
     }
 }
