@@ -36,6 +36,8 @@ import static tech.units.indriya.unit.Units.*;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.Locale;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;
@@ -112,7 +114,7 @@ public class QuantityFormatTest {
 
     @Test
     public void testFormatCompound2() {
-        final NumberDelimiterQuantityFormat format1 = NumberDelimiterQuantityFormat.getInstance(new DecimalFormat("#.000"),
+        final NumberDelimiterQuantityFormat format1 = NumberDelimiterQuantityFormat.getInstance(new DecimalFormat("#.000", DecimalFormatSymbols.getInstance(Locale.ENGLISH)),
                 SimpleUnitFormat.getInstance());
         final Unit<Length> compLen = Units.METRE.compound(CENTI(Units.METRE));
         final Number[] numList = { 1, 70 };
@@ -123,7 +125,7 @@ public class QuantityFormatTest {
 
     @Test
     public void testFormatCompoundDelim() {
-        final NumberDelimiterQuantityFormat format1 = NumberDelimiterQuantityFormat.getCompoundInstance(DecimalFormat.getInstance(),
+        final NumberDelimiterQuantityFormat format1 = NumberDelimiterQuantityFormat.getCompoundInstance(DecimalFormat.getInstance(Locale.ENGLISH),
                 SimpleUnitFormat.getInstance(), "_", "_");
         final Unit<Length> compLen = Units.METRE.compound(CENTI(Units.METRE));
         final Number[] numList = { 1, 70 };
