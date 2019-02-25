@@ -37,6 +37,7 @@ import static tech.units.indriya.unit.Units.*;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.ParsePosition;
 import java.util.Locale;
 
 import javax.measure.Quantity;
@@ -247,6 +248,14 @@ public class QuantityFormatTest {
     }
     
     @Test
+    public void testParseAtPosition() {
+        QuantityFormat format1 = NumberDelimiterQuantityFormat.getInstance(DecimalFormat.getInstance(), SimpleUnitFormat.getInstance());
+        Quantity<?> parsed1 = format1.parse("1 km 2 m", new ParsePosition(5));
+        assertEquals(2L, parsed1.getValue());
+        assertEquals(METRE, parsed1.getUnit());
+    }
+    
+    @Test
     public void testParseCompound1() {
         QuantityFormat format1 = SimpleQuantityFormat.getInstance("n u~:");
         Quantity<?> parsed1 = format1.parse("1 h:30 min:10 s");
@@ -262,7 +271,7 @@ public class QuantityFormatTest {
     
     @Test
     public void testParseCompound2() {
-        QuantityFormat format1 = NumberDelimiterQuantityFormat.getCompoundInstance(DecimalFormat.getInstance(), SimpleUnitFormat.getInstance(), " ", ";");
+        QuantityFormat format1 = NumberDelimiterQuantityFormat.getCompoundInstance(DecimalFormat.getInstance(Locale.ENGLISH), SimpleUnitFormat.getInstance(), " ", ";");
         Quantity<?> parsed1 = format1.parse("1 m;30 cm");
         assertEquals(130L, parsed1.getValue());
         assertEquals(METRE.compound(CENTI(METRE)), parsed1.getUnit());

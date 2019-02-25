@@ -167,13 +167,14 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
     @Override
     public ComparableQuantity<?> parse(CharSequence csq, ParsePosition cursor) throws IllegalArgumentException, MeasurementParseException {
         final String str = csq.toString();
+        final int index = cursor.getIndex();
         if (compoundDelimiter != null && !compoundDelimiter.equals(delimiter)) {
-            return parseCompound(str, numberFormat, unitFormat, delimiter, compoundDelimiter);
+            return parseCompound(str, numberFormat, unitFormat, delimiter, compoundDelimiter, cursor.getIndex());
         } 
         final Number number = numberFormat.parse(str, cursor);
         if (number == null)
             throw new IllegalArgumentException("Number cannot be parsed");
-        final String[] parts = str.split(delimiter);
+        final String[] parts = str.substring(index).split(delimiter);
         if (parts.length < 2) {
             throw new IllegalArgumentException("No Unit found");
         }

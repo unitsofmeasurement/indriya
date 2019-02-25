@@ -52,11 +52,12 @@ abstract class CommonFormatter {
     @SuppressWarnings("unchecked")
     static ComparableQuantity<?> parseCompound(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final String delimiter,
             final String compoundDelimiter, final int position) throws IllegalArgumentException, MeasurementParseException {
-        final String[] compParts = str.split(compoundDelimiter);
+        final String section = str.substring(position);
+        final String[] sectionParts = section.split(compoundDelimiter);
         @SuppressWarnings("rawtypes")
         Unit unit = null;
         final List<Number> nums = new ArrayList<>();
-        for (String compStr : compParts) {
+        for (String compStr : sectionParts) {
             final String[] parts = compStr.split(delimiter);
             if (parts.length < 2) {
                 throw new IllegalArgumentException("No Unit found");
