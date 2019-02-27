@@ -157,7 +157,7 @@ public class QuantityFormatTest {
     }
 
     @Test
-    public void testParseSimple1() {
+    public void testParseSimpleTime() {
         Quantity<?> parsed1 = SimpleQuantityFormat.getInstance().parse("10 min");
         assertNotNull(parsed1);
         assertEquals(BigDecimal.valueOf(10), parsed1.getValue());
@@ -165,7 +165,7 @@ public class QuantityFormatTest {
     }
 
     @Test
-    public void testParse2() {
+    public void testParseSimpleLen() {
         Quantity<?> parsed1 = format.parse("60 m");
         assertNotNull(parsed1);
         assertEquals(BigDecimal.valueOf(60), parsed1.getValue());
@@ -181,7 +181,7 @@ public class QuantityFormatTest {
     }
 
     @Test
-    public void testParseSimple3() {
+    public void testParseSimpleMass() {
         try {
             Quantity<?> parsed1 = format.parse("5 kg");
             assertNotNull(parsed1);
@@ -256,7 +256,7 @@ public class QuantityFormatTest {
     }
     
     @Test
-    public void testParseCompound1() {
+    public void testParseCompoundSimpleTime() {
         QuantityFormat format1 = SimpleQuantityFormat.getInstance("n u~:");
         Quantity<?> parsed1 = format1.parse("1 h:30 min:10 s");
         assertEquals(5410L, parsed1.getValue());
@@ -270,9 +270,33 @@ public class QuantityFormatTest {
     }
     
     @Test
-    public void testParseCompound2() {
+    public void testParseCompoundSimpleSameDelimTime() {
+        QuantityFormat format1 = SimpleQuantityFormat.getInstance("n u~ ");
+        Quantity<?> parsed1 = format1.parse("1 h 30 min 10 s");
+        assertEquals(5410L, parsed1.getValue());
+        assertEquals(HOUR.compound(MINUTE).compound(SECOND), parsed1.getUnit());
+        assertTrue(parsed1 instanceof CompoundQuantity);
+        final Number[] values = ((CompoundQuantity<?>)parsed1).getValues();
+        assertEquals(3, values.length);
+        assertEquals(1L, values[0]);
+        assertEquals(30L, values[1]);
+        assertEquals(10L, values[2]);
+    }
+    
+    @Test
+    public void testParseCompoundNumDelimiterLen() {
         QuantityFormat format1 = NumberDelimiterQuantityFormat.getCompoundInstance(DecimalFormat.getInstance(Locale.ENGLISH), SimpleUnitFormat.getInstance(), " ", ";");
         Quantity<?> parsed1 = format1.parse("1 m;30 cm");
+        assertEquals(130L, parsed1.getValue());
+        assertEquals(METRE.compound(CENTI(METRE)), parsed1.getUnit());
+        assertTrue(parsed1 instanceof CompoundQuantity);
+        assertEquals(2, ((CompoundQuantity<?>)parsed1).getValues().length);
+    }
+    
+    @Test
+    public void testParseCompoundNumDelimiterSameDelimLen() {
+        QuantityFormat format1 = NumberDelimiterQuantityFormat.getCompoundInstance(DecimalFormat.getInstance(Locale.ENGLISH), SimpleUnitFormat.getInstance(), " ", " ");
+        Quantity<?> parsed1 = format1.parse("1 m 30 cm");
         assertEquals(130L, parsed1.getValue());
         assertEquals(METRE.compound(CENTI(METRE)), parsed1.getUnit());
         assertTrue(parsed1 instanceof CompoundQuantity);

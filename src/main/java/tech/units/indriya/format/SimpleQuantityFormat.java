@@ -99,7 +99,7 @@ import tech.units.indriya.unit.CompoundUnit;
  *     it's needed to separate two adjacent fields.<br><br></li>
  * </ul>
  * </p>
- * @version 0.9.5, $Date: 2019-02-14 $
+ * @version 1.0, $Date: 2019-02-27 $
  * @since 2.0
  */
 @SuppressWarnings("rawtypes")
@@ -199,7 +199,9 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
 	@Override
 	public ComparableQuantity<?> parse(CharSequence csq, ParsePosition cursor) throws MeasurementParseException {
         if (compoundDelimiter != null && !compoundDelimiter.equals(delimiter)) {
-            return parseCompound(csq.toString(), NumberFormat.getInstance(), SimpleUnitFormat.getInstance(), delimiter, compoundDelimiter);
+            return parseCompound(csq.toString(), NumberFormat.getInstance(), SimpleUnitFormat.getInstance(), delimiter, compoundDelimiter, cursor.getIndex());
+        } else if (compoundDelimiter != null && compoundDelimiter.equals(delimiter)) {
+            return parseCompound(csq.toString(), NumberFormat.getInstance(), SimpleUnitFormat.getInstance(), delimiter, cursor.getIndex());
         }
 	    int startDecimal = cursor.getIndex();
 		while ((startDecimal < csq.length()) && Character.isWhitespace(csq.charAt(startDecimal))) {

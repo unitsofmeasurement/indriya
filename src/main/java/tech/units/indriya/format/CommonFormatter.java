@@ -79,4 +79,33 @@ abstract class CommonFormatter {
             final String compoundDelimiter) throws IllegalArgumentException, MeasurementParseException {
         return parseCompound(str, numberFormat, unitFormat, delimiter, compoundDelimiter, 0);
     }
+    
+    @SuppressWarnings("unchecked")
+    static ComparableQuantity<?> parseCompound(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final String delimiter, final int position) throws IllegalArgumentException, MeasurementParseException {
+        final String section = str.substring(position);
+        @SuppressWarnings("rawtypes")
+        Unit unit = null;
+        final List<Number> nums = new ArrayList<>();
+        final String[] parts = section.split(delimiter);
+        if (parts.length < 2) {
+            throw new IllegalArgumentException("No Unit found");
+        } else {
+            for (int i=0; i < parts.length-1; i++) {
+                try {
+                    nums.add(numberFormat.parse(parts[i]));
+                } catch (ParseException pe) {
+                    throw new MeasurementParseException(pe);
+                }
+                unit = (unit == null) ? unitFormat.parse(parts[i+1]) : unit.compound(unitFormat.parse(parts[i+1]));
+                i++; // get to next number
+            }
+        }
+        final Number[] numArray = new Number[nums.size()];
+        nums.toArray(numArray);
+        return CompoundQuantity.of(numArray, unit);
+    }
+    
+    static ComparableQuantity<?> parseCompound(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final String delimiter) throws IllegalArgumentException, MeasurementParseException {
+        return parseCompound(str, numberFormat, unitFormat, delimiter, 0);
+    }
 }

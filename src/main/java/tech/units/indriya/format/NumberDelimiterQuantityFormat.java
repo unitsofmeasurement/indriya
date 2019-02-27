@@ -52,7 +52,7 @@ import tech.units.indriya.unit.CompoundUnit;
  * An implementation of {@link javax.measure.format.QuantityFormat QuantityFormat} combining {@linkplain NumberFormat} and {@link UnitFormat}
  * separated by a delimiter.
  * 
- * @version 1.5, $Date: 2019-02-12 $
+ * @version 1.6, $Date: 2019-02-27 $
  * @since 2.0
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -95,7 +95,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
     }
 
     private NumberDelimiterQuantityFormat(NumberFormat numberFormat, UnitFormat unitFormat) {
-        this(numberFormat, unitFormat, DEFAULT_DELIMITER, DEFAULT_DELIMITER);
+        this(numberFormat, unitFormat, DEFAULT_DELIMITER);
     }
     
     private static int getFractionDigitsCount(double d) {
@@ -138,7 +138,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
                         sb.append(delimiter);
                         sb.append(unitFormat.format(compUnit.getUnits().get(i)));
                         if (i < values.length - 1) {
-                            sb.append(compoundDelimiter);
+                            sb.append((compoundDelimiter != null ? compoundDelimiter : DEFAULT_DELIMITER)); // we need null for parsing but not formatting
                         }
                     }
                     return sb;
@@ -169,8 +169,10 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
         final String str = csq.toString();
         final int index = cursor.getIndex();
         if (compoundDelimiter != null && !compoundDelimiter.equals(delimiter)) {
-            return parseCompound(str, numberFormat, unitFormat, delimiter, compoundDelimiter, cursor.getIndex());
-        } 
+            return parseCompound(str, numberFormat, unitFormat, delimiter, compoundDelimiter, index);
+        } else if (compoundDelimiter != null && compoundDelimiter.equals(delimiter)) {
+            return parseCompound(str, numberFormat, unitFormat, delimiter, index);
+        }
         final Number number = numberFormat.parse(str, cursor);
         if (number == null)
             throw new IllegalArgumentException("Number cannot be parsed");
