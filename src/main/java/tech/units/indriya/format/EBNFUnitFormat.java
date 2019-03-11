@@ -145,7 +145,7 @@ import java.util.ResourceBundle;
  * 
  * @author <a href="mailto:eric-r@northwestern.edu">Eric Russell</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.2, $Date: 2018-08-08 $
+ * @version 1.3, $Date: 2019-03-11 $
  * @since 1.0
  */
 public class EBNFUnitFormat extends AbstractUnitFormat {
@@ -221,10 +221,15 @@ public class EBNFUnitFormat extends AbstractUnitFormat {
   protected SymbolMap getSymbols() {
     return symbolMap;
   }
+  
+  @Override
+  public String toString() {
+    return getClass().getSimpleName();
+  }
 
-  // //////////////
+////////////////
   // Formatting //
-  // //////////////
+  ////////////////
   public Appendable format(Unit<?> unit, Appendable appendable) throws IOException {
 
     EBNFHelper.formatInternal(unit, appendable, symbolMap);
@@ -276,6 +281,7 @@ public class EBNFUnitFormat extends AbstractUnitFormat {
     return parse(csq, new ParsePosition(index));
   }
 
+  @Override
   public Unit<?> parse(CharSequence csq) throws MeasurementParseException {
     return parse(csq, 0);
   }

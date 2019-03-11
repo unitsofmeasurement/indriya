@@ -52,7 +52,7 @@ import tech.units.indriya.unit.CompoundUnit;
  * An implementation of {@link javax.measure.format.QuantityFormat QuantityFormat} combining {@linkplain NumberFormat} and {@link UnitFormat}
  * separated by a delimiter.
  * 
- * @version 1.6, $Date: 2019-02-27 $
+ * @version 1.6.1, $Date: 2019-03-11 $
  * @since 2.0
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -115,6 +115,11 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
         return count;
     }
 
+    @Override
+    public String toString() {
+        return getClass().getSimpleName();
+    }
+    
     @Override
     public Appendable format(Quantity<?> quantity, Appendable dest) throws IOException {
         int fract = 0;

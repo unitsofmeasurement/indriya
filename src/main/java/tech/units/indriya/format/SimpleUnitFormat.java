@@ -72,15 +72,16 @@ import tech.units.indriya.unit.Units;
  * For all SI units, the <b>20 SI prefixes</b> used to form decimal multiples and sub-multiples are recognized. As well as the <b>8 binary prefixes</b>.<br>
  * {@link Units} are directly recognized. For example:<br>
  * <code>
- *        AbstractUnit.parse("m°C").equals(MetricPrefix.MILLI(Units.CELSIUS))
- *        AbstractUnit.parse("kW").equals(MetricPrefix.KILO(Units.WATT))
- *        AbstractUnit.parse("ft").equals(Units.METRE.multiply(0.3048))</code>
+ *        UnitFormat format = SimpleUnitFormat.getInstance();<br>
+ *        format.parse("m°C").equals(MetricPrefix.MILLI(Units.CELSIUS));<br>
+ *        format.parse("kW").equals(MetricPrefix.KILO(Units.WATT));<br>
+ *        format.parse("ft").equals(Units.METRE.multiply(0.3048))</code>
  * </p>
  * 
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
  * @author Eric Russell
- * @version 1.6.4, February 14, 2019
+ * @version 1.6.5, March 11, 2019
  * @since 1.0
  */
 public abstract class SimpleUnitFormat extends AbstractUnitFormat {
@@ -331,6 +332,11 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
     protected final HashMap<Unit<?>, String> unitToName = new HashMap<>();
 
     @Override
+    public String toString() {
+        return "SimpleUnitFormat";
+    }
+    
+    @Override
     public void label(Unit<?> unit, String label) {
       if (!isValidIdentifier(label))
         throw new IllegalArgumentException("Label: " + label + " is not a valid identifier.");
@@ -350,7 +356,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
     }
 
     @Override
-    public boolean isValidIdentifier(String name) {
+    protected boolean isValidIdentifier(String name) {
       if ((name == null) || (name.length() == 0))
         return false;
       return isUnitIdentifierPart(name.charAt(0));
@@ -852,6 +858,11 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
     }
 
     @Override
+    public String toString() {
+        return "SimpleUnitFormat - ASCII";
+    }
+
+    @Override
     public Appendable format(Unit<?> unit, Appendable appendable) throws IOException {
       String name = nameFor(unit);
       if (name != null)
@@ -882,7 +893,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
     }
 
     @Override
-    public boolean isValidIdentifier(String name) {
+    protected boolean isValidIdentifier(String name) {
       if ((name == null) || (name.length() == 0))
         return false;
       // label must not begin with a digit or mathematical operator

@@ -33,6 +33,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static javax.measure.spi.FormatService.FormatType.*;
 import java.util.List;
 
+import javax.measure.format.QuantityFormat;
 import javax.measure.format.UnitFormat;
 import javax.measure.spi.FormatService;
 import javax.measure.spi.ServiceProvider;
@@ -56,17 +57,19 @@ public class FormatServiceTest {
   public void testGetService() throws Exception {
     FormatService fs = ServiceProvider.current().getFormatService();
     assertNotNull(fs);
-    assertNotNull(fs.getUnitFormat());
-    assertEquals("DefaultFormat", fs.getUnitFormat().getClass().getSimpleName());
+    final UnitFormat uf = fs.getUnitFormat();
+    assertNotNull(uf);
+    assertEquals("DefaultFormat", uf.getClass().getSimpleName());
+    assertEquals("SimpleUnitFormat", uf.toString());
   }
 
   @Test
   public void testGetUnitFormatFound() throws Exception {
     final FormatService fs = ServiceProvider.current().getFormatService();
     assertNotNull(fs);
-    UnitFormat uf = fs.getUnitFormat("EBNF");
+    final UnitFormat uf = fs.getUnitFormat("EBNF");
     assertNotNull(uf);
-    //assertEquals("EBNFUnitFormat", uf.toString());
+    assertEquals("EBNFUnitFormat", uf.toString());
   }
 
   @Test
@@ -87,9 +90,20 @@ public class FormatServiceTest {
   public void testGetQuantityFormatFound() throws Exception {
     final FormatService fs = ServiceProvider.current().getFormatService();
     assertNotNull(fs);
-    assertNotNull(fs.getQuantityFormat("Simple"));
+    final QuantityFormat qf = fs.getQuantityFormat("Simple");
+    assertNotNull(qf);
+    assertEquals("SimpleQuantityFormat", qf.toString());
   }
-
+  
+  @Test
+  public void testGetMoreQuantityFormatFound() throws Exception {
+    final FormatService fs = ServiceProvider.current().getFormatService();
+    assertNotNull(fs);
+    final QuantityFormat qf = fs.getQuantityFormat("NumberDelimiter");
+    assertNotNull(qf);
+    assertEquals("NumberDelimiterQuantityFormat", qf.toString());
+  }
+  
   @Test
   public void testGetQuantityFormatNotFound() throws Exception {
     final FormatService fs = ServiceProvider.current().getFormatService();

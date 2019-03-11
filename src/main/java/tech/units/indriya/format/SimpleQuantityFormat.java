@@ -99,7 +99,7 @@ import tech.units.indriya.unit.CompoundUnit;
  *     it's needed to separate two adjacent fields.<br><br></li>
  * </ul>
  * </p>
- * @version 1.0, $Date: 2019-02-27 $
+ * @version 1.1, $Date: 2019-03-11 $
  * @since 2.0
  */
 @SuppressWarnings("rawtypes")
@@ -262,6 +262,11 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
 		return new SimpleQuantityFormat(pattern);
 	}
 
+	@Override
+	public String toString() {
+	    return getClass().getSimpleName();
+	}
+	  
 	public String getPattern() {
 		return pattern;
 	}

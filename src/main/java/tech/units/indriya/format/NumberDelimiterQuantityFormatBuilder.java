@@ -37,10 +37,10 @@ import javax.measure.Unit;
 /**
  * Builder to create quantity formatters.
  * <p>
- * This allows a {@code SimpleQuantityFormat} to be created.
- * @deprecated we may not need this any more
+ * This allows a {@code NumberDelimiterQuantityFormat} to be created.
+ * @deprecated clarify need
  */
-public class SimpleQuantityFormatBuilder {
+public class NumberDelimiterQuantityFormatBuilder {
 	// TODO maybe typing with Q similar to CompoundQuantity is required here, too?
 	
 	private List<Unit<?>> units = new LinkedList<>();
@@ -51,18 +51,18 @@ public class SimpleQuantityFormatBuilder {
      * This appends an instruction to format/parse a unit to the builder.
      * @return this, for chaining, not null
      */
-    public SimpleQuantityFormatBuilder appendUnit(Unit<?> u) {
+    public NumberDelimiterQuantityFormatBuilder appendUnit(Unit<?> u) {
     	units.add(u);
     	return this;
     }
     
     /**
-     * Returns an instance of <code>SimpleQuantityFormat</code> created from the fields set
+     * Returns an instance of <code>NumberDelimiterQuantityFormat</code> created from the fields set
      * on this builder.
      *
-     * @return A SimpleQuantityFormat.
+     * @return A NumberDelimiterQuantityFormat.
      */
-    public SimpleQuantityFormat build() {
-    	return SimpleQuantityFormat.getInstance();
+    public NumberDelimiterQuantityFormat build() {
+    	return NumberDelimiterQuantityFormat.getInstance();
     }
 }

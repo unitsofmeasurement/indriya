@@ -217,7 +217,7 @@ public class QuantityFormatTest {
 
     @Test
     public void testSimpleBuilder() {
-        QuantityFormat quantFormat = new SimpleQuantityFormatBuilder().appendUnit(DAY).appendUnit(HOUR).appendUnit(MINUTE).build();
+        QuantityFormat quantFormat = new NumberDelimiterQuantityFormatBuilder().appendUnit(DAY).appendUnit(HOUR).appendUnit(MINUTE).build();
         assertNotNull(quantFormat);
     }
 
