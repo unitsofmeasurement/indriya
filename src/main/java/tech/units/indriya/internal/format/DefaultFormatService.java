@@ -44,7 +44,7 @@ import tech.units.indriya.format.SimpleQuantityFormat;
  * Default format service.
  *
  * @author Werner Keil
- * @version 0.6, April 6, 2018
+ * @version 0.9, March 11, 2019
  * @since 2.0
  */
 public class DefaultFormatService extends DefaultUnitFormatService implements FormatService {
@@ -57,8 +57,8 @@ public class DefaultFormatService extends DefaultUnitFormatService implements Fo
   public DefaultFormatService() {
     super();
     quantityFormats.put(DEFAULT_FORMAT, SimpleQuantityFormat.getInstance());
-    quantityFormats.put("NumberSpace", NumberDelimiterQuantityFormat.getInstance());
-    quantityFormats.put("Local", NumberDelimiterQuantityFormat.getInstance(LOCALE_SENSITIVE));
+    quantityFormats.put("NumberDelimiter", NumberDelimiterQuantityFormat.getInstance());
+    quantityFormats.put("LocalQuantity", NumberDelimiterQuantityFormat.getInstance(LOCALE_SENSITIVE));
   }
 
   @Override

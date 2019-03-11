@@ -47,7 +47,7 @@ import tech.uom.lib.common.function.IntPrioritySupplier;
  * Default unit format service.
  *
  * @author Werner Keil
- * @version 0.6, March 30, 2018
+ * @version 0.9, March 11, 2019
  * @since 1.0
  * @deprecated For backward-compatibility, to be removed in a future version.
  */
@@ -63,7 +63,7 @@ public class DefaultUnitFormatService implements UnitFormatService, IntPriorityS
     unitFormats.put(DEFAULT_FORMAT, SimpleUnitFormat.getInstance());
     unitFormats.put(Flavor.ASCII.name(), SimpleUnitFormat.getInstance(Flavor.ASCII));
     unitFormats.put("EBNF", EBNFUnitFormat.getInstance());
-    unitFormats.put("Local", LocalUnitFormat.getInstance());
+    unitFormats.put("LocalUnit", LocalUnitFormat.getInstance());
   }
 
   /*

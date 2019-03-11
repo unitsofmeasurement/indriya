@@ -33,6 +33,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static javax.measure.spi.FormatService.FormatType.*;
 import java.util.List;
 
+import javax.measure.format.UnitFormat;
 import javax.measure.spi.FormatService;
 import javax.measure.spi.ServiceProvider;
 
@@ -63,7 +64,9 @@ public class FormatServiceTest {
   public void testGetUnitFormatFound() throws Exception {
     final FormatService fs = ServiceProvider.current().getFormatService();
     assertNotNull(fs);
-    assertNotNull(fs.getUnitFormat("EBNF"));
+    UnitFormat uf = fs.getUnitFormat("EBNF");
+    assertNotNull(uf);
+    //assertEquals("EBNFUnitFormat", uf.toString());
   }
 
   @Test
