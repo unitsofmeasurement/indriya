@@ -63,7 +63,7 @@ public class DefaultUnitFormatService implements UnitFormatService, IntPriorityS
     unitFormats.put(DEFAULT_FORMAT, SimpleUnitFormat.getInstance());
     unitFormats.put(Flavor.ASCII.name(), SimpleUnitFormat.getInstance(Flavor.ASCII));
     unitFormats.put("EBNF", EBNFUnitFormat.getInstance());
-    unitFormats.put("LocalUnit", LocalUnitFormat.getInstance());
+    unitFormats.put("Local", LocalUnitFormat.getInstance());
   }
 
   /*

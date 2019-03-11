@@ -227,7 +227,7 @@ public class EBNFUnitFormat extends AbstractUnitFormat {
     return getClass().getSimpleName();
   }
 
-////////////////
+  ////////////////
   // Formatting //
   ////////////////
   public Appendable format(Unit<?> unit, Appendable appendable) throws IOException {

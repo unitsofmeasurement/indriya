@@ -157,7 +157,7 @@ import java.util.ResourceBundle;
  *
  * @author <a href="mailto:eric-r@northwestern.edu">Eric Russell</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.2.1, February 14, 2019
+ * @version 1.2.2, March 11, 2019
  * @since 1.0
  */
 public class LocalUnitFormat extends AbstractUnitFormat {
@@ -216,9 +216,9 @@ public class LocalUnitFormat extends AbstractUnitFormat {
     symbolMap = symbols;
   }
 
-  // //////////////////////
+  ////////////////////////
   // Instance methods //
-  // //////////////////////
+  ////////////////////////
   /**
    * Get the symbol map used by this instance to map between {@link AbstractUnit Unit}s and <code>String</code>s, etc...
    * 
@@ -227,6 +227,11 @@ public class LocalUnitFormat extends AbstractUnitFormat {
   @Override
   protected SymbolMap getSymbols() {
     return symbolMap;
+  }
+  
+  @Override
+  public String toString() {
+    return getClass().getSimpleName();
   }
 
   // //////////////

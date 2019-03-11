@@ -73,6 +73,15 @@ public class FormatServiceTest {
   }
 
   @Test
+  public void testGetUnitFormatLocalFound() throws Exception {
+    final FormatService fs = ServiceProvider.current().getFormatService();
+    assertNotNull(fs);
+    final UnitFormat uf = fs.getUnitFormat("Local");
+    assertNotNull(uf);
+    assertEquals("LocalUnitFormat", uf.toString());
+  }
+
+  @Test
   public void testGetUnitFormatNotFound() throws Exception {
     final FormatService fs = ServiceProvider.current().getFormatService();
     assertNotNull(fs);
