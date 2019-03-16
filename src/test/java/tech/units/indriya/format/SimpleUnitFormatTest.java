@@ -57,7 +57,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import tech.units.indriya.format.SimpleUnitFormat;
 import tech.units.indriya.function.ExpConverter;
 import tech.units.indriya.function.RationalConverter;
 import tech.units.indriya.unit.AlternateUnit;

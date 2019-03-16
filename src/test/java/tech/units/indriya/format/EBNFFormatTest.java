@@ -46,7 +46,6 @@ import javax.measure.spi.ServiceProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import tech.units.indriya.format.EBNFUnitFormat;
 import tech.units.indriya.function.RationalConverter;
 import tech.units.indriya.unit.TransformedUnit;
 import tech.units.indriya.unit.Units;
