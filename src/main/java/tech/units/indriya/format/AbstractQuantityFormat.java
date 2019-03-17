@@ -103,8 +103,6 @@ public abstract class AbstractQuantityFormat extends Format implements QuantityF
      *
      * @param csq
      *            the <code>CharSequence</code> to parse.
-     * @param cursor
-     *            the cursor holding the current parsing index.
      * @return the object parsed from the specified character sub-sequence.
      * @throws IllegalArgumentException
      *             if any problem occurs while parsing the specified character sequence (e.g. illegal syntax).
@@ -152,7 +150,6 @@ public abstract class AbstractQuantityFormat extends Format implements QuantityF
      *          The quantity to format
      * @return Formatted string.
      */
-    @Override
     public final String format(Quantity<?> quantity) {
       if (quantity instanceof AbstractQuantity) return format((AbstractQuantity<?>) quantity, new StringBuffer()).toString();
 
