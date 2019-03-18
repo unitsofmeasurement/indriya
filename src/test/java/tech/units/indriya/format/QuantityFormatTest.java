@@ -216,9 +216,14 @@ public class QuantityFormatTest {
     }
 
     @Test
-    public void testSimpleBuilder() {
-        QuantityFormat quantFormat = new NumberDelimiterQuantityFormatBuilder().appendUnit(DAY).appendUnit(HOUR).appendUnit(MINUTE).build();
-        assertNotNull(quantFormat);
+    public void testNDFBuilder() {
+        QuantityFormat quantFormat = new NumberDelimiterQuantityFormat.Builder().
+                withNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH)).
+                withUnitFormat(SimpleUnitFormat.getInstance()).withDelimiter("_").
+                build();
+        final Unit<Length> cm = CENTI(Units.METRE);
+        final Quantity<Length> l1 = Quantities.getQuantity(150, cm);
+        assertEquals("150_cm", quantFormat.format(l1));
     }
 
     @Test
