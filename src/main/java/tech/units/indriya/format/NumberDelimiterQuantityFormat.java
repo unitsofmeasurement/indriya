@@ -51,241 +51,290 @@ import tech.units.indriya.unit.CompoundUnit;
 /**
  * An implementation of {@link javax.measure.format.QuantityFormat QuantityFormat} combining {@linkplain NumberFormat} and {@link UnitFormat}
  * separated by a delimiter.
- * 
- * @version 1.6.1, $Date: 2019-03-11 $
+ *
+ * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
+ * @author <a href="mailto:thodoris.bais@gmail.com">Thodoris Bais</a>
+ *
+ * @version 1.6.2, $Date: 2019-03-17 $
  * @since 2.0
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
 
-    /**
-     * Holds the default format instance (EBNFUnitFormat).
-     */
-    private static final NumberDelimiterQuantityFormat EBNF = new NumberDelimiterQuantityFormat(NumberFormat.getInstance(),
-            EBNFUnitFormat.getInstance());
+	/**
+	 * Holds the default format instance (EBNFUnitFormat).
+	 */
+	private static final NumberDelimiterQuantityFormat EBNF = new NumberDelimiterQuantityFormat.Builder()
+		.withNumberFormat(NumberFormat.getInstance())
+		.withUnitFormat(EBNFUnitFormat.getInstance())
+		.build();
 
-    /**
-     * Holds the localized format instance.
-     */
-    private static final NumberDelimiterQuantityFormat LOCAL = new NumberDelimiterQuantityFormat(NumberFormat.getInstance(),
-            LocalUnitFormat.getInstance());
+	/**
+	 * Holds the localized format instance.
+	 */
+	private static final NumberDelimiterQuantityFormat LOCAL = new NumberDelimiterQuantityFormat.Builder()
+		.withNumberFormat(NumberFormat.getInstance())
+		.withUnitFormat(LocalUnitFormat.getInstance())
+		.build();
 
-    /**
-     * 
-     */
-    private static final long serialVersionUID = 3546952599885869402L;
+	/**
+	 *
+	 */
+	private static final long serialVersionUID = 3546952599885869402L;
 
-    private final transient NumberFormat numberFormat;
+	private transient NumberFormat numberFormat;
+	private UnitFormat unitFormat;
+	private String delimiter;
+	private String compoundDelimiter;
 
-    private final UnitFormat unitFormat;
-    
-    private final String delimiter;
+	private NumberDelimiterQuantityFormat() { /* private constructor */ }
 
-    private final String compoundDelimiter;
-    
-    private NumberDelimiterQuantityFormat(NumberFormat numberFormat, UnitFormat unitFormat, String delim, String compDelim) {
-        this.numberFormat = numberFormat;
-        this.unitFormat = unitFormat;
-        this.delimiter = delim;
-        this.compoundDelimiter = compDelim;
-    }
-    
-    private NumberDelimiterQuantityFormat(NumberFormat numberFormat, UnitFormat unitFormat, String delim) {
-        this(numberFormat, unitFormat, delim, null);
-    }
+	/**
+	 * A fluent Builder to easily create new instances of <code>NumberDelimiterQuantityFormat</code>.
+	 */
+	public static class Builder {
 
-    private NumberDelimiterQuantityFormat(NumberFormat numberFormat, UnitFormat unitFormat) {
-        this(numberFormat, unitFormat, DEFAULT_DELIMITER);
-    }
-    
-    private static int getFractionDigitsCount(double d) {
-        if (d >= 1) { // we only need the fraction digits
-            d = d - (long) d;
-        }
-        if (d == 0) { // nothing to count
-            return 0;
-        }
-        d *= 10; // shifts 1 digit to left
-        int count = 1;
-        while (d - (long) d != 0) { // keeps shifting until there are no more
-            // fractions
-            d *= 10;
-            count++;
-        }
-        return count;
-    }
+		private transient NumberFormat numberFormat;
+		private UnitFormat unitFormat;
+		private String delimiter = DEFAULT_DELIMITER;
+		private String compoundDelimiter;
 
-    @Override
-    public String toString() {
-        return getClass().getSimpleName();
-    }
-    
-    @Override
-    public Appendable format(Quantity<?> quantity, Appendable dest) throws IOException {
-        int fract = 0;
-        if (quantity instanceof CompoundQuantity) {
-            final CompoundQuantity<?> compQuant = (CompoundQuantity<?>) quantity;
-            if (compQuant.getUnit() instanceof CompoundUnit) {
-                final CompoundUnit<?> compUnit = (CompoundUnit<?>) compQuant.getUnit();
-                final Number[] values = compQuant.getValues();
-                if (values.length == compUnit.getUnits().size()) {
-                    final StringBuffer sb = new StringBuffer(); // we use StringBuffer here because of java.text.Format compatibility
-                    for (int i = 0; i < values.length; i++) {
-                        if (values[i] != null) {
-                            fract = getFractionDigitsCount(values[i].doubleValue());
-                        } else {
-                            fract = 0;
-                        }
-                        if (fract > 1) {
-                            numberFormat.setMaximumFractionDigits(fract + 1);
-                        }
-                        sb.append(numberFormat.format(values[i]));
-                        sb.append(delimiter);
-                        sb.append(unitFormat.format(compUnit.getUnits().get(i)));
-                        if (i < values.length - 1) {
-                            sb.append((compoundDelimiter != null ? compoundDelimiter : DEFAULT_DELIMITER)); // we need null for parsing but not formatting
-                        }
-                    }
-                    return sb;
-                } else {
-                    throw new IllegalArgumentException(
-                            String.format("%s values don't match %s in Compound Unit", values.length, compUnit.getUnits().size()));
-                }
-            } else {
-                throw new MeasurementException("A Compound Quantity must contain a Compound Unit");
-            }
-        } else {
-            if (quantity != null && quantity.getValue() != null) {
-                fract = getFractionDigitsCount(quantity.getValue().doubleValue());
-            }
-            if (fract > 1) {
-                numberFormat.setMaximumFractionDigits(fract + 1);
-            }
-            dest.append(numberFormat.format(quantity.getValue()));
-            if (quantity.getUnit().equals(AbstractUnit.ONE))
-                return dest;
-            dest.append(delimiter);
-            return unitFormat.format(quantity.getUnit(), dest);
-        }
-    }
+		public Builder withNumberFormat(NumberFormat numberFormat) {
+			if (null != numberFormat) this.numberFormat = numberFormat;
+			return this;
+		}
 
-    @Override
-    public ComparableQuantity<?> parse(CharSequence csq, ParsePosition cursor) throws IllegalArgumentException, MeasurementParseException {
-        final String str = csq.toString();
-        final int index = cursor.getIndex();
-        if (compoundDelimiter != null && !compoundDelimiter.equals(delimiter)) {
-            return parseCompound(str, numberFormat, unitFormat, delimiter, compoundDelimiter, index);
-        } else if (compoundDelimiter != null && compoundDelimiter.equals(delimiter)) {
-            return parseCompound(str, numberFormat, unitFormat, delimiter, index);
-        }
-        final Number number = numberFormat.parse(str, cursor);
-        if (number == null)
-            throw new IllegalArgumentException("Number cannot be parsed");
-        final String[] parts = str.substring(index).split(delimiter);
-        if (parts.length < 2) {
-            throw new IllegalArgumentException("No Unit found");
-        }
-        final Unit unit = unitFormat.parse(parts[1]);
-        return Quantities.getQuantity(number, unit);
-    }
+		public Builder withUnitFormat(UnitFormat unitFormat) {
+			if (null != unitFormat) this.unitFormat = unitFormat;
+			return this;
+		}
 
-    @Override
-    protected ComparableQuantity<?> parse(CharSequence csq, int index) throws IllegalArgumentException, MeasurementParseException {
-        return parse(csq, new ParsePosition(index));
-    }
+		public Builder withDelimiter(String delimiter) {
+			if (null != delimiter) this.delimiter = delimiter;
+			return this;
+		}
 
-    @Override
-    public ComparableQuantity<?> parse(CharSequence csq) throws IllegalArgumentException, MeasurementParseException {
-        return parse(csq, 0);
-    }
+		public Builder withCompoundDelimiter(String compoundDelimiter) {
+			if (null != compoundDelimiter) this.compoundDelimiter = compoundDelimiter;
+			return this;
+		}
 
-    /**
-     * Returns the culture invariant format based upon {@link BigDecimal} canonical format and the {@link UnitFormat#getStandardInstance() standard}
-     * unit format. This format <b>is not</b> locale-sensitive and can be used for unambiguous electronic communication of quantities together with
-     * their units without loss of information. For example: <code>"1.23456789 kg.m/s2"</code> returns
-     * <code>Quantities.getQuantity(new BigDecimal("1.23456789"), AbstractUnit.parse("kg.m/s2")));</code>
-     *
-     * @param style
-     *            the format style to apply.
-     * @return <code>NumberDelimiterQuantityFormat.getInstance(NumberFormat.getInstance(), UnitFormat.getInstance())</code>
-     */
-    public static NumberDelimiterQuantityFormat getInstance(FormatBehavior style) {
-        switch (style) {
-            case LOCALE_NEUTRAL:
-                return EBNF;
-            case LOCALE_SENSITIVE:
-                return LOCAL;
-            default:
-                return EBNF;
-        }
-    }
+		public NumberDelimiterQuantityFormat build() {
+			NumberDelimiterQuantityFormat quantityFormat = new NumberDelimiterQuantityFormat();
+			quantityFormat.numberFormat = this.numberFormat;
+			quantityFormat.unitFormat = this.unitFormat;
+			quantityFormat.delimiter = this.delimiter;
+			quantityFormat.compoundDelimiter = this.compoundDelimiter;
 
-    /**
-     * Returns the default format.
-     * 
-     * @return the desired format.
-     */
-    public static NumberDelimiterQuantityFormat getInstance() {
-        return getInstance(LOCALE_NEUTRAL);
-    }
+			return quantityFormat;
+		}
+	}
 
-    /**
-     * Returns the quantity format using the specified number format and unit format (the number and unit are separated by one space).
-     *
-     * @param numberFormat
-     *            the number format.
-     * @param unitFormat
-     *            the unit format.
-     * @return the corresponding format.
-     */
-    public static NumberDelimiterQuantityFormat getInstance(NumberFormat numberFormat, UnitFormat unitFormat) {
-        return new NumberDelimiterQuantityFormat(numberFormat, unitFormat);
-    }
-    
-    /**
-     * Returns the quantity format using the specified number format, unit format and delimiter. The number and unit are separated by the delimiter.
-     *
-     * @param numberFormat
-     *            the number format.
-     * @param unitFormat
-     *            the unit format.
-     * @param delimiter
-     *            the delimiter.
-     * @return the corresponding format.
-     */
-    public static NumberDelimiterQuantityFormat getInstance(NumberFormat numberFormat, UnitFormat unitFormat, String delimiter) {
-        return new NumberDelimiterQuantityFormat(numberFormat, unitFormat, delimiter);
-    }
-    
-    /**
-     * Returns the quantity format using the specified number format, unit format and delimiter. The numbers and units are separated by the delimiter.
-     *
-     * @param numberFormat
-     *            the number format.
-     * @param unitFormat
-     *            the unit format.
-     * @param delimiter
-     *            the delimiter.
-     * @return the corresponding format.
-     */
-    public static NumberDelimiterQuantityFormat getCompoundInstance(NumberFormat numberFormat, UnitFormat unitFormat, String delimiter) {
-        return new NumberDelimiterQuantityFormat(numberFormat, unitFormat, delimiter, null);
-    }
-    
-    /**
-     * Returns the quantity format using the specified number format, unit format and delimiters. The numbers and units are separated by the delimiters.
-     *
-     * @param numberFormat
-     *            the number format.
-     * @param unitFormat
-     *            the unit format.
-     * @param delimiter
-     *            the delimiter.
-     * @param compDelimiter
-     *            the compound delimiter.
-     * @return the corresponding format.
-     */
-    public static NumberDelimiterQuantityFormat getCompoundInstance(NumberFormat numberFormat, UnitFormat unitFormat, String delimiter, String compDelimiter) {
-        return new NumberDelimiterQuantityFormat(numberFormat, unitFormat, delimiter, compDelimiter);
-    }
+	/**
+	 * Returns the culture invariant format based upon {@link BigDecimal} canonical format and the {@link UnitFormat#getStandardInstance() standard}
+	 * unit format. This format <b>is not</b> locale-sensitive and can be used for unambiguous electronic communication of quantities together with
+	 * their units without loss of information. For example: <code>"1.23456789 kg.m/s2"</code> returns
+	 * <code>Quantities.getQuantity(new BigDecimal("1.23456789"), AbstractUnit.parse("kg.m/s2")));</code>
+	 *
+	 * @param style
+	 *            the format style to apply.
+	 * @return <code>NumberDelimiterQuantityFormat.getInstance(NumberFormat.getInstance(), UnitFormat.getInstance())</code>
+	 */
+	public static NumberDelimiterQuantityFormat getInstance(FormatBehavior style) {
+		switch (style) {
+			case LOCALE_NEUTRAL:
+				return EBNF;
+			case LOCALE_SENSITIVE:
+				return LOCAL;
+			default:
+				return EBNF;
+		}
+	}
+
+	/**
+	 * Returns the default format.
+	 *
+	 * @return the desired format.
+	 */
+	public static NumberDelimiterQuantityFormat getInstance() {
+		return getInstance(LOCALE_NEUTRAL);
+	}
+
+	/**
+	 * Returns the quantity format using the specified number format and unit format (the number and unit are separated by one space).
+	 *
+	 * @param numberFormat
+	 *            the number format.
+	 * @param unitFormat
+	 *            the unit format.
+	 * @return the corresponding format.
+	 */
+	public static NumberDelimiterQuantityFormat getInstance(NumberFormat numberFormat, UnitFormat unitFormat) {
+		return new NumberDelimiterQuantityFormat.Builder()
+			.withNumberFormat(numberFormat)
+			.withUnitFormat(unitFormat)
+			.build();
+	}
+
+	/**
+	 * Returns the quantity format using the specified number format, unit format and delimiter. The number and unit are separated by the delimiter.
+	 *
+	 * @param numberFormat
+	 *            the number format.
+	 * @param unitFormat
+	 *            the unit format.
+	 * @param delimiter
+	 *            the delimiter.
+	 * @return the corresponding format.
+	 */
+	public static NumberDelimiterQuantityFormat getInstance(NumberFormat numberFormat, UnitFormat unitFormat, String delimiter) {
+		return new NumberDelimiterQuantityFormat.Builder()
+			.withNumberFormat(numberFormat)
+			.withUnitFormat(unitFormat)
+			.withDelimiter(delimiter)
+			.build();
+	}
+
+	/**
+	 * Returns the quantity format using the specified number format, unit format and delimiter. The numbers and units are separated by the delimiter.
+	 *
+	 * @param numberFormat
+	 *            the number format.
+	 * @param unitFormat
+	 *            the unit format.
+	 * @param delimiter
+	 *            the delimiter.
+	 * @return the corresponding format.
+	 */
+	public static NumberDelimiterQuantityFormat getCompoundInstance(NumberFormat numberFormat, UnitFormat unitFormat, String delimiter) {
+		return new NumberDelimiterQuantityFormat.Builder()
+			.withNumberFormat(numberFormat)
+			.withUnitFormat(unitFormat)
+			.withDelimiter(delimiter)
+			.build();
+	}
+
+	/**
+	 * Returns the quantity format using the specified number format, unit format and delimiters. The numbers and units are separated by the delimiters.
+	 *
+	 * @param numberFormat
+	 *            the number format.
+	 * @param unitFormat
+	 *            the unit format.
+	 * @param delimiter
+	 *            the delimiter.
+	 * @param compDelimiter
+	 *            the compound delimiter.
+	 * @return the corresponding format.
+	 */
+	public static NumberDelimiterQuantityFormat getCompoundInstance(NumberFormat numberFormat, UnitFormat unitFormat, String delimiter, String compDelimiter) {
+		return new NumberDelimiterQuantityFormat.Builder()
+			.withNumberFormat(numberFormat)
+			.withUnitFormat(unitFormat)
+			.withDelimiter(delimiter)
+			.withCompoundDelimiter(compDelimiter)
+			.build();
+	}
+
+
+	@Override
+	public Appendable format(Quantity<?> quantity, Appendable dest) throws IOException {
+		int fract = 0;
+		if (quantity instanceof CompoundQuantity) {
+			final CompoundQuantity<?> compQuant = (CompoundQuantity<?>) quantity;
+			if (compQuant.getUnit() instanceof CompoundUnit) {
+				final CompoundUnit<?> compUnit = (CompoundUnit<?>) compQuant.getUnit();
+				final Number[] values = compQuant.getValues();
+				if (values.length == compUnit.getUnits().size()) {
+					final StringBuffer sb = new StringBuffer(); // we use StringBuffer here because of java.text.Format compatibility
+					for (int i = 0; i < values.length; i++) {
+						if (values[i] != null) {
+							fract = getFractionDigitsCount(values[i].doubleValue());
+						} else {
+							fract = 0;
+						}
+						if (fract > 1) {
+							numberFormat.setMaximumFractionDigits(fract + 1);
+						}
+						sb.append(numberFormat.format(values[i]));
+						sb.append(delimiter);
+						sb.append(unitFormat.format(compUnit.getUnits().get(i)));
+						if (i < values.length - 1) {
+							sb.append((compoundDelimiter != null ? compoundDelimiter : DEFAULT_DELIMITER)); // we need null for parsing but not formatting
+						}
+					}
+					return sb;
+				} else {
+					throw new IllegalArgumentException(
+						String.format("%s values don't match %s in Compound Unit", values.length, compUnit.getUnits().size()));
+				}
+			} else {
+				throw new MeasurementException("A Compound Quantity must contain a Compound Unit");
+			}
+		} else {
+			if (quantity != null && quantity.getValue() != null) {
+				fract = getFractionDigitsCount(quantity.getValue().doubleValue());
+			}
+			if (fract > 1) {
+				numberFormat.setMaximumFractionDigits(fract + 1);
+			}
+			dest.append(numberFormat.format(quantity.getValue()));
+			if (quantity.getUnit().equals(AbstractUnit.ONE))
+				return dest;
+			dest.append(delimiter);
+			return unitFormat.format(quantity.getUnit(), dest);
+		}
+	}
+
+	@Override
+	public ComparableQuantity<?> parse(CharSequence csq, ParsePosition cursor) throws IllegalArgumentException, MeasurementParseException {
+		final String str = csq.toString();
+		final int index = cursor.getIndex();
+		if (compoundDelimiter != null && !compoundDelimiter.equals(delimiter)) {
+			return parseCompound(str, numberFormat, unitFormat, delimiter, compoundDelimiter, index);
+		} else if (compoundDelimiter != null && compoundDelimiter.equals(delimiter)) {
+			return parseCompound(str, numberFormat, unitFormat, delimiter, index);
+		}
+		final Number number = numberFormat.parse(str, cursor);
+		if (number == null)
+			throw new IllegalArgumentException("Number cannot be parsed");
+		final String[] parts = str.substring(index).split(delimiter);
+		if (parts.length < 2) {
+			throw new IllegalArgumentException("No Unit found");
+		}
+		final Unit unit = unitFormat.parse(parts[1]);
+		return Quantities.getQuantity(number, unit);
+	}
+
+	@Override
+	protected ComparableQuantity<?> parse(CharSequence csq, int index) throws IllegalArgumentException, MeasurementParseException {
+		return parse(csq, new ParsePosition(index));
+	}
+
+	@Override
+	public ComparableQuantity<?> parse(CharSequence csq) throws IllegalArgumentException, MeasurementParseException {
+		return parse(csq, 0);
+	}
+
+	@Override
+	public String toString() {
+		return getClass().getSimpleName();
+	}
+
+	private static int getFractionDigitsCount(double d) {
+		if (d >= 1) { // we only need the fraction digits
+			d = d - (long) d;
+		}
+		if (d == 0) { // nothing to count
+			return 0;
+		}
+		d *= 10; // shifts 1 digit to left
+		int count = 1;
+		while (d - (long) d != 0) { // keeps shifting until there are no more
+			// fractions
+			d *= 10;
+			count++;
+		}
+		return count;
+	}
 }
