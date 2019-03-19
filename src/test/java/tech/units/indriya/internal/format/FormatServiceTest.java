@@ -44,6 +44,8 @@ import org.junit.jupiter.api.Test;
  * Tests for services provided via {@link ServiceProvider}.
  */
 public class FormatServiceTest {
+    
+  private static final int QUANTITY_FORMAT_COUNT = 4;
 
   @Test
   public void testGetServices() throws Exception {
@@ -114,6 +116,16 @@ public class FormatServiceTest {
   }
   
   @Test
+  public void testGetLocalQuantityFormatFound() throws Exception {
+    final FormatService fs = ServiceProvider.current().getFormatService();
+    assertNotNull(fs);
+    final QuantityFormat qf = fs.getQuantityFormat("Local");
+    assertNotNull(qf);
+    assertEquals("NumberDelimiterQuantityFormat", qf.toString());
+    assertTrue(qf.isLocaleSensitive());
+  }
+  
+  @Test
   public void testGetQuantityFormatNotFound() throws Exception {
     final FormatService fs = ServiceProvider.current().getFormatService();
     assertNotNull(fs);
@@ -124,6 +136,6 @@ public class FormatServiceTest {
   public void testGetQuantityFormatNames() throws Exception {
     final FormatService fs = ServiceProvider.current().getFormatService();
     assertNotNull(fs);
-    assertEquals(3, fs.getAvailableFormatNames(QUANTITY_FORMAT).size());
+    assertEquals(QUANTITY_FORMAT_COUNT, fs.getAvailableFormatNames(QUANTITY_FORMAT).size());
   }
 }
