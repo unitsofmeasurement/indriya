@@ -55,7 +55,7 @@ import tech.units.indriya.unit.CompoundUnit;
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
  * @author <a href="mailto:thodoris.bais@gmail.com">Thodoris Bais</a>
  *
- * @version 1.6.2, $Date: 2019-03-17 $
+ * @version 1.7, $Date: 2019-03-19 $
  * @since 2.0
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -186,6 +186,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
 	 * @param delimiter
 	 *            the delimiter.
 	 * @return the corresponding format.
+	 * @deprecated Consider using Builder instead
 	 */
 	public static NumberDelimiterQuantityFormat getInstance(NumberFormat numberFormat, UnitFormat unitFormat, String delimiter) {
 		return new NumberDelimiterQuantityFormat.Builder()
@@ -226,6 +227,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
 	 * @param compDelimiter
 	 *            the compound delimiter.
 	 * @return the corresponding format.
+	 * @deprecated Consider using Builder instead
 	 */
 	public static NumberDelimiterQuantityFormat getCompoundInstance(NumberFormat numberFormat, UnitFormat unitFormat, String delimiter, String compDelimiter) {
 		return new NumberDelimiterQuantityFormat.Builder()
