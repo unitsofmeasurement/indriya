@@ -65,16 +65,16 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
 	 * Holds the default format instance (EBNFUnitFormat).
 	 */
 	private static final NumberDelimiterQuantityFormat EBNF = new NumberDelimiterQuantityFormat.Builder()
-		.withNumberFormat(NumberFormat.getInstance())
-		.withUnitFormat(EBNFUnitFormat.getInstance())
+		.setNumberFormat(NumberFormat.getInstance())
+		.setUnitFormat(EBNFUnitFormat.getInstance())
 		.build();
 
 	/**
 	 * Holds the localized format instance.
 	 */
 	private static final NumberDelimiterQuantityFormat LOCAL = new NumberDelimiterQuantityFormat.Builder()
-		.withNumberFormat(NumberFormat.getInstance())
-		.withUnitFormat(LocalUnitFormat.getInstance())
+		.setNumberFormat(NumberFormat.getInstance())
+		.setUnitFormat(LocalUnitFormat.getInstance())
 		.build();
 
 	/**
@@ -99,22 +99,22 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
 		private String delimiter = DEFAULT_DELIMITER;
 		private String compoundDelimiter;
 
-		public Builder withNumberFormat(NumberFormat numberFormat) {
+		public Builder setNumberFormat(NumberFormat numberFormat) {
 			if (null != numberFormat) this.numberFormat = numberFormat;
 			return this;
 		}
 
-		public Builder withUnitFormat(UnitFormat unitFormat) {
+		public Builder setUnitFormat(UnitFormat unitFormat) {
 			if (null != unitFormat) this.unitFormat = unitFormat;
 			return this;
 		}
 
-		public Builder withDelimiter(String delimiter) {
+		public Builder setDelimiter(String delimiter) {
 			if (null != delimiter) this.delimiter = delimiter;
 			return this;
 		}
 
-		public Builder withCompoundDelimiter(String compoundDelimiter) {
+		public Builder setCompoundDelimiter(String compoundDelimiter) {
 			if (null != compoundDelimiter) this.compoundDelimiter = compoundDelimiter;
 			return this;
 		}
@@ -171,8 +171,8 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
 	 */
 	public static NumberDelimiterQuantityFormat getInstance(NumberFormat numberFormat, UnitFormat unitFormat) {
 		return new NumberDelimiterQuantityFormat.Builder()
-			.withNumberFormat(numberFormat)
-			.withUnitFormat(unitFormat)
+			.setNumberFormat(numberFormat)
+			.setUnitFormat(unitFormat)
 			.build();
 	}
 
@@ -189,9 +189,9 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
 	 */
 	public static NumberDelimiterQuantityFormat getInstance(NumberFormat numberFormat, UnitFormat unitFormat, String delimiter) {
 		return new NumberDelimiterQuantityFormat.Builder()
-			.withNumberFormat(numberFormat)
-			.withUnitFormat(unitFormat)
-			.withDelimiter(delimiter)
+			.setNumberFormat(numberFormat)
+			.setUnitFormat(unitFormat)
+			.setDelimiter(delimiter)
 			.build();
 	}
 
@@ -208,9 +208,9 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
 	 */
 	public static NumberDelimiterQuantityFormat getCompoundInstance(NumberFormat numberFormat, UnitFormat unitFormat, String delimiter) {
 		return new NumberDelimiterQuantityFormat.Builder()
-			.withNumberFormat(numberFormat)
-			.withUnitFormat(unitFormat)
-			.withDelimiter(delimiter)
+			.setNumberFormat(numberFormat)
+			.setUnitFormat(unitFormat)
+			.setDelimiter(delimiter)
 			.build();
 	}
 
@@ -229,10 +229,10 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
 	 */
 	public static NumberDelimiterQuantityFormat getCompoundInstance(NumberFormat numberFormat, UnitFormat unitFormat, String delimiter, String compDelimiter) {
 		return new NumberDelimiterQuantityFormat.Builder()
-			.withNumberFormat(numberFormat)
-			.withUnitFormat(unitFormat)
-			.withDelimiter(delimiter)
-			.withCompoundDelimiter(compDelimiter)
+			.setNumberFormat(numberFormat)
+			.setUnitFormat(unitFormat)
+			.setDelimiter(delimiter)
+			.setCompoundDelimiter(compDelimiter)
 			.build();
 	}
 

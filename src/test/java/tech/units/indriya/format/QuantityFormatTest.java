@@ -218,8 +218,8 @@ public class QuantityFormatTest {
     @Test
     public void testNDFBuilder() {
         QuantityFormat quantFormat = new NumberDelimiterQuantityFormat.Builder().
-                withNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH)).
-                withUnitFormat(SimpleUnitFormat.getInstance()).withDelimiter("_").
+			setNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH)).
+			setUnitFormat(SimpleUnitFormat.getInstance()).setDelimiter("_").
                 build();
         final Unit<Length> cm = CENTI(Units.METRE);
         final Quantity<Length> l1 = Quantities.getQuantity(150, cm);
