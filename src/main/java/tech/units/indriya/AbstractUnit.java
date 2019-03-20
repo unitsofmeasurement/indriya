@@ -558,7 +558,7 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
    *            the least significant unit to combine with this unit.
    * @return the corresponding compound unit.
    */
-  public final Unit<Q> compound(Unit<Q> that) {
+  public final Unit<Q> mix(Unit<Q> that) {
       if (this instanceof CompoundUnit) {
           final CompoundUnit<Q> thisComp = (CompoundUnit<Q>) this;
           final List<Unit<Q>> comps = new ArrayList<>();

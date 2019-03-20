@@ -55,7 +55,7 @@ public class CompoundQuantityTest {
 
   @Test
   public void testLength() {
-    Unit<Length> compUnit = Units.METRE.compound(CENTI(Units.METRE));
+    Unit<Length> compUnit = Units.METRE.mix(CENTI(Units.METRE));
     Quantity<Length> l1 = Quantities.getQuantity(1.70, compUnit);
     assertEquals(1.7d, l1.getValue());
     assertEquals("m;cm", l1.getUnit().toString()); // TODO this does not make much sense yet
@@ -63,7 +63,7 @@ public class CompoundQuantityTest {
   
   @Test
   public void testLengths() {
-    Unit<Length> compUnit = Units.METRE.compound(CENTI(Units.METRE));
+    Unit<Length> compUnit = Units.METRE.mix(CENTI(Units.METRE));
     Number[] numList = {1, 70};
     Quantity<Length> l1 = Quantities.getCompoundQuantity(numList, compUnit);
     assertEquals(BigDecimal.valueOf(1.7d), l1.getValue());
@@ -77,7 +77,7 @@ public class CompoundQuantityTest {
   
   @Test
   public void testTimes() {
-    Unit<Time> compUnit = Units.DAY.compound(Units.HOUR);
+    Unit<Time> compUnit = Units.DAY.mix(Units.HOUR);
     Number[] numList = {3, 12};
     Quantity<Time> t1 = Quantities.getCompoundQuantity(numList, compUnit);
     assertEquals(BigDecimal.valueOf(3.5d), t1.getValue());
@@ -101,7 +101,7 @@ public class CompoundQuantityTest {
   @Test
   public void testSizeMismatch() {
       Unit<Time> compTime = Units.HOUR.
-              compound(Units.MINUTE).compound(Units.SECOND);
+              mix(Units.MINUTE).mix(Units.SECOND);
       Number[] numList = {1, 70};
     assertThrows(IllegalArgumentException.class, () -> {
         @SuppressWarnings("unused")
@@ -111,7 +111,7 @@ public class CompoundQuantityTest {
   
   @Test
   public void testConvert() {
-    Unit<Length> compUnit = Units.METRE.compound(CENTI(Units.METRE));
+    Unit<Length> compUnit = Units.METRE.mix(CENTI(Units.METRE));
     Quantity<Length> l1 = Quantities.getQuantity(170, CENTI(Units.METRE));
     assertEquals(170, l1.getValue());
     assertEquals("cm", l1.getUnit().toString());

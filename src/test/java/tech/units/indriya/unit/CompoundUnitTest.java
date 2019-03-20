@@ -50,14 +50,14 @@ public class CompoundUnitTest {
 
   @Test
   public void testLength() {
-    final Unit<Length> compLen =  Units.METRE.compound(CENTI(Units.METRE));
+    final Unit<Length> compLen =  Units.METRE.mix(CENTI(Units.METRE));
     assertEquals("m;cm", compLen.toString());
   }
   
   @Test
   public void testTime() {
     final Unit<Time> compTime =  Units.HOUR.
-              compound(Units.MINUTE).compound(Units.SECOND);
+              mix(Units.MINUTE).mix(Units.SECOND);
     assertEquals("h;min;s", compTime.toString());
   }
   
@@ -67,14 +67,18 @@ public class CompoundUnitTest {
   @Test
   public void testConverterToDay() {
     final Unit<Time> compTime =  Units.HOUR.
-              compound(Units.MINUTE).compound(Units.SECOND);
+              mix(Units.MINUTE).mix(Units.SECOND);
     UnitConverter converter = compTime.getConverterTo(Units.DAY);
     UnitConverter converter2 = Units.HOUR.getConverterTo(Units.DAY);
     Double result = converter.convert(1d);
-    //System.out.println("R: " + result);
+    //System.out.println("R: " + result + "ß" + converter.isIdentity());
     Double result2 = converter2.convert(1d);
-    //System.out.println("R2: " + result2);
+    //System.out.println("R2: " + result2 + "ß" + converter2.isIdentity());
     assertEquals(result, result2);
+    assertTrue(Units.DAY.getConverterTo(Units.DAY).isIdentity());
+    assertFalse(converter.isIdentity());
+    assertFalse(converter2.isIdentity());
+    //logger.log(Level.FINER(Units.DAY.getConverterTo(Units.DAY).isIdentity());
     //logger.log(Level.FINER, result.toString());
   }
 }

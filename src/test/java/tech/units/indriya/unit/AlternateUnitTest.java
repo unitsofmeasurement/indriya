@@ -186,7 +186,7 @@ class AlternateUnitTest {
       }
 
     @Override
-    public Unit<ElectricCurrent> compound(Unit<ElectricCurrent> that) {
+    public Unit<ElectricCurrent> mix(Unit<ElectricCurrent> that) {
         return null;
     }
     };

@@ -67,7 +67,7 @@ abstract class CommonFormatter {
                 } catch (ParseException pe) {
                     throw new MeasurementParseException(pe);
                 }
-                unit = (unit == null) ? unitFormat.parse(parts[1]) : unit.compound(unitFormat.parse(parts[1]));
+                unit = (unit == null) ? unitFormat.parse(parts[1]) : unit.mix(unitFormat.parse(parts[1]));
             }
         }
         final Number[] numArray = new Number[nums.size()];
@@ -96,7 +96,7 @@ abstract class CommonFormatter {
                 } catch (ParseException pe) {
                     throw new MeasurementParseException(pe);
                 }
-                unit = (unit == null) ? unitFormat.parse(parts[i+1]) : unit.compound(unitFormat.parse(parts[i+1]));
+                unit = (unit == null) ? unitFormat.parse(parts[i+1]) : unit.mix(unitFormat.parse(parts[i+1]));
                 i++; // get to next number
             }
         }

@@ -106,7 +106,7 @@ public class QuantityFormatTest {
     public void testFormatCompound1() {
         final NumberDelimiterQuantityFormat format1 = NumberDelimiterQuantityFormat.getInstance(DecimalFormat.getInstance(),
                 SimpleUnitFormat.getInstance());
-        final Unit<Length> compLen = Units.METRE.compound(CENTI(Units.METRE));
+        final Unit<Length> compLen = Units.METRE.mix(CENTI(Units.METRE));
         final Number[] numList = { 1, 70 };
         final Quantity<Length> l1 = Quantities.getCompoundQuantity(numList, compLen);
 
@@ -117,7 +117,7 @@ public class QuantityFormatTest {
     public void testFormatCompound2() {
         final NumberDelimiterQuantityFormat format1 = NumberDelimiterQuantityFormat.getInstance(new DecimalFormat("#.000", DecimalFormatSymbols.getInstance(Locale.ENGLISH)),
                 SimpleUnitFormat.getInstance());
-        final Unit<Length> compLen = Units.METRE.compound(CENTI(Units.METRE));
+        final Unit<Length> compLen = Units.METRE.mix(CENTI(Units.METRE));
         final Number[] numList = { 1, 70 };
         final Quantity<Length> l1 = Quantities.getCompoundQuantity(numList, compLen);
 
@@ -131,7 +131,7 @@ public class QuantityFormatTest {
                 .setUnitFormat(SimpleUnitFormat.getInstance())
                 .setDelimiter("_").setCompoundDelimiter("_")
                 .build();
-        final Unit<Length> compLen = Units.METRE.compound(CENTI(Units.METRE));
+        final Unit<Length> compLen = Units.METRE.mix(CENTI(Units.METRE));
         final Number[] numList = { 1, 70 };
         final Quantity<Length> l1 = Quantities.getCompoundQuantity(numList, compLen);
 
@@ -146,7 +146,7 @@ public class QuantityFormatTest {
                 .setDelimiter("_")
                 .setCompoundDelimiter(" ")
                 .build();
-        final Unit<Length> compLen = Units.METRE.compound(CENTI(Units.METRE));
+        final Unit<Length> compLen = Units.METRE.mix(CENTI(Units.METRE));
         final Number[] numList = { 1, 70 };
         final Quantity<Length> l1 = Quantities.getCompoundQuantity(numList, compLen);
 
@@ -159,7 +159,7 @@ public class QuantityFormatTest {
                 .setNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH))
                 .setUnitFormat(SimpleUnitFormat.getInstance())
                 .setDelimiter(" ").setCompoundDelimiter(":").build();
-        Unit<Time> compTime = Units.HOUR.compound(Units.MINUTE).compound(Units.SECOND);
+        Unit<Time> compTime = Units.HOUR.mix(Units.MINUTE).mix(Units.SECOND);
         final Number[] numList = { 1, 40, 10 };
         final Quantity<Time> t1 = Quantities.getCompoundQuantity(numList, compTime);
         assertEquals("1 h:40 min:10 s", format1.format(t1));
@@ -292,7 +292,7 @@ public class QuantityFormatTest {
         QuantityFormat format1 = SimpleQuantityFormat.getInstance("n u~:");
         Quantity<?> parsed1 = format1.parse("1 h:30 min:10 s");
         assertEquals(5410L, parsed1.getValue());
-        assertEquals(HOUR.compound(MINUTE).compound(SECOND), parsed1.getUnit());
+        assertEquals(HOUR.mix(MINUTE).mix(SECOND), parsed1.getUnit());
         assertTrue(parsed1 instanceof CompoundQuantity);
         final Number[] values = ((CompoundQuantity<?>)parsed1).getValues();
         assertEquals(3, values.length);
@@ -306,7 +306,7 @@ public class QuantityFormatTest {
         QuantityFormat format1 = SimpleQuantityFormat.getInstance("n u~ ");
         Quantity<?> parsed1 = format1.parse("1 h 30 min 10 s");
         assertEquals(5410L, parsed1.getValue());
-        assertEquals(HOUR.compound(MINUTE).compound(SECOND), parsed1.getUnit());
+        assertEquals(HOUR.mix(MINUTE).mix(SECOND), parsed1.getUnit());
         assertTrue(parsed1 instanceof CompoundQuantity);
         final Number[] values = ((CompoundQuantity<?>)parsed1).getValues();
         assertEquals(3, values.length);
@@ -320,7 +320,7 @@ public class QuantityFormatTest {
         QuantityFormat format1 = NumberDelimiterQuantityFormat.getCompoundInstance(DecimalFormat.getInstance(Locale.ENGLISH), SimpleUnitFormat.getInstance(), " ", ";");
         Quantity<?> parsed1 = format1.parse("1 m;30 cm");
         assertEquals(130L, parsed1.getValue());
-        assertEquals(METRE.compound(CENTI(METRE)), parsed1.getUnit());
+        assertEquals(METRE.mix(CENTI(METRE)), parsed1.getUnit());
         assertTrue(parsed1 instanceof CompoundQuantity);
         assertEquals(2, ((CompoundQuantity<?>)parsed1).getValues().length);
     }
@@ -330,7 +330,7 @@ public class QuantityFormatTest {
         QuantityFormat format1 = NumberDelimiterQuantityFormat.getCompoundInstance(DecimalFormat.getInstance(Locale.ENGLISH), SimpleUnitFormat.getInstance(), " ", " ");
         Quantity<?> parsed1 = format1.parse("1 m 30 cm");
         assertEquals(130L, parsed1.getValue());
-        assertEquals(METRE.compound(CENTI(METRE)), parsed1.getUnit());
+        assertEquals(METRE.mix(CENTI(METRE)), parsed1.getUnit());
         assertTrue(parsed1 instanceof CompoundQuantity);
         assertEquals(2, ((CompoundQuantity<?>)parsed1).getValues().length);
     }
