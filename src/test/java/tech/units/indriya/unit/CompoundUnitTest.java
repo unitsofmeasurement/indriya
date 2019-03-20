@@ -71,10 +71,14 @@ public class CompoundUnitTest {
     UnitConverter converter = compTime.getConverterTo(Units.DAY);
     UnitConverter converter2 = Units.HOUR.getConverterTo(Units.DAY);
     Double result = converter.convert(1d);
-    //System.out.println("R: " + result);
+    //System.out.println("R: " + result + "ß" + converter.isIdentity());
     Double result2 = converter2.convert(1d);
-    //System.out.println("R2: " + result2);
+    //System.out.println("R2: " + result2 + "ß" + converter2.isIdentity());
     assertEquals(result, result2);
+    assertTrue(Units.DAY.getConverterTo(Units.DAY).isIdentity());
+    assertFalse(converter.isIdentity());
+    assertFalse(converter2.isIdentity());
+    //logger.log(Level.FINER(Units.DAY.getConverterTo(Units.DAY).isIdentity());
     //logger.log(Level.FINER, result.toString());
   }
 }
