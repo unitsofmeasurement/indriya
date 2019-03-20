@@ -55,7 +55,7 @@ import javax.measure.Unit;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.9, January 29, 2019
+ * @version 1.9.1, March 20, 2019
  * @since 2.0
  */
 public final class CompoundUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
@@ -66,7 +66,7 @@ public final class CompoundUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
     private static final long serialVersionUID = -6588505921476784171L;
 
     /**
-     * Holds the upper unit.
+     * Holds the list of units.
      */
     private final List<Unit<Q>> units;
 
