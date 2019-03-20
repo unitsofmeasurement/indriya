@@ -105,7 +105,7 @@ public class CompoundQuantityTest {
     Quantity<Length> l2 = l1.to(compLen);
     // TODO UnitConverter implementations should also decompose a quantity into a CompoundQuantity, so this no longer throws an exception
     assertThrows(MeasurementException.class, () -> {
-        logger.info(String.valueOf(l2));
+        logger.warning(String.valueOf(l2));
     });
   }
 }
