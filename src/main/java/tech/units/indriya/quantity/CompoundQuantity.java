@@ -54,7 +54,7 @@ import tech.units.indriya.unit.CompoundUnit;
  * @param <Q>
  *            The type of the quantity.
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 1.1, $Date: 2019-02-03 $
+ * @version 1.1.1, $Date: 2019-03-20 $
  * @since 2.0
  */
 public class CompoundQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
@@ -100,6 +100,7 @@ public class CompoundQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q>
     }
 
     @Override
+    // TODO update JavaDoc here after the classes were renamed.
     public Number getValue() {
         if (getUnit() instanceof CompoundUnit) {
             final CompoundUnit<Q> compUnit =  (CompoundUnit<Q>) getUnit();
@@ -122,6 +123,7 @@ public class CompoundQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q>
         }
     }
 
+    // TODO JavaDoc
     public Number[] getValues() {
         return values;
     }
