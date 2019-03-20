@@ -33,11 +33,9 @@ import static tech.units.indriya.format.FormatBehavior.LOCALE_NEUTRAL;
 import static tech.units.indriya.format.CommonFormatter.*;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
 import java.util.Locale;
-
 import javax.measure.MeasurementException;
 import javax.measure.Quantity;
 import javax.measure.Unit;
@@ -57,7 +55,7 @@ import tech.units.indriya.unit.CompoundUnit;
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
  * @author <a href="mailto:thodoris.bais@gmail.com">Thodoris Bais</a>
  *
- * @version 1.7, $Date: 2019-03-19 $
+ * @version 1.7.1, $Date: 2019-03-20 $
  * @since 2.0
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -102,30 +100,68 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
         private String compoundDelimiter;
         private boolean localeSensitive;
 
+        /**
+         * Sets the numberFormat parameter to the given {@code NumberFormat}.
+         * @param numberFormat the {@link NumberFormat}
+         * @throws NullPointerException if {@code numberFormat} is {@code null}
+         * @return this {@code NumberDelimiterQuantityFormat.Builder}
+         */
         public Builder setNumberFormat(NumberFormat numberFormat) {
-            if (null != numberFormat)
-                this.numberFormat = numberFormat;
+            if (numberFormat == null) {
+                throw new NullPointerException();
+            }
+            this.numberFormat = numberFormat;
             return this;
         }
 
+        /**
+         * Sets the unitFormat parameter to the given {@code UnitFormat}.
+         * @param numberFormat the {@link UnitFormat}
+         * @throws NullPointerException if {@code unitFormat} is {@code null}
+         * @return this {@code NumberDelimiterQuantityFormat.Builder}
+         */
         public Builder setUnitFormat(UnitFormat unitFormat) {
-            if (null != unitFormat)
-                this.unitFormat = unitFormat;
+            if (unitFormat == null) {
+                throw new NullPointerException();
+            }
+            this.unitFormat = unitFormat;
             return this;
         }
 
+        /**
+         * Sets the delimiter between a {@code NumberFormat} and {@code UnitFormat}.
+         * @param delimiter the delimiter to use
+         * @throws NullPointerException if {@code delimiter} is {@code null}
+         * @return this {@code NumberDelimiterQuantityFormat.Builder}
+         */
         public Builder setDelimiter(String delimiter) {
-            if (null != delimiter)
-                this.delimiter = delimiter;
+            if (delimiter == null) {
+                throw new NullPointerException();
+            }
+            this.delimiter = delimiter;
             return this;
         }
 
+        /**
+         * Sets the compound delimiter between multiple {@link CompoundQuantity compound quantities}.
+         * @param compoundDelimiter the delimiter to use
+         * @throws NullPointerException if {@code compoundDelimiter} is {@code null}
+         * @return this {@code NumberDelimiterQuantityFormat.Builder}
+         */
         public Builder setCompoundDelimiter(String compoundDelimiter) {
-            if (null != compoundDelimiter)
-                this.compoundDelimiter = compoundDelimiter;
+            if (compoundDelimiter == null) {
+                throw new NullPointerException();
+            }
+            this.compoundDelimiter = compoundDelimiter;
             return this;
         }
 
+        /**
+         * Sets the {@code localeSensitive} flag.
+         * @param localeSensitive the flag, if the {@code NumberDelimiterQuantityFormat} to be built will depend on a {@code Locale} to perform its tasks.
+         * @return this {@code NumberDelimiterQuantityFormat.Builder}
+         * @see UnitFormat#isLocaleSensitive()
+         */
         public Builder setLocaleSensitive(boolean localeSensitive) {
             this.localeSensitive = localeSensitive;
             return this;
@@ -198,22 +234,6 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
      * @deprecated Consider using Builder instead
      */
     public static NumberDelimiterQuantityFormat getInstance(NumberFormat numberFormat, UnitFormat unitFormat, String delimiter) {
-        return new NumberDelimiterQuantityFormat.Builder().setNumberFormat(numberFormat).setUnitFormat(unitFormat).setDelimiter(delimiter).build();
-    }
-
-    /**
-     * Returns the quantity format using the specified number format, unit format and delimiter. The numbers and units are separated by the delimiter.
-     *
-     * @param numberFormat
-     *            the number format.
-     * @param unitFormat
-     *            the unit format.
-     * @param delimiter
-     *            the delimiter.
-     * @return the corresponding format.
-     * @deprecated Consider using Builder instead
-     */
-    public static NumberDelimiterQuantityFormat getCompoundInstance(NumberFormat numberFormat, UnitFormat unitFormat, String delimiter) {
         return new NumberDelimiterQuantityFormat.Builder().setNumberFormat(numberFormat).setUnitFormat(unitFormat).setDelimiter(delimiter).build();
     }
 

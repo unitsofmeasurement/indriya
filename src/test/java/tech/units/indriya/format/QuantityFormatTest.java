@@ -126,8 +126,11 @@ public class QuantityFormatTest {
 
     @Test
     public void testFormatCompoundDelim() {
-        final NumberDelimiterQuantityFormat format1 = NumberDelimiterQuantityFormat.getCompoundInstance(DecimalFormat.getInstance(Locale.ENGLISH),
-                SimpleUnitFormat.getInstance(), "_", "_");
+        final NumberDelimiterQuantityFormat format1 = new NumberDelimiterQuantityFormat.Builder()
+                .setNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH))
+                .setUnitFormat(SimpleUnitFormat.getInstance())
+                .setDelimiter("_").setCompoundDelimiter("_")
+                .build();
         final Unit<Length> compLen = Units.METRE.compound(CENTI(Units.METRE));
         final Number[] numList = { 1, 70 };
         final Quantity<Length> l1 = Quantities.getCompoundQuantity(numList, compLen);
@@ -137,8 +140,12 @@ public class QuantityFormatTest {
 
     @Test
     public void testFormatCompoundDelims() {
-        final NumberDelimiterQuantityFormat format1 = NumberDelimiterQuantityFormat.getCompoundInstance(DecimalFormat.getInstance(Locale.ENGLISH),
-                SimpleUnitFormat.getInstance(), "_", " ");
+        final NumberDelimiterQuantityFormat format1 = new NumberDelimiterQuantityFormat.Builder()
+                .setNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH))
+                .setUnitFormat(SimpleUnitFormat.getInstance())
+                .setDelimiter("_")
+                .setCompoundDelimiter(" ")
+                .build();
         final Unit<Length> compLen = Units.METRE.compound(CENTI(Units.METRE));
         final Number[] numList = { 1, 70 };
         final Quantity<Length> l1 = Quantities.getCompoundQuantity(numList, compLen);
@@ -148,8 +155,10 @@ public class QuantityFormatTest {
 
     @Test
     public void testFormatCompoundDelims2() {
-        final NumberDelimiterQuantityFormat format1 = NumberDelimiterQuantityFormat.getCompoundInstance(DecimalFormat.getInstance(Locale.ENGLISH),
-                SimpleUnitFormat.getInstance(), " ", ":");
+        final NumberDelimiterQuantityFormat format1 = new NumberDelimiterQuantityFormat.Builder()
+                .setNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH))
+                .setUnitFormat(SimpleUnitFormat.getInstance())
+                .setDelimiter(" ").setCompoundDelimiter(":").build();
         Unit<Time> compTime = Units.HOUR.compound(Units.MINUTE).compound(Units.SECOND);
         final Number[] numList = { 1, 40, 10 };
         final Quantity<Time> t1 = Quantities.getCompoundQuantity(numList, compTime);
@@ -224,6 +233,24 @@ public class QuantityFormatTest {
         final Unit<Length> cm = CENTI(Units.METRE);
         final Quantity<Length> l1 = Quantities.getQuantity(150, cm);
         assertEquals("150_cm", quantFormat.format(l1));
+    }
+    
+    @Test
+    public void testNDFBuilderNullNumFormat() {
+        assertThrows(NullPointerException.class, () -> {
+            @SuppressWarnings("unused")
+            QuantityFormat quantFormat = new NumberDelimiterQuantityFormat.Builder().
+                    setNumberFormat(null).build();
+        });
+    }
+    
+    @Test
+    public void testNDFBuilderNullUnitFormat() {
+        assertThrows(NullPointerException.class, () -> {
+            @SuppressWarnings("unused")
+            QuantityFormat quantFormat = new NumberDelimiterQuantityFormat.Builder().
+                    setUnitFormat(null).build();
+        });
     }
 
     @Test
