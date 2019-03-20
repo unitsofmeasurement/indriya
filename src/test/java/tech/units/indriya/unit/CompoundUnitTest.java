@@ -30,6 +30,7 @@
 package tech.units.indriya.unit;
 
 import javax.measure.Unit;
+import javax.measure.UnitConverter;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Time;
 
@@ -38,6 +39,7 @@ import org.junit.jupiter.api.Test;
 import tech.units.indriya.unit.Units;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 import static javax.measure.MetricPrefix.*;
 
 /**
@@ -57,5 +59,22 @@ public class CompoundUnitTest {
     final Unit<Time> compTime =  Units.HOUR.
               compound(Units.MINUTE).compound(Units.SECOND);
     assertEquals("h;min;s", compTime.toString());
+  }
+  
+  /**
+   * Test method for {@link javax.measure.Unit#getConverterTo}.
+   */
+  @Test
+  public void testConverterToDay() {
+    final Unit<Time> compTime =  Units.HOUR.
+              compound(Units.MINUTE).compound(Units.SECOND);
+    UnitConverter converter = compTime.getConverterTo(Units.DAY);
+    UnitConverter converter2 = Units.HOUR.getConverterTo(Units.DAY);
+    Double result = converter.convert(1d);
+    //System.out.println("R: " + result);
+    Double result2 = converter2.convert(1d);
+    //System.out.println("R2: " + result2);
+    assertEquals(result, result2);
+    //logger.log(Level.FINER, result.toString());
   }
 }
