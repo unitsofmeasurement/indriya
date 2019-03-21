@@ -48,7 +48,7 @@ public class LocalFormatTest {
 
   @Test
   @Disabled
-  // TODO LocalUnitFormat won't parse Compound Units, EBNF does, also see https://github.com/unitsofmeasurement/uom-se/issues/145
+  // TODO LocalUnitFormat won't parse mixed units, EBNF does, also see https://github.com/unitsofmeasurement/uom-se/issues/145
   public void testPrefixKm() {
     final UnitFormat format = LocalUnitFormat.getInstance();
     Unit<?> u = format.parse("km");

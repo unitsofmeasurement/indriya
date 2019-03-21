@@ -64,266 +64,267 @@ import static javax.measure.MetricPrefix.*;
  * @author Werner Keil
  */
 public class UnitsTest {
-  static final Logger logger = Logger.getLogger(UnitsTest.class.getName());
+    static final Logger logger = Logger.getLogger(UnitsTest.class.getName());
 
-  private Unit<Dimensionless> one;
-  private SystemOfUnits sou;
-  
-  /*
-   * (non-Javadoc)
-   * 
-   * @see junit.framework.TestCase#setUp()
-   */
-  @BeforeEach
-  public void setUp() throws Exception {
-    // super.setUp();
-    one = AbstractUnit.ONE;
-    sou = Units.getInstance();
-  }
+    private Unit<Dimensionless> one;
+    private SystemOfUnits sou;
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see junit.framework.TestCase#tearDown()
-   */
-  @After
-  public void tearDown() throws Exception {
-    // super.tearDown();
-    one = null;
-  }
-
-  /**
-   * Test method for {@link javax.measure.Unit#getConverterTo}.
-   */
-  @Test
-  public void testConverterToSI() {
-    Double factor = 10.0;
-    UnitConverter converter = one.getConverterTo(one);
-    Double result = converter.convert(factor.doubleValue());
-    assertEquals(result, factor);
-    logger.log(Level.FINER, result.toString());
-  }
-
-  /**
-   * Test method for {@link javax.measure.Unit#asType(java.lang.Class)}.
-   */
-  @Test
-  public void testAsType() {
-    one.asType(Dimensionless.class);
-    try {
-      METRE.asType(Dimensionless.class);
-      fail("Should have raised ClassCastException");
-    } catch (ClassCastException e) {
-      assertTrue(true);
+    /*
+     * (non-Javadoc)
+     * 
+     * @see junit.framework.TestCase#setUp()
+     */
+    @BeforeEach
+    public void setUp() throws Exception {
+        // super.setUp();
+        one = AbstractUnit.ONE;
+        sou = Units.getInstance();
     }
-  }
 
-  /**
-   * Test method for {@link javax.measure.Unit#getDimension()}.
-   */
-  @Test
-  public void testGetDimension() {
-    one.getDimension();
-  }
+    /*
+     * (non-Javadoc)
+     * 
+     * @see junit.framework.TestCase#tearDown()
+     */
+    @After
+    public void tearDown() throws Exception {
+        // super.tearDown();
+        one = null;
+    }
 
-  /**
-   * Test method for {@link javax.measure.Unit#alternate(java.lang.String)}.
-   */
-  @Test
-  public void testAlternate() {
-    Unit<?> alternate = one.alternate(null);
-    assertNotNull(alternate);
-  }
+    /**
+     * Test method for {@link javax.measure.Unit#getConverterTo}.
+     */
+    @Test
+    public void testConverterToSI() {
+        Double factor = 10.0;
+        UnitConverter converter = one.getConverterTo(one);
+        Double result = converter.convert(factor.doubleValue());
+        assertEquals(result, factor);
+        logger.log(Level.FINER, result.toString());
+    }
 
-  /**
-   * Test method for {@link javax.measure.Unit#compound(javax.measure.Unit)}.
-   */
-  /*
-   * public void testCompound() { Unit<? extends Quantity> compound =
-   * one.compound(one); assertNotNull(compound); }
-   */
+    /**
+     * Test method for {@link javax.measure.Unit#asType(java.lang.Class)}.
+     */
+    @Test
+    public void testAsType() {
+        one.asType(Dimensionless.class);
+        try {
+            METRE.asType(Dimensionless.class);
+            fail("Should have raised ClassCastException");
+        } catch (ClassCastException e) {
+            assertTrue(true);
+        }
+    }
 
-  /**
-   * Test method for {@link javax.measure.Unit#transform}.
-   */
-  @Test
-  public void testTransform() {
-    Unit<?> result = one.transform(AbstractConverter.IDENTITY);
-    assertEquals(result, one);
-  }
+    /**
+     * Test method for {@link javax.measure.Unit#getDimension()}.
+     */
+    @Test
+    public void testGetDimension() {
+        one.getDimension();
+    }
 
-  /**
-   * Test method for {@link javax.measure.Unit#shift(double)}.
-   */
-  @Test
-  public void testShift() {
-    Unit<?> result = one.shift(10);
-    assertNotSame(result, one);
-  }
+    /**
+     * Test method for {@link javax.measure.Unit#alternate(java.lang.String)}.
+     */
+    @Test
+    public void testAlternate() {
+        Unit<?> alternate = one.alternate(null);
+        assertNotNull(alternate);
+    }
 
-  /**
-   * Test method for {@link javax.measure.Unit#multiply(long)}.
-   */
-  @Test
-  public void testMultiplyLong() {
-    Unit<?> result = one.multiply(2L);
-    assertNotSame(result, one);
-  }
+    /**
+     * Test method for {@link javax.measure.Unit#mix(javax.measure.Unit)}.
+     */
+    @Test
+    public void testMix() {
+        Unit<? extends Quantity<?>> mixed = one.mix(one);
+        assertNotNull(mixed);
+    }
 
-  /**
-   * Test method for {@link javax.measure.Unit#multiply(double)}.
-   */
-  @Test
-  public void testMultiplyDouble() {
-    Unit<?> result = one.multiply(2.1);
-    assertNotSame(result, one);
-  }
+    /**
+     * Test method for {@link javax.measure.Unit#transform}.
+     */
+    @Test
+    public void testTransform() {
+        Unit<?> result = one.transform(AbstractConverter.IDENTITY);
+        assertEquals(result, one);
+    }
 
-  /**
-   * Test method for {@link javax.measure.Unit#multiply(javax.measure.Unit)}.
-   */
-  @Test
-  public void testMultiplyUnitOfQ() {
-    AbstractUnit<?> result = (AbstractUnit<?>) one.multiply(one);
-    assertEquals(result, one);
-  }
+    /**
+     * Test method for {@link javax.measure.Unit#shift(double)}.
+     */
+    @Test
+    public void testShift() {
+        Unit<?> result = one.shift(10);
+        assertNotSame(result, one);
+    }
 
-  /**
-   * Test method for {@link javax.measure.Unit#inverse()}.
-   */
-  @Test
-  public void testInverse() {
-    Unit<?> result = one.inverse();
-    assertEquals(result, one);
-  }
+    /**
+     * Test method for {@link javax.measure.Unit#multiply(long)}.
+     */
+    @Test
+    public void testMultiplyLong() {
+        Unit<?> result = one.multiply(2L);
+        assertNotSame(result, one);
+    }
 
-  /**
-   * Test method for {@link javax.measure.Unit#divide(long)}.
-   */
-  @Test
-  public void testDivideLong() {
-    Unit<?> result = one.divide(2L);
-    assertNotSame(result, one);
-  }
+    /**
+     * Test method for {@link javax.measure.Unit#multiply(double)}.
+     */
+    @Test
+    public void testMultiplyDouble() {
+        Unit<?> result = one.multiply(2.1);
+        assertNotSame(result, one);
+    }
 
-  /**
-   * Test method for {@link javax.measure.Unit#divide(double)}.
-   */
-  @Test
-  public void testDivideDouble() {
-    Unit<?> result = one.divide(3.2);
-    assertNotSame(result, one);
-  }
+    /**
+     * Test method for {@link javax.measure.Unit#multiply(javax.measure.Unit)}.
+     */
+    @Test
+    public void testMultiplyUnitOfQ() {
+        AbstractUnit<?> result = (AbstractUnit<?>) one.multiply(one);
+        assertEquals(result, one);
+    }
 
-  /**
-   * Test method for {@link javax.measure.Unit#divide(javax.measure.Unit)}.
-   */
-  @Test
-  public void testDivideUnitOfQ() {
-    Unit<?> result = one.divide(one);
-    assertEquals(result, one);
-  }
+    /**
+     * Test method for {@link javax.measure.Unit#inverse()}.
+     */
+    @Test
+    public void testInverse() {
+        Unit<?> result = one.inverse();
+        assertEquals(result, one);
+    }
 
-  /**
-   * Test method for {@link javax.measure.Unit#root(int)}.
-   */
-  @Test
-  public void testRoot() {
-    Unit<?> result = one.root(2);
-    assertEquals(result, one);
-  }
+    /**
+     * Test method for {@link javax.measure.Unit#divide(long)}.
+     */
+    @Test
+    public void testDivideLong() {
+        Unit<?> result = one.divide(2L);
+        assertNotSame(result, one);
+    }
 
-  /**
-   * Test method for {@link javax.measure.Unit#pow(int)}.
-   */
-  @Test
-  public void testPowOnOne() {
-    Unit<?> result = one.pow(10);
-    assertEquals("one", result.toString());
-  }
-  
-  /**
-   * Test method for {@link javax.measure.Unit#pow(int)}.
-   */
-  @Test
-  public void testPow() {
-    Unit<?> result = WATT.pow(10);
-    assertEquals("W^10", result.toString());
-  }
+    /**
+     * Test method for {@link javax.measure.Unit#divide(double)}.
+     */
+    @Test
+    public void testDivideDouble() {
+        Unit<?> result = one.divide(3.2);
+        assertNotSame(result, one);
+    }
 
-  @Test
-  public void testKiloIsAThousand() {
-    ComparableQuantity<Power> w2000 = Quantities.getQuantity(2000, WATT);
-    Quantity<Power> kW2 = Quantities.getQuantity(2, KILO(WATT));
-    assertTrue(w2000.isEquivalentTo(kW2));
-  }
+    /**
+     * Test method for {@link javax.measure.Unit#divide(javax.measure.Unit)}.
+     */
+    @Test
+    public void testDivideUnitOfQ() {
+        Unit<?> result = one.divide(one);
+        assertEquals(result, one);
+    }
 
-  @Test
-  public void testOf() {
-    assertEquals(KILO(GRAM).toString(), AbstractUnit.parse("kg").toString());
-  }
+    /**
+     * Test method for {@link javax.measure.Unit#root(int)}.
+     */
+    @Test
+    public void testRoot() {
+        Unit<?> result = one.root(2);
+        assertEquals(result, one);
+    }
 
-  @Test
-  public void testParse() {
-    assertEquals(KILO(GRAM).toString(), AbstractUnit.parse("kg").toString()); // TODO: Problem
-    // with kg...?
-  }
+    /**
+     * Test method for {@link javax.measure.Unit#pow(int)}.
+     */
+    @Test
+    public void testPowOnOne() {
+        Unit<?> result = one.pow(10);
+        assertEquals("one", result.toString());
+    }
 
-  @Test
-  public void testParse2() {
-    assertEquals(KILO(METRE), AbstractUnit.parse("km"));
-  }
+    /**
+     * Test method for {@link javax.measure.Unit#pow(int)}.
+     */
+    @Test
+    public void testPow() {
+        Unit<?> result = WATT.pow(10);
+        assertEquals("W^10", result.toString());
+    }
 
-  @Test
-  public void testToString() {
-    assertEquals("kg", KILO(GRAM).toString());
-  }
+    @Test
+    public void testKiloIsAThousand() {
+        ComparableQuantity<Power> w2000 = Quantities.getQuantity(2000, WATT);
+        Quantity<Power> kW2 = Quantities.getQuantity(2, KILO(WATT));
+        assertTrue(w2000.isEquivalentTo(kW2));
+    }
 
-  @Test
-  public void testGetSymbol() {
-    // TODO see https://github.com/unitsofmeasurement/uom-se/issues/54 /
-    assertEquals("kg", KILOGRAM.getSymbol());
-    assertNull(GRAM.getSymbol());
-  }
+    @Test
+    public void testOf() {
+        assertEquals(KILO(GRAM).toString(), AbstractUnit.parse("kg").toString());
+    }
 
-  @Test
-  public void testGetParentUnit() {
-    assertEquals("TransformedUnit", GRAM.getClass().getSimpleName());
-    assertEquals("kg", ((TransformedUnit<Mass>) GRAM).getParentUnit().getSymbol());
-  }
+    @Test
+    public void testParse() {
+        assertEquals(KILO(GRAM).toString(), AbstractUnit.parse("kg").toString()); // TODO: Problem
+        // with kg...?
+    }
 
-  @Test
-  public void testByClassTime() {
-    Unit<?> result = sou.getUnit(Time.class);
-    assertNotNull(result);
-    assertEquals("s", result.toString());
-  }
-  
-  @Test
-  public void testByStringM() {
-	  final Unit<?> u = sou.getUnit("m");
-	  assertNotNull(u);
-	  assertEquals(METRE, u);
-  }
-  
-  @Test
-  public void testByStringG() {
-	  final Unit<?> u = sou.getUnit("g");
-	  assertNotNull(u);
-	  assertEquals(GRAM, u);
-  }
-  
-  @Test
-  public void testByStringKg() {
-	  final Unit<?> u = sou.getUnit("kg");
-	  assertNotNull(u);
-	  assertEquals(KILOGRAM, u);
-  }
-  
-  @Test
-  public void testByStringW() {	
-	  final Unit<?> u = sou.getUnit("W");
-	  assertNotNull(u);
-	  assertEquals(WATT, u);
-  }
+    @Test
+    public void testParse2() {
+        assertEquals(KILO(METRE), AbstractUnit.parse("km"));
+    }
+
+    @Test
+    public void testToString() {
+        assertEquals("kg", KILO(GRAM).toString());
+    }
+
+    @Test
+    public void testGetSymbol() {
+        // TODO see https://github.com/unitsofmeasurement/uom-se/issues/54 /
+        assertEquals("kg", KILOGRAM.getSymbol());
+        assertNull(GRAM.getSymbol());
+    }
+
+    @Test
+    public void testGetParentUnit() {
+        assertEquals("TransformedUnit", GRAM.getClass().getSimpleName());
+        assertEquals("kg", ((TransformedUnit<Mass>) GRAM).getParentUnit().getSymbol());
+    }
+
+    @Test
+    public void testByClassTime() {
+        Unit<?> result = sou.getUnit(Time.class);
+        assertNotNull(result);
+        assertEquals("s", result.toString());
+    }
+
+    @Test
+    public void testByStringM() {
+        final Unit<?> u = sou.getUnit("m");
+        assertNotNull(u);
+        assertEquals(METRE, u);
+    }
+
+    @Test
+    public void testByStringG() {
+        final Unit<?> u = sou.getUnit("g");
+        assertNotNull(u);
+        assertEquals(GRAM, u);
+    }
+
+    @Test
+    public void testByStringKg() {
+        final Unit<?> u = sou.getUnit("kg");
+        assertNotNull(u);
+        assertEquals(KILOGRAM, u);
+    }
+
+    @Test
+    public void testByStringW() {
+        final Unit<?> u = sou.getUnit("W");
+        assertNotNull(u);
+        assertEquals(WATT, u);
+    }
 }

@@ -58,7 +58,7 @@ import tech.units.indriya.function.RationalConverter;
 import tech.units.indriya.unit.AlternateUnit;
 import tech.units.indriya.unit.AnnotatedUnit;
 import tech.units.indriya.unit.BaseUnit;
-import tech.units.indriya.unit.CompoundUnit;
+import tech.units.indriya.unit.MixedUnit;
 import tech.units.indriya.unit.ProductUnit;
 import tech.units.indriya.unit.TransformedUnit;
 import tech.units.indriya.unit.Units;
@@ -429,25 +429,25 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
         AnnotatedUnit<?> annotatedUnit = (AnnotatedUnit<?>) unit;
         final StringBuilder annotable = new StringBuilder(nameFor(annotatedUnit.getActualUnit()));
         if (annotatedUnit.getAnnotation() != null) {
-          annotable.append('{'); // TODO maybe also configure this one similar to Compound separator
+          annotable.append('{'); // TODO maybe also configure this one similar to mix delimiter
           annotable.append(annotatedUnit.getAnnotation());
           annotable.append('}');
         }
         return annotable.toString();
       }
-      // Compound unit.
-      if (unit instanceof CompoundUnit) {
-        CompoundUnit<?> cpdUnit = (CompoundUnit<?>) unit;
-        final StringBuilder compoundable = new StringBuilder();
-        final int partSize = cpdUnit.getUnits().size();
+      // mixed unit.
+      if (unit instanceof MixedUnit) {
+        MixedUnit<?> mixUnit = (MixedUnit<?>) unit;
+        final StringBuilder mixer = new StringBuilder();
+        final int partSize = mixUnit.getUnits().size();
         int pos = 0;
-        for (Unit<?> part : cpdUnit.getUnits()) {
-            compoundable.append(nameFor(part));
+        for (Unit<?> part : mixUnit.getUnits()) {
+            mixer.append(nameFor(part));
             pos++;
-            if (compoundable.length() > 0 && pos < partSize) 
-                compoundable.append(";"); // FIXME we need a more flexible pattern here
+            if (mixer.length() > 0 && pos < partSize) 
+                mixer.append(";"); // FIXME we need a more flexible pattern here
         }
-        return compoundable.toString();
+        return mixer.toString();
       }
       return null; // Product unit.
     }

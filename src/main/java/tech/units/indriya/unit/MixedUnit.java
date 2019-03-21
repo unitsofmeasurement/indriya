@@ -44,21 +44,21 @@ import javax.measure.Unit;
 
 /**
  * <p>
- * This class represents multi-radix units (such as "hour:min:sec" or "ft, in"). Instances of this class are created using the {@link Unit#compound
- * Unit.compound} method.
+ * This class represents multi-radix units (such as "hour:min:sec" or "ft, in"). Instances of this class are created using the {@link Unit#mix
+ * Unit.mix} method.
  * </p>
  * 
  * <p>
- * Examples of compound units:<code> Unit<Time> HOUR_MINUTE_SECOND = HOUR.compound(MINUTE).compound(SECOND); <br>Unit<Length> FOOT_INCH =
- * FOOT.compound(INCH); </code>
+ * Examples of mixed units:<code> Unit<Time> HOUR_MINUTE_SECOND = HOUR.mix(MINUTE).mix(SECOND); <br>Unit<Length> FOOT_INCH =
+ * FOOT.mix(INCH); </code>
  * </p>
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.9.1, March 20, 2019
+ * @version 1.10, March 21, 2019
  * @since 2.0
  */
-public final class CompoundUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
+public final class MixedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
 
     /**
      * 
@@ -71,7 +71,7 @@ public final class CompoundUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
     private final List<Unit<Q>> units;
 
     /**
-     * Creates a compound unit from the specified units.
+     * Creates a mixed unit from the specified units.
      *
      * @param units
      *            the units.
@@ -79,7 +79,7 @@ public final class CompoundUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
      *             if all units do not have the same system unit.
      */
     @SafeVarargs
-    public CompoundUnit(final Unit<Q>... units) {
+    private MixedUnit(final Unit<Q>... units) {
         Objects.requireNonNull(units);
         final Unit<Q> systemUnit = units[0].getSystemUnit();
         for (Unit<Q> unit : units) {
@@ -90,8 +90,8 @@ public final class CompoundUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
     }
 
     /**
-     * Returns the list of units uniquely defining the value of this CompoundUnit. The list is a snapshot of the units at the time {@code getUnits} is
-     * called and is not mutable. The units are ordered in as they were added to this CompoundUnit.
+     * Returns the list of units uniquely defining the value of this MixedUnit. The list is a snapshot of the units at the time {@code getUnits} is
+     * called and is not mutable. The units are ordered in as they were added to this MixedUnit.
      *
      * implSpec The list of units completely and uniquely represents the state of the object without omissions, overlaps or duplication. The units are
      * in order they were added.
@@ -103,7 +103,7 @@ public final class CompoundUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
     }
 
     /**
-     * Indicates if this compound unit is considered equals to the specified object (both are compound units with same composing units in the same
+     * Indicates if this mixed unit is considered equals to the specified object (both are mixed units with same composing units in the same
      * order).
      *
      * @param obj
@@ -114,8 +114,8 @@ public final class CompoundUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
         if (this == obj) {
             return true;
         }
-        if (obj instanceof CompoundUnit) {
-            CompoundUnit<?> thatUnit = (CompoundUnit<?>) obj;
+        if (obj instanceof MixedUnit) {
+            MixedUnit<?> thatUnit = (MixedUnit<?>) obj;
             return Objects.equals(units, thatUnit.getUnits());
         }
         if (obj instanceof AbstractUnit) {
@@ -148,5 +148,18 @@ public final class CompoundUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
     @Override
     public Dimension getDimension() {
         return units.get(0).getDimension();
+    }
+    
+    /**
+     * Returns a mixed unit from the specified units.
+     *
+     * @param units
+     *            the units.
+     * @throws IllegalArgumentException
+     *             if not all units have the same system unit.
+     */
+    @SafeVarargs
+    public static <Q extends Quantity<Q>> MixedUnit<Q> of(final Unit<Q>... units) {
+        return new MixedUnit<>(units);
     }
 }

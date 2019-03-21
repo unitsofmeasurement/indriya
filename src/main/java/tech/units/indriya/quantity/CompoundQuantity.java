@@ -41,7 +41,7 @@ import javax.measure.UnitConverter;
 import tech.units.indriya.AbstractQuantity;
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.function.Calculus;
-import tech.units.indriya.unit.CompoundUnit;
+import tech.units.indriya.unit.MixedUnit;
 
 /**
  * An implementation of {@link ComparableQuantity} that represents multi-radix quantities (like "1 hour:20 min:45 sec" or "6 ft, 4 in").
@@ -50,11 +50,11 @@ import tech.units.indriya.unit.CompoundUnit;
  * @see AbstractQuantity
  * @see Quantity
  * @see ComparableQuantity
- * @see CompoundUnit
+ * @see MixedUnit
  * @param <Q>
  *            The type of the quantity.
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 1.1.1, $Date: 2019-03-20 $
+ * @version 1.2, $Date: 2019-03-21 $
  * @since 2.0
  */
 public class CompoundQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
@@ -102,8 +102,8 @@ public class CompoundQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q>
     @Override
     // TODO update JavaDoc here after the classes were renamed.
     public Number getValue() {
-        if (getUnit() instanceof CompoundUnit) {
-            final CompoundUnit<Q> compUnit =  (CompoundUnit<Q>) getUnit();
+        if (getUnit() instanceof MixedUnit) {
+            final MixedUnit<Q> compUnit =  (MixedUnit<Q>) getUnit();
             ComparableQuantity<Q> result = null;
             if (values.length == compUnit.getUnits().size()) {
                 for (int i = 0; i < values.length; i++) {
@@ -116,10 +116,10 @@ public class CompoundQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q>
                 }
                 return result.getValue();
             } else {
-                throw new IllegalArgumentException(String.format("%s values don't match %s in Compound Unit", values.length, compUnit.getUnits().size()));
+                throw new IllegalArgumentException(String.format("%s values don't match %s in mixed unit", values.length, compUnit.getUnits().size()));
             }
         } else {
-            throw new IllegalArgumentException(String.format("%s not a Compound Unit", getUnit()));
+            throw new IllegalArgumentException(String.format("%s not a mixed unit", getUnit()));
         }
     }
 
@@ -257,8 +257,8 @@ public class CompoundQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q>
      */
     @Override
     public ComparableQuantity<Q> to(Unit<Q> anotherUnit) {
-        if (anotherUnit instanceof CompoundUnit) {
-            // TODO test for the array size of the target CompoundUnit compared to this one.
+        if (anotherUnit instanceof MixedUnit) {
+            // TODO test for the array size of the target MixedUnit compared to this one.
         }
         return super.to(anotherUnit);
     }

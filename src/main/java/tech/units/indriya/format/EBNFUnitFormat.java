@@ -110,10 +110,10 @@ import java.util.ResourceBundle;
  * <tr valign="top">
  * <td>&lt;unit_expr&gt;</td>
  * <td>:=</td>
- * <td>&lt;compound_expr&gt;</td>
+ * <td>&lt;mix_expr&gt;</td>
  * </tr>
  * <tr valign="top">
- * <td>&lt;compound_expr&gt;</td>
+ * <td>&lt;mix_expr&gt;</td>
  * <td>:=</td>
  * <td>&lt;add_expr&gt; ( ":" &lt;add_expr&gt; )*</td>
  * </tr>
@@ -144,8 +144,8 @@ import java.util.ResourceBundle;
  * </table>
  * 
  * @author <a href="mailto:eric-r@northwestern.edu">Eric Russell</a>
- * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.3, $Date: 2019-03-11 $
+ * @author <a href="mailto:werner@uom.tech">Werner Keil</a>
+ * @version 1.4, $Date: 2019-03-21 $
  * @since 1.0
  */
 public class EBNFUnitFormat extends AbstractUnitFormat {
@@ -241,7 +241,7 @@ public class EBNFUnitFormat extends AbstractUnitFormat {
         appendable.append('}');
       }
     }
-    // TODO add support for CompoundUnit similar to AnnotatedUnit
+    // TODO add support for MixedUnit similar to AnnotatedUnit
     return appendable;
   }
 

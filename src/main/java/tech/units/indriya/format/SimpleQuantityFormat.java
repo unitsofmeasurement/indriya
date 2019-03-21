@@ -47,7 +47,7 @@ import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.CompoundQuantity;
 import tech.units.indriya.quantity.NumberQuantity;
 import tech.units.indriya.quantity.Quantities;
-import tech.units.indriya.unit.CompoundUnit;
+import tech.units.indriya.unit.MixedUnit;
 
 /**
  * A simple implementation of QuantityFormat
@@ -165,10 +165,10 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
 	@Override
 	public Appendable format(Quantity<?> quantity, Appendable dest) throws IOException {
 		final Unit unit = quantity.getUnit();
-        if (unit instanceof CompoundUnit) {
+        if (unit instanceof MixedUnit) {
             if (quantity instanceof CompoundQuantity) {
                 final CompoundQuantity<?> compQuant = (CompoundQuantity<?>) quantity;
-                final CompoundUnit<?> compUnit = (CompoundUnit<?>) unit;
+                final MixedUnit<?> compUnit = (MixedUnit<?>) unit;
                 final Number[] values = compQuant.getValues();
                 if (values.length == compUnit.getUnits().size()) {
                     final StringBuffer sb = new StringBuffer(); // we use StringBuffer here because of java.text.Format compatibility
@@ -181,7 +181,7 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
                     }
                     return sb;
                 } else {
-                    throw new IllegalArgumentException(String.format("%s values don't match %s in Compound Unit", values.length, compUnit.getUnits().size()));
+                    throw new IllegalArgumentException(String.format("%s values don't match %s in mixed unit", values.length, compUnit.getUnits().size()));
                 }
             } else {
                 throw new MeasurementException("The quantity is not a Compound Quantity");

@@ -63,7 +63,7 @@ public final class UnitFormatParser implements UnitTokenConstants {
   @SuppressWarnings("unused")
   public Unit<?> parseUnit() throws TokenException { // TODO visibility
     Unit<?> result;
-    result = compoundExpr();
+    result = mixExpr();
     jj_consume_token(0);
     {
       if (true)
@@ -73,7 +73,7 @@ public final class UnitFormatParser implements UnitTokenConstants {
   }
 
   @SuppressWarnings("unused")
-  Unit<?> compoundExpr() throws TokenException {
+  Unit<?> mixExpr() throws TokenException {
     Unit<?> result = AbstractUnit.ONE;
     result = addExpr();
     label_1: while (true) {

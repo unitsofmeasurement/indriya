@@ -55,9 +55,9 @@ import tech.uom.lib.common.util.UnitComparator;
  * </p>
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
- * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
+ * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author Andi Huber
- * @version 1.7, Oct. 27, 2018
+ * @version 1.8, Mar 21, 2019
  * @since 1.0
  */
 public abstract class AbstractConverter
@@ -418,11 +418,12 @@ public abstract class AbstractConverter
 		 * Non-API
 		 */
 		protected List<? extends UnitConverter> createConversionSteps(){
-			List<? extends UnitConverter> leftCompound = left.getConversionSteps();
-			List<? extends UnitConverter> rightCompound = right.getConversionSteps();
-			final List<UnitConverter> steps = new ArrayList<>(leftCompound.size() + rightCompound.size());
-			steps.addAll(leftCompound);
-			steps.addAll(rightCompound);
+			final List<? extends UnitConverter> leftSteps = left.getConversionSteps();
+			final List<? extends UnitConverter> rightSteps = right.getConversionSteps();
+			// TODO we could use Lambdas here
+			final List<UnitConverter> steps = new ArrayList<>(leftSteps.size() + rightSteps.size());
+			steps.addAll(leftSteps);
+			steps.addAll(rightSteps);
 			return steps;
 		}
 
@@ -440,17 +441,17 @@ public abstract class AbstractConverter
 		public Number convertWhenNotIdentity(BigInteger value, MathContext ctx) {
 			if (right instanceof AbstractConverter) {
 			    //Implementation Note: assumes left is always instance of AbstractConverter
-				final AbstractConverter _left = (AbstractConverter) left;
-				final AbstractConverter _right = (AbstractConverter) right;
+				final AbstractConverter absLeft = (AbstractConverter) left;
+				final AbstractConverter absRight = (AbstractConverter) right;
 				
-				final Number rightValue = _right.convertWhenNotIdentity(value, ctx);
+				final Number rightValue = absRight.convertWhenNotIdentity(value, ctx);
 				if(rightValue instanceof BigDecimal) {
-					return _left.convertWhenNotIdentity((BigDecimal) rightValue, ctx);
+					return absLeft.convertWhenNotIdentity((BigDecimal) rightValue, ctx);
 				}
 				if(rightValue instanceof BigInteger) {
-					return _left.convertWhenNotIdentity((BigInteger) rightValue, ctx);
+					return absLeft.convertWhenNotIdentity((BigInteger) rightValue, ctx);
 				}
-				return _left.convertWhenNotIdentity(Calculus.toBigDecimal(rightValue), ctx);
+				return absLeft.convertWhenNotIdentity(Calculus.toBigDecimal(rightValue), ctx);
 			}
 			return convertWhenNotIdentity(new BigDecimal(value), ctx);
 		}
@@ -514,13 +515,9 @@ public abstract class AbstractConverter
 				.collect(Collectors.joining(" ○ ")) );
 		}
 		
-
 		@Override
 		protected boolean canReduceWith(AbstractConverter that) {
 			return false;
-		}
-		
+		}	
 	}
-
-
 }

@@ -49,17 +49,13 @@ import tech.uom.lib.common.function.Parser;
  * </p>
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
- * @author <a href="mailto:werner@uom.technology">Werner Keil</a>
- * @version 1.3, $Date: 2019-02-23 $
+ * @author <a href="mailto:werner@units.tech">Werner Keil</a>
+ * @version 1.4, $Date: 2019-03-21 $
  * @since 1.0
  * 
  */
 @SuppressWarnings("rawtypes")
 public abstract class AbstractQuantityFormat extends Format implements QuantityFormat, Parser<CharSequence, ComparableQuantity> {
-    // TODO for later, see https://github.com/unitsofmeasurement/indriya/issues/17
-    // * <p>
-    // * Instances of this class should be able to format quantities stated in {@link CompoundUnit}. See {@link #formatCompound formatCompound(...)}.
-    // * </p>
     /**
      * The default delimiter.
      */

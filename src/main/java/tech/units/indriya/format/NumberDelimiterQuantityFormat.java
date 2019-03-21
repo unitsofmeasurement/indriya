@@ -46,7 +46,7 @@ import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.CompoundQuantity;
 import tech.units.indriya.quantity.Quantities;
-import tech.units.indriya.unit.CompoundUnit;
+import tech.units.indriya.unit.MixedUnit;
 
 /**
  * An implementation of {@link javax.measure.format.QuantityFormat QuantityFormat} combining {@linkplain NumberFormat} and {@link UnitFormat}
@@ -263,8 +263,8 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
         int fract = 0;
         if (quantity instanceof CompoundQuantity) {
             final CompoundQuantity<?> compQuant = (CompoundQuantity<?>) quantity;
-            if (compQuant.getUnit() instanceof CompoundUnit) {
-                final CompoundUnit<?> compUnit = (CompoundUnit<?>) compQuant.getUnit();
+            if (compQuant.getUnit() instanceof MixedUnit) {
+                final MixedUnit<?> compUnit = (MixedUnit<?>) compQuant.getUnit();
                 final Number[] values = compQuant.getValues();
                 if (values.length == compUnit.getUnits().size()) {
                     final StringBuffer sb = new StringBuffer(); // we use StringBuffer here because of java.text.Format compatibility
@@ -288,10 +288,10 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
                     return sb;
                 } else {
                     throw new IllegalArgumentException(
-                            String.format("%s values don't match %s in Compound Unit", values.length, compUnit.getUnits().size()));
+                            String.format("%s values don't match %s in mixed unit", values.length, compUnit.getUnits().size()));
                 }
             } else {
-                throw new MeasurementException("A Compound Quantity must contain a Compound Unit");
+                throw new MeasurementException("A Compound Quantity must contain a mixed unit");
             }
         } else {
             if (quantity != null && quantity.getValue() != null) {

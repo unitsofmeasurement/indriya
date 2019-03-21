@@ -122,10 +122,10 @@ import java.util.ResourceBundle;
  * <tr * valign="top">
  * <td>&lt;unit_expr&gt;</td>
  * <td>:=</td>
- * <td>&lt;compound_expr&gt;</td>
+ * <td>&lt;mix_expr&gt;</td>
  * </tr>
  * <tr valign="top">
- * <td>&lt;compound_expr&gt;</td>
+ * <td>&lt;mix_expr&gt;</td>
  * <td>:=</td>
  * <td>&lt;add_expr&gt; ( ":" &lt;add_expr&gt; )*</td>
  * </tr>

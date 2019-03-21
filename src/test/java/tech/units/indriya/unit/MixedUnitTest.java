@@ -46,19 +46,25 @@ import static javax.measure.MetricPrefix.*;
  *
  * @author Werner Keil
  */
-public class CompoundUnitTest {
+public class MixedUnitTest {
 
   @Test
   public void testLength() {
-    final Unit<Length> compLen =  Units.METRE.mix(CENTI(Units.METRE));
-    assertEquals("m;cm", compLen.toString());
+    final Unit<Length> mixUnit =  Units.METRE.mix(CENTI(Units.METRE));
+    assertEquals("m;cm", mixUnit.toString());
   }
   
   @Test
   public void testTime() {
-    final Unit<Time> compTime =  Units.HOUR.
+    final Unit<Time> mixUnit =  Units.HOUR.
               mix(Units.MINUTE).mix(Units.SECOND);
-    assertEquals("h;min;s", compTime.toString());
+    assertEquals("h;min;s", mixUnit.toString());
+  }
+  
+  @Test
+  public void testTimeOf() {
+    final Unit<Time> mixTime =  MixedUnit.of(Units.DAY, Units.HOUR, Units.MINUTE);
+    assertEquals("day;h;min", mixTime.toString());
   }
   
   /**
@@ -66,9 +72,9 @@ public class CompoundUnitTest {
    */
   @Test
   public void testConverterToDay() {
-    final Unit<Time> compTime =  Units.HOUR.
+    final Unit<Time> mixTime =  Units.HOUR.
               mix(Units.MINUTE).mix(Units.SECOND);
-    UnitConverter converter = compTime.getConverterTo(Units.DAY);
+    UnitConverter converter = mixTime.getConverterTo(Units.DAY);
     UnitConverter converter2 = Units.HOUR.getConverterTo(Units.DAY);
     Double result = converter.convert(1d);
     //System.out.println("R: " + result + "ß" + converter.isIdentity());

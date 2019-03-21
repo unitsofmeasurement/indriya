@@ -45,7 +45,7 @@ import javax.measure.format.MeasurementParseException;
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.format.AbstractQuantityFormat;
 import tech.units.indriya.format.SimpleQuantityFormat;
-import tech.units.indriya.unit.CompoundUnit;
+import tech.units.indriya.unit.MixedUnit;
 
 /**
  * Singleton class for accessing {@link Quantity} instances.
@@ -155,22 +155,22 @@ public final class Quantities {
      * @throws NullPointerException
      *             if value or scale were null
      * @throws IllegalArgumentException
-     *             if unit is a CompoundUnit but the number of given values don't match its parts. 
+     *             if unit is a MixedUnit but the number of given values don't match its parts. 
      * @throws MeasurementException
-     *             if unit is not a CompoundUnit
+     *             if unit is not a MixedUnit
      * @since 2.0
      */
     public static <Q extends Quantity<Q>> ComparableQuantity<Q> getCompoundQuantity(Number[] values, Unit<Q> unit, Scale scale) {
-        if (unit instanceof CompoundUnit) {
-            final CompoundUnit<Q> compUnit =  (CompoundUnit<Q>) unit;
+        if (unit instanceof MixedUnit) {
+            final MixedUnit<Q> compUnit =  (MixedUnit<Q>) unit;
             //ComparableQuantity<Q> result = null;
             if (values.length == compUnit.getUnits().size()) {
                 return new CompoundQuantity<Q>(values, unit, scale);
             } else {
-                throw new IllegalArgumentException(String.format("%s values don't match %s in Compound Unit", values.length, compUnit.getUnits().size()));
+                throw new IllegalArgumentException(String.format("%s values don't match %s in mixed unit", values.length, compUnit.getUnits().size()));
             }
         } else {
-            throw new MeasurementException(String.format("%s not a Compound Unit", unit));
+            throw new MeasurementException(String.format("%s not a mixed unit", unit));
         }
     }
     

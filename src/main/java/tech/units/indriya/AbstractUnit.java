@@ -56,7 +56,7 @@ import tech.units.indriya.quantity.QuantityDimension;
 import tech.units.indriya.spi.DimensionalModel;
 import tech.units.indriya.unit.AlternateUnit;
 import tech.units.indriya.unit.AnnotatedUnit;
-import tech.units.indriya.unit.CompoundUnit;
+import tech.units.indriya.unit.MixedUnit;
 import tech.units.indriya.unit.ProductUnit;
 import tech.units.indriya.unit.TransformedUnit;
 import tech.units.indriya.unit.Units;
@@ -77,8 +77,8 @@ import tech.uom.lib.common.function.SymbolSupplier;
  *
  * @see <a href= "http://en.wikipedia.org/wiki/International_System_of_Units">Wikipedia: International System of Units</a>
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
- * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.5, January 31, 2019
+ * @author <a href="mailto:werner@units.tech">Werner Keil</a>
+ * @version 1.6, March 21, 2019
  * @since 1.0
  */
 public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableUnit<Q>, Nameable, PrefixOperator<Q>, SymbolSupplier {
@@ -182,20 +182,6 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
   public Unit<Q> annotate(String annotation) {
     return new AnnotatedUnit<>(this, annotation);
   }
-
-  /*
-   * Returns the combination of this unit with the specified sub-unit. Compound
-   * units are typically used for formatting purpose. Examples of compound
-   * units:<code> Unit<Length> FOOT_INCH = FOOT.compound(INCH); Unit<Time>
-   * HOUR_MINUTE_SECOND = HOUR.compound(MINUTE).compound(SECOND); </code>
-   * 
-   * @param that the least significant unit to combine with this unit.
-   * 
-   * @return the corresponding compound unit.
-   *
-   * public final Unit<Q> compound(Unit<Q> that) { return new
-   * CompoundUnit<Q>(this, that); }
-   */
 
   /**
    * Returns the abstract unit represented by the specified characters as per default format.
@@ -547,30 +533,30 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
   }
   
   /**
-   * Returns the combination of this unit with the specified sub-unit. Compound
-   * units are typically used for formatting purpose. Examples of compound
-   * units:<code> 
-   *     Unit<Length> FOOT_INCH = FOOT.compound(INCH);
-   *     Unit<Time> HOUR_MINUTE_SECOND = HOUR.compound(MINUTE).compound(SECOND);
+   * Returns the combination of this unit with the specified unit. Mixed
+   * units can be used for formatting purpose or conversion and calculation between mixed and other units.<br>Examples of mixed
+   * units:<br><code> 
+   *     Unit<Length> FOOT_INCH = FOOT.mix(INCH);<br>
+   *     Unit<Time> HOUR_MINUTE_SECOND = HOUR.mix(MINUTE).mix(SECOND);
    * </code>
    * 
    * @param that
-   *            the least significant unit to combine with this unit.
-   * @return the corresponding compound unit.
+   *            the unit to mix with this unit.
+   * @return the corresponding mixed unit.
    */
   public final Unit<Q> mix(Unit<Q> that) {
-      if (this instanceof CompoundUnit) {
-          final CompoundUnit<Q> thisComp = (CompoundUnit<Q>) this;
+      if (this instanceof MixedUnit) {
+          final MixedUnit<Q> thisComp = (MixedUnit<Q>) this;
           final List<Unit<Q>> comps = new ArrayList<>();
           comps.addAll(thisComp.getUnits());
           comps.add(that);
           @SuppressWarnings("unchecked")
-          final Unit<Q>[] compArray = new Unit[comps.size()];
-          comps.toArray(compArray);
-          return new CompoundUnit<Q>(compArray);
-          // TODO special case for that being a CompoundUnit as well
+          final Unit<Q>[] mixArray = new Unit[comps.size()];
+          comps.toArray(mixArray);
+          return MixedUnit.of(mixArray);
+          // TODO special case for that being a MixedUnit as well
       } else {
-          return new CompoundUnit<Q>(this, that);
+          return MixedUnit.of(this, that);
       }
   }
 
