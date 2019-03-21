@@ -40,6 +40,7 @@ import java.util.Objects;
 
 import javax.measure.Dimension;
 import javax.measure.Quantity;
+import javax.measure.UnconvertibleException;
 import javax.measure.Unit;
 
 /**
@@ -103,7 +104,7 @@ public final class MixedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
     }
 
     /**
-     * Indicates if this mixed unit is considered equals to the specified object (both are mixed units with same composing units in the same
+     * Indicates if this mixed unit is considered equal to the specified object (both are mixed units with same composing units in the same
      * order).
      *
      * @param obj
@@ -132,7 +133,16 @@ public final class MixedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
 
     @Override
     public UnitConverter getSystemConverter() {
-        return ((AbstractUnit<Q>) units.get(0)).getSystemConverter();
+        UnitConverter sysConverter = null;
+        for (Unit<Q> u : units) {
+            if (sysConverter == null) {
+                sysConverter = ((AbstractUnit<Q>)u).getSystemConverter();
+            } else {
+                sysConverter = sysConverter.concatenate(((AbstractUnit<Q>)u).getSystemConverter());
+            }
+        }
+        //return ((AbstractUnit<Q>) units.get(0)).getSystemConverter();
+        return sysConverter;
     }
 
     @Override

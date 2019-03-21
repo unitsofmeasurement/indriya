@@ -83,7 +83,7 @@ public abstract class AbstractConverter
 	public static ConverterCompositionHandler UNIT_COMPOSITION_HANDLER = ConverterCompositionHandler.yieldingNormalForm();
 
 	/**
-	 * memoization for getConversionSteps
+	 * memorization for getConversionSteps
 	 */
 	protected List<? extends UnitConverter> conversionSteps; 
 

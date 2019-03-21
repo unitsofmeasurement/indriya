@@ -289,7 +289,7 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
   }
 
   @Override
-  public final UnitConverter getConverterTo(Unit<Q> that) throws UnconvertibleException {
+  public UnitConverter getConverterTo(Unit<Q> that) throws UnconvertibleException {
     return internalGetConverterTo(that, true);
   }
 
@@ -300,8 +300,7 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
       throw new IncommensurableException(this + " is not compatible with " + that);
     AbstractUnit thatAbstr = (AbstractUnit) that; // Since both units are
     // compatible they must
-    // be both physics
-    // units.
+    // be both abstract units.
     DimensionalModel model = DimensionalModel.current();
     Unit thisSystemUnit = this.getSystemUnit();
     UnitConverter thisToDimension = model.getDimensionalTransform(thisSystemUnit.getDimension()).concatenate(this.getSystemConverter());
@@ -366,7 +365,7 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
     return model.getFundamentalDimension(thisDimension).equals(model.getFundamentalDimension(thatDimension));
   }
 
-  private final UnitConverter internalGetConverterTo(Unit<Q> that, boolean useEquals) throws UnconvertibleException {
+  protected final UnitConverter internalGetConverterTo(Unit<Q> that, boolean useEquals) throws UnconvertibleException {
     if (useEquals) {
       if (this == that || this.equals(that))
         return AbstractConverter.IDENTITY;
