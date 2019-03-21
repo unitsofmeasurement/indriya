@@ -41,6 +41,7 @@ import javax.measure.Unit;
 import javax.measure.format.MeasurementParseException;
 import javax.measure.format.UnitFormat;
 import javax.measure.quantity.Length;
+import javax.measure.quantity.Time;
 import javax.measure.spi.ServiceProvider;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -55,89 +56,96 @@ import tech.units.indriya.unit.Units;
  *
  */
 public class EBNFFormatTest {
-	private static final Logger logger = Logger.getLogger(EBNFFormatTest.class.getName());
+    private static final Logger logger = Logger.getLogger(EBNFFormatTest.class.getName());
 
-	private UnitFormat format;
+    private UnitFormat format;
 
-	@BeforeEach
-	public void init() {
-		format = EBNFUnitFormat.getInstance();
-	}
+    @BeforeEach
+    public void init() {
+        format = EBNFUnitFormat.getInstance();
+    }
 
-	@Test
-	public void testParseKm() {
-		Unit<?> u = format.parse("km");
-		assertEquals(KILO(METRE), u);
-		assertEquals("km", u.toString());
-	}
+    @Test
+    public void testParseKm() {
+        Unit<?> u = format.parse("km");
+        assertEquals(KILO(METRE), u);
+        assertEquals("km", u.toString());
+    }
 
-	@Test
-	public void testParseInverseM() {
-		Unit<?> u = format.parse("1/m");
-		assertEquals("1/m", u.toString());
-	}
+    @Test
+    public void testParseInverseM() {
+        Unit<?> u = format.parse("1/m");
+        assertEquals("1/m", u.toString());
+    }
 
-	@Test
-	public void testParseInverseKg() {
-		Unit<?> u = format.parse("1/kg");
-		assertEquals("1/kg", u.toString());
-	}
+    @Test
+    public void testParseInverseKg() {
+        Unit<?> u = format.parse("1/kg");
+        assertEquals("1/kg", u.toString());
+    }
 
-	@Test
-	public void testParseInverseL() {
-		Unit<?> u = format.parse("1/l");
-		assertEquals("1/l", u.toString());
-	}
+    @Test
+    public void testParseInverseL() {
+        Unit<?> u = format.parse("1/l");
+        assertEquals("1/l", u.toString());
+    }
 
-	@Test
-	public void testParseInverses() {
-		for (Unit<?> u : Units.getInstance().getUnits()) {
-			try {
-				Unit<?> v = format.parse("1/" + u.toString());
-				assertNotNull(v);
-				logger.log(Level.FINER, v.toString());
-			} catch (MeasurementParseException pex) {
-				logger.log(Level.WARNING, String.format(" %s parsing %s", pex, u));
-			}
-		}
-	}
+    @Test
+    public void testParseInverses() {
+        for (Unit<?> u : Units.getInstance().getUnits()) {
+            try {
+                Unit<?> v = format.parse("1/" + u.toString());
+                assertNotNull(v);
+                logger.log(Level.FINER, v.toString());
+            } catch (MeasurementParseException pex) {
+                logger.log(Level.WARNING, String.format(" %s parsing %s", pex, u));
+            }
+        }
+    }
 
-	@Test
-	// TODO address https://github.com/unitsofmeasurement/uom-se/issues/145
-	public void testFormatKm() {
-		String s = format.format(KILO(METRE));
-		assertEquals("km", s);
-	}
+    @Test
+    // TODO address https://github.com/unitsofmeasurement/uom-se/issues/145
+    public void testFormatKm() {
+        String s = format.format(KILO(METRE));
+        assertEquals("km", s);
+    }
 
-	@Test
-	// TODO address https://github.com/unitsofmeasurement/uom-se/issues/145
-	public void testFormatmm() {
-		String s = format.format(MILLI(METRE));
-		assertEquals("mm", s);
-	}
+    @Test
+    // TODO address https://github.com/unitsofmeasurement/uom-se/issues/145
+    public void testFormatmm() {
+        String s = format.format(MILLI(METRE));
+        assertEquals("mm", s);
+    }
 
-	@Test
-	public void testParseIrregularStringEBNF() {
-		assertThrows(MeasurementParseException.class, () -> {
-			@SuppressWarnings("unused")
-			Unit<?> u = format.parse("bl//^--1a");
-		});
-	}
+    @Test
+    public void testParseIrregularStringEBNF() {
+        assertThrows(MeasurementParseException.class, () -> {
+            @SuppressWarnings("unused")
+            Unit<?> u = format.parse("bl//^--1a");
+        });
+    }
 
-	@Test
-	public void testTransformed() {
-		final String ANGSTROEM_SYM = "\u212B";
-		final Unit<Length> ANGSTROEM = new TransformedUnit<Length>(ANGSTROEM_SYM, METRE, METRE,
-				new RationalConverter(BigInteger.ONE, BigInteger.TEN.pow(10)));
-		final String s = format.format(ANGSTROEM);
-		assertEquals(ANGSTROEM_SYM, s);
-	}
+    @Test
+    public void testTransformed() {
+        final String ANGSTROEM_SYM = "\u212B";
+        final Unit<Length> ANGSTROEM = new TransformedUnit<Length>(ANGSTROEM_SYM, METRE, METRE,
+                new RationalConverter(BigInteger.ONE, BigInteger.TEN.pow(10)));
+        final String s = format.format(ANGSTROEM);
+        assertEquals(ANGSTROEM_SYM, s);
+    }
 
-	@Test
-	public void parseHertz() {
-		Unit<?> onePerSecond = ServiceProvider.current().getFormatService().getUnitFormat("EBNF").parse("1/s");
+    @Test
+    public void testMixed() {
+        final Unit<Time> mixUnit = Units.HOUR.mix(Units.MINUTE).mix(Units.SECOND);
+        final String s = format.format(mixUnit);
+        assertEquals("h;min;s", s);
+    }
 
-		Unit<?> anotherOnePerSecond = ServiceProvider.current().getFormatService().getUnitFormat().parse("one/s");
-		assertEquals(onePerSecond, anotherOnePerSecond);
-	}
+    @Test
+    public void parseHertz() {
+        Unit<?> onePerSecond = ServiceProvider.current().getFormatService().getUnitFormat("EBNF").parse("1/s");
+
+        Unit<?> anotherOnePerSecond = ServiceProvider.current().getFormatService().getUnitFormat().parse("one/s");
+        assertEquals(onePerSecond, anotherOnePerSecond);
+    }
 }

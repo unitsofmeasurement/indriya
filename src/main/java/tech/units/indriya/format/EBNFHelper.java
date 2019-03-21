@@ -74,6 +74,7 @@ static int formatInternal(Unit<?> unit, Appendable buffer, SymbolMap symbolMap) 
       return productPrecedenceInternal(unit, buffer, symbolMap);
     } else if (unit instanceof BaseUnit<?>) {
       return noopPrecedenceInternal(buffer, ((BaseUnit<?>) unit).getSymbol());
+    // TODO add case for MixedUnit
     } else if (unit.getSymbol() != null) { // Alternate unit.
       return noopPrecedenceInternal(buffer, unit.getSymbol());
     } else { // A transformed unit or new unit type!
