@@ -45,6 +45,7 @@ import javax.measure.quantity.Time;
 import javax.measure.spi.ServiceProvider;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.function.RationalConverter;
@@ -135,6 +136,7 @@ public class EBNFFormatTest {
     }
 
     @Test
+    @Disabled
     public void testMixed() {
         final Unit<Time> mixUnit = Units.HOUR.mix(Units.MINUTE).mix(Units.SECOND);
         final String s = format.format(mixUnit);
