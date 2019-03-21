@@ -289,7 +289,7 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
   }
 
   @Override
-  public UnitConverter getConverterTo(Unit<Q> that) throws UnconvertibleException {
+  public final UnitConverter getConverterTo(Unit<Q> that) throws UnconvertibleException {
     return internalGetConverterTo(that, true);
   }
 

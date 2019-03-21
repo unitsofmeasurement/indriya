@@ -55,7 +55,7 @@ import javax.measure.Unit;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.11, March 21, 2019
+ * @version 1.12, March 21, 2019
  * @since 2.0
  */
 public final class MixedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
@@ -132,6 +132,7 @@ public final class MixedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
 
     @Override
     public UnitConverter getSystemConverter() {
+        /*
         UnitConverter sysConverter = null;
         for (Unit<Q> u : units) {
             if (sysConverter == null) {
@@ -140,23 +141,35 @@ public final class MixedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
                 sysConverter = sysConverter.concatenate(((AbstractUnit<Q>)u).getSystemConverter());
             }
         }
-        //return ((AbstractUnit<Q>) units.get(0)).getSystemConverter();
         return sysConverter;
+        */
+        //return ((AbstractUnit<Q>) units.get(0)).getSystemConverter();
+        return ((AbstractUnit<Q>) getReferenceUnit()).getSystemConverter();
     }
 
     @Override
     protected Unit<Q> toSystemUnit() {
-        return units.get(0).getSystemUnit();
+        return getReferenceUnit().getSystemUnit();
     }
 
     @Override
     public Map<? extends Unit<?>, Integer> getBaseUnits() {
-        return units.get(0).getBaseUnits();
+        return getReferenceUnit().getBaseUnits();
     }
 
     @Override
     public Dimension getDimension() {
-        return units.get(0).getDimension();
+        return getReferenceUnit().getDimension();
+    }
+    
+    /**
+     * Returns the reference unit for this MixedUnit. The reference unit is used for all occasions where this MixedUnit has to behave like a single unit.
+     * The reference unit shall be a member of {@link #getUnits()}.
+     * @return the reference unit; not null
+     * @see #getUnits()
+     */
+    public Unit<Q> getReferenceUnit() {
+      return units.get(0);
     }
     
     /**

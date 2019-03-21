@@ -38,7 +38,6 @@ import javax.measure.Unit;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Time;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.quantity.Quantities;
@@ -56,18 +55,17 @@ public class CompoundQuantityTest {
 
   @Test
   public void testLength() {
-    Unit<Length> compUnit = Units.METRE.mix(CENTI(Units.METRE));
-    Quantity<Length> l1 = Quantities.getQuantity(1.70, compUnit);
+    Unit<Length> mixUnit = Units.METRE.mix(CENTI(Units.METRE));
+    Quantity<Length> l1 = Quantities.getQuantity(1.70, mixUnit);
     assertEquals(1.7d, l1.getValue());
     assertEquals("m;cm", l1.getUnit().toString()); // TODO this does not make much sense yet
   }
   
   @Test
-  @Disabled("address mixed conversion")
   public void testLengths() {
-    Unit<Length> compUnit = Units.METRE.mix(CENTI(Units.METRE));
+    Unit<Length> mixUnit = Units.METRE.mix(CENTI(Units.METRE));
     Number[] numList = {1, 70};
-    Quantity<Length> l1 = Quantities.getCompoundQuantity(numList, compUnit);
+    Quantity<Length> l1 = Quantities.getCompoundQuantity(numList, mixUnit);
     assertEquals(BigDecimal.valueOf(1.7d), l1.getValue());
     assertEquals("m;cm", l1.getUnit().toString());
     assertEquals("1 m 70 cm", l1.toString());
@@ -78,11 +76,10 @@ public class CompoundQuantityTest {
   }
   
   @Test
-  @Disabled("address mixed conversion")
   public void testTimes() {
-    Unit<Time> compUnit = Units.DAY.mix(Units.HOUR);
+    Unit<Time> mixUnit = Units.DAY.mix(Units.HOUR);
     Number[] numList = {3, 12};
-    Quantity<Time> t1 = Quantities.getCompoundQuantity(numList, compUnit);
+    Quantity<Time> t1 = Quantities.getCompoundQuantity(numList, mixUnit);
     assertEquals(BigDecimal.valueOf(3.5d), t1.getValue());
     assertEquals("day;h", t1.getUnit().toString());
     assertEquals("3 day 12 h", t1.toString());
@@ -114,11 +111,11 @@ public class CompoundQuantityTest {
   
   @Test
   public void testConvert() {
-    Unit<Length> compUnit = Units.METRE.mix(CENTI(Units.METRE));
+    Unit<Length> mixUnit = Units.METRE.mix(CENTI(Units.METRE));
     Quantity<Length> l1 = Quantities.getQuantity(170, CENTI(Units.METRE));
     assertEquals(170, l1.getValue());
     assertEquals("cm", l1.getUnit().toString());
-    Quantity<Length> l2 = l1.to(compUnit);
+    Quantity<Length> l2 = l1.to(mixUnit);
     // TODO UnitConverter implementations should also decompose a quantity into a CompoundQuantity, so this no longer throws an exception
     assertThrows(MeasurementException.class, () -> {
         logger.warning(String.valueOf(l2));
