@@ -40,7 +40,6 @@ import java.util.Objects;
 
 import javax.measure.Dimension;
 import javax.measure.Quantity;
-import javax.measure.UnconvertibleException;
 import javax.measure.Unit;
 
 /**
@@ -56,7 +55,7 @@ import javax.measure.Unit;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.10, March 21, 2019
+ * @version 1.11, March 21, 2019
  * @since 2.0
  */
 public final class MixedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
