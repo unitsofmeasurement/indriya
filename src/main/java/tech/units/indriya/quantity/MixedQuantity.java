@@ -54,7 +54,7 @@ import tech.units.indriya.unit.MixedUnit;
  * @param <Q>
  *            The type of the quantity.
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 1.3, $Date: 2019-03-21 $
+ * @version 1.4, $Date: 2019-03-22 $
  * @since 2.0
  */
 public class MixedQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
@@ -99,8 +99,11 @@ public class MixedQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
         return converter.convert(getValue().doubleValue());
     }
 
+    /**
+     * Returns the numeric value of the quantity represented in the {@link MixedUnit#getReferenceUnit() reference unit} (first in the array/list) of this {@link MixedUnit mixed unit}.
+     * @since 2.0
+     */
     @Override
-    // TODO update JavaDoc here after the classes were renamed.
     public Number getValue() {
         if (getUnit() instanceof MixedUnit) {
             final MixedUnit<Q> mixUnit =  (MixedUnit<Q>) getUnit();
@@ -123,7 +126,12 @@ public class MixedQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
         }
     }
 
-    // TODO JavaDoc
+    /**
+     * Returns the array of numeric values of the quantity corresponding to the {@link MixedUnit mixed unit}.
+     * 
+     * @return the array of numeric values; not null
+     * @since 2.0
+     */
     public Number[] getValues() {
         return values;
     }

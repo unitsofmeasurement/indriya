@@ -54,17 +54,18 @@ public class MixedQuantityTest {
   static final Logger logger = Logger.getLogger(MixedQuantityTest.class.getName());
 
   @Test
-  public void testLength() {
-    Unit<Length> mixUnit = Units.METRE.mix(CENTI(Units.METRE));
-    Quantity<Length> l1 = Quantities.getQuantity(1.70, mixUnit);
-    assertEquals(1.7d, l1.getValue());
-    assertEquals("m;cm", l1.getUnit().toString()); // TODO this does not make much sense yet
+  public void testLengthSingleValueMixedUnit() {
+    final Unit<Length> mixUnit = Units.METRE.mix(CENTI(Units.METRE));
+    assertThrows(MeasurementException.class, () -> {
+        @SuppressWarnings("unused")
+        Quantity<Length> l1 = Quantities.getQuantity(1.70, mixUnit);
+    });
   }
   
   @Test
   public void testLengths() {
-    Unit<Length> mixUnit = Units.METRE.mix(CENTI(Units.METRE));
-    Number[] numList = {1, 70};
+    final Unit<Length> mixUnit = Units.METRE.mix(CENTI(Units.METRE));
+    final Number[] numList = {1, 70};
     Quantity<Length> l1 = Quantities.getMixedQuantity(numList, mixUnit);
     assertEquals(BigDecimal.valueOf(1.7d), l1.getValue());
     assertEquals("m;cm", l1.getUnit().toString());
@@ -77,20 +78,20 @@ public class MixedQuantityTest {
   
   @Test
   public void testTimes() {
-    Unit<Time> mixUnit = Units.DAY.mix(Units.HOUR);
-    Number[] numList = {3, 12};
+    final Unit<Time> mixUnit = Units.DAY.mix(Units.HOUR);
+    final Number[] numList = {3, 12};
     Quantity<Time> t1 = Quantities.getMixedQuantity(numList, mixUnit);
     assertEquals(BigDecimal.valueOf(3.5d), t1.getValue());
     assertEquals("day;h", t1.getUnit().toString());
     assertEquals("3 day 12 h", t1.toString());
-    Quantity<Time> t2 = t1.to(Units.MINUTE);
+    final Quantity<Time> t2 = t1.to(Units.MINUTE);
     assertEquals(BigDecimal.valueOf(5040d), t2.getValue());
-    Quantity<Time> t3 = t1.to(Units.SECOND);
+    final Quantity<Time> t3 = t1.to(Units.SECOND);
     assertEquals(BigDecimal.valueOf(302400d), t3.getValue());
   }
  
   @Test
-  public void testNoMix() {
+  public void testArrayNoMixedUnit() {
     Number[] numList = {1, 70};
     assertThrows(MeasurementException.class, () -> {
         @SuppressWarnings("unused")
@@ -110,14 +111,15 @@ public class MixedQuantityTest {
   }
   
   @Test
-  public void testConvert() {
+  public void testConvertToMixed() {
     Unit<Length> mixUnit = Units.METRE.mix(CENTI(Units.METRE));
     Quantity<Length> l1 = Quantities.getQuantity(170, CENTI(Units.METRE));
     assertEquals(170, l1.getValue());
     assertEquals("cm", l1.getUnit().toString());
-    Quantity<Length> l2 = l1.to(mixUnit);
-    // TODO UnitConverter implementations should also decompose a quantity into a MixedQuantity, so this no longer throws an exception
     assertThrows(MeasurementException.class, () -> {
+        Quantity<Length> l2 = l1.to(mixUnit);
+        // TODO UnitConverter implementations should also decompose a quantity into a MixedQuantity, so this no longer throws an exception
+
         logger.warning(String.valueOf(l2));
     });
   }

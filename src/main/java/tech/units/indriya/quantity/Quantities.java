@@ -50,7 +50,7 @@ import tech.units.indriya.unit.MixedUnit;
 /**
  * Singleton class for accessing {@link Quantity} instances.
  * 
- * @version 1.7, March 21, 2019
+ * @version 1.8, March 22, 2019
  * @author werner
  * @author otaviojava
  * @since 1.0
@@ -99,30 +99,36 @@ public final class Quantities {
      * @return the corresponding <code>numeric</code> quantity.
      * @throws NullPointerException
      *             if value, unit or scale were null
+     * @throws MeasurementException
+     *             if unit is a MixedUnit
      * @since 2.0
      */
     public static <Q extends Quantity<Q>> ComparableQuantity<Q> getQuantity(Number value, Unit<Q> unit, Scale scale) {
         Objects.requireNonNull(value);
         Objects.requireNonNull(unit);
         Objects.requireNonNull(scale);
-        if (Double.class.isInstance(value)) {
-            return new DoubleQuantity<>(Double.class.cast(value), unit, scale);
-        } else if (Long.class.isInstance(value)) {
-            return new LongQuantity<Q>(Long.class.cast(value), unit, scale);
-        } else if (Short.class.isInstance(value)) {
-            return new ShortQuantity<Q>(Short.class.cast(value), unit, scale);
-        } else if (Byte.class.isInstance(value)) {
-            return new ByteQuantity<Q>(Byte.class.cast(value), unit, scale);
-//        } else if (Integer.class.isInstance(value)) { FIXME IntegerQuantity has issues
-//            return new IntegerQuantity<Q>(Integer.class.cast(value), unit);
-//        } else if (Float.class.isInstance(value)) { FIXME FloatQuantity has issues
-//            return new FloatQuantity<Q>(Float.class.cast(value), unit);
-        } else if (BigDecimal.class.isInstance(value)) {
-            return new DecimalQuantity<>(BigDecimal.class.cast(value), unit, scale);
-        } else if (BigInteger.class.isInstance(value)) {
-            return new BigIntegerQuantity<>(BigInteger.class.cast(value), unit, scale);
+        if (unit instanceof MixedUnit) {
+            throw new MeasurementException(String.format("Cannot combine single value %s with a mixed unit %s", value, unit));
+        } else {
+            if (Double.class.isInstance(value)) {
+                return new DoubleQuantity<>(Double.class.cast(value), unit, scale);
+            } else if (Long.class.isInstance(value)) {
+                return new LongQuantity<Q>(Long.class.cast(value), unit, scale);
+            } else if (Short.class.isInstance(value)) {
+                return new ShortQuantity<Q>(Short.class.cast(value), unit, scale);
+            } else if (Byte.class.isInstance(value)) {
+                return new ByteQuantity<Q>(Byte.class.cast(value), unit, scale);
+    //        } else if (Integer.class.isInstance(value)) { FIXME IntegerQuantity has issues
+    //            return new IntegerQuantity<Q>(Integer.class.cast(value), unit);
+    //        } else if (Float.class.isInstance(value)) { FIXME FloatQuantity has issues
+    //            return new FloatQuantity<Q>(Float.class.cast(value), unit);
+            } else if (BigDecimal.class.isInstance(value)) {
+                return new DecimalQuantity<>(BigDecimal.class.cast(value), unit, scale);
+            } else if (BigInteger.class.isInstance(value)) {
+                return new BigIntegerQuantity<>(BigInteger.class.cast(value), unit, scale);
+            }
+            return new NumberQuantity<>(value, unit, scale);
         }
-        return new NumberQuantity<>(value, unit, scale);
     }
 
     /**
