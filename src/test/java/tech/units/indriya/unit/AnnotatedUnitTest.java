@@ -188,4 +188,12 @@ public class AnnotatedUnitTest {
     AnnotatedUnit<ElectricCurrent> otherUnit = new AnnotatedUnit<ElectricCurrent>((AbstractUnit<ElectricCurrent>) Units.AMPERE, "Other annotation");
     assertNotEquals(ANNOTATED_AMPERE.hashCode(), otherUnit.hashCode());
   }
+  
+  /**
+   * Verifies that an annotated unit has an identity converter to its actual unit.
+   */
+  @Test
+  public void annotatedUnitHasIdentityConverter() {
+    assertTrue(ANNOTATED_AMPERE.getConverterTo(Units.AMPERE).isIdentity());
+  }
 }

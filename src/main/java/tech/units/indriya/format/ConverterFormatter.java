@@ -54,7 +54,7 @@ class ConverterFormatter {
     /**
      * Formats the given converter to the given StringBuilder and returns the operator precedence of the converter's mathematical operation. This is
      * the default implementation, which supports all built-in UnitConverter implementations. Note that it recursively calls itself in the case of a
-     * {@link AbstractConverter.converter.UnitConverter.Compound Compound} converter.
+     * {@link AbstractConverter.Pair pair} converter.
      *
      * @param converter
      *            the converter to be formatted
@@ -83,19 +83,19 @@ class ConverterFormatter {
                 return noopPrecedence(buffer, symbolMap, prefix);
             return productPrecedence((PowerOfIntConverter) converter, continued, unitPrecedence, buffer);
         } else if (converter instanceof AbstractConverter.Pair) {
-            AbstractConverter.Pair compound = (AbstractConverter.Pair) converter;
-            if (compound.getLeft() == AbstractConverter.IDENTITY)
-                return formatConverter(compound.getRight(), true, unitPrecedence, buffer, symbolMap);
+            final AbstractConverter.Pair pair = (AbstractConverter.Pair) converter;
+            if (pair.getLeft() == AbstractConverter.IDENTITY)
+                return formatConverter(pair.getRight(), true, unitPrecedence, buffer, symbolMap);
 
-            if (compound.getLeft() instanceof Formattable) {
-                return formatFormattable((Formattable) compound.getLeft(), unitPrecedence, buffer);
-            } else if (compound.getRight() instanceof Formattable) {
-                return formatFormattable((Formattable) compound.getRight(), unitPrecedence, buffer);
+            if (pair.getLeft() instanceof Formattable) {
+                return formatFormattable((Formattable) pair.getLeft(), unitPrecedence, buffer);
+            } else if (pair.getRight() instanceof Formattable) {
+                return formatFormattable((Formattable) pair.getRight(), unitPrecedence, buffer);
             } else {
-                return formatConverter(compound.getLeft(), true, unitPrecedence, buffer, symbolMap);
+                return formatConverter(pair.getLeft(), true, unitPrecedence, buffer, symbolMap);
                 // FIXME use getRight() here, too
             }
-            // return formatConverter(compound.getRight(), true,
+            // return formatConverter(pair.getRight(), true,
             // unitPrecedence, buffer);
 
         } else {
@@ -247,7 +247,7 @@ class ConverterFormatter {
     /**
      * Formats the given converter to the given StringBuffer and returns the operator precedence of the converter's mathematical operation. This is
      * the default implementation, which supports all built-in UnitConverter implementations. Note that it recursively calls itself in the case of a
-     * {@link javax.measure.converter.UnitConverter.Compound Compound} converter.
+     * {@link AbstractConverter.Pair pair} converter.
      * 
      * @param converter
      *            the converter to be formatted

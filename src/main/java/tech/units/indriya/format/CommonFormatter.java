@@ -39,7 +39,7 @@ import javax.measure.format.MeasurementParseException;
 import javax.measure.format.UnitFormat;
 
 import tech.units.indriya.ComparableQuantity;
-import tech.units.indriya.quantity.CompoundQuantity;
+import tech.units.indriya.quantity.MixedQuantity;
 
 /**
  * Common helper class that handles internals of formatting in {@link SimpleQuantityFormat}, {@link SimpleUnitFormat}
@@ -50,10 +50,10 @@ import tech.units.indriya.quantity.CompoundQuantity;
 abstract class CommonFormatter {
 
     @SuppressWarnings("unchecked")
-    static ComparableQuantity<?> parseCompound(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final String delimiter,
-            final String compoundDelimiter, final int position) throws IllegalArgumentException, MeasurementParseException {
+    static ComparableQuantity<?> parseMixed(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final String delimiter,
+            final String mixDelimiter, final int position) throws IllegalArgumentException, MeasurementParseException {
         final String section = str.substring(position);
-        final String[] sectionParts = section.split(compoundDelimiter);
+        final String[] sectionParts = section.split(mixDelimiter);
         @SuppressWarnings("rawtypes")
         Unit unit = null;
         final List<Number> nums = new ArrayList<>();
@@ -72,16 +72,16 @@ abstract class CommonFormatter {
         }
         final Number[] numArray = new Number[nums.size()];
         nums.toArray(numArray);
-        return CompoundQuantity.of(numArray, unit);
+        return MixedQuantity.of(numArray, unit);
     }
     
-    static ComparableQuantity<?> parseCompound(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final String delimiter,
-            final String compoundDelimiter) throws IllegalArgumentException, MeasurementParseException {
-        return parseCompound(str, numberFormat, unitFormat, delimiter, compoundDelimiter, 0);
+    static ComparableQuantity<?> parseMixed(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final String delimiter,
+            final String mixDelimiter) throws IllegalArgumentException, MeasurementParseException {
+        return parseMixed(str, numberFormat, unitFormat, delimiter, mixDelimiter, 0);
     }
     
     @SuppressWarnings("unchecked")
-    static ComparableQuantity<?> parseCompound(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final String delimiter, final int position) throws IllegalArgumentException, MeasurementParseException {
+    static ComparableQuantity<?> parseMixed(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final String delimiter, final int position) throws IllegalArgumentException, MeasurementParseException {
         final String section = str.substring(position);
         @SuppressWarnings("rawtypes")
         Unit unit = null;
@@ -102,10 +102,10 @@ abstract class CommonFormatter {
         }
         final Number[] numArray = new Number[nums.size()];
         nums.toArray(numArray);
-        return CompoundQuantity.of(numArray, unit);
+        return MixedQuantity.of(numArray, unit);
     }
     
-    static ComparableQuantity<?> parseCompound(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final String delimiter) throws IllegalArgumentException, MeasurementParseException {
-        return parseCompound(str, numberFormat, unitFormat, delimiter, 0);
+    static ComparableQuantity<?> parseMixed(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final String delimiter) throws IllegalArgumentException, MeasurementParseException {
+        return parseMixed(str, numberFormat, unitFormat, delimiter, 0);
     }
 }

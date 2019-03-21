@@ -44,7 +44,7 @@ import tech.units.indriya.function.Calculus;
 import tech.units.indriya.unit.MixedUnit;
 
 /**
- * An implementation of {@link ComparableQuantity} that represents multi-radix quantities (like "1 hour:20 min:45 sec" or "6 ft, 4 in").
+ * An implementation of {@link Quantity} that represents multi-radix quantities (like "1 hour:20 min:45 sec" or "6 ft, 4 in").
  * This object is immutable.
  *
  * @see AbstractQuantity
@@ -54,10 +54,10 @@ import tech.units.indriya.unit.MixedUnit;
  * @param <Q>
  *            The type of the quantity.
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 1.2, $Date: 2019-03-21 $
+ * @version 1.3, $Date: 2019-03-21 $
  * @since 2.0
  */
-public class CompoundQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
+public class MixedQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
 
     /**
      * 
@@ -74,7 +74,7 @@ public class CompoundQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q>
     /**
      * @since 2.0
      */
-    protected CompoundQuantity(Number[] numbers, Unit<Q> unit, Scale sc) {
+    protected MixedQuantity(Number[] numbers, Unit<Q> unit, Scale sc) {
         super(unit, sc);
         Objects.requireNonNull(numbers);
         values = numbers;
@@ -89,7 +89,7 @@ public class CompoundQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q>
     /**
      * @since 2.0
      */
-    protected CompoundQuantity(Number[] numbers, Unit<Q> unit) {
+    protected MixedQuantity(Number[] numbers, Unit<Q> unit) {
         this(numbers, unit, ABSOLUTE);
     }
 
@@ -103,20 +103,20 @@ public class CompoundQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q>
     // TODO update JavaDoc here after the classes were renamed.
     public Number getValue() {
         if (getUnit() instanceof MixedUnit) {
-            final MixedUnit<Q> compUnit =  (MixedUnit<Q>) getUnit();
+            final MixedUnit<Q> mixUnit =  (MixedUnit<Q>) getUnit();
             ComparableQuantity<Q> result = null;
-            if (values.length == compUnit.getUnits().size()) {
+            if (values.length == mixUnit.getUnits().size()) {
                 for (int i = 0; i < values.length; i++) {
                     Number value = values[i];
                     if (result == null) {
-                        result = Quantities.getQuantity(value, compUnit.getUnits().get(i), getScale());
+                        result = Quantities.getQuantity(value, mixUnit.getUnits().get(i), getScale());
                     } else {
-                        result = result.add(Quantities.getQuantity(value, compUnit.getUnits().get(i), getScale()));
+                        result = result.add(Quantities.getQuantity(value, mixUnit.getUnits().get(i), getScale()));
                     }
                 }
                 return result.getValue();
             } else {
-                throw new IllegalArgumentException(String.format("%s values don't match %s in mixed unit", values.length, compUnit.getUnits().size()));
+                throw new IllegalArgumentException(String.format("%s values don't match %s in mixed unit", values.length, mixUnit.getUnits().size()));
             }
         } else {
             throw new IllegalArgumentException(String.format("%s not a mixed unit", getUnit()));
@@ -176,7 +176,7 @@ public class CompoundQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q>
                 inv[i] = 1d / values[i].doubleValue();
             }
         }
-        return new CompoundQuantity(inv, getUnit().inverse());
+        return new MixedQuantity(inv, getUnit().inverse());
     }
 
     @Override
@@ -220,16 +220,16 @@ public class CompoundQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q>
     }
 
     /**
-     * Returns the compound quantity for the specified <code>Number</code> array stated in the specified unit.
+     * Returns the mixed quantity for the specified <code>Number</code> array stated in the specified unit.
      *
      * @param values
      *            the measurement values.
      * @param unit
      *            the measurement unit.
-     * @return the corresponding compound quantity.
+     * @return the corresponding mixed quantity.
      */
     public static <Q extends Quantity<Q>> AbstractQuantity<Q> of(Number[] values, Unit<Q> unit) {
-        return new CompoundQuantity<Q>(values, unit);
+        return new MixedQuantity<Q>(values, unit);
     }
 
     @Override

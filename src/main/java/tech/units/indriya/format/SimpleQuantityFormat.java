@@ -29,7 +29,7 @@
  */
 package tech.units.indriya.format;
 
-import static tech.units.indriya.format.CommonFormatter.parseCompound;
+import static tech.units.indriya.format.CommonFormatter.parseMixed;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -44,7 +44,7 @@ import javax.measure.format.MeasurementParseException;
 import tech.units.indriya.AbstractQuantity;
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.ComparableQuantity;
-import tech.units.indriya.quantity.CompoundQuantity;
+import tech.units.indriya.quantity.MixedQuantity;
 import tech.units.indriya.quantity.NumberQuantity;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.MixedUnit;
@@ -77,7 +77,7 @@ import tech.units.indriya.unit.MixedUnit;
  *         <td><code>m</code>
  *    <tr>
  *         <td><code>~</code>
- *         <td>Compound
+ *         <td>Mix
  *         <td><a href="#text">Text</a>
  *         <td><code>m</code>; <code>cm</code>
  * </tbody>
@@ -99,7 +99,7 @@ import tech.units.indriya.unit.MixedUnit;
  *     it's needed to separate two adjacent fields.<br><br></li>
  * </ul>
  * </p>
- * @version 1.1, $Date: 2019-03-11 $
+ * @version 1.2, $Date: 2019-03-21 $
  * @since 2.0
  */
 @SuppressWarnings("rawtypes")
@@ -111,7 +111,7 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
 
 	private static final String NUM_PART = "n";
 	private static final String UNIT_PART = "u";
-	private static final String COMPOUND_SWITCH = "~";
+	private static final String MIXER = "~";
 	
 	/**
 	 * The pattern string of this formatter. This is always a non-localized pattern.
@@ -123,11 +123,11 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
 	
 	private String delimiter;
 	
-	private String compoundDelimiter;
+	private String mixDelimiter;
 
 	/**
-	*
-	*/
+	 *
+	 */
 	private static final long serialVersionUID = 2758248665095734058L;
 
 	/**
@@ -144,9 +144,9 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
 	public SimpleQuantityFormat(String pattern) {
 		this.pattern = pattern;
 		if (pattern != null && !pattern.isEmpty()) {
-		   if (pattern.contains(COMPOUND_SWITCH)) {
-		       final String singlePattern = pattern.substring(0, pattern.indexOf(COMPOUND_SWITCH));
-		       compoundDelimiter = pattern.substring(pattern.indexOf(COMPOUND_SWITCH) + 1);
+		   if (pattern.contains(MIXER)) {
+		       final String singlePattern = pattern.substring(0, pattern.indexOf(MIXER));
+		       mixDelimiter = pattern.substring(pattern.indexOf(MIXER) + 1);
 		       delimiter = singlePattern.substring(pattern.indexOf(NUM_PART)+1, pattern.indexOf(UNIT_PART));
 		   } else {
 		       delimiter = pattern.substring(pattern.indexOf(NUM_PART)+1, pattern.indexOf(UNIT_PART));
@@ -166,8 +166,8 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
 	public Appendable format(Quantity<?> quantity, Appendable dest) throws IOException {
 		final Unit unit = quantity.getUnit();
         if (unit instanceof MixedUnit) {
-            if (quantity instanceof CompoundQuantity) {
-                final CompoundQuantity<?> compQuant = (CompoundQuantity<?>) quantity;
+            if (quantity instanceof MixedQuantity) {
+                final MixedQuantity<?> compQuant = (MixedQuantity<?>) quantity;
                 final MixedUnit<?> compUnit = (MixedUnit<?>) unit;
                 final Number[] values = compQuant.getValues();
                 if (values.length == compUnit.getUnits().size()) {
@@ -184,7 +184,7 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
                     throw new IllegalArgumentException(String.format("%s values don't match %s in mixed unit", values.length, compUnit.getUnits().size()));
                 }
             } else {
-                throw new MeasurementException("The quantity is not a Compound Quantity");
+                throw new MeasurementException("The quantity is not a mixed quantity");
             }
         } else {
     		dest.append(quantity.getValue().toString());
@@ -198,10 +198,10 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
 	@SuppressWarnings("unchecked")
 	@Override
 	public ComparableQuantity<?> parse(CharSequence csq, ParsePosition cursor) throws MeasurementParseException {
-        if (compoundDelimiter != null && !compoundDelimiter.equals(delimiter)) {
-            return parseCompound(csq.toString(), NumberFormat.getInstance(), SimpleUnitFormat.getInstance(), delimiter, compoundDelimiter, cursor.getIndex());
-        } else if (compoundDelimiter != null && compoundDelimiter.equals(delimiter)) {
-            return parseCompound(csq.toString(), NumberFormat.getInstance(), SimpleUnitFormat.getInstance(), delimiter, cursor.getIndex());
+        if (mixDelimiter != null && !mixDelimiter.equals(delimiter)) {
+            return parseMixed(csq.toString(), NumberFormat.getInstance(), SimpleUnitFormat.getInstance(), delimiter, mixDelimiter, cursor.getIndex());
+        } else if (mixDelimiter != null && mixDelimiter.equals(delimiter)) {
+            return parseMixed(csq.toString(), NumberFormat.getInstance(), SimpleUnitFormat.getInstance(), delimiter, cursor.getIndex());
         }
 	    int startDecimal = cursor.getIndex();
 		while ((startDecimal < csq.length()) && Character.isWhitespace(csq.charAt(startDecimal))) {

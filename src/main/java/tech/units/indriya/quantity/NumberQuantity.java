@@ -306,7 +306,7 @@ public class NumberQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
   @Override
   public ComparableQuantity<Q> to(Unit<Q> anotherUnit) {
       if (anotherUnit instanceof MixedUnit) {
-          // FIXME decompose into CompoundQuantity
+          // FIXME decompose into MixedQuantity
       }
       return super.to(anotherUnit);
   }

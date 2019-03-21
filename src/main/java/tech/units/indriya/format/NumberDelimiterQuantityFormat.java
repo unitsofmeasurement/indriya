@@ -44,7 +44,7 @@ import javax.measure.format.UnitFormat;
 
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.ComparableQuantity;
-import tech.units.indriya.quantity.CompoundQuantity;
+import tech.units.indriya.quantity.MixedQuantity;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.MixedUnit;
 
@@ -83,7 +83,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
     private transient NumberFormat numberFormat;
     private UnitFormat unitFormat;
     private String delimiter;
-    private String compoundDelimiter;
+    private String mixDelimiter;
     private boolean localeSensitive;
 
     private NumberDelimiterQuantityFormat() {
@@ -97,7 +97,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
         private transient NumberFormat numberFormat;
         private UnitFormat unitFormat;
         private String delimiter = DEFAULT_DELIMITER;
-        private String compoundDelimiter;
+        private String mixDelimiter;
         private boolean localeSensitive;
 
         /**
@@ -143,16 +143,16 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
         }
 
         /**
-         * Sets the compound delimiter between multiple {@link CompoundQuantity compound quantities}.
-         * @param compoundDelimiter the delimiter to use
-         * @throws NullPointerException if {@code compoundDelimiter} is {@code null}
+         * Sets the mix delimiter between multiple {@link MixedQuantity mixed quantities}.
+         * @param mixDelimiter the delimiter to use
+         * @throws NullPointerException if {@code mixDelimiter} is {@code null}
          * @return this {@code NumberDelimiterQuantityFormat.Builder}
          */
-        public Builder setCompoundDelimiter(String compoundDelimiter) {
-            if (compoundDelimiter == null) {
+        public Builder setMixDelimiter(String mixDelimiter) {
+            if (mixDelimiter == null) {
                 throw new NullPointerException();
             }
-            this.compoundDelimiter = compoundDelimiter;
+            this.mixDelimiter = mixDelimiter;
             return this;
         }
 
@@ -172,7 +172,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
             quantityFormat.numberFormat = this.numberFormat;
             quantityFormat.unitFormat = this.unitFormat;
             quantityFormat.delimiter = this.delimiter;
-            quantityFormat.compoundDelimiter = this.compoundDelimiter;
+            quantityFormat.mixDelimiter = this.mixDelimiter;
             quantityFormat.localeSensitive = this.localeSensitive;
             return quantityFormat;
         }
@@ -221,48 +221,11 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
         return new NumberDelimiterQuantityFormat.Builder().setNumberFormat(numberFormat).setUnitFormat(unitFormat).build();
     }
 
-    /**
-     * Returns the quantity format using the specified number format, unit format and delimiter. The number and unit are separated by the delimiter.
-     *
-     * @param numberFormat
-     *            the number format.
-     * @param unitFormat
-     *            the unit format.
-     * @param delimiter
-     *            the delimiter.
-     * @return the corresponding format.
-     * @deprecated Consider using Builder instead
-     */
-    public static NumberDelimiterQuantityFormat getInstance(NumberFormat numberFormat, UnitFormat unitFormat, String delimiter) {
-        return new NumberDelimiterQuantityFormat.Builder().setNumberFormat(numberFormat).setUnitFormat(unitFormat).setDelimiter(delimiter).build();
-    }
-
-    /**
-     * Returns the quantity format using the specified number format, unit format and delimiters. The numbers and units are separated by the
-     * delimiters.
-     *
-     * @param numberFormat
-     *            the number format.
-     * @param unitFormat
-     *            the unit format.
-     * @param delimiter
-     *            the delimiter.
-     * @param compDelimiter
-     *            the compound delimiter.
-     * @return the corresponding format.
-     * @deprecated Consider using Builder instead
-     */
-    public static NumberDelimiterQuantityFormat getCompoundInstance(NumberFormat numberFormat, UnitFormat unitFormat, String delimiter,
-            String compDelimiter) {
-        return new NumberDelimiterQuantityFormat.Builder().setNumberFormat(numberFormat).setUnitFormat(unitFormat).setDelimiter(delimiter)
-                .setCompoundDelimiter(compDelimiter).build();
-    }
-
     @Override
     public Appendable format(Quantity<?> quantity, Appendable dest) throws IOException {
         int fract = 0;
-        if (quantity instanceof CompoundQuantity) {
-            final CompoundQuantity<?> compQuant = (CompoundQuantity<?>) quantity;
+        if (quantity instanceof MixedQuantity) {
+            final MixedQuantity<?> compQuant = (MixedQuantity<?>) quantity;
             if (compQuant.getUnit() instanceof MixedUnit) {
                 final MixedUnit<?> compUnit = (MixedUnit<?>) compQuant.getUnit();
                 final Number[] values = compQuant.getValues();
@@ -281,7 +244,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
                         sb.append(delimiter);
                         sb.append(unitFormat.format(compUnit.getUnits().get(i)));
                         if (i < values.length - 1) {
-                            sb.append((compoundDelimiter != null ? compoundDelimiter : DEFAULT_DELIMITER)); // we need null for parsing but not
+                            sb.append((mixDelimiter != null ? mixDelimiter : DEFAULT_DELIMITER)); // we need null for parsing but not
                                                                                                             // formatting
                         }
                     }
@@ -291,7 +254,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
                             String.format("%s values don't match %s in mixed unit", values.length, compUnit.getUnits().size()));
                 }
             } else {
-                throw new MeasurementException("A Compound Quantity must contain a mixed unit");
+                throw new MeasurementException("A mixed quantity must contain a mixed unit");
             }
         } else {
             if (quantity != null && quantity.getValue() != null) {
@@ -312,10 +275,10 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
     public ComparableQuantity<?> parse(CharSequence csq, ParsePosition cursor) throws IllegalArgumentException, MeasurementParseException {
         final String str = csq.toString();
         final int index = cursor.getIndex();
-        if (compoundDelimiter != null && !compoundDelimiter.equals(delimiter)) {
-            return parseCompound(str, numberFormat, unitFormat, delimiter, compoundDelimiter, index);
-        } else if (compoundDelimiter != null && compoundDelimiter.equals(delimiter)) {
-            return parseCompound(str, numberFormat, unitFormat, delimiter, index);
+        if (mixDelimiter != null && !mixDelimiter.equals(delimiter)) {
+            return parseMixed(str, numberFormat, unitFormat, delimiter, mixDelimiter, index);
+        } else if (mixDelimiter != null && mixDelimiter.equals(delimiter)) {
+            return parseMixed(str, numberFormat, unitFormat, delimiter, index);
         }
         final Number number = numberFormat.parse(str, cursor);
         if (number == null)

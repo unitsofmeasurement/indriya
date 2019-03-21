@@ -50,7 +50,7 @@ import tech.units.indriya.unit.MixedUnit;
 /**
  * Singleton class for accessing {@link Quantity} instances.
  * 
- * @version 1.6.1, February 3, 2019
+ * @version 1.7, March 21, 2019
  * @author werner
  * @author otaviojava
  * @since 1.0
@@ -142,7 +142,7 @@ public final class Quantities {
     }
     
     /**
-     * Returns the compound quantity. When the {@link Number} was {@link BigDecimal} or {@link BigInteger} will uses {@link DecimalQuantity}, when the
+     * Returns the mixed quantity. When the {@link Number} was {@link BigDecimal} or {@link BigInteger} will uses {@link DecimalQuantity}, when the
      * {@link Number} was {@link Double} will {@link DoubleQuantity} otherwise will {@link NumberQuantity}. in the specified unit.
      * 
      * @param value
@@ -160,12 +160,12 @@ public final class Quantities {
      *             if unit is not a MixedUnit
      * @since 2.0
      */
-    public static <Q extends Quantity<Q>> ComparableQuantity<Q> getCompoundQuantity(Number[] values, Unit<Q> unit, Scale scale) {
+    public static <Q extends Quantity<Q>> ComparableQuantity<Q> getMixedQuantity(Number[] values, Unit<Q> unit, Scale scale) {
         if (unit instanceof MixedUnit) {
             final MixedUnit<Q> compUnit =  (MixedUnit<Q>) unit;
             //ComparableQuantity<Q> result = null;
             if (values.length == compUnit.getUnits().size()) {
-                return new CompoundQuantity<Q>(values, unit, scale);
+                return new MixedQuantity<Q>(values, unit, scale);
             } else {
                 throw new IllegalArgumentException(String.format("%s values don't match %s in mixed unit", values.length, compUnit.getUnits().size()));
             }
@@ -175,7 +175,7 @@ public final class Quantities {
     }
     
     /**
-     * Returns the compound quantity. When the {@link Number} was {@link BigDecimal} or {@link BigInteger} will uses {@link DecimalQuantity}, when the
+     * Returns the mixed quantity. When the {@link Number} was {@link BigDecimal} or {@link BigInteger} will uses {@link DecimalQuantity}, when the
      * {@link Number} was {@link Double} will {@link DoubleQuantity} otherwise will {@link NumberQuantity}. in the specified unit.
      * 
      * @param value
@@ -184,10 +184,10 @@ public final class Quantities {
      *            the measurement unit.
      * @return the corresponding <code>numeric</code> quantity.
      * @throws NullPointerException
-     *             if value, unit or level were null
+     *             if value or unit were null
      * @since 2.0
      */
-    public static <Q extends Quantity<Q>> ComparableQuantity<Q> getCompoundQuantity(Number[] values, Unit<Q> unit) {
-        return getCompoundQuantity(values, unit, ABSOLUTE);
+    public static <Q extends Quantity<Q>> ComparableQuantity<Q> getMixedQuantity(Number[] values, Unit<Q> unit) {
+        return getMixedQuantity(values, unit, ABSOLUTE);
     }
 }

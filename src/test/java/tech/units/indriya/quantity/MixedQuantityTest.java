@@ -50,8 +50,8 @@ import static javax.measure.MetricPrefix.*;
  *
  * @author Werner Keil
  */
-public class CompoundQuantityTest {
-  static final Logger logger = Logger.getLogger(CompoundQuantityTest.class.getName());
+public class MixedQuantityTest {
+  static final Logger logger = Logger.getLogger(MixedQuantityTest.class.getName());
 
   @Test
   public void testLength() {
@@ -65,7 +65,7 @@ public class CompoundQuantityTest {
   public void testLengths() {
     Unit<Length> mixUnit = Units.METRE.mix(CENTI(Units.METRE));
     Number[] numList = {1, 70};
-    Quantity<Length> l1 = Quantities.getCompoundQuantity(numList, mixUnit);
+    Quantity<Length> l1 = Quantities.getMixedQuantity(numList, mixUnit);
     assertEquals(BigDecimal.valueOf(1.7d), l1.getValue());
     assertEquals("m;cm", l1.getUnit().toString());
     assertEquals("1 m 70 cm", l1.toString());
@@ -79,7 +79,7 @@ public class CompoundQuantityTest {
   public void testTimes() {
     Unit<Time> mixUnit = Units.DAY.mix(Units.HOUR);
     Number[] numList = {3, 12};
-    Quantity<Time> t1 = Quantities.getCompoundQuantity(numList, mixUnit);
+    Quantity<Time> t1 = Quantities.getMixedQuantity(numList, mixUnit);
     assertEquals(BigDecimal.valueOf(3.5d), t1.getValue());
     assertEquals("day;h", t1.getUnit().toString());
     assertEquals("3 day 12 h", t1.toString());
@@ -90,11 +90,11 @@ public class CompoundQuantityTest {
   }
  
   @Test
-  public void testNoCompound() {
+  public void testNoMix() {
     Number[] numList = {1, 70};
     assertThrows(MeasurementException.class, () -> {
         @SuppressWarnings("unused")
-        Quantity<Time> t1 = Quantities.getCompoundQuantity(numList, Units.DAY);
+        Quantity<Time> t1 = Quantities.getMixedQuantity(numList, Units.DAY);
     });
   }
   
@@ -105,7 +105,7 @@ public class CompoundQuantityTest {
       Number[] numList = {1, 70};
     assertThrows(IllegalArgumentException.class, () -> {
         @SuppressWarnings("unused")
-        Quantity<Time> t1 = Quantities.getCompoundQuantity(numList, compTime);
+        Quantity<Time> t1 = Quantities.getMixedQuantity(numList, compTime);
     });
   }
   
@@ -116,7 +116,7 @@ public class CompoundQuantityTest {
     assertEquals(170, l1.getValue());
     assertEquals("cm", l1.getUnit().toString());
     Quantity<Length> l2 = l1.to(mixUnit);
-    // TODO UnitConverter implementations should also decompose a quantity into a CompoundQuantity, so this no longer throws an exception
+    // TODO UnitConverter implementations should also decompose a quantity into a MixedQuantity, so this no longer throws an exception
     assertThrows(MeasurementException.class, () -> {
         logger.warning(String.valueOf(l2));
     });

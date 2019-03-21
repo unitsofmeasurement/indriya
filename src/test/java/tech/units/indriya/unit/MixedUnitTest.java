@@ -34,7 +34,6 @@ import javax.measure.UnitConverter;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Time;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.unit.Units;
@@ -72,22 +71,22 @@ public class MixedUnitTest {
    * Test method for {@link javax.measure.Unit#getConverterTo}.
    */
   @Test
-  @Disabled("address mixed conversion")
   public void testConverterToDay() {
     final Unit<Time> mixTime =  Units.HOUR.
               mix(Units.MINUTE).mix(Units.SECOND);
+    assertTrue(mixTime instanceof MixedUnit);
+    final MixedUnit<Time> actualMixTime = (MixedUnit<Time>)mixTime;
+    assertEquals(Units.HOUR, actualMixTime.getReferenceUnit());
     UnitConverter converter = mixTime.getConverterTo(Units.DAY);
     UnitConverter converter2 = Units.HOUR.getConverterTo(Units.DAY);
     Double result = converter.convert(1d);
-    //System.out.println("R: " + result + "ß" + converter.isIdentity());
     Double result2 = converter2.convert(1d);
-    //System.out.println("R2: " + result2 + "ß" + converter2.isIdentity());
     UnitConverter converter3 = Units.DAY.mix(Units.HOUR).getConverterTo(Units.DAY);
     assertEquals(result, result2);
     assertTrue(Units.DAY.getConverterTo(Units.DAY).isIdentity());
     assertFalse(converter.isIdentity());
     assertFalse(converter2.isIdentity());
-    assertFalse(converter3.isIdentity());
+    assertTrue(converter3.isIdentity());
     //logger.log(Level.FINER(Units.DAY.getConverterTo(Units.DAY).isIdentity());
     //logger.log(Level.FINER, result.toString());
   }
