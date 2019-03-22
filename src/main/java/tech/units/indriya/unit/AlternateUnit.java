@@ -157,7 +157,9 @@ public final class AlternateUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> 
      * @param symbol
      *            the symbol for this alternate unit.
      * @throws IllegalArgumentException
-     *             if the specified parent unit is not an {@link AbstractUnit#isSystemUnit() system unit}
+     *             if the specified parent unit is not an unscaled standard {@link AbstractUnit#isSystemUnit() system unit}.
+     * @throws MeasurementException
+     *           if the specified symbol is not valid or is already associated to a different unit.
      */
     public static <Q extends Quantity<Q>> AlternateUnit<Q> of(Unit<?> parent, String symbol) {
         return new AlternateUnit<>(parent, symbol);
