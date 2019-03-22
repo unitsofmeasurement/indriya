@@ -78,7 +78,7 @@ import tech.uom.lib.common.function.SymbolSupplier;
  * @see <a href= "http://en.wikipedia.org/wiki/International_System_of_Units">Wikipedia: International System of Units</a>
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 1.6, March 21, 2019
+ * @version 1.6.1, March 22, 2019
  * @since 1.0
  */
 public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableUnit<Q>, Nameable, PrefixOperator<Q>, SymbolSupplier {
@@ -309,10 +309,9 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
     return thatToDimension.inverse().concatenate(thisToDimension);
   }
 
-  @SuppressWarnings({ "rawtypes", "unchecked" })
   @Override
   public final Unit<Q> alternate(String newSymbol) {
-    return new AlternateUnit(this, newSymbol);
+    return new AlternateUnit<>(this, newSymbol);
   }
 
   @Override

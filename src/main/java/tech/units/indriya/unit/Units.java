@@ -233,13 +233,13 @@ public class Units extends AbstractSystemOfUnits {
 	 * The SI unit for plane angle quantities (standard name <code>rad</code>). One radian is the angle between two radii of a circle such that the
 	 * length of the arc between them is equal to the radius.
 	 */
-	public static final Unit<Angle> RADIAN = addUnit(new AlternateUnit<>(ONE, "rad"), Angle.class);
+	public static final Unit<Angle> RADIAN = addUnit(AlternateUnit.of(ONE, "rad"), Angle.class);
 
 	/**
 	 * The SI unit for solid angle quantities (standard name <code>sr</code>). One steradian is the solid angle subtended at the center of a sphere by
 	 * an area on the surface of the sphere that is equal to the radius squared. The total solid angle of a sphere is 4*Pi steradians.
 	 */
-	public static final Unit<SolidAngle> STERADIAN = addUnit(new AlternateUnit<SolidAngle>(ONE, "sr"), SolidAngle.class);
+	public static final Unit<SolidAngle> STERADIAN = addUnit(new AlternateUnit<>(ONE, "sr"), SolidAngle.class);
 
 	/**
 	 * The SI unit for frequency (standard name <code>Hz</code>). A unit of frequency equal to one cycle per second. After Heinrich Rudolf Hertz

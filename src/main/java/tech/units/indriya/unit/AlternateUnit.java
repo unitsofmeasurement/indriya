@@ -43,10 +43,20 @@ import java.util.Objects;
  * <p>
  * This class represents units used in expressions to distinguish between quantities of a different nature but of the same dimensions.
  * </p>
+ * 
+ * <p>
+ * Examples of alternate units:
+ * </p>
+ *
+ * <code>
+ *     {@literal Unit<Angle>} RADIAN = AlternateUnit.of(ONE, "rad").asType(Angle.class);<br>
+ *     {@literal Unit<Force>} NEWTON = AlternateUnit.of(METRE.multiply(KILOGRAM).divide(SECOND.pow(2)), "N").asType(Force.class);<br>
+ *     {@literal Unit<Pressure>} PASCAL = AlternateUnit.of(NEWTON.divide(METRE.pow(2), "Pa").asType(Pressure.class);<br>
+ * </code>
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
- * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.4, October 12, 2018
+ * @author <a href="mailto:werner@units.tech">Werner Keil</a>
+ * @version 1.5, March 23, 2019
  * @since 1.0
  */
 public final class AlternateUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
@@ -69,7 +79,7 @@ public final class AlternateUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> 
     /**
      * Creates an alternate unit for the specified system unit identified by the specified name and symbol.
      *
-     * @param parent
+     * @param parentUnit
      *            the system unit from which this alternate unit is derived.
      * @param symbol
      *            the symbol for this alternate unit.
@@ -137,5 +147,19 @@ public final class AlternateUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> 
             return Objects.equals(parentUnit, that.parentUnit) && Objects.equals(symbol, that.symbol);
         }
         return false;
+    }
+    
+    /**
+     * Creates an alternate unit for the specified system unit identified by the specified name and symbol.
+     *
+     * @param parent
+     *            the system unit from which this alternate unit is derived.
+     * @param symbol
+     *            the symbol for this alternate unit.
+     * @throws IllegalArgumentException
+     *             if the specified parent unit is not an {@link AbstractUnit#isSystemUnit() system unit}
+     */
+    public static <Q extends Quantity<Q>> AlternateUnit<Q> of(Unit<?> parent, String symbol) {
+        return new AlternateUnit<>(parent, symbol);
     }
 }

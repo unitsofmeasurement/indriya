@@ -53,7 +53,7 @@ import java.util.Objects;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.3.2, Dezember 27, 2017
+ * @version 1.4, March 23, 2019
  * @since 1.0
  */
 public final class AnnotatedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
@@ -66,7 +66,7 @@ public final class AnnotatedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> 
   /**
    * Holds the actual unit.
    */
-  private final AbstractUnit<Q> actualUnit;
+  private final Unit<Q> actualUnit;
 
   /**
    * Holds the annotation.
@@ -82,7 +82,7 @@ public final class AnnotatedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> 
    *          the annotation.
    * @return the annotated unit.
    */
-  public AnnotatedUnit(AbstractUnit<Q> actualUnit, String annotation) {
+  public AnnotatedUnit(Unit<Q> actualUnit, String annotation) {
     this.actualUnit = actualUnit instanceof AnnotatedUnit ? ((AnnotatedUnit<Q>) actualUnit).actualUnit : actualUnit;
     this.annotation = annotation;
   }
@@ -92,7 +92,7 @@ public final class AnnotatedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> 
    *
    * @return the actual unit.
    */
-  public AbstractUnit<Q> getActualUnit() {
+  public Unit<Q> getActualUnit() {
     return actualUnit;
   }
 
@@ -127,7 +127,7 @@ public final class AnnotatedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> 
 
   @Override
   public UnitConverter getSystemConverter() {
-    return actualUnit.getSystemConverter();
+    return ((AbstractUnit<Q>)actualUnit).getSystemConverter();
   }
 
   @Override
@@ -145,5 +145,18 @@ public final class AnnotatedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> 
       return Objects.equals(actualUnit, other.actualUnit) && Objects.equals(annotation, other.annotation);
     }
     return false;
+  }
+  
+  /**
+   * Creates an annotated unit equivalent to the specified unit.
+   *
+   * @param actualUnit
+   *          the unit to be annotated.
+   * @param annotation
+   *          the annotation.
+   * @return the annotated unit.
+   */
+  public static <Q extends Quantity<Q>> AnnotatedUnit<Q> of(Unit<Q> actualUnit, String annotation) {
+      return new AnnotatedUnit<>(actualUnit, annotation);
   }
 }

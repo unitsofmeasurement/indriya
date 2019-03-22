@@ -30,7 +30,6 @@
 package tech.units.indriya.unit;
 
 import javax.measure.quantity.ElectricCurrent;
-
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -195,5 +194,14 @@ public class AnnotatedUnitTest {
   @Test
   public void annotatedUnitHasIdentityConverter() {
     assertTrue(ANNOTATED_AMPERE.getConverterTo(Units.AMPERE).isIdentity());
+  }
+  
+  /**
+   * Verifies the construction of an annotated unit via the of() method.
+   */
+  @Test
+  public void annotatedUnitOf() {
+    AnnotatedUnit<ElectricCurrent> otherUnit = AnnotatedUnit.of(Units.AMPERE, ANNOTATION);
+    assertEquals(ANNOTATED_AMPERE, otherUnit);
   }
 }

@@ -316,4 +316,13 @@ class AlternateUnitTest {
     AlternateUnit<ElectricCurrent> otherUnit = new AlternateUnit<ElectricCurrent>(PARENT_UNIT, OTHER_SYMBOL);
     assertNotEquals(ALTERNATE_UNIT.hashCode(), otherUnit.hashCode());
   }
+  
+  /**
+   * Verifies the construction of an alternate unit via the of() method.
+   */
+  @Test
+  public void alternateUnitOf() {
+    AlternateUnit<Length> otherUnit = AlternateUnit.of(PARENT_UNIT, SYMBOL);
+    assertEquals(ALTERNATE_UNIT, otherUnit);
+  }
 }
