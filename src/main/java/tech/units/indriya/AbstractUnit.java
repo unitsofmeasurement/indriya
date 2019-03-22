@@ -160,7 +160,7 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
   protected abstract Unit<Q> toSystemUnit();
 
   /**
-   * Returns the converter from this unit to its unscaled {@link #toSysemUnit System Unit} unit.
+   * Returns the converter from this unit to its unscaled {@link #toSystemUnit System Unit} unit.
    *
    * @return <code>getConverterTo(this.toSystemUnit())</code>
    * @see #toSystemUnit
