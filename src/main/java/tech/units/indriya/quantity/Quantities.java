@@ -50,7 +50,7 @@ import tech.units.indriya.unit.MixedUnit;
 /**
  * Singleton class for accessing {@link Quantity} instances.
  * 
- * @version 1.8, March 22, 2019
+ * @version 1.8.1, March 24, 2019
  * @author werner
  * @author otaviojava
  * @since 1.0
@@ -76,11 +76,11 @@ public final class Quantities {
      *
      * @param csq
      *            the decimal value and its unit (if any) separated by space(s).
-     * @return <code>QuantityFormat.getInstance(LOCALE_NEUTRAL).parse(csq, new ParsePosition(0))</code>
+     * @return <code>QuantityFormat.getInstance(LOCALE_NEUTRAL).parse(csq)</code>
      */
     public static ComparableQuantity<?> getQuantity(CharSequence csq) {
         try {
-            return SimpleQuantityFormat.getInstance().parse(csq, new ParsePosition(0));
+            return SimpleQuantityFormat.getInstance("n u~ ").parse(csq);
         } catch (MeasurementParseException e) {
             throw new IllegalArgumentException(e.getParsedString());
         }
@@ -157,7 +157,7 @@ public final class Quantities {
      *            the measurement unit.
      * @param scale
      *            the measurement scale.
-     * @return the corresponding <code>numeric</code> quantity.
+     * @return the corresponding mixed <code>numeric</code> quantity.
      * @throws NullPointerException
      *             if value or scale were null
      * @throws IllegalArgumentException
@@ -188,7 +188,7 @@ public final class Quantities {
      *            the measurement value.
      * @param unit
      *            the measurement unit.
-     * @return the corresponding <code>numeric</code> quantity.
+     * @return the corresponding mixed <code>numeric</code> quantity.
      * @throws NullPointerException
      *             if value or unit were null
      * @since 2.0
