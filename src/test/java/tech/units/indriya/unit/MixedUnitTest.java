@@ -76,7 +76,7 @@ public class MixedUnitTest {
               mix(Units.MINUTE).mix(Units.SECOND);
     assertTrue(mixTime instanceof MixedUnit);
     final MixedUnit<Time> actualMixTime = (MixedUnit<Time>)mixTime;
-    assertEquals(Units.HOUR, actualMixTime.getReferenceUnit());
+    assertEquals(Units.HOUR, actualMixTime.getLeadUnit());
     UnitConverter converter = mixTime.getConverterTo(Units.DAY);
     UnitConverter converter2 = Units.HOUR.getConverterTo(Units.DAY);
     Double result = converter.convert(1d);

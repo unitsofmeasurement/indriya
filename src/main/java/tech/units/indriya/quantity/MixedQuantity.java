@@ -100,7 +100,7 @@ public class MixedQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
     }
 
     /**
-     * Returns the numeric value of the quantity represented in the {@link MixedUnit#getReferenceUnit() reference unit} (first in the array/list) of this {@link MixedUnit mixed unit}.
+     * Returns the numeric value of the quantity represented in the {@link MixedUnit#getLeadUnit() reference unit} (first in the array/list) of this {@link MixedUnit mixed unit}.
      * @since 2.0
      */
     @Override

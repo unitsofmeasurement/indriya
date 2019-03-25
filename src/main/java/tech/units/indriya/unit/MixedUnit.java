@@ -55,7 +55,7 @@ import javax.measure.Unit;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.12, March 21, 2019
+ * @version 1.13, March 25, 2019
  * @since 2.0
  */
 public final class MixedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
@@ -144,31 +144,31 @@ public final class MixedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
         return sysConverter;
         */
         //return ((AbstractUnit<Q>) units.get(0)).getSystemConverter();
-        return ((AbstractUnit<Q>) getReferenceUnit()).getSystemConverter();
+        return ((AbstractUnit<Q>) getLeadUnit()).getSystemConverter();
     }
 
     @Override
     protected Unit<Q> toSystemUnit() {
-        return getReferenceUnit().getSystemUnit();
+        return getLeadUnit().getSystemUnit();
     }
 
     @Override
     public Map<? extends Unit<?>, Integer> getBaseUnits() {
-        return getReferenceUnit().getBaseUnits();
+        return getLeadUnit().getBaseUnits();
     }
 
     @Override
     public Dimension getDimension() {
-        return getReferenceUnit().getDimension();
+        return getLeadUnit().getDimension();
     }
     
     /**
-     * Returns the reference unit for this MixedUnit. The reference unit is used for all occasions where this MixedUnit has to behave like a single unit.
-     * The reference unit shall be a member of {@link #getUnits()}.
-     * @return the reference unit; not null
+     * Returns the lead unit for this MixedUnit. The lead unit is used for all occasions where this MixedUnit has to behave like a single unit.
+     * The lead unit shall be a member of {@link #getUnits()}.
+     * @return the lead unit; not null
      * @see #getUnits()
      */
-    public Unit<Q> getReferenceUnit() {
+    public Unit<Q> getLeadUnit() {
       return units.get(0);
     }
     
