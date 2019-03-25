@@ -155,8 +155,8 @@ public class AnnotatedUnitTest {
    * Verifies that an annotated unit is not equal to null.
    */
   @Test
-  public void annotatedUnitIsNotEqualToNull() {
-    assertNotEquals(ANNOTATED_AMPERE, null);
+  public void annotatedUnitIsNotNull() {
+      assertNotNull(ANNOTATED_AMPERE);
   }
 
   /**

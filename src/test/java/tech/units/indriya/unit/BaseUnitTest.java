@@ -215,9 +215,9 @@ public class BaseUnitTest {
    * Verifies that a base unit is not equal to anull.
    */
   @Test
-  public void baseUnitIsNotEqualToNull() {
+  public void baseUnitIsNotNull() {
     AbstractUnit<?> unit = new BaseUnit<>(A_SYMBOL);
-    assertNotEquals(unit, null);
+    assertNotNull(unit);
   }
 
   /**

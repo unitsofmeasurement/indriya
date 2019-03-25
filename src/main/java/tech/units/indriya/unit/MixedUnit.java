@@ -172,6 +172,11 @@ public final class MixedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
       return units.get(0);
     }
     
+    @Override
+    public String getSymbol() {
+      return getLeadUnit().getSymbol();
+    }
+    
     /**
      * Returns a mixed unit from the specified units.
      *

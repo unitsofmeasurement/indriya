@@ -31,40 +31,173 @@ package tech.units.indriya.unit;
 
 import javax.measure.Unit;
 import javax.measure.UnitConverter;
-import javax.measure.quantity.Length;
 import javax.measure.quantity.Time;
-
 import org.junit.jupiter.api.Test;
-
-import tech.units.indriya.unit.Units;
-
 import static org.junit.jupiter.api.Assertions.*;
 
-import static javax.measure.MetricPrefix.*;
+import java.util.Arrays;
 
 /**
- *
- * @author Werner Keil
- */
+*
+* @author Werner Keil
+*/
 public class MixedUnitTest {
 
+  @SuppressWarnings("unchecked")
+  private static final Unit<Time>[] TIMES = new Unit[] {Units.DAY, Units.HOUR, Units.MINUTE};
+  private static final MixedUnit<Time> MIXED_TIME = MixedUnit.of(TIMES);
+  private static final String STRING = "day;h;min";
+  
+  /**
+   * Verifies that the lead unit is wired correctly in the constructor.
+   */
   @Test
-  public void testLength() {
-    final Unit<Length> mixUnit =  Units.METRE.mix(CENTI(Units.METRE));
-    assertEquals("m;cm", mixUnit.toString());
+  public void leadUnitIsWiredCorrectlyInConstructor() {
+    assertEquals(Units.DAY, MIXED_TIME.getLeadUnit());
+  }
+
+  /**
+   * Verifies that the units are wired correctly in the constructor.
+   */
+  @Test
+  public void unitsAreWiredCorrectlyInConstructor() {
+    //assertThat(MIXED_TIME.getUnits(), Matchers.arrayContaining(expected));
+    assertEquals(Arrays.asList(TIMES), MIXED_TIME.getUnits());
+  }
+
+  /**
+   * Verifies that when an annotation unit is provided to the constructor, its actual unit is used as the actual unit for the new mixed unit.
+   */
+  @Test
+  public void mixedUnitsActualUnitIsUsedAsActualUnitByInConstructor() {
+    AnnotatedUnit<Time> unit = new AnnotatedUnit<Time>(MIXED_TIME, "Mixed");
+    assertEquals(MIXED_TIME, unit.getActualUnit());
+  }
+
+  /**
+   * Verifies that getSymbol returns the lead unit's symbol.
+   */
+  @Test
+  public void getSymbolReturnsLeadUnitsSymbol() {
+    assertEquals(Units.DAY.getSymbol(), MIXED_TIME.getSymbol());
+  }
+
+  /**
+   * Verifies that getBaseUnits returns the actual unit's base units.
+   */
+  @Test
+  public void getBaseUnitsReturnsTheActualUnitsBaseUnits() {
+    assertEquals(Units.AMPERE.getBaseUnits(), MIXED_TIME.getBaseUnits());
+  }
+
+  /**
+   * Verifies that toSystemUnit returns the actual unit's system unit.
+   */
+  @Test
+  public void toSystemUnitReturnsTheActualUnitsSystemUnit() {
+    assertEquals(Units.DAY.getSystemUnit(), MIXED_TIME.toSystemUnit());
+  }
+
+  /**
+   * Verifies that getDimension returns the actual unit's dimension.
+   */
+  @Test
+  public void getDimensionReturnsTheActualUnitsDimension() {
+    assertEquals(Units.DAY.getDimension(), MIXED_TIME.getDimension());
+  }
+
+  /**
+   * Verifies that getSystemConverter returns the actual unit's system converter.
+   */
+  @Test
+  public void getSystemConverterReturnsTheActualUnitsSystemConverter() {
+    assertEquals(Units.DAY.getConverterTo(Units.DAY.getSystemUnit()), MIXED_TIME.getSystemConverter());
+  }
+
+  /**
+   * Verifies that an mixed unit is equal to itself.
+   */
+  @Test
+  public void mixedUnitIsEqualToItself() {
+    assertEquals(MIXED_TIME, MIXED_TIME);
+  }
+
+  /**
+   * Verifies that an mixed unit is equal to another mixed unit with the same units.
+   */
+  @Test
+  public void mixedUnitIsEqualToAnotherAnnotatedUnitWithTheSameActualUnitAndAnnotation() {
+    MixedUnit<Time> otherUnit = MixedUnit.of(TIMES);
+    assertEquals(MIXED_TIME, otherUnit);
+  }
+
+  /**
+   * Verifies that an mixed unit is not equal to another mixed unit with other units.
+   */
+  @Test
+  public void mixedUnitIsNotEqualToAnotherAnnotatedUnitWithAnotherActualUnit() {
+    MixedUnit<Time> otherUnit = MixedUnit.of(Units.HOUR, Units.MINUTE, Units.SECOND);
+    assertNotEquals(MIXED_TIME, otherUnit);
+  }
+
+  /**
+   * Verifies that an mixed unit is not equal to an object of a different type.
+   */
+  @Test
+  public void mixedUnitIsNotEqualToAString() {
+    assertNotEquals(MIXED_TIME, STRING);
+  }
+
+  /**
+   * Verifies that an mixed unit is not equal to null.
+   */
+  @Test
+  public void mixedUnitIsNotNull() {
+    assertNotNull(MIXED_TIME);
+  }
+
+  /**
+   * Verifies that an mixed unit has the same hash code as another mixed unit with the same actual unit and annotation.
+   */
+  @Test
+  public void mixedUnitHasTheSameHashCodeAsAnotherMixedUnitWithTheSameUnits() {
+    MixedUnit<Time> otherUnit = MixedUnit.of(Units.DAY, Units.HOUR, Units.MINUTE);
+    assertEquals(MIXED_TIME.hashCode(), otherUnit.hashCode());
+  }
+
+  /**
+   * Verifies that an mixed unit has a different hash code if the actual unit is different. Note that this isn't a requirement for the hashCode
+   * method, but generally a good property to have.
+   */
+  @Test
+  public void mixedUnitHasDifferentHashCodeForMixedUnitWithDifferentUnits() {
+      MixedUnit<Time> otherUnit = MixedUnit.of(Units.HOUR, Units.MINUTE, Units.SECOND);
+    assertNotEquals(MIXED_TIME.hashCode(), otherUnit.hashCode());
   }
   
+  /**
+   * Verifies that an mixed unit has an identity converter to its lead unit.
+   */
   @Test
-  public void testTime() {
-    final Unit<Time> mixUnit =  Units.HOUR.
-              mix(Units.MINUTE).mix(Units.SECOND);
-    assertEquals("h;min;s", mixUnit.toString());
+  public void mixedUnitHasIdentityConverter() {
+    assertTrue(MIXED_TIME.getConverterTo(Units.DAY).isIdentity());
   }
   
+  /**
+   * Verifies the string representation of a mixed unit.
+   */
   @Test
-  public void testTimeOf() {
-    final Unit<Time> mixTime =  MixedUnit.of(Units.DAY, Units.HOUR, Units.MINUTE);
-    assertEquals("day;h;min", mixTime.toString());
+  public void mixedUnitStringRepresentation() {
+    assertEquals(STRING, MIXED_TIME.toString());
+  }
+
+  /**
+   * Verifies the Unit.mix() creation of a mixed unit.
+   */
+  @Test
+  public void testMixTime() {
+    final Unit<Time> mixUnit =  Units.DAY.mix(Units.HOUR).mix(Units.MINUTE);
+    assertEquals(MIXED_TIME, mixUnit);
   }
   
   /**
@@ -87,7 +220,5 @@ public class MixedUnitTest {
     assertFalse(converter.isIdentity());
     assertFalse(converter2.isIdentity());
     assertTrue(converter3.isIdentity());
-    //logger.log(Level.FINER(Units.DAY.getConverterTo(Units.DAY).isIdentity());
-    //logger.log(Level.FINER, result.toString());
   }
 }

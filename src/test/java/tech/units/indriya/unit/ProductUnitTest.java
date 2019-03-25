@@ -220,8 +220,8 @@ public class ProductUnitTest {
    * Verifies that a product unit is not equal to null.
    */
   @Test
-  public void productUnitIsNotEqualNull() {
-    assertNotEquals(KILOGRAM_METRE, null);
+  public void productUnitIsNotNull() {
+      assertNotNull(KILOGRAM_METRE);
   }
 
   /**
