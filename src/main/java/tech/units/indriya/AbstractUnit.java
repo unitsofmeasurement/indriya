@@ -570,15 +570,9 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
     } else if (name == null) {
       if (getSymbol() == null || that.getSymbol() == null) return -1;
       return getSymbol().compareTo(that.getSymbol());
-    } else if (getSymbol() == null) {
-      return name == null ? -1 : name.compareTo(that.getName());
     } else {
-      UnitConverter conv = getConverterTo(that);
-      if (conv instanceof AbstractConverter) {
-        return ((AbstractConverter) conv).compareTo(that.getConverterTo(this));
-      }
-      return -1;
-    }
+      return name == null ? -1 : name.compareTo(that.getName());
+    } 
   }
 
   @Override
