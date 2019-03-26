@@ -321,8 +321,16 @@ class AlternateUnitTest {
    * Verifies the construction of an alternate unit via the of() method.
    */
   @Test
-  public void alternateUnitOf() {
+  public void testUnitOf() {
     AlternateUnit<Length> otherUnit = AlternateUnit.of(PARENT_UNIT, SYMBOL);
     assertEquals(ALTERNATE_UNIT, otherUnit);
+  }
+  
+  /**
+   * Verifies the string representation of an alternate unit.
+   */
+  @Test
+  public void testStringRepresentation() {
+    assertEquals(SYMBOL, ALTERNATE_UNIT.toString());
   }
 }

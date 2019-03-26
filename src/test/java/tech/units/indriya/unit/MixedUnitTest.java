@@ -66,15 +66,6 @@ public class MixedUnitTest {
   }
 
   /**
-   * Verifies that when an annotation unit is provided to the constructor, its actual unit is used as the actual unit for the new mixed unit.
-   */
-  @Test
-  public void mixedUnitsActualUnitIsUsedAsActualUnitByInConstructor() {
-    AnnotatedUnit<Time> unit = new AnnotatedUnit<Time>(MIXED_TIME, "Mixed");
-    assertEquals(MIXED_TIME, unit.getActualUnit());
-  }
-
-  /**
    * Verifies that getSymbol returns the lead unit's symbol.
    */
   @Test
@@ -126,7 +117,7 @@ public class MixedUnitTest {
    * Verifies that an mixed unit is equal to another mixed unit with the same units.
    */
   @Test
-  public void mixedUnitIsEqualToAnotherAnnotatedUnitWithTheSameActualUnitAndAnnotation() {
+  public void mixedUnitIsEqualToAnotherMixedUnitWithTheSameActualUnits() {
     MixedUnit<Time> otherUnit = MixedUnit.of(TIMES);
     assertEquals(MIXED_TIME, otherUnit);
   }
@@ -171,7 +162,7 @@ public class MixedUnitTest {
    */
   @Test
   public void mixedUnitHasDifferentHashCodeForMixedUnitWithDifferentUnits() {
-      MixedUnit<Time> otherUnit = MixedUnit.of(Units.HOUR, Units.MINUTE, Units.SECOND);
+    MixedUnit<Time> otherUnit = MixedUnit.of(Units.HOUR, Units.MINUTE, Units.SECOND);
     assertNotEquals(MIXED_TIME.hashCode(), otherUnit.hashCode());
   }
   
@@ -187,7 +178,7 @@ public class MixedUnitTest {
    * Verifies the string representation of a mixed unit.
    */
   @Test
-  public void mixedUnitStringRepresentation() {
+  public void testStringRepresentation() {
     assertEquals(STRING, MIXED_TIME.toString());
   }
 

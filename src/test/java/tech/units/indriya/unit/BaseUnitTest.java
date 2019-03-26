@@ -30,6 +30,7 @@
 package tech.units.indriya.unit;
 
 import javax.measure.Dimension;
+import javax.measure.Unit;
 
 import org.junit.jupiter.api.Test;
 
@@ -250,5 +251,14 @@ public class BaseUnitTest {
     AbstractUnit<?> unit = new BaseUnit<>(A_SYMBOL, A_DIMENSION);
     AbstractUnit<?> otherUnit = new BaseUnit<>(A_SYMBOL, OTHER_SYMBOL);
     assertNotEquals(unit.hashCode(), otherUnit.hashCode());
+  }
+  
+  /**
+   * Verifies the string representation of a base unit.
+   */
+  @Test
+  public void testStringRepresentation() {
+    Unit<?> unit = new BaseUnit<>(A_SYMBOL, A_DIMENSION);
+    assertEquals(A_SYMBOL, unit.toString());
   }
 }

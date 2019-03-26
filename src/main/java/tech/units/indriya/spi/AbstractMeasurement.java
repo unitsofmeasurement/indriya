@@ -35,6 +35,7 @@ import javax.measure.Quantity;
 
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.ComparableQuantity;
+import tech.uom.lib.common.util.NumberComparator;
 
 /**
  * <p>
@@ -46,7 +47,7 @@ import tech.units.indriya.ComparableQuantity;
  * </p>
  *
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 0.4 $Date: 2016-10-15 $
+ * @version 0.5 $Date: 2019-03-26 $
  */
 abstract class AbstractMeasurement<Q extends Quantity<Q>> implements Measurement<Q>, Comparable<Measurement<Q>> {
 
