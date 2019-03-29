@@ -126,9 +126,17 @@ public class MixedUnitTest {
    * Verifies that an mixed unit is not equal to another mixed unit with other units.
    */
   @Test
-  public void mixedUnitIsNotEqualToAnotherAnnotatedUnitWithAnotherActualUnit() {
+  public void mixedUnitIsNotEqualToAnotherMixedUnit() {
     MixedUnit<Time> otherUnit = MixedUnit.of(Units.HOUR, Units.MINUTE, Units.SECOND);
     assertNotEquals(MIXED_TIME, otherUnit);
+  }
+  
+  /**
+   * Verifies that an mixed unit is not equal to a single unit.
+   */
+  @Test
+  public void mixedUnitIsNotEqualToAnotherSingleUnit() {
+    assertNotEquals(MIXED_TIME, Units.DAY);
   }
 
   /**

@@ -51,76 +51,106 @@ import static javax.measure.MetricPrefix.*;
  * @author Werner Keil
  */
 public class MixedQuantityTest {
-  static final Logger logger = Logger.getLogger(MixedQuantityTest.class.getName());
+    static final Logger logger = Logger.getLogger(MixedQuantityTest.class.getName());
 
-  @Test
-  public void testLengthSingleValueMixedUnit() {
-    final Unit<Length> mixUnit = Units.METRE.mix(CENTI(Units.METRE));
-    assertThrows(MeasurementException.class, () -> {
-        @SuppressWarnings("unused")
-        Quantity<Length> l1 = Quantities.getQuantity(1.70, mixUnit);
-    });
-  }
-  
-  @Test
-  public void testLengths() {
-    final Unit<Length> mixUnit = Units.METRE.mix(CENTI(Units.METRE));
-    final Number[] numList = {1, 70};
-    Quantity<Length> l1 = Quantities.getMixedQuantity(numList, mixUnit);
-    assertEquals(BigDecimal.valueOf(1.7d), l1.getValue());
-    assertEquals("m;cm", l1.getUnit().toString());
-    assertEquals("1 m 70 cm", l1.toString());
-    Quantity<Length> l2 = l1.to(Units.METRE);
-    assertEquals(BigDecimal.valueOf(1.7d), l2.getValue());
-    Quantity<Length> l3 = l1.to(CENTI(Units.METRE));
-    assertEquals(BigDecimal.valueOf(170d), l3.getValue());
-  }
-  
-  @Test
-  public void testTimes() {
-    final Unit<Time> mixUnit = Units.DAY.mix(Units.HOUR);
-    final Number[] numList = {3, 12};
-    Quantity<Time> t1 = Quantities.getMixedQuantity(numList, mixUnit);
-    assertEquals(BigDecimal.valueOf(3.5d), t1.getValue());
-    assertEquals("day;h", t1.getUnit().toString());
-    assertEquals("3 day 12 h", t1.toString());
-    final Quantity<Time> t2 = t1.to(Units.MINUTE);
-    assertEquals(BigDecimal.valueOf(5040d), t2.getValue());
-    final Quantity<Time> t3 = t1.to(Units.SECOND);
-    assertEquals(BigDecimal.valueOf(302400d), t3.getValue());
-  }
- 
-  @Test
-  public void testArrayNoMixedUnit() {
-    Number[] numList = {1, 70};
-    assertThrows(MeasurementException.class, () -> {
-        @SuppressWarnings("unused")
-        Quantity<Time> t1 = Quantities.getMixedQuantity(numList, Units.DAY);
-    });
-  }
-  
-  @Test
-  public void testSizeMismatch() {
-      Unit<Time> compTime = Units.HOUR.
-              mix(Units.MINUTE).mix(Units.SECOND);
-      Number[] numList = {1, 70};
-    assertThrows(IllegalArgumentException.class, () -> {
-        @SuppressWarnings("unused")
-        Quantity<Time> t1 = Quantities.getMixedQuantity(numList, compTime);
-    });
-  }
-  
-  @Test
-  public void testConvertToMixed() {
-    Unit<Length> mixUnit = Units.METRE.mix(CENTI(Units.METRE));
-    Quantity<Length> l1 = Quantities.getQuantity(170, CENTI(Units.METRE));
-    assertEquals(170, l1.getValue());
-    assertEquals("cm", l1.getUnit().toString());
-    assertThrows(MeasurementException.class, () -> {
-        Quantity<Length> l2 = l1.to(mixUnit);
-        // TODO UnitConverter implementations should also decompose a quantity into a MixedQuantity, so this no longer throws an exception
+    @Test
+    public void testLengthSingleValueMixedUnit() {
+        final Unit<Length> mixUnit = Units.METRE.mix(CENTI(Units.METRE));
+        assertThrows(MeasurementException.class, () -> {
+            @SuppressWarnings("unused")
+            Quantity<Length> l1 = Quantities.getQuantity(1.70, mixUnit);
+        });
+    }
 
-        logger.warning(String.valueOf(l2));
-    });
-  }
+    @Test
+    public void testLengths() {
+        final Unit<Length> mixUnit = Units.METRE.mix(CENTI(Units.METRE));
+        final Number[] numList = { 1, 70 };
+        Quantity<Length> l1 = Quantities.getMixedQuantity(numList, mixUnit);
+        assertEquals(BigDecimal.valueOf(1.7d), l1.getValue());
+        assertEquals("m;cm", l1.getUnit().toString());
+        assertEquals("1 m 70 cm", l1.toString());
+        Quantity<Length> l2 = l1.to(Units.METRE);
+        assertEquals(BigDecimal.valueOf(1.7d), l2.getValue());
+        Quantity<Length> l3 = l1.to(CENTI(Units.METRE));
+        assertEquals(BigDecimal.valueOf(170d), l3.getValue());
+    }
+
+    /**
+     * Inspired by Time conversion in https://reference.wolfram.com/language/ref/MixedUnit.html
+     */
+    @Test
+    public void testTimes() {
+        final Unit<Time> mixUnit = Units.DAY.mix(Units.HOUR).mix(Units.MINUTE);
+        final Number[] numList = { 3, 4, 48 };
+        Quantity<Time> t1 = Quantities.getMixedQuantity(numList, mixUnit);
+        assertEquals(BigDecimal.valueOf(3.2d), ((BigDecimal) t1.getValue()).stripTrailingZeros());
+        assertEquals("day;h;min", t1.getUnit().toString());
+        assertEquals("3 day 4 h 48 min", t1.toString());
+        final Quantity<Time> t2 = t1.to(Units.MINUTE);
+
+        assertEquals(new BigDecimal("4608.0000000000000000000000000000"), t2.getValue());
+        final Quantity<Time> t3 = t1.to(Units.SECOND);
+        assertEquals(new BigDecimal("276480.0000000000000000000000000000"), t3.getValue());
+    }
+
+    @Test
+    public void testArrayNoMixedUnit() {
+        Number[] numList = { 1, 70 };
+        assertThrows(MeasurementException.class, () -> {
+            @SuppressWarnings("unused")
+            Quantity<Time> t1 = Quantities.getMixedQuantity(numList, Units.DAY);
+        });
+    }
+
+    @Test
+    public void testSizeMismatch() {
+        Unit<Time> compTime = Units.HOUR.mix(Units.MINUTE).mix(Units.SECOND);
+        Number[] numList = { 1, 70 };
+        assertThrows(IllegalArgumentException.class, () -> {
+            @SuppressWarnings("unused")
+            Quantity<Time> t1 = Quantities.getMixedQuantity(numList, compTime);
+        });
+    }
+
+    @Test
+    public void testConvertToMixed() {
+        Unit<Length> mixUnit = Units.METRE.mix(CENTI(Units.METRE));
+        Quantity<Length> l1 = Quantities.getQuantity(170, CENTI(Units.METRE));
+        assertEquals(170, l1.getValue());
+        assertEquals("cm", l1.getUnit().toString());
+        assertThrows(MeasurementException.class, () -> {
+            Quantity<Length> l2 = l1.to(mixUnit);
+            // TODO UnitConverter implementations should also decompose a quantity into a MixedQuantity, so this no longer throws an exception
+
+            logger.warning(String.valueOf(l2));
+        });
+    }
+
+    /**
+     * Verifies that an mixed quantity is not equal to another quantity.
+     */
+    @Test
+    public void mixedQuantityIsNotEqualToAnotherQuantity() {
+        final Unit<Time> mixUnit = (Units.HOUR).mix(Units.MINUTE);
+        final Number[] numList = { 2, 6 };
+        Quantity<Time> mixTime = Quantities.getMixedQuantity(numList, mixUnit);
+        Quantity<Time> compareTime = Quantities.getQuantity(2.5d, Units.HOUR);
+        assertNotEquals(mixTime, compareTime);
+        assertNotEquals(mixTime.getValue().doubleValue(), compareTime.getValue().doubleValue());
+
+    }
+
+    /**
+     * Verifies that an mixed quantity is not equal to another quantity that has the same numeric value.
+     */
+    @Test
+    public void mixedQuantityIsNotEqualToAQuantityOfTheSameNumericValue() {
+        final Unit<Time> mixUnit = (Units.HOUR).mix(Units.MINUTE);
+        final Number[] numList = { 2, 30 };
+        Quantity<Time> mixTime = Quantities.getMixedQuantity(numList, mixUnit);
+        Quantity<Time> compareTime = Quantities.getQuantity(2.5d, Units.HOUR);
+        assertNotEquals(mixTime, compareTime);
+        assertEquals(mixTime.getValue().doubleValue(), compareTime.getValue().doubleValue());
+    }
 }

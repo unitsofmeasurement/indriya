@@ -33,7 +33,6 @@ import static javax.measure.Quantity.Scale.ABSOLUTE;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.text.ParsePosition;
 import java.util.Objects;
 
 import javax.measure.MeasurementException;
@@ -50,7 +49,7 @@ import tech.units.indriya.unit.MixedUnit;
 /**
  * Singleton class for accessing {@link Quantity} instances.
  * 
- * @version 1.8.1, March 24, 2019
+ * @version 1.9, March 29, 2019
  * @author werner
  * @author otaviojava
  * @since 1.0
