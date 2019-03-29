@@ -74,18 +74,18 @@ public class MixedUnitTest {
   }
 
   /**
-   * Verifies that getBaseUnits returns the actual unit's base units.
+   * Verifies that getBaseUnits returns the lead unit's base units.
    */
   @Test
-  public void getBaseUnitsReturnsTheActualUnitsBaseUnits() {
-    assertEquals(Units.AMPERE.getBaseUnits(), MIXED_TIME.getBaseUnits());
+  public void getBaseUnitsReturnsTheLeadUnitsBaseUnits() {
+    assertEquals(Units.DAY.getBaseUnits(), MIXED_TIME.getBaseUnits());
   }
 
   /**
    * Verifies that toSystemUnit returns the actual unit's system unit.
    */
   @Test
-  public void toSystemUnitReturnsTheActualUnitsSystemUnit() {
+  public void toSystemUnitReturnsTheLeadUnitsSystemUnit() {
     assertEquals(Units.DAY.getSystemUnit(), MIXED_TIME.toSystemUnit());
   }
 
@@ -93,7 +93,7 @@ public class MixedUnitTest {
    * Verifies that getDimension returns the actual unit's dimension.
    */
   @Test
-  public void getDimensionReturnsTheActualUnitsDimension() {
+  public void getDimensionReturnsTheLeadUnitsDimension() {
     assertEquals(Units.DAY.getDimension(), MIXED_TIME.getDimension());
   }
 
@@ -101,7 +101,7 @@ public class MixedUnitTest {
    * Verifies that getSystemConverter returns the actual unit's system converter.
    */
   @Test
-  public void getSystemConverterReturnsTheActualUnitsSystemConverter() {
+  public void getSystemConverterReturnsTheLeadUnitsSystemConverter() {
     assertEquals(Units.DAY.getConverterTo(Units.DAY.getSystemUnit()), MIXED_TIME.getSystemConverter());
   }
 
@@ -117,7 +117,7 @@ public class MixedUnitTest {
    * Verifies that an mixed unit is equal to another mixed unit with the same units.
    */
   @Test
-  public void mixedUnitIsEqualToAnotherMixedUnitWithTheSameActualUnits() {
+  public void mixedUnitIsEqualToAnotherMixedUnitWithTheSameLeadUnits() {
     MixedUnit<Time> otherUnit = MixedUnit.of(TIMES);
     assertEquals(MIXED_TIME, otherUnit);
   }
@@ -156,7 +156,7 @@ public class MixedUnitTest {
   }
 
   /**
-   * Verifies that an mixed unit has the same hash code as another mixed unit with the same actual unit and annotation.
+   * Verifies that an mixed unit has the same hash code as another mixed unit with the same units and mix.
    */
   @Test
   public void mixedUnitHasTheSameHashCodeAsAnotherMixedUnitWithTheSameUnits() {
