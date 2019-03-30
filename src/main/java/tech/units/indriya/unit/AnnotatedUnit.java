@@ -45,7 +45,7 @@ import java.util.Objects;
  * </p>
  * 
  * <p>
- * Instances of this class are created through the {@link AbstractUnit#annotate(String)} method.
+ * Instances of this class are created through the {@link AnnotatedUnit#of(Unit, String)} method.
  * </p>
  *
  * @param <Q>
@@ -53,7 +53,7 @@ import java.util.Objects;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.4, March 23, 2019
+ * @version 1.5, March 30, 2019
  * @since 1.0
  */
 public final class AnnotatedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {

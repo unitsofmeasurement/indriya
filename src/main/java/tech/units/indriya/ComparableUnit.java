@@ -80,5 +80,5 @@ public interface ComparableUnit<Q extends Quantity<Q>> extends Unit<Q>, Comparab
    * @return the annotated unit.
    * @since 2.0
    */
-  public Unit<Q> annotate(String annotation);
+//  public Unit<Q> annotate(String annotation);
 }

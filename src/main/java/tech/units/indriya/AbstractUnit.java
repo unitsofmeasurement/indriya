@@ -179,9 +179,9 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
    *            the unit annotation.
    * @return the annotated unit.
    */
-  public Unit<Q> annotate(String annotation) {
-    return new AnnotatedUnit<>(this, annotation);
-  }
+//  public Unit<Q> annotate(String annotation) {
+//    return new AnnotatedUnit<>(this, annotation);
+//  }
 
   /**
    * Returns the abstract unit represented by the specified characters as per default format.

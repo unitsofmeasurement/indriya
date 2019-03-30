@@ -92,7 +92,7 @@ public class AbsUnitTest {
   public void testEquivalentWhenComposed() {
     assertTrue((((AbstractUnit<Mass>) MICRO(GRAM))).isEquivalentOf(GRAM.divide(1000).divide(1000)));
   }
-
+/*
   @Test
   public void testAnnotate() {
     assertEquals("g{Gr}", (((AbstractUnit<Mass>) GRAM).annotate("Gr")).toString());
@@ -102,4 +102,5 @@ public class AbsUnitTest {
   public void testAnnotateClass() {
     assertEquals("tech.units.indriya.unit.AnnotatedUnit", (((AbstractUnit<Mass>) GRAM).annotate("Gr")).getClass().getName());
   }
+  */
 }
