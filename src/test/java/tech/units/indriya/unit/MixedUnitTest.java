@@ -29,6 +29,8 @@
  */
 package tech.units.indriya.unit;
 
+import static javax.measure.MetricPrefix.MEGA;
+
 import javax.measure.Unit;
 import javax.measure.UnitConverter;
 import javax.measure.quantity.Time;
@@ -220,4 +222,29 @@ public class MixedUnitTest {
     assertFalse(converter2.isIdentity());
     assertTrue(converter3.isIdentity());
   }
+  
+  /**
+   * Verifies that the lead unit is wired correctly in the constructor.
+   */
+  @Test
+  public void leadUnitIsNotEqualToPow() {
+    assertNotEquals(Units.DAY.pow(10), MIXED_TIME.pow(10));
+  }
+  
+  /**
+   * Verifies that the lead unit is wired correctly in the constructor.
+   */
+  @Test
+  public void leadUnitIsNotEqualToShift() {
+    assertNotEquals(Units.DAY.shift(10), MIXED_TIME.shift(10));
+  }
+  
+  /**
+   * Verifies that the lead unit is wired correctly in the constructor.
+   */
+  @Test
+  public void leadUnitIsNotEqualToMega() {
+    assertNotEquals(MEGA(Units.DAY), MEGA(MIXED_TIME));
+  }
+
 }
