@@ -32,7 +32,7 @@ package tech.units.indriya.unit;
 import javax.measure.quantity.ElectricCurrent;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
-
+import static javax.measure.MetricPrefix.MEGA;
 import static javax.measure.MetricPrefix.MILLI;
 
 import tech.units.indriya.AbstractUnit;
@@ -219,5 +219,13 @@ public class AnnotatedUnitTest {
   @Test
   public void actualUnitIsNotEqualToShift() {
     assertNotEquals(Units.AMPERE.shift(10), ANNOTATED_AMPERE.shift(10));
+  }
+  
+  /**
+   * Verifies that the lead unit is wired correctly in the constructor.
+   */
+  @Test
+  public void actualUnitIsNotEqualToMega() {
+    assertNotEquals(MEGA(Units.AMPERE), MEGA(ANNOTATED_AMPERE).toString());
   }
 }
