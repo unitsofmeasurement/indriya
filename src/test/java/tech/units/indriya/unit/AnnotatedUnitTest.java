@@ -29,7 +29,6 @@
  */
 package tech.units.indriya.unit;
 
-import javax.measure.Unit;
 import javax.measure.quantity.ElectricCurrent;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -212,5 +211,13 @@ public class AnnotatedUnitTest {
   @Test
   public void testStringRepresentation() {
     assertEquals("A{Annotation}", ANNOTATED_AMPERE.toString());
+  }
+  
+  /**
+   * Verifies that the actual unit is wired correctly in the constructor.
+   */
+  @Test
+  public void actualUnitIsNotEqualToShift() {
+    assertNotEquals(Units.AMPERE.shift(10), ANNOTATED_AMPERE.shift(10));
   }
 }

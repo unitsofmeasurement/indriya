@@ -333,4 +333,12 @@ class AlternateUnitTest {
   public void testStringRepresentation() {
     assertEquals(SYMBOL, ALTERNATE_UNIT.toString());
   }
+  
+  /**
+   * Verifies that the lead unit is wired correctly in the constructor.
+   */
+  @Test
+  public void actualUnitIsNotEqualToShift() {
+    assertNotEquals(ALTERNATE_UNIT.getParentUnit().shift(10), ALTERNATE_UNIT.shift(10));
+  }
 }
