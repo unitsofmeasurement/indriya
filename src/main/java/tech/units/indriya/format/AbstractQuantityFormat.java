@@ -41,6 +41,7 @@ import javax.measure.format.MeasurementParseException;
 import javax.measure.format.QuantityFormat;
 import tech.units.indriya.AbstractQuantity;
 import tech.units.indriya.ComparableQuantity;
+import tech.units.indriya.quantity.CompositeQuantity;
 import tech.uom.lib.common.function.Parser;
 
 /**
@@ -50,7 +51,7 @@ import tech.uom.lib.common.function.Parser;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 1.4, $Date: 2019-03-21 $
+ * @version 1.5, $Date: 2019-03-31 $
  * @since 1.0
  * 
  */
@@ -122,11 +123,15 @@ public abstract class AbstractQuantityFormat extends Format implements QuantityF
 
     @Override
     public final StringBuffer format(Object obj, final StringBuffer toAppendTo, FieldPosition pos) {
-        if (!(obj instanceof AbstractQuantity<?>))
-            throw new IllegalArgumentException("obj: Not an instance of Quantity");
-        if ((toAppendTo == null) || (pos == null))
-            throw new NullPointerException();
-        return (StringBuffer) format((AbstractQuantity<?>) obj, toAppendTo);
+        if(obj instanceof CompositeQuantity<?>) {
+            return formatComposite((CompositeQuantity<?>) obj, toAppendTo);
+        } else {
+            if (!(obj instanceof ComparableQuantity<?>))
+                throw new IllegalArgumentException("obj: Not an instance of Quantity");
+            if ((toAppendTo == null) || (pos == null))
+                throw new NullPointerException();
+            return (StringBuffer) format((ComparableQuantity<?>) obj, toAppendTo);
+        }
     }
     
     @Override
@@ -157,7 +162,7 @@ public abstract class AbstractQuantityFormat extends Format implements QuantityF
     }
     
     /**
-     * Convenience method equivalent to {@link #format(AbstractQuantity, Appendable)} except it does not raise an IOException.
+     * Convenience method equivalent to {@link #format(ComparableQuantity, Appendable)} except it does not raise an IOException.
      *
      * @param quantity
      *            the quantity to format.
@@ -165,11 +170,22 @@ public abstract class AbstractQuantityFormat extends Format implements QuantityF
      *            the appendable destination.
      * @return the specified <code>StringBuilder</code>.
      */
-    protected final StringBuffer format(AbstractQuantity<?> quantity, StringBuffer dest) {
+    protected final StringBuffer format(ComparableQuantity<?> quantity, StringBuffer dest) {
         try {
             return (StringBuffer) this.format(quantity, (Appendable) dest);
         } catch (IOException ex) {
             throw new RuntimeException(ex); // Should not happen.
         }
     }
+    
+    /**
+     * Convenience method equivalent to {@link #format(CompositeQuantity, Appendable)} except it does not raise an IOException.
+     *
+     * @param comp
+     *            the composite quantity to format.
+     * @param dest
+     *            the appendable destination.
+     * @return the specified <code>StringBuilder</code>.
+     */
+    protected abstract StringBuffer formatComposite(CompositeQuantity<?> comp, StringBuffer dest);
 }

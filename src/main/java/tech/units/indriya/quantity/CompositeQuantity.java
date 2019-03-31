@@ -52,10 +52,10 @@ import tech.uom.lib.common.function.QuantityConverter;
  *            The type of the quantity.
  * 
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 0.8, March 30, 2019
+ * @version 0.9, March 31, 2019
  * @see <a href="http://www.thefreedictionary.com/Compound+quantity">Free Dictionary: Compound Quantity</a>
  */
-public class CompoundQuantity<Q extends Quantity<Q>> implements QuantityConverter<Q>, Serializable {
+public class CompositeQuantity<Q extends Quantity<Q>> implements QuantityConverter<Q>, Serializable {
     // TODO could it be final?
     /**
     * 
@@ -65,7 +65,7 @@ public class CompoundQuantity<Q extends Quantity<Q>> implements QuantityConverte
     private final Map<Unit<Q>, Quantity<Q>> quantMap = new LinkedHashMap<>();
 
     @SafeVarargs
-    protected CompoundQuantity(final Quantity<Q>... quantities) {
+    protected CompositeQuantity(final Quantity<Q>... quantities) {
         for (Quantity<Q> q : quantities) {
             quantMap.put(q.getUnit(), q);
         }
@@ -78,8 +78,8 @@ public class CompoundQuantity<Q extends Quantity<Q>> implements QuantityConverte
      *            The type of the quantity.
      */
     @SafeVarargs
-    public static <Q extends Quantity<Q>> CompoundQuantity<Q> of(Quantity<Q>... quantities) {
-        return new CompoundQuantity<>(quantities);
+    public static <Q extends Quantity<Q>> CompositeQuantity<Q> of(Quantity<Q>... quantities) {
+        return new CompositeQuantity<>(quantities);
     }
 
     /**
@@ -158,8 +158,8 @@ public class CompoundQuantity<Q extends Quantity<Q>> implements QuantityConverte
         if (this == obj) {
             return true;
         }
-        if (obj instanceof CompoundQuantity) {
-            CompoundQuantity<?> c = (CompoundQuantity<?>) obj;
+        if (obj instanceof CompositeQuantity) {
+            CompositeQuantity<?> c = (CompositeQuantity<?>) obj;
             return Objects.equals(quantMap, c.quantMap);
         } else {
             return false;

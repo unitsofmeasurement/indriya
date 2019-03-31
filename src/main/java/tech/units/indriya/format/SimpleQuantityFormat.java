@@ -44,6 +44,7 @@ import javax.measure.format.MeasurementParseException;
 import tech.units.indriya.AbstractQuantity;
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.ComparableQuantity;
+import tech.units.indriya.quantity.CompositeQuantity;
 import tech.units.indriya.quantity.MixedQuantity;
 import tech.units.indriya.quantity.NumberQuantity;
 import tech.units.indriya.quantity.Quantities;
@@ -99,7 +100,7 @@ import tech.units.indriya.unit.MixedUnit;
  *     it's needed to separate two adjacent fields.<br><br></li>
  * </ul>
  * </p>
- * @version 1.2, $Date: 2019-03-21 $
+ * @version 1.3, $Date: 2019-03-31 $
  * @since 2.0
  */
 @SuppressWarnings("rawtypes")
@@ -270,4 +271,18 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
 	public String getPattern() {
 		return pattern;
 	}
+	
+    @Override
+    protected StringBuffer formatComposite(CompositeQuantity<?> comp, StringBuffer dest) {
+        final StringBuffer sb = new StringBuffer();
+        int i = 0;
+        for (Quantity<?> q : comp.getQuantities()) {
+            sb.append(format(q));
+            if (i < comp.getQuantities().size() - 1 ) {
+                sb.append((mixDelimiter != null ? mixDelimiter : DEFAULT_DELIMITER)); // we need null for parsing but not
+            }
+            i++;
+        }
+        return sb;
+    }
 }
