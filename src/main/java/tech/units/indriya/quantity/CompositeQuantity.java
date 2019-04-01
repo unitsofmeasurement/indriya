@@ -29,6 +29,8 @@
  */
 package tech.units.indriya.quantity;
 
+import static javax.measure.Quantity.Scale;
+
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -52,7 +54,7 @@ import tech.uom.lib.common.function.QuantityConverter;
  *            The type of the quantity.
  * 
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 0.9, March 31, 2019
+ * @version 1.0, April 7, 2019
  * @see <a href="http://www.thefreedictionary.com/Compound+quantity">Free Dictionary: Compound Quantity</a>
  */
 public class CompositeQuantity<Q extends Quantity<Q>> implements QuantityConverter<Q>, Serializable {
@@ -64,15 +66,27 @@ public class CompositeQuantity<Q extends Quantity<Q>> implements QuantityConvert
 
     private final Map<Unit<Q>, Quantity<Q>> quantMap = new LinkedHashMap<>();
 
+    /**
+     * @throws NullPointerException
+     *             if the given quantities are <code>null</code>.
+    * @throws MeasurementException
+    *             if this CompositeQuantity is empty or contains only <code>null</code> values.
+    */
     @SafeVarargs
     protected CompositeQuantity(final Quantity<Q>... quantities) {
+        Objects.requireNonNull(quantities);
+        final Scale firstScale = quantities[0].getScale();        
         for (Quantity<Q> q : quantities) {
-            quantMap.put(q.getUnit(), q);
+            if (firstScale.equals(q.getScale())) {
+                quantMap.put(q.getUnit(), q);
+            } else {
+                throw new MeasurementException("Quantities do not have the same scale.");
+            }
         }
     }
 
     /**
-     * Returns an {@code CompoundQuantity} with the specified values.
+     * Returns an {@code CompositeQuantity} with the specified values.
      * 
      * @param <Q>
      *            The type of the quantity.
@@ -83,7 +97,7 @@ public class CompositeQuantity<Q extends Quantity<Q>> implements QuantityConvert
     }
 
     /**
-     * Gets the set of units in this CompoundQuantity.
+     * Gets the set of units in this CompositeQuantity.
      * <p>
      * This set can be used in conjunction with {@link #get(Unit)} to access the entire quantity.
      *
@@ -94,7 +108,7 @@ public class CompositeQuantity<Q extends Quantity<Q>> implements QuantityConvert
     }
 
     /**
-     * Gets quantities in this CompoundQuantity.
+     * Gets quantities in this CompositeQuantity.
      *
      * @return a collection containing the quantities, not null
      */
@@ -105,7 +119,7 @@ public class CompositeQuantity<Q extends Quantity<Q>> implements QuantityConvert
     /**
      * Gets the Quantity of the requested Unit.
      * <p>
-     * This returns a value for each Unit in this CompoundQuantity. Or <type>null</type> if the given unit is not included.
+     * This returns a value for each Unit in this CompositeQuantity. Or <type>null</type> if the given unit is not included.
      *
      */
     public Quantity<Q> get(Unit<Q> unit) {
@@ -123,13 +137,13 @@ public class CompositeQuantity<Q extends Quantity<Q>> implements QuantityConvert
     }
 
     /**
-     * Returns the <b>sum</b> of all quantity values in this CompoundQuantity converted into another (compatible) unit.
+     * Returns the <b>sum</b> of all quantity values in this CompositeQuantity converted into another (compatible) unit.
      * 
-     * @return the sum of all quantities in this CompoundQuantity or a new quantity stated in the specified unit.
+     * @return the sum of all quantities in this CompositeQuantity or a new quantity stated in the specified unit.
      * @throws ArithmeticException
      *             if the result is inexact and the quotient has a non-terminating decimal expansion.
      * @throws MeasurementException
-     *             if this CompoundQuantity is empty or contains only <code>null</code> values.
+     *             if this CompositeQuantity is empty or contains only <code>null</code> values.
      */
     @Override
     public Quantity<Q> to(Unit<Q> type) {

@@ -40,6 +40,7 @@ import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.Units;
+import tech.uom.lib.common.function.QuantityConverter;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static javax.measure.MetricPrefix.*;
@@ -61,7 +62,7 @@ public class CompositeQuantityTest {
         Quantity<Length> l2 = mixLen.to(Units.METRE);
         assertEquals(Integer.valueOf(1), l2.getValue());
     }
-
+    
     @Test
     public void testLengths() {
         @SuppressWarnings("unchecked")
@@ -121,5 +122,18 @@ public class CompositeQuantityTest {
         Quantity<Time> compareTime = Quantities.getQuantity(2.5d, Units.HOUR);
         assertNotEquals(mixTime, compareTime);
         assertEquals(mixTime.to(Units.HOUR), compareTime);    
+     }
+    
+    /**
+     * Verifies that an mixed quantity can be represented as QuantityConverter.
+     */
+    @Test
+    public void mixedQuantityAsConverter() {
+        @SuppressWarnings("unchecked")
+        final Quantity<Time>[] numList = new Quantity[] { Quantities.getQuantity(2, Units.HOUR),  Quantities.getQuantity(30, Units.MINUTE) };
+        QuantityConverter<Time> convTime = CompositeQuantity.of(numList);
+        Quantity<Time> compareTime = Quantities.getQuantity(2.5d, Units.HOUR);
+        assertNotEquals(convTime, compareTime);
+        assertEquals(convTime.to(Units.HOUR), compareTime);    
      }
 }
