@@ -72,26 +72,7 @@ public class AbsUnitTest {
   public void testParse2() {
     assertEquals(MILLI(CELSIUS), AbstractUnit.parse("m°C"));
   }
-
-  @Test
-  public void testCompareTo() {
-    assertEquals(0, ((AbstractUnit<Mass>) KILOGRAM).compareTo(KILOGRAM));
-  }
-
-  @Test
-  public void testCompareToOther() {
-    assertEquals(-1, ((AbstractUnit<Mass>) KILOGRAM).compareTo(KILO(GRAM)));
-  }
-
-  @Test
-  public void testEquivalent() {
-    assertTrue((((AbstractUnit<Mass>) MICRO(GRAM))).isEquivalentOf(GRAM.divide(1_000_000)));
-  }
   
-  @Test
-  public void testEquivalentWhenComposed() {
-    assertTrue((((AbstractUnit<Mass>) MICRO(GRAM))).isEquivalentOf(GRAM.divide(1000).divide(1000)));
-  }
 /*
   @Test
   public void testAnnotate() {
