@@ -53,7 +53,7 @@ public class CompositeQuantityTest {
 
     @Test
     public void testLengthSingleValueCompositeUnit() {
-         CompositeQuantity<Length> mixLen = CompositeQuantity.of(Quantities.getQuantity(1, Units.METRE));
+        CompositeQuantity<Length> mixLen = CompositeQuantity.of(Quantities.getQuantity(1, Units.METRE));
       
         assertEquals("[m]", mixLen.getUnits().toString());
         assertEquals("1 m", mixLen.toString());
