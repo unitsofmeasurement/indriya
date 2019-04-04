@@ -32,9 +32,7 @@ package tech.units.indriya.quantity;
 import java.math.BigDecimal;
 import java.util.logging.Logger;
 
-import javax.measure.MeasurementException;
 import javax.measure.Quantity;
-import javax.measure.Unit;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Time;
 
@@ -54,19 +52,21 @@ public class CompositeQuantityTest {
     static final Logger logger = Logger.getLogger(CompositeQuantityTest.class.getName());
 
     @Test
-    public void testLengthSingleValueMixedUnit() {
-        final Unit<Length> mixUnit = Units.METRE.mix(CENTI(Units.METRE));
-        assertThrows(MeasurementException.class, () -> {
-            @SuppressWarnings("unused")
-            Quantity<Length> l1 = Quantities.getQuantity(1.70, mixUnit);
-        });
+    public void testLengthSingleValueCompositeUnit() {
+         CompositeQuantity<Length> mixLen = CompositeQuantity.of(Quantities.getQuantity(1, Units.METRE));
+      
+        assertEquals("[m]", mixLen.getUnits().toString());
+        assertEquals("1 m", mixLen.toString());
+        
+        Quantity<Length> l2 = mixLen.to(Units.METRE);
+        assertEquals(Integer.valueOf(1), l2.getValue());
     }
 
     @Test
     public void testLengths() {
         @SuppressWarnings("unchecked")
-        final Quantity<Length>[] l1 = new Quantity[] { Quantities.getQuantity(1, Units.METRE),  Quantities.getQuantity(70, CENTI(Units.METRE)) };
-        CompositeQuantity<Length> mixLen = CompositeQuantity.of(l1);
+        final Quantity<Length>[] quants = new Quantity[] { Quantities.getQuantity(1, Units.METRE),  Quantities.getQuantity(70, CENTI(Units.METRE)) };
+        CompositeQuantity<Length> mixLen = CompositeQuantity.of(quants);
       
         assertEquals("[m, cm]", mixLen.getUnits().toString());
         assertEquals("1 m 70 cm", mixLen.toString());
@@ -82,12 +82,14 @@ public class CompositeQuantityTest {
      */
     @Test
     public void testTimes() {
-        final Unit<Time> mixUnit = Units.DAY.mix(Units.HOUR).mix(Units.MINUTE);
-        final Number[] numList = { 3, 4, 48 };
-        Quantity<Time> t1 = Quantities.getMixedQuantity(numList, mixUnit);
-        assertEquals(BigDecimal.valueOf(3.2d), ((BigDecimal) t1.getValue()).stripTrailingZeros());
-        assertEquals("day;h;min", t1.getUnit().toString());
+        @SuppressWarnings("unchecked")
+        final Quantity<Time>[] quants = new Quantity[] { Quantities.getQuantity(3, Units.DAY),  Quantities.getQuantity(4, Units.HOUR), 
+                Quantities.getQuantity(48, Units.MINUTE)};
+        final CompositeQuantity<Time> t1 = CompositeQuantity.of(quants);
+       
+        assertEquals("[day, h, min]", t1.getUnits().toString());
         assertEquals("3 day 4 h 48 min", t1.toString());
+        assertEquals(BigDecimal.valueOf(3.2d), ((BigDecimal) t1.to(Units.DAY).getValue()).stripTrailingZeros());
         final Quantity<Time> t2 = t1.to(Units.MINUTE);
 
         assertEquals(new BigDecimal("4608.0000000000000000000000000000"), t2.getValue());
