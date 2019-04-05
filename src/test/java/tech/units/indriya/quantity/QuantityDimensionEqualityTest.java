@@ -30,9 +30,12 @@
 package tech.units.indriya.quantity;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import javax.measure.Dimension;
+import javax.measure.IncommensurableException;
 import javax.measure.Quantity;
+import javax.measure.UnconvertibleException;
 import javax.measure.Unit;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Volume;
@@ -63,7 +66,9 @@ class QuantityDimensionEqualityTest {
   }
   
   @Test
-  void dimensionsShouldBeEqual_whenSameRoot() {
+  void dimensionsShouldBeEqual_whenSameBaseUnit() {
+    
+    // multiplication of these two results in a dimensionless entity  
     Dimension consumptionDim = FuelConsumption.LITRE_PER_100KM.getDimension();
     Dimension economyDim = FuelEconomy.MILES_PER_GALLON.getDimension();
     
@@ -75,5 +80,23 @@ class QuantityDimensionEqualityTest {
     
   }
 
+  @Test
+  void dimensionsShouldBeCompatible_whenCompatibleDimensions() 
+      throws UnconvertibleException, IncommensurableException {
+    
+    // given: a and b, having compatible dimensions
+    
+    Unit<FuelConsumption> a = FuelConsumption.LITRE_PER_100KM;
+    Unit<FuelEconomy> b = FuelEconomy.MILES_PER_GALLON.pow(-1).asType(FuelEconomy.class);
+    
+    // when: even though a and b are different
+    
+    assertFalse(a.getConverterToAny(b).isIdentity());
+    
+    // then: 
+    
+    assertTrue(a.isCompatible(b));
+    
+  }
   
 }
