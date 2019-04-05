@@ -90,7 +90,7 @@ class QuantityDimensionEqualityTest {
     // given: a and b, having compatible dimensions
     
     Unit<FuelConsumption> a = FuelConsumption.LITRE_PER_100KM;
-    Unit<FuelEconomy> b = FuelEconomy.MILES_PER_GALLON.pow(-1).asType(FuelEconomy.class);
+    Unit<?> b = FuelEconomy.MILES_PER_GALLON.pow(-1);
     
     // when: even though a and b are different
     
