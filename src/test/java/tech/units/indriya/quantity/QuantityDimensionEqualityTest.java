@@ -40,6 +40,7 @@ import javax.measure.Unit;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Volume;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.unit.Units;
@@ -50,9 +51,9 @@ import tech.units.indriya.unit.Units;
  */
 class QuantityDimensionEqualityTest {
   
-  static class USCustomary {
-    static final Unit<Length> MILE = Units.METRE.multiply(1609.344).asType(Length.class);
-    static final Unit<Volume> GALLON_LIQUID = Units.LITRE.multiply(3.785411784).asType(Volume.class);
+  private static class USCustomary {
+    public static final Unit<Length> MILE = Units.METRE.multiply(1609.344).asType(Length.class);
+    public static final Unit<Volume> GALLON_LIQUID = Units.LITRE.multiply(3.785411784).asType(Volume.class);
   }
 
   interface FuelConsumption extends Quantity<FuelConsumption> {
@@ -66,7 +67,8 @@ class QuantityDimensionEqualityTest {
   }
   
   @Test
-  void dimensionsShouldBeEqual_whenSameBaseUnit() {
+  @DisplayName("dimensions should be equal when same (shared) BaseUnit")
+  public void dimensionsShouldBeEqual() {
     
     // multiplication of these two results in a dimensionless entity  
     Dimension consumptionDim = FuelConsumption.LITRE_PER_100KM.getDimension();
@@ -81,7 +83,8 @@ class QuantityDimensionEqualityTest {
   }
 
   @Test
-  void dimensionsShouldBeCompatible_whenCompatibleDimensions() 
+  @DisplayName("units should be compatible when 'same' dimensions")
+  public void unitsShouldBeCompatible() 
       throws UnconvertibleException, IncommensurableException {
     
     // given: a and b, having compatible dimensions
@@ -93,7 +96,7 @@ class QuantityDimensionEqualityTest {
     
     assertFalse(a.getConverterToAny(b).isIdentity());
     
-    // then: 
+    // then: a and b should be compatible
     
     assertTrue(a.isCompatible(b));
     
