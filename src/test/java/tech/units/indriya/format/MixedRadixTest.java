@@ -31,6 +31,9 @@
 package tech.units.indriya.format;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static tech.units.indriya.unit.Units.HOUR;
+import static tech.units.indriya.unit.Units.MINUTE;
+import static tech.units.indriya.unit.Units.SECOND;
 
 import java.text.DecimalFormat;
 import java.util.Locale;
@@ -38,12 +41,15 @@ import java.util.Locale;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.quantity.Length;
+import javax.measure.quantity.Time;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.NumberAssertions;
-import tech.units.indriya.format.MixedRadix.MixedRadixFormatOptions;
+import tech.units.indriya.format.MixedRadixFormat.MixedRadixFormatOptions;
+import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.Units;
 
 /**
@@ -66,6 +72,14 @@ public class MixedRadixTest {
         
     }
 
+
+    @Test @Disabled("check is not yet implemented") //TODO[211] enable once implemented
+    public void wrongOrderOfSignificance() {
+        Assertions.assertThrows(IllegalArgumentException.class, ()->{
+            MixedRadix.ofPrimary(USCustomary.INCH).mix(USCustomary.FOOT);
+        });
+    }
+    
     @Test
     public void quantityConstruction() {
         
@@ -78,7 +92,8 @@ public class MixedRadixTest {
         Quantity<Length> lengthQuantity = mixedRadix.createQuantity(1, 2);
         
         // then
-
+        
+        assertEquals(USCustomary.FOOT, mixedRadix.getPrimaryUnit());
         NumberAssertions.assertNumberEquals(1.1666666666666667, lengthQuantity.getValue(), 1E-9);
     }
     
@@ -134,6 +149,31 @@ public class MixedRadixTest {
         NumberAssertions.assertNumberArrayEquals(new Number[] {1, 2, 3}, valueParts, 1E-9);
     }
     
+    @Test @Disabled("not well defined yet, how to handle negative numbers") //TODO[211] enable once clarified
+    public void radixExtractionWhenNegative() {
+        
+        // given
+        
+        MixedRadix<Length> mixedRadix = MixedRadix
+                .ofPrimary(USCustomary.FOOT)
+                .mix(USCustomary.INCH)
+                .mix(USCustomary.PICA);
+        
+        Quantity<Length> lengthQuantity = mixedRadix.createQuantity(-1, 2, 3);
+        
+        // when 
+        
+        Number[] valueParts = mixedRadix.extractValues(lengthQuantity);
+        
+        System.out.println(lengthQuantity);
+        
+        
+        // then
+        
+        NumberAssertions.assertNumberArrayEquals(new Number[] {-1, 2, 3}, valueParts, 1E-9);
+    }
+    
+    
     @Test
     public void formatting() {
         
@@ -150,20 +190,85 @@ public class MixedRadixTest {
         realFormat.setDecimalSeparatorAlwaysShown(true);
         realFormat.setMaximumFractionDigits(3);
         
-        MixedRadixFormatOptions mixedRadixFormatOptions = new MixedRadixFormatOptions()
+        MixedRadixFormatOptions mixedRadixFormatOptions = new MixedRadixFormat.MixedRadixFormatOptions()
                 .realFormat(realFormat)
                 .unitFormat(SimpleUnitFormat.getInstance())
                 .numberToUnitDelimiter(" ")
                 .radixPartsDelimiter(" ");
         
+        MixedRadixFormat<Length> mixedRadixFormat = mixedRadix.createFormat(mixedRadixFormatOptions);
+        
+
+        // method 1
+        {
+            // when
+            String formatedOutput = mixedRadix.format(lengthQuantity, mixedRadixFormatOptions);
+            
+            // then
+            assertEquals("1 ft 2 in 3. P̸", formatedOutput);
+        } 
+
+        // method 2
+        {
+            // when
+            String formatedOutput = mixedRadixFormat.format(lengthQuantity);
+            
+            // then
+            assertEquals("1 ft 2 in 3. P̸", formatedOutput);
+        } 
+        
+        
+    }
+    
+    @Test @Disabled("parsing not yet implemented") //TODO[211] enable once implemented
+    public void parsing() {
+        
+        // given
+        
+        MixedRadix<Length> mixedRadix = MixedRadix.ofPrimary(USCustomary.FOOT).mix(USCustomary.INCH);
+        MixedRadixFormat.MixedRadixFormatOptions mixedRadixFormatOptions = new MixedRadixFormat.MixedRadixFormatOptions();
+        MixedRadixFormat<Length> mixedRadixFormat = mixedRadix.createFormat(mixedRadixFormatOptions);
+        
+        // method 1
+        {
+            // when 
+            Quantity<Length> lengthQuantity = mixedRadix.parse("1 ft 2 in", mixedRadixFormatOptions);
+            
+            // then
+            NumberAssertions.assertNumberEquals(1.1666666666666667, lengthQuantity.getValue(), 1E-9);
+        }
+        
+        // method 2
+        {
+            // when 
+            Quantity<Length> lengthQuantity = mixedRadixFormat.parse("1 ft 2 in");
+            
+            // then
+            NumberAssertions.assertNumberEquals(1.1666666666666667, lengthQuantity.getValue(), 1E-9);
+        }
+        
+    }
+    
+    @Test @Disabled("not yet optimized to do this") //TODO[211] enable once implemented
+    public void leastSignificantShouldDriveArithmetic() {
+        
+        // given
+    
+        MixedRadix<Time> mixedRadix = MixedRadix.ofLeastSignificantAsPrimary(HOUR).mix(MINUTE).mix(SECOND);
+        
+        Quantity<Time> startTime = mixedRadix.createQuantity(9, 20, 0);
+        Quantity<Time> duration = Quantities.getQuantity(30, SECOND);
+
         // when
         
-        String formatedOutput = mixedRadix.format(lengthQuantity, mixedRadixFormatOptions);
+        Quantity<Time> endTime = startTime.add(duration);
+        Number[] timeParts = mixedRadix.extractValues(endTime);
         
         // then
         
-        assertEquals("1 ft 2 in 3. P̸", formatedOutput);
-        
+        assertEquals(9, timeParts[0]); // should be actually an int
+        assertEquals(20, timeParts[1]); // should be actually an int
+        assertEquals(30, timeParts[2]); // should be actually an int
         
     }
 
