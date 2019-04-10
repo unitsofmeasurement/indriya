@@ -33,11 +33,13 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import tech.units.indriya.format.SimpleUnitFormat;
 
 import static javax.measure.MetricPrefix.KILO;
-
+import static tech.units.indriya.unit.Units.GRAM;
+import static tech.units.indriya.unit.Units.KILOGRAM;
 import static tech.units.indriya.unit.Units.WATT;
 
 import java.util.Map;
@@ -45,12 +47,13 @@ import java.util.Map;
 import javax.measure.Dimension;
 import javax.measure.Unit;
 import javax.measure.UnitConverter;
+import javax.measure.quantity.Mass;
 
 /**
- * Unit tests on the AbstractUnit class.
+ * Unit tests on the AbstractUnit class. Named abstrakt with a k because otherwise it would be ignored by Surefire.
  *
  */
-public class AbstractUnitTest {
+public class AbstraktUnitTest {
 
   private static final String SYMBOL = "symbol";
   private static final String NAME = "name";
@@ -60,9 +63,9 @@ public class AbstractUnitTest {
    * Trivial implementation of the AbstractUnit class, in order to test the functionality provided in the abstract class.
    *
    */
-  class TestUnit extends AbstractUnit {
+  class DummyUnit extends AbstractUnit {
 
-    private TestUnit(String symbol) {
+    private DummyUnit(String symbol) {
       super(symbol);
     }
 
@@ -107,7 +110,7 @@ public class AbstractUnitTest {
    */
   @Test
   public void constructorWithSymbolHasTheSymbolWiredCorrectly() {
-    TestUnit unit = new TestUnit(SYMBOL);
+    DummyUnit unit = new DummyUnit(SYMBOL);
     assertEquals(SYMBOL, unit.getSymbol());
   }
 
@@ -116,7 +119,7 @@ public class AbstractUnitTest {
    */
   @Test
   public void setterAndGetterForNameAreWiredCorrectly() {
-    TestUnit unit = new TestUnit(SYMBOL);
+    DummyUnit unit = new DummyUnit(SYMBOL);
     unit.setName(NAME);
     assertEquals(NAME, unit.getName());
   }
@@ -134,7 +137,7 @@ public class AbstractUnitTest {
    */
   @Test
   public void toStrindMethodIsWiredToAFormatter() {
-    TestUnit unit = new TestUnit(SYMBOL);
+    DummyUnit unit = new DummyUnit(SYMBOL);
     SimpleUnitFormat.getInstance().label(unit, LABEL);
     assertEquals(LABEL, unit.toString());
   }
@@ -144,7 +147,7 @@ public class AbstractUnitTest {
    */
   @Test
   public void compareToReturnsZeroWhenObjectIsProvidedAsArgument() {
-    TestUnit unit = new TestUnit(SYMBOL);
+    DummyUnit unit = new DummyUnit(SYMBOL);
     assertEquals(0, unit.compareTo(unit));
   }
   
@@ -153,53 +156,91 @@ public class AbstractUnitTest {
    */
   @Test
   public void compareToReturnsZeroWhenUnitWithSameSymbolIsProvided() {
-    TestUnit unit = new TestUnit(SYMBOL);
-    TestUnit otherUnit = new TestUnit(SYMBOL);
+    DummyUnit unit = new DummyUnit(SYMBOL);
+    DummyUnit otherUnit = new DummyUnit(SYMBOL);
     assertEquals(0, unit.compareTo(otherUnit));
   }
   
+  /**
+   * Verifies that the compareTo method returns a positive number when a unit with a symbol is compared to a unit without a symbol.
+   */
+  @Test
+  public void compareToReturnsPositiveNumberWhenTheOtherUnitHasNoSymbol() {
+    DummyUnit unit = new DummyUnit(SYMBOL);
+    DummyUnit otherUnit = new DummyUnit(null);
+    assertTrue(unit.compareTo(otherUnit) > 0);
+  }
   
   /**
    * Verifies that a unit is equal to another unit with the same symbol and name according to the compareTo method.
    */
   @Test
   public void compareToReturnsZeroWhenUnitWithSameSymbolAndNameIsProvided() {
-    TestUnit unit = new TestUnit(SYMBOL);
+    DummyUnit unit = new DummyUnit(SYMBOL);
     unit.setName(NAME);
-    TestUnit otherUnit = new TestUnit(SYMBOL);
+    DummyUnit otherUnit = new DummyUnit(SYMBOL);
     otherUnit.setName(NAME);
     assertEquals(0, unit.compareTo(otherUnit));
   }
   
   /**
-   * Verifies that when compared to a unit with a smaller unit, the compareTo method returns a positive number.
+   * Verifies that when compared to a unit with a smaller symbol, the compareTo method returns a positive number.
    */
   @Test
   public void compareToReturnsAPositiveIntegerWhenUnitWithSmallerSymbolIsProvided() {
-    TestUnit unit = new TestUnit(SYMBOL);
-    TestUnit otherUnit = new TestUnit("a");
+    DummyUnit unit = new DummyUnit("b");
+    DummyUnit otherUnit = new DummyUnit("a");
     assertTrue(unit.compareTo(otherUnit) > 0);
   }
 
   /**
-   * Verifies that when compared to a unit with the same symbol but a smaller name, the compareToMethod returns a positive number.
+   * Verifies that when compared to a unit with the same symbol but a smaller name, the compareTo method returns a positive number.
    */
   @Test
   public void compareToReturnsAPositiveNumberWhenUnitWithSameSymbolButSmallerNameIsProvided() {
-    TestUnit unit = new TestUnit(SYMBOL);
-    unit.setName(NAME);
-    TestUnit otherUnit = new TestUnit(SYMBOL);
+    DummyUnit unit = new DummyUnit(SYMBOL);
+    unit.setName("b");
+    DummyUnit otherUnit = new DummyUnit(SYMBOL);
     otherUnit.setName("a");
     assertTrue(unit.compareTo(otherUnit) > 0);
   }
-  
+
+  /**
+   * Verifies that when compared to a unit with a smaller symbol but a larger name, the compareTo method returns a positive number.
+   */
+  @Test
+  public void compareToReturnsAPositiveNumberWhenUnitWithSmallerSymbolButLargerNameIsProvided() {
+    DummyUnit unit = new DummyUnit("B");
+    unit.setName("a");
+    DummyUnit otherUnit = new DummyUnit("A");
+    otherUnit.setName("b");
+    assertTrue(unit.compareTo(otherUnit) > 0);
+  }
+
   /**
    * Verifies that a unit is equivalent to itself.
    */
   @Test
   public void unitIsEquivalentToItself() {
-    TestUnit unit = new TestUnit(SYMBOL);
+    DummyUnit unit = new DummyUnit(SYMBOL);
     assertTrue(unit.isEquivalentOf(unit));
   }
+  
+  /**
+   * Verifies that a kilo of a gram is equivalent to a kilogram.
+   */
+  @Test
+  public void aKiloOfAGramIsEquivalentToAKilogram() {
+    assertTrue((((AbstractUnit<Mass>) KILO(GRAM))).isEquivalentOf(KILOGRAM));
+  }
+  
+  /**
+   * Verifies that a gram is not equivalent to a kilogram.
+   */
+  @Test
+  public void aGramIsNotEquivalentToAKilogram() {
+    assertFalse((((AbstractUnit<Mass>) GRAM)).isEquivalentOf(KILOGRAM));
+  }
+
 
 }

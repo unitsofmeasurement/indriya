@@ -55,7 +55,6 @@ import tech.units.indriya.function.RationalConverter;
 import tech.units.indriya.quantity.QuantityDimension;
 import tech.units.indriya.spi.DimensionalModel;
 import tech.units.indriya.unit.AlternateUnit;
-import tech.units.indriya.unit.AnnotatedUnit;
 import tech.units.indriya.unit.MixedUnit;
 import tech.units.indriya.unit.ProductUnit;
 import tech.units.indriya.unit.TransformedUnit;
@@ -559,28 +558,32 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
   }
 
   /**
-   * Compares this unit to the specified unit. The default implementation compares the name and symbol of both this unit and the specified unit.
+   * Compares this unit to the specified unit. The default implementation compares the name and symbol of both this unit and the specified unit,
+   * giving precedence to the symbol.
    *
    * @return a negative integer, zero, or a positive integer as this unit is less than, equal to, or greater than the specified unit.
    */
   @Override
   public int compareTo(Unit<Q> that) {
-    if (name != null && getSymbol() != null) {
-      return name.compareTo(that.getName()) + getSymbol().compareTo(that.getSymbol());
-    } else if (name == null) {
-      if (getSymbol() == null || that.getSymbol() == null) return -1;
-      return getSymbol().compareTo(that.getSymbol());
+    int symbolComparison = compareToWithPossibleNullValues(getSymbol(), that.getSymbol());
+    if (symbolComparison == 0) {
+      return compareToWithPossibleNullValues(name, that.getName());
     } else {
-      return name == null ? -1 : name.compareTo(that.getName());
-    } 
+      return symbolComparison;
+    }
+  }
+
+  private int compareToWithPossibleNullValues(String a, String b) {
+    if (a == null) {
+      return (b == null) ? 0 : -1;
+    } else {
+      return (b == null) ? 1 : a.compareTo(b);
+    }
   }
 
   @Override
   public boolean isEquivalentOf(Unit<Q> that) {
-    if (this.compareTo(that) == 0)
-      return true;
     return this.getConverterTo(that).isIdentity();
-    // [ahuber] was ... return this.getConverterTo(that).equals(that.getConverterTo(this));
   }
 
   // //////////////////////////////////////////////////////////////
