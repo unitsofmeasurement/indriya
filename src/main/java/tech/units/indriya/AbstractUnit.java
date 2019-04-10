@@ -44,6 +44,7 @@ import javax.measure.Quantity;
 import javax.measure.UnconvertibleException;
 import javax.measure.Unit;
 import javax.measure.UnitConverter;
+import javax.measure.format.MeasurementParseException;
 import javax.measure.quantity.Dimensionless;
 
 import tech.units.indriya.format.LocalUnitFormat;
@@ -55,7 +56,6 @@ import tech.units.indriya.function.RationalConverter;
 import tech.units.indriya.quantity.QuantityDimension;
 import tech.units.indriya.spi.DimensionalModel;
 import tech.units.indriya.unit.AlternateUnit;
-import tech.units.indriya.unit.AnnotatedUnit;
 import tech.units.indriya.unit.MixedUnit;
 import tech.units.indriya.unit.ProductUnit;
 import tech.units.indriya.unit.TransformedUnit;
