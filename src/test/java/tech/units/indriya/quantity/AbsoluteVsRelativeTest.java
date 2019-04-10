@@ -27,7 +27,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package tech.units.indriya.incubator;
+package tech.units.indriya.quantity;
 
 import static javax.measure.MetricPrefix.KILO;
 import static javax.measure.Quantity.Scale.*;
@@ -55,7 +55,7 @@ import tech.units.indriya.unit.Units;
  *  , what would it look like in Java?
  * @author Andi Huber
  */
-class AbsoluteVsRelativeDraft {
+class AbsoluteVsRelativeTest {
 
   public static final Unit<Temperature> DegreesFahrenheit = 
       new TransformedUnit<>(Units.KELVIN, RationalConverter.of(5, 9).concatenate(new AddConverter(459.67)));
