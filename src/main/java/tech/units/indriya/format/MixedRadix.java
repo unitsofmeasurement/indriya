@@ -56,6 +56,17 @@ import tech.units.indriya.quantity.Quantities;
  */
 public class MixedRadix<Q extends Quantity<Q>> {
 
+    // -- PRIVATE FIELDS 
+    
+    private final static int FIRST_PART_IS_PRIMARY_UNIT = 0;
+    private final static int LAST_PART_IS_PRIMARY_UNIT = -1;
+    
+    private final int primaryUnitIndex;
+    private final Unit<Q> primaryUnit;
+    private final List<Unit<Q>> mixedRadixUnits;
+    
+    // -- FACTORIES
+    
     /**
      * TODO
      * @param <X>
@@ -254,13 +265,6 @@ public class MixedRadix<Q extends Quantity<Q>> {
     }
     
     // -- IMPLEMENTATION DETAILS
-
-    private final static int FIRST_PART_IS_PRIMARY_UNIT = 0;
-    private final static int LAST_PART_IS_PRIMARY_UNIT = -1;
-    
-    private final int primaryUnitIndex;
-    private final Unit<Q> primaryUnit;
-    private final List<Unit<Q>> mixedRadixUnits;
 
     /**
      * 

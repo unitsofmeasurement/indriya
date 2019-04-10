@@ -50,6 +50,11 @@ import javax.measure.format.UnitFormat;
  * @since 2.0
  */
 public class MixedRadixFormat<Q extends Quantity<Q>> implements QuantityFormat {
+    
+    // -- PRIVATE FIELDS 
+    
+    private final MixedRadix<Q> mixedRadix;
+    private final MixedRadixFormat.MixedRadixFormatOptions mixedRadixFormatOptions;
 
     // -- FACTORIES
 
@@ -90,13 +95,8 @@ public class MixedRadixFormat<Q extends Quantity<Q>> implements QuantityFormat {
 
     public static class MixedRadixFormatOptions {
 
-        private DecimalFormat integerFormat = (DecimalFormat) DecimalFormat.getInstance(Locale.US);
-        {
-            integerFormat.setMaximumFractionDigits(0);    
-            integerFormat.setDecimalSeparatorAlwaysShown(false);
-        }
-
-        private DecimalFormat realFormat = (DecimalFormat) DecimalFormat.getInstance(Locale.US);
+        private DecimalFormat integerFormat = defaultIntegerFormat();
+        private DecimalFormat realFormat = defaultRealFormat();
         private UnitFormat unitFormat = SimpleUnitFormat.getInstance();
         private String numberToUnitDelimiter = AbstractQuantityFormat.DEFAULT_DELIMITER;
         private String radixPartsDelimiter = " ";
@@ -169,13 +169,23 @@ public class MixedRadixFormat<Q extends Quantity<Q>> implements QuantityFormat {
             this.radixPartsDelimiter = radixPartsDelimiter;
             return this;
         }
+        
+        private static DecimalFormat defaultIntegerFormat() {
+            DecimalFormat format = (DecimalFormat) DecimalFormat.getInstance(Locale.US);
+            format.setMaximumFractionDigits(0);    
+            format.setDecimalSeparatorAlwaysShown(false);
+            return format;
+        }
+        
+        private static DecimalFormat defaultRealFormat() {
+            DecimalFormat format = (DecimalFormat) DecimalFormat.getInstance(Locale.US);
+            format.setDecimalSeparatorAlwaysShown(true);
+            return format;
+        }
 
     }
 
     // -- IMPLEMENTATION DETAILS
-
-    private final MixedRadix<Q> mixedRadix;
-    private final MixedRadixFormat.MixedRadixFormatOptions mixedRadixFormatOptions;
 
     private MixedRadixFormat(MixedRadix<Q> mixedRadix, MixedRadixFormat.MixedRadixFormatOptions mixedRadixFormatOptions) {
         this.mixedRadix = mixedRadix;
