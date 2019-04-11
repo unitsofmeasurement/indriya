@@ -203,25 +203,11 @@ public class MixedRadixTest {
         
         MixedRadixFormat<Length> mixedRadixFormat = mixedRadix.createFormat(mixedRadixFormatOptions);
         
-
-        // method 1
-        {
-            // when
-            String formatedOutput = mixedRadix.format(lengthQuantity, mixedRadixFormatOptions);
-            
-            // then
-            assertEquals("1 ft 2 in 3. P̸", formatedOutput);
-        } 
-
-        // method 2
-        {
-            // when
-            String formatedOutput = mixedRadixFormat.format(lengthQuantity);
-            
-            // then
-            assertEquals("1 ft 2 in 3. P̸", formatedOutput);
-        } 
+        // when
+        String formatedOutput = mixedRadixFormat.format(lengthQuantity);
         
+        // then
+        assertEquals("1 ft 2 in 3. P̸", formatedOutput);
         
     }
     
@@ -233,24 +219,13 @@ public class MixedRadixTest {
         MixedRadix<Length> mixedRadix = MixedRadix.ofPrimary(USCustomary.FOOT).mix(USCustomary.INCH);
         MixedRadixFormat.MixedRadixFormatOptions mixedRadixFormatOptions = new MixedRadixFormat.MixedRadixFormatOptions();
         MixedRadixFormat<Length> mixedRadixFormat = mixedRadix.createFormat(mixedRadixFormatOptions);
+
+        // when 
+        Quantity<Length> lengthQuantity = mixedRadixFormat.parse("1 ft 2 in");
         
-        // method 1
-        {
-            // when 
-            Quantity<Length> lengthQuantity = mixedRadix.parse("1 ft 2 in", mixedRadixFormatOptions);
-            
-            // then
-            NumberAssertions.assertNumberEquals(1.1666666666666667, lengthQuantity.getValue(), 1E-9);
-        }
+        // then
+        NumberAssertions.assertNumberEquals(1.1666666666666667, lengthQuantity.getValue(), 1E-9);
         
-        // method 2
-        {
-            // when 
-            Quantity<Length> lengthQuantity = mixedRadixFormat.parse("1 ft 2 in");
-            
-            // then
-            NumberAssertions.assertNumberEquals(1.1666666666666667, lengthQuantity.getValue(), 1E-9);
-        }
         
         fail("disabled"); // to satisfy code quality check?
     }

@@ -30,19 +30,15 @@
 
 package tech.units.indriya.format;
 
-import java.io.IOException;
-import java.text.DecimalFormat;
-import java.text.ParsePosition;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import javax.measure.MeasurementException;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 
-import tech.units.indriya.AbstractUnit;
+import tech.units.indriya.format.MixedRadixFormat.MixedRadixFormatOptions;
 import tech.units.indriya.function.Calculus;
 import tech.units.indriya.function.Calculus.IntegerAndFraction;
 import tech.units.indriya.quantity.Quantities;
@@ -51,7 +47,6 @@ import tech.units.indriya.quantity.Quantities;
  * Immutable, typesafe utility class to cover 'mixed-radix' related use-cases.
  * 
  * @author Andi Huber
- * @version 1.1
  * @since 2.0
  */
 public class MixedRadix<Q extends Quantity<Q>> {
@@ -67,33 +62,16 @@ public class MixedRadix<Q extends Quantity<Q>> {
     
     // -- FACTORIES
     
-    /**
-     * TODO
-     * @param <X>
-     * @param primaryUnit
-     * @return
-     */
     public static <X extends Quantity<X>> MixedRadix<X> ofPrimary(Unit<X> primaryUnit) {
         Objects.requireNonNull(primaryUnit);
         return new MixedRadix<>(FIRST_PART_IS_PRIMARY_UNIT, Collections.singletonList(primaryUnit));
     }
     
-    /**
-     * TODO
-     * @param <X>
-     * @param unit
-     * @return
-     */
     public static <X extends Quantity<X>> MixedRadix<X> ofLeastSignificantAsPrimary(Unit<X> unit) {
         Objects.requireNonNull(unit);
         return new MixedRadix<>(LAST_PART_IS_PRIMARY_UNIT, Collections.singletonList(unit));
     }
 
-    /**
-     * TODO
-     * @param mixedRadixUnit
-     * @return
-     */
     public MixedRadix<Q> mix(Unit<Q> mixedRadixUnit) {
         Objects.requireNonNull(mixedRadixUnit);
         
@@ -104,28 +82,38 @@ public class MixedRadix<Q extends Quantity<Q>> {
         mixedRadixUnits.add(mixedRadixUnit);
         return new MixedRadix<>(primaryUnitIndex, mixedRadixUnits);
     }
+    
+    // -- GETTERS
 
-    /**
-     * TODO
-     * @return
-     */
     public Unit<Q> getPrimaryUnit() {
         return primaryUnit;
     }
     
-    /**
-     * TODO
-     * @param leadingValue
-     * @param lessSignificantValues
-     * @return
-     */
+    public Unit<Q> getLeadingUnit() {
+        return mixedRadixUnits.get(0);
+    }
+    
+    public Unit<Q> getTrainlingUnit() {
+        return mixedRadixUnits.get(mixedRadixUnits.size()-1);
+    }
+    
+    public List<Unit<Q>> getUnits() {
+        return new ArrayList<>(mixedRadixUnits);
+    }
+    
+    public int getUnitCount() {
+        return mixedRadixUnits.size();
+    }
+    
+    // -- QUANTITY FACTORY
+    
     public Quantity<Q> createQuantity(Number leadingValue, Number ... lessSignificantValues) {
 
         Objects.requireNonNull(leadingValue);
         Objects.requireNonNull(lessSignificantValues); // allow empty but not <null>
 
         int totalValuesGiven = 1 + lessSignificantValues.length;
-        int totalValuesAllowed = totalParts();
+        int totalValuesAllowed = getUnitCount();
         
         if(totalValuesGiven > totalValuesAllowed) {
             String message = String.format(
@@ -148,119 +136,91 @@ public class MixedRadix<Q extends Quantity<Q>> {
 
         return quantity;
     }
+    
+    // -- VALUE EXTRACTION
 
-    /**
-     * TODO
-     * @param quantity
-     * @return
-     */
     public Number[] extractValues(Quantity<Q> quantity) {
         Objects.requireNonNull(quantity);
-        final Number[] target = new Number[totalParts()];
+        final Number[] target = new Number[getUnitCount()];
         return extractValuesInto(quantity, target);
     }
 
-    /**
-     * TODO
-     * @param quantity
-     * @param target
-     * @return
-     */
     public Number[] extractValuesInto(Quantity<Q> quantity, Number[] target) {
         Objects.requireNonNull(quantity);
         Objects.requireNonNull(target);
 
-        visitRadixPartsOfQuantity(quantity, target.length, (index, unit, value)->{
+        visitQuantity(quantity, target.length, (index, unit, value)->{
             target[index] = value;
         });
 
         return target;
     }
-
-    /**
-     * TODO
-     * @param options
-     * @param quantity
-     * @param dest
-     * @return
-     * @throws IOException
-     */
-    public Appendable format(Quantity<Q> quantity, Appendable dest, MixedRadixFormat.MixedRadixFormatOptions options) 
-            throws IOException {
-
-        final int lastIndex = totalParts()-1;
-        
-        visitRadixPartsOfQuantity(quantity, totalParts(), (index, unit, value)->{
-            try {
-                
-                boolean isLast = index == lastIndex;
-                
-                DecimalFormat numberFormat = isLast
-                        ? options.getRealFormat() // to format real number value
-                                : options.getIntegerFormat(); // to format whole number value
-
-                // number value 
-                dest.append(numberFormat.format(value));
-                
-                if (!quantity.getUnit().equals(AbstractUnit.ONE)) {
-                    // number to unit delimiter 
-                    dest.append(options.getNumberToUnitDelimiter());
-                    
-                    // unit
-                    options.getUnitFormat().format(unit, dest);
-                }
-                
-                if(!isLast) {
-                    
-                    // radix delimiter
-                    dest.append(options.getRadixPartsDelimiter());
-                    
-                } 
-                
-            } catch (IOException e) {
-                throw new MeasurementException(e);
-            }
-        });
-
-        return dest;
+    
+    // -- THE VISITOR
+    
+    @FunctionalInterface
+    public static interface MixedRadixVisitor<Q extends Quantity<Q>> {
+        public void accept(int index, Unit<Q> unit, Number value);
     }
+    
+    public void visitQuantity(
+            Quantity<Q> quantity,
+            int maxPartsToVisit,
+            MixedRadixVisitor<Q> partVisitor) {
 
-    /**
-     * TODO
-     * @param options
-     * @param quantity
-     * @return
-     */
-    public final String format(Quantity<Q> quantity, MixedRadixFormat.MixedRadixFormatOptions options) {
-        try {
-            return (this.format(quantity, new StringBuffer(), options)).toString();
-        } catch (IOException ex) {
-            // Should never happen, because StringBuffer is an Appendable, that does not throw here
-            throw new MeasurementException(ex); 
+        final Number value_inLeadingUnits = quantity.to(getLeadingUnit()).getValue();
+        
+        // calculate the primary part and fractions
+        // these are all integers (whole numbers) except for the very last part
+
+        IntegerAndFraction remaining = null;
+        Unit<Q> currentUnit = null;
+
+        final int partsToVisitCount = Math.min(maxPartsToVisit, getUnitCount());
+
+        // corner cases
+
+        if(partsToVisitCount==0) {
+            return;
+        }
+        if(partsToVisitCount==1) {
+            partVisitor.accept(0, getLeadingUnit(), value_inLeadingUnits);
+            return;
+        }
+
+        // for partsToVisitCount >= 2
+
+        final int maxIndexToVisit = partsToVisitCount - 1;
+        for(int i=0; i<=maxIndexToVisit; ++i) {
+
+            if(i==0) {
+                remaining = Calculus.roundTowardsZeroWithRemainder(value_inLeadingUnits);
+                currentUnit = getLeadingUnit();
+                partVisitor.accept(0, getLeadingUnit(), remaining.getInteger());
+                continue;
+            } 
+
+            // convert remaining fraction to next fractionalUnit
+            Unit<Q> fractionalUnit = mixedRadixUnits.get(i);
+            Quantity<Q> remainingQuantity = 
+                    Quantities.getQuantity(remaining.getFraction(), currentUnit);            
+            Number value_inFractionalUnits = remainingQuantity.to(fractionalUnit).getValue();
+
+            if(i==maxIndexToVisit) {
+                partVisitor.accept(i, fractionalUnit, value_inFractionalUnits);
+                break; // we're done
+            }
+
+            // split the remaining fraction
+            remaining = Calculus.roundTowardsZeroWithRemainder(value_inFractionalUnits);
+            partVisitor.accept(i, fractionalUnit, remaining.getInteger());
+            currentUnit = fractionalUnit;
         }
     }
     
-    /**
-     * TODO
-     * @param input
-     * @param options
-     * @return
-     */
-    public Quantity<Q> parse(CharSequence csq, ParsePosition pos, MixedRadixFormat.MixedRadixFormatOptions options) {
-        throw new IllegalStateException("no implement yet"); //FIXME[211] implement
-    }
+    // -- FORMATTING 
     
-    /**
-     * TODO
-     * @param csq
-     * @param options
-     * @return
-     */
-    public Quantity<Q> parse(CharSequence csq, MixedRadixFormat.MixedRadixFormatOptions options) {
-        return this.parse(csq, new ParsePosition(0), options);
-    }
-    
-    public MixedRadixFormat<Q> createFormat(final MixedRadixFormat.MixedRadixFormatOptions options) {
+    public MixedRadixFormat<Q> createFormat(final MixedRadixFormatOptions options) {
         return MixedRadixFormat.of(this, options);
     }
     
@@ -282,77 +242,6 @@ public class MixedRadix<Q extends Quantity<Q>> {
                 ? mixedRadixUnits.size() + primaryUnitIndex
                         : primaryUnitIndex;
     }
-
-    private int totalParts() {
-        return mixedRadixUnits.size();
-    }
-    
-    private Unit<Q> leadingUnit() {
-        return mixedRadixUnits.get(0);
-    }
-
-    @FunctionalInterface
-    private static interface PartVisitor<Q extends Quantity<Q>> {
-        public void accept(int index, Unit<Q> unit, Number value);
-    }
-
-    private void visitRadixPartsOfQuantity(
-            Quantity<Q> quantity,
-            int maxPartsToVisit,
-            PartVisitor<Q> partVisitor) {
-
-        final Number value_inLeadingUnits = quantity.to(leadingUnit()).getValue();
-        
-        // calculate the primary part and fractions
-        // these are all integers (whole numbers) except for the very last part
-
-        IntegerAndFraction remaining = null;
-        Unit<Q> currentUnit = null;
-
-        final int partsToVisitCount = Math.min(maxPartsToVisit, totalParts());
-
-        // corner cases
-
-        if(partsToVisitCount==0) {
-            return;
-        }
-        if(partsToVisitCount==1) {
-            partVisitor.accept(0, leadingUnit(), value_inLeadingUnits);
-            return;
-        }
-
-        // for partsToVisitCount >= 2
-
-        final int maxIndexToVisit = partsToVisitCount - 1;
-        for(int i=0; i<=maxIndexToVisit; ++i) {
-
-            if(i==0) {
-                remaining = Calculus.roundTowardsZeroWithRemainder(value_inLeadingUnits);
-                currentUnit = leadingUnit();
-                partVisitor.accept(0, leadingUnit(), remaining.getInteger());
-                continue;
-            } 
-
-            // convert remaining fraction to next fractionalUnit
-            Unit<Q> fractionalUnit = mixedRadixUnits.get(i);
-            Quantity<Q> remainingQuantity = 
-                    Quantities.getQuantity(remaining.getFraction(), currentUnit);            
-            Number value_inFractionalUnits = remainingQuantity.to(fractionalUnit).getValue();
-
-            if(i==maxIndexToVisit) {
-                partVisitor.accept(i, fractionalUnit, value_inFractionalUnits);
-                break; // we're done
-            }
-
-            // split the remaining fraction
-            remaining = Calculus.roundTowardsZeroWithRemainder(value_inFractionalUnits);
-            partVisitor.accept(i, fractionalUnit, remaining.getInteger());
-            currentUnit = fractionalUnit;
-        }
-    }
-
-
-
 
 
 }

@@ -42,6 +42,8 @@ import javax.measure.format.MeasurementParseException;
 import javax.measure.format.QuantityFormat;
 import javax.measure.format.UnitFormat;
 
+import tech.units.indriya.AbstractUnit;
+
 /**
  * Typesafe utility class to parse and format quantities using 'mixed-radix' format.
  * 
@@ -54,7 +56,7 @@ public class MixedRadixFormat<Q extends Quantity<Q>> implements QuantityFormat {
     // -- PRIVATE FIELDS 
     
     private final MixedRadix<Q> mixedRadix;
-    private final MixedRadixFormat.MixedRadixFormatOptions mixedRadixFormatOptions;
+    private final MixedRadixFormatOptions formatOptions;
 
     // -- FACTORIES
 
@@ -71,24 +73,64 @@ public class MixedRadixFormat<Q extends Quantity<Q>> implements QuantityFormat {
     @Override
     public Appendable format(Quantity<?> quantity, Appendable destination) throws IOException {
         Quantity<Q> quantity_typed = castOrFail(quantity);
-        return mixedRadix.format(quantity_typed, destination, mixedRadixFormatOptions);
+        
+        final int mixedRadixUnitCount = mixedRadix.getUnitCount();
+        final int lastIndex = mixedRadixUnitCount-1;
+        
+        mixedRadix.visitQuantity(quantity_typed, mixedRadixUnitCount, (index, unit, value)->{
+            try {
+                
+                boolean isLast = index == lastIndex;
+                
+                DecimalFormat numberFormat = isLast
+                        ? formatOptions.getRealFormat() // to format real number value
+                                : formatOptions.getIntegerFormat(); // to format whole number value
+
+                // number value 
+                        destination.append(numberFormat.format(value));
+                
+                if (!quantity.getUnit().equals(AbstractUnit.ONE)) {
+                    // number to unit delimiter 
+                    destination.append(formatOptions.getNumberToUnitDelimiter());
+                    
+                    // unit
+                    formatOptions.getUnitFormat().format(unit, destination);
+                }
+                
+                if(!isLast) {
+                    
+                    // radix delimiter
+                    destination.append(formatOptions.getRadixPartsDelimiter());
+                    
+                } 
+                
+            } catch (IOException e) {
+                throw new MeasurementException(e);
+            }
+        });
+        
+        return destination;
     }
 
     @Override
     public String format(Quantity<?> quantity) {
-        Quantity<Q> quantity_typed = castOrFail(quantity);
-        return mixedRadix.format(quantity_typed, mixedRadixFormatOptions);
+        try {
+            return (this.format(quantity, new StringBuffer())).toString();
+        } catch (IOException ex) {
+            // Should never happen, because StringBuffer is an Appendable, that does not throw here
+            throw new MeasurementException(ex); 
+        }
     }
 
     @Override
     public Quantity<Q> parse(CharSequence csq, ParsePosition pos)
             throws IllegalArgumentException, MeasurementParseException {
-        return mixedRadix.parse(csq, pos, mixedRadixFormatOptions);
+        throw new IllegalStateException("no implement yet"); //FIXME[211] implement
     }
 
     @Override
     public Quantity<Q> parse(CharSequence csq) throws MeasurementParseException {
-        return mixedRadix.parse(csq, mixedRadixFormatOptions);
+        return this.parse(csq, new ParsePosition(0));
     }
 
     // -- FORMAT OPTIONS
@@ -189,7 +231,7 @@ public class MixedRadixFormat<Q extends Quantity<Q>> implements QuantityFormat {
 
     private MixedRadixFormat(MixedRadix<Q> mixedRadix, MixedRadixFormat.MixedRadixFormatOptions mixedRadixFormatOptions) {
         this.mixedRadix = mixedRadix;
-        this.mixedRadixFormatOptions = mixedRadixFormatOptions;
+        this.formatOptions = mixedRadixFormatOptions;
     }
 
     @SuppressWarnings("unchecked")
