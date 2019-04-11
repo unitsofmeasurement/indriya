@@ -246,7 +246,8 @@ public class MixedRadix<Q extends Quantity<Q>> {
     }
     
     // -- FORMATTING 
-    
+    // I think we should leave this to the actual QuantityFormat implementation, but we might offer a toString() method with a properly constructed format instance.
+    @Deprecated
     public MixedRadixFormat<Q> createFormat(final MixedRadixFormatOptions options) {
         return MixedRadixFormat.of(this, options);
     }
