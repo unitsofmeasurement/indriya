@@ -48,6 +48,7 @@ import tech.units.indriya.quantity.Quantities;
  * Immutable, typesafe utility class to cover 'mixed-radix' related use-cases.
  * 
  * @author Andi Huber
+ * @author Werner Keil
  * @since 2.0
  */
 public class MixedRadix<Q extends Quantity<Q>> {
@@ -119,12 +120,12 @@ public class MixedRadix<Q extends Quantity<Q>> {
         return mixedRadixUnits.get(0);
     }
     
-    public Unit<Q> getTrainlingUnit() {
+    public Unit<Q> getTrailingUnit() {
         return mixedRadixUnits.get(mixedRadixUnits.size()-1);
     }
     
     public List<Unit<Q>> getUnits() {
-        return new ArrayList<>(mixedRadixUnits);
+        return Collections.unmodifiableList(mixedRadixUnits);
     }
     
     public int getUnitCount() {
