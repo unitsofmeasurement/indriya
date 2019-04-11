@@ -39,7 +39,7 @@ import javax.measure.MeasurementException;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 
-import tech.units.indriya.format.MixedRadixFormat.MixedRadixFormatOptions;
+import tech.units.indriya.format.MixedQuantityFormat.MixedRadixFormatOptions;
 import tech.units.indriya.function.Calculus;
 import tech.units.indriya.function.Calculus.IntegerAndFraction;
 import tech.units.indriya.quantity.Quantities;
@@ -248,8 +248,8 @@ public class MixedRadix<Q extends Quantity<Q>> {
     // -- FORMATTING 
     // I think we should leave this to the actual QuantityFormat implementation, but we might offer a toString() method with a properly constructed format instance.
     @Deprecated
-    public MixedRadixFormat<Q> createFormat(final MixedRadixFormatOptions options) {
-        return MixedRadixFormat.of(this, options);
+    public MixedQuantityFormat<Q> createFormat(final MixedRadixFormatOptions options) {
+        return MixedQuantityFormat.of(this, options);
     }
     
     // -- IMPLEMENTATION DETAILS

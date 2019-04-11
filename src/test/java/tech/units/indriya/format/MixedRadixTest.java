@@ -50,7 +50,7 @@ import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.NumberAssertions;
 import tech.units.indriya.format.MixedRadix.PrimaryUnitPick;
-import tech.units.indriya.format.MixedRadixFormat.MixedRadixFormatOptions;
+import tech.units.indriya.format.MixedQuantityFormat.MixedRadixFormatOptions;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.Units;
 
@@ -255,13 +255,13 @@ public class MixedRadixTest {
         realFormat.setDecimalSeparatorAlwaysShown(true);
         realFormat.setMaximumFractionDigits(3);
         
-        MixedRadixFormatOptions mixedRadixFormatOptions = new MixedRadixFormat.MixedRadixFormatOptions()
+        MixedRadixFormatOptions mixedRadixFormatOptions = new MixedQuantityFormat.MixedRadixFormatOptions()
                 .realFormat(realFormat)
                 .unitFormat(SimpleUnitFormat.getInstance())
                 .numberToUnitDelimiter(" ")
                 .radixPartsDelimiter(" ");
         
-        MixedRadixFormat<Length> mixedRadixFormat = mixedRadix.createFormat(mixedRadixFormatOptions);
+        MixedQuantityFormat<Length> mixedRadixFormat = mixedRadix.createFormat(mixedRadixFormatOptions);
         
         // when
         String formatedOutput = mixedRadixFormat.format(lengthQuantity);
@@ -277,8 +277,8 @@ public class MixedRadixTest {
         // given
         
         MixedRadix<Length> mixedRadix = MixedRadix.ofPrimary(USCustomary.FOOT).mix(USCustomary.INCH);
-        MixedRadixFormat.MixedRadixFormatOptions mixedRadixFormatOptions = new MixedRadixFormat.MixedRadixFormatOptions();
-        MixedRadixFormat<Length> mixedRadixFormat = mixedRadix.createFormat(mixedRadixFormatOptions);
+        MixedQuantityFormat.MixedRadixFormatOptions mixedRadixFormatOptions = new MixedQuantityFormat.MixedRadixFormatOptions();
+        MixedQuantityFormat<Length> mixedRadixFormat = mixedRadix.createFormat(mixedRadixFormatOptions);
 
         // when 
         Quantity<Length> lengthQuantity = mixedRadixFormat.parse("1 ft 2 in");
