@@ -39,7 +39,6 @@ import javax.measure.format.MeasurementParseException;
 import javax.measure.format.UnitFormat;
 
 import tech.units.indriya.ComparableQuantity;
-import tech.units.indriya.quantity.MixedQuantity;
 
 /**
  * Common helper class that handles internals of formatting in {@link SimpleQuantityFormat}, {@link SimpleUnitFormat}
@@ -72,7 +71,8 @@ abstract class CommonFormatter {
         }
         final Number[] numArray = new Number[nums.size()];
         nums.toArray(numArray);
-        return MixedQuantity.of(numArray, unit);
+        //return MixedQuantity.of(numArray, unit);
+        return null; // FIXME change to use MixedRadix
     }
     
     static ComparableQuantity<?> parseMixed(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final String delimiter,
@@ -102,7 +102,8 @@ abstract class CommonFormatter {
         }
         final Number[] numArray = new Number[nums.size()];
         nums.toArray(numArray);
-        return MixedQuantity.of(numArray, unit);
+        //return MixedQuantity.of(numArray, unit);
+        return null; // FIXME change to use MixedRadix
     }
     
     static ComparableQuantity<?> parseMixed(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final String delimiter) throws IllegalArgumentException, MeasurementParseException {

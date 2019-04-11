@@ -44,6 +44,7 @@ import javax.measure.format.MeasurementParseException;
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.format.AbstractQuantityFormat;
 import tech.units.indriya.format.SimpleQuantityFormat;
+import tech.units.indriya.function.MixedRadix;
 import tech.units.indriya.unit.MixedUnit;
 
 /**
@@ -160,22 +161,14 @@ public final class Quantities {
      * @throws NullPointerException
      *             if value or scale were null
      * @throws IllegalArgumentException
-     *             if unit is a MixedUnit but the number of given values don't match its parts. 
-     * @throws MeasurementException
-     *             if unit is not a MixedUnit
+     *             if unit is a MixedUnit but the number of given values don't match its parts.
      * @since 2.0
      */
-    public static <Q extends Quantity<Q>> ComparableQuantity<Q> getMixedQuantity(Number[] values, Unit<Q> unit, Scale scale) {
-        if (unit instanceof MixedUnit) {
-            final MixedUnit<Q> compUnit =  (MixedUnit<Q>) unit;
-            //ComparableQuantity<Q> result = null;
-            if (values.length == compUnit.getUnits().size()) {
-                return new MixedQuantity<Q>(values, unit, scale);
-            } else {
-                throw new IllegalArgumentException(String.format("%s values don't match %s in mixed unit", values.length, compUnit.getUnits().size()));
-            }
+    public static <Q extends Quantity<Q>> Quantity<Q> getMixedQuantity(Number[] values, Unit<Q>[] units, Scale scale) {
+        if (values.length == units.length) {
+            return MixedRadix.of(units).createQuantity(values);
         } else {
-            throw new MeasurementException(String.format("%s not a mixed unit", unit));
+            throw new IllegalArgumentException(String.format("%s values don't match %s units", values.length, units.length));
         }
     }
     
@@ -192,7 +185,8 @@ public final class Quantities {
      *             if value or unit were null
      * @since 2.0
      */
-    public static <Q extends Quantity<Q>> ComparableQuantity<Q> getMixedQuantity(Number[] values, Unit<Q> unit) {
-        return getMixedQuantity(values, unit, ABSOLUTE);
+    @SafeVarargs
+    public static <Q extends Quantity<Q>> Quantity<Q> getMixedQuantity(Number[] values, Unit<Q>... units) {
+        return getMixedQuantity(values, units, ABSOLUTE);
     }
 }

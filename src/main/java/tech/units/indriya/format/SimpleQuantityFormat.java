@@ -45,7 +45,6 @@ import tech.units.indriya.AbstractQuantity;
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.CompositeQuantity;
-import tech.units.indriya.quantity.MixedQuantity;
 import tech.units.indriya.quantity.NumberQuantity;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.MixedUnit;
@@ -166,7 +165,8 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
 	@Override
 	public Appendable format(Quantity<?> quantity, Appendable dest) throws IOException {
 		final Unit unit = quantity.getUnit();
-        if (unit instanceof MixedUnit) {
+        /*
+		if (unit instanceof MixedUnit) {
             if (quantity instanceof MixedQuantity) {
                 final MixedQuantity<?> compQuant = (MixedQuantity<?>) quantity;
                 final MixedUnit<?> compUnit = (MixedUnit<?>) unit;
@@ -187,13 +187,13 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
             } else {
                 throw new MeasurementException("The quantity is not a mixed quantity");
             }
-        } else {
+        } else { */
     		dest.append(quantity.getValue().toString());
     		if (quantity.getUnit().equals(AbstractUnit.ONE))
     			return dest;
     		dest.append(delimiter);
     		return SimpleUnitFormat.getInstance().format(unit, dest);
-        }
+        //}
 	}
 
 	@SuppressWarnings("unchecked")

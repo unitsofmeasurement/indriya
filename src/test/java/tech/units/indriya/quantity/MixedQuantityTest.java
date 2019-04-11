@@ -38,6 +38,7 @@ import javax.measure.Unit;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Time;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.quantity.Quantities;
@@ -50,6 +51,7 @@ import static javax.measure.MetricPrefix.*;
  *
  * @author Werner Keil
  */
+@Disabled
 public class MixedQuantityTest {
     static final Logger logger = Logger.getLogger(MixedQuantityTest.class.getName());
 

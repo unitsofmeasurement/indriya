@@ -28,7 +28,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package tech.units.indriya.format;
+package tech.units.indriya.function;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -39,16 +39,17 @@ import javax.measure.MeasurementException;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 
+import tech.units.indriya.format.MixedQuantityFormat;
 import tech.units.indriya.format.MixedQuantityFormat.MixedRadixFormatOptions;
-import tech.units.indriya.function.Calculus;
 import tech.units.indriya.function.Calculus.IntegerAndFraction;
 import tech.units.indriya.quantity.Quantities;
 
 /**
- * Immutable, typesafe utility class to cover 'mixed-radix' related use-cases.
+ * Immutable class that represents multi-radix quantities (like "1 hour:20 min:45 sec" or "6 ft, 4 in")
  * 
  * @author Andi Huber
  * @author Werner Keil
+ * @version 1.2
  * @since 2.0
  */
 public class MixedRadix<Q extends Quantity<Q>> {
@@ -77,6 +78,14 @@ public class MixedRadix<Q extends Quantity<Q>> {
         return new MixedRadix<>(
                 PrimaryUnitPickState.pickByConvention(), 
                 Collections.singletonList(leadingUnit));
+    }
+    
+    @SafeVarargs
+    public static <X extends Quantity<X>> MixedRadix<X> of(Unit<X>... units) {
+        Objects.requireNonNull(units);
+        return new MixedRadix<>(
+                PrimaryUnitPickState.pickByConvention(), 
+                List.of(units));
     }
     
     public static <X extends Quantity<X>> MixedRadix<X> ofPrimary(Unit<X> primaryUnit) {
@@ -133,7 +142,7 @@ public class MixedRadix<Q extends Quantity<Q>> {
     }
     
     // -- QUANTITY FACTORY
-    
+ /*   
     public Quantity<Q> createQuantity(Number leadingValue, Number ... lessSignificantValues) {
 
         Objects.requireNonNull(leadingValue);
@@ -144,7 +153,7 @@ public class MixedRadix<Q extends Quantity<Q>> {
         
         if(totalValuesGiven > totalValuesAllowed) {
             String message = String.format(
-                    "number of values given <%d> exceeds the number of mixid-radix units available <%d>", 
+                    "number of values given <%d> exceeds the number of mixed-radix units available <%d>", 
                     totalValuesGiven, totalValuesAllowed);
             throw new IllegalArgumentException(message);
         }
@@ -163,6 +172,35 @@ public class MixedRadix<Q extends Quantity<Q>> {
 
         return quantity;
     }
+  */
+    
+    public Quantity<Q> createQuantity(Number ... values) {
+
+        Objects.requireNonNull(values);
+ 
+        int totalValuesGiven = values.length;
+        int totalValuesAllowed = getUnitCount();
+        
+        if(totalValuesGiven > totalValuesAllowed) {
+            String message = String.format(
+                    "number of values given <%d> exceeds the number of mixed-radix units available <%d>", 
+                    totalValuesGiven, totalValuesAllowed);
+            throw new IllegalArgumentException(message);
+        }
+
+        int valuesToBeProcessed = Math.min(totalValuesAllowed, totalValuesGiven);
+        
+        Quantity<Q> quantity = Quantities.getQuantity(0, primaryUnit);
+        
+        for(int i=0; i<valuesToBeProcessed; ++i) {
+            final Number fractionalValue = values[i];
+            final Unit<Q> fractionalUnit = mixedRadixUnits.get(i); 
+            quantity = quantity.add(Quantities.getQuantity(fractionalValue, fractionalUnit));
+        }
+
+        return quantity;
+    }
+    
     
     // -- VALUE EXTRACTION
 

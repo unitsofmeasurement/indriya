@@ -43,6 +43,7 @@ import javax.measure.format.QuantityFormat;
 import javax.measure.format.UnitFormat;
 
 import tech.units.indriya.AbstractUnit;
+import tech.units.indriya.function.MixedRadix;
 
 /**
  * Typesafe utility class to parse and format quantities using 'mixed-radix' format.

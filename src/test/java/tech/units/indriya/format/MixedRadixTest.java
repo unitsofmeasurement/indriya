@@ -49,8 +49,9 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.NumberAssertions;
-import tech.units.indriya.format.MixedRadix.PrimaryUnitPick;
 import tech.units.indriya.format.MixedQuantityFormat.MixedRadixFormatOptions;
+import tech.units.indriya.function.MixedRadix;
+import tech.units.indriya.function.MixedRadix.PrimaryUnitPick;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.Units;
 
