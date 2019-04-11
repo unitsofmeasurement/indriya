@@ -35,6 +35,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import javax.measure.MeasurementException;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 
@@ -52,24 +53,36 @@ import tech.units.indriya.quantity.Quantities;
 public class MixedRadix<Q extends Quantity<Q>> {
 
     // -- PRIVATE FIELDS 
-    
-    private final static int FIRST_PART_IS_PRIMARY_UNIT = 0;
-    private final static int LAST_PART_IS_PRIMARY_UNIT = -1;
-    
-    private final int primaryUnitIndex;
+
+    private final PrimaryUnitPickState pickState; 
     private final Unit<Q> primaryUnit;
     private final List<Unit<Q>> mixedRadixUnits;
     
+    // -- PRIMARY UNIT PICK CONVENTION
+    
+    public static enum PrimaryUnitPick {
+        LEADING_UNIT,
+        TRAILING_UNIT
+    }
+    
+    public static final PrimaryUnitPick PRIMARY_UNIT_PICK_DEFAULT = PrimaryUnitPick.TRAILING_UNIT;
+    
+    public static PrimaryUnitPick PRIMARY_UNIT_PICK = PRIMARY_UNIT_PICK_DEFAULT;
+    
     // -- FACTORIES
+    
+    public static <X extends Quantity<X>> MixedRadix<X> of(Unit<X> leadingUnit) {
+        Objects.requireNonNull(leadingUnit);
+        return new MixedRadix<>(
+                PrimaryUnitPickState.pickByConvention(), 
+                Collections.singletonList(leadingUnit));
+    }
     
     public static <X extends Quantity<X>> MixedRadix<X> ofPrimary(Unit<X> primaryUnit) {
         Objects.requireNonNull(primaryUnit);
-        return new MixedRadix<>(FIRST_PART_IS_PRIMARY_UNIT, Collections.singletonList(primaryUnit));
-    }
-    
-    public static <X extends Quantity<X>> MixedRadix<X> ofLeastSignificantAsPrimary(Unit<X> unit) {
-        Objects.requireNonNull(unit);
-        return new MixedRadix<>(LAST_PART_IS_PRIMARY_UNIT, Collections.singletonList(unit));
+        return new MixedRadix<>(
+                PrimaryUnitPickState.pickLeading(), 
+                Collections.singletonList(primaryUnit));
     }
 
     public MixedRadix<Q> mix(Unit<Q> mixedRadixUnit) {
@@ -80,8 +93,21 @@ public class MixedRadix<Q extends Quantity<Q>> {
         
         final List<Unit<Q>> mixedRadixUnits = new ArrayList<>(this.mixedRadixUnits);
         mixedRadixUnits.add(mixedRadixUnit);
-        return new MixedRadix<>(primaryUnitIndex, mixedRadixUnits);
+        return new MixedRadix<>(pickState, mixedRadixUnits);
     }
+    
+    public MixedRadix<Q> mixPrimary(Unit<Q> mixedRadixUnit) {
+        pickState.assertNotExplicitlyPicked();
+        Objects.requireNonNull(mixedRadixUnit);
+        
+        //FIXME[211] create a converter from current least-significant unit to given mixedRadixUnit
+        // and ensure there is a decreasing order of significance
+        
+        final List<Unit<Q>> mixedRadixUnits = new ArrayList<>(this.mixedRadixUnits);
+        mixedRadixUnits.add(mixedRadixUnit);
+        return new MixedRadix<>(PrimaryUnitPickState.pickByExplicitIndex(getUnitCount()), mixedRadixUnits);
+    }
+    
     
     // -- GETTERS
 
@@ -231,17 +257,67 @@ public class MixedRadix<Q extends Quantity<Q>> {
      * @param primaryUnitIndex - if negative, the index is relative to the number of parts
      * @param mixedRadixUnits
      */
-    private MixedRadix(int primaryUnitIndex, List<Unit<Q>> mixedRadixUnits) {
-        this.primaryUnitIndex = primaryUnitIndex;
+    private MixedRadix(PrimaryUnitPickState pickState, List<Unit<Q>> mixedRadixUnits) {
+        this.pickState = pickState;
         this.mixedRadixUnits = mixedRadixUnits;
-        this.primaryUnit = mixedRadixUnits.get(nonNegativePrimaryUnitIndex());
+        this.primaryUnit = mixedRadixUnits.get(pickState.nonNegativePrimaryUnitIndex(getUnitCount()));
     }
     
-    private int nonNegativePrimaryUnitIndex() {
-        return primaryUnitIndex < 0
-                ? mixedRadixUnits.size() + primaryUnitIndex
-                        : primaryUnitIndex;
-    }
+    private static class PrimaryUnitPickState {
+        
+        private final static int FIRST_PART_IS_PRIMARY_UNIT = 0;
+        private final static int LAST_PART_IS_PRIMARY_UNIT = -1;
+        private final boolean explicitlyPicked;
+        private final int pickedIndex;
+        
+        private static PrimaryUnitPickState pickByConvention() {
+            
+            final int pickedIndex_byConvention;
+            
+            switch (PRIMARY_UNIT_PICK) {
+            case LEADING_UNIT:
+                pickedIndex_byConvention = FIRST_PART_IS_PRIMARY_UNIT;
+                break;
 
+            case TRAILING_UNIT:
+                pickedIndex_byConvention = LAST_PART_IS_PRIMARY_UNIT;
+                break;
+                
+            default:
+                throw new MeasurementException(String.format("internal error: unmatched switch case <%s>", PRIMARY_UNIT_PICK));
+                
+            }
+            
+            return new PrimaryUnitPickState(false, pickedIndex_byConvention);
+        }
+
+        private void assertNotExplicitlyPicked() {
+            if(explicitlyPicked) {
+                throw new IllegalStateException("a primary unit was already picked");
+            }
+        }
+
+        private static PrimaryUnitPickState pickByExplicitIndex(int explicitIndex) {
+            return new PrimaryUnitPickState(true, explicitIndex);
+        }
+
+        private static PrimaryUnitPickState pickLeading() {
+            return new PrimaryUnitPickState(true, FIRST_PART_IS_PRIMARY_UNIT);
+        }
+
+        private PrimaryUnitPickState(boolean explicitlyPicked, int pickedIndex) {
+            this.explicitlyPicked = explicitlyPicked;
+            this.pickedIndex = pickedIndex;
+        }
+        
+        private int nonNegativePrimaryUnitIndex(int unitCount) {
+            return pickedIndex < 0
+                    ? unitCount + pickedIndex
+                            : pickedIndex;
+        }
+        
+    
+    }
+    
 
 }

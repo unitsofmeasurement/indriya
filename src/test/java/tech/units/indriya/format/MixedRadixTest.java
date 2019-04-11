@@ -49,6 +49,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.NumberAssertions;
+import tech.units.indriya.format.MixedRadix.PrimaryUnitPick;
 import tech.units.indriya.format.MixedRadixFormat.MixedRadixFormatOptions;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.Units;
@@ -73,6 +74,65 @@ public class MixedRadixTest {
         
     }
 
+    @Test
+    public void cannotRassignPrimaryUnit() {
+        assertThrows(IllegalStateException.class, ()->{
+            MixedRadix.ofPrimary(HOUR).mixPrimary(MINUTE);
+        });
+    }
+    
+    @Test
+    public void assignPrimaryUnitByLeadingConvention() {
+
+        // given
+        MixedRadix.PRIMARY_UNIT_PICK = PrimaryUnitPick.LEADING_UNIT;
+        
+        // when
+        MixedRadix<Time> mixedRadix = MixedRadix.of(HOUR).mix(MINUTE).mix(SECOND);
+        
+        // then
+        assertEquals(HOUR, mixedRadix.getPrimaryUnit());
+        
+    }
+    
+    @Test
+    public void assignPrimaryUnitByTrailingConvention() {
+
+        // given
+        MixedRadix.PRIMARY_UNIT_PICK = PrimaryUnitPick.TRAILING_UNIT;
+        
+        // when
+        MixedRadix<Time> mixedRadix = MixedRadix.of(HOUR).mix(MINUTE).mix(SECOND);
+        
+        // then
+        assertEquals(SECOND, mixedRadix.getPrimaryUnit());
+        
+    }
+    
+    @Test
+    public void assignPrimaryUnitExplicitlyLeading() {
+
+        // given
+        MixedRadix<Time> mixedRadix = MixedRadix.ofPrimary(HOUR).mix(MINUTE).mix(SECOND);
+        
+        // then
+        assertEquals(HOUR, mixedRadix.getPrimaryUnit());
+        
+    }
+    
+    @Test
+    public void assignPrimaryUnitExplicitlyOnMix() {
+
+        // given
+        MixedRadix<Time> mixedRadix1 = MixedRadix.of(HOUR).mixPrimary(MINUTE).mix(SECOND);
+        MixedRadix<Time> mixedRadix2 = MixedRadix.of(HOUR).mix(MINUTE).mixPrimary(SECOND);
+        
+        // then
+        assertEquals(MINUTE, mixedRadix1.getPrimaryUnit());
+        assertEquals(SECOND, mixedRadix2.getPrimaryUnit());
+        
+    }
+    
 
     @Test @Disabled("check is not yet implemented") //TODO[211] enable once implemented
     public void wrongOrderOfSignificance() {
@@ -235,7 +295,7 @@ public class MixedRadixTest {
         
         // given
     
-        MixedRadix<Time> mixedRadix = MixedRadix.ofLeastSignificantAsPrimary(HOUR).mix(MINUTE).mix(SECOND);
+        MixedRadix<Time> mixedRadix = MixedRadix.ofPrimary(HOUR).mix(MINUTE).mixPrimary(SECOND);
         
         Quantity<Time> startTime = mixedRadix.createQuantity(9, 20, 0);
         Quantity<Time> duration = Quantities.getQuantity(30, SECOND);
