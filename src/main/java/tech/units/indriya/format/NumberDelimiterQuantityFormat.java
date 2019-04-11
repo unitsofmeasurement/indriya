@@ -45,7 +45,6 @@ import javax.measure.format.UnitFormat;
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.CompositeQuantity;
-import tech.units.indriya.quantity.MixedQuantity;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.MixedUnit;
 
@@ -225,6 +224,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
     @Override
     public Appendable format(Quantity<?> quantity, Appendable dest) throws IOException {
         int fract = 0;
+        /* 
         if (quantity instanceof MixedQuantity) {
             final MixedQuantity<?> compQuant = (MixedQuantity<?>) quantity;
             if (compQuant.getUnit() instanceof MixedUnit) {
@@ -258,6 +258,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
                 throw new MeasurementException("A mixed quantity must contain a mixed unit");
             }
         } else {
+        */
             if (quantity != null && quantity.getValue() != null) {
                 fract = getFractionDigitsCount(quantity.getValue().doubleValue());
             }
@@ -269,7 +270,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
                 return dest;
             dest.append(delimiter);
             return unitFormat.format(quantity.getUnit(), dest);
-        }
+        //}
     }
 
     @Override
