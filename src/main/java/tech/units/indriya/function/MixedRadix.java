@@ -28,7 +28,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package tech.units.indriya.format;
+package tech.units.indriya.function;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -41,9 +41,8 @@ import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.UnitConverter;
 
-import tech.units.indriya.format.MixedRadixFormat.MixedRadixFormatOptions;
-import tech.units.indriya.function.Calculus;
-import tech.units.indriya.function.RationalConverter;
+import tech.units.indriya.format.MixedQuantityFormat;
+import tech.units.indriya.format.MixedQuantityFormat.MixedRadixFormatOptions;
 import tech.units.indriya.internal.radix.MixedRadixSupport;
 import tech.units.indriya.internal.radix.Radix;
 import tech.units.indriya.quantity.Quantities;
@@ -112,12 +111,12 @@ public class MixedRadix<Q extends Quantity<Q>> {
         return mixedRadixUnits.get(0);
     }
     
-    public Unit<Q> getTrainlingUnit() {
+    public Unit<Q> getTrailingUnit() {
         return mixedRadixUnits.get(mixedRadixUnits.size()-1);
     }
     
     public List<Unit<Q>> getUnits() {
-        return new ArrayList<>(mixedRadixUnits);
+        return Collections.unmodifiableList(mixedRadixUnits);
     }
     
     public int getUnitCount() {
@@ -155,7 +154,7 @@ public class MixedRadix<Q extends Quantity<Q>> {
         
         Number sum = mixedRadixSupport.sumMostSignificant(valuesToBeProcessed);
         
-        return Quantities.getQuantity(sum, getTrainlingUnit()).to(getPrimaryUnit());
+        return Quantities.getQuantity(sum, getTrailingUnit()).to(getPrimaryUnit());
     }
 
     // -- VALUE EXTRACTION
@@ -199,7 +198,7 @@ public class MixedRadix<Q extends Quantity<Q>> {
 
         // for partsToVisitCount >= 1
         
-        final Number value_inTrailingUnits = quantity.to(getTrainlingUnit()).getValue();
+        final Number value_inTrailingUnits = quantity.to(getTrailingUnit()).getValue();
         final List<Number> extractedValues = new ArrayList<>(getUnitCount());
         
         mixedRadixSupport.visitRadixNumbers(value_inTrailingUnits, extractedValues::add);
@@ -212,8 +211,10 @@ public class MixedRadix<Q extends Quantity<Q>> {
     
     // -- FORMATTING 
     
-    public MixedRadixFormat<Q> createFormat(final MixedRadixFormatOptions options) {
-        return MixedRadixFormat.of(this, options);
+    // I think we should leave this to the actual QuantityFormat implementation, but we might offer a toString() method with a properly constructed format instance.
+    @Deprecated
+    public MixedQuantityFormat<Q> createFormat(final MixedRadixFormatOptions options) {
+        return MixedQuantityFormat.of(this, options);
     }
     
     // -- IMPLEMENTATION DETAILS
@@ -252,7 +253,7 @@ public class MixedRadix<Q extends Quantity<Q>> {
 
     private MixedRadix<Q> append(PrimaryUnitPickState state, Unit<Q> mixedRadixUnit) {
         
-        Unit<Q> tail = getTrainlingUnit(); 
+        Unit<Q> tail = getTrailingUnit(); 
         
         assertDecreasingOrderOfSignificanceAndLinearity(tail, mixedRadixUnit);
         

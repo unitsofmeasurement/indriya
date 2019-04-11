@@ -50,9 +50,10 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.NumberAssertions;
-import tech.units.indriya.format.MixedRadix.PrimaryUnitPick;
-import tech.units.indriya.format.MixedRadixFormat.MixedRadixFormatOptions;
+import tech.units.indriya.format.MixedQuantityFormat.MixedRadixFormatOptions;
 import tech.units.indriya.function.Calculus;
+import tech.units.indriya.function.MixedRadix;
+import tech.units.indriya.function.MixedRadix.PrimaryUnitPick;
 import tech.units.indriya.unit.Units;
 
 /**
@@ -256,13 +257,14 @@ public class MixedRadixTest {
         realFormat.setDecimalSeparatorAlwaysShown(true);
         realFormat.setMaximumFractionDigits(3);
         
-        MixedRadixFormatOptions mixedRadixFormatOptions = MixedRadixFormat.options()
+        MixedRadixFormatOptions mixedRadixFormatOptions = MixedQuantityFormat.options()
                 .setRealFormat(realFormat)
                 .setUnitFormat(SimpleUnitFormat.getInstance())
                 .setNumberToUnitDelimiter(" ")
                 .setRadixPartsDelimiter(" ");
         
-        MixedRadixFormat<Length> mixedRadixFormat = mixedRadix.createFormat(mixedRadixFormatOptions);
+        MixedQuantityFormat<Length> mixedRadixFormat = 
+                MixedQuantityFormat.of(mixedRadix, mixedRadixFormatOptions); 
         
         // when
         String formatedOutput = mixedRadixFormat.format(lengthQuantity);
@@ -278,8 +280,9 @@ public class MixedRadixTest {
         // given
         
         MixedRadix<Length> mixedRadix = MixedRadix.ofPrimary(USCustomary.FOOT).mix(USCustomary.INCH);
-        MixedRadixFormat.MixedRadixFormatOptions mixedRadixFormatOptions = new MixedRadixFormat.MixedRadixFormatOptions();
-        MixedRadixFormat<Length> mixedRadixFormat = mixedRadix.createFormat(mixedRadixFormatOptions);
+        MixedQuantityFormat.MixedRadixFormatOptions mixedRadixFormatOptions = new MixedQuantityFormat.MixedRadixFormatOptions();
+        MixedQuantityFormat<Length> mixedRadixFormat = 
+                MixedQuantityFormat.of(mixedRadix, mixedRadixFormatOptions);
 
         // when 
         Quantity<Length> lengthQuantity = mixedRadixFormat.parse("1 ft 2 in");

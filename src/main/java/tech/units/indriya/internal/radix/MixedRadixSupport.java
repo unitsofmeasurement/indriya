@@ -4,8 +4,8 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.function.Consumer;
 
-import tech.units.indriya.format.MixedRadix;
 import tech.units.indriya.function.Calculus;
+import tech.units.indriya.function.MixedRadix;
 
 /**
  * Internal utility class to support {@link MixedRadix}.

@@ -43,15 +43,17 @@ import javax.measure.format.QuantityFormat;
 import javax.measure.format.UnitFormat;
 
 import tech.units.indriya.AbstractUnit;
+import tech.units.indriya.function.MixedRadix;
 
 /**
  * Typesafe utility class to parse and format quantities using 'mixed-radix' format.
  * 
  * @author Andi Huber
- * @version 1.0
+ * @author Werner Keil
+ * @version 1.1
  * @since 2.0
  */
-public class MixedRadixFormat<Q extends Quantity<Q>> implements QuantityFormat {
+public class MixedQuantityFormat<Q extends Quantity<Q>> implements QuantityFormat {
     
     // -- PRIVATE FIELDS 
     
@@ -60,12 +62,12 @@ public class MixedRadixFormat<Q extends Quantity<Q>> implements QuantityFormat {
 
     // -- FACTORIES
 
-    public static <Q extends Quantity<Q>> MixedRadixFormat<Q> of(MixedRadix<Q> mixedRadix, MixedRadixFormatOptions mixedRadixFormatOptions) {
-        return new MixedRadixFormat<>(mixedRadix, mixedRadixFormatOptions);
+    public static <Q extends Quantity<Q>> MixedQuantityFormat<Q> of(MixedRadix<Q> mixedRadix, MixedRadixFormatOptions mixedRadixFormatOptions) {
+        return new MixedQuantityFormat<>(mixedRadix, mixedRadixFormatOptions);
     }
 
-    public static <Q extends Quantity<Q>> MixedRadixFormat<Q> of(MixedRadix<Q> mixedRadix) {
-        return new MixedRadixFormat<>(mixedRadix, new MixedRadixFormatOptions());
+    public static <Q extends Quantity<Q>> MixedQuantityFormat<Q> of(MixedRadix<Q> mixedRadix) {
+        return new MixedQuantityFormat<>(mixedRadix, new MixedRadixFormatOptions());
     }
 
     // -- IMPLEMENTATION
@@ -233,7 +235,7 @@ public class MixedRadixFormat<Q extends Quantity<Q>> implements QuantityFormat {
 
     // -- IMPLEMENTATION DETAILS
 
-    private MixedRadixFormat(MixedRadix<Q> mixedRadix, MixedRadixFormat.MixedRadixFormatOptions mixedRadixFormatOptions) {
+    private MixedQuantityFormat(MixedRadix<Q> mixedRadix, MixedQuantityFormat.MixedRadixFormatOptions mixedRadixFormatOptions) {
         this.mixedRadix = mixedRadix;
         this.formatOptions = mixedRadixFormatOptions;
     }
