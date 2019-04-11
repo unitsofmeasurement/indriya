@@ -53,6 +53,39 @@ public final class Calculus {
 	 * Exposes (non-final) the MathContext used for BigDecimal calculus.
 	 */
 	public static MathContext MATH_CONTEXT = DEFAULT_MATH_CONTEXT;
+	
+	/**
+	 * @param number
+	 * @return whether {@code number} is one of Long, Integer, Short or Byte 
+	 */
+	public static boolean isPrimitiveNonFractional(Number number) {
+	    Objects.requireNonNull(number, MSG_NUMBER_NON_NULL);
+	    if(number instanceof Long || number instanceof Integer || 
+	            number instanceof Short || number instanceof Byte) {
+	        return true;
+	    }
+        return false;
+    }
+	
+	public static boolean isNonFractional(Number number) {
+	    if(isPrimitiveNonFractional(number) || number instanceof BigInteger) {
+	        return true;
+	    }
+        return false;
+    }
+	
+	public static void assertNotFractional(Number number) {
+        if(!isNonFractional(number)) {
+            throw new ArithmeticException("number is fractional");       
+        }
+    }
+	
+	public static void assertNotNegative(Number number) {
+        if(isLessThanZero(number)) {
+            throw new ArithmeticException("number is fractional");       
+        }
+    }
+	
 
 	/**
 	 * Converts a number to {@link BigDecimal}
@@ -185,15 +218,15 @@ public final class Calculus {
 	public static boolean isLessThanOne(Number number) {
 		Objects.requireNonNull(number, MSG_NUMBER_NON_NULL);
 		if(number instanceof BigInteger) {
-			return ((BigInteger) number).compareTo(BigInteger.ONE) == -1;
+			return ((BigInteger) number).compareTo(BigInteger.ONE) < 0;
 		}
 		if(number instanceof BigDecimal) {
-			return ((BigDecimal) number).compareTo(BigDecimal.ONE) == -1;
+			return ((BigDecimal) number).compareTo(BigDecimal.ONE) < 0;
 		}
 		if(number instanceof Double) {
 			return ((double)number) < 1.0;
 		}
-		if(number instanceof Long || number instanceof Integer || number instanceof Short || number instanceof Byte) {
+		if(isPrimitiveNonFractional(number)) {
 			return number.longValue() < 1L;
 		}
 		logger.fine(()->String.format(
@@ -201,6 +234,162 @@ public final class Calculus {
 				number.getClass().getName()));
 		return number.doubleValue() < 1.0;
 	}
+	
+    /**
+     * Whether given number is &lt; 1
+     * @param number
+     * @return
+     */
+    public static boolean isLessThanZero(Number number) {
+        Objects.requireNonNull(number, MSG_NUMBER_NON_NULL);
+        if(number instanceof BigInteger) {
+            return ((BigInteger) number).compareTo(BigInteger.ZERO) < 0;
+        }
+        if(number instanceof BigDecimal) {
+            return ((BigDecimal) number).compareTo(BigDecimal.ZERO) < 0;
+        }
+        if(number instanceof Double) {
+            return ((double)number) < 0.;
+        }
+        if(isPrimitiveNonFractional(number)) {
+            return number.longValue() < 0L;
+        }
+        logger.fine(()->String.format(
+                "WARNING: possibly loosing precision, when converting from Number type '%s' to double.",
+                number.getClass().getName()));
+        return number.doubleValue() < 0.;
+    }
+	
+	// -- OPTIMIZED ARITHMETIC
+	
+	/**
+     * @return number of bits in the minimal two's-complement
+     *         representation of this Number, <i>excluding</i> a sign bit; 
+     *         returns {@code -1}, iff the given number is a non-fractional type or {@code null} 
+     */
+	public static int bitLength(Number number) {
+	    if(number==null) {
+	        return -1;
+	    }
+        if(isPrimitiveNonFractional(number)) {
+            
+            long long_value = number.longValue(); 
+            
+            if(long_value == Long.MIN_VALUE) {
+                return 63;
+            } else {
+                return Long.bitCount(Math.abs(long_value));
+            }
+            
+        }
+        if(number instanceof BigInteger) {
+            return ((BigInteger) number).bitLength();
+        }
+        return -1;        
+    }
+
+	/**
+     * Converts this number to a int, checking for lost information. If the value of this 
+     * number is out of the range of the int type, then an ArithmeticException is thrown.
+     * @param number
+     */
+	public static int intValueExact(Number number) {
+	    Objects.requireNonNull(number, MSG_NUMBER_NON_NULL);
+        if(number instanceof BigInteger) {
+            return ((BigInteger) number).intValueExact();
+        }
+        if(isPrimitiveNonFractional(number)) {
+            long long_value = number.longValue();
+            return Math.toIntExact(long_value);
+        }
+        throw new ArithmeticException("Number out of int range");
+	}
+	
+	/**
+	 * Converts this number to a long, checking for lost information. If the value of this 
+	 * number is out of the range of the long type, then an ArithmeticException is thrown.
+	 * @param number
+	 */
+	public static long longValueExact(Number number) {
+	    Objects.requireNonNull(number, MSG_NUMBER_NON_NULL);
+        if(number instanceof BigInteger) {
+            return ((BigInteger) number).longValueExact();
+        }
+        if(isPrimitiveNonFractional(number)) {
+            return number.longValue();
+        }
+        throw new ArithmeticException("Number out of long range");
+    }
+	
+	public static Number longValueIfExact(Number number) {
+	    if(number==null) {
+	        return null;
+	    }
+	    
+        int total_bits_required = bitLength(number); // not including sign
+        
+        if(total_bits_required<63) {
+            return longValueExact(number);
+        }
+	    
+        return number;
+	}
+	
+	/**
+	 * Multiplication without loss of precision.
+	 * @param x
+	 * @param y
+	 * @return
+	 */
+	public static Number times(Number x, Number y) {
+	    
+	    if(isNonFractional(x) && isNonFractional(y)) {
+	        
+            int total_bits_required = bitLength(x) + bitLength(y); // not including sign
+            
+            if(total_bits_required<31) {
+                return intValueExact(x) * intValueExact(y);
+            }
+            
+            if(total_bits_required<63) {
+                return longValueExact(x) * longValueExact(y);
+            }
+            
+            return toBigInteger(x).multiply(toBigInteger(y));
+	        
+	    }
+	    
+	    return toBigDecimal(x).multiply(toBigDecimal(y));
+	    
+	}
+	
+    /**
+     * Addition without loss of precision.
+     * @param x
+     * @param y
+     * @return
+     */
+	public static Number plus(Number x, Number y) {
+        
+        if(isNonFractional(x) && isNonFractional(y)) {
+            
+            int total_bits_required = Math.max(bitLength(x), bitLength(y)) + 1; // +1 carry, not including sign
+            
+            if(total_bits_required<31) {
+                return intValueExact(x) + intValueExact(y);
+            }
+            
+            if(total_bits_required<63) {
+                return longValueExact(x) + longValueExact(y);
+            }
+            
+            return toBigInteger(x).add(toBigInteger(y));
+            
+        }
+        
+        return toBigDecimal(x).add(toBigDecimal(y));
+
+    }
 	
 	// -- DOUBLE TO LONG
 	
@@ -306,7 +495,7 @@ public final class Calculus {
         final double fraction = value - integer;
         return new IntegerAndFraction(toLongIfCanBeRoundedToLong(integer), fraction);
     }
-    
+   
     
     
 }

@@ -32,6 +32,7 @@ package tech.units.indriya.format;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static tech.units.indriya.unit.Units.HOUR;
 import static tech.units.indriya.unit.Units.MINUTE;
@@ -51,7 +52,7 @@ import org.junit.jupiter.api.Test;
 import tech.units.indriya.NumberAssertions;
 import tech.units.indriya.format.MixedRadix.PrimaryUnitPick;
 import tech.units.indriya.format.MixedRadixFormat.MixedRadixFormatOptions;
-import tech.units.indriya.quantity.Quantities;
+import tech.units.indriya.function.Calculus;
 import tech.units.indriya.unit.Units;
 
 /**
@@ -271,7 +272,7 @@ public class MixedRadixTest {
         
     }
     
-    @Test @Disabled("parsing not yet implemented") //TODO[211] enable once implemented
+    @Test @Disabled("parsing not yet implemented") //TODO[211] enable once implemented, also test parse negative
     public void parsing() {
         
         // given
@@ -290,35 +291,45 @@ public class MixedRadixTest {
         fail("disabled"); // to satisfy code quality check?
     }
     
-    @Test //@Disabled("not yet optimized to do this") //TODO[211] enable once implemented
-    public void trailingUnitShouldDriveArithmetic() {
+    @Test
+    public void primaryUnitShouldDriveQuantityCreationArithmetic() {
+        
+        // given
+        MixedRadix<Time> mixedRadix_seconds = MixedRadix.of(HOUR).mix(MINUTE).mixPrimary(SECOND);
+        MixedRadix<Time> mixedRadix_hours = MixedRadix.ofPrimary(HOUR).mix(MINUTE).mix(SECOND);
+    
+        // when
+        Quantity<Time> time_seconds = mixedRadix_seconds.createQuantity(9, 20, 15); // '9h20min15s' in units of SECOND
+        Quantity<Time> time_hours = mixedRadix_hours.createQuantity(9, 20, 15); // '9h20min15s' in units of HOUR
+        
+        // then
+        assertEquals(Integer.class, time_seconds.getValue().getClass());
+        assertEquals(Double.class, time_hours.getValue().getClass());
+    }
+    
+    @Test
+    public void trailingUnitShouldDriveExtractionArithmetic() {
         
         // given
     
-        MixedRadix<Time> mixedRadix_second = MixedRadix.of(HOUR).mix(MINUTE).mixPrimary(SECOND);
-        MixedRadix<Time> mixedRadix_hour = MixedRadix.ofPrimary(HOUR).mix(MINUTE).mix(SECOND);
+        MixedRadix<Time> mixedRadix_seconds = MixedRadix.of(HOUR).mix(MINUTE).mixPrimary(SECOND);
+        MixedRadix<Time> mixedRadix_hours = MixedRadix.ofPrimary(HOUR).mix(MINUTE).mix(SECOND);
         
-        Quantity<Time> startTime = mixedRadix_second.createQuantity(9, 20, 0); // '9h20min' in units of SECOND
-        Quantity<Time> duration = Quantities.getQuantity(30, SECOND); // in units of SECOND
+        Quantity<Time> time = mixedRadix_seconds.createQuantity(9, 20, 15); // '9h20min15s' in units of SECOND
 
         // when
         
-        Quantity<Time> endTime = startTime.add(duration); // in units of SECOND
-        
-        System.out.println(startTime.getValue().getClass());
-        System.out.println(duration.getValue().getClass());
-        System.out.println(endTime.getValue().getClass());
-                
-        Number[] timeParts = mixedRadix_hour.extractValues(endTime); // trailing unit should drive the arithmetic
+        Number[] timeParts = mixedRadix_hours.extractValues(time); // trailing unit should drive the arithmetic
         
         // then
         
-        assertEquals(9, timeParts[0]); // should be actually an int
-        assertEquals(20, timeParts[1]); // should be actually an int
-        assertEquals(30, timeParts[2]); // should be actually an int
+        assertEquals(Integer.class, time.getValue().getClass());
+        
+        assertTrue(Calculus.isNonFractional(timeParts[0])); // should be non-fractional
+        assertTrue(Calculus.isNonFractional(timeParts[1])); // should be non-fractional
+        assertTrue(Calculus.isNonFractional(timeParts[2])); // should be non-fractional
         
     }
-
 
 
 }
