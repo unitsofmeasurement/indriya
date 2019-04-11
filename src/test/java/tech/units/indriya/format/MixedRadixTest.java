@@ -255,11 +255,11 @@ public class MixedRadixTest {
         realFormat.setDecimalSeparatorAlwaysShown(true);
         realFormat.setMaximumFractionDigits(3);
         
-        MixedRadixFormatOptions mixedRadixFormatOptions = new MixedRadixFormat.MixedRadixFormatOptions()
-                .realFormat(realFormat)
-                .unitFormat(SimpleUnitFormat.getInstance())
-                .numberToUnitDelimiter(" ")
-                .radixPartsDelimiter(" ");
+        MixedRadixFormatOptions mixedRadixFormatOptions = MixedRadixFormat.options()
+                .setRealFormat(realFormat)
+                .setUnitFormat(SimpleUnitFormat.getInstance())
+                .setNumberToUnitDelimiter(" ")
+                .setRadixPartsDelimiter(" ");
         
         MixedRadixFormat<Length> mixedRadixFormat = mixedRadix.createFormat(mixedRadixFormatOptions);
         

@@ -143,7 +143,7 @@ public class MixedRadix<Q extends Quantity<Q>> {
         
         if(totalValuesGiven > totalValuesAllowed) {
             String message = String.format(
-                    "number of values given <%d> exceeds the number of mixid-radix units available <%d>", 
+                    "number of values given <%d> exceeds the number of mixed-radix units available <%d>", 
                     totalValuesGiven, totalValuesAllowed);
             throw new IllegalArgumentException(message);
         }
@@ -194,9 +194,7 @@ public class MixedRadix<Q extends Quantity<Q>> {
             int maxPartsToVisit,
             MixedRadixVisitor<Q> partVisitor) {
 
-        final Number value_inLeadingUnits = quantity.to(getLeadingUnit()).getValue();
-        
-        // calculate the primary part and fractions
+        // calculate the leading part and fractions
         // these are all integers (whole numbers) except for the very last part
 
         IntegerAndFraction remaining = null;
@@ -204,11 +202,16 @@ public class MixedRadix<Q extends Quantity<Q>> {
 
         final int partsToVisitCount = Math.min(maxPartsToVisit, getUnitCount());
 
-        // corner cases
+        // corner case (partsToVisitCount == 0)
 
         if(partsToVisitCount==0) {
             return;
         }
+        
+        // corner case (partsToVisitCount == 1)
+        
+        final Number value_inLeadingUnits = quantity.to(getLeadingUnit()).getValue();
+        
         if(partsToVisitCount==1) {
             partVisitor.accept(0, getLeadingUnit(), value_inLeadingUnits);
             return;
@@ -254,7 +257,7 @@ public class MixedRadix<Q extends Quantity<Q>> {
 
     /**
      * 
-     * @param primaryUnitIndex - if negative, the index is relative to the number of parts
+     * @param primaryUnitIndex - if negative, the index is relative to the number of units
      * @param mixedRadixUnits
      */
     private MixedRadix(PrimaryUnitPickState pickState, List<Unit<Q>> mixedRadixUnits) {
@@ -265,8 +268,8 @@ public class MixedRadix<Q extends Quantity<Q>> {
     
     private static class PrimaryUnitPickState {
         
-        private final static int FIRST_PART_IS_PRIMARY_UNIT = 0;
-        private final static int LAST_PART_IS_PRIMARY_UNIT = -1;
+        private final static int LEADING_IS_PRIMARY_UNIT = 0;
+        private final static int TRAILING_IS_PRIMARY_UNIT = -1;
         private final boolean explicitlyPicked;
         private final int pickedIndex;
         
@@ -276,11 +279,11 @@ public class MixedRadix<Q extends Quantity<Q>> {
             
             switch (PRIMARY_UNIT_PICK) {
             case LEADING_UNIT:
-                pickedIndex_byConvention = FIRST_PART_IS_PRIMARY_UNIT;
+                pickedIndex_byConvention = LEADING_IS_PRIMARY_UNIT;
                 break;
 
             case TRAILING_UNIT:
-                pickedIndex_byConvention = LAST_PART_IS_PRIMARY_UNIT;
+                pickedIndex_byConvention = TRAILING_IS_PRIMARY_UNIT;
                 break;
                 
             default:
@@ -302,7 +305,7 @@ public class MixedRadix<Q extends Quantity<Q>> {
         }
 
         private static PrimaryUnitPickState pickLeading() {
-            return new PrimaryUnitPickState(true, FIRST_PART_IS_PRIMARY_UNIT);
+            return new PrimaryUnitPickState(true, LEADING_IS_PRIMARY_UNIT);
         }
 
         private PrimaryUnitPickState(boolean explicitlyPicked, int pickedIndex) {
