@@ -77,6 +77,7 @@ public class MixedRadixTest {
     @Test
     public void cannotRassignPrimaryUnit() {
         assertThrows(IllegalStateException.class, ()->{
+            
             MixedRadix.ofPrimary(HOUR).mixPrimary(MINUTE);
         });
     }
@@ -134,13 +135,12 @@ public class MixedRadixTest {
     }
     
 
-    @Test @Disabled("check is not yet implemented") //TODO[211] enable once implemented
+    @Test
     public void wrongOrderOfSignificance() {
         assertThrows(IllegalArgumentException.class, ()->{
+            
             MixedRadix.ofPrimary(USCustomary.INCH).mix(USCustomary.FOOT);
         });
-        
-        fail("disabled"); // to satisfy code quality check?
     }
     
     @Test
@@ -290,20 +290,26 @@ public class MixedRadixTest {
         fail("disabled"); // to satisfy code quality check?
     }
     
-    @Test @Disabled("not yet optimized to do this") //TODO[211] enable once implemented
-    public void leastSignificantShouldDriveArithmetic() {
+    @Test //@Disabled("not yet optimized to do this") //TODO[211] enable once implemented
+    public void trailingUnitShouldDriveArithmetic() {
         
         // given
     
-        MixedRadix<Time> mixedRadix = MixedRadix.ofPrimary(HOUR).mix(MINUTE).mixPrimary(SECOND);
+        MixedRadix<Time> mixedRadix_second = MixedRadix.of(HOUR).mix(MINUTE).mixPrimary(SECOND);
+        MixedRadix<Time> mixedRadix_hour = MixedRadix.ofPrimary(HOUR).mix(MINUTE).mix(SECOND);
         
-        Quantity<Time> startTime = mixedRadix.createQuantity(9, 20, 0);
-        Quantity<Time> duration = Quantities.getQuantity(30, SECOND);
+        Quantity<Time> startTime = mixedRadix_second.createQuantity(9, 20, 0); // '9h20min' in units of SECOND
+        Quantity<Time> duration = Quantities.getQuantity(30, SECOND); // in units of SECOND
 
         // when
         
-        Quantity<Time> endTime = startTime.add(duration);
-        Number[] timeParts = mixedRadix.extractValues(endTime);
+        Quantity<Time> endTime = startTime.add(duration); // in units of SECOND
+        
+        System.out.println(startTime.getValue().getClass());
+        System.out.println(duration.getValue().getClass());
+        System.out.println(endTime.getValue().getClass());
+                
+        Number[] timeParts = mixedRadix_hour.extractValues(endTime); // trailing unit should drive the arithmetic
         
         // then
         

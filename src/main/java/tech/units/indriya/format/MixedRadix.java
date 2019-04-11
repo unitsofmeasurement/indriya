@@ -57,6 +57,7 @@ public class MixedRadix<Q extends Quantity<Q>> {
     private final PrimaryUnitPickState pickState; 
     private final Unit<Q> primaryUnit;
     private final List<Unit<Q>> mixedRadixUnits;
+    //private final List<Unit<Q>> converter;
     
     // -- PRIMARY UNIT PICK CONVENTION
     
@@ -87,25 +88,13 @@ public class MixedRadix<Q extends Quantity<Q>> {
 
     public MixedRadix<Q> mix(Unit<Q> mixedRadixUnit) {
         Objects.requireNonNull(mixedRadixUnit);
-        
-        //FIXME[211] create a converter from current least-significant unit to given mixedRadixUnit
-        // and ensure there is a decreasing order of significance
-        
-        final List<Unit<Q>> mixedRadixUnits = new ArrayList<>(this.mixedRadixUnits);
-        mixedRadixUnits.add(mixedRadixUnit);
-        return new MixedRadix<>(pickState, mixedRadixUnits);
+        return append(pickState, mixedRadixUnit); // pickState is immutable, so reuse
     }
     
     public MixedRadix<Q> mixPrimary(Unit<Q> mixedRadixUnit) {
         pickState.assertNotExplicitlyPicked();
         Objects.requireNonNull(mixedRadixUnit);
-        
-        //FIXME[211] create a converter from current least-significant unit to given mixedRadixUnit
-        // and ensure there is a decreasing order of significance
-        
-        final List<Unit<Q>> mixedRadixUnits = new ArrayList<>(this.mixedRadixUnits);
-        mixedRadixUnits.add(mixedRadixUnit);
-        return new MixedRadix<>(PrimaryUnitPickState.pickByExplicitIndex(getUnitCount()), mixedRadixUnits);
+        return append(PrimaryUnitPickState.pickByExplicitIndex(getUnitCount()), mixedRadixUnit);
     }
     
     
@@ -264,6 +253,31 @@ public class MixedRadix<Q extends Quantity<Q>> {
         this.pickState = pickState;
         this.mixedRadixUnits = mixedRadixUnits;
         this.primaryUnit = mixedRadixUnits.get(pickState.nonNegativePrimaryUnitIndex(getUnitCount()));
+    }
+    
+    private MixedRadix<Q> append(PrimaryUnitPickState state, Unit<Q> mixedRadixUnit) {
+        
+        Unit<Q> tail = getTrainlingUnit(); 
+        
+        assertDecreasingOrderOfSignificance(tail, mixedRadixUnit);
+        
+        final List<Unit<Q>> mixedRadixUnits = new ArrayList<>(this.mixedRadixUnits);
+        mixedRadixUnits.add(mixedRadixUnit);
+        return new MixedRadix<>(state, mixedRadixUnits);
+    }
+    
+    private void assertDecreasingOrderOfSignificance(Unit<Q> u1, Unit<Q> u2) {
+        
+        Number factor = u2.getConverterTo(u1).convert(1.);
+        
+        if(!Calculus.isLessThanOne(Calculus.abs(factor))) {
+            String message = String.format("the appended mixed-radix unit <%s> "
+                    + "must be of lesser significance "
+                    + "than the one it is appended to: <%s>", 
+                    u1.getClass(),
+                    u2.getClass());
+            throw new IllegalArgumentException(message);
+        }
     }
     
     private static class PrimaryUnitPickState {
