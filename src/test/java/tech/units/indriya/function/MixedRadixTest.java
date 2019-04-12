@@ -32,6 +32,7 @@ package tech.units.indriya.function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static tech.units.indriya.unit.Units.HOUR;
 import static tech.units.indriya.unit.Units.MINUTE;
@@ -47,9 +48,7 @@ import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.NumberAssertions;
 import tech.units.indriya.format.SimpleUnitFormat;
-import tech.units.indriya.function.MixedRadix;
 import tech.units.indriya.function.MixedRadix.PrimaryUnitPick;
-import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.Units;
 
 /**
@@ -57,6 +56,7 @@ import tech.units.indriya.unit.Units;
  * @author Andi Huber
  */
 public class MixedRadixTest {
+    
     public static class USCustomary {
 
         public static final Unit<Length> FOOT = Units.METRE.multiply(0.3048).asType(Length.class);
@@ -70,10 +70,11 @@ public class MixedRadixTest {
         }
         
     }
-    
+
     @Test
     public void cannotRassignPrimaryUnit() {
         assertThrows(IllegalStateException.class, ()->{
+            
             MixedRadix.ofPrimary(HOUR).mixPrimary(MINUTE);
         });
     }
@@ -131,13 +132,12 @@ public class MixedRadixTest {
     }
     
 
-    @Test @Disabled("check is not yet implemented") //TODO[211] enable once implemented
+    @Test
     public void wrongOrderOfSignificance() {
         assertThrows(IllegalArgumentException.class, ()->{
+            
             MixedRadix.ofPrimary(USCustomary.INCH).mix(USCustomary.FOOT);
         });
-        
-        fail("disabled"); // to satisfy code quality check?
     }
     
     @Test
@@ -234,29 +234,47 @@ public class MixedRadixTest {
         
         fail("disabled"); // to satisfy code quality check?
     }
+
     
+    @Test
+    public void primaryUnitShouldDriveQuantityCreationArithmetic() {
+        
+        // given
+        MixedRadix<Time> mixedRadix_seconds = MixedRadix.of(HOUR).mix(MINUTE).mixPrimary(SECOND);
+        MixedRadix<Time> mixedRadix_hours = MixedRadix.ofPrimary(HOUR).mix(MINUTE).mix(SECOND);
     
-     
-    @Test @Disabled("not yet optimized to do this") //TODO[211] enable once implemented
-    public void leastSignificantShouldDriveArithmetic() {
+        // when
+        Quantity<Time> time_seconds = mixedRadix_seconds.createQuantity(9, 20, 15); // '9h20min15s' in units of SECOND
+        Quantity<Time> time_hours = mixedRadix_hours.createQuantity(9, 20, 15); // '9h20min15s' in units of HOUR
+        
+        // then
+        assertEquals(Integer.class, time_seconds.getValue().getClass());
+        assertEquals(Double.class, time_hours.getValue().getClass());
+    }
+    
+    @Test
+    public void trailingUnitShouldDriveExtractionArithmetic() {
         
         // given
     
-        MixedRadix<Time> mixedRadix = MixedRadix.ofPrimary(HOUR).mix(MINUTE).mixPrimary(SECOND);
+        MixedRadix<Time> mixedRadix_seconds = MixedRadix.of(HOUR).mix(MINUTE).mixPrimary(SECOND);
+        MixedRadix<Time> mixedRadix_hours = MixedRadix.ofPrimary(HOUR).mix(MINUTE).mix(SECOND);
         
-        Quantity<Time> startTime = mixedRadix.createQuantity(9, 20, 0);
-        Quantity<Time> duration = Quantities.getQuantity(30, SECOND);
+        Quantity<Time> time = mixedRadix_seconds.createQuantity(9, 20, 15); // '9h20min15s' in units of SECOND
 
         // when
         
-        Quantity<Time> endTime = startTime.add(duration);
-        Number[] timeParts = mixedRadix.extractValues(endTime);
+        Number[] timeParts = mixedRadix_hours.extractValues(time); // trailing unit should drive the arithmetic
         
         // then
         
-        assertEquals(9, timeParts[0]); // should be actually an int
-        assertEquals(20, timeParts[1]); // should be actually an int
-        assertEquals(30, timeParts[2]); // should be actually an int
+        assertEquals(Integer.class, time.getValue().getClass());
+        
+        assertTrue(Calculus.isNonFractional(timeParts[0])); // should be non-fractional
+        assertTrue(Calculus.isNonFractional(timeParts[1])); // should be non-fractional
+        assertTrue(Calculus.isNonFractional(timeParts[2])); // should be non-fractional
         
     }
+
+
 }

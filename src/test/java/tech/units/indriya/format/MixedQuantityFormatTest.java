@@ -67,10 +67,10 @@ public class MixedQuantityFormatTest {
         realFormat.setMaximumFractionDigits(3);
         
         MixedRadixFormatOptions mixedRadixFormatOptions = new MixedQuantityFormat.MixedRadixFormatOptions()
-                .realFormat(realFormat)
-                .unitFormat(SimpleUnitFormat.getInstance())
-                .numberToUnitDelimiter(" ")
-                .radixPartsDelimiter(" ");
+                .setRealFormat(realFormat)
+                .setUnitFormat(SimpleUnitFormat.getInstance())
+                .setNumberToUnitDelimiter(" ")
+                .setRadixPartsDelimiter(" ");
         
         MixedQuantityFormat<Length> mixedRadixFormat = MixedQuantityFormat.of(mixedRadix, mixedRadixFormatOptions);
         

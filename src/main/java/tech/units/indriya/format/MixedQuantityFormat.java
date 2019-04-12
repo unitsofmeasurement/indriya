@@ -62,12 +62,12 @@ public class MixedQuantityFormat<Q extends Quantity<Q>> implements QuantityForma
 
     // -- FACTORIES
 
-    public static <Q extends Quantity<Q>> MixedQuantityFormat<Q> of(MixedRadix<Q> mixedRadix, MixedQuantityFormat.MixedRadixFormatOptions mixedRadixFormatOptions) {
+    public static <Q extends Quantity<Q>> MixedQuantityFormat<Q> of(MixedRadix<Q> mixedRadix, MixedRadixFormatOptions mixedRadixFormatOptions) {
         return new MixedQuantityFormat<>(mixedRadix, mixedRadixFormatOptions);
     }
 
     public static <Q extends Quantity<Q>> MixedQuantityFormat<Q> of(MixedRadix<Q> mixedRadix) {
-        return new MixedQuantityFormat<>(mixedRadix, new MixedQuantityFormat.MixedRadixFormatOptions());
+        return new MixedQuantityFormat<>(mixedRadix, new MixedRadixFormatOptions());
     }
 
     // -- IMPLEMENTATION
@@ -79,7 +79,7 @@ public class MixedQuantityFormat<Q extends Quantity<Q>> implements QuantityForma
         final int mixedRadixUnitCount = mixedRadix.getUnitCount();
         final int lastIndex = mixedRadixUnitCount-1;
         
-        mixedRadix.visitQuantity(quantity_typed, mixedRadixUnitCount, (index, unit, value)-> {
+        mixedRadix.visitQuantity(quantity_typed, mixedRadixUnitCount, (index, unit, value)->{
             try {
                 
                 boolean isLast = index == lastIndex;
@@ -104,7 +104,8 @@ public class MixedQuantityFormat<Q extends Quantity<Q>> implements QuantityForma
                     // radix delimiter
                     destination.append(formatOptions.getRadixPartsDelimiter());
                     
-                }
+                } 
+                
             } catch (IOException e) {
                 throw new MeasurementException(e);
             }
@@ -126,7 +127,7 @@ public class MixedQuantityFormat<Q extends Quantity<Q>> implements QuantityForma
     @Override
     public Quantity<Q> parse(CharSequence csq, ParsePosition pos)
             throws IllegalArgumentException, MeasurementParseException {
-        throw new UnsupportedOperationException("not implemented yet"); //FIXME[211] implement
+        throw new IllegalStateException("no implement yet"); //FIXME[211] implement
     }
 
     @Override
@@ -135,6 +136,10 @@ public class MixedQuantityFormat<Q extends Quantity<Q>> implements QuantityForma
     }
 
     // -- FORMAT OPTIONS
+    
+    public static MixedRadixFormatOptions options() {
+        return new MixedRadixFormatOptions();
+    }
 
     public static class MixedRadixFormatOptions {
 
@@ -157,7 +162,7 @@ public class MixedQuantityFormat<Q extends Quantity<Q>> implements QuantityForma
          * @throws NullPointerException if {@code integerFormat} is {@code null}
          * @return this {@code MixedRadixFormatOptions}
          */
-        public MixedRadixFormatOptions integerFormat(DecimalFormat integerFormat) {
+        public MixedRadixFormatOptions setIntegerFormat(DecimalFormat integerFormat) {
             Objects.requireNonNull(integerFormat);
             this.integerFormat = integerFormat;
             return this;
@@ -177,7 +182,7 @@ public class MixedQuantityFormat<Q extends Quantity<Q>> implements QuantityForma
          * @throws NullPointerException if {@code realFormat} is {@code null}
          * @return this {@code MixedRadixFormatOptions}    
          */
-        public MixedRadixFormatOptions realFormat(DecimalFormat realFormat) {
+        public MixedRadixFormatOptions setRealFormat(DecimalFormat realFormat) {
             Objects.requireNonNull(realFormat);
             this.realFormat = realFormat;
             return this;
@@ -187,7 +192,7 @@ public class MixedQuantityFormat<Q extends Quantity<Q>> implements QuantityForma
             return unitFormat;
         }
 
-        public MixedRadixFormatOptions unitFormat(UnitFormat unitFormat) {
+        public MixedRadixFormatOptions setUnitFormat(UnitFormat unitFormat) {
             Objects.requireNonNull(unitFormat);
             this.unitFormat = unitFormat;
             return this;
@@ -197,7 +202,7 @@ public class MixedQuantityFormat<Q extends Quantity<Q>> implements QuantityForma
             return numberToUnitDelimiter;
         }
 
-        public MixedRadixFormatOptions numberToUnitDelimiter(String numberToUnitDelimiter) {
+        public MixedRadixFormatOptions setNumberToUnitDelimiter(String numberToUnitDelimiter) {
             Objects.requireNonNull(numberToUnitDelimiter);
             this.numberToUnitDelimiter = numberToUnitDelimiter;
             return this;
@@ -207,7 +212,7 @@ public class MixedQuantityFormat<Q extends Quantity<Q>> implements QuantityForma
             return radixPartsDelimiter;
         }
 
-        public MixedRadixFormatOptions radixPartsDelimiter(String radixPartsDelimiter) {
+        public MixedRadixFormatOptions setRadixPartsDelimiter(String radixPartsDelimiter) {
             Objects.requireNonNull(radixPartsDelimiter);
             this.radixPartsDelimiter = radixPartsDelimiter;
             return this;
@@ -244,4 +249,8 @@ public class MixedQuantityFormat<Q extends Quantity<Q>> implements QuantityForma
                     + "does not match the required MixedRadix's generic type!", e);
         }
     }
+
+    
+
+
 }
