@@ -46,7 +46,7 @@ import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.function.MixedRadix;
 
 /**
- * Typesafe utility class to parse and format quantities using 'mixed-radix' format.
+ * QuantityFormat implementation to parse and format quantities using 'mixed-radix' format.
  * 
  * @author Andi Huber
  * @author Werner Keil
@@ -79,7 +79,7 @@ public class MixedQuantityFormat<Q extends Quantity<Q>> implements QuantityForma
         final int mixedRadixUnitCount = mixedRadix.getUnitCount();
         final int lastIndex = mixedRadixUnitCount-1;
         
-        mixedRadix.visitQuantity(quantity_typed, mixedRadixUnitCount, (index, unit, value)->{
+        mixedRadix.visitQuantity(quantity_typed, mixedRadixUnitCount, (index, unit, value)-> {
             try {
                 
                 boolean isLast = index == lastIndex;
@@ -104,8 +104,7 @@ public class MixedQuantityFormat<Q extends Quantity<Q>> implements QuantityForma
                     // radix delimiter
                     destination.append(formatOptions.getRadixPartsDelimiter());
                     
-                } 
-                
+                }
             } catch (IOException e) {
                 throw new MeasurementException(e);
             }
@@ -127,7 +126,7 @@ public class MixedQuantityFormat<Q extends Quantity<Q>> implements QuantityForma
     @Override
     public Quantity<Q> parse(CharSequence csq, ParsePosition pos)
             throws IllegalArgumentException, MeasurementParseException {
-        throw new IllegalStateException("no implement yet"); //FIXME[211] implement
+        throw new UnsupportedOperationException("not implemented yet"); //FIXME[211] implement
     }
 
     @Override
@@ -245,6 +244,4 @@ public class MixedQuantityFormat<Q extends Quantity<Q>> implements QuantityForma
                     + "does not match the required MixedRadix's generic type!", e);
         }
     }
-
-
 }
