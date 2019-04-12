@@ -118,7 +118,7 @@ public abstract class AbstractQuantityFormat extends Format implements QuantityF
      * @throws IllegalArgumentException
      *             if any problem occurs while parsing the specified character sequence (e.g. illegal syntax).
      */
-    abstract Quantity<?> parse(CharSequence csq, int index) throws IllegalArgumentException, MeasurementParseException;
+    protected abstract Quantity<?> parse(CharSequence csq, int index) throws IllegalArgumentException, MeasurementParseException;
 
     @Override
     public final StringBuffer format(Object obj, final StringBuffer toAppendTo, FieldPosition pos) {

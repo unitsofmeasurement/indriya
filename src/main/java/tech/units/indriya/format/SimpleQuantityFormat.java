@@ -40,7 +40,6 @@ import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.format.MeasurementParseException;
 
-import tech.units.indriya.AbstractQuantity;
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.quantity.CompoundQuantity;
 import tech.units.indriya.quantity.NumberQuantity;
@@ -217,7 +216,7 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	AbstractQuantity<?> parse(CharSequence csq, int index) throws MeasurementParseException {
+	protected Quantity<?> parse(CharSequence csq, int index) throws MeasurementParseException {
 		int startDecimal = index; // cursor.getIndex();
 		while ((startDecimal < csq.length()) && Character.isWhitespace(csq.charAt(startDecimal))) {
 			startDecimal++;
