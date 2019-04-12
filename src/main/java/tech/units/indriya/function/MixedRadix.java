@@ -82,6 +82,22 @@ public class MixedRadix<Q extends Quantity<Q>> {
                 Collections.singletonList(leadingUnit));
     }
     
+    @SafeVarargs
+    public static <X extends Quantity<X>> MixedRadix<X> of(Unit<X>... units) {
+        Objects.requireNonNull(units); 
+        if(units.length<1) {
+            throw new IllegalArgumentException("at last the leading unit is required");
+        }
+        MixedRadix<X> mixedRadix = null;
+        for(Unit<X> unit : units) {
+            mixedRadix = mixedRadix==null
+                    ? of(unit)
+                            : mixedRadix.mix(unit);
+        }
+        return mixedRadix;
+    }
+    
+    
     public static <X extends Quantity<X>> MixedRadix<X> ofPrimary(Unit<X> primaryUnit) {
         Objects.requireNonNull(primaryUnit);
         return new MixedRadix<>(
@@ -125,12 +141,14 @@ public class MixedRadix<Q extends Quantity<Q>> {
     
     // -- QUANTITY FACTORY
     
-    public Quantity<Q> createQuantity(Number leadingValue, Number ... lesserSignificantValues) {
+    public Quantity<Q> createQuantity(Number ... mostSignificantValues) {
+        
+        Objects.requireNonNull(mostSignificantValues); 
+        if(mostSignificantValues.length<1) {
+            throw new IllegalArgumentException("at last the leading unit is required");
+        }
 
-        Objects.requireNonNull(leadingValue);
-        Objects.requireNonNull(lesserSignificantValues); // allow empty but not <null>
-
-        int totalValuesGiven = 1 + lesserSignificantValues.length;
+        int totalValuesGiven = mostSignificantValues.length;
         int totalValuesAllowed = getUnitCount();
         
         if(totalValuesGiven > totalValuesAllowed) {
@@ -140,19 +158,7 @@ public class MixedRadix<Q extends Quantity<Q>> {
             throw new IllegalArgumentException(message);
         }
 
-        int valuesToBeProcessedCount = Math.min(totalValuesAllowed, totalValuesGiven);
-        
-        Number[] valuesToBeProcessed = new Number[valuesToBeProcessedCount];
-        valuesToBeProcessed[0] = leadingValue;
-        
-        if(valuesToBeProcessedCount>1) {
-            System.arraycopy(
-                    lesserSignificantValues, 0, 
-                    valuesToBeProcessed, 1, 
-                    lesserSignificantValues.length);
-        }
-        
-        Number sum = mixedRadixSupport.sumMostSignificant(valuesToBeProcessed);
+        Number sum = mixedRadixSupport.sumMostSignificant(mostSignificantValues);
         
         return Quantities.getQuantity(sum, getTrailingUnit()).to(getPrimaryUnit());
     }
