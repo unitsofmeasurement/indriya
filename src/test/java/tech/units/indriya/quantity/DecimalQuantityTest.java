@@ -32,6 +32,8 @@ package tech.units.indriya.quantity;
 import static javax.measure.MetricPrefix.MILLI;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -257,11 +259,11 @@ public class DecimalQuantityTest {
   }
 
   /**
-   * Verifies that a quantity isn't equal to null.
+   * Verifies that a quantity isn't null.
    */
   @Test
   public void decimalQuantityIsNotEqualToNull() {
-    assertFalse(ONE_OHM.equals(null));
+    assertNotNull(ONE_OHM);
   }
 
   /**
@@ -269,7 +271,7 @@ public class DecimalQuantityTest {
    */
   @Test
   public void decimalQuantityIsEqualToItself() {
-    assertTrue(ONE_OHM.equals(ONE_OHM));
+      assertEquals(ONE_OHM, ONE_OHM);
   }
 
   /**
@@ -277,7 +279,7 @@ public class DecimalQuantityTest {
    */
   @Test
   public void decimalQuantityIsEqualToIdenticalInstance() {
-    assertTrue(ONE_OHM.equals(createQuantity(1, Units.OHM)));
+    assertEquals(ONE_OHM, createQuantity(1, Units.OHM));
   }
 
   /**
@@ -285,7 +287,7 @@ public class DecimalQuantityTest {
    */
   @Test
   public void decimalQuantityIsEqualToIdenticalInstanceWithAnotherPrimitive() {
-    assertTrue(ONE_OHM.equals(new DoubleQuantity<ElectricResistance>(Double.valueOf(1).doubleValue(), Units.OHM)));
+    assertEquals(ONE_OHM, new DoubleQuantity<ElectricResistance>(Double.valueOf(1).doubleValue(), Units.OHM));
   }
 
   /**
@@ -301,7 +303,7 @@ public class DecimalQuantityTest {
    */
   @Test
   public void decimalQuantityIsNotEqualToQuantityWithDifferentUnit() {
-    assertFalse(ONE_OHM.equals(ONE_MILLIOHM));
+      assertNotEquals(ONE_OHM, ONE_MILLIOHM);
   }
 
   /**
@@ -309,7 +311,7 @@ public class DecimalQuantityTest {
    */
   @Test
   public void decimalQuantityIsNotEqualToObjectOfDifferentClass() {
-    assertFalse(ONE_OHM.equals(SQUARE_OHM));
+    assertNotEquals(ONE_OHM, SQUARE_OHM);
   }
 
 }
