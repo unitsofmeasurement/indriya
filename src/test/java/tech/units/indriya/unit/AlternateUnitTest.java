@@ -184,11 +184,6 @@ class AlternateUnitTest {
       public Unit<ElectricCurrent> transform(UnitConverter arg0) {
         return null;
       }
-
-    @Override
-    public Unit<ElectricCurrent> mix(Unit<ElectricCurrent> that) {
-        return null;
-    }
     };
     assertThrows(IllegalArgumentException.class, () -> {
       new AlternateUnit<ElectricCurrent>(nonAbstractUnit, SYMBOL);

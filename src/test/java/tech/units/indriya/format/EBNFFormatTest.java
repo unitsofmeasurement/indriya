@@ -136,14 +136,6 @@ public class EBNFFormatTest {
     }
 
     @Test
-    @Disabled
-    public void testMixed() {
-        final Unit<Time> mixUnit = Units.HOUR.mix(Units.MINUTE).mix(Units.SECOND);
-        final String s = format.format(mixUnit);
-        assertEquals("h;min;s", s);
-    }
-
-    @Test
     public void parseHertz() {
         Unit<?> onePerSecond = ServiceProvider.current().getFormatService().getUnitFormat("EBNF").parse("1/s");
 

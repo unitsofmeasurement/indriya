@@ -287,34 +287,34 @@ public class QuantityFormatTest {
         assertEquals(2L, parsed1.getValue());
         assertEquals(METRE, parsed1.getUnit());
     }
-    
-    /*     
+      
     @Test
     public void testParseMixedSimpleTime() {
         QuantityFormat format1 = SimpleQuantityFormat.getInstance("n u~:");
-        Quantity<?> parsed1 = format1.parse("1 h:30 min:10 s");
-        assertEquals(5410L, parsed1.getValue());
-        assertEquals(HOUR.mix(MINUTE).mix(SECOND), parsed1.getUnit());
-        assertTrue(parsed1 instanceof MixedQuantity);
-        final Number[] values = ((MixedQuantity<?>)parsed1).getValues();
-        assertEquals(3, values.length);
-        assertEquals(1L, values[0]);
-        assertEquals(30L, values[1]);
-        assertEquals(10L, values[2]);
+        Quantity<Time> parsed1 = format1.parse("1 h:30 min:10 s").asType(Time.class);
+        assertEquals(1.5027777777777778d, parsed1.getValue());
+        assertEquals(HOUR, parsed1.getUnit());
+        
+        //assertTrue(parsed1 instanceof MixedQuantity);
+//        final Number[] values = ((MixedQuantity<?>)parsed1).getValues();
+//        assertEquals(3, values.length);
+//        assertEquals(1L, values[0]);
+//        assertEquals(30L, values[1]);
+//        assertEquals(10L, values[2]);
     }
     
     @Test
     public void testParseMixedSimpleSameDelimTime() {
         QuantityFormat format1 = SimpleQuantityFormat.getInstance("n u~ ");
         Quantity<?> parsed1 = format1.parse("1 h 30 min 10 s");
-        assertEquals(5410L, parsed1.getValue());
-        assertEquals(HOUR.mix(MINUTE).mix(SECOND), parsed1.getUnit());
-        assertTrue(parsed1 instanceof MixedQuantity);
-        final Number[] values = ((MixedQuantity<?>)parsed1).getValues();
-        assertEquals(3, values.length);
-        assertEquals(1L, values[0]);
-        assertEquals(30L, values[1]);
-        assertEquals(10L, values[2]);
+        assertEquals(1.5027777777777778d, parsed1.getValue());
+        assertEquals(HOUR, parsed1.getUnit());
+//        assertTrue(parsed1 instanceof MixedQuantity);
+//        final Number[] values = ((MixedQuantity<?>)parsed1).getValues();
+//        assertEquals(3, values.length);
+//        assertEquals(1L, values[0]);
+//        assertEquals(30L, values[1]);
+//        assertEquals(10L, values[2]);
     }
     
     @Test
@@ -326,26 +326,26 @@ public class QuantityFormatTest {
                 .setMixDelimiter(";")
                 .build();
         Quantity<?> parsed1 = format1.parse("1 m;30 cm");
-        assertEquals(130L, parsed1.getValue());
-        assertEquals(METRE.mix(CENTI(METRE)), parsed1.getUnit());
-        assertTrue(parsed1 instanceof MixedQuantity);
-        assertEquals(2, ((MixedQuantity<?>)parsed1).getValues().length);
+        assertEquals(1.3d, parsed1.getValue());
+        assertEquals(METRE, parsed1.getUnit());
+//        assertTrue(parsed1 instanceof MixedQuantity);
+//        assertEquals(2, ((MixedQuantity<?>)parsed1).getValues().length);
     }
-    
+ 
     @Test
-    public void testParseMixedNumDelimiterSameDelimLen() {
+    public void testParseCompNumDelimiterSameDelimLen() {
         final QuantityFormat format1 = new NumberDelimiterQuantityFormat.Builder()
                 .setNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH))
                 .setUnitFormat(SimpleUnitFormat.getInstance())
                 .setDelimiter(" ").setMixDelimiter(" ")
                 .build();
         Quantity<?> parsed1 = format1.parse("1 m 30 cm");
-        assertEquals(130L, parsed1.getValue());
-        assertEquals(METRE.mix(CENTI(METRE)), parsed1.getUnit());
-        assertTrue(parsed1 instanceof MixedQuantity);
-        assertEquals(2, ((MixedQuantity<?>)parsed1).getValues().length);
+        assertEquals(1.3d, parsed1.getValue());
+        assertEquals(METRE, parsed1.getUnit());
+        //assertTrue(parsed1 instanceof MixedQuantity);
+        //assertEquals(2, ((MixedQuantity<?>)parsed1).getValues().length);
     }
-    */
+   
     
     @Test
     public void testFormatCompDelims() {

@@ -34,11 +34,14 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.format.MeasurementParseException;
 import javax.measure.format.UnitFormat;
 
 import tech.units.indriya.ComparableQuantity;
+import tech.units.indriya.quantity.CompoundQuantity;
+import tech.units.indriya.quantity.Quantities;
 
 /**
  * Common helper class that handles internals of formatting in {@link SimpleQuantityFormat}, {@link SimpleUnitFormat}
@@ -49,64 +52,84 @@ import tech.units.indriya.ComparableQuantity;
 abstract class CommonFormatter {
 
     @SuppressWarnings("unchecked")
-    static ComparableQuantity<?> parseMixed(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final String delimiter,
+    static Quantity<?> parseCompound(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final String delimiter,
             final String mixDelimiter, final int position) throws IllegalArgumentException, MeasurementParseException {
         final String section = str.substring(position);
         final String[] sectionParts = section.split(mixDelimiter);
-        @SuppressWarnings("rawtypes")
-        Unit unit = null;
+        final List<Quantity> quants = new ArrayList<>();
         final List<Number> nums = new ArrayList<>();
+        @SuppressWarnings("rawtypes")
+        Unit leadUnit = null;
         for (String compStr : sectionParts) {
             final String[] parts = compStr.split(delimiter);
             if (parts.length < 2) {
                 throw new IllegalArgumentException("No Unit found");
             } else {
+                Number num = null;
                 try {
-                    nums.add(numberFormat.parse(parts[0]));
+                    num = numberFormat.parse(parts[0]);
                 } catch (ParseException pe) {
                     throw new MeasurementParseException(pe);
                 }
-                unit = (unit == null) ? unitFormat.parse(parts[1]) : unit.mix(unitFormat.parse(parts[1]));
+                Unit unit = unitFormat.parse(parts[1]);
+                if (num != null && unit != null) {
+                    if (leadUnit == null) leadUnit = unit;
+                    quants.add(Quantities.getQuantity(num, unit));
+                }
             }
         }
-        final Number[] numArray = new Number[nums.size()];
-        nums.toArray(numArray);
+        //final Number[] numArray = new Number[nums.size()];
+        //nums.toArray(numArray);
         //return MixedQuantity.of(numArray, unit);
-        return null; // FIXME change to use MixedRadix
+        @SuppressWarnings("rawtypes")
+        final Quantity[] qArray = new Quantity[quants.size()];
+        quants.toArray(qArray);
+        CompoundQuantity<?> comp = CompoundQuantity.of(qArray);
+        return comp.to(leadUnit);
     }
     
-    static ComparableQuantity<?> parseMixed(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final String delimiter,
+    static Quantity<?> parseCompound(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final String delimiter,
             final String mixDelimiter) throws IllegalArgumentException, MeasurementParseException {
-        return parseMixed(str, numberFormat, unitFormat, delimiter, mixDelimiter, 0);
+        return parseCompound(str, numberFormat, unitFormat, delimiter, mixDelimiter, 0);
     }
     
     @SuppressWarnings("unchecked")
-    static ComparableQuantity<?> parseMixed(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final String delimiter, final int position) throws IllegalArgumentException, MeasurementParseException {
+    static Quantity<?> parseCompound(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final String delimiter, final int position) throws IllegalArgumentException, MeasurementParseException {
         final String section = str.substring(position);
-        @SuppressWarnings("rawtypes")
-        Unit unit = null;
+        final List<Quantity<?>> quants = new ArrayList<>();
         final List<Number> nums = new ArrayList<>();
         final String[] parts = section.split(delimiter);
+        @SuppressWarnings("rawtypes")
+        Unit leadUnit = null;
         if (parts.length < 2) {
             throw new IllegalArgumentException("No Unit found");
         } else {
             for (int i=0; i < parts.length-1; i++) {
+                Number num = null;
                 try {
-                    nums.add(numberFormat.parse(parts[i]));
+                    num = numberFormat.parse(parts[i]);
                 } catch (ParseException pe) {
                     throw new MeasurementParseException(pe);
                 }
-                unit = (unit == null) ? unitFormat.parse(parts[i+1]) : unit.mix(unitFormat.parse(parts[i+1]));
+                Unit unit = unitFormat.parse(parts[i+1]);
+                if (num != null && unit != null) {
+                    if (leadUnit == null) leadUnit = unit;
+                    quants.add(Quantities.getQuantity(num, unit));
+                }
                 i++; // get to next number
             }
         }
-        final Number[] numArray = new Number[nums.size()];
-        nums.toArray(numArray);
+        //final Number[] numArray = new Number[nums.size()];
+        //nums.toArray(numArray);
         //return MixedQuantity.of(numArray, unit);
-        return null; // FIXME change to use MixedRadix
+        @SuppressWarnings("rawtypes")
+        final Quantity[] qArray = new Quantity[quants.size()];
+        quants.toArray(qArray);
+        CompoundQuantity<?> comp = CompoundQuantity.of(qArray);
+        return comp.to(leadUnit);
     }
     
-    static ComparableQuantity<?> parseMixed(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final String delimiter) throws IllegalArgumentException, MeasurementParseException {
-        return parseMixed(str, numberFormat, unitFormat, delimiter, 0);
+    static Quantity<?> parseCompound(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final String delimiter) throws IllegalArgumentException, MeasurementParseException {
+        return parseCompound(str, numberFormat, unitFormat, delimiter, 0);
     }
 }

@@ -29,7 +29,7 @@
  */
 package tech.units.indriya.format;
 
-import static tech.units.indriya.format.CommonFormatter.parseMixed;
+import static tech.units.indriya.format.CommonFormatter.parseCompound;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -42,7 +42,6 @@ import javax.measure.format.MeasurementParseException;
 
 import tech.units.indriya.AbstractQuantity;
 import tech.units.indriya.AbstractUnit;
-import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.CompoundQuantity;
 import tech.units.indriya.quantity.NumberQuantity;
 import tech.units.indriya.quantity.Quantities;
@@ -196,11 +195,11 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public ComparableQuantity<?> parse(CharSequence csq, ParsePosition cursor) throws MeasurementParseException {
+	public Quantity<?> parse(CharSequence csq, ParsePosition cursor) throws MeasurementParseException {
         if (mixDelimiter != null && !mixDelimiter.equals(delimiter)) {
-            return parseMixed(csq.toString(), NumberFormat.getInstance(), SimpleUnitFormat.getInstance(), delimiter, mixDelimiter, cursor.getIndex());
+            return parseCompound(csq.toString(), NumberFormat.getInstance(), SimpleUnitFormat.getInstance(), delimiter, mixDelimiter, cursor.getIndex());
         } else if (mixDelimiter != null && mixDelimiter.equals(delimiter)) {
-            return parseMixed(csq.toString(), NumberFormat.getInstance(), SimpleUnitFormat.getInstance(), delimiter, cursor.getIndex());
+            return parseCompound(csq.toString(), NumberFormat.getInstance(), SimpleUnitFormat.getInstance(), delimiter, cursor.getIndex());
         }
 	    int startDecimal = cursor.getIndex();
 		while ((startDecimal < csq.length()) && Character.isWhitespace(csq.charAt(startDecimal))) {
@@ -233,7 +232,7 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
 	}
 
 	@Override
-	public ComparableQuantity<?> parse(CharSequence csq) throws MeasurementParseException {
+	public Quantity<?> parse(CharSequence csq) throws MeasurementParseException {
 		return parse(csq, new ParsePosition(0));
 	}
 

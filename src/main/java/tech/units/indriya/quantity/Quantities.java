@@ -78,7 +78,7 @@ public final class Quantities {
      *            the decimal value and its unit (if any) separated by space(s).
      * @return <code>QuantityFormat.getInstance(LOCALE_NEUTRAL).parse(csq)</code>
      */
-    public static ComparableQuantity<?> getQuantity(CharSequence csq) {
+    public static Quantity<?> getQuantity(CharSequence csq) {
         try {
             return SimpleQuantityFormat.getInstance("n u~ ").parse(csq);
         } catch (MeasurementParseException e) {

@@ -136,15 +136,6 @@ public class UnitsTest {
     }
 
     /**
-     * Test method for {@link javax.measure.Unit#mix(javax.measure.Unit)}.
-     */
-    @Test
-    public void testMix() {
-        Unit<? extends Quantity<?>> mixed = one.mix(one);
-        assertNotNull(mixed);
-    }
-
-    /**
      * Test method for {@link javax.measure.Unit#transform}.
      */
     @Test

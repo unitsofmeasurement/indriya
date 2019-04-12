@@ -42,7 +42,6 @@ import javax.measure.format.MeasurementParseException;
 import javax.measure.format.UnitFormat;
 
 import tech.units.indriya.AbstractUnit;
-import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.CompoundQuantity;
 import tech.units.indriya.quantity.Quantities;
 
@@ -53,7 +52,7 @@ import tech.units.indriya.quantity.Quantities;
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
  * @author <a href="mailto:thodoris.bais@gmail.com">Thodoris Bais</a>
  *
- * @version 1.7.1, $Date: 2019-03-20 $
+ * @version 1.8, $Date: 2019-04-13 $
  * @since 2.0
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -272,13 +271,13 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
     }
 
     @Override
-    public ComparableQuantity<?> parse(CharSequence csq, ParsePosition cursor) throws IllegalArgumentException, MeasurementParseException {
+    public Quantity<?> parse(CharSequence csq, ParsePosition cursor) throws IllegalArgumentException, MeasurementParseException {
         final String str = csq.toString();
         final int index = cursor.getIndex();
         if (mixDelimiter != null && !mixDelimiter.equals(delimiter)) {
-            return parseMixed(str, numberFormat, unitFormat, delimiter, mixDelimiter, index);
+            return parseCompound(str, numberFormat, unitFormat, delimiter, mixDelimiter, index);
         } else if (mixDelimiter != null && mixDelimiter.equals(delimiter)) {
-            return parseMixed(str, numberFormat, unitFormat, delimiter, index);
+            return parseCompound(str, numberFormat, unitFormat, delimiter, index);
         }
         final Number number = numberFormat.parse(str, cursor);
         if (number == null)
@@ -292,12 +291,12 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
     }
 
     @Override
-    protected ComparableQuantity<?> parse(CharSequence csq, int index) throws IllegalArgumentException, MeasurementParseException {
+    protected Quantity<?> parse(CharSequence csq, int index) throws IllegalArgumentException, MeasurementParseException {
         return parse(csq, new ParsePosition(index));
     }
 
     @Override
-    public ComparableQuantity<?> parse(CharSequence csq) throws IllegalArgumentException, MeasurementParseException {
+    public Quantity<?> parse(CharSequence csq) throws IllegalArgumentException, MeasurementParseException {
         return parse(csq, 0);
     }
 

@@ -32,8 +32,10 @@ package tech.units.indriya.quantity;
 import static javax.measure.Quantity.Scale;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -67,15 +69,15 @@ public class CompoundQuantity<Q extends Quantity<Q>> implements QuantityConverte
     private final Map<Unit<Q>, Quantity<Q>> quantMap = new LinkedHashMap<>();
 
     /**
+     * @param quantities the list of quantities to construct this CompoundQuantity.
      * @throws NullPointerException
      *             if the given quantities are <code>null</code>.
     * @throws MeasurementException
     *             if this CompositeQuantity is empty or contains only <code>null</code> values.
     */
-    @SafeVarargs
-    protected CompoundQuantity(final Quantity<Q>... quantities) {
+    protected CompoundQuantity(final List<Quantity<Q>> quantities) {
         Objects.requireNonNull(quantities);
-        final Scale firstScale = quantities[0].getScale();        
+        final Scale firstScale = quantities.get(0).getScale();        
         for (Quantity<Q> q : quantities) {
             if (firstScale.equals(q.getScale())) {
                 quantMap.put(q.getUnit(), q);
@@ -93,6 +95,16 @@ public class CompoundQuantity<Q extends Quantity<Q>> implements QuantityConverte
      */
     @SafeVarargs
     public static <Q extends Quantity<Q>> CompoundQuantity<Q> of(Quantity<Q>... quantities) {
+        return of(Arrays.asList(quantities));
+    }
+    
+    /**
+     * Returns an {@code CompositeQuantity} with the specified values.
+     * 
+     * @param <Q>
+     *            The type of the quantity.
+     */
+    public static <Q extends Quantity<Q>> CompoundQuantity<Q> of(List<Quantity<Q>> quantities) {
         return new CompoundQuantity<>(quantities);
     }
 
