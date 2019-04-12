@@ -36,7 +36,6 @@ import static tech.units.indriya.unit.Units.*;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
-import java.text.DecimalFormatSymbols;
 import java.text.ParsePosition;
 import java.util.Locale;
 
@@ -51,6 +50,7 @@ import javax.measure.quantity.Time;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import tech.units.indriya.quantity.CompoundQuantity;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.Units;
 
@@ -346,4 +346,38 @@ public class QuantityFormatTest {
         assertEquals(2, ((MixedQuantity<?>)parsed1).getValues().length);
     }
     */
+    
+    @Test
+    public void testFormatCompDelims() {
+        final NumberDelimiterQuantityFormat format1 = new NumberDelimiterQuantityFormat.Builder()
+                .setNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH))
+                .setUnitFormat(SimpleUnitFormat.getInstance())
+                .setDelimiter("_").setMixDelimiter(" ")
+                .build();
+        @SuppressWarnings("unchecked")
+        final Quantity<Length>[] quants = new Quantity[] { Quantities.getQuantity(1, Units.METRE),  Quantities.getQuantity(70, CENTI(Units.METRE)) };
+        CompoundQuantity<Length> l1 = CompoundQuantity.of(quants);
+
+        assertEquals("1_m 70_cm", format1.format(l1));
+    }
+    
+    @Test
+    public void testFormatCompDelimsMultipleQuantities() {
+        final NumberDelimiterQuantityFormat format1 = new NumberDelimiterQuantityFormat.Builder()
+                .setNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH))
+                .setUnitFormat(SimpleUnitFormat.getInstance())
+                .setDelimiter("_").setMixDelimiter(" ")
+                .build();
+        @SuppressWarnings("unchecked")
+        final Quantity<Length>[] quants = new Quantity[] { Quantities.getQuantity(1, Units.METRE),  Quantities.getQuantity(70, CENTI(Units.METRE)) };
+        CompoundQuantity<Length> l1 = CompoundQuantity.of(quants);
+
+        assertEquals("1_m 70_cm", format1.format(l1));
+        
+        @SuppressWarnings("unchecked")
+        final Quantity<Time>[] timeQuants = new Quantity[] { Quantities.getQuantity(3, Units.DAY),  Quantities.getQuantity(4, Units.HOUR), 
+                Quantities.getQuantity(48, Units.MINUTE)};
+        final CompoundQuantity<Time> t1 = CompoundQuantity.of(timeQuants);
+        assertEquals("3_day 4_h 48_min", format1.format(t1));
+    }
 }

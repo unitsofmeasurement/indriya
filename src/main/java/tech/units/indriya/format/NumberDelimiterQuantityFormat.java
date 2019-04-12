@@ -36,7 +36,6 @@ import java.io.IOException;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
 import java.util.Locale;
-import javax.measure.MeasurementException;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.format.MeasurementParseException;
@@ -44,9 +43,8 @@ import javax.measure.format.UnitFormat;
 
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.ComparableQuantity;
-import tech.units.indriya.quantity.CompositeQuantity;
+import tech.units.indriya.quantity.CompoundQuantity;
 import tech.units.indriya.quantity.Quantities;
-import tech.units.indriya.unit.MixedUnit;
 
 /**
  * An implementation of {@link javax.measure.format.QuantityFormat QuantityFormat} combining {@linkplain NumberFormat} and {@link UnitFormat}
@@ -331,7 +329,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
     }
 
     @Override
-    protected StringBuffer formatComposite(CompositeQuantity<?> comp, StringBuffer dest) {
+    protected StringBuffer formatComposite(CompoundQuantity<?> comp, StringBuffer dest) {
         final StringBuffer sb = new StringBuffer();
         int i = 0;
         for (Quantity<?> q : comp.getQuantities()) {

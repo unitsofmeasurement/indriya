@@ -72,7 +72,7 @@ public class MixedQuantityFormatTest {
                 .numberToUnitDelimiter(" ")
                 .radixPartsDelimiter(" ");
         
-        MixedQuantityFormat<Length> mixedRadixFormat = mixedRadix.createFormat(mixedRadixFormatOptions);
+        MixedQuantityFormat<Length> mixedRadixFormat = MixedQuantityFormat.of(mixedRadix, mixedRadixFormatOptions);
         
         // when
         String formatedOutput = mixedRadixFormat.format(lengthQuantity);
@@ -89,7 +89,7 @@ public class MixedQuantityFormatTest {
         
         MixedRadix<Length> mixedRadix = MixedRadix.ofPrimary(USCustomary.FOOT).mix(USCustomary.INCH);
         MixedQuantityFormat.MixedRadixFormatOptions mixedRadixFormatOptions = new MixedQuantityFormat.MixedRadixFormatOptions();
-        MixedQuantityFormat<Length> mixedRadixFormat = mixedRadix.createFormat(mixedRadixFormatOptions);
+        MixedQuantityFormat<Length> mixedRadixFormat = MixedQuantityFormat.of(mixedRadix, mixedRadixFormatOptions);
 
         // when 
         Quantity<Length> lengthQuantity = mixedRadixFormat.parse("1 ft 2 in");

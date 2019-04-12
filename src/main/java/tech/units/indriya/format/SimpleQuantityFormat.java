@@ -36,7 +36,6 @@ import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
 
-import javax.measure.MeasurementException;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.format.MeasurementParseException;
@@ -44,10 +43,9 @@ import javax.measure.format.MeasurementParseException;
 import tech.units.indriya.AbstractQuantity;
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.ComparableQuantity;
-import tech.units.indriya.quantity.CompositeQuantity;
+import tech.units.indriya.quantity.CompoundQuantity;
 import tech.units.indriya.quantity.NumberQuantity;
 import tech.units.indriya.quantity.Quantities;
-import tech.units.indriya.unit.MixedUnit;
 
 /**
  * A simple implementation of QuantityFormat
@@ -99,7 +97,7 @@ import tech.units.indriya.unit.MixedUnit;
  *     it's needed to separate two adjacent fields.<br><br></li>
  * </ul>
  * </p>
- * @version 1.3, $Date: 2019-03-31 $
+ * @version 1.3.1, $Date: 2019-04-12 $
  * @since 2.0
  */
 @SuppressWarnings("rawtypes")
@@ -273,7 +271,7 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
 	}
 	
     @Override
-    protected StringBuffer formatComposite(CompositeQuantity<?> comp, StringBuffer dest) {
+    protected StringBuffer formatComposite(CompoundQuantity<?> comp, StringBuffer dest) {
         final StringBuffer sb = new StringBuffer();
         int i = 0;
         for (Quantity<?> q : comp.getQuantities()) {
