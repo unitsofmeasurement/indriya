@@ -74,12 +74,14 @@ public class MixedQuantityFormatTest {
         
         MixedQuantityFormat<Length> mixedRadixFormat = MixedQuantityFormat.of(mixedRadix, mixedRadixFormatOptions);
         SimpleQuantityFormat simpleFormat = SimpleQuantityFormat.getInstance();
+        
         // when
         String formatedOutput = mixedRadixFormat.format(lengthQuantity);
+        String simpleFormatedOutput = simpleFormat.format(lengthQuantity);
         
         // then
         assertEquals("1 ft 2 in 3. P̸", formatedOutput);
-        
+        assertEquals("1.208005249343831960409448818897613 ft", simpleFormatedOutput);
     }
     
     @Test @Disabled("parsing not yet implemented") //TODO[211] enable once implemented
