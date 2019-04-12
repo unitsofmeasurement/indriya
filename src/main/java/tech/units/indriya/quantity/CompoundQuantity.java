@@ -54,10 +54,10 @@ import tech.uom.lib.common.function.QuantityConverter;
  *            The type of the quantity.
  * 
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.0, April 7, 2019
+ * @version 1.1, April 12, 2019
  * @see <a href="http://www.thefreedictionary.com/Compound+quantity">Free Dictionary: Compound Quantity</a>
  */
-public class CompositeQuantity<Q extends Quantity<Q>> implements QuantityConverter<Q>, Serializable {
+public class CompoundQuantity<Q extends Quantity<Q>> implements QuantityConverter<Q>, Serializable {
     // TODO could it be final?
     /**
     * 
@@ -73,7 +73,7 @@ public class CompositeQuantity<Q extends Quantity<Q>> implements QuantityConvert
     *             if this CompositeQuantity is empty or contains only <code>null</code> values.
     */
     @SafeVarargs
-    protected CompositeQuantity(final Quantity<Q>... quantities) {
+    protected CompoundQuantity(final Quantity<Q>... quantities) {
         Objects.requireNonNull(quantities);
         final Scale firstScale = quantities[0].getScale();        
         for (Quantity<Q> q : quantities) {
@@ -92,8 +92,8 @@ public class CompositeQuantity<Q extends Quantity<Q>> implements QuantityConvert
      *            The type of the quantity.
      */
     @SafeVarargs
-    public static <Q extends Quantity<Q>> CompositeQuantity<Q> of(Quantity<Q>... quantities) {
-        return new CompositeQuantity<>(quantities);
+    public static <Q extends Quantity<Q>> CompoundQuantity<Q> of(Quantity<Q>... quantities) {
+        return new CompoundQuantity<>(quantities);
     }
 
     /**
@@ -172,8 +172,8 @@ public class CompositeQuantity<Q extends Quantity<Q>> implements QuantityConvert
         if (this == obj) {
             return true;
         }
-        if (obj instanceof CompositeQuantity) {
-            CompositeQuantity<?> c = (CompositeQuantity<?>) obj;
+        if (obj instanceof CompoundQuantity) {
+            CompoundQuantity<?> c = (CompoundQuantity<?>) obj;
             return Objects.equals(quantMap, c.quantMap);
         } else {
             return false;

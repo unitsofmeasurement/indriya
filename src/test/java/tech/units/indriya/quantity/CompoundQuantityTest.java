@@ -49,12 +49,12 @@ import static javax.measure.MetricPrefix.*;
  *
  * @author Werner Keil
  */
-public class CompositeQuantityTest {
-    static final Logger logger = Logger.getLogger(CompositeQuantityTest.class.getName());
+public class CompoundQuantityTest {
+    static final Logger logger = Logger.getLogger(CompoundQuantityTest.class.getName());
 
     @Test
     public void testLengthSingleValueCompositeUnit() {
-        CompositeQuantity<Length> mixLen = CompositeQuantity.of(Quantities.getQuantity(1, Units.METRE));
+        CompoundQuantity<Length> mixLen = CompoundQuantity.of(Quantities.getQuantity(1, Units.METRE));
       
         assertEquals("[m]", mixLen.getUnits().toString());
         assertEquals("1 m", mixLen.toString());
@@ -67,7 +67,7 @@ public class CompositeQuantityTest {
     public void testLengths() {
         @SuppressWarnings("unchecked")
         final Quantity<Length>[] quants = new Quantity[] { Quantities.getQuantity(1, Units.METRE),  Quantities.getQuantity(70, CENTI(Units.METRE)) };
-        CompositeQuantity<Length> mixLen = CompositeQuantity.of(quants);
+        CompoundQuantity<Length> mixLen = CompoundQuantity.of(quants);
       
         assertEquals("[m, cm]", mixLen.getUnits().toString());
         assertEquals("1 m 70 cm", mixLen.toString());
@@ -86,7 +86,7 @@ public class CompositeQuantityTest {
         @SuppressWarnings("unchecked")
         final Quantity<Time>[] quants = new Quantity[] { Quantities.getQuantity(3, Units.DAY),  Quantities.getQuantity(4, Units.HOUR), 
                 Quantities.getQuantity(48, Units.MINUTE)};
-        final CompositeQuantity<Time> t1 = CompositeQuantity.of(quants);
+        final CompoundQuantity<Time> t1 = CompoundQuantity.of(quants);
        
         assertEquals("[day, h, min]", t1.getUnits().toString());
         assertEquals("3 day 4 h 48 min", t1.toString());
@@ -102,10 +102,10 @@ public class CompositeQuantityTest {
      * Verifies that an mixed quantity is not equal to another quantity.
      */
     @Test
-    public void mixedQuantityIsNotEqualToAnotherQuantity() {
+    public void compoundQuantityIsNotEqualToAnotherQuantity() {
         @SuppressWarnings("unchecked")
         final Quantity<Time>[] numList = new Quantity[] { Quantities.getQuantity(2, Units.HOUR),  Quantities.getQuantity(6, Units.MINUTE) };
-        CompositeQuantity<Time> mixTime = CompositeQuantity.of(numList);
+        CompoundQuantity<Time> mixTime = CompoundQuantity.of(numList);
         Quantity<Time> compareTime = Quantities.getQuantity(2.5d, Units.HOUR);
         assertNotEquals(mixTime, compareTime);
         assertNotEquals(mixTime.to(Units.HOUR), compareTime);
@@ -115,10 +115,10 @@ public class CompositeQuantityTest {
      * Verifies that an mixed quantity is not equal to another quantity that has the same numeric value.
      */
     @Test
-    public void mixedQuantityIsEqualToAQuantityOfTheSameNumericValue() {
+    public void compoundQuantityIsEqualToAQuantityOfTheSameNumericValue() {
         @SuppressWarnings("unchecked")
         final Quantity<Time>[] numList = new Quantity[] { Quantities.getQuantity(2, Units.HOUR),  Quantities.getQuantity(30, Units.MINUTE) };
-        CompositeQuantity<Time> mixTime = CompositeQuantity.of(numList);
+        CompoundQuantity<Time> mixTime = CompoundQuantity.of(numList);
         Quantity<Time> compareTime = Quantities.getQuantity(2.5d, Units.HOUR);
         assertNotEquals(mixTime, compareTime);
         assertEquals(mixTime.to(Units.HOUR), compareTime);    
@@ -128,10 +128,10 @@ public class CompositeQuantityTest {
      * Verifies that an mixed quantity can be represented as QuantityConverter.
      */
     @Test
-    public void mixedQuantityAsConverter() {
+    public void compoundQuantityAsConverter() {
         @SuppressWarnings("unchecked")
         final Quantity<Time>[] numList = new Quantity[] { Quantities.getQuantity(2, Units.HOUR),  Quantities.getQuantity(30, Units.MINUTE) };
-        QuantityConverter<Time> convTime = CompositeQuantity.of(numList);
+        QuantityConverter<Time> convTime = CompoundQuantity.of(numList);
         Quantity<Time> compareTime = Quantities.getQuantity(2.5d, Units.HOUR);
         assertNotEquals(convTime, compareTime);
         assertEquals(convTime.to(Units.HOUR), compareTime);    

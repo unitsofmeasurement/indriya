@@ -46,7 +46,7 @@ import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.function.MixedRadix;
 
 /**
- * Typesafe utility class to parse and format quantities using 'mixed-radix' format.
+ * QuantityFormat implementation to parse and format quantities using 'mixed-radix' format.
  * 
  * @author Andi Huber
  * @author Werner Keil
