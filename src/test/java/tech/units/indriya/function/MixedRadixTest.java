@@ -28,7 +28,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-package tech.units.indriya.format;
+package tech.units.indriya.function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -36,9 +36,6 @@ import static org.junit.jupiter.api.Assertions.fail;
 import static tech.units.indriya.unit.Units.HOUR;
 import static tech.units.indriya.unit.Units.MINUTE;
 import static tech.units.indriya.unit.Units.SECOND;
-
-import java.text.DecimalFormat;
-import java.util.Locale;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;
@@ -49,7 +46,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.NumberAssertions;
-import tech.units.indriya.format.MixedQuantityFormat.MixedRadixFormatOptions;
+import tech.units.indriya.format.SimpleUnitFormat;
 import tech.units.indriya.function.MixedRadix;
 import tech.units.indriya.function.MixedRadix.PrimaryUnitPick;
 import tech.units.indriya.quantity.Quantities;
@@ -60,8 +57,7 @@ import tech.units.indriya.unit.Units;
  * @author Andi Huber
  */
 public class MixedRadixTest {
-
-    private static class USCustomary {
+    public static class USCustomary {
 
         public static final Unit<Length> FOOT = Units.METRE.multiply(0.3048).asType(Length.class);
         public static final Unit<Length> INCH = Units.METRE.multiply(0.0254).asType(Length.class);
@@ -74,7 +70,7 @@ public class MixedRadixTest {
         }
         
     }
-
+    
     @Test
     public void cannotRassignPrimaryUnit() {
         assertThrows(IllegalStateException.class, ()->{
@@ -240,57 +236,7 @@ public class MixedRadixTest {
     }
     
     
-    @Test
-    public void formatting() {
-        
-        // given
-        
-        MixedRadix<Length> mixedRadix = MixedRadix
-                .ofPrimary(USCustomary.FOOT)
-                .mix(USCustomary.INCH)
-                .mix(USCustomary.PICA);
-        
-        Quantity<Length> lengthQuantity = mixedRadix.createQuantity(1, 2, 3);
-        
-        DecimalFormat realFormat = (DecimalFormat) DecimalFormat.getInstance(Locale.ENGLISH);
-        realFormat.setDecimalSeparatorAlwaysShown(true);
-        realFormat.setMaximumFractionDigits(3);
-        
-        MixedRadixFormatOptions mixedRadixFormatOptions = new MixedQuantityFormat.MixedRadixFormatOptions()
-                .realFormat(realFormat)
-                .unitFormat(SimpleUnitFormat.getInstance())
-                .numberToUnitDelimiter(" ")
-                .radixPartsDelimiter(" ");
-        
-        MixedQuantityFormat<Length> mixedRadixFormat = mixedRadix.createFormat(mixedRadixFormatOptions);
-        
-        // when
-        String formatedOutput = mixedRadixFormat.format(lengthQuantity);
-        
-        // then
-        assertEquals("1 ft 2 in 3. P̸", formatedOutput);
-        
-    }
-    
-    @Test @Disabled("parsing not yet implemented") //TODO[211] enable once implemented
-    public void parsing() {
-        
-        // given
-        
-        MixedRadix<Length> mixedRadix = MixedRadix.ofPrimary(USCustomary.FOOT).mix(USCustomary.INCH);
-        MixedQuantityFormat.MixedRadixFormatOptions mixedRadixFormatOptions = new MixedQuantityFormat.MixedRadixFormatOptions();
-        MixedQuantityFormat<Length> mixedRadixFormat = mixedRadix.createFormat(mixedRadixFormatOptions);
-
-        // when 
-        Quantity<Length> lengthQuantity = mixedRadixFormat.parse("1 ft 2 in");
-        
-        // then
-        NumberAssertions.assertNumberEquals(1.1666666666666667, lengthQuantity.getValue(), 1E-9);
-        
-        
-        fail("disabled"); // to satisfy code quality check?
-    }
-    
+     
     @Test @Disabled("not yet optimized to do this") //TODO[211] enable once implemented
     public void leastSignificantShouldDriveArithmetic() {
         
@@ -313,7 +259,4 @@ public class MixedRadixTest {
         assertEquals(30, timeParts[2]); // should be actually an int
         
     }
-
-
-
 }
