@@ -43,8 +43,8 @@ import javax.measure.UnitConverter;
 
 import tech.units.indriya.format.MixedQuantityFormat;
 import tech.units.indriya.format.MixedQuantityFormat.MixedRadixFormatOptions;
-import tech.units.indriya.internal.radix.MixedRadixSupport;
-import tech.units.indriya.internal.radix.Radix;
+import tech.units.indriya.internal.function.radix.MixedRadixSupport;
+import tech.units.indriya.internal.function.radix.Radix;
 import tech.units.indriya.quantity.Quantities;
 
 /**

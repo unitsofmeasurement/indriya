@@ -73,7 +73,7 @@ public class MixedQuantityFormatTest {
                 .setRadixPartsDelimiter(" ");
         
         MixedQuantityFormat<Length> mixedRadixFormat = MixedQuantityFormat.of(mixedRadix, mixedRadixFormatOptions);
-        
+        SimpleQuantityFormat simpleFormat = SimpleQuantityFormat.getInstance();
         // when
         String formatedOutput = mixedRadixFormat.format(lengthQuantity);
         

@@ -33,7 +33,7 @@ import java.util.function.BiPredicate;
 import java.util.function.BinaryOperator;
 
 import tech.units.indriya.AbstractConverter;
-import tech.units.indriya.internal.simplify.UnitCompositionHandlerYieldingNormalForm;
+import tech.units.indriya.internal.function.simplify.UnitCompositionHandlerYieldingNormalForm;
 
 /**
  * Functional interface for handling the composition (concatenation) of two unit converters.

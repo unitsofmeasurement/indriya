@@ -1,15 +1,3 @@
-package tech.units.indriya.internal.radix;
-
-import java.math.BigDecimal;
-import java.math.BigInteger;
-
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
-import tech.units.indriya.NumberAssertions;
-import tech.units.indriya.internal.radix.Radix.DecimalRadix;
-import tech.units.indriya.internal.radix.Radix.RationalRadix;
-
 /*
  * Units of Measurement Reference Implementation
  * Copyright (c) 2005-2019, Units of Measurement project.
@@ -39,6 +27,19 @@ import tech.units.indriya.internal.radix.Radix.RationalRadix;
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package tech.units.indriya.internal.funtion.radix;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
+import tech.units.indriya.NumberAssertions;
+import tech.units.indriya.internal.function.radix.MixedRadixSupport;
+import tech.units.indriya.internal.function.radix.Radix;
+import tech.units.indriya.internal.function.radix.Radix.DecimalRadix;
+import tech.units.indriya.internal.function.radix.Radix.RationalRadix;
 
 /**
 *
