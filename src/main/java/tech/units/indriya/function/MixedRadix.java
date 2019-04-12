@@ -48,9 +48,11 @@ import tech.units.indriya.internal.radix.Radix;
 import tech.units.indriya.quantity.Quantities;
 
 /**
- * Immutable, typesafe utility class to cover 'mixed-radix' related use-cases.
+ * Immutable class that represents multi-radix quantities (like "1 hour:20 min:45 sec" or "6 ft, 4 in")
  * 
  * @author Andi Huber
+ * @author Werner Keil
+ * @version 1.3
  * @since 2.0
  */
 public class MixedRadix<Q extends Quantity<Q>> {
@@ -86,7 +88,7 @@ public class MixedRadix<Q extends Quantity<Q>> {
     public static <X extends Quantity<X>> MixedRadix<X> of(Unit<X>... units) {
         Objects.requireNonNull(units); 
         if(units.length<1) {
-            throw new IllegalArgumentException("at last the leading unit is required");
+            throw new IllegalArgumentException("at least the leading unit is required");
         }
         MixedRadix<X> mixedRadix = null;
         for(Unit<X> unit : units) {
@@ -145,7 +147,7 @@ public class MixedRadix<Q extends Quantity<Q>> {
         
         Objects.requireNonNull(mostSignificantValues); 
         if(mostSignificantValues.length<1) {
-            throw new IllegalArgumentException("at last the leading unit is required");
+            throw new IllegalArgumentException("at least the leading unit's number is required");
         }
 
         int totalValuesGiven = mostSignificantValues.length;
