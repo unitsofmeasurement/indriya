@@ -76,7 +76,7 @@ public class MixedQuantityFormat<Q extends Quantity<Q>> implements QuantityForma
     public Appendable format(Quantity<?> quantity, Appendable destination) throws IOException {
         Quantity<Q> quantity_typed = castOrFail(quantity);
         
-        final int mixedRadixUnitCount = mixedRadix.getUnitCount();
+        final int mixedRadixUnitCount = mixedRadix.getUnits().size();
         final int lastIndex = mixedRadixUnitCount-1;
         
         mixedRadix.visitQuantity(quantity_typed, mixedRadixUnitCount, (index, unit, value)->{

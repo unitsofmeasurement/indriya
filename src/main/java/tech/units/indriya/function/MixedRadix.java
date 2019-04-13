@@ -41,19 +41,21 @@ import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.UnitConverter;
 
-import tech.units.indriya.format.MixedQuantityFormat;
-import tech.units.indriya.format.MixedQuantityFormat.MixedRadixFormatOptions;
 import tech.units.indriya.internal.function.radix.MixedRadixSupport;
 import tech.units.indriya.internal.function.radix.Radix;
 import tech.units.indriya.quantity.Quantities;
 
 /**
- * Immutable class that represents multi-radix quantities (like "1 hour:20 min:45 sec" or "6 ft, 4 in")
+ * Immutable class that represents multi-radix units (like "hour:min:sec" or "ft, in")
+ * 
  * 
  * @author Andi Huber
  * @author Werner Keil
- * @version 1.3
+ * @version 1.4
  * @since 2.0
+ * @see <a href="https://en.wikipedia.org/wiki/Mixed_radix">Wikipedia: Mixed radix</a>
+ * @see <a href="https://reference.wolfram.com/language/ref/MixedUnit.html">Wolfram Language & System: MixedUnit</a>
+ * @see <a href="https://en.wikipedia.org/wiki/Metrication">Wikipedia: Metrication</a>
  */
 public class MixedRadix<Q extends Quantity<Q>> {
 
@@ -137,21 +139,21 @@ public class MixedRadix<Q extends Quantity<Q>> {
         return Collections.unmodifiableList(mixedRadixUnits);
     }
     
-    public int getUnitCount() {
+    private int getUnitCount() {
         return mixedRadixUnits.size();
     }
     
     // -- QUANTITY FACTORY
     
-    public Quantity<Q> createQuantity(Number ... mostSignificantValues) {
+    public Quantity<Q> createQuantity(Number ... values) {
         
-        Objects.requireNonNull(mostSignificantValues); 
-        if(mostSignificantValues.length<1) {
+        Objects.requireNonNull(values); 
+        if(values.length<1) {
             throw new IllegalArgumentException("at least the leading unit's number is required");
         }
 
-        int totalValuesGiven = mostSignificantValues.length;
-        int totalValuesAllowed = getUnitCount();
+        int totalValuesGiven = values.length;
+        int totalValuesAllowed = mixedRadixUnits.size();
         
         if(totalValuesGiven > totalValuesAllowed) {
             String message = String.format(
@@ -160,7 +162,7 @@ public class MixedRadix<Q extends Quantity<Q>> {
             throw new IllegalArgumentException(message);
         }
 
-        Number sum = mixedRadixSupport.sumMostSignificant(mostSignificantValues);
+        Number sum = mixedRadixSupport.sumMostSignificant(values);
         
         return Quantities.getQuantity(sum, getTrailingUnit()).to(getPrimaryUnit());
     }
@@ -169,7 +171,7 @@ public class MixedRadix<Q extends Quantity<Q>> {
 
     public Number[] extractValues(Quantity<Q> quantity) {
         Objects.requireNonNull(quantity);
-        final Number[] target = new Number[getUnitCount()];
+        final Number[] target = new Number[mixedRadixUnits.size()];
         return extractValuesInto(quantity, target);
     }
 
@@ -217,14 +219,6 @@ public class MixedRadix<Q extends Quantity<Q>> {
         }
     }
     
-    // -- FORMATTING 
-    
-    // I think we should leave this to the actual QuantityFormat implementation, but we might offer a toString() method with a properly constructed format instance.
-    @Deprecated
-    public MixedQuantityFormat<Q> createFormat(final MixedRadixFormatOptions options) {
-        return MixedQuantityFormat.of(this, options);
-    }
-    
     // -- IMPLEMENTATION DETAILS
 
     /**
@@ -232,7 +226,7 @@ public class MixedRadix<Q extends Quantity<Q>> {
      * @param primaryUnitIndex - if negative, the index is relative to the number of units
      * @param mixedRadixUnits
      */
-    private MixedRadix(PrimaryUnitPickState pickState, List<Unit<Q>> mixedRadixUnits) {
+    private MixedRadix(PrimaryUnitPickState pickState, final List<Unit<Q>> mixedRadixUnits) {
         this.pickState = pickState;
         this.mixedRadixUnits = mixedRadixUnits;
         this.primaryUnit = mixedRadixUnits.get(pickState.nonNegativePrimaryUnitIndex(getUnitCount()));
