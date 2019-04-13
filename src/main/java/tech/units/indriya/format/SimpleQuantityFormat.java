@@ -29,7 +29,7 @@
  */
 package tech.units.indriya.format;
 
-import static tech.units.indriya.format.CommonFormatter.parseCompound;
+import static tech.units.indriya.format.CommonFormatter.*;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -196,9 +196,9 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
 	@Override
 	public Quantity<?> parse(CharSequence csq, ParsePosition cursor) throws MeasurementParseException {
         if (mixDelimiter != null && !mixDelimiter.equals(delimiter)) {
-            return parseCompound(csq.toString(), NumberFormat.getInstance(), SimpleUnitFormat.getInstance(), delimiter, mixDelimiter, cursor.getIndex());
+            return parseCompoundAsLeading(csq.toString(), NumberFormat.getInstance(), SimpleUnitFormat.getInstance(), delimiter, mixDelimiter, cursor.getIndex());
         } else if (mixDelimiter != null && mixDelimiter.equals(delimiter)) {
-            return parseCompound(csq.toString(), NumberFormat.getInstance(), SimpleUnitFormat.getInstance(), delimiter, cursor.getIndex());
+            return parseCompoundAsLeading(csq.toString(), NumberFormat.getInstance(), SimpleUnitFormat.getInstance(), delimiter, cursor.getIndex());
         }
 	    int startDecimal = cursor.getIndex();
 		while ((startDecimal < csq.length()) && Character.isWhitespace(csq.charAt(startDecimal))) {

@@ -78,7 +78,8 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
     private static final long serialVersionUID = 3546952599885869402L;
 
     private transient NumberFormat numberFormat;
-    private UnitFormat unitFormat;
+    private transient UnitFormat unitFormat;
+    private transient Unit primaryUnit;
     private String delimiter;
     private String mixDelimiter;
     private boolean localeSensitive;
@@ -92,9 +93,10 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
     public static class Builder {
 
         private transient NumberFormat numberFormat;
-        private UnitFormat unitFormat;
-        private String delimiter = DEFAULT_DELIMITER;
-        private String mixDelimiter;
+        private transient UnitFormat unitFormat;
+        private transient Unit primaryUnit;
+        private transient String delimiter = DEFAULT_DELIMITER;
+        private transient String mixDelimiter;
         private boolean localeSensitive;
 
         /**
@@ -122,6 +124,20 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
                 throw new NullPointerException();
             }
             this.unitFormat = unitFormat;
+            return this;
+        }
+        
+        /**
+         * Sets the primary unit parameter to the given {@code Unit}.
+         * @param primary the primary {@link Unit}
+         * @throws NullPointerException if {@code primary} is {@code null}
+         * @return this {@code NumberDelimiterQuantityFormat.Builder}
+         */
+        public Builder setPrimaryUnit(final Unit primary) {
+            if (unitFormat == null) {
+                throw new NullPointerException();
+            }
+            this.primaryUnit = primary;
             return this;
         }
 
@@ -168,6 +184,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
             NumberDelimiterQuantityFormat quantityFormat = new NumberDelimiterQuantityFormat();
             quantityFormat.numberFormat = this.numberFormat;
             quantityFormat.unitFormat = this.unitFormat;
+            quantityFormat.primaryUnit = this.primaryUnit;
             quantityFormat.delimiter = this.delimiter;
             quantityFormat.mixDelimiter = this.mixDelimiter;
             quantityFormat.localeSensitive = this.localeSensitive;
@@ -275,9 +292,17 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
         final String str = csq.toString();
         final int index = cursor.getIndex();
         if (mixDelimiter != null && !mixDelimiter.equals(delimiter)) {
-            return parseCompound(str, numberFormat, unitFormat, delimiter, mixDelimiter, index);
+            if (primaryUnit != null) {
+                return parseCompoundAsPrimary(str, numberFormat, unitFormat, primaryUnit, delimiter, mixDelimiter, index);
+            } else {
+                return parseCompoundAsLeading(str, numberFormat, unitFormat, delimiter, mixDelimiter, index);
+            }
         } else if (mixDelimiter != null && mixDelimiter.equals(delimiter)) {
-            return parseCompound(str, numberFormat, unitFormat, delimiter, index);
+            if (primaryUnit != null) {
+                return parseCompoundAsPrimary(str, numberFormat, unitFormat, primaryUnit, delimiter, index);
+            } else {
+                return parseCompoundAsLeading(str, numberFormat, unitFormat, delimiter, index);
+            }
         }
         final Number number = numberFormat.parse(str, cursor);
         if (number == null)

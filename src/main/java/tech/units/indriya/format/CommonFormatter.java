@@ -33,6 +33,7 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;
@@ -43,22 +44,19 @@ import tech.units.indriya.quantity.CompoundQuantity;
 import tech.units.indriya.quantity.Quantities;
 
 /**
- * Common helper class that handles internals of formatting in {@link SimpleQuantityFormat}, {@link SimpleUnitFormat}
+ * Common helper class that handles internals of formatting in {@link SimpleQuantityFormat}, {@link NumberDelimiterQuantityFormat}
  * 
  * @author keilw
  * @since 2.0
  */
 abstract class CommonFormatter {
 
-    @SuppressWarnings("unchecked")
-    static Quantity<?> parseCompound(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final String delimiter,
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    static CompoundQuantity<?> parseCompound(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final String delimiter,
             final String mixDelimiter, final int position) throws IllegalArgumentException, MeasurementParseException {
         final String section = str.substring(position);
         final String[] sectionParts = section.split(mixDelimiter);
         final List<Quantity> quants = new ArrayList<>();
-        final List<Number> nums = new ArrayList<>();
-        @SuppressWarnings("rawtypes")
-        Unit leadUnit = null;
         for (String compStr : sectionParts) {
             final String[] parts = compStr.split(delimiter);
             if (parts.length < 2) {
@@ -72,33 +70,27 @@ abstract class CommonFormatter {
                 }
                 Unit unit = unitFormat.parse(parts[1]);
                 if (num != null && unit != null) {
-                    if (leadUnit == null) leadUnit = unit;
+                    //if (leadUnit == null) leadUnit = unit;
                     quants.add(Quantities.getQuantity(num, unit));
                 }
             }
         }
-        //final Number[] numArray = new Number[nums.size()];
-        //nums.toArray(numArray);
-        //return MixedQuantity.of(numArray, unit);
-        @SuppressWarnings("rawtypes")
         final Quantity[] qArray = new Quantity[quants.size()];
         quants.toArray(qArray);
         CompoundQuantity<?> comp = CompoundQuantity.of(qArray);
-        return comp.to(leadUnit);
+        return comp;
     }
     
-    static Quantity<?> parseCompound(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final String delimiter,
+    static CompoundQuantity<?> parseCompound(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final String delimiter,
             final String mixDelimiter) throws IllegalArgumentException, MeasurementParseException {
         return parseCompound(str, numberFormat, unitFormat, delimiter, mixDelimiter, 0);
     }
     
-    @SuppressWarnings("unchecked")
-    static Quantity<?> parseCompound(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final String delimiter, final int position) throws IllegalArgumentException, MeasurementParseException {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    static CompoundQuantity<?> parseCompound(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final String delimiter, final int position) throws IllegalArgumentException, MeasurementParseException {
         final String section = str.substring(position);
         final List<Quantity<?>> quants = new ArrayList<>();
-        final List<Number> nums = new ArrayList<>();
         final String[] parts = section.split(delimiter);
-        @SuppressWarnings("rawtypes")
         Unit leadUnit = null;
         if (parts.length < 2) {
             throw new IllegalArgumentException("No Unit found");
@@ -118,17 +110,62 @@ abstract class CommonFormatter {
                 i++; // get to next number
             }
         }
-        //final Number[] numArray = new Number[nums.size()];
-        //nums.toArray(numArray);
-        //return MixedQuantity.of(numArray, unit);
-        @SuppressWarnings("rawtypes")
         final Quantity[] qArray = new Quantity[quants.size()];
         quants.toArray(qArray);
         CompoundQuantity<?> comp = CompoundQuantity.of(qArray);
-        return comp.to(leadUnit);
+        return comp;
     }
     
-    static Quantity<?> parseCompound(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final String delimiter) throws IllegalArgumentException, MeasurementParseException {
+    static CompoundQuantity<?> parseCompound(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final String delimiter) throws IllegalArgumentException, MeasurementParseException {
         return parseCompound(str, numberFormat, unitFormat, delimiter, 0);
+    }
+    
+    // Fusion into Quantity
+    
+    @SuppressWarnings("unchecked")
+    static  Quantity<?> parseCompoundAsLeading(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final String delimiter, final String compDelim, final int position) throws IllegalArgumentException, MeasurementParseException {
+        final CompoundQuantity<?> comp = parseCompound(str, numberFormat, unitFormat, delimiter, compDelim, position);
+        @SuppressWarnings("rawtypes")
+        final Unit u = getLeadingUnit(comp);
+        return comp.to(u);
+    }
+    
+    @SuppressWarnings("unchecked")
+    static  Quantity<?> parseCompoundAsLeading(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final String delimiter, final int position) throws IllegalArgumentException, MeasurementParseException {
+        final CompoundQuantity<?> comp = parseCompound(str, numberFormat, unitFormat, delimiter, position);
+        @SuppressWarnings("rawtypes")
+        final Unit u = getLeadingUnit(comp);
+        return comp.to(u);
+    }
+    
+    static  Quantity<?> parseCompoundAsLeading(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final String delimiter) throws IllegalArgumentException, MeasurementParseException {
+        return parseCompoundAsLeading(str, numberFormat, unitFormat, delimiter, 0);
+    }
+    
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    static Quantity<?> parseCompoundAsPrimary(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final Unit primaryUnit, final String delimiter, final String compDelim, final int position) throws IllegalArgumentException, MeasurementParseException {
+        return parseCompound(str, numberFormat, unitFormat, delimiter, compDelim, position).to(primaryUnit);
+    }
+    
+    
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    static Quantity<?> parseCompoundAsPrimary(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final Unit primaryUnit, final String delimiter, final int position) throws IllegalArgumentException, MeasurementParseException {
+        return parseCompound(str, numberFormat, unitFormat, delimiter, position).to(primaryUnit);
+    }
+    
+    static Quantity<?> parseCompoundAsPrimary(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, @SuppressWarnings("rawtypes") final Unit primaryUnit, final String delimiter) throws IllegalArgumentException, MeasurementParseException {
+        return parseCompoundAsPrimary(str, numberFormat, unitFormat, primaryUnit, delimiter, 0);
+    }
+    
+    // Private helpers
+    
+    private static final <Q extends Quantity<Q>> Unit<Q> getLeadingUnit(final CompoundQuantity<Q> comp) {
+        Objects.requireNonNull(comp);
+        Unit<Q> unit = null;
+        for(Unit<Q> u: comp.getUnits()) {
+            unit = u;
+            break;
+        }
+        return unit;
     }
 }

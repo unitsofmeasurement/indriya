@@ -72,16 +72,20 @@ public class MixedQuantityFormatTest {
                 .setNumberToUnitDelimiter(" ")
                 .setRadixPartsDelimiter(" ");
         
-        MixedQuantityFormat<Length> mixedRadixFormat = MixedQuantityFormat.of(mixedRadix, mixedRadixFormatOptions);
-        SimpleQuantityFormat simpleFormat = SimpleQuantityFormat.getInstance();
+        final MixedQuantityFormat<Length> mixedRadixFormat = MixedQuantityFormat.of(mixedRadix, mixedRadixFormatOptions);
+        final SimpleQuantityFormat simpleFormat = SimpleQuantityFormat.getInstance();
+        final NumberDelimiterQuantityFormat ndFormat = new NumberDelimiterQuantityFormat.Builder()
+                .setUnitFormat(SimpleUnitFormat.getInstance()).setNumberFormat(realFormat).setDelimiter(" ").build();
         
-        // when
+                // when
         String formatedOutput = mixedRadixFormat.format(lengthQuantity);
-        String simpleFormatedOutput = simpleFormat.format(lengthQuantity);
+        String simpleFormattedOutput = simpleFormat.format(lengthQuantity);
+        String ndFormattedOutput = ndFormat.format(lengthQuantity);
         
         // then
         assertEquals("1 ft 2 in 3. P̸", formatedOutput);
-        assertEquals("1.208005249343831960409448818897613 ft", simpleFormatedOutput);
+        assertEquals("1.208005249343831960409448818897613 ft", simpleFormattedOutput);
+        assertEquals("1.20800524934383196 ft", ndFormattedOutput);
     }
     
     @Test @Disabled("parsing not yet implemented") //TODO[211] enable once implemented
