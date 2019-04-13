@@ -147,7 +147,7 @@ public class MixedQuantityFormat<Q extends Quantity<Q>> implements QuantityForma
         private DecimalFormat realFormat = defaultRealFormat();
         private UnitFormat unitFormat = SimpleUnitFormat.getInstance();
         private String numberToUnitDelimiter = AbstractQuantityFormat.DEFAULT_DELIMITER;
-        private String radixPartsDelimiter = " ";
+        private String radixPartsDelimiter = AbstractQuantityFormat.DEFAULT_DELIMITER;
 
         /**
          * @return the {@link DecimalFormat} to be used for formatting the whole-number parts
@@ -230,7 +230,6 @@ public class MixedQuantityFormat<Q extends Quantity<Q>> implements QuantityForma
             format.setDecimalSeparatorAlwaysShown(true);
             return format;
         }
-
     }
 
     // -- IMPLEMENTATION DETAILS
@@ -249,8 +248,4 @@ public class MixedQuantityFormat<Q extends Quantity<Q>> implements QuantityForma
                     + "does not match the required MixedRadix's generic type!", e);
         }
     }
-
-    
-
-
 }
