@@ -39,7 +39,6 @@ import javax.measure.Unit;
 import javax.measure.format.MeasurementParseException;
 import javax.measure.format.UnitFormat;
 
-import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.CompoundQuantity;
 import tech.units.indriya.quantity.Quantities;
 
