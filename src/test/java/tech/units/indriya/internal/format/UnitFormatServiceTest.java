@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2018, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+ * Copyright (c) 2005-2019, Units of Measurement project.
  *
  * All rights reserved.
  *
@@ -33,6 +33,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 
+import javax.measure.format.UnitFormat;
 import javax.measure.spi.ServiceProvider;
 import javax.measure.spi.UnitFormatService;
 
@@ -56,14 +57,18 @@ public class UnitFormatServiceTest {
     UnitFormatService ufs = ServiceProvider.current().getUnitFormatService();
     assertNotNull(ufs);
     assertNotNull(ufs.getUnitFormat());
-    assertEquals("DefaultFormat", ufs.getUnitFormat().getClass().getSimpleName());
+    final UnitFormat uf = ufs.getUnitFormat();
+    assertNotNull(uf);
+    assertEquals("DefaultFormat", uf.getClass().getSimpleName());
   }
 
   @Test
   public void testGetFormatFound() throws Exception {
     UnitFormatService ufs = ServiceProvider.current().getUnitFormatService();
     assertNotNull(ufs);
-    assertNotNull(ufs.getUnitFormat("EBNF"));
+    final UnitFormat uf = ufs.getUnitFormat("EBNF");
+    assertNotNull(uf);
+    assertEquals("EBNFUnitFormat", uf.toString());
   }
 
   @Test

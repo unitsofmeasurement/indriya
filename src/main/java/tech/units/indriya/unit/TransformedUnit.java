@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2018, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+ * Copyright (c) 2005-2019, Units of Measurement project.
  *
  * All rights reserved.
  *
@@ -67,7 +67,7 @@ import tech.uom.lib.common.function.UnitConverterSupplier;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.2, August 06, 2017
+ * @version 1.2.1, October 12, 2018
  * @since 1.0
  */
 public final class TransformedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> implements UnitConverterSupplier {
@@ -91,11 +91,6 @@ public final class TransformedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q
    * Holds the converter to the parent unit.
    */
   private final UnitConverter converter;
-
-  /**
-   * Holds the symbol.
-   */
-  private String symbol;
 
   /**
    * Creates a transformed unit from the specified system unit. using the parent as symbol
@@ -144,7 +139,7 @@ public final class TransformedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q
       // }
       this.parentUnit = abParent;
       this.converter = unitConverter;
-      this.symbol = symbol;
+      setSymbol(symbol);
       // see https://github.com/unitsofmeasurement/uom-se/issues/54
     } else {
       throw new IllegalArgumentException("The parent unit: " + parentUnit + " is not an abstract unit.");
@@ -195,17 +190,8 @@ public final class TransformedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q
       TransformedUnit<?> other = (TransformedUnit<?>) obj;
       return Objects.equals(parentUnit, other.parentUnit) 
     		  && Objects.equals(converter, other.converter);
-    }
-    if (obj instanceof AbstractUnit) {
-      return AbstractUnit.Equalizer.areEqual(this, (AbstractUnit) obj);
-    } else {
-      return false;
-    }
-  }
-
-  @Override
-  public String getSymbol() {
-    return symbol;
+    } 
+    return false;
   }
 
   /**

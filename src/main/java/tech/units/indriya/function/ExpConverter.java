@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2018, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+ * Copyright (c) 2005-2019, Units of Measurement project.
  *
  * All rights reserved.
  *
@@ -48,138 +48,139 @@ import tech.uom.lib.common.function.ValueSupplier;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.2, March 25, 2018
+ * @author Andi Huber
+ * @version 1.3, April 26, 2018
  * @since 1.0
  */
 public final class ExpConverter extends AbstractConverter implements ValueSupplier<String> {
 
-  /**
+	/**
 	 * 
 	 */
-  private static final long serialVersionUID = -8851436813812059827L;
+	private static final long serialVersionUID = -8851436813812059827L;
 
-  /**
-   * Holds the logarithmic base.
-   */
-  private final double base;
+	/**
+	 * Holds the logarithmic base.
+	 */
+	private final double base;
 
-  /**
-   * Holds the natural logarithm of the base.
-   */
-  private final double logOfBase;
+	/**
+	 * Holds the natural logarithm of the base.
+	 */
+	private final double logOfBase;
 
-  /**
-   * Creates a logarithmic converter having the specified base.
-   *
-   * @param base
-   *          the logarithmic base (e.g. <code>Math.E</code> for the Natural Logarithm).
-   */
-  public ExpConverter(double base) {
-    this.base = base;
-    this.logOfBase = Math.log(base);
-  }
-
-  /**
-   * Creates a logarithmic converter having the specified base.
-   *
-   * @param base
-   *          the logarithmic base (e.g. <code>Math.E</code> for the Natural Logarithm).
-   */
-  public static ExpConverter of(double base) {
-    return new ExpConverter(base);
-  }
-
-  /**
-   * Returns the exponential base of this converter.
-   *
-   * @return the exponential base (e.g. <code>Math.E</code> for the Natural Exponential).
-   */
-  public double getBase() {
-    return base;
-  }
-
-  @Override
-  public boolean isIdentity() {
-    return false;
-  }
-
-  @Override
-  protected boolean isSimpleCompositionWith(AbstractConverter that) {
-	if(that instanceof LogConverter) {
-		return ((LogConverter)that).getBase() == base; // can compose with log to identity, provided it has same base
+	/**
+	 * Creates a logarithmic converter having the specified base.
+	 *
+	 * @param base
+	 *          the logarithmic base (e.g. <code>Math.E</code> for the Natural Logarithm).
+	 */
+	public ExpConverter(double base) {
+		this.base = base;
+		this.logOfBase = Math.log(base);
 	}
-  	return false;
-  }
 
-  @Override
-  protected AbstractConverter simpleCompose(AbstractConverter that) {
-    return AbstractConverter.IDENTITY;
-  }
-  
-  @Override
-  public AbstractConverter inverse() {
-    return new LogConverter(base);
-  }
+	/**
+	 * Creates a logarithmic converter having the specified base.
+	 *
+	 * @param base
+	 *          the logarithmic base (e.g. <code>Math.E</code> for the Natural Logarithm).
+	 */
+	public static ExpConverter of(double base) {
+		return new ExpConverter(base);
+	}
 
-  @Override
-  public final String toString() {
-    if (base == Math.E) {
-      return "e";
-    } else {
-      return "Exp(" + base + ")";
-    }
-  }
+	/**
+	 * Returns the exponential base of this converter.
+	 *
+	 * @return the exponential base (e.g. <code>Math.E</code> for the Natural Exponential).
+	 */
+	public double getBase() {
+		return base;
+	}
 
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj instanceof ExpConverter) {
-      ExpConverter that = (ExpConverter) obj;
-      return Objects.equals(base, that.base);
-    }
-    return false;
-  }
+	@Override
+	public boolean isIdentity() {
+		return false;
+	}
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(base);
-  }
+	@Override
+	protected boolean canReduceWith(AbstractConverter that) {
+		if(that instanceof LogConverter) {
+			return ((LogConverter)that).getBase() == base; // can compose with log to identity, provided it has same base
+		}
+		return false;
+	}
 
-  @Override
-  public double convertWhenNotIdentity(double amount) {
-    return Math.exp(logOfBase * amount);
-  }
+	@Override
+	protected AbstractConverter reduce(AbstractConverter that) {
+		return AbstractConverter.IDENTITY;
+	}
 
-  @Override
-  public BigDecimal convertWhenNotIdentity(BigDecimal value, MathContext ctx) throws ArithmeticException {
-    return BigDecimal.valueOf(convert(value.doubleValue())); // Reverts to
-    // double
-    // conversion.
-  }
+	@Override
+	public AbstractConverter inverseWhenNotIdentity() {
+		return new LogConverter(base);
+	}
 
-  @Override
-  public boolean isLinear() {
-    return false;
-  }
+	@Override
+	public final String transformationLiteral() {
+		if (base == Math.E) return "x -> e^x";
 
-  @Override
-  public String getValue() {
-    return toString();
-  }
+		if (base<0) return String.format("x -> (%s)^x", base);
 
-  @SuppressWarnings("rawtypes")
-  @Override
-  public int compareTo(UnitConverter o) {
-    if (this == o) {
-      return 0;
-    }
-    if (o instanceof ValueSupplier) {
-      return getValue().compareTo(String.valueOf(((ValueSupplier) o).getValue()));
-    }
-    return -1;
-  }
+		return String.format("x -> %s^x", base);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj instanceof ExpConverter) {
+			ExpConverter that = (ExpConverter) obj;
+			return Objects.equals(base, that.base);
+		}
+		return false;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(base);
+	}
+
+	@Override
+	public double convertWhenNotIdentity(double amount) {
+		return Math.exp(logOfBase * amount);
+	}
+
+	@Override
+	public BigDecimal convertWhenNotIdentity(BigDecimal value, MathContext ctx) throws ArithmeticException {
+		return BigDecimal.valueOf(convert(value.doubleValue())); // Reverts to
+		// double
+		// conversion.
+	}
+
+	@Override
+	public boolean isLinear() {
+		return false;
+	}
+
+	@Override
+	public String getValue() {
+		return toString();
+	}
+
+	@SuppressWarnings("rawtypes")
+	@Override
+	public int compareTo(UnitConverter o) {
+		if (this == o) {
+			return 0;
+		}
+		if (o instanceof ValueSupplier) {
+			return getValue().compareTo(String.valueOf(((ValueSupplier) o).getValue()));
+		}
+		return -1;
+	}
 
 
 }

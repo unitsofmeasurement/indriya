@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2018, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+ * Copyright (c) 2005-2019, Units of Measurement project.
  *
  * All rights reserved.
  *
@@ -30,7 +30,6 @@
 package tech.units.indriya.function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -55,7 +54,7 @@ public class MultiplyConverterTest {
 
   @Test
   public void testEqualityOfTwoLogConverter() {
-    assertFalse(converter.equals(null));
+    assertNotNull(converter);
     assertEquals(new MultiplyConverter(2), converter);
   }
 
@@ -87,6 +86,6 @@ public class MultiplyConverterTest {
 
   @Test
   public void toStringTest() {
-    assertEquals("MultiplyConverter(2.0)", converter.toString());
+    assertEquals("Multiply(x -> x * 2.0)", converter.toString());
   }
 }

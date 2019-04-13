@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2018, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+ * Copyright (c) 2005-2019, Units of Measurement project.
  *
  * All rights reserved.
  *
@@ -30,6 +30,7 @@
 package tech.units.indriya.function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -55,14 +56,14 @@ public class ExpConverterTest {
   public void testEqualityOfTwoLogConverter() {
     ExpConverter expConverter = new ExpConverter(10.);
     assertTrue(expConverter.equals(expConverterBase10));
-    assertTrue(!expConverter.equals(null));
+    assertNotNull(expConverter);
   }
 
   @Test
   public void testGetValueLogConverter() {
     ExpConverter expConverter = new ExpConverter(Math.E);
-    assertEquals("Exp(10.0)", expConverterBase10.getValue());
-    assertEquals("e", expConverter.getValue());
+    assertEquals("Exp(x -> 10.0^x)", expConverterBase10.getValue());
+    assertEquals("Exp(x -> e^x)", expConverter.getValue());
   }
 
   @Test

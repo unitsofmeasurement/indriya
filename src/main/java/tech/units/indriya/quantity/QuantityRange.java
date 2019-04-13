@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2018, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+ * Copyright (c) 2005-2019, Units of Measurement project.
  *
  * All rights reserved.
  *
@@ -39,14 +39,14 @@ import tech.units.indriya.spi.Range;
 /**
  * A Quantity Range is a pair of {@link Quantity} items that represent a range of values.
  * <p>
- * Range limits MUST be presented in the same scale and have the same unit as measured data values.<br/>
+ * Range limits MUST be presented in the same scale and have the same unit as measured data values.<br>
  * Subclasses of QuantityRange should be immutable.
  * 
  * @param <Q>
  *          The value of the range.
  * 
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 0.5, December 29, 2017
+ * @version 0.6, June 5, 2018
  * @see <a href= "http://www.botts-inc.com/SensorML_1.0.1/schemaBrowser/SensorML_QuantityRange.html"> SensorML: QuantityRange</a>
  */
 public class QuantityRange<Q extends Quantity<Q>> extends Range<Quantity<Q>> {
@@ -72,6 +72,9 @@ public class QuantityRange<Q extends Quantity<Q>> extends Range<Quantity<Q>> {
    */
   @SuppressWarnings({ "rawtypes", "unchecked" })
   public static QuantityRange of(Quantity minimum, Quantity maximum, Quantity resolution) {
+    if (!isCompatibleQuantityTriple(minimum, maximum, resolution)) {
+      throw new IllegalArgumentException();
+    }
     return new QuantityRange(minimum, maximum, resolution);
   }
 
@@ -86,39 +89,54 @@ public class QuantityRange<Q extends Quantity<Q>> extends Range<Quantity<Q>> {
    */
   @SuppressWarnings({ "rawtypes", "unchecked" })
   public static QuantityRange of(Quantity minimum, Quantity maximum) {
+    if (!isCompatibleQuantityPair(minimum, maximum)) {
+      throw new IllegalArgumentException();
+    }
     return new QuantityRange(minimum, maximum);
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see tech.units.indriya.spi.Range#contains()
-   */
-  @Override
-  public boolean contains(Quantity<Q> q) {
-    if (q != null && q.getValue() != null && q.getUnit() != null) {
-      if (hasMinimum() && hasMaximum()) {
-        if ((q.getUnit().isCompatible(getMinimum().getUnit())) && (q.getUnit().isCompatible(getMaximum().getUnit()))) {
-          if (q instanceof ComparableQuantity) {
-            final ComparableQuantity<Q> cq = (ComparableQuantity<Q>) q;
-            return (cq.isGreaterThanOrEqualTo(getMinimum()) && cq.isLessThanOrEqualTo(getMaximum()));
-          } else {
-            return (q.getValue().doubleValue() >= getMinimum().getValue().doubleValue() && q.getValue().doubleValue() <= getMaximum().getValue()
-                .doubleValue());
-          }
-        }
-      } // TODO other cases with only min or max
-    }
-    return false;
+  @SuppressWarnings({ "rawtypes", "unchecked" })
+  private static boolean isCompatibleQuantityPair(final Quantity q1, final Quantity q2) {
+    return q1 == null || q2 == null || q1.getUnit().isCompatible(q2.getUnit());
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.lang.Object#equals()
-   */
+  @SuppressWarnings("rawtypes")
+  private static boolean isCompatibleQuantityTriple(final Quantity q1, final Quantity q2, final Quantity q3) {
+    return isCompatibleQuantityPair(q1, q2) && isCompatibleQuantityPair(q1, q3) && isCompatibleQuantityPair(q2, q3);
+  }
+
+  private boolean isAboveMinimum(final Quantity<Q> q) {
+    if (q instanceof ComparableQuantity) return ((ComparableQuantity<Q>) q).isGreaterThanOrEqualTo(getMinimum());
+
+    final Quantity<Q> qConverted = q.to(getMinimum().getUnit());
+    return qConverted.getValue().doubleValue() >= getMinimum().getValue().doubleValue();
+  }
+
+  private boolean isBelowMaximum(final Quantity<Q> q) {
+    if (q instanceof ComparableQuantity) return ((ComparableQuantity<Q>) q).isLessThanOrEqualTo(getMaximum());
+
+    final Quantity<Q> qConverted = q.to(getMaximum().getUnit());
+    return qConverted.getValue().doubleValue() <= getMaximum().getValue().doubleValue();
+  }
+
+  private boolean fulfillsMaximumConstraint(final Quantity<Q> q) {
+    return !hasMaximum() || isBelowMaximum(q);
+  }
+
+  private boolean fulfillsMinimumConstraint(final Quantity<Q> q) {
+    return !hasMinimum() || isAboveMinimum(q);
+  }
+
   @Override
-  public boolean equals(Object obj) {
+  public boolean contains(final Quantity<Q> q) {
+    if (q == null) {
+      throw new NullPointerException();
+    }
+    return q.getValue() != null && q.getUnit() != null && fulfillsMinimumConstraint(q) && fulfillsMaximumConstraint(q);
+  }
+
+  @Override
+  public boolean equals(final Object obj) {
     if (this == obj) {
       return true;
     }
@@ -131,11 +149,11 @@ public class QuantityRange<Q extends Quantity<Q>> extends Range<Quantity<Q>> {
     return false;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.lang.Object#toString()
-   */
+  @Override
+  public int hashCode() {
+    return Objects.hash(getMinimum(), getMaximum(), getResolution());
+  }
+
   @Override
   public String toString() {
     final StringBuilder sb = new StringBuilder().append("min= ").append(getMinimum()).append(", max= ").append(getMaximum());

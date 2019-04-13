@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2018, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+ * Copyright (c) 2005-2019, Units of Measurement project.
  *
  * All rights reserved.
  *
@@ -47,10 +47,11 @@ import tech.uom.lib.common.function.IntPrioritySupplier;
  * Default unit format service.
  *
  * @author Werner Keil
- * @version 0.6, March 30, 2018
+ * @version 0.9, March 11, 2019
  * @since 1.0
  * @deprecated For backward-compatibility, to be removed in a future version.
  */
+@Deprecated
 public class DefaultUnitFormatService implements UnitFormatService, IntPrioritySupplier {
   static final int PRIO = 1000;
 

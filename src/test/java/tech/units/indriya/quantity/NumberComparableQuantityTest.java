@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2018, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+ * Copyright (c) 2005-2019, Units of Measurement project.
  *
  * All rights reserved.
  *
@@ -116,8 +116,8 @@ public class NumberComparableQuantityTest {
     ComparableQuantity<Time> day = Quantities.getQuantity(1, Units.DAY);
     ComparableQuantity<Time> hours = Quantities.getQuantity(12, Units.HOUR);
     ComparableQuantity<Time> result = day.add(hours);
-    assertTrue(result.getValue().doubleValue() == 1.5);
-    assertEquals(result.getUnit(), Units.DAY);
+    assertEquals(1.5d, result.getValue().doubleValue());
+    assertEquals(Units.DAY, result.getUnit());
   }
 
   @Test
@@ -134,8 +134,8 @@ public class NumberComparableQuantityTest {
     ComparableQuantity<Time> day = Quantities.getQuantity(1, Units.DAY);
     ComparableQuantity<Time> hours = Quantities.getQuantity(12, Units.HOUR);
     ComparableQuantity<Time> result = day.subtract(hours);
-    assertTrue(result.getValue().doubleValue() == 0.5);
-    assertEquals(result.getUnit(), Units.DAY);
+    assertEquals(0.5d, result.getValue().doubleValue());
+    assertEquals(Units.DAY, result.getUnit());
   }
 
   @Test
@@ -235,15 +235,15 @@ public class NumberComparableQuantityTest {
   }
 
   @Test
-  public void isEquivalentOfTest() {
+  public void isEquivalentTest() {
     ComparableQuantity<Time> day = Quantities.getQuantity(1, Units.DAY);
     ComparableQuantity<Time> hours = Quantities.getQuantity(12, Units.HOUR);
     ComparableQuantity<Time> dayInHour = Quantities.getQuantity(24, Units.HOUR);
     ComparableQuantity<Time> daysInHour = Quantities.getQuantity(48, Units.HOUR);
 
     assertTrue(day.isLessThanOrEqualTo(day));
-    assertFalse(day.isEquivalentOf(hours));
-    assertTrue(day.isEquivalentOf(dayInHour));
-    assertFalse(day.isEquivalentOf(daysInHour));
+    assertFalse(day.isEquivalentTo(hours));
+    assertTrue(day.isEquivalentTo(dayInHour));
+    assertFalse(day.isEquivalentTo(daysInHour));
   }
 }

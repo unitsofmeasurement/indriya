@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2018, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+ * Copyright (c) 2005-2019, Units of Measurement project.
  *
  * All rights reserved.
  *
@@ -30,31 +30,40 @@
 package tech.units.indriya.quantity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.math.BigDecimal;
 
 import javax.measure.MetricPrefix;
 import javax.measure.Quantity;
 import javax.measure.Unit;
+import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.ElectricResistance;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Time;
 
 import org.junit.jupiter.api.Test;
 
+import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.quantity.IntegerQuantity;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.Units;
 
 public class IntegerQuantityTest {
 
-  final IntegerQuantity<ElectricResistance> ONE_OHM = createQuantity(1, Units.OHM);
-  final IntegerQuantity<ElectricResistance> TWO_OHM = createQuantity(2, Units.OHM);
-  final IntegerQuantity<ElectricResistance> MAX_VALUE_OHM = createQuantity(Integer.MAX_VALUE, Units.OHM);
-  final IntegerQuantity<ElectricResistance> ONE_MILLIOHM = createQuantity(1, MetricPrefix.MILLI(Units.OHM));
-  final IntegerQuantity<ElectricResistance> ONE_KILOOHM = createQuantity(1, MetricPrefix.KILO(Units.OHM));
-  final IntegerQuantity<ElectricResistance> ONE_YOTTAOHM = createQuantity(1, MetricPrefix.YOTTA(Units.OHM));
+  private static final Unit<?> SQUARE_OHM = Units.OHM.multiply(Units.OHM);
+  private final IntegerQuantity<ElectricResistance> ONE_OHM = createQuantity(1, Units.OHM);
+  private final IntegerQuantity<ElectricResistance> TWO_OHM = createQuantity(2, Units.OHM);
+  private final IntegerQuantity<ElectricResistance> MIN_VALUE_OHM = createQuantity(Integer.MIN_VALUE, Units.OHM);
+  private final IntegerQuantity<ElectricResistance> MAX_VALUE_OHM = createQuantity(Integer.MAX_VALUE, Units.OHM);
+  private final IntegerQuantity<ElectricResistance> ONE_MILLIOHM = createQuantity(1, MetricPrefix.MILLI(Units.OHM));
+  private final IntegerQuantity<ElectricResistance> ONE_KILOOHM = createQuantity(1, MetricPrefix.KILO(Units.OHM));
+  private final IntegerQuantity<ElectricResistance> ONE_YOTTAOHM = createQuantity(1, MetricPrefix.YOTTA(Units.OHM));
+  private static final LongQuantity<ElectricResistance> ONE_LONG_OHM = new LongQuantity<ElectricResistance>(1L, Units.OHM);
 
-  private <Q extends Quantity<Q>> IntegerQuantity<Q> createQuantity(int i, Unit<Q> unit) {
+  private static <Q extends Quantity<Q>> IntegerQuantity<Q> createQuantity(int i, Unit<Q> unit) {
     return new IntegerQuantity<Q>(Integer.valueOf(i).intValue(), unit);
   }
 
@@ -74,9 +83,9 @@ public class IntegerQuantityTest {
    */
   @Test
   public void additionWithSameMultipleResultingInOverflowThrowsException() {
-	  assertThrows(ArithmeticException.class, () -> {
-		  ONE_OHM.add(MAX_VALUE_OHM);
-	  });
+    assertThrows(ArithmeticException.class, () -> {
+      ONE_OHM.add(MAX_VALUE_OHM);
+    });
   }
 
   /**
@@ -147,32 +156,326 @@ public class IntegerQuantityTest {
     assertEquals(ONE_OHM, actual);
   }
 
+  /**
+   * Verifies that the subtraction of two quantities with the same multiples resulting in a negative overflow throws an exception.
+   */
   @Test
-  public void multiplyQuantityTest() {
-    IntegerQuantity<ElectricResistance> quantity1 = new IntegerQuantity<ElectricResistance>(Long.valueOf(3).intValue(), Units.OHM);
-    Quantity<?> result = quantity1.multiply(TWO_OHM);
-    assertEquals(Integer.valueOf(6), result.getValue());
+  public void subtractionWithSameMultipleResultingInNegativeOverflowThrowsException() {
+    assertThrows(ArithmeticException.class, () -> {
+      MIN_VALUE_OHM.subtract(ONE_OHM);
+    });
   }
 
+  /**
+   * Verifies that the subtraction of two quantities with the same multiples almost resulting in a negative overflow doesn't an exception.
+   */
   @Test
-  public void divideTest() {
-    IntegerQuantity<ElectricResistance> quantity1 = new IntegerQuantity<ElectricResistance>(Long.valueOf(3).intValue(), Units.OHM);
-    Quantity<?> result = quantity1.divide(TWO_OHM);
-    assertEquals(Double.valueOf(1.5d), result.getValue());
+  public void subtractionWithSameMultipleAlmostResultingInNegativeDoesNotThrowException() {
+    Quantity<ElectricResistance> actual = createQuantity(Integer.MIN_VALUE + 1, Units.OHM).subtract(ONE_OHM);
+    assertEquals(MIN_VALUE_OHM, actual);
   }
 
+  /**
+   * Verifies that the multiplication of two quantities multiplies correctly.
+   */
   @Test
-  public void longValueTest() {
-    IntegerQuantity<Time> day = new IntegerQuantity<Time>(Integer.valueOf(3).intValue(), Units.DAY);
-    long hours = day.longValue(Units.HOUR);
-    assertEquals(72L, hours);
+  public void quantityMultiplicationMultipliesCorrectly() {
+    Quantity<?> actual = TWO_OHM.multiply(TWO_OHM);
+    IntegerQuantity<?> expected = createQuantity(4, SQUARE_OHM);
+    assertEquals(expected, actual);
   }
 
+  /**
+   * Verifies that the multiplication of two quantities resulting in an overflow throws an exception.
+   */
   @Test
-  public void doubleValueTest() {
-    IntegerQuantity<Time> day = new IntegerQuantity<Time>(Integer.valueOf(3).intValue(), Units.DAY);
-    double hours = day.doubleValue(Units.HOUR);
-    assertEquals(72D, hours);
+  public void quantityMultiplicationResultingInOverflowThrowsException() {
+    assertThrows(ArithmeticException.class, () -> {
+      Quantity<ElectricResistance> halfMaxValuePlusOne = createQuantity(1 + Integer.MAX_VALUE / 2, Units.OHM);
+      halfMaxValuePlusOne.multiply(TWO_OHM);
+    });
+  }
+
+  /**
+   * Verifies that the multiplication with a number multiplies correctly.
+   */
+  @Test
+  public void numberMultiplicationMultipliesCorrectly() {
+    Quantity<?> actual = TWO_OHM.multiply(2);
+    IntegerQuantity<ElectricResistance> expected = createQuantity(4, Units.OHM);
+    assertEquals(expected, actual);
+  }
+
+  /**
+   * Verifies that the multiplication with a number resulting in an overflow throws an exception.
+   */
+  @Test
+  public void numberMultiplicationResultingInOverflowThrowsException() {
+    assertThrows(ArithmeticException.class, () -> {
+      Quantity<ElectricResistance> halfMaxValuePlusOne = createQuantity(1 + Integer.MAX_VALUE / 2, Units.OHM);
+      halfMaxValuePlusOne.multiply(2);
+    });
+  }
+
+  /**
+   * Verifies that the division of two quantities divides correctly.
+   */
+  @Test
+  public void quantityDivisionDividesCorrectly() {
+    Quantity<?> actual = TWO_OHM.divide(TWO_OHM);
+    IntegerQuantity<Dimensionless> expected = createQuantity(1, AbstractUnit.ONE);
+    assertEquals(expected, actual);
+  }
+
+  /**
+   * Verifies that the division with a number divides correctly.
+   */
+  @Test
+  public void numberDivisionDividesCorrectly() {
+    Quantity<?> actual = TWO_OHM.divide(2);
+    assertEquals(ONE_OHM, actual);
+  }
+
+  /**
+   * Verifies that the inverse returns the correct reciprocal for a unit quantity.
+   */
+  @Test
+  public void inverseReturnsUnitQuantityForUnitQuantity() {
+    Quantity<?> actual = ONE_OHM.inverse();
+    IntegerQuantity<?> expected = createQuantity(1, Units.OHM.inverse());
+    assertEquals(expected, actual);
+  }
+
+  /**
+   * Verifies that the inverse returns the correct reciprocal for a quantity larger than a unit quantity.
+   */
+  @Test
+  public void inverseReturnsZeroQuantityForLargerThanUnitQuantity() {
+    Quantity<?> actual = TWO_OHM.inverse();
+    IntegerQuantity<?> expected = createQuantity(0, Units.OHM.inverse());
+    assertEquals(expected, actual);
+  }
+
+  /**
+   * Verifies that the inverse throws an exception for a zero quantity.
+   */
+  @Test
+  public void inverseThrowsExceptionForZeroQuantity() {
+    assertThrows(ArithmeticException.class, () -> {
+      createQuantity(0, Units.OHM).inverse();
+    });
+  }
+
+  /**
+   * Verifies that a IntegerQuantity isn't big.
+   */
+  @Test
+  public void integerQuantityIsNotBig() {
+    assertFalse(ONE_OHM.isBig());
+  }
+
+  /**
+   * Verifies that a IntegerQuantity isn't decimal.
+   */
+  @Test
+  public void integerQuantityIsNotDecimal() {
+    assertFalse(ONE_OHM.isDecimal());
+  }
+
+  /**
+   * Verifies that a IntegerQuantity has the size of Integer.
+   */
+  @Test
+  public void integerQuantityHasByteSize() {
+    assertEquals(Integer.SIZE, ONE_OHM.getSize());
+  }
+
+  /**
+   * Verifies that a quantity isn't equal to null.
+   */
+  @Test
+  public void integerQuantityIsNotEqualToNull() {
+    assertFalse(ONE_OHM.equals(null));
+  }
+
+  /**
+   * Verifies that a quantity is equal to itself.
+   */
+  @Test
+  public void integerQuantityIsEqualToItself() {
+    assertTrue(ONE_OHM.equals(ONE_OHM));
+  }
+
+  /**
+   * Verifies that a quantity is equal to another instance with the same value and unit.
+   */
+  @Test
+  public void integerQuantityIsEqualToIdenticalInstance() {
+    assertTrue(ONE_OHM.equals(createQuantity(1, Units.OHM)));
+  }
+
+  /**
+   * Verifies that a quantity is equal to another instance with the same value and unit using another primitive.
+   */
+  @Test
+  public void integerQuantityIsEqualToIdenticalInstanceWithAnotherPrimitive() {
+    assertTrue(ONE_OHM.equals(new DoubleQuantity<ElectricResistance>(Double.valueOf(1).doubleValue(), Units.OHM)));
+  }
+
+  /**
+   * Verifies that a quantity is not equal to a quantity with a different value.
+   */
+  @Test
+  public void integerQuantityIsNotEqualToQuantityWithDifferentValue() {
+    assertFalse(ONE_OHM.equals(TWO_OHM));
+  }
+
+  /**
+   * Verifies that a quantity is not equal to a quantity with a different unit.
+   */
+  @Test
+  public void integerQuantityIsNotEqualToQuantityWithDifferentUnit() {
+    assertFalse(ONE_OHM.equals(ONE_KILOOHM));
+  }
+
+  /**
+   * Verifies that a quantity is not equal to an object of a different class.
+   */
+  @Test
+  public void integerQuantityIsNotEqualToObjectOfDifferentClass() {
+    assertFalse(ONE_OHM.equals(SQUARE_OHM));
+  }
+
+  /**
+   * Verifies that the value is returned without conversion if doubleValue is called with the quantity's unit.
+   */
+  @Test
+  public void doubleValueReturnsValueForSameUnit() {
+    assertEquals(1, ONE_OHM.doubleValue(Units.OHM));
+  }
+
+  /**
+   * Verifies that the value is correctly converted if doubleValue is called with the quantity's unit.
+   */
+  @Test
+  public void doubleValueReturnsConvertedValueForOtherUnit() {
+    assertEquals(0.001, ONE_MILLIOHM.doubleValue(Units.OHM));
+  }
+
+  /**
+   * Verifies that the value is returned without conversion if decimalValue is called with the quantity's unit.
+   */
+  @Test
+  public void decimalValueReturnsValueForSameUnit() {
+    assertEquals(BigDecimal.valueOf(1), ONE_OHM.decimalValue(Units.OHM));
+  }
+
+  /**
+   * Verifies that the value is correctly converted if decimalValue is called with the quantity's unit.
+   */
+  @Test
+  public void decimalValueReturnsConvertedValueForOtherUnit() {
+    assertEquals(BigDecimal.valueOf(0.001), ONE_MILLIOHM.decimalValue(Units.OHM));
+  }
+
+  /**
+   * Verifies that the value is returned without conversion if longValue is called with the quantity's unit.
+   */
+  @Test
+  public void longValueReturnsValueForSameUnit() {
+    assertEquals(1, ONE_OHM.longValue(Units.OHM));
+  }
+
+  /**
+   * Verifies that the value is correctly converted if longValue is called with the quantity's unit.
+   */
+  @Test
+  public void longValueReturnsConvertedValueForOtherUnit() {
+    assertEquals(0, ONE_MILLIOHM.longValue(Units.OHM));
+  }
+
+  /**
+   * Verifies that an exception is thrown if the conversion for longValue results in a positive overflow.
+   */
+  @Test
+  public void longValueThrowsExceptionOnPositiveOverflow() {
+    assertThrows(ArithmeticException.class, () -> {
+      createQuantity(9223373, MetricPrefix.TERA(Units.OHM)).longValue(Units.OHM);
+    });
+  }
+
+  /**
+   * Verifies that an exception is thrown if the conversion for longValue results in a negative overflow.
+   */
+  @Test
+  public void longValueThrowsExceptionOnNegativeOverflow() {
+    assertThrows(ArithmeticException.class, () -> {
+      createQuantity(-9223373, MetricPrefix.TERA(Units.OHM)).longValue(Units.OHM);
+    });
+  }
+  
+  /**
+   * Verifies that addition with IntegerQuantity returns a IntegerQuantity.
+   */
+  @Test
+  public void additionWithIntegerQuantityDoesNotWiden() {
+    assertEquals(IntegerQuantity.class, ONE_OHM.add(ONE_OHM).getClass());
+  }
+
+  /**
+   * Verifies that addition with LongQuantity widens to LongQuantity.
+   */
+  @Test
+  public void additionWithLongQuantityWidensToLongQuantity() {
+    assertEquals(LongQuantity.class, ONE_OHM.add(ONE_LONG_OHM).getClass());
+  }
+
+  /**
+   * Verifies that subtraction with IntegerQuantity returns a IntegerQuantity.
+   */
+  @Test
+  public void subtractionWithIntegerQuantityDoesNotWiden() {
+    assertEquals(IntegerQuantity.class, ONE_OHM.subtract(ONE_OHM).getClass());
+  }
+
+  /**
+   * Verifies that subtraction with LongQuantity widens to LongQuantity.
+   */
+  @Test
+  public void subtractionWithLongQuantityWidensToLongQuantity() {
+    assertEquals(LongQuantity.class, ONE_OHM.subtract(ONE_LONG_OHM).getClass());
+  }
+
+  /**
+   * Verifies that multiplication with IntegerQuantity returns a IntegerQuantity.
+   */
+  @Test
+  public void multiplicationWithIntegerQuantityDoesNotWiden() {
+    assertEquals(IntegerQuantity.class, ONE_OHM.multiply(ONE_OHM).getClass());
+  }
+
+  /**
+   * Verifies that multiplication with LongQuantity widens to LongQuantity.
+   */
+  @Test
+  public void multiplicationWithLongQuantityWidensToLongQuantity() {
+    assertEquals(LongQuantity.class, ONE_OHM.multiply(ONE_LONG_OHM).getClass());
+  }
+
+  /**
+   * Verifies that division with IntegerQuantity returns a IntegerQuantity.
+   */
+  @Test
+  public void divisionWithIntegerQuantityDoesNotWiden() {
+    assertEquals(IntegerQuantity.class, ONE_OHM.divide(ONE_OHM).getClass());
+  }
+
+  /**
+   * Verifies that division with LongQuantity widens to LongQuantity.
+   */
+  @Test
+  public void divisionWithLongQuantityWidensToLongQuantity() {
+    assertEquals(LongQuantity.class, ONE_OHM.divide(ONE_LONG_OHM).getClass());
   }
 
   @Test
@@ -189,9 +492,17 @@ public class IntegerQuantityTest {
 
   @Test
   public void testEquality() throws Exception {
-    Quantity<Length> value = Quantities.getQuantity(new Integer(10), Units.METRE);
-    Quantity<Length> anotherValue = Quantities.getQuantity(new Integer(10), Units.METRE);
+    Quantity<Length> value = Quantities.getQuantity(Integer.valueOf(10), Units.METRE);
+    Quantity<Length> anotherValue = Quantities.getQuantity(Integer.valueOf(10), Units.METRE);
     assertEquals(value, anotherValue);
+  }
+  
+  /**
+   * Tests negate()
+   */
+  @Test
+  public void negateTest() {
+    assertEquals(-1, ONE_OHM.negate().getValue());
   }
 
 }

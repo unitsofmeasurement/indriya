@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2018, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+ * Copyright (c) 2005-2019, Units of Measurement project.
  *
  * All rights reserved.
  *
@@ -127,7 +127,7 @@ public class QuantitySummaryStatisticsTest {
     assertEquals(4L, summary.getAverage().getValue().longValue());
   }
 
-  private QuantitySummaryStatistics<Time> createSummaryTime() {
+  private static QuantitySummaryStatistics<Time> createSummaryTime() {
     QuantitySummaryStatistics<Time> summary = new QuantitySummaryStatistics<>(Units.DAY);
 
     summary.accept(Quantities.getQuantity(9, Units.DAY));

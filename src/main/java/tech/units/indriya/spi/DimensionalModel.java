@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2018, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+ * Copyright (c) 2005-2019, Units of Measurement project.
  *
  * All rights reserved.
  *
@@ -34,7 +34,6 @@ import java.util.Map;
 import javax.measure.Dimension;
 
 import tech.units.indriya.AbstractConverter;
-import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.quantity.QuantityDimension;
 
 /**
@@ -75,7 +74,8 @@ import tech.units.indriya.quantity.QuantityDimension;
  * @see <a href="http://en.wikipedia.org/wiki/Dimensional_analysis">Wikipedia: Dimensional Analysis</a>
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 0.5.5, $Date: 2015-07-25 $
+ * @version 0.6, $Date: 2018-05-31 $
+ * @since 1.0
  */
 public abstract class DimensionalModel {
 
@@ -156,7 +156,7 @@ public abstract class DimensionalModel {
         cvtr = cvtr.inverse();
       }
       for (int j = 0; j < pow; j++) {
-        toFundamental = AbstractUnit.Simplifier.compose(toFundamental, cvtr);
+        toFundamental = (AbstractConverter) toFundamental.concatenate(cvtr); 
       }
     }
     return toFundamental;

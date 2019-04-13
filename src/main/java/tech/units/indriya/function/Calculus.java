@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2018, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+ * Copyright (c) 2005-2019, Units of Measurement project.
  *
  * All rights reserved.
  *
@@ -35,7 +35,12 @@ import java.math.MathContext;
 import java.util.Objects;
 import java.util.logging.Logger;
 
+/**
+ * Mathematical helper class
+ * @author Andi Huber
+ */
 public final class Calculus {
+	private static final String MSG_NUMBER_NON_NULL = "number cannot be null";
 	
 	private static final Logger logger = Logger.getLogger(Calculus.class.getName());
 
@@ -57,7 +62,7 @@ public final class Calculus {
 	 * @return the number converted
 	 */
 	public static BigDecimal toBigDecimal(Number number) {
-		Objects.requireNonNull(number, "number can not be null");
+		Objects.requireNonNull(number, MSG_NUMBER_NON_NULL);
 		if(number instanceof BigDecimal) {
 			return (BigDecimal) number;
 		}
@@ -81,7 +86,7 @@ public final class Calculus {
 	 * @return the number converted
 	 */
 	public static BigInteger toBigInteger(Number number) {
-		Objects.requireNonNull(number, "number can not be null");
+		Objects.requireNonNull(number, MSG_NUMBER_NON_NULL);
 		if(number instanceof BigInteger) {
 			return (BigInteger) number;
 		}
@@ -99,11 +104,101 @@ public final class Calculus {
 			return BigInteger.valueOf(number.longValue());
 		}
 		logger.fine(()->String.format(
-				"WARNING: possibly loosing precision, when converting from Number type '%s' to double.",
+				"WARNING: possibly loosing precision, when converting from Number type '%s' to long.",
 				number.getClass().getName()));
 		return BigInteger.valueOf(number.longValue());
 	}
 
+	/**
+	 * Returns the absolute value of {@code number}
+	 * @param number
+	 * @return 
+	 */
+	public static Number abs(Number number) {
+		Objects.requireNonNull(number, MSG_NUMBER_NON_NULL);
+		if(number instanceof BigInteger) {
+			return ((BigInteger) number).abs();
+		}
+		if(number instanceof BigDecimal) {
+			return ((BigDecimal) number).abs();
+		}
+		if(number instanceof Double) {
+			return Math.abs((double)number);
+		}
+		if(number instanceof Long) {
+			return Math.abs((long)number);
+		}
+		if(number instanceof Integer) {
+			return Math.abs((int)number);
+		}
+		if(number instanceof Short) {
+			return Math.abs((short)number);
+		}
+		if(number instanceof Byte) {
+			return Math.abs((byte)number);
+		}
+		logger.fine(()->String.format(
+				"WARNING: possibly loosing precision, when converting from Number type '%s' to double.",
+				number.getClass().getName()));
+		return Math.abs(number.doubleValue());
+	}
+	
+	/**
+	 * Returns the negated value of {@code number}
+	 * @param number
+	 * @return -number
+	 */
+	public static Number negate(Number number) {
+		Objects.requireNonNull(number, MSG_NUMBER_NON_NULL);
+		if(number instanceof BigInteger) {
+			return ((BigInteger) number).negate();
+		}
+		if(number instanceof BigDecimal) {
+			return ((BigDecimal) number).negate();
+		}
+		if(number instanceof Double) {
+			return -((double)number);
+		}
+		if(number instanceof Long) {
+			return -((long)number);
+		}
+		if(number instanceof Integer) {
+			return -((int)number);
+		}
+		if(number instanceof Short) {
+			return -((short)number);
+		}
+		if(number instanceof Byte) {
+			return -((byte)number);
+		}
+		logger.fine(()->String.format(
+				"WARNING: possibly loosing precision, when converting from Number type '%s' to double.",
+				number.getClass().getName()));
+		return -(number.doubleValue());
+	}
 
-
+	/**
+	 * 
+	 * @param number
+	 * @return
+	 */
+	public static boolean isLessThanOne(Number number) {
+		Objects.requireNonNull(number, MSG_NUMBER_NON_NULL);
+		if(number instanceof BigInteger) {
+			return ((BigInteger) number).compareTo(BigInteger.ONE) == -1;
+		}
+		if(number instanceof BigDecimal) {
+			return ((BigDecimal) number).compareTo(BigDecimal.ONE) == -1;
+		}
+		if(number instanceof Double) {
+			return ((double)number) < 1.0;
+		}
+		if(number instanceof Long || number instanceof Integer || number instanceof Short || number instanceof Byte) {
+			return number.longValue() < 1L;
+		}
+		logger.fine(()->String.format(
+				"WARNING: possibly loosing precision, when converting from Number type '%s' to double.",
+				number.getClass().getName()));
+		return number.doubleValue() < 1.0;
+	}
 }

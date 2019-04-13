@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2018, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+ * Copyright (c) 2005-2019, Units of Measurement project.
  *
  * All rights reserved.
  *
@@ -29,153 +29,96 @@
  */
 package tech.units.indriya.quantity;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Objects;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;
 
-import tech.units.indriya.AbstractConverter;
 import tech.units.indriya.AbstractQuantity;
 import tech.units.indriya.ComparableQuantity;
-import tech.units.indriya.function.Calculus;
 
 /**
  * An amount of quantity, implementation of {@link ComparableQuantity} that uses {@link BigInteger} as implementation of {@link Number}, this object
  * is immutable. Note: all operations which involves {@link Number}, this implementation will convert to {@link BigInteger}.
  *
  * @param <Q>
- *          The type of the quantity.
+ *            The type of the quantity.
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
  * @see AbstractQuantity
  * @see Quantity
  * @see ComparableQuantity
- * @version 0.2
+ * @see BigInteger
+ * @version 1.0
  * @since 2.0
  */
-@SuppressWarnings({ "rawtypes", "unchecked" })
-final class BigIntegerQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> implements Serializable {
+final class BigIntegerQuantity<Q extends Quantity<Q>> extends JavaNumericQuantity<Q> {
 
-  /**
-	 * 
-	 */
-  private static final long serialVersionUID = -593014349777834846L;
-  private final BigInteger value;
+    private static final long serialVersionUID = -593014349777834846L;
+    private final BigInteger value;
 
-  public BigIntegerQuantity(BigInteger value, Unit<Q> unit) {
-    super(unit);
-    this.value = value;
-  }
-
-  public BigIntegerQuantity(long value, Unit<Q> unit) {
-    super(unit);
-    this.value = BigInteger.valueOf(value);
-  }
-
-  @Override
-  public BigInteger getValue() {
-    return value;
-  }
-
-  @Override
-  public double doubleValue(Unit<Q> unit) {
-    if (getUnit().equals(unit)) {
-      return value.doubleValue();
-    } else {
-      return getUnit().getConverterTo(unit).convert(value.doubleValue());
+    public BigIntegerQuantity(BigInteger value, Unit<Q> unit, Scale sc) {
+        super(unit, sc);
+        this.value = value;
     }
-  }
 
-  @Override
-  public BigDecimal decimalValue(Unit<Q> unit) throws ArithmeticException {
-    if (getUnit().equals(unit)) {
-      return new BigDecimal(value);
-    } else {
-      final Number converted = ((AbstractConverter) unit.getConverterTo(unit)).convert(value);
-      if (converted instanceof BigDecimal) {
-        return BigDecimal.class.cast(converted);
-      } else if (converted instanceof BigInteger) {
-        return new BigDecimal(BigInteger.class.cast(converted));
-      } else {
-        return BigDecimal.valueOf(converted.doubleValue());
-      }
+    public BigIntegerQuantity(BigInteger value, Unit<Q> unit) {
+        super(unit);
+        this.value = value;
     }
-  }
 
-  @Override
-  public ComparableQuantity<Q> add(Quantity<Q> that) {
-    if (getUnit().equals(that.getUnit())) {
-      return Quantities.getQuantity(value.add(Calculus.toBigInteger(that.getValue())), getUnit());
+    public BigIntegerQuantity(long value, Unit<Q> unit) {
+        this(BigInteger.valueOf(value), unit);
     }
-    Quantity<Q> converted = that.to(getUnit());
-    return Quantities.getQuantity(value.add(Calculus.toBigInteger(converted.getValue())), getUnit());
-  }
 
-  @Override
-  public ComparableQuantity<Q> subtract(Quantity<Q> that) {
-    if (getUnit().equals(that.getUnit())) {
-      return Quantities.getQuantity(value.subtract(Calculus.toBigInteger(that.getValue())), getUnit());
+    /**
+     * <p>
+     * Returns a {@code BigIntegerQuantity} with same Unit, but whose value is {@code(-this.getValue())}. </p>
+     * 
+     * @return {@code -this}.
+     */
+    public BigIntegerQuantity<Q> negate() {
+        return new BigIntegerQuantity<Q>(value.negate(), getUnit());
     }
-    Quantity<Q> converted = that.to(getUnit());
-    return Quantities.getQuantity(value.subtract(Calculus.toBigInteger(converted.getValue())), getUnit());
-  }
 
-  @Override
-  public ComparableQuantity<?> multiply(Quantity<?> that) {
-    return new BigIntegerQuantity(value.multiply(Calculus.toBigDecimal(that.getValue()).toBigInteger()), getUnit().multiply(that.getUnit()));
-  }
-
-  @Override
-  public ComparableQuantity<Q> multiply(Number that) {
-    return Quantities.getQuantity(value.multiply(Calculus.toBigInteger(that)), getUnit());
-  }
-
-  @Override
-  public ComparableQuantity<Q> divide(Number that) {
-    return Quantities.getQuantity(value.divide(Calculus.toBigDecimal(that).toBigInteger()), getUnit());
-  }
-
-  @Override
-  public ComparableQuantity<Q> inverse() {
-    return (ComparableQuantity<Q>) Quantities.getQuantity(BigInteger.ONE.divide(value), getUnit().inverse());
-  }
-
-  @Override
-  protected long longValue(Unit<Q> unit) {
-    double result = doubleValue(unit);
-    if ((result < Long.MIN_VALUE) || (result > Long.MAX_VALUE)) {
-      throw new ArithmeticException("Overflow (" + result + ")");
+    @Override
+    public BigInteger getValue() {
+        return value;
     }
-    return (long) result;
-  }
 
-  @Override
-  public boolean isBig() {
-    return true;
-  }
-
-  @Override
-  public ComparableQuantity<?> divide(Quantity<?> that) {
-    return new BigIntegerQuantity(value.divide(Calculus.toBigInteger(that.getValue())), getUnit().divide(that.getUnit()));
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see AbstractQuantity#equals(java.lang.Object)
-   */
-  @Override
-  public boolean equals(Object obj) {
-    if (obj == null)
-      return false;
-    if (obj == this)
-      return true;
-    if (obj instanceof Quantity<?>) {
-      Quantity<?> that = (Quantity<?>) obj;
-      return Objects.equals(getUnit(), that.getUnit()) && Equalizer.hasEquality(value, that.getValue());
+    @SuppressWarnings({ "unchecked" })
+    @Override
+    public ComparableQuantity<Q> inverse() {
+        return (ComparableQuantity<Q>) Quantities.getQuantity(BigInteger.ONE.divide(value), getUnit().inverse());
     }
-    return false;
-  }
+
+    @Override
+    public boolean isBig() {
+        return true;
+    }
+
+    @Override
+    public boolean isDecimal() {
+        return false;
+    }
+
+    @Override
+    public int getSize() {
+        return 0;
+    }
+
+    @Override
+    public Class<?> getNumberType() {
+        return BigInteger.class;
+    }
+
+    @Override
+    Number castFromBigDecimal(BigDecimal aValue) {
+        return aValue.toBigInteger();
+    }
+
+    @Override
+    boolean isOverflowing(BigDecimal aValue) {
+        return false;
+    }
 }

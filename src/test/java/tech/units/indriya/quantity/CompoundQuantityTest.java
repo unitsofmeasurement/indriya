@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2018, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+ * Copyright (c) 2005-2019, Units of Measurement project.
  *
  * All rights reserved.
  *
@@ -80,7 +80,7 @@ public class CompoundQuantityTest {
 
   @Test
   public void toStringTest() {
-    CompoundQuantity<Pressure> pressures = new CompoundQuantity<>(ONE_HPA, TEN_PA);
+    CompoundQuantity<Pressure> pressures = CompoundQuantity.of(ONE_HPA, TEN_PA);
     assertEquals("1 hPa 10 Pa", pressures.toString());
   }
 

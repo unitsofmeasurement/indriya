@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2018, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+ * Copyright (c) 2005-2019, Units of Measurement project.
  *
  * All rights reserved.
  *
@@ -30,13 +30,14 @@
 package tech.units.indriya.internal;
 
 import javax.measure.spi.SystemOfUnits;
+
 import tech.units.indriya.spi.AbstractSystemOfUnitsService;
 import tech.units.indriya.unit.Units;
 
 /**
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
  * @author Martin Desruisseaux
- * @version 1.0, April 22, 2018
+ * @version 1.1, May 31, 2018
  * @since 1.0
  */
 public class DefaultSystemOfUnitsService extends AbstractSystemOfUnitsService {

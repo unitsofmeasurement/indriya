@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2018, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+ * Copyright (c) 2005-2019, Units of Measurement project.
  *
  * All rights reserved.
  *
@@ -110,10 +110,10 @@ import java.util.ResourceBundle;
  * <tr valign="top">
  * <td>&lt;unit_expr&gt;</td>
  * <td>:=</td>
- * <td>&lt;compound_expr&gt;</td>
+ * <td>&lt;mix_expr&gt;</td>
  * </tr>
  * <tr valign="top">
- * <td>&lt;compound_expr&gt;</td>
+ * <td>&lt;mix_expr&gt;</td>
  * <td>:=</td>
  * <td>&lt;add_expr&gt; ( ":" &lt;add_expr&gt; )*</td>
  * </tr>
@@ -144,8 +144,8 @@ import java.util.ResourceBundle;
  * </table>
  * 
  * @author <a href="mailto:eric-r@northwestern.edu">Eric Russell</a>
- * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.1, $Date: 2018-04-05 $
+ * @author <a href="mailto:werner@uom.tech">Werner Keil</a>
+ * @version 1.4, $Date: 2019-03-21 $
  * @since 1.0
  */
 public class EBNFUnitFormat extends AbstractUnitFormat {
@@ -221,10 +221,15 @@ public class EBNFUnitFormat extends AbstractUnitFormat {
   protected SymbolMap getSymbols() {
     return symbolMap;
   }
+  
+  @Override
+  public String toString() {
+    return getClass().getSimpleName();
+  }
 
-  // //////////////
+  ////////////////
   // Formatting //
-  // //////////////
+  ////////////////
   public Appendable format(Unit<?> unit, Appendable appendable) throws IOException {
 
     EBNFHelper.formatInternal(unit, appendable, symbolMap);
@@ -236,16 +241,12 @@ public class EBNFUnitFormat extends AbstractUnitFormat {
         appendable.append('}');
       }
     }
-    // TODO add support for CompoundUnit similar to AnnotatedUnit
+    // TODO add support for MixedUnit similar to AnnotatedUnit
     return appendable;
   }
 
-  public boolean isLocaleSensitive() {
-    return false;
-  }
-
   @Override
-  protected Unit<? extends Quantity<?>> parse(CharSequence csq, ParsePosition cursor) throws MeasurementParseException {
+  public Unit<? extends Quantity<?>> parse(CharSequence csq, ParsePosition cursor) throws MeasurementParseException {
     // Parsing reads the whole character sequence from the parse position.
     int start = cursor != null ? cursor.getIndex() : 0;
     int end = csq.length();
@@ -280,6 +281,7 @@ public class EBNFUnitFormat extends AbstractUnitFormat {
     return parse(csq, new ParsePosition(index));
   }
 
+  @Override
   public Unit<?> parse(CharSequence csq) throws MeasurementParseException {
     return parse(csq, 0);
   }

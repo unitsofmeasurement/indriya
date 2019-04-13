@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2018, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+ * Copyright (c) 2005-2019, Units of Measurement project.
  *
  * All rights reserved.
  *
@@ -31,35 +31,47 @@ package tech.units.indriya.internal.format;
 
 import static tech.units.indriya.format.FormatBehavior.LOCALE_SENSITIVE;
 
+import java.text.NumberFormat;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
 import javax.measure.format.QuantityFormat;
 import javax.measure.spi.FormatService;
-import tech.units.indriya.format.NumberSpaceQuantityFormat;
+
+import tech.units.indriya.format.EBNFUnitFormat;
+import tech.units.indriya.format.NumberDelimiterQuantityFormat;
 import tech.units.indriya.format.SimpleQuantityFormat;
-import tech.uom.lib.common.function.IntPrioritySupplier;
 
 /**
  * Default format service.
  *
  * @author Werner Keil
- * @version 0.6, April 6, 2018
+ * @version 1.0, March 19, 2019
  * @since 2.0
  */
-public class DefaultFormatService extends DefaultUnitFormatService implements FormatService, IntPrioritySupplier {
+public class DefaultFormatService extends DefaultUnitFormatService implements FormatService {
   static final int PRIO = 1000;
 
-  private static final String DEFAULT_FORMAT = "Simple";
+  private static final String DEFAULT_FORMAT_NAME = "Simple";
 
+  /**
+   * Holds the default format instance (EBNFUnitFormat).
+   */
+  private static final NumberDelimiterQuantityFormat EBNF_QUANTITY_FORMAT = new NumberDelimiterQuantityFormat.Builder()
+      .setNumberFormat(NumberFormat.getInstance(Locale.ROOT))
+      .setUnitFormat(EBNFUnitFormat.getInstance())
+      .build();
+  
   private final Map<String, QuantityFormat> quantityFormats = new HashMap<>();
 
   public DefaultFormatService() {
     super();
-    quantityFormats.put(DEFAULT_FORMAT, SimpleQuantityFormat.getInstance());
-    quantityFormats.put("NumberSpace", NumberSpaceQuantityFormat.getInstance());
-    quantityFormats.put("Local", NumberSpaceQuantityFormat.getInstance(LOCALE_SENSITIVE));
+    quantityFormats.put(DEFAULT_FORMAT_NAME, SimpleQuantityFormat.getInstance());
+    quantityFormats.put("NumberDelimiter", NumberDelimiterQuantityFormat.getInstance());
+    quantityFormats.put("EBNF", EBNF_QUANTITY_FORMAT);
+    quantityFormats.put("Local", NumberDelimiterQuantityFormat.getInstance(LOCALE_SENSITIVE));
   }
 
   @Override
@@ -74,7 +86,7 @@ public class DefaultFormatService extends DefaultUnitFormatService implements Fo
 
   @Override
   public QuantityFormat getQuantityFormat() {
-    return getQuantityFormat(DEFAULT_FORMAT);
+    return getQuantityFormat(DEFAULT_FORMAT_NAME);
   }
 
   @Override

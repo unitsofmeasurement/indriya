@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2018, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+ * Copyright (c) 2005-2019, Units of Measurement project.
  *
  * All rights reserved.
  *
@@ -156,7 +156,7 @@ public interface ComparableQuantity<Q extends Quantity<Q>> extends Quantity<Q>, 
    * @throws NullPointerException
    *           if the quantity is null
    */
-  boolean isEquivalentOf(Quantity<Q> that);
+  boolean isEquivalentTo(Quantity<Q> that);
 
   /**
    * Multiply and cast the {@link ComparableQuantity}

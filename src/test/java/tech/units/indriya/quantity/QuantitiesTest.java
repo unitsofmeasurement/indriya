@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2018, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+ * Copyright (c) 2005-2019, Units of Measurement project.
  *
  * All rights reserved.
  *
@@ -29,31 +29,25 @@
  */
 package tech.units.indriya.quantity;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static tech.units.indriya.unit.Units.PASCAL;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Disabled;
+import tech.units.indriya.unit.Units;
 
+import javax.measure.Quantity;
+import javax.measure.quantity.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.RoundingMode;
 
-import javax.measure.Quantity;
-import javax.measure.quantity.Pressure;
-import javax.measure.quantity.Time;
-
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
-import tech.units.indriya.quantity.DecimalQuantity;
-import tech.units.indriya.quantity.DoubleQuantity;
-import tech.units.indriya.quantity.NumberQuantity;
-import tech.units.indriya.quantity.Quantities;
-import tech.units.indriya.unit.Units;
+import static org.junit.jupiter.api.Assertions.*;
+import static javax.measure.Quantity.Scale.*;
+import static tech.units.indriya.unit.Units.CELSIUS;
+import static tech.units.indriya.unit.Units.PASCAL;
 
 /**
  *
  * @author Werner Keil
- * @version 0.3
+ * @version 0.4
  */
 public class QuantitiesTest {
 
@@ -81,20 +75,59 @@ public class QuantitiesTest {
     assertTrue(Integer.class.isInstance(intQuantity.getValue()));
     assertTrue(Float.class.isInstance(floatQuantity.getValue()));
     assertTrue(Double.class.isInstance(doubleQuantity.getValue()));
-    assertTrue(BigDecimal.class.isInstance(bigIntegerQuantity.getValue()));
+    assertTrue(BigInteger.class.isInstance(bigIntegerQuantity.getValue()));
     assertTrue(BigDecimal.class.isInstance(bigDecimalQuantity.getValue()));
 
-    assertTrue(NumberQuantity.class.isInstance(shortQuantity));
-    assertTrue(NumberQuantity.class.isInstance(byteQuantity));
-    assertTrue(NumberQuantity.class.isInstance(longQuantity));
-    assertTrue(NumberQuantity.class.isInstance(intQuantity));
-    assertTrue(NumberQuantity.class.isInstance(floatQuantity));
+    assertTrue(ShortQuantity.class.isInstance(shortQuantity));
+    assertTrue(ByteQuantity.class.isInstance(byteQuantity));
+    assertTrue(LongQuantity.class.isInstance(longQuantity));
+    assertTrue(NumberQuantity.class.isInstance(intQuantity)); // workaround
+    assertTrue(NumberQuantity.class.isInstance(floatQuantity)); // workaround
     assertTrue(DoubleQuantity.class.isInstance(doubleQuantity));
-    assertTrue(DecimalQuantity.class.isInstance(bigIntegerQuantity));
+    assertTrue(BigIntegerQuantity.class.isInstance(bigIntegerQuantity));
     assertTrue(DecimalQuantity.class.isInstance(bigDecimalQuantity));
-
   }
 
+  @Test
+  public void intervalTest() {
+    Quantity<Temperature> bigDecimalQuantity = Quantities.getQuantity(BigDecimal.ONE, CELSIUS, RELATIVE);
+    Quantity<Temperature> bigIntegerQuantity = Quantities.getQuantity(BigInteger.ONE, CELSIUS, RELATIVE);
+
+    Quantity<Temperature> shortQuantity = Quantities.getQuantity(Short.valueOf("2"), CELSIUS, RELATIVE);
+    Quantity<Temperature> byteQuantity = Quantities.getQuantity(Byte.valueOf("2"), CELSIUS, RELATIVE);
+    Quantity<Temperature> longQuantity = Quantities.getQuantity(Long.valueOf("2"), CELSIUS, RELATIVE);
+    Quantity<Temperature> intQuantity = Quantities.getQuantity(Integer.valueOf("2"), CELSIUS, RELATIVE);
+    Quantity<Temperature> floatQuantity = Quantities.getQuantity(Float.valueOf("2"), CELSIUS, RELATIVE);
+    Quantity<Temperature> doubleQuantity = Quantities.getQuantity(Double.valueOf("2"), CELSIUS, RELATIVE);
+
+    assertTrue(Short.class.isInstance(shortQuantity.getValue()));
+    assertTrue(Byte.class.isInstance(byteQuantity.getValue()));
+    assertTrue(Long.class.isInstance(longQuantity.getValue()));
+    assertTrue(Integer.class.isInstance(intQuantity.getValue()));
+    assertTrue(Float.class.isInstance(floatQuantity.getValue()));
+    assertTrue(Double.class.isInstance(doubleQuantity.getValue()));
+    assertTrue(BigInteger.class.isInstance(bigIntegerQuantity.getValue()));
+    assertTrue(BigDecimal.class.isInstance(bigDecimalQuantity.getValue()));
+
+    assertTrue(ShortQuantity.class.isInstance(shortQuantity));
+    assertTrue(ByteQuantity.class.isInstance(byteQuantity));
+    assertTrue(LongQuantity.class.isInstance(longQuantity));
+    assertTrue(NumberQuantity.class.isInstance(intQuantity)); // workaround
+    assertTrue(NumberQuantity.class.isInstance(floatQuantity)); // workaround
+    assertTrue(DoubleQuantity.class.isInstance(doubleQuantity));
+    assertTrue(BigIntegerQuantity.class.isInstance(bigIntegerQuantity));
+    assertTrue(DecimalQuantity.class.isInstance(bigDecimalQuantity));
+    
+    assertEquals(RELATIVE, shortQuantity.getScale());
+    assertEquals(RELATIVE, byteQuantity.getScale());
+    assertEquals(RELATIVE, longQuantity.getScale());
+    assertEquals(RELATIVE, intQuantity.getScale());
+    assertEquals(RELATIVE, floatQuantity.getScale());
+    assertEquals(RELATIVE, doubleQuantity.getScale());
+    assertEquals(RELATIVE, bigIntegerQuantity.getScale());
+    assertEquals(RELATIVE, bigDecimalQuantity.getScale());
+  }
+  
   @Test
   public void toTest() {
     Quantity<Time> minute = Quantities.getQuantity(BigDecimal.ONE, Units.YEAR);
@@ -103,5 +136,13 @@ public class QuantitiesTest {
     value.setScale(4, RoundingMode.HALF_EVEN);
     BigDecimal expected = BigDecimal.valueOf(31556952);
     assertEquals(expected.setScale(4, RoundingMode.HALF_EVEN), value.setScale(4, RoundingMode.HALF_EVEN));
+  }
+
+  @Test
+  @Disabled("equals() is broken for DecimalQuantity or all of JavaNumericQuantity")
+  public void equalityValuesTest() {
+   Quantity<Speed> shouldBe = Quantities.getQuantity(BigDecimal.valueOf(15.0d), Units.KILOMETRE_PER_HOUR);
+   Quantity<Speed> parsedSpeed = Quantities.getQuantity("15.0 km/h").asType(Speed.class);
+   assertEquals(shouldBe, parsedSpeed);
   }
 }

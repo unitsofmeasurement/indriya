@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2018, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+ * Copyright (c) 2005-2019, Units of Measurement project.
  *
  * All rights reserved.
  *
@@ -33,6 +33,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static javax.measure.spi.FormatService.FormatType.*;
 import java.util.List;
 
+import javax.measure.format.QuantityFormat;
+import javax.measure.format.UnitFormat;
 import javax.measure.spi.FormatService;
 import javax.measure.spi.ServiceProvider;
 
@@ -42,6 +44,8 @@ import org.junit.jupiter.api.Test;
  * Tests for services provided via {@link ServiceProvider}.
  */
 public class FormatServiceTest {
+    
+  private static final int QUANTITY_FORMAT_COUNT = 4;
 
   @Test
   public void testGetServices() throws Exception {
@@ -55,15 +59,28 @@ public class FormatServiceTest {
   public void testGetService() throws Exception {
     FormatService fs = ServiceProvider.current().getFormatService();
     assertNotNull(fs);
-    assertNotNull(fs.getUnitFormat());
-    assertEquals("DefaultFormat", fs.getUnitFormat().getClass().getSimpleName());
+    final UnitFormat uf = fs.getUnitFormat();
+    assertNotNull(uf);
+    assertEquals("DefaultFormat", uf.getClass().getSimpleName());
+    assertEquals("SimpleUnitFormat", uf.toString());
   }
 
   @Test
   public void testGetUnitFormatFound() throws Exception {
     final FormatService fs = ServiceProvider.current().getFormatService();
     assertNotNull(fs);
-    assertNotNull(fs.getUnitFormat("EBNF"));
+    final UnitFormat uf = fs.getUnitFormat("EBNF");
+    assertNotNull(uf);
+    assertEquals("EBNFUnitFormat", uf.toString());
+  }
+
+  @Test
+  public void testGetUnitFormatLocalFound() throws Exception {
+    final FormatService fs = ServiceProvider.current().getFormatService();
+    assertNotNull(fs);
+    final UnitFormat uf = fs.getUnitFormat("Local");
+    assertNotNull(uf);
+    assertEquals("LocalUnitFormat", uf.toString());
   }
 
   @Test
@@ -84,9 +101,30 @@ public class FormatServiceTest {
   public void testGetQuantityFormatFound() throws Exception {
     final FormatService fs = ServiceProvider.current().getFormatService();
     assertNotNull(fs);
-    assertNotNull(fs.getQuantityFormat("Simple"));
+    final QuantityFormat qf = fs.getQuantityFormat("Simple");
+    assertNotNull(qf);
+    assertEquals("SimpleQuantityFormat", qf.toString());
   }
-
+  
+  @Test
+  public void testGetMoreQuantityFormatFound() throws Exception {
+    final FormatService fs = ServiceProvider.current().getFormatService();
+    assertNotNull(fs);
+    final QuantityFormat qf = fs.getQuantityFormat("NumberDelimiter");
+    assertNotNull(qf);
+    assertEquals("NumberDelimiterQuantityFormat", qf.toString());
+  }
+  
+  @Test
+  public void testGetLocalQuantityFormatFound() throws Exception {
+    final FormatService fs = ServiceProvider.current().getFormatService();
+    assertNotNull(fs);
+    final QuantityFormat qf = fs.getQuantityFormat("Local");
+    assertNotNull(qf);
+    assertEquals("NumberDelimiterQuantityFormat", qf.toString());
+    assertTrue(qf.isLocaleSensitive());
+  }
+  
   @Test
   public void testGetQuantityFormatNotFound() throws Exception {
     final FormatService fs = ServiceProvider.current().getFormatService();
@@ -98,6 +136,6 @@ public class FormatServiceTest {
   public void testGetQuantityFormatNames() throws Exception {
     final FormatService fs = ServiceProvider.current().getFormatService();
     assertNotNull(fs);
-    assertEquals(3, fs.getAvailableFormatNames(QUANTITY_FORMAT).size());
+    assertEquals(QUANTITY_FORMAT_COUNT, fs.getAvailableFormatNames(QUANTITY_FORMAT).size());
   }
 }

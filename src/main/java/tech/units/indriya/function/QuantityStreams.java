@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2018, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+ * Copyright (c) 2005-2019, Units of Measurement project.
  *
  * All rights reserved.
  *
@@ -27,11 +27,37 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-module tech.units.indriya {
-    requires java.logging;
-    requires javax.measure;
-    requires javax.measure.format;
-    requires javax.measure.quantity;
-    requires javax.measure.spi;
-    uses java.measure;
+package tech.units.indriya.function;
+
+import java.util.function.Supplier;
+import java.util.stream.Collector;
+
+import javax.measure.Quantity;
+import javax.measure.Unit;
+
+/**
+ * Utility methods for operating on quantities using streams.
+ * 
+ * @author Otavio
+ * @author Werner
+ * @version 1.0
+ * @since 2.0
+ *
+ */
+public final class QuantityStreams {
+
+  private QuantityStreams() {
+	  throw new Error("no instances");
+  }
+
+  /**
+   * Summary of Quantity
+   * 
+   * @return the QuantitySummaryStatistics
+   */
+  public static <Q extends Quantity<Q>> Collector<Quantity<Q>, QuantitySummaryStatistics<Q>, QuantitySummaryStatistics<Q>> summarizeQuantity(
+			Unit<Q> unit) {
+		Supplier<QuantitySummaryStatistics<Q>> supplier = () -> new QuantitySummaryStatistics<>(unit);
+		return Collector.of(supplier, QuantitySummaryStatistics<Q>::accept, QuantitySummaryStatistics<Q>::combine);
+	}
 }

@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2018, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+ * Copyright (c) 2005-2019, Units of Measurement project.
  *
  * All rights reserved.
  *
@@ -37,6 +37,7 @@ import java.util.ResourceBundle;
 import org.junit.jupiter.api.Test;
 
 public class LocalMessagesTest {
+  private static final int BUNDLE_ENTRIES = 72;
   private static final String BUNDLE_NAME = "tech.units.indriya.format.messages";
   private static final String KEY = "tech.units.indriya.unit.Units.KILOMETRE_PER_HOUR";
 
@@ -49,11 +50,11 @@ public class LocalMessagesTest {
     String text = bundle.getString(KEY);
     assertEquals("km/h", text);
 
-    assertEquals(64, bundle.keySet().size());
+    assertEquals(BUNDLE_ENTRIES, bundle.keySet().size());
   }
 
   @Test
-  public void testMessageBundle_de() {
+  public void testMessageBundleDe() {
     Locale locale = new Locale("de");
 
     ResourceBundle bundle = ResourceBundle.getBundle(BUNDLE_NAME, locale);
@@ -63,7 +64,7 @@ public class LocalMessagesTest {
   }
 
   @Test
-  public void testMessageBundle_fr() {
+  public void testMessageBundleFr() {
     Locale locale = new Locale("fr");
 
     ResourceBundle bundle = ResourceBundle.getBundle(BUNDLE_NAME, locale);

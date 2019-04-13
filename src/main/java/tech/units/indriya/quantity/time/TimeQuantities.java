@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2018, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+ * Copyright (c) 2005-2019, Units of Measurement project.
  *
  * All rights reserved.
  *
@@ -47,7 +47,7 @@ import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.quantity.Time;
 
-import tech.units.indriya.function.PowerConverter;
+import tech.units.indriya.function.PowerOfIntConverter;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.TransformedUnit;
 import tech.units.indriya.unit.Units;
@@ -66,13 +66,13 @@ public final class TimeQuantities {
 	// Convenience constants outside the unit system (multiples are not held there)
 
 	public static final Unit<Time> MICROSECOND = new TransformedUnit<>("μs", SECOND, SECOND,
-			PowerConverter.of(MetricPrefix.MICRO));
+			PowerOfIntConverter.of(MetricPrefix.MICRO));
 
 	public static final TransformedUnit<Time> MILLISECOND = new TransformedUnit<>("ms", SECOND, SECOND,
-			PowerConverter.of(MetricPrefix.MILLI));
+			PowerOfIntConverter.of(MetricPrefix.MILLI));
 
 	public static final TransformedUnit<Time> NANOSECOND = new TransformedUnit<>("ns", SECOND, SECOND,
-			PowerConverter.of(MetricPrefix.NANO));
+			PowerOfIntConverter.of(MetricPrefix.NANO));
 
 	/**
 	 * Creates the {@link Quantity<Time>} based in the difference of the two
@@ -153,20 +153,20 @@ public final class TimeQuantities {
 	 * @param timeUnit
 	 *            - time to be used
 	 */
-	public static TimeUnitQuantity getQuantity(Integer number, TimeUnit timeUnit) {
+	public static TimeUnitQuantity getQuantity(Long number, TimeUnit timeUnit) {
 		return new TimeUnitQuantity(Objects.requireNonNull(timeUnit), Objects.requireNonNull(number));
 	}
 
 	/**
 	 * creates the {@link TemporalQuantity} using {@link TemporalUnit} and
-	 * {@link Integer}
+	 * {@link Long}
 	 * 
 	 * @param value
 	 *            - value to be used
 	 * @param timeUnit
 	 *            - time to be used
 	 */
-	public static TemporalQuantity getQuantity(Integer number, TemporalUnit temporalUnit) {
+	public static TemporalQuantity getQuantity(Long number, TemporalUnit temporalUnit) {
 		return new TemporalQuantity(Objects.requireNonNull(number), Objects.requireNonNull(temporalUnit));
 	}
 
@@ -180,7 +180,7 @@ public final class TimeQuantities {
 	 */
 	public static TimeUnitQuantity toTimeUnitSeconds(Quantity<Time> quantity) {
 		Quantity<Time> seconds = Objects.requireNonNull(quantity).to(SECOND);
-		return new TimeUnitQuantity(TimeUnit.SECONDS, seconds.getValue().intValue());
+		return new TimeUnitQuantity(TimeUnit.SECONDS, seconds.getValue().longValue());
 	}
 
 	/**

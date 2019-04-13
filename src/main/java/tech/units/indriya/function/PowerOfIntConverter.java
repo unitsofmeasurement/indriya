@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2018, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+ * Copyright (c) 2005-2019, Units of Measurement project.
  *
  * All rights reserved.
  *
@@ -27,7 +27,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package tech.units.indriya.function;
 
 import java.math.BigDecimal;
@@ -39,21 +38,24 @@ import javax.measure.Prefix;
 import javax.measure.UnitConverter;
 
 import tech.units.indriya.AbstractConverter;
+import tech.uom.lib.common.function.IntBaseSupplier;
+import tech.uom.lib.common.function.IntExponentSupplier;
 
 /**
  * UnitConverter for numbers in base^exponent representation.
  * @author Andi Huber
  * @author Werner Keil
- * @version 1.1, April 24, 2018
+ * @version 1.2, May 10, 2018
  * @since 2.0
  */
-public class PowerConverter extends AbstractConverter {
+public final class PowerOfIntConverter extends AbstractConverter 
+ implements IntBaseSupplier, IntExponentSupplier {
 	private static final long serialVersionUID = 3546932001671571300L;
 
-	protected final int base;
-	protected final int exponent;
-	protected final int hashCode;
-	protected final double doubleFactor; // for double calculus only
+	private final int base;
+	private final int exponent;
+	private final int hashCode;
+	private final double doubleFactor; // for double calculus only
 
 	/**
 	 * Creates a converter with the specified Prefix.
@@ -61,8 +63,8 @@ public class PowerConverter extends AbstractConverter {
 	 * @param prefix
 	 *            the prefix for the factor.
 	 */
-	public static PowerConverter of(Prefix prefix) {
-		return new PowerConverter(prefix.getBase(), prefix.getExponent());
+	public static PowerOfIntConverter of(Prefix prefix) {
+		return new PowerOfIntConverter(prefix.getBase(), prefix.getExponent());
 	}
 
 	/**
@@ -72,25 +74,15 @@ public class PowerConverter extends AbstractConverter {
 	 * @param exponent
 	 * @return
 	 */
-	public static PowerConverter of(int base, int exponent) {
-		return new PowerConverter(base, exponent);
+	public static PowerOfIntConverter of(int base, int exponent) {
+		return new PowerOfIntConverter(base, exponent);
 	}
 
-	protected PowerConverter(int base, int exponent) {
+	protected PowerOfIntConverter(int base, int exponent) {
 		if(base == 0) {
 			throw new IllegalArgumentException("base cannot be zero (because 0^0 is undefined)");
 		}
 		this.base = base;
-		this.exponent = exponent;
-		this.doubleFactor = Math.pow(base, exponent);
-		this.hashCode = Objects.hash(base, exponent);
-	}
-	
-	protected PowerConverter(double base, int exponent) {
-		if(base == 0) {
-			throw new IllegalArgumentException("base cannot be zero (because 0^0 is undefined)");
-		}
-		this.base = (int)base;
 		this.exponent = exponent;
 		this.doubleFactor = Math.pow(base, exponent);
 		this.hashCode = Objects.hash(base, exponent);
@@ -120,36 +112,32 @@ public class PowerConverter extends AbstractConverter {
 	}
 
 	@Override
-	protected boolean isSimpleCompositionWith(AbstractConverter that) {
-		if (that instanceof PowerConverter) {
-			return ((PowerConverter) that).base == this.base;
+	protected boolean canReduceWith(AbstractConverter that) {
+		if (that instanceof PowerOfIntConverter) {
+			return ((PowerOfIntConverter) that).base == this.base;
 		}
-		return that.isLinear();
+		return that instanceof RationalConverter;
 	}
 
 	@Override
-	protected AbstractConverter simpleCompose(AbstractConverter that) {
-		if (that instanceof PowerConverter) {
-			PowerConverter other = (PowerConverter) that;
+	protected AbstractConverter reduce(AbstractConverter that) {
+		if (that instanceof PowerOfIntConverter) {
+			PowerOfIntConverter other = (PowerOfIntConverter) that;
 			if(this.base == other.base) { // always true due to guard above
 				return composeSameBaseNonIdentity(other);
 			} 
 		}
 		if (that instanceof RationalConverter) {
-			return (AbstractConverter) toRationalConverter().concatenate((RationalConverter) that);
-		}
-		if (that instanceof MultiplyConverter) {
-			// TODO simple, but not the best we can do
-			return new MultiplyConverter(Math.pow(base, exponent) * ((MultiplyConverter) that).getFactor());
+			return (AbstractConverter) toRationalConverter().concatenate(that);
 		}
 		throw new IllegalStateException(String.format(
-				"%s.simpleCompose() not handled for linear converter %s", 
+				"%s.simpleCompose() not handled for converter %s", 
 				this, that));
 	}
 
 	@Override
-	public AbstractConverter inverse() {
-		return isIdentity() ? this : new PowerConverter(base, -exponent);
+	public AbstractConverter inverseWhenNotIdentity() {
+		return new PowerOfIntConverter(base, -exponent);
 	}
 
 	@Override
@@ -182,7 +170,7 @@ public class PowerConverter extends AbstractConverter {
 
 		//[ahuber] thats where we are loosing 'exactness'
 		final BigDecimal bdecFactor = new BigDecimal(BigInteger.valueOf(base).pow(Math.abs(exponent)));
-		final BigDecimal bdecValue = (BigDecimal) value;
+		final BigDecimal bdecValue = value;
 		
 		return exponent>0 
 				? bdecValue.multiply(bdecFactor, ctx)
@@ -206,16 +194,19 @@ public class PowerConverter extends AbstractConverter {
 				return true;
 			}
 		}
-		if (obj instanceof PowerConverter) {
-			PowerConverter other = (PowerConverter) obj;
+		if (obj instanceof PowerOfIntConverter) {
+			PowerOfIntConverter other = (PowerOfIntConverter) obj;
 			return this.base == other.base && this.exponent == other.exponent;
 		}
 		return false;
 	}
 
 	@Override
-	public String toString() {
-		return "PiPowerConverter(^" + exponent + ")";
+	public final String transformationLiteral() {
+		if(base<0) {
+			return String.format("x -> x * (%s)^%s", base, exponent);
+		}
+		return String.format("x -> x * %s^%s", base, exponent);
 	}
 
 	@Override
@@ -226,8 +217,8 @@ public class PowerConverter extends AbstractConverter {
 		if(this.isIdentity() && o.isIdentity()) {
 			return 0;
 		}
-		if (o instanceof PowerConverter) {
-			PowerConverter other = (PowerConverter) o;
+		if (o instanceof PowerOfIntConverter) {
+			PowerOfIntConverter other = (PowerOfIntConverter) o;
 			int c = Integer.compare(base, other.base);
 			if(c!=0) {
 				return c;
@@ -244,9 +235,9 @@ public class PowerConverter extends AbstractConverter {
 
 	// -- HELPER
 
-	private PowerConverter composeSameBaseNonIdentity(PowerConverter other) {
+	private PowerOfIntConverter composeSameBaseNonIdentity(PowerOfIntConverter other) {
 		// no check for identity required
-		return new PowerConverter(this.base, this.exponent + other.exponent);
+		return new PowerOfIntConverter(this.base, this.exponent + other.exponent);
 	}
 
 	public RationalConverter toRationalConverter() {

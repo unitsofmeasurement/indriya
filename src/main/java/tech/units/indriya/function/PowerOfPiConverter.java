@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2018, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+ * Copyright (c) 2005-2019, Units of Measurement project.
  *
  * All rights reserved.
  *
@@ -27,39 +27,58 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package tech.units.indriya.function;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.util.Objects;
+
 import javax.measure.UnitConverter;
 
 import tech.units.indriya.AbstractConverter;
+import tech.uom.lib.common.function.IntExponentSupplier;
 
 /**
  * This class represents a converter multiplying numeric values by a factor of
  * Pi to the power of an integer exponent (π^exponent).
  * @author Andi Huber
  * @author Werner Keil
- * @version 1.0, April 24, 2018
+ * @version 1.2, October 14, 2018
  * @since 2.0
  */
-public final class PiPowerConverter extends PowerConverter {
-
+public final class PowerOfPiConverter extends AbstractConverter 
+ implements IntExponentSupplier {
 	private static final long serialVersionUID = 5000593326722785126L;
+	
+	private final int exponent;
+	private final int hashCode;
+	private final double doubleFactor; // for double calculus only
 
+	/**
+     * A converter by Pi to the power of 1.
+     *
+     * @since  2.0
+     */
+    public static final PowerOfPiConverter ONE = of(1);
+	
 	/**
 	 * Creates a converter with the specified exponent.
 	 * 
 	 * @param exponent
 	 *            the exponent for the factor π^exponent.
 	 */
-	public static PiPowerConverter of(int exponent) {
-		return new PiPowerConverter(exponent);
+	public static PowerOfPiConverter of(int exponent) {
+		return new PowerOfPiConverter(exponent);
 	}
 
-	protected PiPowerConverter(int exponent) {
-		super(Math.PI, exponent);
+	protected PowerOfPiConverter(int exponent) {
+		this.exponent = exponent;
+		this.doubleFactor =  Math.pow(Math.PI, exponent);
+		this.hashCode = Objects.hash(exponent);
+	}
+
+	public int getExponent() {
+		return exponent;
 	}
 
 	@Override
@@ -68,8 +87,13 @@ public final class PiPowerConverter extends PowerConverter {
 	}
 
 	@Override
-	public AbstractConverter inverse() {
-		return isIdentity() ? this : new PiPowerConverter(-exponent);
+	public boolean isLinear() {
+		return true;
+	}
+
+	@Override
+	public AbstractConverter inverseWhenNotIdentity() {
+		return new PowerOfPiConverter(-exponent);
 	}
 
 	@Override
@@ -89,13 +113,13 @@ public final class PiPowerConverter extends PowerConverter {
 	}
 
 	@Override
-	protected boolean isSimpleCompositionWith(AbstractConverter that) {
-		return that instanceof PiPowerConverter;
+	protected boolean canReduceWith(AbstractConverter that) {
+		return that instanceof PowerOfPiConverter;
 	}
 
 	@Override
-	protected AbstractConverter simpleCompose(AbstractConverter that) {
-		return new PiPowerConverter(this.exponent + ((PiPowerConverter)that).exponent);
+	protected AbstractConverter reduce(AbstractConverter that) {
+		return new PowerOfPiConverter(this.exponent + ((PowerOfPiConverter)that).exponent);
 	}
 
 	@Override
@@ -109,16 +133,16 @@ public final class PiPowerConverter extends PowerConverter {
 				return true;
 			}
 		}
-		if (obj instanceof PiPowerConverter) {
-			PiPowerConverter other = (PiPowerConverter) obj;
+		if (obj instanceof PowerOfPiConverter) {
+			PowerOfPiConverter other = (PowerOfPiConverter) obj;
 			return this.exponent == other.exponent;
 		}
 		return false;
 	}
 
 	@Override
-	public final String toString() {
-		return "PiPowerConverter(π^" + exponent + ")";
+	public final String transformationLiteral() {
+		return String.format("x -> x * π^%s", exponent);
 	}
 
 	@Override
@@ -129,10 +153,15 @@ public final class PiPowerConverter extends PowerConverter {
 		if(this.isIdentity() && o.isIdentity()) {
 			return 0;
 		}
-		if (o instanceof PiPowerConverter) {
-			PiPowerConverter other = (PiPowerConverter) o;
+		if (o instanceof PowerOfPiConverter) {
+			PowerOfPiConverter other = (PowerOfPiConverter) o;
 			return Integer.compare(exponent, other.exponent);
 		}
 		return this.getClass().getName().compareTo(o.getClass().getName());
+	}
+
+	@Override
+	public int hashCode() {
+		return hashCode;
 	}
 }

@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2018, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+ * Copyright (c) 2005-2019, Units of Measurement project.
  *
  * All rights reserved.
  *
@@ -35,6 +35,7 @@ import javax.measure.Quantity;
 
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.ComparableQuantity;
+import tech.uom.lib.common.util.NumberComparator;
 
 /**
  * <p>
@@ -46,7 +47,7 @@ import tech.units.indriya.ComparableQuantity;
  * </p>
  *
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 0.4 $Date: 2016-10-15 $
+ * @version 0.5 $Date: 2019-03-26 $
  */
 abstract class AbstractMeasurement<Q extends Quantity<Q>> implements Measurement<Q>, Comparable<Measurement<Q>> {
 
@@ -163,10 +164,9 @@ abstract class AbstractMeasurement<Q extends Quantity<Q>> implements Measurement
       if (getQuantity().getUnit() instanceof AbstractUnit) {
         return ((AbstractUnit) getQuantity().getUnit()).compareTo(m.getQuantity().getUnit())
             + NumberComparator.getInstance().compare(getQuantity().getValue(), m.getQuantity().getValue()) + getInstant().compareTo(m.getInstant());
-      } else {
-        // don't compare unit if it's not an AbstractUnit
-        return NumberComparator.getInstance().compare(getQuantity().getValue(), m.getQuantity().getValue()) + getInstant().compareTo(m.getInstant());
       }
+      // don't compare unit if it's not an AbstractUnit
+      return NumberComparator.getInstance().compare(getQuantity().getValue(), m.getQuantity().getValue()) + getInstant().compareTo(m.getInstant());
     }
   }
 
@@ -201,14 +201,10 @@ abstract class AbstractMeasurement<Q extends Quantity<Q>> implements Measurement
       return (ComparableQuantity<Q>) super.getQuantity();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public int compareTo(Measurement<Q> m) {
       if (m instanceof DefaultComparable) {
-        DefaultComparable dm = (DefaultComparable) m;
-        if (getQuantity() instanceof ComparableQuantity) {
-          return getQuantity().compareTo(dm.getQuantity()) + getInstant().compareTo(m.getInstant());
-        }
+        return getQuantity().compareTo(m.getQuantity()) + getInstant().compareTo(m.getInstant());
       }
       return 0;
     }

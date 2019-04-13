@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2018, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+ * Copyright (c) 2005-2019, Units of Measurement project.
  *
  * All rights reserved.
  *
@@ -39,6 +39,7 @@ import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.quantity.QuantityDimension;
 
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * <p>
@@ -53,43 +54,20 @@ import java.util.Map;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.2, August 06, 2017
+ * @version 1.4, January 15, 2019
  * @since 1.0
  */
 public final class BaseUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
 
   /**
-     * 
-     */
-  private static final long serialVersionUID = 1721629233768215930L;
-
-  /**
-   * Holds the symbol.
+   * 
    */
-  private final String symbol;
+  private static final long serialVersionUID = 1721629233768215930L;
 
   /**
    * Holds the base unit dimension.
    */
   private final Dimension dimension;
-
-  private Q quantityType;
-
-  protected Q getQuantityType() {
-    return quantityType;
-  }
-
-  /**
-   * Creates a base unit having the specified symbol and dimension.
-   *
-   * @param symbol
-   *          the symbol of this base unit.
-   */
-  public BaseUnit(String symbol, Dimension dimension, Q quant) {
-    this.symbol = symbol;
-    this.dimension = dimension;
-    quantityType = quant;
-  }
 
   /**
    * Creates a base unit having the specified symbol and dimension.
@@ -98,7 +76,7 @@ public final class BaseUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
    *          the symbol of this base unit.
    */
   public BaseUnit(String symbol, Dimension dimension) {
-    this.symbol = symbol;
+    super(symbol);
     this.dimension = dimension;
   }
 
@@ -109,7 +87,7 @@ public final class BaseUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
    *          the symbol of this base unit.
    */
   public BaseUnit(String symbol) {
-    this.symbol = symbol;
+    super(symbol);
     this.dimension = QuantityDimension.NONE;
   }
 
@@ -129,11 +107,6 @@ public final class BaseUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
   }
 
   @Override
-  public String getSymbol() {
-    return symbol;
-  }
-
-  @Override
   public Unit<Q> toSystemUnit() {
     return this;
   }
@@ -149,31 +122,24 @@ public final class BaseUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
   }
 
   @Override
-  public final boolean equals(Object obj) {
+  public boolean equals(Object obj) {
     if (this == obj)
       return true;
     if (obj instanceof BaseUnit) {
       BaseUnit<?> thatUnit = (BaseUnit<?>) obj;
-      return this.symbol.equals(thatUnit.symbol) && this.dimension.equals(thatUnit.dimension);
+      return Objects.equals(this.getSymbol(), thatUnit.getSymbol()) && this.dimension.equals(thatUnit.dimension);
     }
-    if (obj instanceof AbstractUnit) {
-      return AbstractUnit.Equalizer.areEqual(this, (AbstractUnit) obj);
-    } else {
-      return false;
-    }
+    return false;
   }
 
   @Override
-  public final int hashCode() {
-    return symbol.hashCode();
+  public int hashCode() {
+    return Objects.hash(getSymbol(), getDimension());
   }
 
   @Override
   public Map<? extends AbstractUnit<Q>, Integer> getBaseUnits() {
-    // TODO Shall we return null, empty list or what (e.g. Optional in SE
-    // 8)?
+    // TODO Shall we return null, empty list or what (e.g. Optional from Java 8)?
     return null;
   }
-
-
 }

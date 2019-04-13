@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2018, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+ * Copyright (c) 2005-2019, Units of Measurement project.
  *
  * All rights reserved.
  *
@@ -40,6 +40,7 @@ import javax.measure.Unit;
  * @see {@link Unit}
  * @author werner
  * @param <Q>
+ * @version 1.1
  * @since 1.0.9
  */
 public interface ComparableUnit<Q extends Quantity<Q>> extends Unit<Q>, Comparable<Unit<Q>>, Serializable {
@@ -65,4 +66,19 @@ public interface ComparableUnit<Q extends Quantity<Q>> extends Unit<Q>, Comparab
    * @return <code>equals(toSystemUnit())</code>
    */
   boolean isSystemUnit();
+  
+  /**
+   * Annotates the specified unit. Annotation does not change the unit semantic. Annotations are often written between curly braces behind units.
+   * For example:<br>
+   * <code> Unit<Volume> PERCENT_VOL = ((AbstractUnit)Units.PERCENT).annotate("vol"); // "%{vol}" Unit<Mass> KG_TOTAL =
+   * ((AbstractUnit)Units.KILOGRAM).annotate("total"); // "kg{total}" Unit<Dimensionless> RED_BLOOD_CELLS = ((AbstractUnit)Units.ONE).annotate("RBC"); // "{RBC}" </code>
+   *
+   * Note: Annotation of system units are not considered themselves as system units.
+   *
+   * @param annotation
+   *            the unit annotation.
+   * @return the annotated unit.
+   * @since 2.0
+   */
+//  public Unit<Q> annotate(String annotation);
 }

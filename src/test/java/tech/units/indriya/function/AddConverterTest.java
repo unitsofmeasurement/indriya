@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2018, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+ * Copyright (c) 2005-2019, Units of Measurement project.
  *
  * All rights reserved.
  *
@@ -74,7 +74,8 @@ public class AddConverterTest {
 
   @Test
   public void toStringTest() {
-    assertEquals("AddConverter(10.0)", converter.toString());
+    assertEquals("Add(x -> x + 10.0)", converter.toString());
+    assertEquals("Add(x -> x - 10.0)", converter.inverse().toString());
   }
 
   @Test

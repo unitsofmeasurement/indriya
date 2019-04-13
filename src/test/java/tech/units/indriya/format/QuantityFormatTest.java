@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2018, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+ * Copyright (c) 2005-2019, Units of Measurement project.
  *
  * All rights reserved.
  *
@@ -29,27 +29,28 @@
  */
 package tech.units.indriya.format;
 
-import static javax.measure.MetricPrefix.KILO;
-import static javax.measure.MetricPrefix.MEGA;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.fail;
-import static tech.units.indriya.unit.Units.HERTZ;
-import static tech.units.indriya.unit.Units.KILOGRAM;
-import static tech.units.indriya.unit.Units.METRE;
+import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+import static javax.measure.MetricPrefix.*;
+import static tech.units.indriya.unit.Units.*;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
+import java.text.ParsePosition;
+import java.util.Locale;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;
-import javax.measure.format.ParserException;
+import javax.measure.format.MeasurementParseException;
 import javax.measure.format.QuantityFormat;
 import javax.measure.quantity.Frequency;
 import javax.measure.quantity.Length;
+import javax.measure.quantity.Time;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import tech.units.indriya.quantity.CompoundQuantity;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.Units;
 
@@ -58,63 +59,325 @@ import tech.units.indriya.unit.Units;
  *
  */
 public class QuantityFormatTest {
-  private Quantity<Length> sut;
-  private QuantityFormat format;
+    private Quantity<Length> sut;
+    private SimpleQuantityFormat format;
 
-  @BeforeEach
-  public void init() {
-    // sut =
-    // DefaultQuantityFactoryService.getQuantityFactory(Length.class).create(10,
-    // METRE);
-    sut = Quantities.getQuantity(10, METRE);
-    format = SimpleQuantityFormat.getInstance();
-  }
-
-  @Test
-  public void testFormat() {
-    Unit<Frequency> hz = HERTZ;
-    assertEquals("Hz", hz.toString());
-  }
-
-  @Test
-  public void testFormat2() {
-    Unit<Frequency> mhz = MEGA(HERTZ);
-    assertEquals("MHz", mhz.toString());
-  }
-
-  @Test
-  public void testFormat3() {
-    Unit<Frequency> khz = KILO(HERTZ);
-    assertEquals("kHz", khz.toString());
-  }
-
-  @Test
-  public void testParseSimple1() {
-    Quantity<?> parsed1 = SimpleQuantityFormat.getInstance().parse("10 min");
-    assertNotNull(parsed1);
-    assertEquals(BigDecimal.valueOf(10), parsed1.getValue());
-    assertEquals(Units.MINUTE, parsed1.getUnit());
-  }
-
-  @Test
-  public void testParse2() {
-    Quantity<?> parsed1 = SimpleQuantityFormat.getInstance().parse("60 m");
-    assertNotNull(parsed1);
-    assertEquals(BigDecimal.valueOf(60), parsed1.getValue());
-    assertEquals(Units.METRE, parsed1.getUnit());
-  }
-
-  @Test
-  public void testParseSimple3() {
-    try {
-      Quantity<?> parsed1 = format.parse("5 kg");
-      assertNotNull(parsed1);
-      assertEquals(BigDecimal.valueOf(5), parsed1.getValue());
-      assertNotNull(parsed1.getUnit());
-      assertEquals("kg", parsed1.getUnit().getSymbol());
-      assertEquals(KILOGRAM, parsed1.getUnit());
-    } catch (ParserException e) {
-      fail(e.getMessage());
+    @BeforeEach
+    public void init() {
+        // sut =
+        // DefaultQuantityFactoryService.getQuantityFactory(Length.class).create(10,
+        // METRE);
+        sut = Quantities.getQuantity(10, METRE);
+        format = SimpleQuantityFormat.getInstance();
     }
-  }
+
+    @Test
+    public void testFormat() {
+        Unit<Frequency> hz = HERTZ;
+        Quantity<Frequency> tenHz = Quantities.getQuantity(10, hz);
+        assertEquals("10 Hz", format.format(tenHz));
+    }
+
+    @Test
+    public void testFormat2() {
+        Unit<Frequency> mhz = MEGA(HERTZ);
+        Quantity<Frequency> oneMHz = Quantities.getQuantity(1, mhz);
+        assertEquals("1 MHz", oneMHz.toString());
+    }
+
+    @Test
+    public void testFormat3() {
+        Unit<Frequency> khz = KILO(HERTZ);
+        Quantity<Frequency> fiveKhz = Quantities.getQuantity(5, khz);
+        assertEquals("5 kHz", format.format(fiveKhz));
+    }
+
+    @Test
+    public void testFormatDelim() {
+        final QuantityFormat format1 = new NumberDelimiterQuantityFormat.Builder()
+                .setNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH))
+                .setUnitFormat(SimpleUnitFormat.getInstance())
+                .setDelimiter("_")
+                .build();
+        final Unit<Length> cm = CENTI(Units.METRE);
+        final Quantity<Length> l1 = Quantities.getQuantity(150, cm);
+        assertEquals("150_cm", format1.format(l1));
+    }
+/*
+    @Test
+    public void testFormatMixed1() {
+        final NumberDelimiterQuantityFormat format1 = NumberDelimiterQuantityFormat.getInstance(DecimalFormat.getInstance(),
+                SimpleUnitFormat.getInstance());
+        final Unit<Length> compLen = Units.METRE.mix(CENTI(Units.METRE));
+        final Number[] numList = { 1, 70 };
+        final Quantity<Length> l1 = Quantities.getMixedQuantity(numList, compLen);
+
+        assertEquals("1 m 70 cm", format1.format(l1));
+    }
+
+    @Test
+    public void testFormatMixed2() {
+        final NumberDelimiterQuantityFormat format1 = NumberDelimiterQuantityFormat.getInstance(new DecimalFormat("#.000", DecimalFormatSymbols.getInstance(Locale.ENGLISH)),
+                SimpleUnitFormat.getInstance());
+        final Unit<Length> compLen = Units.METRE.mix(CENTI(Units.METRE));
+        final Number[] numList = { 1, 70 };
+        final Quantity<Length> l1 = Quantities.getMixedQuantity(numList, compLen);
+
+        assertEquals("1.000 m 70.000 cm", format1.format(l1));
+    }
+
+    @Test
+    public void testFormatMixDelim() {
+        final NumberDelimiterQuantityFormat format1 = new NumberDelimiterQuantityFormat.Builder()
+                .setNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH))
+                .setUnitFormat(SimpleUnitFormat.getInstance())
+                .setDelimiter("_").setMixDelimiter("_")
+                .build();
+        final Unit<Length> compLen = Units.METRE.mix(CENTI(Units.METRE));
+        final Number[] numList = { 1, 70 };
+        final Quantity<Length> l1 = Quantities.getMixedQuantity(numList, compLen);
+
+        assertEquals("1_m_70_cm", format1.format(l1));
+    }
+
+    @Test
+    public void testFormatMixDelims() {
+        final NumberDelimiterQuantityFormat format1 = new NumberDelimiterQuantityFormat.Builder()
+                .setNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH))
+                .setUnitFormat(SimpleUnitFormat.getInstance())
+                .setDelimiter("_").setMixDelimiter(" ")
+                .build();
+        final Unit<Length> compLen = Units.METRE.mix(CENTI(Units.METRE));
+        final Number[] numList = { 1, 70 };
+        final Quantity<Length> l1 = Quantities.getMixedQuantity(numList, compLen);
+
+        assertEquals("1_m 70_cm", format1.format(l1));
+    }
+
+    @Test
+    public void testFormatMixDelims2() {
+        final NumberDelimiterQuantityFormat format1 = new NumberDelimiterQuantityFormat.Builder()
+                .setNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH))
+                .setUnitFormat(SimpleUnitFormat.getInstance())
+                .setDelimiter(" ").setMixDelimiter(":").build();
+        Unit<Time> compTime = Units.HOUR.mix(Units.MINUTE).mix(Units.SECOND);
+        final Number[] numList = { 1, 40, 10 };
+        final Quantity<Time> t1 = Quantities.getMixedQuantity(numList, compTime);
+        assertEquals("1 h:40 min:10 s", format1.format(t1));
+    }
+*/
+    @Test
+    public void testParseSimpleTime() {
+        Quantity<?> parsed1 = SimpleQuantityFormat.getInstance().parse("10 min");
+        assertNotNull(parsed1);
+        assertEquals(BigDecimal.valueOf(10), parsed1.getValue());
+        assertEquals(Units.MINUTE, parsed1.getUnit());
+    }
+
+    @Test
+    public void testParseSimpleLen() {
+        Quantity<?> parsed1 = format.parse("60 m");
+        assertNotNull(parsed1);
+        assertEquals(BigDecimal.valueOf(60), parsed1.getValue());
+        assertEquals(Units.METRE, parsed1.getUnit());
+    }
+
+    @Test
+    public void testParseAsType() {
+        Quantity<Length> parsed1 = SimpleQuantityFormat.getInstance().parse("60 m").asType(Length.class);
+        assertNotNull(parsed1);
+        assertEquals(BigDecimal.valueOf(60), parsed1.getValue());
+        assertEquals(Units.METRE, parsed1.getUnit());
+    }
+
+    @Test
+    public void testParseSimpleMass() {
+        try {
+            Quantity<?> parsed1 = format.parse("5 kg");
+            assertNotNull(parsed1);
+            assertEquals(BigDecimal.valueOf(5), parsed1.getValue());
+            assertNotNull(parsed1.getUnit());
+            assertEquals("kg", parsed1.getUnit().getSymbol());
+            assertEquals(KILOGRAM, parsed1.getUnit());
+        } catch (MeasurementParseException e) {
+            fail(e.getMessage());
+        }
+    }
+
+    @Test
+    public void testPattern() {
+        final SimpleQuantityFormat patternFormat = SimpleQuantityFormat.getInstance("n u");
+        assertEquals("n u", patternFormat.getPattern());
+        assertEquals("10 m", patternFormat.format(sut));
+    }
+
+    @Test
+    public void testAnotherPattern() {
+        final SimpleQuantityFormat patternFormat = SimpleQuantityFormat.getInstance("n_u");
+        assertEquals("n_u", patternFormat.getPattern());
+        assertEquals("10_m", patternFormat.format(sut));
+    }
+    
+    @Test
+    public void testCondensedPattern() {
+        final SimpleQuantityFormat patternFormat = SimpleQuantityFormat.getInstance("nu");
+        assertEquals("nu", patternFormat.getPattern());
+        assertEquals("10m", patternFormat.format(sut));
+    }
+
+    @Test
+    public void testNDFBuilder() {
+        QuantityFormat quantFormat = new NumberDelimiterQuantityFormat.Builder().
+            setNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH)).
+            setUnitFormat(SimpleUnitFormat.getInstance()).setDelimiter("_").
+                build();
+        final Unit<Length> cm = CENTI(Units.METRE);
+        final Quantity<Length> l1 = Quantities.getQuantity(150, cm);
+        assertEquals("150_cm", quantFormat.format(l1));
+    }
+    
+    @Test
+    public void testNDFBuilderNullNumFormat() {
+        assertThrows(NullPointerException.class, () -> {
+            @SuppressWarnings("unused")
+            QuantityFormat quantFormat = new NumberDelimiterQuantityFormat.Builder().
+                    setNumberFormat(null).build();
+        });
+    }
+    
+    @Test
+    public void testNDFBuilderNullUnitFormat() {
+        assertThrows(NullPointerException.class, () -> {
+            @SuppressWarnings("unused")
+            QuantityFormat quantFormat = new NumberDelimiterQuantityFormat.Builder().
+                    setUnitFormat(null).build();
+        });
+    }
+
+    @Test
+    public void testParseDelim1() {
+        QuantityFormat format1 = NumberDelimiterQuantityFormat.getInstance(DecimalFormat.getInstance(), SimpleUnitFormat.getInstance());
+        Quantity<?> parsed1 = format1.parse("1 m");
+        assertEquals(1L, parsed1.getValue());
+        assertEquals(METRE, parsed1.getUnit());
+    }
+
+    @Test
+    public void testParseDelim2() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            QuantityFormat format1 = NumberDelimiterQuantityFormat.getInstance(DecimalFormat.getInstance(), SimpleUnitFormat.getInstance());
+            @SuppressWarnings("unused")
+            Quantity<?> parsed1 = format1.parse("1");
+        });
+    }
+
+    @Test
+    public void testParseDelim3() {
+        assertThrows(IllegalArgumentException.class, () -> {
+            QuantityFormat format1 = NumberDelimiterQuantityFormat.getInstance(DecimalFormat.getInstance(), SimpleUnitFormat.getInstance());
+            @SuppressWarnings("unused")
+            Quantity<?> parsed1 = format1.parse("m");
+        });
+    }
+    
+    @Test
+    public void testParseAtPosition() {
+        QuantityFormat format1 = NumberDelimiterQuantityFormat.getInstance(DecimalFormat.getInstance(), SimpleUnitFormat.getInstance());
+        Quantity<?> parsed1 = format1.parse("1 km 2 m", new ParsePosition(5));
+        assertEquals(2L, parsed1.getValue());
+        assertEquals(METRE, parsed1.getUnit());
+    }
+      
+    @Test
+    public void testParseMixedSimpleTime() {
+        QuantityFormat format1 = SimpleQuantityFormat.getInstance("n u~:");
+        Quantity<Time> parsed1 = format1.parse("1 h:30 min:10 s").asType(Time.class);
+        assertEquals(1.5027777777777778d, parsed1.getValue());
+        assertEquals(HOUR, parsed1.getUnit());
+        
+        //assertTrue(parsed1 instanceof MixedQuantity);
+//        final Number[] values = ((MixedQuantity<?>)parsed1).getValues();
+//        assertEquals(3, values.length);
+//        assertEquals(1L, values[0]);
+//        assertEquals(30L, values[1]);
+//        assertEquals(10L, values[2]);
+    }
+    
+    @Test
+    public void testParseMixedSimpleSameDelimTime() {
+        QuantityFormat format1 = SimpleQuantityFormat.getInstance("n u~ ");
+        Quantity<?> parsed1 = format1.parse("1 h 30 min 10 s");
+        assertEquals(1.5027777777777778d, parsed1.getValue());
+        assertEquals(HOUR, parsed1.getUnit());
+//        assertTrue(parsed1 instanceof MixedQuantity);
+//        final Number[] values = ((MixedQuantity<?>)parsed1).getValues();
+//        assertEquals(3, values.length);
+//        assertEquals(1L, values[0]);
+//        assertEquals(30L, values[1]);
+//        assertEquals(10L, values[2]);
+    }
+    
+    @Test
+    public void testParseMixedNumDelimiterLen() {
+        QuantityFormat format1 = new NumberDelimiterQuantityFormat.Builder()
+                .setNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH))
+                .setUnitFormat(SimpleUnitFormat.getInstance())
+                .setDelimiter(" ")
+                .setMixDelimiter(";")
+                .build();
+        Quantity<?> parsed1 = format1.parse("1 m;30 cm");
+        assertEquals(1.3d, parsed1.getValue());
+        assertEquals(METRE, parsed1.getUnit());
+//        assertTrue(parsed1 instanceof MixedQuantity);
+//        assertEquals(2, ((MixedQuantity<?>)parsed1).getValues().length);
+    }
+ 
+    @Test
+    public void testParseCompNumDelimiterSameDelimLen() {
+        final QuantityFormat format1 = new NumberDelimiterQuantityFormat.Builder()
+                .setNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH))
+                .setUnitFormat(SimpleUnitFormat.getInstance())
+                .setDelimiter(" ").setMixDelimiter(" ")
+                .build();
+        Quantity<?> parsed1 = format1.parse("1 m 30 cm");
+        assertEquals(1.3d, parsed1.getValue());
+        assertEquals(METRE, parsed1.getUnit());
+        //assertTrue(parsed1 instanceof MixedQuantity);
+        //assertEquals(2, ((MixedQuantity<?>)parsed1).getValues().length);
+    }
+   
+    
+    @Test
+    public void testFormatCompDelims() {
+        final NumberDelimiterQuantityFormat format1 = new NumberDelimiterQuantityFormat.Builder()
+                .setNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH))
+                .setUnitFormat(SimpleUnitFormat.getInstance())
+                .setDelimiter("_").setMixDelimiter(" ")
+                .build();
+        @SuppressWarnings("unchecked")
+        final Quantity<Length>[] quants = new Quantity[] { Quantities.getQuantity(1, Units.METRE),  Quantities.getQuantity(70, CENTI(Units.METRE)) };
+        CompoundQuantity<Length> l1 = CompoundQuantity.of(quants);
+
+        assertEquals("1_m 70_cm", format1.format(l1));
+    }
+    
+    @Test
+    public void testFormatCompDelimsMultipleQuantities() {
+        final NumberDelimiterQuantityFormat format1 = new NumberDelimiterQuantityFormat.Builder()
+                .setNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH))
+                .setUnitFormat(SimpleUnitFormat.getInstance())
+                .setDelimiter("_").setMixDelimiter(" ")
+                .build();
+        @SuppressWarnings("unchecked")
+        final Quantity<Length>[] quants = new Quantity[] { Quantities.getQuantity(1, Units.METRE),  Quantities.getQuantity(70, CENTI(Units.METRE)) };
+        CompoundQuantity<Length> l1 = CompoundQuantity.of(quants);
+
+        assertEquals("1_m 70_cm", format1.format(l1));
+        
+        @SuppressWarnings("unchecked")
+        final Quantity<Time>[] timeQuants = new Quantity[] { Quantities.getQuantity(3, Units.DAY),  Quantities.getQuantity(4, Units.HOUR), 
+                Quantities.getQuantity(48, Units.MINUTE)};
+        final CompoundQuantity<Time> t1 = CompoundQuantity.of(timeQuants);
+        assertEquals("3_day 4_h 48_min", format1.format(t1));
+    }
 }

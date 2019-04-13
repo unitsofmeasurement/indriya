@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2018, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+ * Copyright (c) 2005-2019, Units of Measurement project.
  *
  * All rights reserved.
  *
@@ -209,37 +209,36 @@ public final class RationalConverter extends AbstractConverter implements ValueS
 	}
 
 	@Override
-	protected boolean isSimpleCompositionWith(AbstractConverter that) {
+	protected boolean canReduceWith(AbstractConverter that) {
 		if (that instanceof RationalConverter) {
 			return true; 
 		}
-		return that instanceof PowerConverter;
+		return that instanceof PowerOfIntConverter;
 	}
 
 	@Override
-	protected AbstractConverter simpleCompose(AbstractConverter that) {
+	protected AbstractConverter reduce(AbstractConverter that) {
 		if (that instanceof RationalConverter) {
-			return (AbstractConverter) composeSameType((RationalConverter) that); 
+			return composeSameType((RationalConverter) that); 
 		}
-		if (that instanceof PowerConverter) {
-			//TODO [ahuber] check whether this can be expressed as a PowerConverter, if so return a PowerConverter
-			return (AbstractConverter) composeSameType(((PowerConverter) that).toRationalConverter()); 
+		if (that instanceof PowerOfIntConverter) {
+			return composeSameType(((PowerOfIntConverter) that).toRationalConverter()); 
 		}
 		throw new IllegalStateException(String.format(
-				"%s.simpleCompose() not handled for linear converter %s", 
+				"%s.simpleCompose() not handled for converter %s", 
 				this, that));
 	}
 
 
 	@Override
-	public RationalConverter inverse() {
+	public RationalConverter inverseWhenNotIdentity() {
 		return dividend.signum() == -1 ? new RationalConverter(getDivisor().negate(), getDividend().negate()) : new RationalConverter(getDivisor(),
 				getDividend());
 	}
 
 	@Override
-	public final String toString() {
-		return "RationalConverter(" + dividend + "," + divisor + ")";
+	public final String transformationLiteral() {
+		return String.format("x -> x * (%s)/(%s)", dividend, divisor);
 	}
 
 	@Override

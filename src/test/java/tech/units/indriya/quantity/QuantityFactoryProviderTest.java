@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2018, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+ * Copyright (c) 2005-2019, Units of Measurement project.
  *
  * All rights reserved.
  *
@@ -30,6 +30,9 @@
 package tech.units.indriya.quantity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static javax.measure.Quantity.Scale.*;
+import static tech.units.indriya.unit.Units.CELSIUS;
+import static tech.units.indriya.unit.Units.KELVIN;
 import static tech.units.indriya.unit.Units.KILOGRAM;
 import static tech.units.indriya.unit.Units.METRE;
 import static tech.units.indriya.unit.Units.MINUTE;
@@ -38,6 +41,7 @@ import static tech.units.indriya.unit.Units.SECOND;
 import javax.measure.Quantity;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
+import javax.measure.quantity.Temperature;
 import javax.measure.quantity.Time;
 import javax.measure.spi.ServiceProvider;
 
@@ -48,7 +52,7 @@ import org.junit.jupiter.api.Test;
  * @author Werner Keil
  */
 public class QuantityFactoryProviderTest {
-  static ServiceProvider service;
+  private static ServiceProvider service;
 
   @BeforeAll
   public static void init() {
@@ -89,5 +93,25 @@ public class QuantityFactoryProviderTest {
     assertEquals("min", t.getUnit().getSymbol()); // TODO see
     // https://github.com/unitsofmeasurement/uom-se/issues/54
     assertEquals("40 min", t.toString());
+  }
+  
+  @Test
+  public void testTemperatureKelvin() {
+    Quantity<Temperature> t = service.getQuantityFactory(Temperature.class).create(50, KELVIN); // 50 K
+    assertEquals(50, t.getValue());
+    assertEquals(KELVIN, t.getUnit());
+    assertEquals("K", t.getUnit().getSymbol());
+    assertEquals("50 K", t.toString());
+    assertEquals(ABSOLUTE, t.getScale());
+  }
+  
+  @Test
+  public void testTemperatureCelsius() {
+    Quantity<Temperature> t = service.getQuantityFactory(Temperature.class).create(60, CELSIUS, RELATIVE); // 60 °C
+    assertEquals(60, t.getValue());
+    assertEquals(CELSIUS, t.getUnit());
+    assertEquals("60 ℃", t.toString());
+    assertEquals(RELATIVE, t.getScale());
+    //assertTrue(RATIO.compareTo(t.isAbsolute()) >=0 );
   }
 }

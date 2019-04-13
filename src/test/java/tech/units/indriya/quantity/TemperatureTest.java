@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2018, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+ * Copyright (c) 2005-2019, Units of Measurement project.
  *
  * All rights reserved.
  *
@@ -30,57 +30,41 @@
 package tech.units.indriya.quantity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static tech.units.indriya.unit.Units.KILOGRAM;
-import static tech.units.indriya.unit.Units.METRE;
-import static tech.units.indriya.unit.Units.MINUTE;
-import static tech.units.indriya.unit.Units.SECOND;
+
+import static tech.units.indriya.unit.Units.CELSIUS;
+import static tech.units.indriya.unit.Units.KELVIN;
 
 import javax.measure.Quantity;
-import javax.measure.quantity.Length;
-import javax.measure.quantity.Mass;
-import javax.measure.quantity.Time;
+import javax.measure.quantity.Temperature;
+
 import org.junit.jupiter.api.Test;
 
-import tech.units.indriya.quantity.ProxyQuantityFactory;
-
-/**
- * @author Werner Keil
- */
-public class QuantityFactoryTest {
+public class TemperatureTest {
 
   @Test
-  public void testLength() {
-    Quantity<Length> l = ProxyQuantityFactory.getInstance(Length.class).create(23.5, METRE); // 23.0 km
-    assertEquals(23.5d, l.getValue());
-    assertEquals(METRE, l.getUnit());
-    assertEquals("m", l.getUnit().getSymbol());
+  public void testInstantiate() {
+    Quantity<Temperature> t = Quantities.getQuantity(23.0d, CELSIUS); // 23.0 °C
+    assertEquals("23.0 ℃", t.toString());
   }
 
   @Test
-  public void testMass() {
-    Quantity<Mass> m = ProxyQuantityFactory.getInstance(Mass.class).create(10, KILOGRAM); // 10 kg
-    assertEquals(10, m.getValue());
-    assertEquals(KILOGRAM, m.getUnit());
-    assertEquals("kg", m.getUnit().getSymbol());
-    assertEquals("10 kg", m.toString());
+  public void testTemperatureQuantityDoubleTemperatureUnit() {
+    Quantity<Temperature> t = Quantities.getQuantity(Double.valueOf(20d), CELSIUS);
+    assertEquals(Double.valueOf(20d), t.getValue());
   }
 
   @Test
-  public void testTime() {
-    Quantity<Time> t = ProxyQuantityFactory.getInstance(Time.class).create(30, SECOND); // 30 sec
-    assertEquals(30, t.getValue());
-    assertEquals(SECOND, t.getUnit());
-    assertEquals("s", t.getUnit().getSymbol());
-    assertEquals("30 s", t.toString());
+  public void testTo() {
+    Quantity<Temperature> t = Quantities.getQuantity(Double.valueOf(30d), CELSIUS);
+    Quantity<Temperature> t2 = t.to(KELVIN);
+    assertEquals(Double.valueOf(303.15d), t2.getValue());
   }
 
   @Test
-  public void testTimeDerived() {
-    Quantity<Time> t = ProxyQuantityFactory.getInstance(Time.class).create(40, MINUTE); // 40 min
-    assertEquals(40, t.getValue());
-    assertEquals(MINUTE, t.getUnit());
-    assertEquals("min", t.getUnit().getSymbol()); // TODO see
-    // https://github.com/unitsofmeasurement/uom-se/issues/54
-    assertEquals("40 min", t.toString());
+  public void testTo2() {
+    Quantity<Temperature> t = Quantities.getQuantity(Double.valueOf(2d), KELVIN);
+    Quantity<Temperature> t2 = t.to(CELSIUS);
+    assertEquals(Double.valueOf(-271.15d), t2.getValue());
   }
+
 }

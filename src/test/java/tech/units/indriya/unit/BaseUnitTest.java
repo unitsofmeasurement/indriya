@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2018, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+ * Copyright (c) 2005-2019, Units of Measurement project.
  *
  * All rights reserved.
  *
@@ -29,11 +29,15 @@
  */
 package tech.units.indriya.unit;
 
-import javax.measure.quantity.Length;
+import javax.measure.Dimension;
+import javax.measure.Unit;
 
 import org.junit.jupiter.api.Test;
 
+import tech.units.indriya.AbstractConverter;
 import tech.units.indriya.AbstractUnit;
+
+import tech.units.indriya.quantity.QuantityDimension;
 import tech.units.indriya.unit.BaseUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -44,123 +48,217 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class BaseUnitTest {
 
-  private final AbstractUnit<Length> sut = new BaseUnit<>("m");
+  private static final String A_SYMBOL = "a";
+  private static final String OTHER_SYMBOL = "o";
+  private static final String A_NAME = "name";
+  private static final String OTHER_NAME = "other name";
+  private static final Dimension A_DIMENSION = QuantityDimension.LENGTH;
+  private static final Dimension OTHER_DIMENSION = QuantityDimension.MASS;
 
-  // public BaseUnitTest() {
-  // }
-  //
-  // @BeforeAll
-  // public static void setUpClass() throws Exception {
-  // }
-  //
-  // @AfterClass
-  // public static void tearDownClass() throws Exception {
-  // }
-  //
-  //
-  // @Test
-  // public void testAnnotate() {
-  // }
-  //
-  // @Test
-  // public void testGetAnnotation() {
-  // }
-  //
-  // @Test
-  // public void testGetUnannotatedUnit() {
-  // }
-  //
-  // @Test
-  // public void testIsSystemUnit() {
-  // }
-  //
-  // @Test
-  // public void testToString() {
-  // }
-  //
-  // @Test
-  // public void testGetConverterToSystemUnit() {
-  // }
-  //
-  // @Test
-  // public void testGetSymbol() {
-  // }
-  //
-  // @Test
-  // public void testGetSystemUnit() {
-  // }
-  //
-  // @Test
-  // public void testGetProductUnits() {
-  // }
-  //
-  // @Test
-  // public void testGetDimension() {
-  // }
-  //
-  // @Test
-  // public void testIsCompatible() {
-  // }
-  //
-  // @Test
-  // public void testAsType() {
-  // }
-  //
-  // @Test
-  // public void testGetConverterTo() {
-  // }
-  //
-  // @Test
-  // public void testGetConverterToAny() {
-  // }
-  //
-  // @Test
-  // public void testAlternate() {
-  // }
-  //
-  // @Test
-  // public void testTransform() {
-  // }
-  //
-  // @Test
-  // public void testAdd() {
-  // }
-  //
-  // @Test
-  // public void testMultiply_double() {
-  // }
-  //
-  // @Test
-  // public void testMultiply_ErrorType() {
-  // }
-  //
-  // @Test
-  // public void testInverse() {
-  // }
-  //
-  // @Test
-  // public void testDivide_double() {
-  // }
-  //
-  // @Test
-  // public void testDivide_ErrorType() {
-  // }
-  //
-  // @Test
-  // public void testRoot() {
-  // }
-  //
-  // @Test
-  // public void testPow() {
-  // }
-  //
-  // @Test
-  // public void testHashCode() {
-  // }
-
+  /**
+   * Verifies that a base unit created using a symbol only has the symbol wired correctly.
+   */
   @Test
-  public void testEquals() {
-    assertTrue(sut.equals(new BaseUnit<Length>("m")));
+  public void baseUnitWithSymbolOnlyHasSymbolWiredCorrectly() {
+    AbstractUnit<?> unit = new BaseUnit<>(A_SYMBOL);
+    assertEquals(A_SYMBOL, unit.getSymbol());
   }
 
+  /**
+   * Verifies that a base unit created using a symbol only has no name.
+   */
+  @Test
+  public void baseUnitWithSymbolOnlyHasNoName() {
+    AbstractUnit<?> unit = new BaseUnit<>(A_SYMBOL);
+    assertNull(unit.getName());
+  }
+
+  /**
+   * Verifies that a base unit created using a symbol only has no dimension.
+   */
+  @Test
+  public void baseUnitWithSymbolOnlyHasNoDimension() {
+    AbstractUnit<?> unit = new BaseUnit<>(A_SYMBOL);
+    assertEquals(QuantityDimension.NONE, unit.getDimension());
+  }
+
+  /**
+   * Verifies that a base unit created using a symbol and a name has the symbol wired correctly.
+   */
+  @Test
+  public void baseUnitWithSymbolAndNameHasSymbolWiredCorrectly() {
+    AbstractUnit<?> unit = new BaseUnit<>(A_SYMBOL, A_NAME);
+    assertEquals(A_SYMBOL, unit.getSymbol());
+  }
+
+  /**
+   * Verifies that a base unit created using a symbol and a name has the name wired correctly.
+   */
+  @Test
+  public void baseUnitWithSymbolAndNameHasNameWiredCorrectly() {
+    AbstractUnit<?> unit = new BaseUnit<>(A_SYMBOL, A_NAME);
+    assertEquals(A_NAME, unit.getName());
+  }
+
+  /**
+   * Verifies that a base unit created using a symbol and a name has no dimension.
+   */
+  @Test
+  public void baseUnitWithSymbolAndNameHasNoDimension() {
+    AbstractUnit<?> unit = new BaseUnit<>(A_SYMBOL, A_NAME);
+    assertEquals(QuantityDimension.NONE, unit.getDimension());
+  }
+
+  /**
+   * Verifies that a base unit created using a symbol and a dimension has the symbol wired correctly.
+   */
+  @Test
+  public void baseUnitWithSymbolAndDimensionHasSymbolWiredCorrectly() {
+    AbstractUnit<?> unit = new BaseUnit<>(A_SYMBOL, A_DIMENSION);
+    assertEquals(A_SYMBOL, unit.getSymbol());
+  }
+
+  /**
+   * Verifies that a base unit created using a symbol and a dimension has no name.
+   */
+  @Test
+  public void baseUnitWithSymbolAndDimensionHasNoName() {
+    AbstractUnit<?> unit = new BaseUnit<>(A_SYMBOL, A_DIMENSION);
+    assertNull(unit.getName());
+  }
+
+  /**
+   * Verifies that a base unit created using a symbol and a dimension has the dimension wired correctly.
+   */
+  @Test
+  public void baseUnitWithSymbolAndDimensionHasDimensionWiredCorrectly() {
+    AbstractUnit<?> unit = new BaseUnit<>(A_SYMBOL, A_DIMENSION);
+    assertEquals(A_DIMENSION, unit.getDimension());
+  }
+
+  /**
+   * Verifies that the system unit of a base unit is the unit itself.
+   */
+  @Test
+  public void baseUnitIsItsOwnBaseUnit() {
+    AbstractUnit<?> unit = new BaseUnit<>(A_SYMBOL);
+    assertEquals(unit, unit.getSystemUnit());
+  }
+
+  /**
+   * Verifies that the system converter of a base unit is the identity.
+   */
+  @Test
+  public void systemConverterIsIdentity() {
+    AbstractUnit<?> unit = new BaseUnit<>(A_SYMBOL);
+    assertEquals(AbstractConverter.IDENTITY, unit.getSystemConverter());
+  }
+
+  /**
+   * Verifies that a base unit is equal to itself.
+   */
+  @Test
+  public void baseUnitIsEqualToItself() {
+    AbstractUnit<?> unit = new BaseUnit<>(A_SYMBOL);
+    assertEquals(unit, unit);
+  }
+
+  /**
+   * Verifies that a base unit is equal to another base unit with the same symbol and dimension.
+   */
+  @Test
+  public void baseUnitIsEqualToAnotherBaseUnitWithTheSameSymbolAndDimension() {
+    AbstractUnit<?> unit = new BaseUnit<>(A_SYMBOL, A_DIMENSION);
+    AbstractUnit<?> otherUnit = new BaseUnit<>(A_SYMBOL, A_DIMENSION);
+    assertEquals(unit, otherUnit);
+  }
+
+  /**
+   * Verifies that a base unit is not equal to another base unit with another symbol.
+   */
+  @Test
+  public void baseUnitIsNotEqualToAnotherBaseUnitWithAnotherSymbol() {
+    AbstractUnit<?> unit = new BaseUnit<>(A_SYMBOL, A_DIMENSION);
+    AbstractUnit<?> otherUnit = new BaseUnit<>(OTHER_SYMBOL, A_DIMENSION);
+    assertNotEquals(unit, otherUnit);
+  }
+
+  /**
+   * Verifies that a base unit is not equal to another base unit with another dimension.
+   */
+  @Test
+  public void baseUnitIsNotEqualToAnotherBaseUnitWithAnotherDimenion() {
+    AbstractUnit<?> unit = new BaseUnit<>(A_SYMBOL, A_DIMENSION);
+    AbstractUnit<?> otherUnit = new BaseUnit<>(A_SYMBOL, OTHER_DIMENSION);
+    assertNotEquals(unit, otherUnit);
+  }
+
+  /**
+   * Verifies that a base unit is equal to another base unit with the same symbol and dimension but another name.
+   */
+  @Test
+  public void baseUnitIsEqualToAnotherBaseUnitWithTheSameSymbolAndDimensionButOtherName() {
+    AbstractUnit<?> unit = new BaseUnit<>(A_SYMBOL, A_NAME);
+    AbstractUnit<?> otherUnit = new BaseUnit<>(A_SYMBOL, OTHER_NAME);
+    assertEquals(unit, otherUnit);
+  }
+
+  /**
+   * Verifies that a base unit is not equal to an object of a different type.
+   */
+  @Test
+  public void baseUnitIsNotEqualToAString() {
+    AbstractUnit<?> unit = new BaseUnit<>(A_SYMBOL);
+    assertNotEquals(unit, A_NAME);
+  }
+
+  /**
+   * Verifies that a base unit is not equal to anull.
+   */
+  @Test
+  public void baseUnitIsNotNull() {
+    AbstractUnit<?> unit = new BaseUnit<>(A_SYMBOL);
+    assertNotNull(unit);
+  }
+
+  /**
+   * Verifies that a base unit has the same hash code as another base unit with the same symbol and dimension.
+   */
+  @Test
+  public void baseUnitHasTheSameHashCodeAsAnotherBaseUnitWithTheSameSymbolAndDimension() {
+    AbstractUnit<?> unit = new BaseUnit<>(A_SYMBOL, A_DIMENSION);
+    AbstractUnit<?> otherUnit = new BaseUnit<>(A_SYMBOL, A_DIMENSION);
+    assertEquals(unit.hashCode(), otherUnit.hashCode());
+  }
+
+  /**
+   * Verifies that a base unit has a different hash code if the symbol is different. Note that this isn't a requirement for the hashCode method, but
+   * generally a good property to have.
+   */
+  @Test
+  public void baseUnitHasDifferentHashCodeForBaseUnitWithDifferentSymbol() {
+    AbstractUnit<?> unit = new BaseUnit<>(A_SYMBOL, A_DIMENSION);
+    AbstractUnit<?> otherUnit = new BaseUnit<>(OTHER_SYMBOL, A_DIMENSION);
+    assertNotEquals(unit.hashCode(), otherUnit.hashCode());
+  }
+  
+  /**
+   * Verifies that a base unit has a different hash code if the dimension is different. Note that this isn't a requirement for the hashCode method, but
+   * generally a good property to have.
+   */
+  @Test
+  public void baseUnitHasDifferentHashCodeForBaseUnitWithDifferentDimension() {
+    AbstractUnit<?> unit = new BaseUnit<>(A_SYMBOL, A_DIMENSION);
+    AbstractUnit<?> otherUnit = new BaseUnit<>(A_SYMBOL, OTHER_SYMBOL);
+    assertNotEquals(unit.hashCode(), otherUnit.hashCode());
+  }
+  
+  /**
+   * Verifies the string representation of a base unit.
+   */
+  @Test
+  public void testStringRepresentation() {
+    Unit<?> unit = new BaseUnit<>(A_SYMBOL, A_DIMENSION);
+    assertEquals(A_SYMBOL, unit.toString());
+  }
 }

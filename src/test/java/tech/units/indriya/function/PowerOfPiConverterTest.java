@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2018, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+ * Copyright (c) 2005-2019, Units of Measurement project.
  *
  * All rights reserved.
  *
@@ -40,23 +40,27 @@ import java.math.MathContext;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 
-public class PiPowerConverterTest {
+public class PowerOfPiConverterTest {
 
-//	@BeforeEach
-//	public void setUp() throws Exception {
-//		
-//	}
+	// for reference
+	protected final static String HUNDRED_DIGITS_OF_PI =
+			"3.141592653589793238462643383279502884197169399375105820974944592307816406286208998628034825342117068";
+
+	//	@BeforeEach
+	//	public void setUp() throws Exception {
+	//		
+	//	}
 
 	@AfterEach
 	public void reset() throws Exception {
 		Calculus.MATH_CONTEXT = Calculus.DEFAULT_MATH_CONTEXT;
 	}
-	
+
 	@Test
 	public void testConvertMethod() {
-		PiPowerConverter converter = new PiPowerConverter(-1);
+		PowerOfPiConverter converter = new PowerOfPiConverter(-1);
 		Calculus.MATH_CONTEXT = MathContext.DECIMAL32;
-		
+
 		assertEquals(1000, converter.convert(3141), 0.2);
 		assertEquals(0, converter.convert(0));
 		assertEquals(-1000, converter.convert(-3141), 0.2);
@@ -64,9 +68,9 @@ public class PiPowerConverterTest {
 
 	@Test
 	public void testConvertBigDecimalMethod() {
-		PiPowerConverter converter = new PiPowerConverter(-1);
+		PowerOfPiConverter converter = new PowerOfPiConverter(-1);
 		Calculus.MATH_CONTEXT = MathContext.DECIMAL32;
-		
+
 		assertEquals(1000, converter.convert(new BigDecimal("3141")).doubleValue(), 0.2);
 		assertEquals(0, converter.convert(BigDecimal.ZERO).doubleValue());
 		assertEquals(-1000, converter.convert(new BigDecimal("-3141")).doubleValue(), 0.2);
@@ -74,41 +78,48 @@ public class PiPowerConverterTest {
 
 	@Test
 	public void testEquality() {
-		PiPowerConverter a = new PiPowerConverter(-1);
-		PiPowerConverter b = new PiPowerConverter(-1);
-		PiPowerConverter c = new PiPowerConverter(1);
+		PowerOfPiConverter a = new PowerOfPiConverter(-1);
+		PowerOfPiConverter b = new PowerOfPiConverter(-1);
+		PowerOfPiConverter c = PowerOfPiConverter.ONE;
 		assertTrue(a.equals(b)); 
 		assertFalse(a.equals(c));
 	}
 
 	@Test
 	public void isLinear() {
-		PiPowerConverter converter = new PiPowerConverter(-1);
+		PowerOfPiConverter converter = PowerOfPiConverter.of(-1);
 		assertTrue(converter.isLinear());
 	}
-	
+
 	@Test
 	public void piSquaredBigDecimalDefaultPrecision() {
-		PiPowerConverter converter = new PiPowerConverter(2);
+		PowerOfPiConverter converter = new PowerOfPiConverter(2);
 		BigDecimal value = (BigDecimal) converter.convert(BigDecimal.valueOf(0.1));
 		assertEquals("0.9869604401089358618834490999876151", value.toPlainString());
 	}
-	
+
 	@Test
 	public void piBigDecimalDefaultPrecision() {
-		PiPowerConverter converter = new PiPowerConverter(1);
+		PowerOfPiConverter converter = new PowerOfPiConverter(1);
 		Calculus.MATH_CONTEXT = MathContext.UNLIMITED;
 		assertThrows(ArithmeticException.class, ()->converter.convert(BigDecimal.valueOf(1.0)));
 	}
-	
+
 	@Test
 	public void piBigDecimalExtendedPrecision() {
-		PiPowerConverter converter = new PiPowerConverter(1);
+		PowerOfPiConverter converter = PowerOfPiConverter.ONE;
 		Calculus.MATH_CONTEXT = new MathContext(MathContext.DECIMAL128.getPrecision() * 2);
 		BigDecimal value = (BigDecimal) converter.convert(BigDecimal.valueOf(1.));
+		//[ahuber] last digit should actually round to '2' instead of '0', 
+		// but I suppose this is within margin of error
 		assertEquals(
 				"3.14159265358979323846264338327950288419716939937510582097494459230780", 
 				value.toPlainString());
 	}
-	
+
+	@Test
+	public void toStringTest() {
+		PowerOfPiConverter converter = new PowerOfPiConverter(2);
+		assertEquals("PowerOfPi(x -> x * π^2)", converter.toString());
+	}
 }

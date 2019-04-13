@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2018, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+ * Copyright (c) 2005-2019, Units of Measurement project.
  *
  * All rights reserved.
  *
@@ -29,6 +29,8 @@
  */
 package tech.units.indriya.function;
 
+import static tech.uom.lib.common.function.QuantityFunctions.*;
+
 import java.util.Objects;
 import java.util.function.BinaryOperator;
 
@@ -40,7 +42,7 @@ import tech.units.indriya.quantity.Quantities;
 /**
  * @author Otavio
  * @author Werner
- * @version 1.0
+ * @version 1.1
  * @since 1.0
  * @param <Q>
  */
@@ -58,9 +60,9 @@ public class QuantitySummaryStatistics<Q extends Quantity<Q>> {
 
   private Quantity<Q> average;
 
-  private final BinaryOperator<Quantity<Q>> minFunctions = QuantityFunctions.min();
+  private final BinaryOperator<Quantity<Q>> minFunctions = min();
 
-  private final BinaryOperator<Quantity<Q>> maxFunctions = QuantityFunctions.max();
+  private final BinaryOperator<Quantity<Q>> maxFunctions = max();
 
   /**
    * Creates a new instance, targeting the given {@link javax.measure.Unit}.

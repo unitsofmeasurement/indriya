@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2018, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+ * Copyright (c) 2005-2019, Units of Measurement project.
  *
  * All rights reserved.
  *
@@ -83,17 +83,17 @@ public final class AddConverter extends AbstractConverter implements ValueSuppli
   }
 
   @Override
-  protected boolean isSimpleCompositionWith(AbstractConverter that) {
+  protected boolean canReduceWith(AbstractConverter that) {
   	return that instanceof AddConverter;
   }
 
   @Override
-  protected AbstractConverter simpleCompose(AbstractConverter that) {
+  protected AbstractConverter reduce(AbstractConverter that) {
     return new AddConverter(offset + ((AddConverter)that).offset);
   }
   
   @Override
-  public AddConverter inverse() {
+  public AddConverter inverseWhenNotIdentity() {
     return new AddConverter(-offset);
   }
 
@@ -108,8 +108,8 @@ public final class AddConverter extends AbstractConverter implements ValueSuppli
   }
 
   @Override
-  public final String toString() {
-    return "AddConverter(" + offset + ")";
+  public String transformationLiteral() {
+    return String.format("x -> x %s %s", offset < 0 ? "-" : "+", Math.abs(offset));
   }
 
   @Override

@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2018, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+ * Copyright (c) 2005-2019, Units of Measurement project.
  *
  * All rights reserved.
  *
@@ -63,7 +63,7 @@ public final class UnitFormatParser implements UnitTokenConstants {
   @SuppressWarnings("unused")
   public Unit<?> parseUnit() throws TokenException { // TODO visibility
     Unit<?> result;
-    result = compoundExpr();
+    result = mixExpr();
     jj_consume_token(0);
     {
       if (true)
@@ -73,7 +73,7 @@ public final class UnitFormatParser implements UnitTokenConstants {
   }
 
   @SuppressWarnings("unused")
-  Unit<?> compoundExpr() throws TokenException {
+  Unit<?> mixExpr() throws TokenException {
     Unit<?> result = AbstractUnit.ONE;
     result = addExpr();
     label_1: while (true) {
@@ -123,7 +123,7 @@ public final class UnitFormatParser implements UnitTokenConstants {
     }
     if (n2 != null) {
       double offset = n2.doubleValue();
-      if (sign2.image.equals("-")) {
+      if ("-".equals(sign2.image)) {
         offset = -offset;
       }
       result = result.shift(offset);
@@ -187,14 +187,14 @@ public final class UnitFormatParser implements UnitTokenConstants {
   Unit<?> exponentExpr() throws TokenException {
     Unit<?> result = AbstractUnit.ONE;
     Exponent exponent = null;
-    Token token = null;
+    Token theToken = null;
     if (jj_2_2(2147483647)) {
       switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
         case INTEGER:
-          token = jj_consume_token(INTEGER);
+          theToken = jj_consume_token(INTEGER);
           break;
         case E:
-          token = jj_consume_token(E);
+          theToken = jj_consume_token(E);
           break;
         default:
           jj_la1[5] = jj_gen;
@@ -204,8 +204,8 @@ public final class UnitFormatParser implements UnitTokenConstants {
       jj_consume_token(CARET);
       result = atomicExpr();
       double base;
-      if (token.kind == INTEGER) {
-        base = Integer.parseInt(token.image);
+      if (theToken.kind == INTEGER) {
+        base = Integer.parseInt(theToken.image);
       } else {
         base = E;
       }
@@ -236,11 +236,7 @@ public final class UnitFormatParser implements UnitTokenConstants {
               result = result.root(exponent.root);
             }
           }
-          {
-            if (true)
-              return result;
-          }
-          // break;
+          return result;
         case LOG:
         case NAT_LOG:
           switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
@@ -248,14 +244,14 @@ public final class UnitFormatParser implements UnitTokenConstants {
               jj_consume_token(LOG);
               switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
                 case INTEGER:
-                  token = jj_consume_token(INTEGER);
+                  theToken = jj_consume_token(INTEGER);
                   break;
                 default:
                   jj_la1[7] = jj_gen;
               }
               break;
             case NAT_LOG:
-              token = jj_consume_token(NAT_LOG);
+              theToken = jj_consume_token(NAT_LOG);
               break;
             default:
               jj_la1[8] = jj_gen;
@@ -266,17 +262,14 @@ public final class UnitFormatParser implements UnitTokenConstants {
           result = addExpr();
           jj_consume_token(CLOSE_PAREN);
           double base = 10;
-          if (token != null) {
-            if (token.kind == INTEGER) {
-              base = Integer.parseInt(token.image);
-            } else if (token.kind == NAT_LOG) {
+          if (theToken != null) {
+            if (theToken.kind == INTEGER) {
+              base = Integer.parseInt(theToken.image);
+            } else if (theToken.kind == NAT_LOG) {
               base = E;
             }
           }
-          {
-            if (true)
-              return result.transform(new LogConverter(base));
-          }
+          return result.transform(new LogConverter(base));
         default:
           jj_la1[9] = jj_gen;
           jj_consume_token(-1);
@@ -290,31 +283,20 @@ public final class UnitFormatParser implements UnitTokenConstants {
     Unit<?> result = AbstractUnit.ONE;
     // Unit<?> temp = AbstractUnit.ONE;
     Number n = null;
-    Token token = null;
+    Token theToken = null;
     switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
       case INTEGER:
       case FLOATING_POINT:
         n = numberExpr();
-        if (n instanceof Integer) {
-          {
-            if (true)
-              return result.multiply(n.intValue());
-          }
-        } else {
-          {
-            if (true)
-              return result.multiply(n.doubleValue());
-          }
-        }
-        // break;
+        return n instanceof Integer ? result.multiply(n.intValue()) : result.multiply(n.doubleValue());
       case UNIT_IDENTIFIER:
-        token = jj_consume_token(UNIT_IDENTIFIER);
-        Unit<?> unit = symbols.getUnit(token.image);
+        theToken = jj_consume_token(UNIT_IDENTIFIER);
+        Unit<?> unit = symbols.getUnit(theToken.image);
         if (unit == null) {
-          Prefix prefix = symbols.getPrefix(token.image);
+          Prefix prefix = symbols.getPrefix(theToken.image);
           if (prefix != null) {
             String prefixSymbol = symbols.getSymbol(prefix);
-            unit = symbols.getUnit(token.image.substring(prefixSymbol.length()));
+            unit = symbols.getUnit(theToken.image.substring(prefixSymbol.length()));
             if (unit != null) {
               {
                 if (true)
@@ -322,26 +304,14 @@ public final class UnitFormatParser implements UnitTokenConstants {
               }
             }
           }
-          {
-            if (true)
-              throw new TokenException();
-          }
-        } else {
-          {
-            if (true)
-              return unit;
-          }
+          throw new TokenException();
         }
-        // break;
+        return unit;
       case OPEN_PAREN:
         jj_consume_token(OPEN_PAREN);
         result = addExpr();
         jj_consume_token(CLOSE_PAREN);
-        {
-          if (true)
-            return result;
-        }
-        // break;
+        return result;
       default:
         jj_la1[10] = jj_gen;
         jj_consume_token(-1);
@@ -373,22 +343,14 @@ public final class UnitFormatParser implements UnitTokenConstants {
   }
 
   Number numberExpr() throws TokenException {
-    Token token = null;
+    Token theToken = null;
     switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
       case INTEGER:
-        token = jj_consume_token(INTEGER);
-        {
-          if (true)
-            return Long.valueOf(token.image);
-        }
-        // break;
+        theToken = jj_consume_token(INTEGER);
+        return Long.valueOf(theToken.image);
       case FLOATING_POINT:
-        token = jj_consume_token(FLOATING_POINT);
-        {
-          if (true)
-            return Double.valueOf(token.image);
-        }
-        // break;
+        theToken = jj_consume_token(FLOATING_POINT);
+        return Double.valueOf(theToken.image);
       default:
         jj_la1[12] = jj_gen;
         jj_consume_token(-1);
@@ -422,10 +384,7 @@ public final class UnitFormatParser implements UnitTokenConstants {
             if ((powSign != null) && powSign.image.equals("-")) {
               pow = -pow;
             }
-            {
-              if (true)
-                return new Exponent(pow, 1);
-            }
+            return new Exponent(pow, 1);
           case OPEN_PAREN:
             jj_consume_token(OPEN_PAREN);
             switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
@@ -465,10 +424,7 @@ public final class UnitFormatParser implements UnitTokenConstants {
                 root = -root;
               }
             }
-            {
-              if (true)
-                return new Exponent(pow, root);
-            }
+            return new Exponent(pow, root);
           default:
             jj_la1[17] = jj_gen;
             jj_consume_token(-1);
@@ -509,11 +465,7 @@ public final class UnitFormatParser implements UnitTokenConstants {
               break;
           }
         }
-        {
-          if (true)
-            return new Exponent(pow, 1);
-        }
-        // break;
+        return new Exponent(pow, 1);
       default:
         jj_la1[18] = jj_gen;
         jj_consume_token(-1);
@@ -774,10 +726,8 @@ public final class UnitFormatParser implements UnitTokenConstants {
   }
 
   private int jj_ntk() {
-    if ((jj_nt = token.next) == null)
-      return (jj_ntk = (token.next = token_source.getNextToken()).kind);
-    else
-      return (jj_ntk = jj_nt.kind);
+    if ((jj_nt = token.next) == null) return (jj_ntk = (token.next = token_source.getNextToken()).kind);
+    return (jj_ntk = jj_nt.kind);
   }
 
   private final java.util.List<int[]> jj_expentries = new java.util.ArrayList<>();

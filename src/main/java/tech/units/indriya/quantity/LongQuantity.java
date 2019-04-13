@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2018, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+ * Copyright (c) 2005-2019, Units of Measurement project.
  *
  * All rights reserved.
  *
@@ -30,7 +30,6 @@
 package tech.units.indriya.quantity;
 
 import java.math.BigDecimal;
-import java.util.Objects;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;
@@ -45,127 +44,71 @@ import tech.units.indriya.ComparableQuantity;
  * @see Quantity
  * @author <a href="mailto:werner@uom.technology">Werner Keil</a>
  * @param <Q>
- *          The type of the quantity.
- * @version 0.3, $Date: 2017-05-28 $
- * @since 1.0.7
+ *            The type of the quantity.
+ * @version 0.5, $Date: 2018-10-31 $
+ * @since 1.0
  */
-final class LongQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
+final class LongQuantity<Q extends Quantity<Q>> extends JavaNumericQuantity<Q> {
 
-  private static final BigDecimal LONG_MAX_VALUE_AS_BIG_DECIMAL = new BigDecimal(Long.MAX_VALUE);
+    private static final long serialVersionUID = 3092808554937634365L;
 
-  /**
-     * 
-     */
-  private static final long serialVersionUID = 3092808554937634365L;
+    private static final BigDecimal LONG_MAX_VALUE = new BigDecimal(Long.MAX_VALUE);
+    private static final BigDecimal LONG_MIN_VALUE = new BigDecimal(Long.MIN_VALUE);
 
-  final long value;
+    private final long value;
 
-  public LongQuantity(long value, Unit<Q> unit) {
-    super(unit);
-    this.value = value;
-  }
-
-  @Override
-  public Long getValue() {
-    return value;
-  }
-
-  public double doubleValue(Unit<Q> unit) {
-    return (super.getUnit().equals(unit)) ? value : super.getUnit().getConverterTo(unit).convert(value);
-  }
-
-  @Override
-  public long longValue(Unit<Q> unit) {
-    double result = doubleValue(unit);
-    if ((result < Long.MIN_VALUE) || (result > Long.MAX_VALUE)) {
-      throw new ArithmeticException("Overflow (" + result + ")");
+    LongQuantity(long value, Unit<Q> unit,  Scale sc) {
+        super(unit, sc);
+        this.value = value;
     }
-    return (long) result;
-  }
 
-  private boolean isOverflowing(BigDecimal value) {
-    return value.compareTo(LONG_MAX_VALUE_AS_BIG_DECIMAL) > 0;
-  }
-
-  private ComparableQuantity<Q> addRaw(Number a, Number b, Unit<Q> unit) {
-    return NumberQuantity.of(a.longValue() + b.longValue(), unit);
-  }
-
-  public ComparableQuantity<Q> add(Quantity<Q> that) {
-    final Quantity<Q> thatConverted = that.to(getUnit());
-    final Quantity<Q> thisConverted = this.to(that.getUnit());
-    final BigDecimal resultValueInThisUnit = new BigDecimal(getValue()).add(new BigDecimal(thatConverted.getValue().doubleValue()));
-    final BigDecimal resultValueInThatUnit = new BigDecimal(thisConverted.getValue().doubleValue())
-        .add(new BigDecimal(that.getValue().doubleValue()));
-    final ComparableQuantity<Q> resultInThisUnit = addRaw(getValue(), thatConverted.getValue(), getUnit());
-    final ComparableQuantity<Q> resultInThatUnit = addRaw(thisConverted.getValue(), that.getValue(), that.getUnit());
-    if (isOverflowing(resultValueInThisUnit)) {
-      if (isOverflowing(resultValueInThatUnit)) {
-        throw new ArithmeticException();
-      } else {
-        return resultInThatUnit;
-      }
-    } else if (isOverflowing(resultValueInThatUnit)) {
-      return resultInThisUnit;
-    } else if (hasFraction(resultValueInThisUnit)) {
-      return resultInThatUnit;
-    } else {
-      return resultInThisUnit;
+    LongQuantity(long value, Unit<Q> unit) {
+        super(unit);
+        this.value = value;
     }
-  }
 
-  public ComparableQuantity<Q> subtract(Quantity<Q> that) {
-    final Quantity<Q> thatNegated = NumberQuantity.of(-that.getValue().longValue(), that.getUnit());
-    return add(thatNegated);
-  }
-
-  @SuppressWarnings({ "rawtypes", "unchecked" })
-  public ComparableQuantity<?> multiply(Quantity<?> that) {
-    return new LongQuantity(value * that.getValue().longValue(), getUnit());
-  }
-
-  public ComparableQuantity<Q> multiply(Number that) {
-    return NumberQuantity.of(value * that.longValue(), getUnit());
-  }
-
-  public ComparableQuantity<?> divide(Quantity<?> that) {
-    return NumberQuantity.of((double) value / that.getValue().doubleValue(), getUnit().divide(that.getUnit()));
-  }
-
-  @SuppressWarnings("unchecked")
-  public AbstractQuantity<Q> inverse() {
-    return (AbstractQuantity<Q>) NumberQuantity.of(1 / value, getUnit().inverse());
-  }
-
-  public ComparableQuantity<Q> divide(Number that) {
-    return NumberQuantity.of(value / that.doubleValue(), getUnit());
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see AbstractQuantity#equals(java.lang.Object)
-   */
-  @Override
-  public boolean equals(Object obj) {
-    if (obj == null)
-      return false;
-    if (obj == this)
-      return true;
-    if (obj instanceof Quantity<?>) {
-      Quantity<?> that = (Quantity<?>) obj;
-      return Objects.equals(getUnit(), that.getUnit()) && Equalizer.hasEquality(value, that.getValue());
+    @Override
+    public Long getValue() {
+        return value;
     }
-    return false;
-  }
 
-  @Override
-  public boolean isBig() {
-    return false;
-  }
+    @Override
+    boolean isOverflowing(BigDecimal aValue) {
+        return aValue.compareTo(LONG_MIN_VALUE) < 0 || aValue.compareTo(LONG_MAX_VALUE) > 0;
+    }
 
-  @Override
-  public BigDecimal decimalValue(Unit<Q> unit) {
-    return BigDecimal.valueOf(doubleValue(unit));
-  }
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    public ComparableQuantity<Q> inverse() {
+        return new LongQuantity(1 / value, getUnit().inverse());
+    }
+
+    @Override
+    public boolean isBig() {
+        return false;
+    }
+
+    @Override
+    public boolean isDecimal() {
+        return false;
+    }
+
+    @Override
+    public int getSize() {
+        return Long.SIZE;
+    }
+
+    @Override
+    public Class<?> getNumberType() {
+        return long.class;
+    }
+
+    @Override
+    Number castFromBigDecimal(BigDecimal aValue) {
+        return aValue.longValue();
+    }
+
+    @Override
+    public Quantity<Q> negate() {
+        return new LongQuantity<Q>(-value, getUnit());
+    }
 }

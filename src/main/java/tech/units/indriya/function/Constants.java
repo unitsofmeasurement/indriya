@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2018, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+ * Copyright (c) 2005-2019, Units of Measurement project.
  *
  * All rights reserved.
  *
@@ -38,6 +38,7 @@ import java.util.logging.Logger;
 
 /**
  * Utility class providing numerical constants such as Pi
+ * @author Andi Huber
  * @since 2.0 
  */
 class Constants {

@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2018, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+ * Copyright (c) 2005-2019, Units of Measurement project.
  *
  * All rights reserved.
  *
@@ -37,13 +37,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.math.BigDecimal;
 
 import javax.measure.Quantity;
-import javax.measure.format.ParserException;
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Speed;
 import javax.measure.quantity.Time;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.ComparableQuantity;
@@ -249,7 +247,7 @@ public class DecimalComparableQuantityTest {
   }
 
   @Test
-  public void isEquivalentOfTest() {
+  public void isEquivalentTest() {
 
     ComparableQuantity<Time> day = Quantities.getQuantity(BigDecimal.ONE, Units.DAY);
     ComparableQuantity<Time> hours = Quantities.getQuantity(BigDecimal.valueOf(12), Units.HOUR);
@@ -257,8 +255,8 @@ public class DecimalComparableQuantityTest {
     ComparableQuantity<Time> daysInHour = Quantities.getQuantity(BigDecimal.valueOf(48), Units.HOUR);
 
     assertTrue(day.isLessThanOrEqualTo(day));
-    assertFalse(day.isEquivalentOf(hours));
-    assertTrue(day.isEquivalentOf(dayInHour));
-    assertFalse(day.isEquivalentOf(daysInHour));
+    assertFalse(day.isEquivalentTo(hours));
+    assertTrue(day.isEquivalentTo(dayInHour));
+    assertFalse(day.isEquivalentTo(daysInHour));
   }
 }

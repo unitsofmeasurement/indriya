@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2018, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+ * Copyright (c) 2005-2019, Units of Measurement project.
  *
  * All rights reserved.
  *
@@ -35,39 +35,46 @@ import static tech.units.indriya.unit.Units.MINUTE;
 import static tech.units.indriya.unit.Units.SECOND;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.math.MathContext;
 import java.time.Duration;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAmount;
 import java.time.temporal.TemporalUnit;
 import java.util.Objects;
+import java.util.function.BiFunction;
 
-import javax.measure.IncommensurableException;
 import javax.measure.Quantity;
-import javax.measure.UnconvertibleException;
 import javax.measure.Unit;
-import javax.measure.UnitConverter;
 import javax.measure.quantity.Frequency;
 import javax.measure.quantity.Time;
 
 import tech.units.indriya.AbstractQuantity;
 import tech.units.indriya.ComparableQuantity;
+import tech.units.indriya.function.Calculus;
+import tech.units.indriya.quantity.NumberQuantity;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.Units;
 
 /**
  * Class that represents {@link TemporalUnit} in Unit-API
  * 
- * @author keilw
+ * @author Werner Keil
+ * @author Filip van Laenen
+ * @version 1.1
  * @since 1.0
  */
 public final class TemporalQuantity extends AbstractQuantity<Time> {
   /**
-     * 
-     */
+   * 
+   */
   private static final long serialVersionUID = 6835738653744691425L;
 
+  private static final BigDecimal LONG_MAX_VALUE = new BigDecimal(Long.MAX_VALUE);
+  private static final BigDecimal LONG_MIN_VALUE = new BigDecimal(Long.MIN_VALUE);
+
   private final TemporalUnit timeUnit;
-  private final Integer value;
+  private final Long value;
   private final TemporalAmount amount;
 
   /**
@@ -78,11 +85,23 @@ public final class TemporalQuantity extends AbstractQuantity<Time> {
    * @param value
    *          - value to be used
    */
-  TemporalQuantity(Integer value, TemporalUnit timeUnit) {
+  TemporalQuantity(Long value, TemporalUnit timeUnit) {
     super(toUnit(timeUnit));
     this.timeUnit = timeUnit;
     this.amount = Duration.of(value, timeUnit);
     this.value = value;
+  }
+
+  /**
+   * creates the {@link TemporalQuantity} using {@link TemporalUnit} and {@link Long}
+   * 
+   * @param value
+   *          - value to be used
+   * @param timeUnit
+   *          - time to be used
+   */
+  public static TemporalQuantity of(Long number, TemporalUnit timeUnit) {
+    return new TemporalQuantity(Objects.requireNonNull(number), Objects.requireNonNull(timeUnit));
   }
 
   /**
@@ -94,7 +113,7 @@ public final class TemporalQuantity extends AbstractQuantity<Time> {
    *          - time to be used
    */
   public static TemporalQuantity of(Integer number, TemporalUnit timeUnit) {
-    return new TemporalQuantity(Objects.requireNonNull(number), Objects.requireNonNull(timeUnit));
+    return new TemporalQuantity(Objects.requireNonNull(number).longValue(), Objects.requireNonNull(timeUnit));
   }
 
   /**
@@ -106,7 +125,7 @@ public final class TemporalQuantity extends AbstractQuantity<Time> {
    */
   public static TemporalQuantity of(Quantity<Time> quantity) {
     Quantity<Time> seconds = Objects.requireNonNull(quantity).to(SECOND);
-    return new TemporalQuantity(seconds.getValue().intValue(), ChronoUnit.SECONDS);
+    return new TemporalQuantity(seconds.getValue().longValue(), ChronoUnit.SECONDS);
   }
 
   /**
@@ -128,11 +147,11 @@ public final class TemporalQuantity extends AbstractQuantity<Time> {
   }
 
   /**
-   * get value expressed in {@link Integer}
+   * get value expressed in {@link Long}
    * 
    * @return the value
    */
-  public Integer getValue() {
+  public Long getValue() {
     return value;
   }
 
@@ -154,9 +173,9 @@ public final class TemporalQuantity extends AbstractQuantity<Time> {
     return Quantities.getQuantity(value, toUnit());
   }
 
-  public TemporalQuantity to(TemporalUnit timeUnit) {
-    Quantity<Time> time = toQuantity().to(toUnit(timeUnit));
-    return new TemporalQuantity(time.getValue().intValue(), timeUnit);
+  public TemporalQuantity to(TemporalUnit aTimeUnit) {
+    Quantity<Time> time = toQuantity().to(toUnit(aTimeUnit));
+    return new TemporalQuantity(time.getValue().longValue(), aTimeUnit);
   }
 
   private static Unit<Time> toUnit(TemporalUnit timeUnit) {
@@ -180,10 +199,8 @@ public final class TemporalQuantity extends AbstractQuantity<Time> {
         default:
           throw new IllegalArgumentException("TemporalQuantity only supports DAYS, HOURS, MICROS, MILLIS, MINUTES, NANOS, SECONDS ");
       }
-    } else {
-      throw new IllegalArgumentException("TemporalQuantity only supports temporal units of type ChronoUnit");
-
     }
+    throw new IllegalArgumentException("TemporalQuantity only supports temporal units of type ChronoUnit");
   }
 
   @Override
@@ -212,74 +229,103 @@ public final class TemporalQuantity extends AbstractQuantity<Time> {
     return "Temporal unit:" + timeUnit + " value: " + value;
   }
 
+  private static BigDecimal numberAsBigDecimal(Number that) {
+    if (that instanceof BigDecimal) {
+      return (BigDecimal) that;
+    } else if (that instanceof BigInteger) {
+      return new BigDecimal((BigInteger) that);
+    } else if (that instanceof Double || that instanceof Float) {
+      return new BigDecimal(that.doubleValue());
+    } else {
+      return new BigDecimal(that.longValue());
+    }
+  }
+
+  boolean isOverflowing(BigDecimal aValue) {
+    return aValue.compareTo(LONG_MIN_VALUE) < 0 || aValue.compareTo(LONG_MAX_VALUE) > 0;
+  }
+
+  private static <R extends Quantity<R>> BigDecimal quantityValueAsBigDecimal(Quantity<R> that) {
+    return convertedQuantityValueAsBigDecimal(that, that.getUnit());
+  }
+
+  private static <R extends Quantity<R>> BigDecimal convertedQuantityValueAsBigDecimal(Quantity<R> that, Unit<R> unit) {
+    return (BigDecimal) that.getUnit().getConverterTo(unit).convert(numberAsBigDecimal(that.getValue()));
+  }
+
   @Override
   public ComparableQuantity<Time> add(Quantity<Time> that) {
-    if (getUnit().equals(that.getUnit())) {
-      return TimeQuantities.getQuantity(value + that.getValue().intValue(), timeUnit);
+    final BigDecimal thisValueInSystemUnit = decimalValue(SECOND);
+    final BigDecimal thatValueInSystemUnit = convertedQuantityValueAsBigDecimal(that, SECOND);
+    final BigDecimal resultValueInSystemUnit = thisValueInSystemUnit.add(thatValueInSystemUnit, Calculus.MATH_CONTEXT);
+    final BigDecimal resultValueInThisUnit = numberAsBigDecimal(SECOND.getConverterTo(getUnit()).convert(resultValueInSystemUnit));
+    final BigDecimal resultValueInThatUnit = numberAsBigDecimal(SECOND.getConverterTo(that.getUnit()).convert(resultValueInSystemUnit));
+    final TemporalQuantity resultInThisUnit = TimeQuantities.getQuantity(resultValueInThisUnit.longValue(), timeUnit);
+    final ComparableQuantity<Time> resultInThatUnit = NumberQuantity.of(resultValueInThatUnit.longValue(), that.getUnit());
+    if (isOverflowing(resultValueInThisUnit)) {
+      if (isOverflowing(resultValueInThatUnit))
+        throw new ArithmeticException();
+      return resultInThatUnit;
+    } else if (isOverflowing(resultValueInThatUnit)) {
+      return resultInThisUnit;
+    } else if (hasFraction(resultValueInThisUnit)) {
+      return resultInThatUnit;
+    } else {
+      return resultInThisUnit;
     }
-    Quantity<Time> converted = that.to(getUnit());
-    return TimeQuantities.getQuantity(value + converted.getValue().intValue(), timeUnit);
   }
 
   @Override
   public ComparableQuantity<Time> subtract(Quantity<Time> that) {
-    if (getUnit().equals(that.getUnit())) {
-      return TimeQuantities.getQuantity(value - that.getValue().intValue(), timeUnit);
-    }
-    Quantity<Time> converted = that.to(getUnit());
-    return TimeQuantities.getQuantity(value - converted.getValue().intValue(), timeUnit);
+    return add(that.negate());
   }
 
   @Override
   public ComparableQuantity<?> divide(Quantity<?> that) {
-    if (getUnit().equals(that.getUnit())) {
-      return TimeQuantities.getQuantity(value / that.getValue().intValue(), timeUnit);
-    }
-    Unit<?> divUnit = getUnit().divide(that.getUnit());
-    UnitConverter conv;
-    try {
-      conv = getUnit().getConverterToAny(divUnit);
-      return TimeQuantities.getQuantity(value / conv.convert(that.getValue()).intValue(), timeUnit);
-    } catch (UnconvertibleException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-      return TimeQuantities.getQuantity(value / that.getValue().intValue(), timeUnit);
-    } catch (IncommensurableException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-      return TimeQuantities.getQuantity(value / that.getValue().intValue(), timeUnit);
-    }
+    return applyMultiplicativeQuantityOperation(that, BigDecimal::divide, Unit::divide);
   }
 
   @Override
   public ComparableQuantity<Time> divide(Number that) {
-    return TimeQuantities.getQuantity(value / that.intValue(), timeUnit);
+    return applyMultiplicativeNumberOperation(that, BigDecimal::divide);
   }
 
   @Override
-  public ComparableQuantity<?> multiply(Quantity<?> multiplier) {
-    if (getUnit().equals(multiplier.getUnit())) {
-      return TimeQuantities.getQuantity(value * multiplier.getValue().intValue(), timeUnit);
-    }
-    Unit<?> mulUnit = getUnit().multiply(multiplier.getUnit());
-    UnitConverter conv;
-    try {
-      conv = getUnit().getConverterToAny(mulUnit);
-      return TimeQuantities.getQuantity(value * conv.convert(multiplier.getValue()).intValue(), timeUnit);
-    } catch (UnconvertibleException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-      return TimeQuantities.getQuantity(value * multiplier.getValue().intValue(), timeUnit);
-    } catch (IncommensurableException e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
-      return TimeQuantities.getQuantity(value * multiplier.getValue().intValue(), timeUnit);
-    }
+  public ComparableQuantity<?> multiply(Quantity<?> that) {
+    return applyMultiplicativeQuantityOperation(that, BigDecimal::multiply, Unit::multiply);
   }
 
   @Override
-  public ComparableQuantity<Time> multiply(Number multiplier) {
-    return TimeQuantities.getQuantity(value * multiplier.intValue(), timeUnit);
+  public ComparableQuantity<Time> multiply(Number that) {
+    return applyMultiplicativeNumberOperation(that, BigDecimal::multiply);
+  }
+
+  @FunctionalInterface
+  private interface TriFunction<R, A, B, C> {
+    R apply(A a, B b, C c);
+  }
+
+  private ComparableQuantity<?> applyMultiplicativeQuantityOperation(Quantity<?> that,
+      TriFunction<BigDecimal, BigDecimal, BigDecimal, MathContext> valueOperator, BiFunction<Unit<?>, Unit<?>, Unit<?>> unitOperator) {
+    final BigDecimal thisValue = decimalValue(getUnit());
+    final BigDecimal thatValue = quantityValueAsBigDecimal(that);
+    final BigDecimal result = valueOperator.apply(thisValue, thatValue, Calculus.MATH_CONTEXT);
+    if (isOverflowing(result)) {
+      throw new ArithmeticException();
+    }
+    final Unit<?> resultUnit = unitOperator.apply(getUnit(), that.getUnit());
+    return NumberQuantity.of(result.longValue(), resultUnit);
+  }
+
+  private ComparableQuantity<Time> applyMultiplicativeNumberOperation(Number that,
+      TriFunction<BigDecimal, BigDecimal, BigDecimal, MathContext> valueOperator) {
+    final BigDecimal thisValue = decimalValue(getUnit());
+    final BigDecimal thatValue = numberAsBigDecimal(that);
+    final BigDecimal result = valueOperator.apply(thisValue, thatValue, Calculus.MATH_CONTEXT);
+    if (isOverflowing(result)) {
+      throw new ArithmeticException();
+    }
+    return NumberQuantity.of(result.longValue(), getUnit());
   }
 
   @Override
@@ -289,16 +335,27 @@ public final class TemporalQuantity extends AbstractQuantity<Time> {
 
   @Override
   public boolean isBig() {
-    return true; // Duration backed by BigDecimal/BigInteger
+    return false; // Duration backed by long
   }
 
   @Override
   public BigDecimal decimalValue(Unit<Time> unit) throws ArithmeticException {
-    return BigDecimal.valueOf(value.doubleValue());
+    return (BigDecimal) getUnit().getConverterTo(unit).convert(BigDecimal.valueOf(value));
   }
 
   @Override
   public double doubleValue(Unit<Time> unit) throws ArithmeticException {
-    return value.doubleValue();
+    final double result = getUnit().getConverterTo(unit).convert(getValue()).doubleValue();
+    if (Double.isInfinite(result))
+      throw new ArithmeticException();
+    return result;
+  }
+
+  /**
+   * @since 1.0.2
+   */
+  @Override
+  public Quantity<Time> negate() {
+    return of(-value, getTemporalUnit());
   }
 }

@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2018, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+ * Copyright (c) 2005-2019, Units of Measurement project.
  *
  * All rights reserved.
  *
@@ -97,17 +97,17 @@ public final class MultiplyConverter extends AbstractConverter implements ValueS
 	}
 
 	@Override
-	protected boolean isSimpleCompositionWith(AbstractConverter that) {
+	protected boolean canReduceWith(AbstractConverter that) {
 		return that instanceof MultiplyConverter;
 	}
 
 	@Override
-	protected AbstractConverter simpleCompose(AbstractConverter that) {
+	protected AbstractConverter reduce(AbstractConverter that) {
 		return new MultiplyConverter(factor * ((MultiplyConverter) that).factor);
 	}
 
 	@Override
-	public MultiplyConverter inverse() {
+	public MultiplyConverter inverseWhenNotIdentity() {
 		return new MultiplyConverter(1.0 / factor);
 	}
 
@@ -122,8 +122,8 @@ public final class MultiplyConverter extends AbstractConverter implements ValueS
 	}
 
 	@Override
-	public final String toString() {
-		return MultiplyConverter.class.getSimpleName() + "(" + factor + ")";
+	public final String transformationLiteral() {
+		return String.format("x -> x * %s", factor);
 	}
 
 	@Override

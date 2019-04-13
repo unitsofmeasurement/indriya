@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2018, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+ * Copyright (c) 2005-2019, Units of Measurement project.
  *
  * All rights reserved.
  *
@@ -57,7 +57,7 @@ public class UnitsDerivedProductUnitsTest {
    * @param quantityClass
    *          The quantity class for which it is expected to be registered.
    */
-  private <Q extends Quantity<Q>> void parseSymbolAndAssertThatItIsTheProductUnitRegisteredForTheQuantity(String symbol, Class<Q> quantityClass) {
+  private static <Q extends Quantity<Q>> void parseSymbolAndAssertThatItIsTheProductUnitRegisteredForTheQuantity(String symbol, Class<Q> quantityClass) {
     Unit<?> parsedUnit = AbstractUnit.parse(symbol);
     assertEquals(ProductUnit.class, parsedUnit.getClass());
     assertEquals(Units.getInstance().getUnit(quantityClass), parsedUnit);

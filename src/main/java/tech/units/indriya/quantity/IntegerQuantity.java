@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2018, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+ * Copyright (c) 2005-2019, Units of Measurement project.
  *
  * All rights reserved.
  *
@@ -30,13 +30,11 @@
 package tech.units.indriya.quantity;
 
 import java.math.BigDecimal;
-import java.util.Objects;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;
 
 import tech.units.indriya.AbstractQuantity;
-import tech.units.indriya.ComparableQuantity;
 
 /**
  * An amount of quantity, consisting of an integer and a Unit. IntegerQuantity objects are immutable.
@@ -47,17 +45,17 @@ import tech.units.indriya.ComparableQuantity;
  * @author Otavio de Santana
  * @param <Q>
  *          The type of the quantity.
- * @version 0.4, $Date: 2017-05-28 $
+ * @version 0.5, $Date: 2018-07-20 $
  * @since 1.0.7
  */
-final class IntegerQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
+final class IntegerQuantity<Q extends Quantity<Q>> extends JavaNumericQuantity<Q> {
 
-  /**
-	 * 
-	 */
   private static final long serialVersionUID = 1405915111744728289L;
 
-  final int value;
+  private static final BigDecimal INTEGER_MIN_VALUE = new BigDecimal(Integer.MIN_VALUE);
+  private static final BigDecimal INTEGER_MAX_VALUE = new BigDecimal(Integer.MAX_VALUE);
+
+  private final int value;
 
   public IntegerQuantity(int value, Unit<Q> unit) {
     super(unit);
@@ -69,92 +67,14 @@ final class IntegerQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
     return value;
   }
 
-  public double doubleValue(Unit<Q> unit) {
-    return super.getUnit().equals(unit) ? value : super.getUnit().getConverterTo(unit).convert(value);
-  }
-
   @Override
-  public long longValue(Unit<Q> unit) {
-    double result = doubleValue(unit);
-    if (result < Long.MIN_VALUE || result > Long.MAX_VALUE) {
-      throw new ArithmeticException("Overflow (" + result + ")");
-    }
-    return (long) result;
-  }
-
-  private boolean isOverflowing(double value) {
-    return value > Integer.MAX_VALUE;
-  }
-
-  private ComparableQuantity<Q> addRaw(Number a, Number b, Unit<Q> unit) {
-    return NumberQuantity.of(a.intValue() + b.intValue(), unit);
-  }
-
-  public ComparableQuantity<Q> add(Quantity<Q> that) {
-    final Quantity<Q> thatConverted = that.to(getUnit());
-    final Quantity<Q> thisConverted = this.to(that.getUnit());
-    final double resultValueInThisUnit = getValue().doubleValue() + thatConverted.getValue().doubleValue();
-    final double resultValueInThatUnit = thisConverted.getValue().doubleValue() + that.getValue().doubleValue();
-    final ComparableQuantity<Q> resultInThisUnit = addRaw(getValue(), thatConverted.getValue(), getUnit());
-    final ComparableQuantity<Q> resultInThatUnit = addRaw(thisConverted.getValue(), that.getValue(), that.getUnit());
-    if (isOverflowing(resultValueInThisUnit)) {
-      if (isOverflowing(resultValueInThatUnit)) {
-        throw new ArithmeticException();
-      } else {
-        return resultInThatUnit;
-      }
-    } else if (isOverflowing(resultValueInThatUnit)) {
-      return resultInThisUnit;
-    } else if (hasFraction(resultValueInThisUnit)) {
-      return resultInThatUnit;
-    } else {
-      return resultInThisUnit;
-    }
-  }
-
-  public ComparableQuantity<Q> subtract(Quantity<Q> that) {
-    final Quantity<Q> thatNegated = NumberQuantity.of(-that.getValue().intValue(), that.getUnit());
-    return add(thatNegated);
-  }
-
-  @SuppressWarnings({ "rawtypes", "unchecked" })
-  public ComparableQuantity<?> multiply(Quantity<?> that) {
-    return new IntegerQuantity(value * that.getValue().intValue(), getUnit().multiply(that.getUnit()));
-  }
-
-  public ComparableQuantity<Q> multiply(Number that) {
-    return NumberQuantity.of(value * that.intValue(), getUnit());
-  }
-
-  public ComparableQuantity<?> divide(Quantity<?> that) {
-    return NumberQuantity.of((double) value / that.getValue().doubleValue(), getUnit().divide(that.getUnit()));
+  boolean isOverflowing(BigDecimal aValue) {
+    return aValue.compareTo(INTEGER_MIN_VALUE) < 0 || aValue.compareTo(INTEGER_MAX_VALUE) > 0;
   }
 
   @SuppressWarnings("unchecked")
   public AbstractQuantity<Q> inverse() {
     return (AbstractQuantity<Q>) NumberQuantity.of(1 / value, getUnit().inverse());
-  }
-
-  public ComparableQuantity<Q> divide(Number that) {
-    return NumberQuantity.of(value / that.doubleValue(), getUnit());
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see AbstractQuantity#equals(java.lang.Object)
-   */
-  @Override
-  public boolean equals(Object obj) {
-    if (obj == null)
-      return false;
-    if (obj == this)
-      return true;
-    if (obj instanceof Quantity<?>) {
-      Quantity<?> that = (Quantity<?>) obj;
-      return Objects.equals(getUnit(), that.getUnit()) && Equalizer.hasEquality(value, that.getValue());
-    }
-    return false;
   }
 
   @Override
@@ -163,8 +83,27 @@ final class IntegerQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
   }
 
   @Override
-  public BigDecimal decimalValue(Unit<Q> unit) throws ArithmeticException {
-    // TODO Auto-generated method stub
-    return null;
+  public boolean isDecimal() {
+    return false;
+  }
+
+  @Override
+  public int getSize() {
+    return Integer.SIZE;
+  }
+
+  @Override
+  public Class<Integer> getNumberType() {
+    return int.class;
+  }
+
+  @Override
+  Number castFromBigDecimal(BigDecimal aValue) {
+    return (int) aValue.longValue();
+  }
+
+  @Override
+  public Quantity<Q> negate() {
+    return new IntegerQuantity<Q>(-value, getUnit());
   }
 }

@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2018, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+ * Copyright (c) 2005-2019, Units of Measurement project.
  *
  * All rights reserved.
  *
@@ -41,7 +41,6 @@ import javax.measure.quantity.Length;
 import javax.measure.quantity.Speed;
 import javax.measure.quantity.Time;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.ComparableQuantity;
@@ -65,8 +64,8 @@ public class DoubleComparableQuantityTest {
     ComparableQuantity<Length> metre = Quantities.getQuantity(10D, Units.METRE);
     ComparableQuantity<Time> time = Quantities.getQuantity(10D, Units.SECOND);
     assertThrows(ClassCastException.class, () -> {
-    	@SuppressWarnings("unused")
-    	ComparableQuantity<Area> area = metre.divide(time, Area.class);
+      @SuppressWarnings("unused")
+      ComparableQuantity<Area> area = metre.divide(time, Area.class);
     });
   }
 
@@ -83,8 +82,8 @@ public class DoubleComparableQuantityTest {
   public void multiplyOperationsExceptionTest() {
     ComparableQuantity<Length> metre = Quantities.getQuantity(10D, Units.METRE);
     assertThrows(ClassCastException.class, () -> {
-    	@SuppressWarnings("unused")
-    	ComparableQuantity<Speed> speed = metre.multiply(metre, Speed.class);
+      @SuppressWarnings("unused")
+      ComparableQuantity<Speed> speed = metre.multiply(metre, Speed.class);
     });
   }
 
@@ -242,9 +241,9 @@ public class DoubleComparableQuantityTest {
     ComparableQuantity<Time> dayInHour = Quantities.getQuantity(24D, Units.HOUR);
     ComparableQuantity<Time> daysInHour = Quantities.getQuantity(46D, Units.HOUR);
 
-    assertTrue(day.isEquivalentOf(day));
-    assertFalse(day.isEquivalentOf(hours));
-    assertTrue(day.isEquivalentOf(dayInHour));
-    assertFalse(day.isEquivalentOf(daysInHour));
+    assertTrue(day.isEquivalentTo(day));
+    assertFalse(day.isEquivalentTo(hours));
+    assertTrue(day.isEquivalentTo(dayInHour));
+    assertFalse(day.isEquivalentTo(daysInHour));
   }
 }

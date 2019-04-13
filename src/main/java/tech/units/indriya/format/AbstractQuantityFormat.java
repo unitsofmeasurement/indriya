@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2018, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+ * Copyright (c) 2005-2019, Units of Measurement project.
  *
  * All rights reserved.
  *
@@ -33,12 +33,12 @@ import java.io.IOException;
 import java.text.FieldPosition;
 import java.text.Format;
 import java.text.ParsePosition;
-import java.util.Collection;
 
+import javax.measure.MeasurementException;
 import javax.measure.Quantity;
+import javax.measure.Unit;
 import javax.measure.format.MeasurementParseException;
 import javax.measure.format.QuantityFormat;
-import tech.units.indriya.AbstractQuantity;
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.CompoundQuantity;
 import tech.uom.lib.common.function.Parser;
@@ -49,131 +49,142 @@ import tech.uom.lib.common.function.Parser;
  * </p>
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
- * @author <a href="mailto:werner@uom.technology">Werner Keil</a>
- * @version 1.2, $Date: 2018-04-26 $
+ * @author <a href="mailto:werner@units.tech">Werner Keil</a>
+ * @version 1.6, $Date: 2019-04-13 $
  * @since 1.0
  * 
  */
 @SuppressWarnings("rawtypes")
-public abstract class AbstractQuantityFormat extends Format implements QuantityFormat, Parser<CharSequence, ComparableQuantity> {
+public abstract class AbstractQuantityFormat extends Format implements QuantityFormat, Parser<CharSequence, Quantity> {
+    /**
+     * The default delimiter.
+     */
+    protected static final String DEFAULT_DELIMITER = " ";
 
-  /**
-   *
-   */
-  private static final long serialVersionUID = -4628006924354248662L;
+    /**
+     *
+     */
+    private static final long serialVersionUID = -4628006924354248662L;
 
-  /**
-   * Formats the specified quantity into an <code>Appendable</code>.
-   *
-   * @param quantity
-   *          the quantity to format.
-   * @param dest
-   *          the appendable destination.
-   * @return the specified <code>Appendable</code>.
-   * @throws IOException
-   *           if an I/O exception occurs.
-   */
-  public abstract Appendable format(Quantity<?> quantity, Appendable dest) throws IOException;
+    /**
+     * Formats the specified quantity into an <code>Appendable</code>.
+     *
+     * @param quantity
+     *            the quantity to format.
+     * @param dest
+     *            the appendable destination.
+     * @return the specified <code>Appendable</code>.
+     * @throws IOException
+     *             if an I/O exception occurs.
+     */
+    public abstract Appendable format(Quantity<?> quantity, Appendable dest) throws IOException;
 
-  /**
-   * Parses a portion of the specified <code>CharSequence</code> from the specified position to produce an object. If parsing succeeds, then the index
-   * of the <code>cursor</code> argument is updated to the index after the last character used.
-   *
-   * @param csq
-   *          the <code>CharSequence</code> to parse.
-   * @param cursor
-   *          the cursor holding the current parsing index.
-   * @return the object parsed from the specified character sub-sequence.
-   * @throws IllegalArgumentException
-   *           if any problem occurs while parsing the specified character sequence (e.g. illegal syntax).
-   */
-  public abstract ComparableQuantity<?> parse(CharSequence csq, ParsePosition cursor) throws IllegalArgumentException, MeasurementParseException;
+    /**
+     * Parses a portion of the specified <code>CharSequence</code> from the specified position to produce an object. If parsing succeeds, then the
+     * index of the <code>cursor</code> argument is updated to the index after the last character used.
+     *
+     * @param csq
+     *            the <code>CharSequence</code> to parse.
+     * @param cursor
+     *            the cursor holding the current parsing index.
+     * @return the object parsed from the specified character sub-sequence.
+     * @throws IllegalArgumentException
+     *             if any problem occurs while parsing the specified character sequence (e.g. illegal syntax).
+     */
+    public abstract Quantity<?> parse(CharSequence csq, ParsePosition cursor) throws IllegalArgumentException, MeasurementParseException;
 
-  /**
-   * Parses a portion of the specified <code>CharSequence</code> from the specified position to produce an object. If parsing succeeds, then the index
-   * of the <code>cursor</code> argument is updated to the index after the last character used.
-   *
-   * @param csq
-   *          the <code>CharSequence</code> to parse.
-   * @param cursor
-   *          the cursor holding the current parsing index.
-   * @return the object parsed from the specified character sub-sequence.
-   * @throws IllegalArgumentException
-   *           if any problem occurs while parsing the specified character sequence (e.g. illegal syntax).
-   */
-  @Override
-  public abstract ComparableQuantity<?> parse(CharSequence csq) throws MeasurementParseException;
+    /**
+     * Parses a portion of the specified <code>CharSequence</code> from the specified position to produce an object. If parsing succeeds, then the
+     * index of the <code>cursor</code> argument is updated to the index after the last character used.
+     *
+     * @param csq
+     *            the <code>CharSequence</code> to parse.
+     * @return the object parsed from the specified character sub-sequence.
+     * @throws IllegalArgumentException
+     *             if any problem occurs while parsing the specified character sequence (e.g. illegal syntax).
+     */
+    @Override
+    public abstract Quantity<?> parse(CharSequence csq) throws MeasurementParseException;
 
-  /**
-   * Parses a portion of the specified <code>CharSequence</code> from the specified position to produce an object. If parsing succeeds, then the index
-   * of the <code>cursor</code> argument is updated to the index after the last character used.
-   * 
-   * @param csq
-   *          the <code>CharSequence</code> to parse.
-   * @param index
-   *          the current parsing index.
-   * @return the object parsed from the specified character sub-sequence.
-   * @throws IllegalArgumentException
-   *           if any problem occurs while parsing the specified character sequence (e.g. illegal syntax).
-   */
-  abstract ComparableQuantity<?> parse(CharSequence csq, int index) throws IllegalArgumentException, MeasurementParseException;
+    /**
+     * Parses a portion of the specified <code>CharSequence</code> from the specified position to produce an object. If parsing succeeds, then the
+     * index of the <code>cursor</code> argument is updated to the index after the last character used.
+     * 
+     * @param csq
+     *            the <code>CharSequence</code> to parse.
+     * @param index
+     *            the current parsing index.
+     * @return the object parsed from the specified character sub-sequence.
+     * @throws IllegalArgumentException
+     *             if any problem occurs while parsing the specified character sequence (e.g. illegal syntax).
+     */
+    protected abstract Quantity<?> parse(CharSequence csq, int index) throws IllegalArgumentException, MeasurementParseException;
 
-  @Override
-  public final StringBuffer format(Object obj, final StringBuffer toAppendTo, FieldPosition pos) {
-    if (obj instanceof AbstractQuantity<?>) {
-	    if ((toAppendTo == null) || (pos == null))
-	      throw new NullPointerException();
-	    try {
-	      return (StringBuffer) format((AbstractQuantity<?>) obj, toAppendTo);
-	    } catch (IOException ex) {
-	      throw new Error(ex); // Cannot happen.
-	    } 
-    } else {
-    	if (obj instanceof CompoundQuantity) {
-    		CompoundQuantity comp = (CompoundQuantity)obj;
-    		@SuppressWarnings("unchecked")
-			Collection<Quantity<?>> col = comp.getQuantities();
-    		StringBuffer cols = new StringBuffer();
-    		int ind = 0;
-    		for (Quantity<?> quant : col) {
-    			if (ind>0) {
-    				cols = format(quant, toAppendTo.append(" "), pos);
-    			} else {
-    				cols = format(quant, toAppendTo, pos);
-    			}
-    			ind++;
-    		}
-    		return cols;
-    	} else {
-    		throw new IllegalArgumentException("obj: Not a Quantity or Compound Quantity");
-    	}
+    @Override
+    public final StringBuffer format(Object obj, final StringBuffer toAppendTo, FieldPosition pos) {
+        if(obj instanceof CompoundQuantity<?>) {
+            return formatComposite((CompoundQuantity<?>) obj, toAppendTo);
+        } else {
+            if (!(obj instanceof ComparableQuantity<?>))
+                throw new IllegalArgumentException("obj: Not an instance of Quantity");
+            if ((toAppendTo == null) || (pos == null))
+                throw new NullPointerException();
+            return (StringBuffer) format((ComparableQuantity<?>) obj, toAppendTo);
+        }
     }
-  }
-
-  @Override
-  public final Object parseObject(String source, ParsePosition pos) {
-	// TODO try handle a CompoundQuantity here, see https://github.com/unitsofmeasurement/indriya/issues/17
-    try {
-      return parse(source, pos);
-    } catch (IllegalArgumentException | MeasurementParseException e) {
-      return null;
+    
+    @Override
+    public final Quantity<?> parseObject(String source, ParsePosition pos) {
+        try {
+            return parse(source, pos);
+        } catch (IllegalArgumentException | MeasurementParseException e) {
+            return null;
+        }
     }
-  }
 
-  /**
-   * Convenience method equivalent to {@link #format(AbstractQuantity, Appendable)} except it does not raise an IOException.
-   *
-   * @param quantity
-   *          the quantity to format.
-   * @param dest
-   *          the appendable destination.
-   * @return the specified <code>StringBuilder</code>.
-   */
-  public final StringBuilder format(AbstractQuantity<?> quantity, StringBuilder dest) {
-    try {
-      return (StringBuilder) this.format(quantity, (Appendable) dest);
-    } catch (IOException ex) {
-      throw new RuntimeException(ex); // Should not happen.
+    /**
+     * Formats an object to produce a string. This is equivalent to <blockquote> {@link #format(Unit, StringBuilder) format}<code>(unit,
+     *         new StringBuilder()).toString();</code> </blockquote>
+     *
+     * @param quantity
+     *          The quantity to format
+     * @return Formatted string.
+     */
+    public final String format(Quantity<?> quantity) {
+      if (quantity instanceof ComparableQuantity) return format((ComparableQuantity<?>) quantity, new StringBuffer()).toString();
+
+      try {
+        return (this.format(quantity, new StringBuffer())).toString();
+      } catch (IOException ex) {
+        throw new MeasurementException(ex); // Should never happen.
+      }
     }
-  }
+    
+    /**
+     * Convenience method equivalent to {@link #format(ComparableQuantity, Appendable)} except it does not raise an IOException.
+     *
+     * @param quantity
+     *            the quantity to format.
+     * @param dest
+     *            the appendable destination.
+     * @return the specified <code>StringBuilder</code>.
+     */
+    protected final StringBuffer format(ComparableQuantity<?> quantity, StringBuffer dest) {
+        try {
+            return (StringBuffer) this.format(quantity, (Appendable) dest);
+        } catch (IOException ex) {
+            throw new RuntimeException(ex); // Should not happen.
+        }
+    }
+    
+    /**
+     * Convenience method equivalent to {@link #format(CompoundQuantity, Appendable)} except it does not raise an IOException.
+     *
+     * @param comp
+     *            the composite quantity to format.
+     * @param dest
+     *            the appendable destination.
+     * @return the specified <code>StringBuilder</code>.
+     */
+    protected abstract StringBuffer formatComposite(CompoundQuantity<?> comp, StringBuffer dest);
 }

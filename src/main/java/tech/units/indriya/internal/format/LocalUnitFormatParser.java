@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2018, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+ * Copyright (c) 2005-2019, Units of Measurement project.
  *
  * All rights reserved.
  *
@@ -612,11 +612,11 @@ public final class LocalUnitFormatParser {
   /** Reinitialise. */
   public void ReInit(java.io.InputStream stream, String encoding) {
     try {
-      inputStream.ReInit(stream, encoding, 1, 1);
+      inputStream.reInit(stream, encoding, 1, 1);
     } catch (java.io.UnsupportedEncodingException e) {
       throw new RuntimeException(e);
     }
-    tokenSource.ReInit(inputStream);
+    tokenSource.reInit(inputStream);
     token = new Token();
     nextTokenIndex = -1;
     genInt = 0;
@@ -645,8 +645,8 @@ public final class LocalUnitFormatParser {
 
   /** Reinitialise. */
   public void ReInit(java.io.Reader stream) {
-    inputStream.ReInit(stream, 1, 1);
-    tokenSource.ReInit(inputStream);
+    inputStream.reInit(stream, 1, 1);
+    tokenSource.reInit(inputStream);
     token = new Token();
     nextTokenIndex = -1;
     genInt = 0;

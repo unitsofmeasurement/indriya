@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2018, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+ * Copyright (c) 2005-2019, Units of Measurement project.
  *
  * All rights reserved.
  *
@@ -33,38 +33,36 @@ package tech.units.indriya.format;
  * Defines the different variants of unit formatting.
  * 
  * @author Werner Keil
- * @version 1.0
+ * @version 1.1, February 3, 2019
  * @since 1.0.1
  */
-// TODO @since should be 1.0 for Indriya here (this is based on uom-se)
 public enum UnitStyle {
+    /**
+     * The unit will be rendered as its name.
+     * 
+     * @see javax.measure.Unit#getName()
+     */
+    NAME,
 
-  /**
-   * The unit will be rendered as its name.
-   * 
-   * @see javax.measure.Unit#getName()
-   */
-  NAME,
+    /**
+     * The unit will be rendered as its symbol.
+     * 
+     * @see javax.measure.Unit#getSymbol()
+     */
+    SYMBOL,
 
-  /**
-   * The unit will be rendered as its symbol.
-   * 
-   * @see javax.measure.Unit#getSymbol()
-   */
-  SYMBOL,
+    /**
+     * The unit will be rendered as its label.
+     * 
+     * @see javax.measure.format.UnitFormat#label()
+     */
+    LABEL,
 
-  /**
-   * The unit will be rendered as its label.
-   * 
-   * @see javax.measure.format.UnitFormat#label()
-   */
-  LABEL,
-
-  /**
-   * The unit will be rendered as its symbol and also labeled.
-   * 
-   * @see javax.measure.Unit#getSymbol()
-   * @see javax.measure.format.UnitFormat#label()
-   */
-  SYMBOL_AND_LABEL
+    /**
+     * The unit will be rendered as its symbol and also labeled.
+     * 
+     * @see javax.measure.Unit#getSymbol()
+     * @see javax.measure.format.UnitFormat#label()
+     */
+    SYMBOL_AND_LABEL;
 }
