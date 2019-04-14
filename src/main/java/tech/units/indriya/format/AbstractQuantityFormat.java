@@ -123,7 +123,7 @@ public abstract class AbstractQuantityFormat extends Format implements QuantityF
     @Override
     public final StringBuffer format(Object obj, final StringBuffer toAppendTo, FieldPosition pos) {
         if(obj instanceof CompoundQuantity<?>) {
-            return formatComposite((CompoundQuantity<?>) obj, toAppendTo);
+            return formatCompound((CompoundQuantity<?>) obj, toAppendTo);
         } else {
             if (!(obj instanceof ComparableQuantity<?>))
                 throw new IllegalArgumentException("obj: Not an instance of Quantity");
@@ -186,5 +186,5 @@ public abstract class AbstractQuantityFormat extends Format implements QuantityF
      *            the appendable destination.
      * @return the specified <code>StringBuilder</code>.
      */
-    protected abstract StringBuffer formatComposite(CompoundQuantity<?> comp, StringBuffer dest);
+    protected abstract StringBuffer formatCompound(CompoundQuantity<?> comp, StringBuffer dest);
 }

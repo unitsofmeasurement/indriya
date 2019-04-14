@@ -49,7 +49,7 @@ import static tech.units.indriya.format.FormatConstants.*;
  * @author keilw
  */
 class ConverterFormatter {
-    private static final String LOCAL_FORMAT_PATTERN = "%s";
+    private static final String LOCAL_FORMAT_PATTERN = "%s"; //$NON-NLS-1$
 
     /**
      * Formats the given converter to the given StringBuilder and returns the operator precedence of the converter's mathematical operation. This is
@@ -86,7 +86,6 @@ class ConverterFormatter {
             final AbstractConverter.Pair pair = (AbstractConverter.Pair) converter;
             if (pair.getLeft() == AbstractConverter.IDENTITY)
                 return formatConverter(pair.getRight(), true, unitPrecedence, buffer, symbolMap);
-
             if (pair.getLeft() instanceof Formattable) {
                 return formatFormattable((Formattable) pair.getLeft(), unitPrecedence, buffer);
             } else if (pair.getRight() instanceof Formattable) {

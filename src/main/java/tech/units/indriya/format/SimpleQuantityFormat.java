@@ -269,7 +269,7 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
 	}
 	
     @Override
-    protected StringBuffer formatComposite(CompoundQuantity<?> comp, StringBuffer dest) {
+    protected StringBuffer formatCompound(CompoundQuantity<?> comp, StringBuffer dest) {
         final StringBuffer sb = new StringBuffer();
         int i = 0;
         for (Quantity<?> q : comp.getQuantities()) {

@@ -30,7 +30,8 @@
 package tech.units.indriya.format;
 
 import static tech.units.indriya.format.FormatBehavior.LOCALE_NEUTRAL;
-import static tech.units.indriya.format.CommonFormatter.*;
+import static tech.units.indriya.format.CommonFormatter.parseCompoundAsLeading;
+import static tech.units.indriya.format.CommonFormatter.parseCompoundAsPrimary;
 
 import java.io.IOException;
 import java.text.NumberFormat;
@@ -314,7 +315,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
         final Unit unit = unitFormat.parse(parts[1]);
         return Quantities.getQuantity(number, unit);
     }
-
+    
     @Override
     protected Quantity<?> parse(CharSequence csq, int index) throws IllegalArgumentException, MeasurementParseException {
         return parse(csq, new ParsePosition(index));
@@ -324,7 +325,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
     public Quantity<?> parse(CharSequence csq) throws IllegalArgumentException, MeasurementParseException {
         return parse(csq, 0);
     }
-
+    
     @Override
     public String toString() {
         return getClass().getSimpleName();
@@ -335,6 +336,49 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
         return localeSensitive;
     }
 
+    @Override
+    protected StringBuffer formatCompound(CompoundQuantity<?> comp, StringBuffer dest) {
+        final StringBuffer sb = new StringBuffer();
+        int i = 0;
+        for (Quantity<?> q : comp.getQuantities()) {
+            sb.append(format(q));
+            if (i < comp.getQuantities().size() - 1 ) {
+                sb.append((mixDelimiter != null ? mixDelimiter : DEFAULT_DELIMITER)); // we need null for parsing but not
+            }
+            i++;
+        }
+        return sb;
+    }
+    
+    public CompoundQuantity<?> parseCompound(CharSequence csq, ParsePosition cursor) throws IllegalArgumentException, MeasurementParseException {
+        final String str = csq.toString();
+        final int index = cursor.getIndex();
+        if (mixDelimiter != null && !mixDelimiter.equals(delimiter)) {
+                return CommonFormatter.parseCompound(str, numberFormat, unitFormat, delimiter, mixDelimiter, index);
+        } else if (mixDelimiter != null && mixDelimiter.equals(delimiter)) {
+                return CommonFormatter.parseCompound(str, numberFormat, unitFormat, delimiter, index);
+        }
+        final Number number = numberFormat.parse(str, cursor);
+        if (number == null)
+            throw new IllegalArgumentException("Number cannot be parsed");
+        final String[] parts = str.substring(index).split(delimiter);
+        if (parts.length < 2) {
+            throw new IllegalArgumentException("No Unit found");
+        }
+        final Unit unit = unitFormat.parse(parts[1]);
+        return CompoundQuantity.of(Quantities.getQuantity(number, unit));
+    }
+    
+    protected CompoundQuantity<?> parseCompound(CharSequence csq, int index) throws IllegalArgumentException, MeasurementParseException {
+        return parseCompound(csq, new ParsePosition(index));
+    }
+    
+    public CompoundQuantity<?> parseCompound(CharSequence csq) throws IllegalArgumentException, MeasurementParseException {
+        return parseCompound(csq, 0);
+    }
+    
+    // Private helper methods
+    
     private static int getFractionDigitsCount(double d) {
         if (d >= 1) { // we only need the fraction digits
             d = d - (long) d;
@@ -352,17 +396,4 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
         return count;
     }
 
-    @Override
-    protected StringBuffer formatComposite(CompoundQuantity<?> comp, StringBuffer dest) {
-        final StringBuffer sb = new StringBuffer();
-        int i = 0;
-        for (Quantity<?> q : comp.getQuantities()) {
-            sb.append(format(q));
-            if (i < comp.getQuantities().size() - 1 ) {
-                sb.append((mixDelimiter != null ? mixDelimiter : DEFAULT_DELIMITER)); // we need null for parsing but not
-            }
-            i++;
-        }
-        return sb;
-    }
 }

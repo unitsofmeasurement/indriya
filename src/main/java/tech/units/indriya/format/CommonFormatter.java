@@ -50,7 +50,7 @@ import tech.units.indriya.quantity.Quantities;
  * @since 2.0
  */
 abstract class CommonFormatter {
-    private static final String ERR_PRIMARY_UNIT_NOT_FOUND = "The primary unit <%s> is not part of the compound units <%s>";
+    private static final String ERR_PRIMARY_UNIT_NOT_FOUND = "The primary unit <%s> is not part of the compound units <%s>"; //$NON-NLS-1$
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
     static CompoundQuantity<?> parseCompound(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final String delimiter,
@@ -71,7 +71,6 @@ abstract class CommonFormatter {
                 }
                 Unit unit = unitFormat.parse(parts[1]);
                 if (num != null && unit != null) {
-                    //if (leadUnit == null) leadUnit = unit;
                     quants.add(Quantities.getQuantity(num, unit));
                 }
             }
@@ -93,7 +92,6 @@ abstract class CommonFormatter {
         final String section = str.substring(position);
         final List<Quantity<?>> quants = new ArrayList<>();
         final String[] parts = section.split(delimiter);
-        Unit leadUnit = null;
         if (parts.length < 2) {
             throw new IllegalArgumentException("No Unit found");
         } else {
@@ -106,7 +104,6 @@ abstract class CommonFormatter {
                 }
                 Unit unit = unitFormat.parse(parts[i+1]);
                 if (num != null && unit != null) {
-                    if (leadUnit == null) leadUnit = unit;
                     quants.add(Quantities.getQuantity(num, unit));
                 }
                 i++; // get to next number
@@ -153,7 +150,6 @@ abstract class CommonFormatter {
             throw new IllegalArgumentException(String.format(ERR_PRIMARY_UNIT_NOT_FOUND, primaryUnit, comp.getUnits()));
         }
     }
-    
     
     @SuppressWarnings({ "rawtypes", "unchecked" })
     static Quantity<?> parseCompoundAsPrimary(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final Unit primaryUnit, final String delimiter, final int position) throws IllegalArgumentException, MeasurementParseException {

@@ -36,7 +36,7 @@ import java.math.MathContext;
 import tech.units.indriya.function.Calculus;
 
 /**
- * Internal utility to support then {@link MixedRadixSupport}.
+ * Internal utility for {@link MixedRadixSupport}.
  * 
  * @author Andi Huber
  * @since 2.0

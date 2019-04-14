@@ -116,7 +116,5 @@ public class MixedRadixSupport {
     private int invertIndex(int index) {
         return radices.length - index - 1;
     }
-    
-    
-    
+
 }
