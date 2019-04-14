@@ -29,6 +29,7 @@
  */
 package tech.units.indriya.format;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.*;
 import static javax.measure.BinaryPrefix.*;
 import static javax.measure.MetricPrefix.*;
@@ -107,7 +108,7 @@ public class SimpleUnitFormatTest {
     }
 
     @Test
-    public void testNano() {
+    public void testFormatNano() {
         Unit<Mass> m = NANO(GRAM);
         String s = format.format(m);
         assertEquals("ng", s);
@@ -224,5 +225,29 @@ public class SimpleUnitFormatTest {
     public void testParseM3() {
         Unit<?> u = SimpleUnitFormat.getInstance(ASCII).parse("m3");
         assertEquals("1/l", u.toString());
+    }
+    
+    @Test
+    public void testParseMicro() {
+      Unit<?> u = format.parse("μm");
+      assertEquals(MICRO(METRE), u);
+    }
+    
+    @Test
+    public void testParseMicroAlias() {
+      Unit<?> u = format.parse("\u03bcm");
+      assertEquals(MICRO(METRE), u);
+    }
+    
+    @Test
+    public void testParseMicro2() {
+      Unit<?> u = format.parse("μg");
+      assertEquals(MICRO(GRAM), u);
+    }
+    
+    @Test
+    public void testParseNano() {
+      Unit<?> u = format.parse("ng");
+      assertEquals(NANO(GRAM), u);
     }
 }

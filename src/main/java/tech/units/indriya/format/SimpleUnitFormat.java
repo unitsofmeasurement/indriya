@@ -29,7 +29,6 @@
  */
 package tech.units.indriya.format;
 
-import static javax.measure.MetricPrefix.KILO;
 import static javax.measure.MetricPrefix.MICRO;
 import static tech.units.indriya.format.FormatConstants.MIDDLE_DOT;
 
@@ -81,7 +80,7 @@ import tech.units.indriya.unit.Units;
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
  * @author Eric Russell
- * @version 1.6.5, March 11, 2019
+ * @version 1.7, April 14, 2019
  * @since 1.0
  */
 public abstract class SimpleUnitFormat extends AbstractUnitFormat {
@@ -131,6 +130,8 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
           .collect(Collectors.toList())
           .toArray(new UnitConverter[] {});
 
+  private static final String MU = "\u03bc";
+  
   /**
    * Holds the standard unit format.
    */
@@ -470,9 +471,14 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
     // Returns the unit for the specified name.
     protected Unit<?> unitFor(String name) {
       Unit<?> unit = nameToUnit.get(name);
-      if (unit != null)
+      if (unit != null) {
         return unit;
-      unit = SYMBOL_TO_UNIT.get(name);
+      } else {
+          unit = SYMBOL_TO_UNIT.get(name);
+      }
+      System.out.println(name);
+      System.out.println(SYMBOL_TO_UNIT.containsKey(name));
+      System.out.println("μg".equals(name));
       return unit;
     }
 
@@ -913,6 +919,10 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
   private static String asciiPrefix(String prefix) {
     return "µ".equals(prefix) ? "micro" : prefix;
   }
+  
+  private static String asciiSymbol(String s) {
+      return "Ω".equals(s) ? "Ohm" : s;
+   }
 
   /** to check if a string only contains US-ASCII characters */
   protected static boolean isAllASCII(String input) {
@@ -939,7 +949,8 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
         Unit<?> u = si.prefix(MetricPrefix.values()[j]);
         DEFAULT.label(u, METRIC_PREFIX_SYMBOLS[j] + symbol);
         if ( "µ".equals(METRIC_PREFIX_SYMBOLS[j]) ) {
-          ASCII.label(u, "micro"); // + symbol);
+          DEFAULT.label(u, MU + symbol);
+          ASCII.label(u, "micro" + asciiSymbol(symbol));
         }
       } // TODO what about BINARY_PREFIX here?
     }
@@ -948,19 +959,28 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
     
     ASCII.label(Units.GRAM, "g");
     DEFAULT.label(Units.GRAM, "g");
-    for(Prefix prefix : MetricPrefix.values()) {
-      if(prefix==KILO) {
-        DEFAULT.label(Units.KILOGRAM, "kg");
-        ASCII.label(Units.KILOGRAM, "kg");
-        continue;
-      }
-      if(prefix==MICRO) {
-        ASCII.label(MICRO(Units.LITRE), "microg"); // instead of 'µg' -> 'microg'
-      } else {
-        ASCII.label(Units.GRAM.prefix(prefix), prefix.getSymbol()+"g");
-      }
-      DEFAULT.label(Units.GRAM.prefix(prefix), prefix.getSymbol()+"g");
+    for(MetricPrefix prefix : MetricPrefix.values()) {
+        switch (prefix) {
+         case KILO:
+            DEFAULT.label(Units.KILOGRAM, "kg");
+            ASCII.label(Units.KILOGRAM, "kg");
+            break;
+         case MICRO:
+            DEFAULT.label(Units.GRAM.prefix(prefix), prefix.getSymbol()+"g");
+            ASCII.label(MICRO(Units.LITRE), "microg"); // instead of 'µg' -> 'microg'
+            break;
+          default:
+            ASCII.label(Units.GRAM.prefix(prefix), prefix.getSymbol()+"g");
+            DEFAULT.label(Units.GRAM.prefix(prefix), prefix.getSymbol()+"g");
+            break;
+        }
     }
+    
+    DEFAULT.label(MICRO(Units.GRAM), MetricPrefix.MICRO.getSymbol() + "g");
+    // Hack, somehow µg is not found.
+    SYMBOL_TO_UNIT.put(MetricPrefix.MICRO.getSymbol() + "g", MICRO(Units.GRAM));
+    SYMBOL_TO_UNIT.put("μg", MICRO(Units.GRAM));
+    SYMBOL_TO_UNIT.put(MU + "g", MICRO(Units.GRAM));
 
     // Alias and ASCIIFormat for Ohm
     DEFAULT.alias(Units.OHM, "Ohm");
