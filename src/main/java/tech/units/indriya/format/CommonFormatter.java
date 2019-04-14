@@ -50,7 +50,8 @@ import tech.units.indriya.quantity.Quantities;
  * @since 2.0
  */
 abstract class CommonFormatter {
-
+    private static final String ERR_PRIMARY_UNIT_NOT_FOUND = "The primary unit <%s> is not part of the compound units <%s>";
+    
     @SuppressWarnings({ "unchecked", "rawtypes" })
     static CompoundQuantity<?> parseCompound(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final String delimiter,
             final String mixDelimiter, final int position) throws IllegalArgumentException, MeasurementParseException {
@@ -88,6 +89,7 @@ abstract class CommonFormatter {
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
     static CompoundQuantity<?> parseCompound(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final String delimiter, final int position) throws IllegalArgumentException, MeasurementParseException {
+        Objects.requireNonNull(str);
         final String section = str.substring(position);
         final List<Quantity<?>> quants = new ArrayList<>();
         final String[] parts = section.split(delimiter);
@@ -120,7 +122,7 @@ abstract class CommonFormatter {
         return parseCompound(str, numberFormat, unitFormat, delimiter, 0);
     }
     
-    // Fusion into Quantity
+    // Decompose into Quantity
     
     @SuppressWarnings("unchecked")
     static  Quantity<?> parseCompoundAsLeading(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final String delimiter, final String compDelim, final int position) throws IllegalArgumentException, MeasurementParseException {
@@ -144,13 +146,23 @@ abstract class CommonFormatter {
     
     @SuppressWarnings({ "rawtypes", "unchecked" })
     static Quantity<?> parseCompoundAsPrimary(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final Unit primaryUnit, final String delimiter, final String compDelim, final int position) throws IllegalArgumentException, MeasurementParseException {
-        return parseCompound(str, numberFormat, unitFormat, delimiter, compDelim, position).to(primaryUnit);
+        final CompoundQuantity<?> comp = parseCompound(str, numberFormat, unitFormat, delimiter, compDelim, position);
+        if (comp.getUnits().contains(primaryUnit)) {
+            return comp.to(primaryUnit);
+        } else {
+            throw new IllegalArgumentException(String.format(ERR_PRIMARY_UNIT_NOT_FOUND, primaryUnit, comp.getUnits()));
+        }
     }
     
     
     @SuppressWarnings({ "rawtypes", "unchecked" })
     static Quantity<?> parseCompoundAsPrimary(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final Unit primaryUnit, final String delimiter, final int position) throws IllegalArgumentException, MeasurementParseException {
-        return parseCompound(str, numberFormat, unitFormat, delimiter, position).to(primaryUnit);
+        final CompoundQuantity<?> comp = parseCompound(str, numberFormat, unitFormat, delimiter, position);
+        if (comp.getUnits().contains(primaryUnit)) {
+            return comp.to(primaryUnit);
+        } else {
+            throw new IllegalArgumentException(String.format(ERR_PRIMARY_UNIT_NOT_FOUND, primaryUnit, comp.getUnits()));
+        }
     }
     
     static Quantity<?> parseCompoundAsPrimary(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, @SuppressWarnings("rawtypes") final Unit primaryUnit, final String delimiter) throws IllegalArgumentException, MeasurementParseException {

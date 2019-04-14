@@ -128,7 +128,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
         }
         
         /**
-         * Sets the primary unit parameter to the given {@code Unit}.
+         * Sets the primary unit parameter for multiple {@link CompoundQuantity mixed quantities} to the given {@code Unit}.
          * @param primary the primary {@link Unit}
          * @throws NullPointerException if {@code primary} is {@code null}
          * @return this {@code NumberDelimiterQuantityFormat.Builder}
@@ -156,7 +156,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
         }
 
         /**
-         * Sets the mix delimiter between multiple {@link MixedQuantity mixed quantities}.
+         * Sets the mix delimiter between multiple {@link CompoundQuantity mixed quantities}.
          * @param mixDelimiter the delimiter to use
          * @throws NullPointerException if {@code mixDelimiter} is {@code null}
          * @return this {@code NumberDelimiterQuantityFormat.Builder}

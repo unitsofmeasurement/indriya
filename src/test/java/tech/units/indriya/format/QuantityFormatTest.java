@@ -37,6 +37,8 @@ import static tech.units.indriya.unit.Units.*;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.ParsePosition;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import javax.measure.Quantity;
@@ -328,8 +330,6 @@ public class QuantityFormatTest {
         Quantity<?> parsed1 = format1.parse("1 m;30 cm");
         assertEquals(1.3d, parsed1.getValue());
         assertEquals(METRE, parsed1.getUnit());
-//        assertTrue(parsed1 instanceof MixedQuantity);
-//        assertEquals(2, ((MixedQuantity<?>)parsed1).getValues().length);
     }
  
     @Test
@@ -342,10 +342,50 @@ public class QuantityFormatTest {
         Quantity<?> parsed1 = format1.parse("1 m 30 cm");
         assertEquals(1.3d, parsed1.getValue());
         assertEquals(METRE, parsed1.getUnit());
-        //assertTrue(parsed1 instanceof MixedQuantity);
-        //assertEquals(2, ((MixedQuantity<?>)parsed1).getValues().length);
     }
-   
+    
+    @Test
+    public void testParseCompNumDelimiterSameDelimPrimaryUnitLen() {
+        final QuantityFormat format1 = new NumberDelimiterQuantityFormat.Builder()
+                .setNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH))
+                .setUnitFormat(SimpleUnitFormat.getInstance())
+                .setDelimiter(" ").setMixDelimiter(" ")
+                .setPrimaryUnit((CENTI(METRE)))
+                .build();
+        Quantity<?> parsed1 = format1.parse("1 m 30 cm");
+        assertEquals(130l, parsed1.getValue());
+        assertEquals(CENTI(METRE), parsed1.getUnit());
+    }
+    
+    @Test
+    public void testParseCompNumDelimiterSameDelimWrongPrimaryUnitLen() {
+        final QuantityFormat format1 = new NumberDelimiterQuantityFormat.Builder()
+                .setNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH))
+                .setUnitFormat(SimpleUnitFormat.getInstance())
+                .setPrimaryUnit((KILO(METRE)))
+                .setDelimiter(" ").setMixDelimiter(" ")
+                .build();
+        
+        assertThrows(IllegalArgumentException.class, () -> {
+            @SuppressWarnings("unused")
+            Quantity<?> parsed1 = format1.parse("1 m 30 cm");
+        });
+    }
+    
+    @Test
+    public void testParseCompNumDelimiterSameDelimWrongPrimaryUnitQuantityLen() {
+        final QuantityFormat format1 = new NumberDelimiterQuantityFormat.Builder()
+                .setNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH))
+                .setUnitFormat(SimpleUnitFormat.getInstance())
+                .setPrimaryUnit(KILOGRAM)
+                .setDelimiter(" ").setMixDelimiter(" ")
+                .build();
+        
+        assertThrows(IllegalArgumentException.class, () -> {
+            @SuppressWarnings("unused")
+            Quantity<?> parsed1 = format1.parse("1 m 30 cm");
+        });
+    }
     
     @Test
     public void testFormatCompDelims() {
@@ -354,10 +394,35 @@ public class QuantityFormatTest {
                 .setUnitFormat(SimpleUnitFormat.getInstance())
                 .setDelimiter("_").setMixDelimiter(" ")
                 .build();
+        final CompoundQuantity<Length> l1 = CompoundQuantity.of(Quantities.getQuantity(1, Units.METRE), 
+                                                          Quantities.getQuantity(70, CENTI(Units.METRE)));
+        assertEquals("1_m 70_cm", format1.format(l1));
+    }
+    
+    @Test
+    public void testFormatCompDelimsArray() {
+        final NumberDelimiterQuantityFormat format1 = new NumberDelimiterQuantityFormat.Builder()
+                .setNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH))
+                .setUnitFormat(SimpleUnitFormat.getInstance())
+                .setDelimiter("_").setMixDelimiter(" ")
+                .build();
         @SuppressWarnings("unchecked")
         final Quantity<Length>[] quants = new Quantity[] { Quantities.getQuantity(1, Units.METRE),  Quantities.getQuantity(70, CENTI(Units.METRE)) };
-        CompoundQuantity<Length> l1 = CompoundQuantity.of(quants);
-
+        final CompoundQuantity<Length> l1 = CompoundQuantity.of(quants);
+        assertEquals("1_m 70_cm", format1.format(l1));
+    }
+    
+    @Test
+    public void testFormatCompDelimsList() {
+        final NumberDelimiterQuantityFormat format1 = new NumberDelimiterQuantityFormat.Builder()
+                .setNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH))
+                .setUnitFormat(SimpleUnitFormat.getInstance())
+                .setDelimiter("_").setMixDelimiter(" ")
+                .build();
+        final List<Quantity<Length>> quants = new ArrayList<>();
+        quants.add(Quantities.getQuantity(1, Units.METRE));
+        quants.add(Quantities.getQuantity(70, CENTI(Units.METRE)));
+        final CompoundQuantity<Length> l1 = CompoundQuantity.of(quants);
         assertEquals("1_m 70_cm", format1.format(l1));
     }
     
