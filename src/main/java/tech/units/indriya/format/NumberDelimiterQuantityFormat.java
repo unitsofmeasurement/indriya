@@ -97,7 +97,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
         private transient UnitFormat unitFormat;
         private transient Unit primaryUnit;
         private transient String delimiter = DEFAULT_DELIMITER;
-        private transient String mixDelimiter;
+        private transient String mixedRadixDelimiter;
         private boolean localeSensitive;
 
         /**
@@ -157,16 +157,16 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
         }
 
         /**
-         * Sets the mix delimiter between multiple {@link CompoundQuantity mixed quantities}.
-         * @param mixDelimiter the delimiter to use
-         * @throws NullPointerException if {@code mixDelimiter} is {@code null}
+         * Sets the radix delimiter between multiple {@link CompoundQuantity mixed quantities}.
+         * @param radixPartsDelimiter the delimiter to use
+         * @throws NullPointerException if {@code radixPartsDelimiter} is {@code null}
          * @return this {@code NumberDelimiterQuantityFormat.Builder}
          */
-        public Builder setMixDelimiter(String mixDelimiter) {
-            if (mixDelimiter == null) {
+        public Builder setRadixPartsDelimiter(String radixPartsDelimiter) {
+            if (radixPartsDelimiter == null) {
                 throw new NullPointerException();
             }
-            this.mixDelimiter = mixDelimiter;
+            this.mixedRadixDelimiter = radixPartsDelimiter;
             return this;
         }
 
@@ -187,7 +187,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
             quantityFormat.unitFormat = this.unitFormat;
             quantityFormat.primaryUnit = this.primaryUnit;
             quantityFormat.delimiter = this.delimiter;
-            quantityFormat.mixDelimiter = this.mixDelimiter;
+            quantityFormat.mixDelimiter = this.mixedRadixDelimiter;
             quantityFormat.localeSensitive = this.localeSensitive;
             return quantityFormat;
         }

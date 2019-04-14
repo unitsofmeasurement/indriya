@@ -145,7 +145,7 @@ public class CompoundQuantityFormatTest {
                 .setNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH))
                 .setUnitFormat(SimpleUnitFormat.getInstance())
                 .setDelimiter(" ")
-                .setMixDelimiter(";")
+                .setRadixPartsDelimiter(";")
                 .build();
         Quantity<?> parsed1 = format1.parse("1 m;30 cm");
         assertEquals(1.3d, parsed1.getValue());
@@ -157,7 +157,7 @@ public class CompoundQuantityFormatTest {
         final QuantityFormat format1 = new NumberDelimiterQuantityFormat.Builder()
                 .setNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH))
                 .setUnitFormat(SimpleUnitFormat.getInstance())
-                .setDelimiter(" ").setMixDelimiter(" ")
+                .setDelimiter(" ").setRadixPartsDelimiter(" ")
                 .build();
         Quantity<?> parsed1 = format1.parse("1 m 30 cm");
         assertEquals(1.3d, parsed1.getValue());
@@ -169,7 +169,7 @@ public class CompoundQuantityFormatTest {
         final QuantityFormat format1 = new NumberDelimiterQuantityFormat.Builder()
                 .setNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH))
                 .setUnitFormat(SimpleUnitFormat.getInstance())
-                .setDelimiter(" ").setMixDelimiter(" ")
+                .setDelimiter(" ").setRadixPartsDelimiter(" ")
                 .setPrimaryUnit((CENTI(METRE)))
                 .build();
         Quantity<?> parsed1 = format1.parse("1 m 30 cm");
@@ -183,7 +183,7 @@ public class CompoundQuantityFormatTest {
                 .setNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH))
                 .setUnitFormat(SimpleUnitFormat.getInstance())
                 .setPrimaryUnit((KILO(METRE)))
-                .setDelimiter(" ").setMixDelimiter(" ")
+                .setDelimiter(" ").setRadixPartsDelimiter(" ")
                 .build();
         
         assertThrows(IllegalArgumentException.class, () -> {
@@ -198,7 +198,7 @@ public class CompoundQuantityFormatTest {
                 .setNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH))
                 .setUnitFormat(SimpleUnitFormat.getInstance())
                 .setPrimaryUnit(KILOGRAM)
-                .setDelimiter(" ").setMixDelimiter(" ")
+                .setDelimiter(" ").setRadixPartsDelimiter(" ")
                 .build();
         
         assertThrows(IllegalArgumentException.class, () -> {
@@ -212,7 +212,7 @@ public class CompoundQuantityFormatTest {
         final NumberDelimiterQuantityFormat format1 = new NumberDelimiterQuantityFormat.Builder()
                 .setNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH))
                 .setUnitFormat(SimpleUnitFormat.getInstance())
-                .setDelimiter("_").setMixDelimiter(" ")
+                .setDelimiter("_").setRadixPartsDelimiter(" ")
                 .build();
         final CompoundQuantity<Length> l1 = CompoundQuantity.of(Quantities.getQuantity(1, Units.METRE), 
                                                           Quantities.getQuantity(70, CENTI(Units.METRE)));
@@ -224,7 +224,7 @@ public class CompoundQuantityFormatTest {
         final NumberDelimiterQuantityFormat format1 = new NumberDelimiterQuantityFormat.Builder()
                 .setNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH))
                 .setUnitFormat(SimpleUnitFormat.getInstance())
-                .setDelimiter("_").setMixDelimiter(" ")
+                .setDelimiter("_").setRadixPartsDelimiter(" ")
                 .build();
         @SuppressWarnings("unchecked")
         final Quantity<Length>[] quants = new Quantity[] { Quantities.getQuantity(1, Units.METRE),  Quantities.getQuantity(70, CENTI(Units.METRE)) };
@@ -237,7 +237,7 @@ public class CompoundQuantityFormatTest {
         final NumberDelimiterQuantityFormat format1 = new NumberDelimiterQuantityFormat.Builder()
                 .setNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH))
                 .setUnitFormat(SimpleUnitFormat.getInstance())
-                .setDelimiter("_").setMixDelimiter(" ")
+                .setDelimiter("_").setRadixPartsDelimiter(" ")
                 .build();
         final List<Quantity<Length>> quants = new ArrayList<>();
         quants.add(Quantities.getQuantity(1, Units.METRE));
@@ -251,7 +251,7 @@ public class CompoundQuantityFormatTest {
         final NumberDelimiterQuantityFormat format1 = new NumberDelimiterQuantityFormat.Builder()
                 .setNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH))
                 .setUnitFormat(SimpleUnitFormat.getInstance())
-                .setDelimiter("_").setMixDelimiter(" ")
+                .setDelimiter("_").setRadixPartsDelimiter(" ")
                 .build();
         @SuppressWarnings("unchecked")
         final Quantity<Length>[] quants = new Quantity[] { Quantities.getQuantity(1, Units.METRE),  Quantities.getQuantity(70, CENTI(Units.METRE)) };
@@ -273,7 +273,7 @@ public class CompoundQuantityFormatTest {
                 .setNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH))
                 .setUnitFormat(SimpleUnitFormat.getInstance())
                 .setDelimiter(" ")
-                .setMixDelimiter(";")
+                .setRadixPartsDelimiter(";")
                 .build();
         final CompoundQuantity<?> parsed1 = format1.parseCompound("1 m;30 cm");
         assertNotNull(parsed1);
@@ -287,7 +287,7 @@ public class CompoundQuantityFormatTest {
         final NumberDelimiterQuantityFormat format1 = new NumberDelimiterQuantityFormat.Builder()
             .setNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH))
             .setUnitFormat(SimpleUnitFormat.getInstance())
-            .setDelimiter(" ").setMixDelimiter(":").build();
+            .setDelimiter(" ").setRadixPartsDelimiter(":").build();
         final CompoundQuantity<?> parsed1 = format1.parseCompound("1 h:40 min:10 s");
         assertThat(parsed1.getUnits(), hasSize(3));
         assertThat(parsed1.getUnits(), contains(Units.HOUR, Units.MINUTE, Units.SECOND));
