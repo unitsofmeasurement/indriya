@@ -55,8 +55,8 @@ import tech.uom.lib.common.function.QuantityConverter;
  * @param <Q>
  *            The type of the quantity.
  * 
- * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.1, April 12, 2019
+ * @author <a href="mailto:werner@units.tech">Werner Keil</a>
+ * @version 1.2, April 14, 2019
  * @see <a href="http://www.thefreedictionary.com/Compound+quantity">Free Dictionary: Compound Quantity</a>
  */
 public class CompoundQuantity<Q extends Quantity<Q>> implements QuantityConverter<Q>, Serializable {
@@ -150,17 +150,18 @@ public class CompoundQuantity<Q extends Quantity<Q>> implements QuantityConverte
 
     /**
      * Returns the <b>sum</b> of all quantity values in this CompositeQuantity converted into another (compatible) unit.
-     * 
+     * @param unit
+     *            the {@code Unit unit} in which the returned quantity is stated.
      * @return the sum of all quantities in this CompositeQuantity or a new quantity stated in the specified unit.
      * @throws ArithmeticException
      *             if the result is inexact and the quotient has a non-terminating decimal expansion.
-     * @throws MeasurementException
+     * @throws IllegalArgumentException
      *             if this CompositeQuantity is empty or contains only <code>null</code> values.
      */
     @Override
-    public Quantity<Q> to(Unit<Q> type) {
+    public Quantity<Q> to(Unit<Q> unit) {
         if (quantMap.isEmpty()) {
-            throw new MeasurementException("No quantity found, cannot convert an empty value");
+            throw new IllegalArgumentException("No quantity found, cannot convert an empty value");
         }
         Quantity<Q> result = null;
         for (Quantity<Q> q : quantMap.values()) {
@@ -170,7 +171,7 @@ public class CompoundQuantity<Q extends Quantity<Q>> implements QuantityConverte
                 result = result.add(q);
             }
         }
-        return result.to(type);
+        return result.to(unit);
     }
 
     /**

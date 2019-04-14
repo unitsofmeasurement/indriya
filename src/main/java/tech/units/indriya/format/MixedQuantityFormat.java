@@ -52,6 +52,7 @@ import tech.units.indriya.function.MixedRadix;
  * @author Werner Keil
  * @version 1.1
  * @since 2.0
+ * @deprecated The mixed-radix information should be used to calculate between quantities making up a mixed/compound quantity, but forcing a particular quantity type Q into formatting and parsing seems cumbersome, because it would require a new instance of this format every time you come across a different value type, even if everything else (format parts, delimiters,...) does not change.
  */
 public class MixedQuantityFormat<Q extends Quantity<Q>> implements QuantityFormat {
     

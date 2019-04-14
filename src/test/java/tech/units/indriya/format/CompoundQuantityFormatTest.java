@@ -179,7 +179,7 @@ public class CompoundQuantityFormatTest {
     
     @Test
     public void testParseCompSingleNumDelimSameDelimWrongPrimaryUnitLen() {
-        final QuantityFormat format1 = new NumberDelimiterQuantityFormat.Builder()
+        final QuantityFormat format1 = NumberDelimiterQuantityFormat.builder()
                 .setNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH))
                 .setUnitFormat(SimpleUnitFormat.getInstance())
                 .setPrimaryUnit((KILO(METRE)))
@@ -194,7 +194,7 @@ public class CompoundQuantityFormatTest {
     
     @Test
     public void testParseCompSingleNumDelimSameDelimWrongPrimaryUnitQuantityLen() {
-        final QuantityFormat format1 = new NumberDelimiterQuantityFormat.Builder()
+        final QuantityFormat format1 = NumberDelimiterQuantityFormat.builder()
                 .setNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH))
                 .setUnitFormat(SimpleUnitFormat.getInstance())
                 .setPrimaryUnit(KILOGRAM)

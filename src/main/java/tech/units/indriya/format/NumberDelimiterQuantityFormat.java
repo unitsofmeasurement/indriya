@@ -50,10 +50,10 @@ import tech.units.indriya.quantity.Quantities;
  * An implementation of {@link javax.measure.format.QuantityFormat QuantityFormat} combining {@linkplain NumberFormat} and {@link UnitFormat}
  * separated by a delimiter.
  *
- * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
+ * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author <a href="mailto:thodoris.bais@gmail.com">Thodoris Bais</a>
  *
- * @version 1.8, $Date: 2019-04-13 $
+ * @version 1.9, $Date: 2019-04-14 $
  * @since 2.0
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -214,6 +214,15 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
         }
     }
 
+    /**
+     * Returns a new instance of {@link Builder}.
+     *
+     * @return a new {@link Builder}.
+     */
+    public static final Builder builder() {
+        return new Builder();
+    }
+    
     /**
      * Returns the default format.
      *

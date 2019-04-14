@@ -73,9 +73,9 @@ import tech.units.indriya.quantity.Quantities;
  *         <td><code>m</code>
  *    <tr>
  *         <td><code>~</code>
- *         <td>Mix
+ *         <td>Mixed radix
  *         <td><a href="#text">Text</a>
- *         <td><code>m</code>; <code>cm</code>
+ *         <td><code>1 m</code>; 27 <code>cm</code>
  * </tbody>
  * </table>
  * </blockquote>
@@ -93,9 +93,12 @@ import tech.units.indriya.quantity.Quantities;
  *     number of digits, and shorter numbers are zero-padded to this amount.
  *     For parsing, the number of pattern letters is ignored unless
  *     it's needed to separate two adjacent fields.<br><br></li>
+ *     
+ *<li><strong><a id="radix">Mixed Radix:</a></strong>
+ *     The Mixed radix marker <code>"~"</code> is followed by a character sequence acting as mixed radix delimiter. This character sequence must not contain <code>"~"</code> itself or any numeric values.<br></li>
  * </ul>
  * </p>
- * @version 1.3.1, $Date: 2019-04-12 $
+ * @version 1.4, $Date: 2019-04-14 $
  * @since 2.0
  */
 @SuppressWarnings("rawtypes")
@@ -107,7 +110,7 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
 
 	private static final String NUM_PART = "n";
 	private static final String UNIT_PART = "u";
-	private static final String MIXER = "~";
+	private static final String RADIX = "~";
 	
 	/**
 	 * The pattern string of this formatter. This is always a non-localized pattern.
@@ -140,9 +143,9 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
 	public SimpleQuantityFormat(String pattern) {
 		this.pattern = pattern;
 		if (pattern != null && !pattern.isEmpty()) {
-		   if (pattern.contains(MIXER)) {
-		       final String singlePattern = pattern.substring(0, pattern.indexOf(MIXER));
-		       mixDelimiter = pattern.substring(pattern.indexOf(MIXER) + 1);
+		   if (pattern.contains(RADIX)) {
+		       final String singlePattern = pattern.substring(0, pattern.indexOf(RADIX));
+		       mixDelimiter = pattern.substring(pattern.indexOf(RADIX) + 1);
 		       delimiter = singlePattern.substring(pattern.indexOf(NUM_PART)+1, pattern.indexOf(UNIT_PART));
 		   } else {
 		       delimiter = pattern.substring(pattern.indexOf(NUM_PART)+1, pattern.indexOf(UNIT_PART));
