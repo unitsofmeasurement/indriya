@@ -80,7 +80,7 @@ import tech.units.indriya.unit.Units;
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
  * @author Eric Russell
- * @version 1.4, April 26, 2018
+ * @version 1.5, April 15, 2019
  * @since 1.0
  */
 public abstract class SimpleUnitFormat extends AbstractUnitFormat {
@@ -888,8 +888,14 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
    */
   private static final Map<String, Unit<?>> SYMBOL_TO_UNIT = new HashMap<>();
 
+  private static final String MU = "\u03bc";
+  
   private static String asciiPrefix(String prefix) {
     return "µ".equals(prefix) ? "micro" : prefix;
+  }
+  
+  private static String asciiSymbol(String s) {
+     return "Ω".equals(s) ? "Ohm" : s;
   }
 
   /** to check if a string only contains US-ASCII characters */
@@ -917,7 +923,8 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
         AbstractUnit<?> u = si.prefix(PREFIXES[j]);
         DEFAULT.label(u, PREFIX_SYMBOLS[j] + symbol);
         if ( "µ".equals(PREFIX_SYMBOLS[j]) ) {
-          ASCII.label(u, "micro"); // + symbol);
+          DEFAULT.alias(u, MU + symbol);
+          ASCII.label(u, "micro" + asciiSymbol(symbol));
         }
       }
     }
@@ -925,15 +932,19 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
     // Special case for KILOGRAM.
     DEFAULT.label(Units.GRAM, "g");
     for (int i = 0; i < PREFIX_SYMBOLS.length; i++) {
-      if (PREFIX_CONVERTERS[i] == MultiplyConverter.of(KILO)) // TODO should it better
-        // be equals()?
-        continue; // kg is already defined.
-      
+      if (MultiplyConverter.of(KILO).equals(PREFIX_CONVERTERS[i]))
+         continue; // kg is already defined.
       DEFAULT.label(Units.KILOGRAM.prefix(PREFIXES[i]).prefix(MILLI), PREFIX_SYMBOLS[i] + "g");
       if ( "µ".equals(PREFIX_SYMBOLS[i]) ) {
         ASCII.label(Units.KILOGRAM.prefix(PREFIXES[i]).prefix(MILLI), "microg");
       }
     }
+    
+    // Hack, somehow µg is not found.
+    SYMBOL_TO_UNIT.put(MICRO.getSymbol() + "g", MICRO(Units.GRAM));
+    SYMBOL_TO_UNIT.put("μg", MICRO(Units.GRAM));
+    SYMBOL_TO_UNIT.put(MU + "g", MICRO(Units.GRAM));
+
 
     // Alias and ASCIIFormat for Ohm
     DEFAULT.alias(Units.OHM, "Ohm");

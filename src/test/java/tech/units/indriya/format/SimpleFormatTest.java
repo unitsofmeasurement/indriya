@@ -29,7 +29,7 @@
  */
 package tech.units.indriya.format;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.Assert.assertEquals;
 import static tech.units.indriya.unit.MetricPrefix.*;
 import static tech.units.indriya.unit.Units.GRAM;
 import static tech.units.indriya.unit.Units.HERTZ;
@@ -122,4 +122,23 @@ public class SimpleFormatTest {
     final String s = format.format(ANGSTROEM);
     assertEquals(ANGSTROEM_SYM, s);
   }
+  
+  @Test
+  public void testParseMicro() {
+    Unit<?> u = format.parse("µm");
+    assertEquals(MICRO(METRE), u);
+  }
+  
+  @Test
+  public void testParseMicroAlias() {
+    Unit<?> u = format.parse("\u03bcm");
+    assertEquals(MICRO(METRE), u);
+  }
+  
+  @Test
+  public void testParseMicro2() {
+    Unit<?> u = format.parse("μg");
+    assertEquals(MICRO(GRAM), u);
+  }
+  
 }
