@@ -427,4 +427,5 @@
 			</pluginRepositories>
 		</profile>
 	</profiles>
+	<version>1.4-SNAPSHOT</version>
 </project>
