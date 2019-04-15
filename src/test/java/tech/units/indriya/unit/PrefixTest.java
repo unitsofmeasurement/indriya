@@ -126,7 +126,7 @@ public class PrefixTest {
 
     Quantity<Length> m2 = m1.to(MICRO(Units.METRE));
     assertEquals(1000000.0d, m2.getValue());
-    assertEquals("µm", m2.getUnit().toString());
+    assertEquals("μm", m2.getUnit().toString());
   }
 
   @Test

@@ -476,9 +476,6 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
       } else {
           unit = SYMBOL_TO_UNIT.get(name);
       }
-      System.out.println(name);
-      System.out.println(SYMBOL_TO_UNIT.containsKey(name));
-      System.out.println("μg".equals(name));
       return unit;
     }
 
