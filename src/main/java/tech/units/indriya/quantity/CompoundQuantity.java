@@ -73,7 +73,7 @@ public class CompoundQuantity<Q extends Quantity<Q>> implements QuantityConverte
      * @throws NullPointerException
      *             if the given quantities are <code>null</code>.
     * @throws MeasurementException
-    *             if this CompositeQuantity is empty or contains only <code>null</code> values.
+    *             if this CompoundQuantity is empty or contains only <code>null</code> values.
     */
     protected CompoundQuantity(final List<Quantity<Q>> quantities) {
         Objects.requireNonNull(quantities);
@@ -88,7 +88,7 @@ public class CompoundQuantity<Q extends Quantity<Q>> implements QuantityConverte
     }
 
     /**
-     * Returns an {@code CompositeQuantity} with the specified values.
+     * Returns an {@code CompoundQuantity} with the specified values.
      * 
      * @param <Q>
      *            The type of the quantity.
@@ -99,7 +99,7 @@ public class CompoundQuantity<Q extends Quantity<Q>> implements QuantityConverte
     }
     
     /**
-     * Returns an {@code CompositeQuantity} with the specified values.
+     * Returns an {@code CompoundQuantity} with the specified values.
      * 
      * @param <Q>
      *            The type of the quantity.
@@ -109,7 +109,7 @@ public class CompoundQuantity<Q extends Quantity<Q>> implements QuantityConverte
     }
 
     /**
-     * Gets the set of units in this CompositeQuantity.
+     * Gets the set of units in this CompoundQuantity.
      * <p>
      * This set can be used in conjunction with {@link #get(Unit)} to access the entire quantity.
      *
@@ -120,7 +120,7 @@ public class CompoundQuantity<Q extends Quantity<Q>> implements QuantityConverte
     }
 
     /**
-     * Gets quantities in this CompositeQuantity.
+     * Gets quantities in this CompoundQuantity.
      *
      * @return a collection containing the quantities, not null
      */
@@ -131,7 +131,7 @@ public class CompoundQuantity<Q extends Quantity<Q>> implements QuantityConverte
     /**
      * Gets the Quantity of the requested Unit.
      * <p>
-     * This returns a value for each Unit in this CompositeQuantity. Or <type>null</type> if the given unit is not included.
+     * This returns a value for each Unit in this CompoundQuantity. Or <type>null</type> if the given unit is not included.
      *
      */
     public Quantity<Q> get(Unit<Q> unit) {
@@ -149,14 +149,14 @@ public class CompoundQuantity<Q extends Quantity<Q>> implements QuantityConverte
     }
 
     /**
-     * Returns the <b>sum</b> of all quantity values in this CompositeQuantity converted into another (compatible) unit.
+     * Returns the <b>sum</b> of all quantity values in this CompoundQuantity converted into another (compatible) unit.
      * @param unit
      *            the {@code Unit unit} in which the returned quantity is stated.
-     * @return the sum of all quantities in this CompositeQuantity or a new quantity stated in the specified unit.
+     * @return the sum of all quantities in this CompoundQuantity or a new quantity stated in the specified unit.
      * @throws ArithmeticException
      *             if the result is inexact and the quotient has a non-terminating decimal expansion.
      * @throws IllegalArgumentException
-     *             if this CompositeQuantity is empty or contains only <code>null</code> values.
+     *             if this CompoundQuantity is empty or contains only <code>null</code> values.
      */
     @Override
     public Quantity<Q> to(Unit<Q> unit) {
