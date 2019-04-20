@@ -48,7 +48,7 @@ import tech.units.indriya.quantity.CompoundQuantity;
 import tech.units.indriya.quantity.Quantities;
 
 /**
- * Immutable class that represents multi-radix units (like "hour:min:sec" or "ft, in")
+ * Immutable class that represents mixed-radix units (like "hour:min:sec" or "ft, in")
  * 
  * 
  * @author Andi Huber
@@ -58,9 +58,11 @@ import tech.units.indriya.quantity.Quantities;
  * @see <a href="https://en.wikipedia.org/wiki/Mixed_radix">Wikipedia: Mixed radix</a>
  * @see <a href="https://reference.wolfram.com/language/ref/MixedUnit.html">Wolfram Language & System: MixedUnit</a>
  * @see <a href="https://en.wikipedia.org/wiki/Metrication">Wikipedia: Metrication</a>
+ * @see CompoundQuantity
  */
 public class MixedRadix<Q extends Quantity<Q>> {
-
+// TODO could it be final or is there a use case for extending it?
+	
     // -- PRIVATE FIELDS 
 
     private final PrimaryUnitPickState pickState; 

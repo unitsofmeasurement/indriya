@@ -28,8 +28,8 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * This package provides <a href="http://docs.oracle.com/javase/8/docs/api/java/util/function/package-summary.html#package.description"
- * >functional interfaces</a>.
+ * This package provides <a href="http://docs.oracle.com/javase/9/docs/api/java/util/function/package-summary.html#package.description"
+ * >functional interfaces</a> and other functions including unit or quantity conversion.
  */
 package tech.units.indriya.function;
 

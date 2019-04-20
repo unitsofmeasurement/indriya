@@ -56,7 +56,7 @@ import tech.uom.lib.common.function.QuantityConverter;
  *            The type of the quantity.
  * 
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 1.2, April 14, 2019
+ * @version 1.3, April 20, 2019
  * @see <a href="http://www.thefreedictionary.com/Compound+quantity">Free Dictionary: Compound Quantity</a>
  */
 public class CompoundQuantity<Q extends Quantity<Q>> implements QuantityConverter<Q>, Serializable {

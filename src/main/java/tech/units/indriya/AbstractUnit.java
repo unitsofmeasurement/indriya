@@ -239,7 +239,7 @@ public abstract class AbstractUnit<Q extends Quantity<Q>> implements ComparableU
    *
    * @param that
    *            the other unit.
-   * @return <code>true</code> if this unit and that unit have equals fundamental dimension according to the current physics model;
+   * @return <code>true</code> if this unit and that unit have the same fundamental dimension according to the current dimensional model;
    *         <code>false</code> otherwise.
    */
   @Override
