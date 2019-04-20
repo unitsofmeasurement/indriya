@@ -53,7 +53,7 @@ import tech.units.indriya.quantity.Quantities;
  * 
  * @author Andi Huber
  * @author Werner Keil
- * @version 1.5
+ * @version 1.6
  * @since 2.0
  * @see <a href="https://en.wikipedia.org/wiki/Mixed_radix">Wikipedia: Mixed radix</a>
  * @see <a href="https://reference.wolfram.com/language/ref/MixedUnit.html">Wolfram Language & System: MixedUnit</a>
@@ -129,11 +129,7 @@ public class MixedRadix<Q extends Quantity<Q>> {
         return primaryUnit;
     }
     
-    public Unit<Q> getLeadingUnit() {
-        return mixedRadixUnits.get(0);
-    }
-    
-    public Unit<Q> getTrailingUnit() {
+    private Unit<Q> getTrailingUnit() {
         return mixedRadixUnits.get(mixedRadixUnits.size()-1);
     }
     
