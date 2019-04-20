@@ -343,18 +343,33 @@ public class CompoundQuantityFormatTest {
         // given
         
         //MixedRadix<Length> mixedRadix = MixedRadix.ofPrimary(USCustomary.FOOT).mix(USCustomary.INCH);
-        final NumberDelimiterQuantityFormat mixedRadixFormat = new NumberDelimiterQuantityFormat.Builder()
+        final NumberDelimiterQuantityFormat mixedRadixFormat = NumberDelimiterQuantityFormat.builder()
                 .setUnitFormat(SimpleUnitFormat.getInstance()).setNumberFormat(NumberFormat.getInstance())
                 .setDelimiter(" ").setRadixPartsDelimiter(" ").build();
 
         // when 
         @SuppressWarnings("rawtypes")
 		CompoundQuantity lengthComp = mixedRadixFormat.parseCompound("1 ft 2 in");
-        
+        Quantity<?> lengthSingle = mixedRadixFormat.parse("1 ft 2 in");
         
         // then
+		@SuppressWarnings("unchecked")
 		Quantity<Length> lengthQuantity = lengthComp.to(FOOT).asType(Length.class);
         NumberAssertions.assertNumberEquals(1.1666666666666667, lengthQuantity.getValue(), 1E-9);
+        NumberAssertions.assertNumberEquals(1.1666666666666667, lengthSingle.getValue(), 1E-9);
+    }
+    
+    @Test @Disabled("Solve https://github.com/unitsofmeasurement/indriya/issues/219")
+    public void mixedParsingSimple() {
+        
+        // given
+        final SimpleQuantityFormat simpleFormat = SimpleQuantityFormat.getInstance("n u~ ");
+
+        // when 
+        Quantity<?> lengthSingle = simpleFormat.parse("1 ft 2 in");       
+        
+        // then
+        NumberAssertions.assertNumberEquals(1.1666666666666667, lengthSingle.getValue(), 1E-9);
     }
 
 }

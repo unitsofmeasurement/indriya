@@ -42,7 +42,6 @@ import javax.measure.format.MeasurementParseException;
 
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.quantity.CompoundQuantity;
-import tech.units.indriya.quantity.NumberQuantity;
 import tech.units.indriya.quantity.Quantities;
 
 /**
@@ -217,20 +216,9 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
 		return Quantities.getQuantity(decimal, unit);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	protected Quantity<?> parse(CharSequence csq, int index) throws MeasurementParseException {
-		int startDecimal = index; // cursor.getIndex();
-		while ((startDecimal < csq.length()) && Character.isWhitespace(csq.charAt(startDecimal))) {
-			startDecimal++;
-		}
-		int endDecimal = startDecimal + 1;
-		while ((endDecimal < csq.length()) && !Character.isWhitespace(csq.charAt(endDecimal))) {
-			endDecimal++;
-		}
-		Double decimal = Double.valueOf(csq.subSequence(startDecimal, endDecimal).toString());
-		Unit unit = SimpleUnitFormat.getInstance().parse(csq, index);
-		return NumberQuantity.of(decimal, unit);
+		return parse(csq, new ParsePosition(index));
 	}
 
 	@Override

@@ -44,7 +44,7 @@ import tech.units.indriya.format.LocalUnitFormat;
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
  *
  */
-public class LocalFormatTest {
+public class LocalUnitFormatTest {
 
   @Test
   @Disabled
