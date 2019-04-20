@@ -30,7 +30,6 @@
 package tech.units.indriya.quantity;
 
 import java.math.BigDecimal;
-
 import javax.measure.Quantity;
 import javax.measure.Unit;
 
@@ -104,7 +103,9 @@ final class LongQuantity<Q extends Quantity<Q>> extends JavaNumericQuantity<Q> {
 
     @Override
     Number castFromBigDecimal(BigDecimal aValue) {
-        return aValue.longValue();
+    	// FIXME https://github.com/unitsofmeasurement/indriya/issues/219 need to round properly, 13.99 must not turn to 13.
+        //return aValue.setScale(0, RoundingMode.HALF_UP).longValue(); would fix it but breaks LongQuantityTest.additionWithLargerMultipleAndOverflowingResultCastsToLargerMultiple
+    	return aValue.longValue();
     }
 
     @Override
