@@ -38,11 +38,13 @@ import java.util.Objects;
 
 import javax.measure.MeasurementException;
 import javax.measure.Quantity;
+import javax.measure.Quantity.Scale;
 import javax.measure.Unit;
 import javax.measure.UnitConverter;
 
 import tech.units.indriya.internal.function.radix.MixedRadixSupport;
 import tech.units.indriya.internal.function.radix.Radix;
+import tech.units.indriya.quantity.CompoundQuantity;
 import tech.units.indriya.quantity.Quantities;
 
 /**
@@ -51,7 +53,7 @@ import tech.units.indriya.quantity.Quantities;
  * 
  * @author Andi Huber
  * @author Werner Keil
- * @version 1.4
+ * @version 1.5
  * @since 2.0
  * @see <a href="https://en.wikipedia.org/wiki/Mixed_radix">Wikipedia: Mixed radix</a>
  * @see <a href="https://reference.wolfram.com/language/ref/MixedUnit.html">Wolfram Language & System: MixedUnit</a>
@@ -145,10 +147,12 @@ public class MixedRadix<Q extends Quantity<Q>> {
     
     // -- QUANTITY FACTORY
     
-    public Quantity<Q> createQuantity(Number ... values) {
+    public Quantity<Q> createQuantity(final Number[] values, final Scale scale) {
         
-        Objects.requireNonNull(values); 
-        if(values.length<1) {
+    	// TODO consolidate with createCompound
+    	Objects.requireNonNull(scale);
+        Objects.requireNonNull(values);
+        if(values.length < 1) {
             throw new IllegalArgumentException("at least the leading unit's number is required");
         }
 
@@ -164,9 +168,41 @@ public class MixedRadix<Q extends Quantity<Q>> {
 
         Number sum = mixedRadixSupport.sumMostSignificant(values);
         
-        return Quantities.getQuantity(sum, getTrailingUnit()).to(getPrimaryUnit());
+        return Quantities.getQuantity(sum, getTrailingUnit(), scale).to(getPrimaryUnit());
     }
+    
+    public Quantity<Q> createQuantity(Number ... values) {
+    	return createQuantity(values, Scale.ABSOLUTE);
+    }
+    
+    public CompoundQuantity<Q> createCompoundQuantity(final Number[] values, final Scale scale) {       
+    	Objects.requireNonNull(scale);
+    	Objects.requireNonNull(values); 
+        if(values.length < 1) {
+            throw new IllegalArgumentException("at least the leading unit's number is required");
+        }
 
+        int totalValuesGiven = values.length;
+        int totalValuesAllowed = mixedRadixUnits.size();
+        
+        if(totalValuesGiven > totalValuesAllowed) {
+            String message = String.format(
+                    "number of values given <%d> exceeds the number of mixed-radix units available <%d>", 
+                    totalValuesGiven, totalValuesAllowed);
+            throw new IllegalArgumentException(message);
+        }
+
+        List<Quantity<Q>> quantities = new ArrayList<>();
+        for (int i = 0; i < values.length; i++) {
+        	quantities.add(Quantities.getQuantity(values[i], mixedRadixUnits.get(i), scale));
+        }
+        return CompoundQuantity.of(quantities);
+    }
+    
+    public CompoundQuantity<Q> createCompoundQuantity(Number ... values) { 
+    	return createCompoundQuantity(values, Scale.ABSOLUTE);
+    }
+    
     // -- VALUE EXTRACTION
 
     public Number[] extractValues(Quantity<Q> quantity) {
@@ -342,5 +378,41 @@ public class MixedRadix<Q extends Quantity<Q>> {
     
     }
     
+/* TODO check what's usable based on the QuantityFormat implementation?
+    mixedRadix.visitQuantity(quantity_typed, mixedRadixUnitCount, (index, unit, value)->{
+        try {
+            
+            boolean isLast = index == lastIndex;
+            
+            DecimalFormat numberFormat = isLast
+                    ? formatOptions.getRealFormat() // to format real number value
+                            : formatOptions.getIntegerFormat(); // to format whole number value
 
+            // number value 
+                    destination.append(numberFormat.format(value));
+            
+            if (!quantity.getUnit().equals(AbstractUnit.ONE)) {
+                // number to unit delimiter 
+                destination.append(formatOptions.getNumberToUnitDelimiter());
+                
+                // unit
+                formatOptions.getUnitFormat().format(unit, destination);
+            }
+            
+            if(!isLast) {
+                
+                // radix delimiter
+                destination.append(formatOptions.getRadixPartsDelimiter());
+                
+            } 
+            
+        } catch (IOException e) {
+            throw new MeasurementException(e);
+        }
+    });
+    
+    return destination;
+}
+*/    
+    
 }

@@ -199,6 +199,7 @@ abstract class JavaNumericQuantity<Q extends Quantity<Q>> extends AbstractQuanti
 		return createQuantity(getNumberType(), castFromBigDecimal(result), resultUnit);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public ComparableQuantity<?> multiply(Quantity<?> that) {
 		if (canWidenTo(that)) {
@@ -207,6 +208,7 @@ abstract class JavaNumericQuantity<Q extends Quantity<Q>> extends AbstractQuanti
 		return applyMultiplicativeQuantityOperation(that, ComparableQuantity<Q>::multiply, BigDecimal::multiply, Unit::multiply);
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public ComparableQuantity<?> divide(Quantity<?> that) {
 		if (canWidenTo(that)) {

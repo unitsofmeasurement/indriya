@@ -50,8 +50,8 @@ import tech.units.indriya.unit.MixedUnit;
 /**
  * Singleton class for accessing {@link Quantity} instances.
  * 
- * @version 1.9, March 29, 2019
- * @author werner
+ * @version 1.10, April 20, 2019
+ * @author keilw
  * @author otaviojava
  * @since 1.0
  */
@@ -148,45 +148,87 @@ public final class Quantities {
     }
     
     /**
-     * Returns the mixed quantity. When the {@link Number} was {@link BigDecimal} or {@link BigInteger} will uses {@link DecimalQuantity}, when the
+     * Returns the mixed radix values and units combined into a single quantity. When the {@link Number} was {@link BigDecimal} or {@link BigInteger} will uses {@link DecimalQuantity}, when the
      * {@link Number} was {@link Double} will {@link DoubleQuantity} otherwise will {@link NumberQuantity}. in the specified unit.
      * 
-     * @param value
-     *            the measurement value.
-     * @param unit
-     *            the measurement unit.
+     * @param values
+     *            the measurement values.
+     * @param units
+     *            the measurement units.
      * @param scale
      *            the measurement scale.
-     * @return the corresponding mixed <code>numeric</code> quantity.
+     * @return the corresponding quantity.
      * @throws NullPointerException
      *             if value or scale were null
      * @throws IllegalArgumentException
-     *             if unit is a MixedUnit but the number of given values don't match its parts.
+     *             if  the size of the values array does not match that of units.
      * @since 2.0
      */
-    public static <Q extends Quantity<Q>> Quantity<Q> getMixedQuantity(Number[] values, Unit<Q>[] units, Scale scale) {
+    public static <Q extends Quantity<Q>> Quantity<Q> getQuantity(Number[] values, Unit<Q>[] units, Scale scale) {
         if (values.length == units.length) {
-            return MixedRadix.of(units).createQuantity(values);
+            return MixedRadix.of(units).createQuantity(values, scale);
         } else {
             throw new IllegalArgumentException(String.format("%s values don't match %s units", values.length, units.length));
         }
     }
     
     /**
-     * Returns the mixed quantity. When the {@link Number} was {@link BigDecimal} or {@link BigInteger} will uses {@link DecimalQuantity}, when the
-     * {@link Number} was {@link Double} will {@link DoubleQuantity} otherwise will {@link NumberQuantity}. in the specified unit.
-     * 
-     * @param value
-     *            the measurement value.
-     * @param unit
-     *            the measurement unit.
-     * @return the corresponding mixed <code>numeric</code> quantity.
+     * Returns the mixed radix values and units combined into a single quantity in the {@code ABSOLUTE} scale.
+     * @param values
+     *            the measurement values.
+     * @param units
+     *            the measurement units.
+     * @return the corresponding quantity.
      * @throws NullPointerException
      *             if value or unit were null
+     * @throws IllegalArgumentException
+     *             if  the size of the values array does not match that of units.
      * @since 2.0
      */
     @SafeVarargs
-    public static <Q extends Quantity<Q>> Quantity<Q> getMixedQuantity(Number[] values, Unit<Q>... units) {
-        return getMixedQuantity(values, units, ABSOLUTE);
+    public static <Q extends Quantity<Q>> Quantity<Q> getQuantity(Number[] values, Unit<Q>... units) {
+        return getQuantity(values, units, ABSOLUTE);
+    }
+    
+    /**
+     * Returns the mixed radix values and units as {@link CompoundQuantity} in the specified scale.
+     * 
+     * @param values
+     *            the measurement values.
+     * @param units
+     *            the measurement units.
+     * @param scale
+     *            the measurement scale.
+     * @return the corresponding compound quantity.
+     * @throws NullPointerException
+     *             if values, units or scale were null
+     * @throws IllegalArgumentException
+     *             if  the size of the values array does not match that of units.
+     * @since 2.0
+     */
+    public static <Q extends Quantity<Q>> CompoundQuantity<Q> getCompoundQuantity(Number[] values, Unit<Q>[] units, Scale scale) {
+        if (values.length == units.length) {
+            return MixedRadix.of(units).createCompoundQuantity(values, scale);
+        } else {
+            throw new IllegalArgumentException(String.format("%s values don't match %s units", values.length, units.length));
+        }
+    }
+    
+    /**
+     * Returns the mixed radix values and units as {@link CompoundQuantity} in the {@code ABSOLUTE} scale.
+     * 
+     * @param values
+     *            the measurement values.
+     * @param units
+     *            the measurement units.
+     * @return the corresponding compound quantity.
+     * @throws NullPointerException
+     *             if values, units or scale were null
+     * @throws IllegalArgumentException
+     *             if  the size of the values array does not match that of units.
+     * @since 2.0
+     */
+    public static <Q extends Quantity<Q>> CompoundQuantity<Q> getCompoundQuantity(final Number[] values, final Unit<Q>[] units) {
+    	return getCompoundQuantity(values, units, ABSOLUTE);
     }
 }

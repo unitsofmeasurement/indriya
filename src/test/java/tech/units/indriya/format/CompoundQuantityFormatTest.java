@@ -36,8 +36,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.*;
 import static javax.measure.MetricPrefix.*;
 import static tech.units.indriya.unit.Units.*;
+import static tech.units.indriya.function.MixedRadixTest.USCustomary.*;
 
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -47,8 +49,11 @@ import javax.measure.format.QuantityFormat;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Time;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import tech.units.indriya.NumberAssertions;
+import tech.units.indriya.function.MixedRadix;
 import tech.units.indriya.quantity.CompoundQuantity;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.Units;
@@ -59,6 +64,12 @@ import tech.units.indriya.unit.Units;
  */
 public class CompoundQuantityFormatTest {
 
+    static {
+        SimpleUnitFormat.getInstance().label(FOOT, "ft");
+        SimpleUnitFormat.getInstance().label(INCH, "in");
+        SimpleUnitFormat.getInstance().label(PICA, "P̸");
+    }
+	
 /*
     @Test
     public void testFormatMixed1() {
@@ -292,4 +303,58 @@ public class CompoundQuantityFormatTest {
         assertThat(parsed1.getUnits(), hasSize(3));
         assertThat(parsed1.getUnits(), contains(Units.HOUR, Units.MINUTE, Units.SECOND));
     }
+    
+    @Test
+    public void mixedFormatting() {
+        
+        // given
+        
+        MixedRadix<Length> mixedRadix = MixedRadix
+                .ofPrimary(FOOT)
+                .mix(INCH)
+                .mix(PICA);
+        
+        Quantity<Length> lengthQuantity = mixedRadix.createQuantity(1, 2, 3);
+        CompoundQuantity<Length> lengthCompound = mixedRadix.createCompoundQuantity(1, 2, 3);
+        
+        DecimalFormat realFormat = (DecimalFormat) DecimalFormat.getInstance(Locale.ENGLISH);
+        realFormat.setDecimalSeparatorAlwaysShown(true);
+        realFormat.setMaximumFractionDigits(3);
+        
+        final SimpleQuantityFormat simpleFormat = SimpleQuantityFormat.getInstance();
+        final NumberDelimiterQuantityFormat ndFormat = new NumberDelimiterQuantityFormat.Builder()
+                .setUnitFormat(SimpleUnitFormat.getInstance()).setNumberFormat(realFormat)
+                .setDelimiter(" ").setRadixPartsDelimiter(" ").build();
+        
+        // when
+        String formatedOutput = ndFormat.format(lengthCompound);
+        String simpleFormattedSingle = simpleFormat.format(lengthQuantity);
+        String ndFormattedSingle = ndFormat.format(lengthQuantity);
+        
+        // then
+        assertEquals("1. ft 2. in 3. P̸", formatedOutput);
+        assertEquals("1.208005249343831960409448818897613 ft", simpleFormattedSingle);
+        assertEquals("1.20800524934383196 ft", ndFormattedSingle);
+    }
+    
+    @Test @Disabled("Solve https://github.com/unitsofmeasurement/indriya/issues/219")
+    public void mixedParsing() {
+        
+        // given
+        
+        //MixedRadix<Length> mixedRadix = MixedRadix.ofPrimary(USCustomary.FOOT).mix(USCustomary.INCH);
+        final NumberDelimiterQuantityFormat mixedRadixFormat = new NumberDelimiterQuantityFormat.Builder()
+                .setUnitFormat(SimpleUnitFormat.getInstance()).setNumberFormat(NumberFormat.getInstance())
+                .setDelimiter(" ").setRadixPartsDelimiter(" ").build();
+
+        // when 
+        @SuppressWarnings("rawtypes")
+		CompoundQuantity lengthComp = mixedRadixFormat.parseCompound("1 ft 2 in");
+        
+        
+        // then
+		Quantity<Length> lengthQuantity = lengthComp.to(FOOT).asType(Length.class);
+        NumberAssertions.assertNumberEquals(1.1666666666666667, lengthQuantity.getValue(), 1E-9);
+    }
+
 }

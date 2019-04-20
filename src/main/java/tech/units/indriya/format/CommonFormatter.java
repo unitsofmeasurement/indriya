@@ -109,8 +109,8 @@ abstract class CommonFormatter {
                 i++; // get to next number
             }
         }
-        final Quantity[] qArray = new Quantity[quants.size()];
-        quants.toArray(qArray);
+        Quantity[] qArray = new Quantity[quants.size()];
+        qArray= quants.toArray(qArray);
         CompoundQuantity<?> comp = CompoundQuantity.of(qArray);
         return comp;
     }

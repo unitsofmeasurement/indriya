@@ -34,6 +34,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
+import static tech.units.indriya.function.MixedRadixTest.USCustomary.FOOT;
+import static tech.units.indriya.function.MixedRadixTest.USCustomary.INCH;
+import static tech.units.indriya.function.MixedRadixTest.USCustomary.PICA;
 import static tech.units.indriya.unit.Units.HOUR;
 import static tech.units.indriya.unit.Units.MINUTE;
 import static tech.units.indriya.unit.Units.SECOND;
@@ -49,6 +52,7 @@ import org.junit.jupiter.api.Test;
 import tech.units.indriya.NumberAssertions;
 import tech.units.indriya.format.SimpleUnitFormat;
 import tech.units.indriya.function.MixedRadix.PrimaryUnitPick;
+import tech.units.indriya.quantity.CompoundQuantity;
 import tech.units.indriya.unit.Units;
 
 /**
@@ -62,13 +66,12 @@ public class MixedRadixTest {
         public static final Unit<Length> FOOT = Units.METRE.multiply(0.3048).asType(Length.class);
         public static final Unit<Length> INCH = Units.METRE.multiply(0.0254).asType(Length.class);
         public static final Unit<Length> PICA = Units.METRE.multiply(0.0042).asType(Length.class);
-
-        static {
-            SimpleUnitFormat.getInstance().label(FOOT, "ft");
-            SimpleUnitFormat.getInstance().label(INCH, "in");
-            SimpleUnitFormat.getInstance().label(PICA, "P̸");
-        }
-        
+    }
+    
+    static {
+        SimpleUnitFormat.getInstance().label(FOOT, "ft");
+        SimpleUnitFormat.getInstance().label(INCH, "in");
+        SimpleUnitFormat.getInstance().label(PICA, "P̸");
     }
 
     @Test
@@ -150,11 +153,14 @@ public class MixedRadixTest {
         // when 
         
         Quantity<Length> lengthQuantity = mixedRadix.createQuantity(1, 2);
+        CompoundQuantity<Length> lengthComp = mixedRadix.createCompoundQuantity(1, 2);
         
         // then
         
         assertEquals(USCustomary.FOOT, mixedRadix.getPrimaryUnit());
         NumberAssertions.assertNumberEquals(1.1666666666666667, lengthQuantity.getValue(), 1E-9);
+        NumberAssertions.assertNumberEquals(1.1666666666666667, lengthComp.to(USCustomary.FOOT).getValue(), 1E-9);
+        
     }
     
     @Test
