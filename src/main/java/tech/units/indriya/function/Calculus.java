@@ -38,6 +38,8 @@ import java.util.logging.Logger;
 /**
  * Mathematical helper class
  * @author Andi Huber
+ * @author Werner Keil
+ * @since 2.0
  */
 public final class Calculus {
 	private static final String MSG_NUMBER_NON_NULL = "number cannot be null";
@@ -341,7 +343,7 @@ public final class Calculus {
 	 * @param y
 	 * @return
 	 */
-	public static Number times(Number x, Number y) {
+	public static Number multiply(Number x, Number y) {
 	    
 	    if(isNonFractional(x) && isNonFractional(y)) {
 	        
@@ -369,7 +371,7 @@ public final class Calculus {
      * @param y
      * @return
      */
-	public static Number plus(Number x, Number y) {
+	public static Number add(Number x, Number y) {
         
         if(isNonFractional(x) && isNonFractional(y)) {
             

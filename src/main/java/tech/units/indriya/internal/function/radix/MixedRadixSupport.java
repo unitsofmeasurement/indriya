@@ -103,7 +103,7 @@ public class MixedRadixSupport {
                 continue;
             }
             
-            sum = Calculus.plus(sum, values[i+1]);    
+            sum = Calculus.add(sum, values[i+1]);    
             
         }
         
