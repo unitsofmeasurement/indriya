@@ -110,24 +110,7 @@ public final class Quantities {
         if (unit instanceof MixedUnit) {
             throw new MeasurementException(String.format("Cannot combine single value %s with a mixed unit %s", value, unit));
         } else {
-            if (Double.class.isInstance(value)) {
-                return new DoubleQuantity<>(Double.class.cast(value), unit, scale);
-            } else if (Long.class.isInstance(value)) {
-                return new LongQuantity<Q>(Long.class.cast(value), unit, scale);
-            } else if (Short.class.isInstance(value)) {
-                return new ShortQuantity<Q>(Short.class.cast(value), unit, scale);
-            } else if (Byte.class.isInstance(value)) {
-                return new ByteQuantity<Q>(Byte.class.cast(value), unit, scale);
-    //        } else if (Integer.class.isInstance(value)) { FIXME IntegerQuantity has issues
-    //            return new IntegerQuantity<Q>(Integer.class.cast(value), unit);
-    //        } else if (Float.class.isInstance(value)) { FIXME FloatQuantity has issues
-    //            return new FloatQuantity<Q>(Float.class.cast(value), unit);
-            } else if (BigDecimal.class.isInstance(value)) {
-                return new DecimalQuantity<>(BigDecimal.class.cast(value), unit, scale);
-            } else if (BigInteger.class.isInstance(value)) {
-                return new BigIntegerQuantity<>(BigInteger.class.cast(value), unit, scale);
-            }
-            return new NumberQuantity<>(value, unit, scale);
+            return new NumberQuantity2<>(value, unit, scale);
         }
     }
 

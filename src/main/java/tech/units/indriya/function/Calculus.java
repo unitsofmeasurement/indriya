@@ -35,6 +35,9 @@ import java.math.MathContext;
 import java.util.Objects;
 import java.util.logging.Logger;
 
+import tech.units.indriya.internal.calc.DefaultNumberSystem;
+import tech.units.indriya.internal.calc.NumberSystem;
+
 /**
  * Mathematical helper class
  * @author Andi Huber
@@ -55,6 +58,17 @@ public final class Calculus {
 	 * Exposes (non-final) the MathContext used for BigDecimal calculus.
 	 */
 	public static MathContext MATH_CONTEXT = DEFAULT_MATH_CONTEXT;
+	
+	
+	/**
+     * The default NumberSystem used for Number arithmetic.
+     */
+    public static final NumberSystem DEFAULT_NUMBER_SYSTEM = new DefaultNumberSystem();
+
+    /**
+     * Exposes (non-final) the NumberSystem used for Number arithmetic.
+     */
+    public static NumberSystem NUMBER_SYSTEM = DEFAULT_NUMBER_SYSTEM;
 	
 	/**
 	 * @param number

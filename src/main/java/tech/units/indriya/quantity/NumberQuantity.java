@@ -59,7 +59,7 @@ import tech.units.indriya.unit.MixedUnit;
  * @since 1.0
  */
 // TODO could we make this extend JavaNumericQuantity for consistency?
-public class NumberQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
+class NumberQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
 
   private static final long serialVersionUID = 7312161895652321241L;
 

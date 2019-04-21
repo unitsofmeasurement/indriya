@@ -78,14 +78,15 @@ public class QuantitiesTest {
     assertTrue(BigInteger.class.isInstance(bigIntegerQuantity.getValue()));
     assertTrue(BigDecimal.class.isInstance(bigDecimalQuantity.getValue()));
 
-    assertTrue(ShortQuantity.class.isInstance(shortQuantity));
-    assertTrue(ByteQuantity.class.isInstance(byteQuantity));
-    assertTrue(LongQuantity.class.isInstance(longQuantity));
-    assertTrue(NumberQuantity.class.isInstance(intQuantity)); // workaround
-    assertTrue(NumberQuantity.class.isInstance(floatQuantity)); // workaround
-    assertTrue(DoubleQuantity.class.isInstance(doubleQuantity));
-    assertTrue(BigIntegerQuantity.class.isInstance(bigIntegerQuantity));
-    assertTrue(DecimalQuantity.class.isInstance(bigDecimalQuantity));
+// //TODO[220] remove obsolete    
+//    assertTrue(ShortQuantity.class.isInstance(shortQuantity));
+//    assertTrue(ByteQuantity.class.isInstance(byteQuantity));
+//    assertTrue(LongQuantity.class.isInstance(longQuantity));
+//    assertTrue(NumberQuantity.class.isInstance(intQuantity)); // workaround
+//    assertTrue(NumberQuantity.class.isInstance(floatQuantity)); // workaround
+//    assertTrue(DoubleQuantity.class.isInstance(doubleQuantity));
+//    assertTrue(BigIntegerQuantity.class.isInstance(bigIntegerQuantity));
+//    assertTrue(DecimalQuantity.class.isInstance(bigDecimalQuantity));
   }
 
   @Test
@@ -109,14 +110,15 @@ public class QuantitiesTest {
     assertTrue(BigInteger.class.isInstance(bigIntegerQuantity.getValue()));
     assertTrue(BigDecimal.class.isInstance(bigDecimalQuantity.getValue()));
 
-    assertTrue(ShortQuantity.class.isInstance(shortQuantity));
-    assertTrue(ByteQuantity.class.isInstance(byteQuantity));
-    assertTrue(LongQuantity.class.isInstance(longQuantity));
-    assertTrue(NumberQuantity.class.isInstance(intQuantity)); // workaround
-    assertTrue(NumberQuantity.class.isInstance(floatQuantity)); // workaround
-    assertTrue(DoubleQuantity.class.isInstance(doubleQuantity));
-    assertTrue(BigIntegerQuantity.class.isInstance(bigIntegerQuantity));
-    assertTrue(DecimalQuantity.class.isInstance(bigDecimalQuantity));
+//TODO[220] remove obsolete
+//    assertTrue(ShortQuantity.class.isInstance(shortQuantity));
+//    assertTrue(ByteQuantity.class.isInstance(byteQuantity));
+//    assertTrue(LongQuantity.class.isInstance(longQuantity));
+//    assertTrue(NumberQuantity.class.isInstance(intQuantity)); // workaround
+//    assertTrue(NumberQuantity.class.isInstance(floatQuantity)); // workaround
+//    assertTrue(DoubleQuantity.class.isInstance(doubleQuantity));
+//    assertTrue(BigIntegerQuantity.class.isInstance(bigIntegerQuantity));
+//    assertTrue(DecimalQuantity.class.isInstance(bigDecimalQuantity));
     
     assertEquals(RELATIVE, shortQuantity.getScale());
     assertEquals(RELATIVE, byteQuantity.getScale());
