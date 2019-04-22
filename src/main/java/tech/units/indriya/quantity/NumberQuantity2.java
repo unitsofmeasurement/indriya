@@ -11,7 +11,7 @@ import javax.measure.UnitConverter;
 
 import tech.units.indriya.AbstractQuantity;
 import tech.units.indriya.ComparableQuantity;
-import tech.units.indriya.internal.calc.Calculator;
+import tech.units.indriya.internal.function.calc.Calculator;
 
 public class NumberQuantity2<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
 

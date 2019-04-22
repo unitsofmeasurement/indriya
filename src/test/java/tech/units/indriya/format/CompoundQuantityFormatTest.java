@@ -359,7 +359,7 @@ public class CompoundQuantityFormatTest {
         NumberAssertions.assertNumberEquals(1.1666666666666667, lengthSingle.getValue(), 1E-9);
     }
     
-    @Test @Disabled("Solve https://github.com/unitsofmeasurement/indriya/issues/219")
+    @Test
     public void mixedParsingSimple() {
         
         // given
