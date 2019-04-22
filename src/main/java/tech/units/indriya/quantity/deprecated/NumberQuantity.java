@@ -27,7 +27,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package tech.units.indriya.quantity;
+package tech.units.indriya.quantity.deprecated;
 
 import static javax.measure.Quantity.Scale.ABSOLUTE;
 
@@ -59,6 +59,7 @@ import tech.units.indriya.unit.MixedUnit;
  * @since 1.0
  */
 // TODO could we make this extend JavaNumericQuantity for consistency?
+@Deprecated
 class NumberQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
 
   private static final long serialVersionUID = 7312161895652321241L;

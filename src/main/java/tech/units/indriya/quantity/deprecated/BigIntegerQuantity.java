@@ -27,63 +27,76 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package tech.units.indriya.quantity;
+package tech.units.indriya.quantity.deprecated;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
+
 import javax.measure.Quantity;
 import javax.measure.Unit;
 
 import tech.units.indriya.AbstractQuantity;
 import tech.units.indriya.ComparableQuantity;
+import tech.units.indriya.quantity.Quantities;
 
 /**
- * An amount of quantity, consisting of a long and a Unit. LongQuantity objects are immutable.
- * 
- * @see AbstractQuantity
- * @see Quantity
- * @author <a href="mailto:werner@uom.technology">Werner Keil</a>
+ * An amount of quantity, implementation of {@link ComparableQuantity} that uses {@link BigInteger} as implementation of {@link Number}, this object
+ * is immutable. Note: all operations which involves {@link Number}, this implementation will convert to {@link BigInteger}.
+ *
  * @param <Q>
  *            The type of the quantity.
- * @version 0.5, $Date: 2018-10-31 $
- * @since 1.0
+ * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
+ * @see AbstractQuantity
+ * @see Quantity
+ * @see ComparableQuantity
+ * @see BigInteger
+ * @version 1.0
+ * @since 2.0
  */
-final class LongQuantity<Q extends Quantity<Q>> extends JavaNumericQuantity<Q> {
+@Deprecated
+final class BigIntegerQuantity<Q extends Quantity<Q>> extends JavaNumericQuantity<Q> {
 
-    private static final long serialVersionUID = 3092808554937634365L;
+    private static final long serialVersionUID = -593014349777834846L;
+    private final BigInteger value;
 
-    private static final BigDecimal LONG_MAX_VALUE = new BigDecimal(Long.MAX_VALUE);
-    private static final BigDecimal LONG_MIN_VALUE = new BigDecimal(Long.MIN_VALUE);
-
-    private final long value;
-
-    LongQuantity(long value, Unit<Q> unit,  Scale sc) {
+    public BigIntegerQuantity(BigInteger value, Unit<Q> unit, Scale sc) {
         super(unit, sc);
         this.value = value;
     }
 
-    LongQuantity(long value, Unit<Q> unit) {
+    public BigIntegerQuantity(BigInteger value, Unit<Q> unit) {
         super(unit);
         this.value = value;
     }
 
+    public BigIntegerQuantity(long value, Unit<Q> unit) {
+        this(BigInteger.valueOf(value), unit);
+    }
+
+    /**
+     * <p>
+     * Returns a {@code BigIntegerQuantity} with same Unit, but whose value is {@code(-this.getValue())}. </p>
+     * 
+     * @return {@code -this}.
+     */
+    public BigIntegerQuantity<Q> negate() {
+        return new BigIntegerQuantity<Q>(value.negate(), getUnit());
+    }
+
     @Override
-    public Long getValue() {
+    public BigInteger getValue() {
         return value;
     }
 
+    @SuppressWarnings({ "unchecked" })
     @Override
-    boolean isOverflowing(BigDecimal aValue) {
-        return aValue.compareTo(LONG_MIN_VALUE) < 0 || aValue.compareTo(LONG_MAX_VALUE) > 0;
-    }
-
-    @SuppressWarnings({ "rawtypes", "unchecked" })
     public ComparableQuantity<Q> inverse() {
-        return new LongQuantity(1 / value, getUnit().inverse());
+        return (ComparableQuantity<Q>) Quantities.getQuantity(BigInteger.ONE.divide(value), getUnit().inverse());
     }
 
     @Override
     public boolean isBig() {
-        return false;
+        return true;
     }
 
     @Override
@@ -93,23 +106,21 @@ final class LongQuantity<Q extends Quantity<Q>> extends JavaNumericQuantity<Q> {
 
     @Override
     public int getSize() {
-        return Long.SIZE;
+        return 0;
     }
 
     @Override
     public Class<?> getNumberType() {
-        return long.class;
+        return BigInteger.class;
     }
 
     @Override
     Number castFromBigDecimal(BigDecimal aValue) {
-    	// FIXME https://github.com/unitsofmeasurement/indriya/issues/219 need to round properly, 13.99 must not turn to 13.
-        //return aValue.setScale(0, RoundingMode.HALF_UP).longValue(); would fix it but breaks LongQuantityTest.additionWithLargerMultipleAndOverflowingResultCastsToLargerMultiple
-    	return aValue.longValue();
+        return aValue.toBigInteger();
     }
 
     @Override
-    public Quantity<Q> negate() {
-        return new LongQuantity<Q>(-value, getUnit());
+    boolean isOverflowing(BigDecimal aValue) {
+        return false;
     }
 }

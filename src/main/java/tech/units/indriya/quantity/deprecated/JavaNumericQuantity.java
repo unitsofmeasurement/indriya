@@ -27,7 +27,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package tech.units.indriya.quantity;
+package tech.units.indriya.quantity.deprecated;
 
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
@@ -53,6 +53,7 @@ import tech.units.indriya.function.Calculus;
  * @since 2.0
  *
  */
+@Deprecated
 abstract class JavaNumericQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
 
 	private static final long serialVersionUID = -772486200565856789L;

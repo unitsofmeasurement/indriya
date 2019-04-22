@@ -27,11 +27,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package tech.units.indriya.quantity;
+package tech.units.indriya.quantity.deprecated;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
-import java.text.NumberFormat;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;
@@ -40,55 +38,54 @@ import tech.units.indriya.AbstractQuantity;
 import tech.units.indriya.ComparableQuantity;
 
 /**
- * An amount of quantity, implementation of {@link ComparableQuantity} that uses {@link BigDecimal} as implementation of {@link Number}, this object
- * is immutable. Note: all operations which involves {@link Number}, this implementation will convert to {@link BigDecimal}, and all operation of
- * BigDecimal will use {@link MathContext#DECIMAL128}.
+ * An amount of quantity, implementation of {@link ComparableQuantity} that uses {@link Double} as implementation of {@link Number}, this object is
+ * immutable. Note: all operations which involves {@link Number}, this implementation will convert to {@link Double}.
  *
  * @param <Q>
  *          The type of the quantity.
- * @author otaviojava
+ * @param <Q>
+ *          The type of the quantity.
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
+ * @author Otavio de Santana
+ * @version 0.7, $Date: 2018-11-14 $
  * @see AbstractQuantity
  * @see Quantity
  * @see ComparableQuantity
- * @version 1.3
  * @since 1.0
  */
-final class DecimalQuantity<Q extends Quantity<Q>> extends JavaNumericQuantity<Q> {
+@Deprecated
+final class DoubleQuantity<Q extends Quantity<Q>> extends JavaNumericQuantity<Q> {
 
-  private static final long serialVersionUID = 6504081836032983882L;
+  private static final long serialVersionUID = 8660843078156312278L;
 
-  private final BigDecimal value;
+  private static final BigDecimal DOUBLE_MAX_VALUE = new BigDecimal(Double.MAX_VALUE);
 
-  public DecimalQuantity(BigDecimal value, Unit<Q> unit,  Scale sc) {
-      super(unit, sc);
-      this.value = value;
-  }
-  
-  public DecimalQuantity(BigDecimal value, Unit<Q> unit) {
-    super(unit);
+  private final double value;
+
+  public DoubleQuantity(double value, Unit<Q> unit, Scale sc) {
+    super(unit, sc);
     this.value = value;
   }
-
-  public DecimalQuantity(double value, Unit<Q> unit) {
-    super(unit);
-    this.value = BigDecimal.valueOf(value);
-  }
+  
+  public DoubleQuantity(double value, Unit<Q> unit) {
+      super(unit);
+      this.value = value;
+    }
 
   @Override
-  public BigDecimal getValue() {
+  public Double getValue() {
     return value;
   }
 
-  @SuppressWarnings("unchecked")
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   @Override
-  public ComparableQuantity<Q> inverse() {
-    return (ComparableQuantity<Q>) Quantities.getQuantity(BigDecimal.ONE.divide(value), getUnit().inverse());
+  public AbstractQuantity<Q> inverse() {
+    return new DoubleQuantity(1d / value, getUnit().inverse());
   }
 
   @Override
   public boolean isBig() {
-    return true;
+    return false;
   }
 
   @Override
@@ -98,43 +95,26 @@ final class DecimalQuantity<Q extends Quantity<Q>> extends JavaNumericQuantity<Q
 
   @Override
   public int getSize() {
-    return 0;
+    return Double.SIZE;
   }
 
   @Override
   public Class<?> getNumberType() {
-    return BigDecimal.class;
+    return double.class;
   }
 
   @Override
   Number castFromBigDecimal(BigDecimal aValue) {
-    return aValue;
-  }
-
-  /**
-   * <p>
-   * Returns a {@code DecimalQuantity} with same Unit, but whose value is {@code(-this.getValue())}. </p>
-   * 
-   * @return {@code -this}.
-   */
-  public DecimalQuantity<Q> negate() {
-    return new DecimalQuantity<Q>(value.negate(), getUnit());
-  }
-  
-  /**
-   * Returns the <code>String</code> representation of this quantity. The string produced for a given quantity is always the same; it is not
-   * affected by locale. This means that it can be used as a canonical string representation for exchanging quantity, or as a key for a Hashtable,
-   * etc. Locale-sensitive quantity formatting and parsing is handled by the {@link QuantityFormat} implementations and its subclasses.
-   *
-   * @return <code>UnitFormat.getInternational().format(this)</code>
-   */
-  @Override
-  public String toString() {
-      return NumberFormat.getInstance().format(value) + " " + String.valueOf(getUnit());
+    return aValue.doubleValue();
   }
 
   @Override
   boolean isOverflowing(BigDecimal aValue) {
-    return false;
+    return aValue.compareTo(DOUBLE_MAX_VALUE.negate()) < 0 || aValue.compareTo(DOUBLE_MAX_VALUE) > 0;
+  }
+
+  @Override
+  public Quantity<Q> negate() {
+    return new DoubleQuantity<Q>(-value, getUnit());
   }
 }

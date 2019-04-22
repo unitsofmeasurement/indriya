@@ -27,7 +27,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package tech.units.indriya.quantity;
+package tech.units.indriya.quantity.deprecated;
 
 import java.math.BigDecimal;
 
@@ -38,72 +38,78 @@ import tech.units.indriya.AbstractQuantity;
 import tech.units.indriya.ComparableQuantity;
 
 /**
- * An amount of quantity, consisting of a float and a Unit. FloatQuantity objects are immutable.
+ * An amount of quantity, consisting of a short and a Unit. ShortQuantity objects are immutable.
  * 
  * @see AbstractQuantity
  * @see Quantity
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @author Otavio de Santana
  * @param <Q>
- *          The type of the quantity.
- * @version 0.6, $Date: 2018-07-20 $
+ *            The type of the quantity.
+ * @version 0.5, $Date: 2018-11-14 $
  * @since 1.0
  */
-final class FloatQuantity<Q extends Quantity<Q>> extends JavaNumericQuantity<Q> {
+@Deprecated
+final class ShortQuantity<Q extends Quantity<Q>> extends JavaNumericQuantity<Q> {
 
-  private static final long serialVersionUID = 5992028803791009345L;
+    private static final long serialVersionUID = 6325849816534488248L;
 
-  private static final BigDecimal FLOAT_MAX_VALUE = new BigDecimal(Float.MAX_VALUE);
+    private static final BigDecimal SHORT_MIN_VALUE = new BigDecimal(Short.MIN_VALUE);
+    private static final BigDecimal SHORT_MAX_VALUE = new BigDecimal(Short.MAX_VALUE);
 
-  final float value;
+    private final short value;
 
-  FloatQuantity(float value, Unit<Q> unit) {
-    super(unit);
-    this.value = value;
-  }
+    ShortQuantity(short value, Unit<Q> unit, Scale sc) {
+        super(unit, sc);
+        this.value = value;
+    }
 
-  @Override
-  public Float getValue() {
-    return value;
-  }
+    ShortQuantity(short value, Unit<Q> unit) {
+        super(unit);
+        this.value = value;
+    }
 
-  @SuppressWarnings({ "unchecked", "rawtypes" })
-  public ComparableQuantity<Q> inverse() {
-    return new FloatQuantity(1f / value, getUnit().inverse());
-  }
+    @Override
+    public Short getValue() {
+        return value;
+    }
 
-  @Override
-  public boolean isBig() {
-    return false;
-  }
+    @Override
+    public boolean isBig() {
+        return false;
+    }
 
-  @Override
-  public boolean isDecimal() {
-    return true;
-  }
+    @Override
+    public ComparableQuantity<?> inverse() {
+        return NumberQuantity.of(1 / value, getUnit().inverse());
+    }
 
-  @Override
-  public int getSize() {
-    return Float.SIZE;
-  }
+    @Override
+    public boolean isDecimal() {
+        return false;
+    }
 
-  @Override
-  public Class<?> getNumberType() {
-    return float.class;
-  }
+    @Override
+    public int getSize() {
+        return Short.SIZE;
+    }
 
-  @Override
-  Number castFromBigDecimal(BigDecimal aValue) {
-    return (float) aValue.doubleValue();
-  }
+    @Override
+    public Class<?> getNumberType() {
+        return short.class;
+    }
 
-  @Override
-  boolean isOverflowing(BigDecimal aValue) {
-    return aValue.compareTo(FLOAT_MAX_VALUE.negate()) < 0 || aValue.compareTo(FLOAT_MAX_VALUE) > 0;
-  }
+    @Override
+    boolean isOverflowing(BigDecimal aValue) {
+        return aValue.compareTo(SHORT_MIN_VALUE) < 0 || aValue.compareTo(SHORT_MAX_VALUE) > 0;
+    }
 
-  @Override
-  public Quantity<Q> negate() {
-    return new FloatQuantity<Q>(-value, getUnit());
-  }
+    @Override
+    public Quantity<Q> negate() {
+        return new ShortQuantity<>((short) (-value), getUnit());
+    }
+
+    @Override
+    Number castFromBigDecimal(BigDecimal aValue) {
+        return (short) aValue.longValue();
+    }
 }
