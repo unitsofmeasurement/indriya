@@ -32,6 +32,7 @@ package tech.units.indriya.internal.function.calc;
 import java.util.Objects;
 
 import tech.units.indriya.function.Calculus;
+import tech.units.indriya.function.NumberSystem;
 
 /**
  * Provides basic arithmetic on Java {@link Number}s.   

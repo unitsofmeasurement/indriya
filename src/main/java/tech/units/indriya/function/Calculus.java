@@ -36,7 +36,6 @@ import java.util.Objects;
 import java.util.logging.Logger;
 
 import tech.units.indriya.internal.function.calc.DefaultNumberSystem;
-import tech.units.indriya.internal.function.calc.NumberSystem;
 
 /**
  * Mathematical helper class

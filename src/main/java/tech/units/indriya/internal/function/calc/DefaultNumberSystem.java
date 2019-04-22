@@ -33,6 +33,8 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 
 import tech.units.indriya.function.Calculus;
+import tech.units.indriya.function.NumberSystem;
+import tech.units.indriya.function.RationalNumber;
 
 /**
  * {@link NumberSystem} implementation to support Java's built-in {@link Number}s and the

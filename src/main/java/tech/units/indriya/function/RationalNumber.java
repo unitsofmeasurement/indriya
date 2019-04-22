@@ -27,13 +27,11 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package tech.units.indriya.internal.function.calc;
+package tech.units.indriya.function;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Objects;
-
-import tech.units.indriya.function.Calculus;
 
 /**
  * Represents a rational number {@code dividend/divisor} with {@code dividend} and 
