@@ -89,13 +89,9 @@ public class MixedRadixSupport {
 
         int maxAllowedValueIndex = values.length - 1; 
         
-        Number sum = null;
+        Number sum = values[0];
         
         for(int i=0;i<radices.length;++i) {
-            
-            if(sum==null) {
-                sum = values[0];
-            }
             
             sum = radices[i].multiply(sum);
             
