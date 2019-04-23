@@ -236,14 +236,14 @@ public class NumberQuantityTest {
     assertEquals("1/s", String.valueOf(secInv.getUnit()));
   }
 
-  @Test @Disabled("not a requirement according to spec")
+  @Test @Disabled("not a requirement according to Javadoc in AbstractQuantity.equals")
   public void testEqualityAtomic() throws Exception {
     Quantity<Length> value = Quantities.getQuantity(new AtomicInteger(10), Units.METRE);
     Quantity<Length> anotherValue = Quantities.getQuantity(new AtomicLong(10), Units.METRE);
     assertEquals(value, anotherValue);
   }
 
-  @Test @Disabled("not a requirement according to spec")
+  @Test @Disabled("not a requirement according to Javadoc in AbstractQuantity.equals")
   public void testEqualityBig() throws Exception {
     Quantity<Length> value = Quantities.getQuantity(BigInteger.valueOf(20), Units.METRE);
     Quantity<Length> anotherValue = Quantities.getQuantity(BigDecimal.valueOf(20), Units.METRE);

@@ -32,6 +32,8 @@ package tech.units.indriya.function;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -94,6 +96,14 @@ public class MixedRadix<Q extends Quantity<Q>> {
     public static <X extends Quantity<X>> MixedRadix<X> of(Unit<X>... units) {
         Objects.requireNonNull(units); 
         if(units.length<1) {
+            throw new IllegalArgumentException("at least the leading unit is required");
+        }
+        return of(Arrays.asList(units));
+    }
+    
+    public static <X extends Quantity<X>> MixedRadix<X> of(Collection<Unit<X>> units) {
+        Objects.requireNonNull(units); 
+        if(units==null || units.size()<1) {
             throw new IllegalArgumentException("at least the leading unit is required");
         }
         MixedRadix<X> mixedRadix = null;

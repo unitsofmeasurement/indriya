@@ -79,11 +79,11 @@ public class NumberQuantity2<Q extends Quantity<Q>> extends AbstractQuantity<Q> 
 
     @Override
     public ComparableQuantity<Q> add(Quantity<Q> that) {
-        return addition(that, (thisValueInSystemUnit, thatValueInSystemUnit) -> 
-            Calculator
-                .loadDefault(thisValueInSystemUnit)
-                .add(thatValueInSystemUnit)
-                .peek());
+        return addition(that, (thisValueInSystemUnit, thatValueInSystemUnit) ->
+        Calculator
+            .loadDefault(thisValueInSystemUnit)
+            .add(thatValueInSystemUnit)
+            .peek());
     }
 
     @Override

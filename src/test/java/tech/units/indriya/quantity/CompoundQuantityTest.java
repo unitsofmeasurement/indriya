@@ -65,8 +65,12 @@ public class CompoundQuantityTest {
     
     @Test
     public void testLengths() {
+        
         @SuppressWarnings("unchecked")
-        final Quantity<Length>[] quants = new Quantity[] { Quantities.getQuantity(1, Units.METRE),  Quantities.getQuantity(70, CENTI(Units.METRE)) };
+        final Quantity<Length>[] quants = new Quantity[] { 
+                Quantities.getQuantity(1, Units.METRE),  
+                Quantities.getQuantity(70, CENTI(Units.METRE)) };
+        
         CompoundQuantity<Length> mixLen = CompoundQuantity.of(quants);
       
         assertEquals("[m, cm]", mixLen.getUnits().toString());
@@ -74,6 +78,7 @@ public class CompoundQuantityTest {
         
         Quantity<Length> l2 = mixLen.to(Units.METRE);
         assertEquals(BigDecimal.valueOf(1.7d), l2.getValue());
+        
         Quantity<Length> l3 = mixLen.to(CENTI(Units.METRE));
         assertEquals(BigDecimal.valueOf(170d), l3.getValue());
     }

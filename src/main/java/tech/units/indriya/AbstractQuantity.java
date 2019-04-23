@@ -44,6 +44,7 @@ import javax.measure.quantity.Dimensionless;
 import tech.units.indriya.format.SimpleQuantityFormat;
 import tech.units.indriya.format.SimpleUnitFormat;
 import tech.units.indriya.function.Calculus;
+import tech.units.indriya.function.NumberSystem;
 import tech.units.indriya.quantity.Quantities;
 import tech.uom.lib.common.function.UnitSupplier;
 import tech.uom.lib.common.function.ValueSupplier;
@@ -280,6 +281,7 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
         return Objects.hash(getUnit(), getValue());
     }
 
+    @Deprecated //TODO[220] remove method
     public abstract boolean isBig();
 
     /**
@@ -294,8 +296,10 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
         return SimpleQuantityFormat.getInstance().format(this);
     }
 
+    @Deprecated //TODO[220] remove method
     public abstract BigDecimal decimalValue(Unit<Q> aUnit) throws ArithmeticException;
 
+    @Deprecated //TODO[220] remove method
     public abstract double doubleValue(Unit<Q> aUnit) throws ArithmeticException;
 
     public final int intValue(Unit<Q> aUnit) throws ArithmeticException {
@@ -385,9 +389,14 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
         return value.remainder(BigDecimal.ONE).compareTo(BigDecimal.ZERO) != 0;
     }
 
+    protected NumberSystem ns() {
+        return Calculus.NUMBER_SYSTEM;
+    }
+    
     /**
      * Utility class for number comparison and equality
      */
+    @Deprecated //TODO[220] use Calculus.NUMBER_SYSTEM instead 
     protected static final class Equalizer {
 
         /**

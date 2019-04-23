@@ -29,8 +29,6 @@
  */
 package tech.units.indriya.quantity;
 
-import static javax.measure.Quantity.Scale;
-
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collection;
@@ -39,12 +37,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.measure.MeasurementException;
 import javax.measure.Quantity;
+import javax.measure.Quantity.Scale;
 import javax.measure.Unit;
 
 import tech.units.indriya.format.SimpleQuantityFormat;
+import tech.units.indriya.function.MixedRadix;
 import tech.uom.lib.common.function.QuantityConverter;
 
 /**
@@ -163,15 +164,29 @@ public class CompoundQuantity<Q extends Quantity<Q>> implements QuantityConverte
         if (quantMap.isEmpty()) {
             throw new IllegalArgumentException("No quantity found, cannot convert an empty value");
         }
-        Quantity<Q> result = null;
-        for (Quantity<Q> q : quantMap.values()) {
-            if (result == null) {
-                result = q;
-            } else {
-                result = result.add(q);
-            }
-        }
-        return result.to(unit);
+        
+        // non optimized quick fix ...
+        // - will throw if units are not in decreasing order of significance
+        MixedRadix<Q> mixedRadix = MixedRadix.of(getUnits());
+        Number[] values = getQuantities()
+        .stream()
+        .map(Quantity::getValue)
+        .collect(Collectors.toList())
+        .toArray(new Number[0]);
+        
+        //TODO[220] what about scale?
+        
+        return mixedRadix.createQuantity(values).to(unit);
+        
+//        Quantity<Q> result = null;
+//        for (Quantity<Q> q : quantMap.values()) {
+//            if (result == null) {
+//                result = q;
+//            } else {
+//                result = result.add(q);
+//            }
+//        }
+//        return result.to(unit);
     }
 
     /**
