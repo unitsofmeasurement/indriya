@@ -33,9 +33,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static tech.units.indriya.NumberAssertions.assertNumberEquals;
 
 import java.math.BigDecimal;
 
+import javax.measure.Quantity;
 import javax.measure.quantity.Area;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Speed;
@@ -164,17 +166,18 @@ public class DoubleComparableQuantityTest {
 
   @Test
   public void inverseTestLength() {
-    @SuppressWarnings("unchecked")
-    ComparableQuantity<Length> metre = (ComparableQuantity<Length>) Quantities.getQuantity(10d, Units.METRE).inverse();
-    assertEquals(0.1d, metre.getValue());
-    assertEquals("1/m", String.valueOf(metre.getUnit()));
+    Quantity<?> perMetre = Quantities.getQuantity(10d, Units.METRE).inverse();
+    assertTrue(perMetre instanceof ComparableQuantity);
+    assertNumberEquals(0.1d, perMetre.getValue(), 1E-12);
+    assertEquals("1/m", String.valueOf(perMetre.getUnit()));
   }
 
   @Test
   public void inverseTestTime() {
-    ComparableQuantity<?> secInv = Quantities.getQuantity(2d, Units.SECOND).inverse();
-    assertEquals(0.5d, secInv.getValue());
-    assertEquals("1/s", String.valueOf(secInv.getUnit()));
+    Quantity<?> perSec = Quantities.getQuantity(2d, Units.SECOND).inverse();
+    assertTrue(perSec instanceof ComparableQuantity);
+    assertNumberEquals(0.5d, perSec.getValue(), 1E-12);
+    assertEquals("1/s", String.valueOf(perSec.getUnit()));
   }
 
   @Test
