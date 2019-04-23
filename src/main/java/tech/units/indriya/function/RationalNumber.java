@@ -50,14 +50,23 @@ public class RationalNumber extends Number {
     private final int signum;
     private final BigInteger absDividend;
     private final BigInteger absDivisor;
+    private final int hashCode;
     private transient BigDecimal divisionResult;
 
     public final static RationalNumber ZERO = ofWholeNumber(BigInteger.ZERO);
     public final static RationalNumber ONE = ofWholeNumber(BigInteger.ONE);
     
+    public static RationalNumber ofWholeNumber(long number) {
+        return ofWholeNumber(BigInteger.valueOf(number));
+    }
+    
     public static RationalNumber ofWholeNumber(BigInteger number) {
         Objects.requireNonNull(number);
         return new RationalNumber(number.signum(), number.abs(), BigInteger.ONE);
+    }
+    
+    public static RationalNumber of(long dividend, long divisor) {
+        return of(BigInteger.valueOf(dividend), BigInteger.valueOf(divisor));
     }
     
     public static RationalNumber of(BigInteger dividend, BigInteger divisor) {
@@ -93,8 +102,19 @@ public class RationalNumber extends Number {
         this.signum = signum;
         this.absDividend = absDividend;
         this.absDivisor = absDivisor;
+        this.hashCode = Objects.hash(signum, absDividend, absDivisor);
     }
 
+    public BigInteger getDividend() {
+        return signum<0
+                ? absDividend.negate()
+                        : absDividend;
+    }
+    
+    public BigInteger getDivisor() {
+        return absDivisor;
+    }
+    
     public int signum() {
         return signum; 
     }
@@ -134,7 +154,11 @@ public class RationalNumber extends Number {
                 );
     }
     
-    public Number multiply(RationalNumber that) {
+    public RationalNumber subtract(RationalNumber that) {
+        return add(that.negate());
+    }
+    
+    public RationalNumber multiply(RationalNumber that) {
         
         final int productSignum = this.signum * that.signum;
         if(productSignum==0) {
@@ -153,12 +177,55 @@ public class RationalNumber extends Number {
                 );
     }
     
+    public RationalNumber divide(RationalNumber that) {
+        return multiply(that.reciprocal());
+    }
+    
     public RationalNumber negate() {
         return new RationalNumber(-signum, absDividend, absDivisor);
     }
     
     public RationalNumber reciprocal() {
         return new RationalNumber(signum, absDivisor, absDividend);
+    }
+    
+    public int compareTo(RationalNumber that) {
+
+        final int comp = Integer.compare(this.signum, that.signum);
+        if(comp!=0) {
+            return comp;
+        }
+        if(comp==0 && this.signum==0) {
+            return 0; // both are ZERO
+        }
+        
+        // we have same signum
+        
+        // a/b > c/d <=> ad > bc
+        
+        final BigInteger a = this.absDividend;
+        final BigInteger b = this.absDivisor;
+        final BigInteger c = that.absDividend;
+        final BigInteger d = that.absDivisor;
+        
+        final BigInteger ad = a.multiply(d);
+        final BigInteger bc = b.multiply(c);
+        
+        final int absCompare = ad.compareTo(bc);
+        
+        return this.signum>0
+                ?  absCompare
+                        : -absCompare;
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        return super.equals(obj);
+    }
+    
+    @Override
+    public int hashCode() {
+        return hashCode;
     }
     
     // -- NUMBER IMPLEMENTATION

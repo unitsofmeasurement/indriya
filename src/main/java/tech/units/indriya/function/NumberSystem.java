@@ -40,15 +40,117 @@ package tech.units.indriya.function;
  */
 public interface NumberSystem {
 
+    /**
+     * Returns the sum of given {@code x} and {@code y} as a {@link Number} that best
+     * represents the arithmetic result within the set of number types this NumberSystem
+     * supports.
+     * 
+     * @param x
+     * @param y
+     * @return {@code x + y}  
+     */
     Number add(Number x, Number y);
+    
+    /**
+     * Returns the difference of given {@code x} and {@code y} as a {@link Number} that best
+     * represents the arithmetic result within the set of number types this NumberSystem
+     * supports.
+     * 
+     * @param x
+     * @param y
+     * @return {@code x - y}  
+     */
     Number subtract(Number x, Number y);
 
+    /**
+     * Returns the product of given {@code x} and {@code y} as a {@link Number} that best
+     * represents the arithmetic result within the set of number types this NumberSystem
+     * supports.
+     * 
+     * @param x
+     * @param y
+     * @return {@code x * y}  
+     */
     Number multiply(Number x, Number y);
+    
+    /**
+     * Returns the division of given {@code x} and {@code y} as a {@link Number} that best
+     * represents the arithmetic result within the set of number types this NumberSystem
+     * supports.
+     * 
+     * @param x
+     * @param y
+     * @return {@code x / y}  
+     */
     Number divide(Number x, Number y);
     
+    
+    /**
+     * Returns the reciprocal of given {@code number} as a {@link Number} that best
+     * represents the arithmetic result within the set of number types this NumberSystem
+     * supports.
+     * 
+     * @param number
+     * @return {@code number^-1}  
+     */    
     Number reciprocal(Number number);
+    
+    /**
+     * Returns the negation of given {@code number} as a {@link Number} that best
+     * represents the arithmetic result within the set of number types this NumberSystem
+     * supports.
+     * 
+     * @param number
+     * @return {@code -number}  
+     */    
     Number negate(Number number);
     
+    /**
+     * 'Narrows' given {@code number} as a {@link Number} that best
+     * represents the numeric value within the set of number types this NumberSystem
+     * supports.
+     * <p>
+     * eg. A BigInteger that is within range of Java's {@code Long} type can be narrowed to
+     * Long w/o loss of precision.
+     * 
+     * @param number
+     * @return 'best' representation of {@code number} w/o loss of precision
+     */
     Number narrow(Number number);
+
+    /**
+     * Compares two {@code Number} values numerically.
+     *
+     * @param  x
+     * @param  y
+     * @return the value {@code 0} if {@code x == y};
+     *         a value less than {@code 0} if {@code x < y}; and
+     *         a value greater than {@code 0} if {@code x > y}
+     */
+    int compare(Number x, Number y);
+    
+    boolean isZero(Number number);
+    boolean isOne(Number number);
+    
+    /**
+     * 
+     * @param x
+     * @param y
+     * @return
+     */
+    default boolean equals(Number x, Number y) {
+        if(x == y) {
+            return true;
+        }
+        if(!x.getClass().equals(y.getClass())) {
+            return false;
+        }
+        return x.equals(y);
+    }
+
+    
+    
+
+    
 
 }

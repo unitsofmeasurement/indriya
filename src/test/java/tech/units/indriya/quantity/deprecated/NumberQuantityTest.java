@@ -44,8 +44,10 @@ import javax.measure.Quantity;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Time;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import tech.units.indriya.NumberAssertions;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.quantity.deprecated.ByteQuantity;
 import tech.units.indriya.quantity.deprecated.NumberQuantity;
@@ -234,14 +236,14 @@ public class NumberQuantityTest {
     assertEquals("1/s", String.valueOf(secInv.getUnit()));
   }
 
-  @Test
+  @Test @Disabled("not a requirement according to spec")
   public void testEqualityAtomic() throws Exception {
     Quantity<Length> value = Quantities.getQuantity(new AtomicInteger(10), Units.METRE);
     Quantity<Length> anotherValue = Quantities.getQuantity(new AtomicLong(10), Units.METRE);
     assertEquals(value, anotherValue);
   }
 
-  @Test
+  @Test @Disabled("not a requirement according to spec")
   public void testEqualityBig() throws Exception {
     Quantity<Length> value = Quantities.getQuantity(BigInteger.valueOf(20), Units.METRE);
     Quantity<Length> anotherValue = Quantities.getQuantity(BigDecimal.valueOf(20), Units.METRE);

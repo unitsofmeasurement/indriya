@@ -63,9 +63,24 @@ public class MixedRadixTest {
     
     public static class USCustomary {
 
-        public static final Unit<Length> FOOT = Units.METRE.multiply(0.3048).asType(Length.class);
-        public static final Unit<Length> INCH = Units.METRE.multiply(0.0254).asType(Length.class);
-        public static final Unit<Length> PICA = Units.METRE.multiply(0.0042).asType(Length.class);
+        
+        private static final RationalNumber INCH_PER_METER = 
+                RationalNumber.of(254, 10000);
+        private static final RationalNumber FOOT_PER_METER = 
+                INCH_PER_METER.multiply(RationalNumber.ofWholeNumber(12));
+        private static final RationalNumber PICA_PER_METER = 
+                INCH_PER_METER.divide(RationalNumber.ofWholeNumber(6));
+        
+        
+        public static final Unit<Length> FOOT = Units.METRE.transform(
+                new RationalConverter(FOOT_PER_METER.getDividend(), FOOT_PER_METER.getDivisor()));
+        
+        public static final Unit<Length> INCH = Units.METRE.transform(
+                new RationalConverter(INCH_PER_METER.getDividend(), INCH_PER_METER.getDivisor()));
+        
+        public static final Unit<Length> PICA = Units.METRE.transform(
+                new RationalConverter(PICA_PER_METER.getDividend(), PICA_PER_METER.getDivisor()));
+                
     }
     
     static {
@@ -189,6 +204,8 @@ public class MixedRadixTest {
         Quantity<Length> lengthQuantity = mixedRadix.createQuantity(1);
         
         // then
+        
+        NumberAssertions.assertNumberEquals(1, lengthQuantity.getValue(), 1E-9);
         
         assertEquals("1 ft", lengthQuantity.toString());
     }
