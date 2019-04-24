@@ -27,7 +27,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package tech.units.indriya.quantity;
+package tech.units.indriya.quantity.deprecated;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -35,37 +35,38 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 
 import javax.measure.MetricPrefix;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.ElectricResistance;
+import javax.measure.quantity.Length;
 import javax.measure.quantity.Time;
 
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.AbstractUnit;
-import tech.units.indriya.quantity.LongQuantity;
 import tech.units.indriya.quantity.Quantities;
+import tech.units.indriya.quantity.deprecated.DoubleQuantity;
+import tech.units.indriya.quantity.deprecated.IntegerQuantity;
+import tech.units.indriya.quantity.deprecated.ShortQuantity;
 import tech.units.indriya.unit.Units;
 
-public class LongQuantityTest {
+public class ShortQuantityTest {
 
   private static final Unit<?> SQUARE_OHM = Units.OHM.multiply(Units.OHM);
-  private final LongQuantity<ElectricResistance> ONE_OHM = createQuantity(1L, Units.OHM);
-  private final LongQuantity<ElectricResistance> TWO_OHM = createQuantity(2L, Units.OHM);
-  private final LongQuantity<ElectricResistance> MIN_VALUE_OHM = createQuantity(Long.MIN_VALUE, Units.OHM);
-  private final LongQuantity<ElectricResistance> MAX_VALUE_OHM = createQuantity(Long.MAX_VALUE, Units.OHM);
-  private final LongQuantity<ElectricResistance> ONE_MILLIOHM = createQuantity(1L, MetricPrefix.MILLI(Units.OHM));
-  private final LongQuantity<ElectricResistance> ONE_KILOOHM = createQuantity(1L, MetricPrefix.KILO(Units.OHM));
-  private final LongQuantity<ElectricResistance> ONE_YOTTAOHM = createQuantity(1L, MetricPrefix.YOTTA(Units.OHM));
-  private static final BigIntegerQuantity<ElectricResistance> ONE_BIG_INTEGER_OHM = new BigIntegerQuantity<ElectricResistance>(BigInteger.ONE,
-      Units.OHM);
+  private final ShortQuantity<ElectricResistance> ONE_OHM = createQuantity((short) 1, Units.OHM);
+  private final ShortQuantity<ElectricResistance> TWO_OHM = createQuantity((short) 2, Units.OHM);
+  private final ShortQuantity<ElectricResistance> MIN_VALUE_OHM = createQuantity(Short.MIN_VALUE, Units.OHM);
+  private final ShortQuantity<ElectricResistance> MAX_VALUE_OHM = createQuantity(Short.MAX_VALUE, Units.OHM);
+  private final ShortQuantity<ElectricResistance> ONE_MILLIOHM = createQuantity((short) 1, MetricPrefix.MILLI(Units.OHM));
+  private final ShortQuantity<ElectricResistance> ONE_KILOOHM = createQuantity((short) 1, MetricPrefix.KILO(Units.OHM));
+  private final ShortQuantity<ElectricResistance> ONE_YOTTAOHM = createQuantity((short) 1, MetricPrefix.YOTTA(Units.OHM));
+  private static final IntegerQuantity<ElectricResistance> ONE_INTEGER_OHM = new IntegerQuantity<ElectricResistance>(1, Units.OHM);
 
-  private static <Q extends Quantity<Q>> LongQuantity<Q> createQuantity(long l, Unit<Q> unit) {
-    return new LongQuantity<Q>(Long.valueOf(l).longValue(), unit);
+  private <Q extends Quantity<Q>> ShortQuantity<Q> createQuantity(short s, Unit<Q> unit) {
+    return new ShortQuantity<Q>(Short.valueOf(s).shortValue(), unit);
   }
 
   /**
@@ -75,7 +76,7 @@ public class LongQuantityTest {
   @Test
   public void additionWithSameMultipleKeepsMultiple() {
     Quantity<ElectricResistance> actual = ONE_OHM.add(TWO_OHM);
-    LongQuantity<ElectricResistance> expected = createQuantity(3, Units.OHM);
+    ShortQuantity<ElectricResistance> expected = createQuantity((short) 3, Units.OHM);
     assertEquals(expected, actual);
   }
 
@@ -95,7 +96,7 @@ public class LongQuantityTest {
   @Test
   public void additionWithLargerMultipleKeepsSmallerMultiple() {
     Quantity<ElectricResistance> actual = ONE_MILLIOHM.add(ONE_OHM);
-    LongQuantity<ElectricResistance> expected = createQuantity(1001, MetricPrefix.MILLI(Units.OHM));
+    ShortQuantity<ElectricResistance> expected = createQuantity((short) 1001, MetricPrefix.MILLI(Units.OHM));
     assertEquals(expected, actual);
   }
 
@@ -105,7 +106,7 @@ public class LongQuantityTest {
   @Test
   public void additionWithSmallerMultipleCastsToSmallerMultipleIfNeeded() {
     Quantity<ElectricResistance> actual = ONE_OHM.add(ONE_MILLIOHM);
-    LongQuantity<ElectricResistance> expected = createQuantity(1001, MetricPrefix.MILLI(Units.OHM));
+    ShortQuantity<ElectricResistance> expected = createQuantity((short) 1001, MetricPrefix.MILLI(Units.OHM));
     assertEquals(expected, actual);
   }
 
@@ -123,9 +124,9 @@ public class LongQuantityTest {
    */
   @Test
   public void additionWithLargerMultipleAndOverflowingResultCastsToLargerMultiple() {
-    LongQuantity<ElectricResistance> almost_max_value_ohm = createQuantity(Long.MAX_VALUE - 999, Units.OHM);
+    ShortQuantity<ElectricResistance> almost_max_value_ohm = createQuantity((short) (Short.MAX_VALUE - 999), Units.OHM);
     Quantity<ElectricResistance> actual = almost_max_value_ohm.add(ONE_KILOOHM);
-    LongQuantity<ElectricResistance> expected = createQuantity(Long.MAX_VALUE / 1000, MetricPrefix.KILO(Units.OHM));
+    ShortQuantity<ElectricResistance> expected = createQuantity((short) (Short.MAX_VALUE / 1000), MetricPrefix.KILO(Units.OHM));
     assertEquals(expected, actual);
   }
 
@@ -134,7 +135,7 @@ public class LongQuantityTest {
    */
   @Test
   public void additionWithLargerMultipleButNotOverflowingResultKeepsSmallerMultiple() {
-    LongQuantity<ElectricResistance> almost_max_value_ohm = createQuantity(Long.MAX_VALUE - 1000L, Units.OHM);
+    ShortQuantity<ElectricResistance> almost_max_value_ohm = createQuantity((short) (Short.MAX_VALUE - 1000), Units.OHM);
     Quantity<ElectricResistance> actual = almost_max_value_ohm.add(ONE_KILOOHM);
     assertEquals(MAX_VALUE_OHM, actual);
   }
@@ -172,7 +173,7 @@ public class LongQuantityTest {
    */
   @Test
   public void subtractionWithSameMultipleAlmostResultingInNegativeDoesNotThrowException() {
-    Quantity<ElectricResistance> actual = createQuantity(Long.MIN_VALUE + 1, Units.OHM).subtract(ONE_OHM);
+    Quantity<ElectricResistance> actual = createQuantity((short) (Short.MIN_VALUE + 1), Units.OHM).subtract(ONE_OHM);
     assertEquals(MIN_VALUE_OHM, actual);
   }
 
@@ -182,7 +183,7 @@ public class LongQuantityTest {
   @Test
   public void quantityMultiplicationMultipliesCorrectly() {
     Quantity<?> actual = TWO_OHM.multiply(TWO_OHM);
-    LongQuantity<?> expected = createQuantity(4L, SQUARE_OHM);
+    ShortQuantity<?> expected = createQuantity((short) 4, SQUARE_OHM);
     assertEquals(expected, actual);
   }
 
@@ -192,7 +193,7 @@ public class LongQuantityTest {
   @Test
   public void quantityMultiplicationResultingInOverflowThrowsException() {
     assertThrows(ArithmeticException.class, () -> {
-      Quantity<ElectricResistance> halfMaxValuePlusOne = createQuantity(514L + Long.MAX_VALUE / 2L, Units.OHM);
+      Quantity<ElectricResistance> halfMaxValuePlusOne = createQuantity((short) (1 + Short.MAX_VALUE / 2), Units.OHM);
       halfMaxValuePlusOne.multiply(TWO_OHM);
     });
   }
@@ -202,8 +203,8 @@ public class LongQuantityTest {
    */
   @Test
   public void numberMultiplicationMultipliesCorrectly() {
-    Quantity<?> actual = TWO_OHM.multiply(2L);
-    LongQuantity<ElectricResistance> expected = createQuantity(4L, Units.OHM);
+    Quantity<?> actual = TWO_OHM.multiply(2);
+    ShortQuantity<ElectricResistance> expected = createQuantity((short) 4, Units.OHM);
     assertEquals(expected, actual);
   }
 
@@ -213,8 +214,8 @@ public class LongQuantityTest {
   @Test
   public void numberMultiplicationResultingInOverflowThrowsException() {
     assertThrows(ArithmeticException.class, () -> {
-      Quantity<ElectricResistance> halfMaxValuePlusOne = createQuantity(1L + Long.MAX_VALUE / 2L, Units.OHM);
-      halfMaxValuePlusOne.multiply(2L);
+      Quantity<ElectricResistance> halfMaxValuePlusOne = createQuantity((short) (1 + Short.MAX_VALUE / 2), Units.OHM);
+      halfMaxValuePlusOne.multiply(2);
     });
   }
 
@@ -224,7 +225,7 @@ public class LongQuantityTest {
   @Test
   public void quantityDivisionDividesCorrectly() {
     Quantity<?> actual = TWO_OHM.divide(TWO_OHM);
-    LongQuantity<Dimensionless> expected = createQuantity(1L, AbstractUnit.ONE);
+    ShortQuantity<Dimensionless> expected = createQuantity((short) 1, AbstractUnit.ONE);
     assertEquals(expected, actual);
   }
 
@@ -233,7 +234,7 @@ public class LongQuantityTest {
    */
   @Test
   public void numberDivisionDividesCorrectly() {
-    Quantity<?> actual = TWO_OHM.divide(2L);
+    Quantity<?> actual = TWO_OHM.divide(2);
     assertEquals(ONE_OHM, actual);
   }
 
@@ -243,7 +244,7 @@ public class LongQuantityTest {
   @Test
   public void inverseReturnsUnitQuantityForUnitQuantity() {
     Quantity<?> actual = ONE_OHM.inverse();
-    LongQuantity<?> expected = createQuantity(1L, Units.OHM.inverse());
+    ShortQuantity<?> expected = createQuantity((short) 1, Units.OHM.inverse());
     assertEquals(expected, actual);
   }
 
@@ -253,7 +254,7 @@ public class LongQuantityTest {
   @Test
   public void inverseReturnsZeroQuantityForLargerThanUnitQuantity() {
     Quantity<?> actual = TWO_OHM.inverse();
-    LongQuantity<?> expected = createQuantity(0L, Units.OHM.inverse());
+    ShortQuantity<?> expected = createQuantity((short) 0, Units.OHM.inverse());
     assertEquals(expected, actual);
   }
 
@@ -263,39 +264,39 @@ public class LongQuantityTest {
   @Test
   public void inverseThrowsExceptionForZeroQuantity() {
     assertThrows(ArithmeticException.class, () -> {
-      createQuantity(0L, Units.OHM).inverse();
+      createQuantity((short) 0, Units.OHM).inverse();
     });
   }
 
   /**
-   * Verifies that a LongQuantity isn't big.
+   * Verifies that a ShortQuantity isn't big.
    */
   @Test
-  public void longQuantityIsNotBig() {
+  public void shortQuantityIsNotBig() {
     assertFalse(ONE_OHM.isBig());
   }
 
   /**
-   * Verifies that a LongQuantity isn't decimal.
+   * Verifies that a ShortQuantity isn't decimal.
    */
   @Test
-  public void longQuantityIsNotDecimal() {
+  public void shortQuantityIsNotDecimal() {
     assertFalse(ONE_OHM.isDecimal());
   }
 
   /**
-   * Verifies that a LongQuantity has the size of Long.
+   * Verifies that a ShortQuantity has the size of Short.
    */
   @Test
-  public void longQuantityHasByteSize() {
-    assertEquals(Long.SIZE, ONE_OHM.getSize());
+  public void shortQuantityHasByteSize() {
+    assertEquals(Short.SIZE, ONE_OHM.getSize());
   }
 
   /**
    * Verifies that a quantity isn't equal to null.
    */
   @Test
-  public void longQuantityIsNotEqualToNull() {
+  public void shortQuantityIsNotEqualToNull() {
     assertFalse(ONE_OHM.equals(null));
   }
 
@@ -303,7 +304,7 @@ public class LongQuantityTest {
    * Verifies that a quantity is equal to itself.
    */
   @Test
-  public void longQuantityIsEqualToItself() {
+  public void shortQuantityIsEqualToItself() {
     assertTrue(ONE_OHM.equals(ONE_OHM));
   }
 
@@ -311,15 +312,15 @@ public class LongQuantityTest {
    * Verifies that a quantity is equal to another instance with the same value and unit.
    */
   @Test
-  public void longQuantityIsEqualToIdenticalInstance() {
-    assertTrue(ONE_OHM.equals(createQuantity(1, Units.OHM)));
+  public void shortQuantityIsEqualToIdenticalInstance() {
+    assertTrue(ONE_OHM.equals(createQuantity((short) 1, Units.OHM)));
   }
 
   /**
    * Verifies that a quantity is equal to another instance with the same value and unit using another primitive.
    */
   @Test
-  public void longQuantityIsEqualToIdenticalInstanceWithAnotherPrimitive() {
+  public void shortQuantityIsEqualToIdenticalInstanceWithAnotherPrimitive() {
     assertTrue(ONE_OHM.equals(new DoubleQuantity<ElectricResistance>(Double.valueOf(1).doubleValue(), Units.OHM)));
   }
 
@@ -327,7 +328,7 @@ public class LongQuantityTest {
    * Verifies that a quantity is not equal to a quantity with a different value.
    */
   @Test
-  public void longQuantityIsNotEqualToQuantityWithDifferentValue() {
+  public void shortQuantityIsNotEqualToQuantityWithDifferentValue() {
     assertFalse(ONE_OHM.equals(TWO_OHM));
   }
 
@@ -335,7 +336,7 @@ public class LongQuantityTest {
    * Verifies that a quantity is not equal to a quantity with a different unit.
    */
   @Test
-  public void longQuantityIsNotEqualToQuantityWithDifferentUnit() {
+  public void shortQuantityIsNotEqualToQuantityWithDifferentUnit() {
     assertFalse(ONE_OHM.equals(ONE_KILOOHM));
   }
 
@@ -343,7 +344,7 @@ public class LongQuantityTest {
    * Verifies that a quantity is not equal to an object of a different class.
    */
   @Test
-  public void longQuantityIsNotEqualToObjectOfDifferentClass() {
+  public void shortQuantityIsNotEqualToObjectOfDifferentClass() {
     assertFalse(ONE_OHM.equals(SQUARE_OHM));
   }
 
@@ -401,7 +402,7 @@ public class LongQuantityTest {
   @Test
   public void longValueThrowsExceptionOnPositiveOverflow() {
     assertThrows(ArithmeticException.class, () -> {
-      createQuantity(Long.MAX_VALUE / 10L + 117L, MetricPrefix.DEKA(Units.OHM)).longValue(Units.OHM);
+      createQuantity((short) 9224, MetricPrefix.PETA(Units.OHM)).longValue(Units.OHM);
     });
   }
 
@@ -411,72 +412,72 @@ public class LongQuantityTest {
   @Test
   public void longValueThrowsExceptionOnNegativeOverflow() {
     assertThrows(ArithmeticException.class, () -> {
-      createQuantity(Long.MIN_VALUE / 10L - 117L, MetricPrefix.DEKA(Units.OHM)).longValue(Units.OHM);
+      createQuantity((short) -9224, MetricPrefix.PETA(Units.OHM)).longValue(Units.OHM);
     });
   }
 
   /**
-   * Verifies that addition with LongQuantity returns a LongQuantity.
+   * Verifies that addition with ShortQuantity returns a ShortQuantity.
    */
   @Test
-  public void additionWithLongQuantityDoesNotWiden() {
-    assertEquals(LongQuantity.class, ONE_OHM.add(ONE_OHM).getClass());
+  public void additionWithShortQuantityDoesNotWiden() {
+    assertEquals(ShortQuantity.class, ONE_OHM.add(ONE_OHM).getClass());
   }
 
   /**
-   * Verifies that addition with BigIntegerQuantity widens to BigIntegerQuantity.
+   * Verifies that addition with IntegerQuantity widens to IntegerQuantity.
    */
   @Test
-  public void additionWithBigIntegerQuantityWidensToBigIntegerQuantity() {
-    assertEquals(BigIntegerQuantity.class, ONE_OHM.add(ONE_BIG_INTEGER_OHM).getClass());
+  public void additionWithIntegerQuantityWidensToIntegerQuantity() {
+    assertEquals(IntegerQuantity.class, ONE_OHM.add(ONE_INTEGER_OHM).getClass());
   }
 
   /**
-   * Verifies that subtraction with LongQuantity returns a LongQuantity.
+   * Verifies that subtraction with ShortQuantity returns a ShortQuantity.
    */
   @Test
-  public void subtractionWithLongQuantityDoesNotWiden() {
-    assertEquals(LongQuantity.class, ONE_OHM.subtract(ONE_OHM).getClass());
+  public void subtractionWithShortQuantityDoesNotWiden() {
+    assertEquals(ShortQuantity.class, ONE_OHM.subtract(ONE_OHM).getClass());
   }
 
   /**
-   * Verifies that subtraction with BigIntegerQuantity widens to BigIntegerQuantity.
+   * Verifies that subtraction with IntegerQuantity widens to IntegerQuantity.
    */
   @Test
-  public void subtractionWithBigIntegerQuantityWidensToBigIntegerQuantity() {
-    assertEquals(BigIntegerQuantity.class, ONE_OHM.subtract(ONE_BIG_INTEGER_OHM).getClass());
+  public void subtractionWithIntegerQuantityWidensToIntegerQuantity() {
+    assertEquals(IntegerQuantity.class, ONE_OHM.subtract(ONE_INTEGER_OHM).getClass());
   }
 
   /**
-   * Verifies that multiplication with LongQuantity returns a LongQuantity.
+   * Verifies that multiplication with ShortQuantity returns a ShortQuantity.
    */
   @Test
-  public void multiplicationWithLongQuantityDoesNotWiden() {
-    assertEquals(LongQuantity.class, ONE_OHM.multiply(ONE_OHM).getClass());
+  public void multiplicationWithShortQuantityDoesNotWiden() {
+    assertEquals(ShortQuantity.class, ONE_OHM.multiply(ONE_OHM).getClass());
   }
 
   /**
-   * Verifies that multiplication with BigIntegerQuantity widens to BigIntegerQuantity.
+   * Verifies that multiplication with IntegerQuantity widens to IntegerQuantity.
    */
   @Test
-  public void multiplicationWithBigIntegerQuantityWidensToBigIntegerQuantity() {
-    assertEquals(BigIntegerQuantity.class, ONE_OHM.multiply(ONE_BIG_INTEGER_OHM).getClass());
+  public void multiplicationWithIntegerQuantityWidensToIntegerQuantity() {
+    assertEquals(IntegerQuantity.class, ONE_OHM.multiply(ONE_INTEGER_OHM).getClass());
   }
 
   /**
-   * Verifies that division with LongQuantity returns a LongQuantity.
+   * Verifies that division with ShortQuantity returns a ShortQuantity.
    */
   @Test
-  public void divisionWithLongQuantityDoesNotWiden() {
-    assertEquals(LongQuantity.class, ONE_OHM.divide(ONE_OHM).getClass());
+  public void divisionWithShortQuantityDoesNotWiden() {
+    assertEquals(ShortQuantity.class, ONE_OHM.divide(ONE_OHM).getClass());
   }
 
   /**
-   * Verifies that division with BigIntegerQuantity widens to BigIntegerQuantity.
+   * Verifies that division with IntegerQuantity widens to IntegerQuantity.
    */
   @Test
-  public void divisionWithBigIntegerQuantityWidensToBigIntegerQuantity() {
-    assertEquals(BigIntegerQuantity.class, ONE_OHM.divide(ONE_BIG_INTEGER_OHM).getClass());
+  public void divisionWithIntegerQuantityWidensToIntegerQuantity() {
+    assertEquals(IntegerQuantity.class, ONE_OHM.divide(ONE_INTEGER_OHM).getClass());
   }
 
   @Test
@@ -491,11 +492,18 @@ public class LongQuantityTest {
     assertEquals(dayResult.getValue().intValue(), day.getValue().intValue());
   }
 
+  @Test
+  public void testEquality() throws Exception {
+    Quantity<Length> value = Quantities.getQuantity(Short.valueOf("1"), Units.METRE);
+    Quantity<Length> anotherValue = Quantities.getQuantity(Short.valueOf("1"), Units.METRE);
+    assertEquals(value, anotherValue);
+  }
+
   /**
    * Tests negate()
    */
   @Test
   public void negateTest() {
-    assertEquals(-1L, ONE_OHM.negate().getValue());
+    assertEquals((short) -1, ONE_OHM.negate().getValue());
   }
 }

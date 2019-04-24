@@ -30,17 +30,28 @@
 package tech.units.indriya.function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static tech.units.indriya.NumberAssertions.assertNumberEquals;
+import static tech.units.indriya.function.QuantityStreams.summarizeQuantity;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.measure.Quantity;
 import javax.measure.quantity.Time;
+import javax.measure.spi.QuantityFactory;
+import javax.measure.spi.ServiceProvider;
 
 import org.junit.jupiter.api.Test;
 
-import tech.units.indriya.function.QuantitySummaryStatistics;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.Units;
 
 public class QuantitySummaryStatisticsTest {
+    
+  private final static double PRECISION_GOAL = 1E-30;
 
   @Test
   public void shouldBeEmpty() {
@@ -66,7 +77,9 @@ public class QuantitySummaryStatisticsTest {
     QuantitySummaryStatistics<Time> summary = new QuantitySummaryStatistics<>(Units.DAY);
 
     summary.accept(Quantities.getQuantity(10, Units.DAY));
+    
     assertEquals(1L, summary.getCount());
+    
     assertEquals(10L, summary.getMin().getValue().longValue());
     assertEquals(10L, summary.getMax().getValue().longValue());
     assertEquals(10L, summary.getSum().getValue().longValue());
@@ -88,6 +101,12 @@ public class QuantitySummaryStatisticsTest {
     assertEquals(240L, summary.getMax(Units.HOUR).getValue().longValue());
     assertEquals(240L, summary.getSum(Units.HOUR).getValue().longValue());
     assertEquals(240L, summary.getAverage(Units.HOUR).getValue().longValue());
+    
+    assertNumberEquals(240, summary.getMin(Units.HOUR).getValue(), PRECISION_GOAL);
+    assertNumberEquals(240, summary.getMax(Units.HOUR).getValue(), PRECISION_GOAL);
+    assertNumberEquals(240, summary.getSum(Units.HOUR).getValue(), PRECISION_GOAL);
+    assertNumberEquals(240, summary.getAverage(Units.HOUR).getValue(), PRECISION_GOAL);
+    
   }
 
   @Test
@@ -97,21 +116,33 @@ public class QuantitySummaryStatisticsTest {
 
     summary.accept(Quantities.getQuantity(10, Units.DAY));
     QuantitySummaryStatistics<Time> summaryHour = summary.to(Units.HOUR);
+    
     assertEquals(240L, summaryHour.getMin().getValue().longValue());
     assertEquals(240L, summaryHour.getMax().getValue().longValue());
     assertEquals(240L, summaryHour.getSum().getValue().longValue());
     assertEquals(240L, summaryHour.getAverage().getValue().longValue());
-
+    
+    assertNumberEquals(240, summaryHour.getMin().getValue(), PRECISION_GOAL);
+    assertNumberEquals(240, summaryHour.getMax().getValue(), PRECISION_GOAL);
+    assertNumberEquals(240, summaryHour.getSum().getValue(), PRECISION_GOAL);
+    assertNumberEquals(240, summaryHour.getAverage().getValue(), PRECISION_GOAL);
   }
 
   @Test
   public void addTest() {
     QuantitySummaryStatistics<Time> summary = createSummaryTime();
+    
     assertEquals(3L, summary.getCount());
+    
     assertEquals(1L, summary.getMin().getValue().longValue());
     assertEquals(9L, summary.getMax().getValue().longValue());
     assertEquals(12L, summary.getSum().getValue().longValue());
-    assertEquals(4L, summary.getAverage().getValue().longValue());
+    //assertEquals(4L, summary.getAverage().getValue().longValue()); //well, that does not work, BigDecimal.longValue() rounding rounds to floor  
+    
+    assertNumberEquals(1, summary.getMin().getValue(), PRECISION_GOAL);
+    assertNumberEquals(9, summary.getMax().getValue(), PRECISION_GOAL);
+    assertNumberEquals(12, summary.getSum().getValue(), PRECISION_GOAL);
+    assertNumberEquals(4, summary.getAverage().getValue(), PRECISION_GOAL);
   }
 
   @Test
@@ -121,12 +152,34 @@ public class QuantitySummaryStatisticsTest {
     QuantitySummaryStatistics<Time> summary = summaryA.combine(summaryB);
 
     assertEquals(6L, summary.getCount());
+    
     assertEquals(1L, summary.getMin().getValue().longValue());
     assertEquals(9L, summary.getMax().getValue().longValue());
     assertEquals(24L, summary.getSum().getValue().longValue());
     assertEquals(4L, summary.getAverage().getValue().longValue());
+    
+    assertNumberEquals(1, summary.getMin().getValue(), PRECISION_GOAL);
+    assertNumberEquals(9, summary.getMax().getValue(), PRECISION_GOAL);
+    assertNumberEquals(24, summary.getSum().getValue(), PRECISION_GOAL);
+    assertNumberEquals(4, summary.getAverage().getValue(), PRECISION_GOAL);
+    
+  }
+  
+  @Test
+  public void summaryTest() {
+    List<Quantity<Time>> times = createTimes();
+    QuantitySummaryStatistics<Time> summary = times.stream().collect(summarizeQuantity(Units.HOUR));
+
+    assertEquals(4, summary.getCount());
+    assertNotNull(summary.getAverage());
+    assertNotNull(summary.getCount());
+    assertNotNull(summary.getMax());
+    assertNotNull(summary.getMin());
+    assertNotNull(summary.getSum());
   }
 
+  // -- HELPER
+  
   private static QuantitySummaryStatistics<Time> createSummaryTime() {
     QuantitySummaryStatistics<Time> summary = new QuantitySummaryStatistics<>(Units.DAY);
 
@@ -135,5 +188,20 @@ public class QuantitySummaryStatisticsTest {
     summary.accept(Quantities.getQuantity(1440, Units.MINUTE));
     return summary;
   }
+  
+  private List<Quantity<Time>> createTimes() {
+      ServiceProvider provider = ServiceProvider.current();
+      QuantityFactory<Time> timeFactory = provider.getQuantityFactory(Time.class);
+      Quantity<Time> minutes = timeFactory.create(BigDecimal.valueOf(15), Units.MINUTE);
+      Quantity<Time> hours = timeFactory.create(BigDecimal.valueOf(18), Units.HOUR);
+      Quantity<Time> day = timeFactory.create(BigDecimal.ONE, Units.DAY);
+      Quantity<Time> seconds = timeFactory.create(BigDecimal.valueOf(100), Units.SECOND);
+      List<Quantity<Time>> times = new ArrayList<>();
+      times.add(day);
+      times.add(hours);
+      times.add(minutes);
+      times.add(seconds);
+      return times;
+    }
 
 }

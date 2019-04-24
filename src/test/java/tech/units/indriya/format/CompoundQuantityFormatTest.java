@@ -29,14 +29,21 @@
  */
 package tech.units.indriya.format;
 
+import static javax.measure.MetricPrefix.CENTI;
+import static javax.measure.MetricPrefix.KILO;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
 import static org.junit.Assert.assertEquals;
-import static org.junit.jupiter.api.Assertions.*;
-import static javax.measure.MetricPrefix.*;
-import static tech.units.indriya.unit.Units.*;
-import static tech.units.indriya.function.MixedRadixTest.USCustomary.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static tech.units.indriya.NumberAssertions.assertNumberEquals;
+import static tech.units.indriya.function.MixedRadixTest.USCustomary.FOOT;
+import static tech.units.indriya.function.MixedRadixTest.USCustomary.INCH;
+import static tech.units.indriya.function.MixedRadixTest.USCustomary.PICA;
+import static tech.units.indriya.unit.Units.HOUR;
+import static tech.units.indriya.unit.Units.KILOGRAM;
+import static tech.units.indriya.unit.Units.METRE;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -49,7 +56,6 @@ import javax.measure.format.QuantityFormat;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Time;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.NumberAssertions;
@@ -159,7 +165,8 @@ public class CompoundQuantityFormatTest {
                 .setRadixPartsDelimiter(";")
                 .build();
         Quantity<?> parsed1 = format1.parse("1 m;30 cm");
-        assertEquals(1.3d, parsed1.getValue());
+        
+        assertNumberEquals(1.3d, parsed1.getValue(), 1E-12);
         assertEquals(METRE, parsed1.getUnit());
     }
  
@@ -171,7 +178,7 @@ public class CompoundQuantityFormatTest {
                 .setDelimiter(" ").setRadixPartsDelimiter(" ")
                 .build();
         Quantity<?> parsed1 = format1.parse("1 m 30 cm");
-        assertEquals(1.3d, parsed1.getValue());
+        assertNumberEquals(1.3d, parsed1.getValue(), 1E-12);
         assertEquals(METRE, parsed1.getUnit());
     }
     
@@ -184,7 +191,7 @@ public class CompoundQuantityFormatTest {
                 .setPrimaryUnit((CENTI(METRE)))
                 .build();
         Quantity<?> parsed1 = format1.parse("1 m 30 cm");
-        assertEquals(130l, parsed1.getValue());
+        assertNumberEquals(130, parsed1.getValue(), 1E-12);
         assertEquals(CENTI(METRE), parsed1.getUnit());
     }
     
@@ -333,11 +340,11 @@ public class CompoundQuantityFormatTest {
         
         // then
         assertEquals("1. ft 2. in 3. P̸", formatedOutput);
-        assertEquals("1.208005249343831960409448818897613 ft", simpleFormattedSingle);
-        assertEquals("1.20800524934383196 ft", ndFormattedSingle);
+        assertEquals("1.2083333333333333 ft", simpleFormattedSingle);
+        assertEquals("1.2083333333333333 ft", ndFormattedSingle);
     }
     
-    @Test @Disabled("Solve https://github.com/unitsofmeasurement/indriya/issues/219")
+    @Test
     public void mixedParsing() {
         
         // given
@@ -359,7 +366,7 @@ public class CompoundQuantityFormatTest {
         NumberAssertions.assertNumberEquals(1.1666666666666667, lengthSingle.getValue(), 1E-9);
     }
     
-    @Test @Disabled("Solve https://github.com/unitsofmeasurement/indriya/issues/219")
+    @Test
     public void mixedParsingSimple() {
         
         // given

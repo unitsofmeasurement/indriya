@@ -27,7 +27,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package tech.units.indriya.quantity;
+package tech.units.indriya.quantity.deprecated;
 
 import java.math.BigDecimal;
 
@@ -35,9 +35,10 @@ import javax.measure.Quantity;
 import javax.measure.Unit;
 
 import tech.units.indriya.AbstractQuantity;
+import tech.units.indriya.ComparableQuantity;
 
 /**
- * An amount of quantity, consisting of an integer and a Unit. IntegerQuantity objects are immutable.
+ * An amount of quantity, consisting of a float and a Unit. FloatQuantity objects are immutable.
  * 
  * @see AbstractQuantity
  * @see Quantity
@@ -45,36 +46,31 @@ import tech.units.indriya.AbstractQuantity;
  * @author Otavio de Santana
  * @param <Q>
  *          The type of the quantity.
- * @version 0.5, $Date: 2018-07-20 $
- * @since 1.0.7
+ * @version 0.6, $Date: 2018-07-20 $
+ * @since 1.0
  */
-final class IntegerQuantity<Q extends Quantity<Q>> extends JavaNumericQuantity<Q> {
+@Deprecated
+final class FloatQuantity<Q extends Quantity<Q>> extends JavaNumericQuantity<Q> {
 
-  private static final long serialVersionUID = 1405915111744728289L;
+  private static final long serialVersionUID = 5992028803791009345L;
 
-  private static final BigDecimal INTEGER_MIN_VALUE = new BigDecimal(Integer.MIN_VALUE);
-  private static final BigDecimal INTEGER_MAX_VALUE = new BigDecimal(Integer.MAX_VALUE);
+  private static final BigDecimal FLOAT_MAX_VALUE = new BigDecimal(Float.MAX_VALUE);
 
-  private final int value;
+  final float value;
 
-  public IntegerQuantity(int value, Unit<Q> unit) {
+  FloatQuantity(float value, Unit<Q> unit) {
     super(unit);
     this.value = value;
   }
 
   @Override
-  public Integer getValue() {
+  public Float getValue() {
     return value;
   }
 
-  @Override
-  boolean isOverflowing(BigDecimal aValue) {
-    return aValue.compareTo(INTEGER_MIN_VALUE) < 0 || aValue.compareTo(INTEGER_MAX_VALUE) > 0;
-  }
-
-  @SuppressWarnings("unchecked")
-  public AbstractQuantity<Q> inverse() {
-    return (AbstractQuantity<Q>) NumberQuantity.of(1 / value, getUnit().inverse());
+  @SuppressWarnings({ "unchecked", "rawtypes" })
+  public ComparableQuantity<Q> inverse() {
+    return new FloatQuantity(1f / value, getUnit().inverse());
   }
 
   @Override
@@ -84,26 +80,31 @@ final class IntegerQuantity<Q extends Quantity<Q>> extends JavaNumericQuantity<Q
 
   @Override
   public boolean isDecimal() {
-    return false;
+    return true;
   }
 
   @Override
   public int getSize() {
-    return Integer.SIZE;
+    return Float.SIZE;
   }
 
   @Override
-  public Class<Integer> getNumberType() {
-    return int.class;
+  public Class<?> getNumberType() {
+    return float.class;
   }
 
   @Override
   Number castFromBigDecimal(BigDecimal aValue) {
-    return (int) aValue.longValue();
+    return (float) aValue.doubleValue();
+  }
+
+  @Override
+  boolean isOverflowing(BigDecimal aValue) {
+    return aValue.compareTo(FLOAT_MAX_VALUE.negate()) < 0 || aValue.compareTo(FLOAT_MAX_VALUE) > 0;
   }
 
   @Override
   public Quantity<Q> negate() {
-    return new IntegerQuantity<Q>(-value, getUnit());
+    return new FloatQuantity<Q>(-value, getUnit());
   }
 }

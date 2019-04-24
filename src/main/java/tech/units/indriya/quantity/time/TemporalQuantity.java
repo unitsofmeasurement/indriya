@@ -52,7 +52,6 @@ import javax.measure.quantity.Time;
 import tech.units.indriya.AbstractQuantity;
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.function.Calculus;
-import tech.units.indriya.quantity.NumberQuantity;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.Units;
 
@@ -261,7 +260,7 @@ public final class TemporalQuantity extends AbstractQuantity<Time> {
     final BigDecimal resultValueInThisUnit = numberAsBigDecimal(SECOND.getConverterTo(getUnit()).convert(resultValueInSystemUnit));
     final BigDecimal resultValueInThatUnit = numberAsBigDecimal(SECOND.getConverterTo(that.getUnit()).convert(resultValueInSystemUnit));
     final TemporalQuantity resultInThisUnit = TimeQuantities.getQuantity(resultValueInThisUnit.longValue(), timeUnit);
-    final ComparableQuantity<Time> resultInThatUnit = NumberQuantity.of(resultValueInThatUnit.longValue(), that.getUnit());
+    final ComparableQuantity<Time> resultInThatUnit = Quantities.getQuantity(resultValueInThatUnit.longValue(), that.getUnit());
     if (isOverflowing(resultValueInThisUnit)) {
       if (isOverflowing(resultValueInThatUnit))
         throw new ArithmeticException();
@@ -314,7 +313,7 @@ public final class TemporalQuantity extends AbstractQuantity<Time> {
       throw new ArithmeticException();
     }
     final Unit<?> resultUnit = unitOperator.apply(getUnit(), that.getUnit());
-    return NumberQuantity.of(result.longValue(), resultUnit);
+    return Quantities.getQuantity(result.longValue(), resultUnit);
   }
 
   private ComparableQuantity<Time> applyMultiplicativeNumberOperation(Number that,
@@ -325,7 +324,7 @@ public final class TemporalQuantity extends AbstractQuantity<Time> {
     if (isOverflowing(result)) {
       throw new ArithmeticException();
     }
-    return NumberQuantity.of(result.longValue(), getUnit());
+    return Quantities.getQuantity(result.longValue(), getUnit());
   }
 
   @Override

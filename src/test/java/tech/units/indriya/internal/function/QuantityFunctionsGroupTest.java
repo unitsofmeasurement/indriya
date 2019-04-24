@@ -30,8 +30,6 @@
 package tech.units.indriya.internal.function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static tech.units.indriya.function.QuantityStreams.summarizeQuantity;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -48,7 +46,6 @@ import javax.measure.spi.ServiceProvider;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import tech.units.indriya.function.QuantitySummaryStatistics;
 import tech.units.indriya.unit.Units;
 import tech.uom.lib.common.function.QuantityFunctions;
 
@@ -91,20 +88,6 @@ public class QuantityFunctionsGroupTest {
     assertEquals(2, timeMap.keySet().size());
     assertEquals(1, timeMap.get(Boolean.TRUE).size());
     assertEquals(3, timeMap.get(Boolean.FALSE).size());
-  }
-
-  @Test
-  // TODO move to Indriya package of QuantitySummaryStatistics 
-  public void summaryTest() {
-    List<Quantity<Time>> times = createTimes();
-    QuantitySummaryStatistics<Time> summary = times.stream().collect(summarizeQuantity(Units.HOUR));
-
-    assertEquals(4, summary.getCount());
-    assertNotNull(summary.getAverage());
-    assertNotNull(summary.getCount());
-    assertNotNull(summary.getMax());
-    assertNotNull(summary.getMin());
-    assertNotNull(summary.getSum());
   }
 
   private List<Quantity<Time>> createTimes() {

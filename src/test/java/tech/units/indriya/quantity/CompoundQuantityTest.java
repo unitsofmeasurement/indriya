@@ -29,6 +29,11 @@
  */
 package tech.units.indriya.quantity;
 
+import static javax.measure.MetricPrefix.CENTI;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static tech.units.indriya.NumberAssertions.assertNumberEquals;
+
 import java.math.BigDecimal;
 import java.util.logging.Logger;
 
@@ -38,12 +43,8 @@ import javax.measure.quantity.Time;
 
 import org.junit.jupiter.api.Test;
 
-import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.Units;
 import tech.uom.lib.common.function.QuantityConverter;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static javax.measure.MetricPrefix.*;
 
 /**
  *
@@ -59,14 +60,18 @@ public class CompoundQuantityTest {
         assertEquals("[m]", mixLen.getUnits().toString());
         assertEquals("1 m", mixLen.toString());
         
-        Quantity<Length> l2 = mixLen.to(Units.METRE);
-        assertEquals(Integer.valueOf(1), l2.getValue());
+        Quantity<Length> length = mixLen.to(Units.METRE);
+        assertNumberEquals(1, length.getValue(), 1E-28);
     }
     
     @Test
     public void testLengths() {
+        
         @SuppressWarnings("unchecked")
-        final Quantity<Length>[] quants = new Quantity[] { Quantities.getQuantity(1, Units.METRE),  Quantities.getQuantity(70, CENTI(Units.METRE)) };
+        final Quantity<Length>[] quants = new Quantity[] { 
+                Quantities.getQuantity(1, Units.METRE),  
+                Quantities.getQuantity(70, CENTI(Units.METRE)) };
+        
         CompoundQuantity<Length> mixLen = CompoundQuantity.of(quants);
       
         assertEquals("[m, cm]", mixLen.getUnits().toString());
@@ -74,6 +79,7 @@ public class CompoundQuantityTest {
         
         Quantity<Length> l2 = mixLen.to(Units.METRE);
         assertEquals(BigDecimal.valueOf(1.7d), l2.getValue());
+        
         Quantity<Length> l3 = mixLen.to(CENTI(Units.METRE));
         assertEquals(BigDecimal.valueOf(170d), l3.getValue());
     }
@@ -86,16 +92,14 @@ public class CompoundQuantityTest {
         @SuppressWarnings("unchecked")
         final Quantity<Time>[] quants = new Quantity[] { Quantities.getQuantity(3, Units.DAY),  Quantities.getQuantity(4, Units.HOUR), 
                 Quantities.getQuantity(48, Units.MINUTE)};
-        final CompoundQuantity<Time> t1 = CompoundQuantity.of(quants);
+        final CompoundQuantity<Time> time = CompoundQuantity.of(quants);
        
-        assertEquals("[day, h, min]", t1.getUnits().toString());
-        assertEquals("3 day 4 h 48 min", t1.toString());
-        assertEquals(BigDecimal.valueOf(3.2d), ((BigDecimal) t1.to(Units.DAY).getValue()).stripTrailingZeros());
-        final Quantity<Time> t2 = t1.to(Units.MINUTE);
-
-        assertEquals(new BigDecimal("4608.0000000000000000000000000000"), t2.getValue());
-        final Quantity<Time> t3 = t1.to(Units.SECOND);
-        assertEquals(new BigDecimal("276480.0000000000000000000000000000"), t3.getValue());
+        assertEquals("[day, h, min]", time.getUnits().toString());
+        assertEquals("3 day 4 h 48 min", time.toString());
+        
+        assertNumberEquals(3.2d, time.to(Units.DAY).getValue(), 1E-28);
+        assertNumberEquals(4608, time.to(Units.MINUTE).getValue(), 1E-28);
+        assertNumberEquals(276480, time.to(Units.SECOND).getValue(), 1E-28);
     }
 
     /**

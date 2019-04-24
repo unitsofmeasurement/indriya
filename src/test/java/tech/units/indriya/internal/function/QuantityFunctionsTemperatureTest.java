@@ -30,10 +30,12 @@
 package tech.units.indriya.internal.function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static tech.units.indriya.NumberAssertions.assertNumberEquals;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
 import javax.measure.Quantity;
 import javax.measure.quantity.Temperature;
 import javax.measure.spi.QuantityFactory;
@@ -62,7 +64,7 @@ public class QuantityFunctionsTemperatureTest {
     final List<Quantity<Temperature>> temps = new ArrayList<>(getList());
     final Quantity<Temperature> sumTemp = temps.stream().reduce(QuantityFunctions.sum(Units.CELSIUS)).get();
     assertEquals(Units.CELSIUS, sumTemp.getUnit());
-    assertEquals(2, sumTemp.getValue().doubleValue(), 0.00001);
+    assertNumberEquals(2, sumTemp.getValue(), 1E-12);
   }
 
   @Test
@@ -70,7 +72,7 @@ public class QuantityFunctionsTemperatureTest {
     final List<Quantity<Temperature>> temps = new ArrayList<>(getList());
     final Quantity<Temperature> sumTemp = temps.stream().reduce(QuantityFunctions.sum(Units.KELVIN)).get();
     assertEquals(Units.KELVIN, sumTemp.getUnit());
-    assertEquals(Double.valueOf(275.15), sumTemp.getValue());
+    assertNumberEquals(275.15, sumTemp.getValue(), 1E-12);
   }
 
   @Test
@@ -78,7 +80,7 @@ public class QuantityFunctionsTemperatureTest {
     final List<Quantity<Temperature>> temps = new ArrayList<>(getList());
     final Quantity<Temperature> sumTemp = temps.stream().reduce(QuantityFunctions.sum(Units.KELVIN)).get();
     assertEquals(Units.KELVIN, sumTemp.getUnit());
-    assertEquals(2.0, sumTemp.to(Units.CELSIUS).getValue());
+    assertNumberEquals(2.0, sumTemp.to(Units.CELSIUS).getValue(), 1E-12);
   }
 
   @Test
@@ -87,7 +89,7 @@ public class QuantityFunctionsTemperatureTest {
     final List<Quantity<Temperature>> temps2 = getList(true);
     final Quantity<Temperature> sumTemp = temps.stream().reduce(QuantityFunctions.sum(Units.KELVIN)).get();
     final Quantity<Temperature> sumTemp2 = temps2.stream().reduce(QuantityFunctions.sum(Units.KELVIN)).get();
-    assertEquals(sumTemp.getValue().doubleValue(), sumTemp2.getValue().doubleValue(), 0.00001);
+    assertNumberEquals(sumTemp.getValue(), sumTemp2.getValue(), 1E-12);
   }
 
   private List<Quantity<Temperature>> getList(boolean reverse) {

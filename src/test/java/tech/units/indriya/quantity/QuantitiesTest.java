@@ -31,6 +31,8 @@ package tech.units.indriya.quantity;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Disabled;
+
+import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.unit.Units;
 
 import javax.measure.Quantity;
@@ -78,14 +80,15 @@ public class QuantitiesTest {
     assertTrue(BigInteger.class.isInstance(bigIntegerQuantity.getValue()));
     assertTrue(BigDecimal.class.isInstance(bigDecimalQuantity.getValue()));
 
-    assertTrue(ShortQuantity.class.isInstance(shortQuantity));
-    assertTrue(ByteQuantity.class.isInstance(byteQuantity));
-    assertTrue(LongQuantity.class.isInstance(longQuantity));
-    assertTrue(NumberQuantity.class.isInstance(intQuantity)); // workaround
-    assertTrue(NumberQuantity.class.isInstance(floatQuantity)); // workaround
-    assertTrue(DoubleQuantity.class.isInstance(doubleQuantity));
-    assertTrue(BigIntegerQuantity.class.isInstance(bigIntegerQuantity));
-    assertTrue(DecimalQuantity.class.isInstance(bigDecimalQuantity));
+// //TODO[220] remove obsolete    
+//    assertTrue(ShortQuantity.class.isInstance(shortQuantity));
+//    assertTrue(ByteQuantity.class.isInstance(byteQuantity));
+//    assertTrue(LongQuantity.class.isInstance(longQuantity));
+//    assertTrue(NumberQuantity.class.isInstance(intQuantity)); // workaround
+//    assertTrue(NumberQuantity.class.isInstance(floatQuantity)); // workaround
+//    assertTrue(DoubleQuantity.class.isInstance(doubleQuantity));
+//    assertTrue(BigIntegerQuantity.class.isInstance(bigIntegerQuantity));
+//    assertTrue(DecimalQuantity.class.isInstance(bigDecimalQuantity));
   }
 
   @Test
@@ -109,14 +112,15 @@ public class QuantitiesTest {
     assertTrue(BigInteger.class.isInstance(bigIntegerQuantity.getValue()));
     assertTrue(BigDecimal.class.isInstance(bigDecimalQuantity.getValue()));
 
-    assertTrue(ShortQuantity.class.isInstance(shortQuantity));
-    assertTrue(ByteQuantity.class.isInstance(byteQuantity));
-    assertTrue(LongQuantity.class.isInstance(longQuantity));
-    assertTrue(NumberQuantity.class.isInstance(intQuantity)); // workaround
-    assertTrue(NumberQuantity.class.isInstance(floatQuantity)); // workaround
-    assertTrue(DoubleQuantity.class.isInstance(doubleQuantity));
-    assertTrue(BigIntegerQuantity.class.isInstance(bigIntegerQuantity));
-    assertTrue(DecimalQuantity.class.isInstance(bigDecimalQuantity));
+//TODO[220] remove obsolete
+//    assertTrue(ShortQuantity.class.isInstance(shortQuantity));
+//    assertTrue(ByteQuantity.class.isInstance(byteQuantity));
+//    assertTrue(LongQuantity.class.isInstance(longQuantity));
+//    assertTrue(NumberQuantity.class.isInstance(intQuantity)); // workaround
+//    assertTrue(NumberQuantity.class.isInstance(floatQuantity)); // workaround
+//    assertTrue(DoubleQuantity.class.isInstance(doubleQuantity));
+//    assertTrue(BigIntegerQuantity.class.isInstance(bigIntegerQuantity));
+//    assertTrue(DecimalQuantity.class.isInstance(bigDecimalQuantity));
     
     assertEquals(RELATIVE, shortQuantity.getScale());
     assertEquals(RELATIVE, byteQuantity.getScale());
@@ -139,10 +143,11 @@ public class QuantitiesTest {
   }
 
   @Test
-  @Disabled("equals() is broken for DecimalQuantity or all of JavaNumericQuantity")
-  public void equalityValuesTest() {
-   Quantity<Speed> shouldBe = Quantities.getQuantity(BigDecimal.valueOf(15.0d), Units.KILOMETRE_PER_HOUR);
-   Quantity<Speed> parsedSpeed = Quantities.getQuantity("15.0 km/h").asType(Speed.class);
-   assertEquals(shouldBe, parsedSpeed);
+  @Disabled("fails because of MultiplyConverter not being sufficiently accurate")
+  public void quantityEquivalentTest() {
+      ComparableQuantity<Speed> shouldBe = Quantities.getQuantity(15, Units.KILOMETRE_PER_HOUR);
+      Quantity<Speed> parsedSpeed = Quantities.getQuantity("15.0 km/h").asType(Speed.class);
+
+      assertTrue(shouldBe.isEquivalentTo(parsedSpeed));
   }
 }

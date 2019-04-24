@@ -47,10 +47,8 @@ import javax.measure.quantity.Time;
 
 import org.junit.jupiter.api.Test;
 
-import tech.units.indriya.AbstractQuantity;
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.ComparableQuantity;
-import tech.units.indriya.quantity.NumberQuantity;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.Units;
 
@@ -415,7 +413,7 @@ public class TemporalQuantityTest {
   @Test
   public void quantityMultiplicationMultipliesCorrectly() {
     Quantity<?> actual = FORTY_TWO_CHRONO_MINUTES.multiply(FORTY_TWO_CHRONO_MINUTES);
-    AbstractQuantity<?> expected = NumberQuantity.of(1764L, SQUARE_MINUTE);
+    Quantity<?> expected = Quantities.getQuantity(1764L, SQUARE_MINUTE);
     assertEquals(expected, actual);
   }
   
@@ -436,7 +434,7 @@ public class TemporalQuantityTest {
   @Test
   public void quantityDivisionDividesCorrectly() {
     Quantity<?> actual = FORTY_TWO_CHRONO_MINUTES.divide(FORTY_TWO_CHRONO_MINUTES);
-    AbstractQuantity<Dimensionless> expected = NumberQuantity.of(1L, AbstractUnit.ONE);
+    Quantity<Dimensionless> expected = Quantities.getQuantity(1L, AbstractUnit.ONE);
     assertEquals(expected, actual);
   }
   

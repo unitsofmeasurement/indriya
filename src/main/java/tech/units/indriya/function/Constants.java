@@ -43,7 +43,7 @@ import java.util.logging.Logger;
  */
 class Constants {
 
-	private static final Logger logger = Logger.getLogger(Constants.class.getName());
+	private static final Logger log = Logger.getLogger(Constants.class.getName());
 	
 	/**
 	 * Memoization of Pi by number-of-digits.
@@ -53,7 +53,7 @@ class Constants {
 	/**
 	 * Pi calculation with Machin's formula.
 	 * 
-	 * @see <a href= "http://en.literateprograms.org/Pi_with_Machin's_formula_(Java)" >Pi with Machin's formula</a>
+	 * @see <a href= "http://mathworld.wolfram.com/PiFormulas.html" >Pi Formulas</a>
 	 * 
 	 */
 	static final class Pi {
@@ -62,7 +62,7 @@ class Constants {
 		private static final BigDecimal THREE = new BigDecimal("3");
 		private static final BigDecimal FOUR = new BigDecimal("4");
 		private static final BigDecimal FIVE = new BigDecimal("5");
-		private static final BigDecimal TWO_THIRTY_NINE = new BigDecimal("239");
+		private static final BigDecimal TWO_HUNDRED_THIRTY_NINE = new BigDecimal("239");
 
 		private Pi() {
 		}
@@ -78,20 +78,12 @@ class Constants {
 				final int calcDigits = numDigits + 10;
 				return FOUR
 						.multiply((FOUR.multiply(arccot(FIVE, calcDigits)))
-						.subtract(arccot(TWO_THIRTY_NINE, calcDigits)))
+						.subtract(arccot(TWO_HUNDRED_THIRTY_NINE, calcDigits)))
 						.setScale(numDigits, RoundingMode.DOWN);
 				
 			});
 		}
 
-		/*
-		 * private static BigDecimal compute(int numDigits, boolean verbose) {
-		 * int calcDigits = numDigits + 10;
-		 * 
-		 * return FOUR .multiply((FOUR.multiply(arccot(FIVE,
-		 * calcDigits))).subtract(arccot(TWO_THIRTY_NINE, calcDigits)))
-		 * .setScale(numDigits, RoundingMode.DOWN); }
-		 */
 		/** Compute arccot via the Taylor series expansion. */
 		private static BigDecimal arccot(BigDecimal x, int numDigits) {
 			BigDecimal unity = BigDecimal.ONE.setScale(numDigits, RoundingMode.DOWN);
@@ -101,7 +93,7 @@ class Constants {
 			int nTerms = 0;
 
 			BigDecimal nearZero = BigDecimal.ONE.scaleByPowerOfTen(-numDigits);
-			logger.log(Level.FINER, "arccot: ARGUMENT=" + x + " (nearZero=" + nearZero + ")");
+			log.log(Level.FINER, ()->"arccot: ARGUMENT=" + x + " (nearZero=" + nearZero + ")");
 			boolean add = false;
 			// Add one term of Taylor series each time thru loop. Stop looping
 			// when _term_
@@ -113,12 +105,14 @@ class Constants {
 				term = xpower.divide(n, RoundingMode.DOWN);
 				sum = add ? sum.add(term) : sum.subtract(term);
 				add = !add;
-				// System.out.println("arccot: xpower=" + xpower + ", term=" +
-				// term);
-				logger.log(Level.FINEST, "arccot: term=" + term);
+				if(log.isLoggable(Level.FINEST)) {
+				    log.log(Level.FINEST, "arccot: term=" + term);    
+				}
 				nTerms++;
 			}
-			logger.log(Level.FINER, "arccot: done. nTerms=" + nTerms);
+			if(log.isLoggable(Level.FINEST)) {
+			    log.log(Level.FINER, "arccot: done. nTerms=" + nTerms);
+			}
 			return sum;
 		}
 	}

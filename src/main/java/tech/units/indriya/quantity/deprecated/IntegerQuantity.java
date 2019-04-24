@@ -27,7 +27,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package tech.units.indriya.quantity;
+package tech.units.indriya.quantity.deprecated;
 
 import java.math.BigDecimal;
 
@@ -35,51 +35,47 @@ import javax.measure.Quantity;
 import javax.measure.Unit;
 
 import tech.units.indriya.AbstractQuantity;
-import tech.units.indriya.ComparableQuantity;
 
 /**
- * An amount of quantity, implementation of {@link ComparableQuantity} that uses {@link Double} as implementation of {@link Number}, this object is
- * immutable. Note: all operations which involves {@link Number}, this implementation will convert to {@link Double}.
- *
- * @param <Q>
- *          The type of the quantity.
- * @param <Q>
- *          The type of the quantity.
- * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @author Otavio de Santana
- * @version 0.7, $Date: 2018-11-14 $
+ * An amount of quantity, consisting of an integer and a Unit. IntegerQuantity objects are immutable.
+ * 
  * @see AbstractQuantity
  * @see Quantity
- * @see ComparableQuantity
- * @since 1.0
+ * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
+ * @author Otavio de Santana
+ * @param <Q>
+ *          The type of the quantity.
+ * @version 0.5, $Date: 2018-07-20 $
+ * @since 1.0.7
  */
-final class DoubleQuantity<Q extends Quantity<Q>> extends JavaNumericQuantity<Q> {
+@Deprecated
+final class IntegerQuantity<Q extends Quantity<Q>> extends JavaNumericQuantity<Q> {
 
-  private static final long serialVersionUID = 8660843078156312278L;
+  private static final long serialVersionUID = 1405915111744728289L;
 
-  private static final BigDecimal DOUBLE_MAX_VALUE = new BigDecimal(Double.MAX_VALUE);
+  private static final BigDecimal INTEGER_MIN_VALUE = new BigDecimal(Integer.MIN_VALUE);
+  private static final BigDecimal INTEGER_MAX_VALUE = new BigDecimal(Integer.MAX_VALUE);
 
-  private final double value;
+  private final int value;
 
-  public DoubleQuantity(double value, Unit<Q> unit, Scale sc) {
-    super(unit, sc);
+  public IntegerQuantity(int value, Unit<Q> unit) {
+    super(unit);
     this.value = value;
   }
-  
-  public DoubleQuantity(double value, Unit<Q> unit) {
-      super(unit);
-      this.value = value;
-    }
 
   @Override
-  public Double getValue() {
+  public Integer getValue() {
     return value;
   }
 
-  @SuppressWarnings({ "rawtypes", "unchecked" })
   @Override
+  boolean isOverflowing(BigDecimal aValue) {
+    return aValue.compareTo(INTEGER_MIN_VALUE) < 0 || aValue.compareTo(INTEGER_MAX_VALUE) > 0;
+  }
+
+  @SuppressWarnings("unchecked")
   public AbstractQuantity<Q> inverse() {
-    return new DoubleQuantity(1d / value, getUnit().inverse());
+    return (AbstractQuantity<Q>) NumberQuantity.of(1 / value, getUnit().inverse());
   }
 
   @Override
@@ -89,31 +85,26 @@ final class DoubleQuantity<Q extends Quantity<Q>> extends JavaNumericQuantity<Q>
 
   @Override
   public boolean isDecimal() {
-    return true;
+    return false;
   }
 
   @Override
   public int getSize() {
-    return Double.SIZE;
+    return Integer.SIZE;
   }
 
   @Override
-  public Class<?> getNumberType() {
-    return double.class;
+  public Class<Integer> getNumberType() {
+    return int.class;
   }
 
   @Override
   Number castFromBigDecimal(BigDecimal aValue) {
-    return aValue.doubleValue();
-  }
-
-  @Override
-  boolean isOverflowing(BigDecimal aValue) {
-    return aValue.compareTo(DOUBLE_MAX_VALUE.negate()) < 0 || aValue.compareTo(DOUBLE_MAX_VALUE) > 0;
+    return (int) aValue.longValue();
   }
 
   @Override
   public Quantity<Q> negate() {
-    return new DoubleQuantity<Q>(-value, getUnit());
+    return new IntegerQuantity<Q>(-value, getUnit());
   }
 }

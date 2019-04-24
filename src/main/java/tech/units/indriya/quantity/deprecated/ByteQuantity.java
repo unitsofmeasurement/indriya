@@ -27,10 +27,9 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package tech.units.indriya.quantity;
+package tech.units.indriya.quantity.deprecated;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;
@@ -39,62 +38,54 @@ import tech.units.indriya.AbstractQuantity;
 import tech.units.indriya.ComparableQuantity;
 
 /**
- * An amount of quantity, implementation of {@link ComparableQuantity} that uses {@link BigInteger} as implementation of {@link Number}, this object
- * is immutable. Note: all operations which involves {@link Number}, this implementation will convert to {@link BigInteger}.
- *
- * @param <Q>
- *            The type of the quantity.
- * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
+ * An amount of quantity, consisting of a short and a Unit. ByteQuantity objects are immutable.
+ * 
  * @see AbstractQuantity
  * @see Quantity
- * @see ComparableQuantity
- * @see BigInteger
- * @version 1.0
- * @since 2.0
+ * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
+ * @param <Q>
+ *            The type of the quantity.
+ * @version 0.3, $Date: 2018-10-31 $
+ * @since 1.0
  */
-final class BigIntegerQuantity<Q extends Quantity<Q>> extends JavaNumericQuantity<Q> {
+@Deprecated
+final class ByteQuantity<Q extends Quantity<Q>> extends JavaNumericQuantity<Q> {
 
-    private static final long serialVersionUID = -593014349777834846L;
-    private final BigInteger value;
+    private static final long serialVersionUID = 6325849816534488248L;
 
-    public BigIntegerQuantity(BigInteger value, Unit<Q> unit, Scale sc) {
+    private static final BigDecimal BYTE_MIN_VALUE = new BigDecimal(Byte.MIN_VALUE);
+    private static final BigDecimal BYTE_MAX_VALUE = new BigDecimal(Byte.MAX_VALUE);
+
+    private final byte value;
+
+    ByteQuantity(byte value, Unit<Q> unit, Scale sc) {
         super(unit, sc);
         this.value = value;
     }
 
-    public BigIntegerQuantity(BigInteger value, Unit<Q> unit) {
+    ByteQuantity(byte value, Unit<Q> unit) {
         super(unit);
         this.value = value;
     }
 
-    public BigIntegerQuantity(long value, Unit<Q> unit) {
-        this(BigInteger.valueOf(value), unit);
-    }
-
-    /**
-     * <p>
-     * Returns a {@code BigIntegerQuantity} with same Unit, but whose value is {@code(-this.getValue())}. </p>
-     * 
-     * @return {@code -this}.
-     */
-    public BigIntegerQuantity<Q> negate() {
-        return new BigIntegerQuantity<Q>(value.negate(), getUnit());
-    }
-
     @Override
-    public BigInteger getValue() {
+    public Byte getValue() {
         return value;
-    }
-
-    @SuppressWarnings({ "unchecked" })
-    @Override
-    public ComparableQuantity<Q> inverse() {
-        return (ComparableQuantity<Q>) Quantities.getQuantity(BigInteger.ONE.divide(value), getUnit().inverse());
     }
 
     @Override
     public boolean isBig() {
-        return true;
+        return false;
+    }
+
+    @Override
+    boolean isOverflowing(BigDecimal aValue) {
+        return aValue.compareTo(BYTE_MIN_VALUE) < 0 || aValue.compareTo(BYTE_MAX_VALUE) > 0;
+    }
+
+    @Override
+    public ComparableQuantity<?> inverse() {
+        return NumberQuantity.of(1 / value, getUnit().inverse());
     }
 
     @Override
@@ -104,21 +95,21 @@ final class BigIntegerQuantity<Q extends Quantity<Q>> extends JavaNumericQuantit
 
     @Override
     public int getSize() {
-        return 0;
+        return Byte.SIZE;
     }
 
     @Override
     public Class<?> getNumberType() {
-        return BigInteger.class;
+        return byte.class;
     }
 
     @Override
     Number castFromBigDecimal(BigDecimal aValue) {
-        return aValue.toBigInteger();
+        return (byte) aValue.longValue();
     }
 
     @Override
-    boolean isOverflowing(BigDecimal aValue) {
-        return false;
+    public Quantity<Q> negate() {
+        return new ByteQuantity<Q>((byte) (-value), getUnit());
     }
 }

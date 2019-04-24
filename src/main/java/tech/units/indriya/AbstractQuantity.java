@@ -44,6 +44,7 @@ import javax.measure.quantity.Dimensionless;
 import tech.units.indriya.format.SimpleQuantityFormat;
 import tech.units.indriya.format.SimpleUnitFormat;
 import tech.units.indriya.function.Calculus;
+import tech.units.indriya.function.NumberSystem;
 import tech.units.indriya.quantity.Quantities;
 import tech.uom.lib.common.function.UnitSupplier;
 import tech.uom.lib.common.function.ValueSupplier;
@@ -225,6 +226,8 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
     }
 
     /**
+     * 
+     * FIXME[220] update java-doc
      * Compares this quantity to the specified quantity. The default implementation compares the {@link AbstractQuantity#doubleValue(Unit)}
      * of both this quantity and the specified quantity stated in the same unit (this quantity's {@link #getUnit() unit}).
      *
@@ -234,8 +237,10 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
      */
     @Override
     public int compareTo(Quantity<Q> that) {
-        final Comparator<Quantity<Q>> comparator = new NaturalQuantityComparator<>();
-        return comparator.compare(this, that);
+        if (this.getUnit().equals(that.getUnit())) {
+            return ns().compare(this.getValue(), that.getValue());
+        }
+        return ns().compare(this.getValue(), that.to(this.getUnit()).getValue());
     }
 
     /**
@@ -265,7 +270,9 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
         }
         if (obj instanceof Quantity<?>) {
             Quantity<?> that = (Quantity<?>) obj;
-            return Objects.equals(getUnit(), that.getUnit()) && Objects.equals(getScale(), that.getScale()) && Objects.equals(getValue(), that.getValue());
+            return Objects.equals(getUnit(), that.getUnit()) && 
+                    Objects.equals(getScale(), that.getScale()) && 
+                    Objects.equals(getValue(), that.getValue());
         }
         return false;
     }
@@ -277,9 +284,10 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
      */
     @Override
     public int hashCode() {
-        return Objects.hash(getUnit(), getValue());
+        return Objects.hash(getUnit(), getScale(), getValue());
     }
 
+    @Deprecated //TODO[220] remove method
     public abstract boolean isBig();
 
     /**
@@ -294,8 +302,10 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
         return SimpleQuantityFormat.getInstance().format(this);
     }
 
+    @Deprecated //TODO[220] remove method
     public abstract BigDecimal decimalValue(Unit<Q> aUnit) throws ArithmeticException;
 
+    @Deprecated //TODO[220] remove method
     public abstract double doubleValue(Unit<Q> aUnit) throws ArithmeticException;
 
     public final int intValue(Unit<Q> aUnit) throws ArithmeticException {
@@ -385,9 +395,14 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
         return value.remainder(BigDecimal.ONE).compareTo(BigDecimal.ZERO) != 0;
     }
 
+    protected NumberSystem ns() {
+        return Calculus.NUMBER_SYSTEM;
+    }
+    
     /**
      * Utility class for number comparison and equality
      */
+    @Deprecated //TODO[220] use Calculus.NUMBER_SYSTEM instead 
     protected static final class Equalizer {
 
         /**

@@ -27,12 +27,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package tech.units.indriya.quantity;
+package tech.units.indriya.quantity.deprecated;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static tech.units.indriya.NumberAssertions.assertNumberEquals;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -44,10 +45,13 @@ import javax.measure.Quantity;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Time;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import tech.units.indriya.quantity.NumberQuantity;
+import tech.units.indriya.NumberAssertions;
 import tech.units.indriya.quantity.Quantities;
+import tech.units.indriya.quantity.deprecated.ByteQuantity;
+import tech.units.indriya.quantity.deprecated.NumberQuantity;
 import tech.units.indriya.unit.Units;
 
 public class NumberQuantityTest {
@@ -233,14 +237,14 @@ public class NumberQuantityTest {
     assertEquals("1/s", String.valueOf(secInv.getUnit()));
   }
 
-  @Test
+  @Test @Disabled("not a requirement according to Javadoc in AbstractQuantity.equals")
   public void testEqualityAtomic() throws Exception {
     Quantity<Length> value = Quantities.getQuantity(new AtomicInteger(10), Units.METRE);
     Quantity<Length> anotherValue = Quantities.getQuantity(new AtomicLong(10), Units.METRE);
     assertEquals(value, anotherValue);
   }
 
-  @Test
+  @Test @Disabled("not a requirement according to Javadoc in AbstractQuantity.equals")
   public void testEqualityBig() throws Exception {
     Quantity<Length> value = Quantities.getQuantity(BigInteger.valueOf(20), Units.METRE);
     Quantity<Length> anotherValue = Quantities.getQuantity(BigDecimal.valueOf(20), Units.METRE);
@@ -259,12 +263,12 @@ public class NumberQuantityTest {
   @Test
   public void testNegateBig() throws Exception {
     final Quantity<Length> value = Quantities.getQuantity(BigInteger.valueOf(20), Units.METRE);
-    assertEquals(BigInteger.valueOf(20).negate(), value.negate().getValue());
+    assertNumberEquals(-20, value.negate().getValue(), 1E-12);
   }
 
   @Test
   public void testNegateDouble() throws Exception {
     final Quantity<Length> value = Quantities.getQuantity(30d, Units.METRE);
-    assertEquals(-30d, value.negate().getValue());
+    assertNumberEquals(-30, value.negate().getValue(), 1E-12);
   }
 }
