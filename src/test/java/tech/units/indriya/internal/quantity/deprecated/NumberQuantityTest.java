@@ -27,7 +27,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package tech.units.indriya.quantity.deprecated;
+package tech.units.indriya.internal.quantity.deprecated;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -49,9 +49,9 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.NumberAssertions;
+import tech.units.indriya.internal.quantity.deprecated.ByteQuantity;
+import tech.units.indriya.internal.quantity.deprecated.NumberQuantity;
 import tech.units.indriya.quantity.Quantities;
-import tech.units.indriya.quantity.deprecated.ByteQuantity;
-import tech.units.indriya.quantity.deprecated.NumberQuantity;
 import tech.units.indriya.unit.Units;
 
 public class NumberQuantityTest {

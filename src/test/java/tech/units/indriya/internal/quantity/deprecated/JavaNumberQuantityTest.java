@@ -27,7 +27,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package tech.units.indriya.quantity.deprecated;
+package tech.units.indriya.internal.quantity.deprecated;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -41,14 +41,14 @@ import javax.measure.quantity.Temperature;
 
 import org.junit.jupiter.api.Test;
 
-import tech.units.indriya.quantity.deprecated.BigIntegerQuantity;
-import tech.units.indriya.quantity.deprecated.ByteQuantity;
-import tech.units.indriya.quantity.deprecated.DecimalQuantity;
-import tech.units.indriya.quantity.deprecated.DoubleQuantity;
-import tech.units.indriya.quantity.deprecated.FloatQuantity;
-import tech.units.indriya.quantity.deprecated.IntegerQuantity;
-import tech.units.indriya.quantity.deprecated.LongQuantity;
-import tech.units.indriya.quantity.deprecated.ShortQuantity;
+import tech.units.indriya.internal.quantity.deprecated.BigIntegerQuantity;
+import tech.units.indriya.internal.quantity.deprecated.ByteQuantity;
+import tech.units.indriya.internal.quantity.deprecated.DecimalQuantity;
+import tech.units.indriya.internal.quantity.deprecated.DoubleQuantity;
+import tech.units.indriya.internal.quantity.deprecated.FloatQuantity;
+import tech.units.indriya.internal.quantity.deprecated.IntegerQuantity;
+import tech.units.indriya.internal.quantity.deprecated.LongQuantity;
+import tech.units.indriya.internal.quantity.deprecated.ShortQuantity;
 import tech.units.indriya.unit.Units;
 
 public class JavaNumberQuantityTest {

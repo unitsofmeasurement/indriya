@@ -56,7 +56,7 @@ import tech.units.indriya.internal.function.calc.Calculator;
  * @param <Q>
  *          The type of the quantity.
  * @author Andi Huber
- * @since 2.0
+ * @since 1.0
  * 
  */
 public class NumberQuantity2<Q extends Quantity<Q>> extends AbstractQuantity<Q> {

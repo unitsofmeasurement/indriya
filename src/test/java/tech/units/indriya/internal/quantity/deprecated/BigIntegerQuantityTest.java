@@ -27,7 +27,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package tech.units.indriya.quantity.deprecated;
+package tech.units.indriya.internal.quantity.deprecated;
 
 import static javax.measure.MetricPrefix.MILLI;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -51,10 +51,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.AbstractUnit;
+import tech.units.indriya.internal.quantity.deprecated.BigIntegerQuantity;
+import tech.units.indriya.internal.quantity.deprecated.DoubleQuantity;
+import tech.units.indriya.internal.quantity.deprecated.FloatQuantity;
 import tech.units.indriya.quantity.Quantities;
-import tech.units.indriya.quantity.deprecated.BigIntegerQuantity;
-import tech.units.indriya.quantity.deprecated.DoubleQuantity;
-import tech.units.indriya.quantity.deprecated.FloatQuantity;
 import tech.units.indriya.unit.Units;
 
 public class BigIntegerQuantityTest {

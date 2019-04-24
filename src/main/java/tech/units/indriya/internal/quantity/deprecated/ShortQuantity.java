@@ -27,9 +27,10 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package tech.units.indriya.quantity.deprecated;
+package tech.units.indriya.internal.quantity.deprecated;
 
 import java.math.BigDecimal;
+
 import javax.measure.Quantity;
 import javax.measure.Unit;
 
@@ -37,54 +38,49 @@ import tech.units.indriya.AbstractQuantity;
 import tech.units.indriya.ComparableQuantity;
 
 /**
- * An amount of quantity, consisting of a long and a Unit. LongQuantity objects are immutable.
+ * An amount of quantity, consisting of a short and a Unit. ShortQuantity objects are immutable.
  * 
  * @see AbstractQuantity
  * @see Quantity
- * @author <a href="mailto:werner@uom.technology">Werner Keil</a>
+ * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
  * @param <Q>
  *            The type of the quantity.
- * @version 0.5, $Date: 2018-10-31 $
+ * @version 0.5, $Date: 2018-11-14 $
  * @since 1.0
  */
 @Deprecated
-final class LongQuantity<Q extends Quantity<Q>> extends JavaNumericQuantity<Q> {
+final class ShortQuantity<Q extends Quantity<Q>> extends JavaNumericQuantity<Q> {
 
-    private static final long serialVersionUID = 3092808554937634365L;
+    private static final long serialVersionUID = 6325849816534488248L;
 
-    private static final BigDecimal LONG_MAX_VALUE = new BigDecimal(Long.MAX_VALUE);
-    private static final BigDecimal LONG_MIN_VALUE = new BigDecimal(Long.MIN_VALUE);
+    private static final BigDecimal SHORT_MIN_VALUE = new BigDecimal(Short.MIN_VALUE);
+    private static final BigDecimal SHORT_MAX_VALUE = new BigDecimal(Short.MAX_VALUE);
 
-    private final long value;
+    private final short value;
 
-    LongQuantity(long value, Unit<Q> unit,  Scale sc) {
+    ShortQuantity(short value, Unit<Q> unit, Scale sc) {
         super(unit, sc);
         this.value = value;
     }
 
-    LongQuantity(long value, Unit<Q> unit) {
+    ShortQuantity(short value, Unit<Q> unit) {
         super(unit);
         this.value = value;
     }
 
     @Override
-    public Long getValue() {
+    public Short getValue() {
         return value;
-    }
-
-    @Override
-    boolean isOverflowing(BigDecimal aValue) {
-        return aValue.compareTo(LONG_MIN_VALUE) < 0 || aValue.compareTo(LONG_MAX_VALUE) > 0;
-    }
-
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    public ComparableQuantity<Q> inverse() {
-        return new LongQuantity(1 / value, getUnit().inverse());
     }
 
     @Override
     public boolean isBig() {
         return false;
+    }
+
+    @Override
+    public ComparableQuantity<?> inverse() {
+        return NumberQuantity.of(1 / value, getUnit().inverse());
     }
 
     @Override
@@ -94,23 +90,26 @@ final class LongQuantity<Q extends Quantity<Q>> extends JavaNumericQuantity<Q> {
 
     @Override
     public int getSize() {
-        return Long.SIZE;
+        return Short.SIZE;
     }
 
     @Override
     public Class<?> getNumberType() {
-        return long.class;
+        return short.class;
     }
 
     @Override
-    Number castFromBigDecimal(BigDecimal aValue) {
-    	// FIXME https://github.com/unitsofmeasurement/indriya/issues/219 need to round properly, 13.99 must not turn to 13.
-        //return aValue.setScale(0, RoundingMode.HALF_UP).longValue(); would fix it but breaks LongQuantityTest.additionWithLargerMultipleAndOverflowingResultCastsToLargerMultiple
-    	return aValue.longValue();
+    boolean isOverflowing(BigDecimal aValue) {
+        return aValue.compareTo(SHORT_MIN_VALUE) < 0 || aValue.compareTo(SHORT_MAX_VALUE) > 0;
     }
 
     @Override
     public Quantity<Q> negate() {
-        return new LongQuantity<Q>(-value, getUnit());
+        return new ShortQuantity<>((short) (-value), getUnit());
+    }
+
+    @Override
+    Number castFromBigDecimal(BigDecimal aValue) {
+        return (short) aValue.longValue();
     }
 }

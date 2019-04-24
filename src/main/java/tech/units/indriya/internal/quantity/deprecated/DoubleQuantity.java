@@ -27,7 +27,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package tech.units.indriya.quantity.deprecated;
+package tech.units.indriya.internal.quantity.deprecated;
 
 import java.math.BigDecimal;
 
@@ -38,39 +38,49 @@ import tech.units.indriya.AbstractQuantity;
 import tech.units.indriya.ComparableQuantity;
 
 /**
- * An amount of quantity, consisting of a float and a Unit. FloatQuantity objects are immutable.
- * 
- * @see AbstractQuantity
- * @see Quantity
- * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @author Otavio de Santana
+ * An amount of quantity, implementation of {@link ComparableQuantity} that uses {@link Double} as implementation of {@link Number}, this object is
+ * immutable. Note: all operations which involves {@link Number}, this implementation will convert to {@link Double}.
+ *
  * @param <Q>
  *          The type of the quantity.
- * @version 0.6, $Date: 2018-07-20 $
+ * @param <Q>
+ *          The type of the quantity.
+ * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
+ * @author Otavio de Santana
+ * @version 0.7, $Date: 2018-11-14 $
+ * @see AbstractQuantity
+ * @see Quantity
+ * @see ComparableQuantity
  * @since 1.0
  */
 @Deprecated
-final class FloatQuantity<Q extends Quantity<Q>> extends JavaNumericQuantity<Q> {
+final class DoubleQuantity<Q extends Quantity<Q>> extends JavaNumericQuantity<Q> {
 
-  private static final long serialVersionUID = 5992028803791009345L;
+  private static final long serialVersionUID = 8660843078156312278L;
 
-  private static final BigDecimal FLOAT_MAX_VALUE = new BigDecimal(Float.MAX_VALUE);
+  private static final BigDecimal DOUBLE_MAX_VALUE = new BigDecimal(Double.MAX_VALUE);
 
-  final float value;
+  private final double value;
 
-  FloatQuantity(float value, Unit<Q> unit) {
-    super(unit);
+  public DoubleQuantity(double value, Unit<Q> unit, Scale sc) {
+    super(unit, sc);
     this.value = value;
   }
+  
+  public DoubleQuantity(double value, Unit<Q> unit) {
+      super(unit);
+      this.value = value;
+    }
 
   @Override
-  public Float getValue() {
+  public Double getValue() {
     return value;
   }
 
-  @SuppressWarnings({ "unchecked", "rawtypes" })
-  public ComparableQuantity<Q> inverse() {
-    return new FloatQuantity(1f / value, getUnit().inverse());
+  @SuppressWarnings({ "rawtypes", "unchecked" })
+  @Override
+  public AbstractQuantity<Q> inverse() {
+    return new DoubleQuantity(1d / value, getUnit().inverse());
   }
 
   @Override
@@ -85,26 +95,26 @@ final class FloatQuantity<Q extends Quantity<Q>> extends JavaNumericQuantity<Q> 
 
   @Override
   public int getSize() {
-    return Float.SIZE;
+    return Double.SIZE;
   }
 
   @Override
   public Class<?> getNumberType() {
-    return float.class;
+    return double.class;
   }
 
   @Override
   Number castFromBigDecimal(BigDecimal aValue) {
-    return (float) aValue.doubleValue();
+    return aValue.doubleValue();
   }
 
   @Override
   boolean isOverflowing(BigDecimal aValue) {
-    return aValue.compareTo(FLOAT_MAX_VALUE.negate()) < 0 || aValue.compareTo(FLOAT_MAX_VALUE) > 0;
+    return aValue.compareTo(DOUBLE_MAX_VALUE.negate()) < 0 || aValue.compareTo(DOUBLE_MAX_VALUE) > 0;
   }
 
   @Override
   public Quantity<Q> negate() {
-    return new FloatQuantity<Q>(-value, getUnit());
+    return new DoubleQuantity<Q>(-value, getUnit());
   }
 }

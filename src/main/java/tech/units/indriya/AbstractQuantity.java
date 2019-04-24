@@ -32,7 +32,6 @@ package tech.units.indriya;
 import static javax.measure.Quantity.Scale.ABSOLUTE;
 
 import java.math.BigDecimal;
-import java.util.Comparator;
 import java.util.Objects;
 
 import javax.measure.Quantity;
@@ -108,7 +107,8 @@ import tech.uom.lib.common.util.NaturalQuantityComparator;
  * </p>
  *
  * @author <a href="mailto:werner@uom.technology">Werner Keil</a>
- * @version 1.8, February 1, 2019
+ * @author Andi Huber
+ * @version 1.9, April 24, 2019
  * @since 1.0
  */
 @SuppressWarnings("unchecked")
