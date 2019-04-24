@@ -31,6 +31,8 @@ package tech.units.indriya.quantity;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Disabled;
+
+import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.unit.Units;
 
 import javax.measure.Quantity;
@@ -141,10 +143,11 @@ public class QuantitiesTest {
   }
 
   @Test
-  @Disabled("equals() is broken for DecimalQuantity or all of JavaNumericQuantity")
-  public void equalityValuesTest() {
-   Quantity<Speed> shouldBe = Quantities.getQuantity(BigDecimal.valueOf(15.0d), Units.KILOMETRE_PER_HOUR);
-   Quantity<Speed> parsedSpeed = Quantities.getQuantity("15.0 km/h").asType(Speed.class);
-   assertEquals(shouldBe, parsedSpeed);
+  @Disabled("fails because of MultiplyConverter not being sufficiently accurate")
+  public void quantityEquivalentTest() {
+      ComparableQuantity<Speed> shouldBe = Quantities.getQuantity(15, Units.KILOMETRE_PER_HOUR);
+      Quantity<Speed> parsedSpeed = Quantities.getQuantity("15.0 km/h").asType(Speed.class);
+
+      assertTrue(shouldBe.isEquivalentTo(parsedSpeed));
   }
 }

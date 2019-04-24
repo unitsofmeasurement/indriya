@@ -226,6 +226,8 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
     }
 
     /**
+     * 
+     * FIXME[220] update java-doc
      * Compares this quantity to the specified quantity. The default implementation compares the {@link AbstractQuantity#doubleValue(Unit)}
      * of both this quantity and the specified quantity stated in the same unit (this quantity's {@link #getUnit() unit}).
      *
@@ -235,8 +237,10 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
      */
     @Override
     public int compareTo(Quantity<Q> that) {
-        final Comparator<Quantity<Q>> comparator = new NaturalQuantityComparator<>();
-        return comparator.compare(this, that);
+        if (this.getUnit().equals(that.getUnit())) {
+            return ns().compare(this.getValue(), that.getValue());
+        }
+        return ns().compare(this.getValue(), that.to(this.getUnit()).getValue());
     }
 
     /**
@@ -266,7 +270,9 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
         }
         if (obj instanceof Quantity<?>) {
             Quantity<?> that = (Quantity<?>) obj;
-            return Objects.equals(getUnit(), that.getUnit()) && Objects.equals(getScale(), that.getScale()) && Objects.equals(getValue(), that.getValue());
+            return Objects.equals(getUnit(), that.getUnit()) && 
+                    Objects.equals(getScale(), that.getScale()) && 
+                    Objects.equals(getValue(), that.getValue());
         }
         return false;
     }
@@ -278,7 +284,7 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
      */
     @Override
     public int hashCode() {
-        return Objects.hash(getUnit(), getValue());
+        return Objects.hash(getUnit(), getScale(), getValue());
     }
 
     @Deprecated //TODO[220] remove method

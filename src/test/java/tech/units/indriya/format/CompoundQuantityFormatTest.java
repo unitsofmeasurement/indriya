@@ -56,7 +56,6 @@ import javax.measure.format.QuantityFormat;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Time;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.NumberAssertions;
@@ -345,7 +344,7 @@ public class CompoundQuantityFormatTest {
         assertEquals("1.2083333333333333 ft", ndFormattedSingle);
     }
     
-    @Test @Disabled("Solve https://github.com/unitsofmeasurement/indriya/issues/219")
+    @Test
     public void mixedParsing() {
         
         // given
