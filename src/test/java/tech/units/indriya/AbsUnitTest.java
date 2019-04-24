@@ -31,10 +31,13 @@ package tech.units.indriya;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static javax.measure.MetricPrefix.*;
 import static tech.units.indriya.unit.Units.*;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 import javax.measure.Dimension;
@@ -55,234 +58,317 @@ import tech.units.indriya.unit.BaseUnit;
  *
  */
 public class AbsUnitTest {
-  private static final AbstractUnit<Length> sut = new BaseUnit<>("m");
+	private static final Number NULL_NUMBER = null;
 
-  @BeforeAll
-  public static void init() {
-    sut.setName("Test");
-  }
+	private static final AbstractUnit<Length> sut = new BaseUnit<>("m");
 
-  @Test
-  public void testName() {
-    assertEquals("Test", sut.getName());
-  }
+	@BeforeAll
+	public static void init() {
+		sut.setName("Test");
+	}
 
-  @Test
-  public void testReturnedClass() {
-    // assertEquals("Q", String.valueOf(sut.getActualType())); // TODO we
-    // hope to get better type information like <Length> in future Java
-    // versions
-    assertEquals("java.lang.reflect.TypeVariable<D>", String.valueOf(sut.getActualType()));
-  }
+	@Test
+	public void testName() {
+		assertEquals("Test", sut.getName());
+	}
 
-  @Test
-  public void testParse() {
-    assertEquals(KILO(WATT), AbstractUnit.parse("kW"));
-  }
+	@Test
+	public void testReturnedClass() {
+		// assertEquals("Q", String.valueOf(sut.getActualType())); // TODO we
+		// hope to get better type information like <Length> in future Java
+		// versions
+		assertEquals("java.lang.reflect.TypeVariable<D>", String.valueOf(sut.getActualType()));
+	}
 
-  @Test
-  public void testParse2() {
-    assertEquals(MILLI(CELSIUS), AbstractUnit.parse("m°C"));
-  }
-  
-/*
-  @Test
-  public void testAnnotate() {
-    assertEquals("g{Gr}", (((AbstractUnit<Mass>) GRAM).annotate("Gr")).toString());
-  }
+	@Test
+	public void testParse() {
+		assertEquals(KILO(WATT), AbstractUnit.parse("kW"));
+	}
 
-  @Test
-  public void testAnnotateClass() {
-    assertEquals("tech.units.indriya.unit.AnnotatedUnit", (((AbstractUnit<Mass>) GRAM).annotate("Gr")).getClass().getName());
-  }
-  */
-  
+	@Test
+	public void testParse2() {
+		assertEquals(MILLI(CELSIUS), AbstractUnit.parse("m°C"));
+	}
 
-  private static final String SYMBOL = "symbol";
-  private static final String NAME = "name";
-  private static final String LABEL = "label";
+	/*
+	 * @Test public void testAnnotate() { assertEquals("g{Gr}",
+	 * (((AbstractUnit<Mass>) GRAM).annotate("Gr")).toString()); }
+	 * 
+	 * @Test public void testAnnotateClass() {
+	 * assertEquals("tech.units.indriya.unit.AnnotatedUnit", (((AbstractUnit<Mass>)
+	 * GRAM).annotate("Gr")).getClass().getName()); }
+	 */
 
-  /**
-   * Trivial implementation of the AbstractUnit class, in order to test the functionality provided in the abstract class.
-   *
-   */
-  class DummyUnit extends AbstractUnit {
+	private static final String SYMBOL = "symbol";
+	private static final String NAME = "name";
+	private static final String LABEL = "label";
 
-    private DummyUnit(String symbol) {
-      super(symbol);
-    }
+	/**
+	 * Trivial implementation of the AbstractUnit class, in order to test the
+	 * functionality provided in the abstract class.
+	 *
+	 */
+	class DummyUnit extends AbstractUnit {
 
-    public int compareTo(Object arg0) {
-      return 0;
-    }
+		private DummyUnit(String symbol) {
+			super(symbol);
+		}
 
-    @Override
-    protected Unit toSystemUnit() {
-      return null;
-    }
+		public int compareTo(Object arg0) {
+			return 0;
+		}
 
-    @Override
-    public UnitConverter getSystemConverter() {
-      return null;
-    }
+		@Override
+		protected Unit toSystemUnit() {
+			return null;
+		}
 
-    @Override
-    public Map getBaseUnits() {
-      return null;
-    }
+		@Override
+		public UnitConverter getSystemConverter() {
+			return null;
+		}
 
-    @Override
-    public Dimension getDimension() {
-      return null;
-    }
+		@Override
+		public Map getBaseUnits() {
+			return null;
+		}
 
-    @Override
-    public boolean equals(Object obj) {
-      return false;
-    }
+		@Override
+		public Dimension getDimension() {
+			return null;
+		}
 
-    @Override
-    public int hashCode() {
-      return 0;
-    }
+		@Override
+		public boolean equals(Object obj) {
+			return false;
+		}
 
-  }
+		@Override
+		public int hashCode() {
+			return 0;
+		}
 
-  /**
-   * Verifies that the constructor has the symbol parameter wired correctly.
-   */
-  @Test
-  public void constructorWithSymbolHasTheSymbolWiredCorrectly() {
-    DummyUnit unit = new DummyUnit(SYMBOL);
-    assertEquals(SYMBOL, unit.getSymbol());
-  }
+	}
 
-  /**
-   * Verifies that the setter and getter for name are wired correctly.
-   */
-  @Test
-  public void setterAndGetterForNameAreWiredCorrectly() {
-    DummyUnit unit = new DummyUnit(SYMBOL);
-    unit.setName(NAME);
-    assertEquals(NAME, unit.getName());
-  }
+	/**
+	 * Verifies that the constructor has the symbol parameter wired correctly.
+	 */
+	@Test
+	public void constructorWithSymbolHasTheSymbolWiredCorrectly() {
+		DummyUnit unit = new DummyUnit(SYMBOL);
+		assertEquals(SYMBOL, unit.getSymbol());
+	}
 
-  /**
-   * Verifies that the parse method is wired to a parser.
-   */
-  @Test
-  public void parseMethodIsWiredToAParser() {
-    assertEquals(KILO(WATT), AbstractUnit.parse("kW"));
-  }
+	/**
+	 * Verifies that the setter and getter for name are wired correctly.
+	 */
+	@Test
+	public void setterAndGetterForNameAreWiredCorrectly() {
+		DummyUnit unit = new DummyUnit(SYMBOL);
+		unit.setName(NAME);
+		assertEquals(NAME, unit.getName());
+	}
 
-  /**
-   * Verifies that the toString method is wired to the SimpleUnitFormat formatter.
-   */
-  @Test
-  public void toStrindMethodIsWiredToAFormatter() {
-    DummyUnit unit = new DummyUnit(SYMBOL);
-    SimpleUnitFormat.getInstance().label(unit, LABEL);
-    assertEquals(LABEL, unit.toString());
-  }
+	/**
+	 * Verifies that the parse method is wired to a parser.
+	 */
+	@Test
+	public void parseMethodIsWiredToAParser() {
+		assertEquals(KILO(WATT), AbstractUnit.parse("kW"));
+	}
 
-  /**
-   * Verifies that a unit is equal to itself according to the compareTo method.
-   */
-  @Test
-  public void compareToReturnsZeroWhenObjectIsProvidedAsArgument() {
-    DummyUnit unit = new DummyUnit(SYMBOL);
-    assertEquals(0, unit.compareTo(unit));
-  }
-  
-  /**
-   * Verifies that a unit is equal to another unit with the same symbol according to the compareTo method.
-   */
-  @Test
-  public void compareToReturnsZeroWhenUnitWithSameSymbolIsProvided() {
-    DummyUnit unit = new DummyUnit(SYMBOL);
-    DummyUnit otherUnit = new DummyUnit(SYMBOL);
-    assertEquals(0, unit.compareTo(otherUnit));
-  }
-  
-  /**
-   * Verifies that the compareTo method returns a positive number when a unit with a symbol is compared to a unit without a symbol.
-   */
-  @Test
-  public void compareToReturnsPositiveNumberWhenTheOtherUnitHasNoSymbol() {
-    DummyUnit unit = new DummyUnit(SYMBOL);
-    DummyUnit otherUnit = new DummyUnit(null);
-    assertTrue(unit.compareTo(otherUnit) > 0);
-  }
-  
-  /**
-   * Verifies that a unit is equal to another unit with the same symbol and name according to the compareTo method.
-   */
-  @Test
-  public void compareToReturnsZeroWhenUnitWithSameSymbolAndNameIsProvided() {
-    DummyUnit unit = new DummyUnit(SYMBOL);
-    unit.setName(NAME);
-    DummyUnit otherUnit = new DummyUnit(SYMBOL);
-    otherUnit.setName(NAME);
-    assertEquals(0, unit.compareTo(otherUnit));
-  }
-  
-  /**
-   * Verifies that when compared to a unit with a smaller symbol, the compareTo method returns a positive number.
-   */
-  @Test
-  public void compareToReturnsAPositiveIntegerWhenUnitWithSmallerSymbolIsProvided() {
-    DummyUnit unit = new DummyUnit("b");
-    DummyUnit otherUnit = new DummyUnit("a");
-    assertTrue(unit.compareTo(otherUnit) > 0);
-  }
+	/**
+	 * Verifies that the toString method is wired to the SimpleUnitFormat formatter.
+	 */
+	@Test
+	public void toStrindMethodIsWiredToAFormatter() {
+		DummyUnit unit = new DummyUnit(SYMBOL);
+		SimpleUnitFormat.getInstance().label(unit, LABEL);
+		assertEquals(LABEL, unit.toString());
+	}
 
-  /**
-   * Verifies that when compared to a unit with the same symbol but a smaller name, the compareTo method returns a positive number.
-   */
-  @Test
-  public void compareToReturnsAPositiveNumberWhenUnitWithSameSymbolButSmallerNameIsProvided() {
-    DummyUnit unit = new DummyUnit(SYMBOL);
-    unit.setName("b");
-    DummyUnit otherUnit = new DummyUnit(SYMBOL);
-    otherUnit.setName("a");
-    assertTrue(unit.compareTo(otherUnit) > 0);
-  }
+	/**
+	 * Verifies that a unit is equal to itself according to the compareTo method.
+	 */
+	@Test
+	public void compareToReturnsZeroWhenObjectIsProvidedAsArgument() {
+		DummyUnit unit = new DummyUnit(SYMBOL);
+		assertEquals(0, unit.compareTo(unit));
+	}
 
-  /**
-   * Verifies that when compared to a unit with a smaller symbol but a larger name, the compareTo method returns a positive number.
-   */
-  @Test
-  public void compareToReturnsAPositiveNumberWhenUnitWithSmallerSymbolButLargerNameIsProvided() {
-    DummyUnit unit = new DummyUnit("B");
-    unit.setName("a");
-    DummyUnit otherUnit = new DummyUnit("A");
-    otherUnit.setName("b");
-    assertTrue(unit.compareTo(otherUnit) > 0);
-  }
+	/**
+	 * Verifies that a unit is equal to another unit with the same symbol according
+	 * to the compareTo method.
+	 */
+	@Test
+	public void compareToReturnsZeroWhenUnitWithSameSymbolIsProvided() {
+		DummyUnit unit = new DummyUnit(SYMBOL);
+		DummyUnit otherUnit = new DummyUnit(SYMBOL);
+		assertEquals(0, unit.compareTo(otherUnit));
+	}
 
-  /**
-   * Verifies that a unit is equivalent to itself.
-   */
-  @Test
-  public void unitIsEquivalentToItself() {
-    DummyUnit unit = new DummyUnit(SYMBOL);
-    assertTrue(unit.isEquivalentOf(unit));
-  }
-  
-  /**
-   * Verifies that a kilo of a gram is equivalent to a kilogram.
-   */
-  @Test
-  public void aKiloOfAGramIsEquivalentToAKilogram() {
-    assertTrue((((AbstractUnit<Mass>) KILO(GRAM))).isEquivalentOf(KILOGRAM));
-  }
-  
-  /**
-   * Verifies that a gram is not equivalent to a kilogram.
-   */
-  @Test
-  public void aGramIsNotEquivalentToAKilogram() {
-    assertFalse((((AbstractUnit<Mass>) GRAM)).isEquivalentOf(KILOGRAM));
-  }
+	/**
+	 * Verifies that the compareTo method returns a positive number when a unit with
+	 * a symbol is compared to a unit without a symbol.
+	 */
+	@Test
+	public void compareToReturnsPositiveNumberWhenTheOtherUnitHasNoSymbol() {
+		DummyUnit unit = new DummyUnit(SYMBOL);
+		DummyUnit otherUnit = new DummyUnit(null);
+		assertTrue(unit.compareTo(otherUnit) > 0);
+	}
+
+	/**
+	 * Verifies that a unit is equal to another unit with the same symbol and name
+	 * according to the compareTo method.
+	 */
+	@Test
+	public void compareToReturnsZeroWhenUnitWithSameSymbolAndNameIsProvided() {
+		DummyUnit unit = new DummyUnit(SYMBOL);
+		unit.setName(NAME);
+		DummyUnit otherUnit = new DummyUnit(SYMBOL);
+		otherUnit.setName(NAME);
+		assertEquals(0, unit.compareTo(otherUnit));
+	}
+
+	/**
+	 * Verifies that when compared to a unit with a smaller symbol, the compareTo
+	 * method returns a positive number.
+	 */
+	@Test
+	public void compareToReturnsAPositiveIntegerWhenUnitWithSmallerSymbolIsProvided() {
+		DummyUnit unit = new DummyUnit("b");
+		DummyUnit otherUnit = new DummyUnit("a");
+		assertTrue(unit.compareTo(otherUnit) > 0);
+	}
+
+	/**
+	 * Verifies that when compared to a unit with the same symbol but a smaller
+	 * name, the compareTo method returns a positive number.
+	 */
+	@Test
+	public void compareToReturnsAPositiveNumberWhenUnitWithSameSymbolButSmallerNameIsProvided() {
+		DummyUnit unit = new DummyUnit(SYMBOL);
+		unit.setName("b");
+		DummyUnit otherUnit = new DummyUnit(SYMBOL);
+		otherUnit.setName("a");
+		assertTrue(unit.compareTo(otherUnit) > 0);
+	}
+
+	/**
+	 * Verifies that when compared to a unit with a smaller symbol but a larger
+	 * name, the compareTo method returns a positive number.
+	 */
+	@Test
+	public void compareToReturnsAPositiveNumberWhenUnitWithSmallerSymbolButLargerNameIsProvided() {
+		DummyUnit unit = new DummyUnit("B");
+		unit.setName("a");
+		DummyUnit otherUnit = new DummyUnit("A");
+		otherUnit.setName("b");
+		assertTrue(unit.compareTo(otherUnit) > 0);
+	}
+
+	/**
+	 * Verifies that a unit is equivalent to itself.
+	 */
+	@Test
+	public void unitIsEquivalentToItself() {
+		DummyUnit unit = new DummyUnit(SYMBOL);
+		assertTrue(unit.isEquivalentOf(unit));
+	}
+
+	/**
+	 * Verifies that a kilo of a gram is equivalent to a kilogram.
+	 */
+	@Test
+	public void aKiloOfAGramIsEquivalentToAKilogram() {
+		assertTrue((((AbstractUnit<Mass>) KILO(GRAM))).isEquivalentOf(KILOGRAM));
+	}
+
+	/**
+	 * Verifies that a gram is not equivalent to a kilogram.
+	 */
+	@Test
+	public void aGramIsNotEquivalentToAKilogram() {
+		assertFalse((((AbstractUnit<Mass>) GRAM)).isEquivalentOf(KILOGRAM));
+	}
+
+	@Test
+	public void testDivideDouble() {
+		Unit<Length> result = sut.divide(3d);
+		assertNotNull(result);
+		//assertEquals(METRE, result.getSystemUnit()); TODO they should be equal
+		assertEquals(METRE.toString(), result.getSystemUnit().toString());
+		assertEquals("m/3.0", result.toString());
+	}
+	
+	@Test
+	public void testDivideNumber() {
+		Unit<Length> result = sut.divide(BigDecimal.valueOf(3d));
+		assertNotNull(result);
+		//assertEquals(METRE, result.getSystemUnit()); TODO they should be equal
+		assertEquals(METRE.toString(), result.getSystemUnit().toString());
+		assertEquals("m/3.0", result.toString());
+	}
+
+	@Test
+	public void testDivideNull() {
+		assertThrows(NullPointerException.class, () -> {
+			@SuppressWarnings({ "rawtypes", "unused" })
+			Unit result = sut.divide(NULL_NUMBER);
+		});
+	}
+	
+	@Test
+	public void testMultiplyDouble() {
+		Unit<Length> result = sut.multiply(4d);
+		assertNotNull(result);
+		//assertEquals(METRE, result.getSystemUnit()); TODO they should be equal
+		assertEquals(METRE.toString(), result.getSystemUnit().toString());
+		assertEquals("m*4.0", result.toString());
+	}
+	
+	@Test
+	public void testMultiplyNumber() {
+		Unit<Length> result = sut.multiply(BigDecimal.valueOf(4d));
+		assertNotNull(result);
+		//assertEquals(METRE, result.getSystemUnit()); TODO they should be equal
+		assertEquals(METRE.toString(), result.getSystemUnit().toString());
+		assertEquals("m*4.0", result.toString());
+	}
+
+	@Test
+	public void testMultiplyNull() {
+		assertThrows(NullPointerException.class, () -> {
+			@SuppressWarnings({ "unused", "rawtypes" })
+			Unit result = sut.multiply(NULL_NUMBER);
+		});
+	}
+
+	@Test
+	public void testShiftDouble() {
+		Unit<Length> result = sut.shift(5d);
+		assertNotNull(result);
+		//assertEquals(METRE, result.getSystemUnit()); TODO they should be equal
+		assertEquals(METRE.toString(), result.getSystemUnit().toString());
+		assertEquals("m+5.0", result.toString());
+	}
+	
+	@Test
+	public void testShiftNumber() {
+		Unit<Length> result = sut.shift(BigDecimal.valueOf(5d));
+		assertNotNull(result);
+		//assertEquals(METRE, result.getSystemUnit()); TODO they should be equal
+		assertEquals(METRE.toString(), result.getSystemUnit().toString());
+		assertEquals("m+5.0", result.toString());
+	}
+	
+	@Test
+	public void testShiftNull() {
+		assertThrows(NullPointerException.class, () -> {
+			@SuppressWarnings({ "unused", "rawtypes" })
+			Unit result = sut.shift(NULL_NUMBER);
+		});
+	}
 
 }

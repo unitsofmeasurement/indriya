@@ -33,52 +33,77 @@ import java.io.Serializable;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;
+import javax.measure.UnitConverter;
 
 /**
- * Unit specialized for the Java SE platform. It extends {@link Unit} with {@linkplain Comparable} and {@linkplain Serializable }
+ * Unit specialized for the Java SE platform. It extends {@link Unit} with
+ * {@linkplain Comparable} and {@linkplain Serializable }
  * 
  * @see {@link Unit}
  * @author werner
  * @param <Q>
- * @version 1.1
+ * @version 1.2
  * @since 1.0.9
  */
 public interface ComparableUnit<Q extends Quantity<Q>> extends Unit<Q>, Comparable<Unit<Q>>, Serializable {
 
-  /**
-   * Compares two instances of {@link Unit <Q>}, doing the conversion of unit if necessary.
-   *
-   * @param that
-   *          the {@code Unit<Q>} to be compared with this instance.
-   * @return {@code true} if {@code that < this}.
-   * @throws NullPointerException
-   *           if the unit is null
-   */
-  boolean isEquivalentOf(Unit<Q> that);
+	/**
+	 * Compares two instances of {@link Unit
+	 * <Q>}, doing the conversion of unit if necessary.
+	 *
+	 * @param that the {@code Unit<Q>} to be compared with this instance.
+	 * @return {@code true} if {@code that < this}.
+	 * @throws NullPointerException if the unit is null
+	 */
+	boolean isEquivalentOf(Unit<Q> that);
 
-  /**
-   * Indicates if this unit belongs to the set of coherent SI units (unscaled SI units).
-   * 
-   * The base and coherent derived units of the SI form a coherent set, designated the set of coherent SI units. The word coherent is used here in the
-   * following sense: when coherent units are used, equations between the numerical values of quantities take exactly the same form as the equations
-   * between the quantities themselves. Thus if only units from a coherent set are used, conversion factors between units are never required.
-   * 
-   * @return <code>equals(toSystemUnit())</code>
-   */
-  boolean isSystemUnit();
-  
-  /**
-   * Annotates the specified unit. Annotation does not change the unit semantic. Annotations are often written between curly braces behind units.
-   * For example:<br>
-   * <code> Unit<Volume> PERCENT_VOL = ((AbstractUnit)Units.PERCENT).annotate("vol"); // "%{vol}" Unit<Mass> KG_TOTAL =
-   * ((AbstractUnit)Units.KILOGRAM).annotate("total"); // "kg{total}" Unit<Dimensionless> RED_BLOOD_CELLS = ((AbstractUnit)Units.ONE).annotate("RBC"); // "{RBC}" </code>
-   *
-   * Note: Annotation of system units are not considered themselves as system units.
-   *
-   * @param annotation
-   *            the unit annotation.
-   * @return the annotated unit.
-   * @since 2.0
-   */
+	/**
+	 * Indicates if this unit belongs to the set of coherent SI units (unscaled SI
+	 * units).
+	 * 
+	 * The base and coherent derived units of the SI form a coherent set, designated
+	 * the set of coherent SI units. The word coherent is used here in the following
+	 * sense: when coherent units are used, equations between the numerical values
+	 * of quantities take exactly the same form as the equations between the
+	 * quantities themselves. Thus if only units from a coherent set are used,
+	 * conversion factors between units are never required.
+	 * 
+	 * @return <code>equals(toSystemUnit())</code>
+	 */
+	boolean isSystemUnit();
+
+	/**
+	 * Returns the system unit (unscaled SI unit) from which this unit is derived.
+	 * They can be be used to identify a quantity given the unit. For example:<br>
+	 * <code> static boolean isAngularVelocity(AbstractUnit<?> unit) {<br>&nbsp;&nbsp;return unit.getSystemUnit().equals(RADIAN.divide(SECOND));<br>}
+	 * <br>assert(REVOLUTION.divide(MINUTE).isAngularVelocity()); // Returns true. </code>
+	 *
+	 * @return the unscaled metric unit from which this unit is derived.
+	 */
+	Unit<Q> getSystemUnit();
+	
+	/**
+	 * Returns the converter from this unit to its unscaled {@link #toSystemUnit
+	 * System Unit} unit.
+	 *
+	 * @return <code>getConverterTo(this.toSystemUnit())</code>
+	 * @see #toSystemUnit
+	 */
+	UnitConverter getSystemConverter();
+
+	/**
+	 * Annotates the specified unit. Annotation does not change the unit semantic.
+	 * Annotations are often written between curly braces behind units. For
+	 * example:<br>
+	 * <code> Unit<Volume> PERCENT_VOL = ((AbstractUnit)Units.PERCENT).annotate("vol"); // "%{vol}" Unit<Mass> KG_TOTAL =
+	 * ((AbstractUnit)Units.KILOGRAM).annotate("total"); // "kg{total}" Unit<Dimensionless> RED_BLOOD_CELLS = ((AbstractUnit)Units.ONE).annotate("RBC"); // "{RBC}" </code>
+	 *
+	 * Note: Annotation of system units are not considered themselves as system
+	 * units.
+	 *
+	 * @param annotation the unit annotation.
+	 * @return the annotated unit.
+	 * @since 2.0
+	 */
 //  public Unit<Q> annotate(String annotation);
 }

@@ -57,7 +57,6 @@ import tech.units.indriya.function.RationalConverter;
 import tech.units.indriya.unit.AlternateUnit;
 import tech.units.indriya.unit.AnnotatedUnit;
 import tech.units.indriya.unit.BaseUnit;
-import tech.units.indriya.unit.MixedUnit;
 import tech.units.indriya.unit.ProductUnit;
 import tech.units.indriya.unit.TransformedUnit;
 import tech.units.indriya.unit.Units;
@@ -437,7 +436,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
         return annotable.toString();
       }
       // mixed unit.
-      if (unit instanceof MixedUnit) {
+/*      if (unit instanceof MixedUnit) {
         MixedUnit<?> mixUnit = (MixedUnit<?>) unit;
         final StringBuilder mixer = new StringBuilder();
         final int partSize = mixUnit.getUnits().size();
@@ -450,6 +449,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
         }
         return mixer.toString();
       }
+      */
       return null; // Product unit.
     }
 

@@ -41,6 +41,7 @@ import tech.units.indriya.quantity.QuantityDimension;
 import tech.units.indriya.unit.BaseUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static tech.units.indriya.unit.Units.METRE;
 
 /**
  *
@@ -154,6 +155,14 @@ public class BaseUnitTest {
     assertEquals(AbstractConverter.IDENTITY, unit.getSystemConverter());
   }
 
+  /**
+   * Verifies that a base unit is equal to itself.
+   */
+  @Test
+  public void baseUnitIsEqual() {
+    assertEquals(METRE, METRE);
+  }
+  
   /**
    * Verifies that a base unit is equal to itself.
    */

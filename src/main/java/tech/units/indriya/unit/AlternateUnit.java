@@ -72,11 +72,6 @@ public final class AlternateUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> 
     private final Unit<?> parentUnit;
 
     /**
-     * Holds the symbol for this unit.
-     */
-    private final String symbol;
-
-    /**
      * Creates an alternate unit for the specified system unit identified by the specified name and symbol.
      *
      * @param parentUnit
@@ -88,12 +83,12 @@ public final class AlternateUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> 
      */
     @SuppressWarnings("rawtypes")
     public AlternateUnit(Unit<?> parentUnit, String symbol) {
+    	super(symbol);
         if (!(parentUnit instanceof AbstractUnit))
             throw new IllegalArgumentException("The parent unit: " + parentUnit + " is not an AbstractUnit");
         if (!((AbstractUnit) parentUnit).isSystemUnit())
             throw new IllegalArgumentException("The parent unit: " + parentUnit + " is not an unscaled SI unit");
         this.parentUnit = parentUnit instanceof AlternateUnit ? ((AlternateUnit) parentUnit).getParentUnit() : parentUnit;
-        this.symbol = symbol;
     }
 
     /**
@@ -103,11 +98,6 @@ public final class AlternateUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> 
      */
     public Unit<?> getParentUnit() {
         return parentUnit;
-    }
-
-    @Override
-    public String getSymbol() {
-        return symbol;
     }
 
     @Override
@@ -133,7 +123,7 @@ public final class AlternateUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> 
 
     @Override
     public int hashCode() {
-        return Objects.hash(parentUnit, symbol);
+        return Objects.hash(parentUnit, getSymbol());
     }
 
     @SuppressWarnings("rawtypes")
@@ -144,7 +134,7 @@ public final class AlternateUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> 
         }
         if (obj instanceof AlternateUnit) {
             AlternateUnit that = (AlternateUnit) obj;
-            return Objects.equals(parentUnit, that.parentUnit) && Objects.equals(symbol, that.symbol);
+            return Objects.equals(parentUnit, that.parentUnit) && Objects.equals(getSymbol(), that.getSymbol());
         }
         return false;
     }

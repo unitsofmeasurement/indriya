@@ -42,7 +42,6 @@ import javax.measure.UnitConverter;
 import tech.units.indriya.AbstractQuantity;
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.function.Calculus;
-import tech.units.indriya.unit.MixedUnit;
 
 /**
  * An amount of quantity, implementation of {@link ComparableQuantity} that keep {@link Number} as possible otherwise converts to
@@ -306,9 +305,6 @@ class NumberQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
    */
   @Override
   public ComparableQuantity<Q> to(Unit<Q> anotherUnit) {
-      if (anotherUnit instanceof MixedUnit) {
-          // FIXME decompose into MixedQuantity
-      }
       return super.to(anotherUnit);
   }
 }

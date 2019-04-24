@@ -48,292 +48,318 @@ import org.junit.jupiter.api.Test;
 
 class AlternateUnitTest {
 
-  private static final String SYMBOL = "S";
-  private static final String OTHER_SYMBOL = "O";
-  private static final Unit<ElectricCurrent> PARENT_UNIT = Units.AMPERE;
-  private static final AlternateUnit<ElectricCurrent> ALTERNATE_UNIT = new AlternateUnit<ElectricCurrent>(PARENT_UNIT, SYMBOL);
+	private static final String SYMBOL = "S";
+	private static final String OTHER_SYMBOL = "O";
+	private static final Unit<ElectricCurrent> PARENT_UNIT = Units.AMPERE;
+	private static final AlternateUnit<ElectricCurrent> ALTERNATE_UNIT = new AlternateUnit<ElectricCurrent>(PARENT_UNIT,
+			SYMBOL);
 
-  /**
-   * Verifies that the parent unit is wired correctly in the constructor.
-   */
-  @Test
-  public void parentUnitIsWiredCorrectlyInConstructor() {
-    assertEquals(PARENT_UNIT, ALTERNATE_UNIT.getParentUnit());
-  }
+	/**
+	 * Verifies that the parent unit is wired correctly in the constructor.
+	 */
+	@Test
+	public void parentUnitIsWiredCorrectlyInConstructor() {
+		assertEquals(PARENT_UNIT, ALTERNATE_UNIT.getParentUnit());
+	}
 
-  /**
-   * Verifies that if the parent unit is an alternate unit, its parent is used as the parent unit.
-   */
-  @Test
-  public void parentUnitOfAlternateUnitIsUsedAsParentUnitByConstructor() {
-    AlternateUnit<ElectricCurrent> secondAlternateUnit = new AlternateUnit<ElectricCurrent>(ALTERNATE_UNIT, SYMBOL);
-    assertEquals(PARENT_UNIT, secondAlternateUnit.getParentUnit());
-  }
-  
-  /**
-   * Verifies that the symbol is wired correctly in the constructor.
-   */
-  @Test
-  public void symbolIsWiredCorrectlyInConstructor() {
-    assertEquals(SYMBOL, ALTERNATE_UNIT.getSymbol());
-  }
+	/**
+	 * Verifies that if the parent unit is an alternate unit, its parent is used as
+	 * the parent unit.
+	 */
+	@Test
+	public void parentUnitOfAlternateUnitIsUsedAsParentUnitByConstructor() {
+		AlternateUnit<ElectricCurrent> secondAlternateUnit = new AlternateUnit<ElectricCurrent>(ALTERNATE_UNIT, SYMBOL);
+		assertEquals(PARENT_UNIT, secondAlternateUnit.getParentUnit());
+	}
 
-  /**
-   * Verifies that if the parent unit isn't an AbstractUnit, an exception is thrown.
-   */
-  @Test
-  public void constructorThrowsIllegalArgumentExceptionIfParentUnitIsNotAnAbstractUnit() {
-    Unit<ElectricCurrent> nonAbstractUnit = new Unit<ElectricCurrent>() {
+	/**
+	 * Verifies that the symbol is wired correctly in the constructor.
+	 */
+	@Test
+	public void symbolIsWiredCorrectlyInConstructor() {
+		assertEquals(SYMBOL, ALTERNATE_UNIT.getSymbol());
+	}
 
-      @Override
-      public Unit<ElectricCurrent> alternate(String arg0) {
-        return null;
-      }
+	/**
+	 * Verifies that if the parent unit isn't an AbstractUnit, an exception is
+	 * thrown.
+	 */
+	@Test
+	public void constructorThrowsIllegalArgumentExceptionIfParentUnitIsNotAnAbstractUnit() {
+		Unit<ElectricCurrent> nonAbstractUnit = new Unit<ElectricCurrent>() {
 
-      @Override
-      public <T extends Quantity<T>> Unit<T> asType(Class<T> arg0) throws ClassCastException {
-        return null;
-      }
+			@Override
+			public Unit<ElectricCurrent> alternate(String arg0) {
+				return null;
+			}
 
-      @Override
-      public Unit<ElectricCurrent> divide(double arg0) {
-        return null;
-      }
+			@Override
+			public <T extends Quantity<T>> Unit<T> asType(Class<T> arg0) throws ClassCastException {
+				return null;
+			}
 
-      @Override
-      public Unit<?> divide(Unit<?> arg0) {
-        return null;
-      }
+			@Override
+			public Unit<ElectricCurrent> divide(double arg0) {
+				return null;
+			}
 
-      @Override
-      public Map<? extends Unit<?>, Integer> getBaseUnits() {
-        return null;
-      }
+			@Override
+			public Unit<?> divide(Unit<?> arg0) {
+				return null;
+			}
 
-      @Override
-      public UnitConverter getConverterTo(Unit<ElectricCurrent> arg0) throws UnconvertibleException {
-        return null;
-      }
+			@Override
+			public Map<? extends Unit<?>, Integer> getBaseUnits() {
+				return null;
+			}
 
-      @Override
-      public UnitConverter getConverterToAny(Unit<?> arg0) throws IncommensurableException, UnconvertibleException {
-        return null;
-      }
+			@Override
+			public UnitConverter getConverterTo(Unit<ElectricCurrent> arg0) throws UnconvertibleException {
+				return null;
+			}
 
-      @Override
-      public Dimension getDimension() {
-        return null;
-      }
+			@Override
+			public UnitConverter getConverterToAny(Unit<?> arg0)
+					throws IncommensurableException, UnconvertibleException {
+				return null;
+			}
 
-      @Override
-      public String getName() {
-        return null;
-      }
+			@Override
+			public Dimension getDimension() {
+				return null;
+			}
 
-      @Override
-      public String getSymbol() {
-        return null;
-      }
+			@Override
+			public String getName() {
+				return null;
+			}
 
-      @Override
-      public Unit<ElectricCurrent> getSystemUnit() {
-        return null;
-      }
+			@Override
+			public String getSymbol() {
+				return null;
+			}
 
-      @Override
-      public Unit<?> inverse() {
-        return null;
-      }
+			@Override
+			public Unit<ElectricCurrent> getSystemUnit() {
+				return null;
+			}
 
-      @Override
-      public boolean isCompatible(Unit<?> arg0) {
-        return false;
-      }
+			@Override
+			public Unit<?> inverse() {
+				return null;
+			}
 
-      @Override
-      public Unit<ElectricCurrent> multiply(double arg0) {
-        return null;
-      }
+			@Override
+			public boolean isCompatible(Unit<?> arg0) {
+				return false;
+			}
 
-      @Override
-      public Unit<?> multiply(Unit<?> arg0) {
-        return null;
-      }
+			@Override
+			public Unit<ElectricCurrent> multiply(double arg0) {
+				return null;
+			}
 
-      @Override
-      public Unit<?> pow(int arg0) {
-        return null;
-      }
+			@Override
+			public Unit<?> multiply(Unit<?> arg0) {
+				return null;
+			}
 
-      @Override
-      public Unit<ElectricCurrent> prefix(Prefix arg0) {
-        return null;
-      }
+			@Override
+			public Unit<?> pow(int arg0) {
+				return null;
+			}
 
-      @Override
-      public Unit<?> root(int arg0) {
-        return null;
-      }
+			@Override
+			public Unit<ElectricCurrent> prefix(Prefix arg0) {
+				return null;
+			}
 
-      @Override
-      public Unit<ElectricCurrent> shift(double arg0) {
-        return null;
-      }
+			@Override
+			public Unit<?> root(int arg0) {
+				return null;
+			}
 
-      @Override
-      public Unit<ElectricCurrent> transform(UnitConverter arg0) {
-        return null;
-      }
-    };
-    assertThrows(IllegalArgumentException.class, () -> {
-      new AlternateUnit<ElectricCurrent>(nonAbstractUnit, SYMBOL);
-    });
-  }
+			@Override
+			public Unit<ElectricCurrent> shift(double arg0) {
+				return null;
+			}
 
-  /**
-   * Verifies that if the parent unit isn't a system unit, an exception is thrown.
-   */
-  @Test
-  public void constructorThrowsIllegalArgumentExceptionIfParentUnitIsNotASystemUnit() {
-    assertThrows(IllegalArgumentException.class, () -> {
-      new AlternateUnit<ElectricCurrent>(MILLI(PARENT_UNIT), SYMBOL);
-    });
-  }
+			@Override
+			public Unit<ElectricCurrent> shift(Number offset) {
+				return shift(offset.doubleValue());
+			}
 
-  /**
-   * Verifies that getDimension returns the parent unit's dimension.
-   */
-  @Test
-  public void getDimensionReturnsTheParentUnitsDimension() {
-    assertEquals(PARENT_UNIT.getDimension(), ALTERNATE_UNIT.getDimension());
-  }
+			@Override
+			public Unit<ElectricCurrent> multiply(Number multiplier) {
+				return multiply(multiplier.doubleValue());
+			}
 
-  /**
-   * Verifies that getSystemConverter returns the parent unit's system converter.
-   */
-  @Test
-  public void getSystemConverterReturnsTheParentUnitsSystemConverter() {
-    assertEquals(PARENT_UNIT.getConverterTo(PARENT_UNIT.getSystemUnit()), ALTERNATE_UNIT.getSystemConverter());
-  }
+			@Override
+			public Unit<ElectricCurrent> divide(Number divisor) {
+				return divide(divisor.doubleValue());
+			}
 
-  /**
-   * Verifies that toSystemUnit returns the alternate unit.
-   */
-  @Test
-  public void toSystemUnitReturnsTheAlternateUnit() {
-    assertEquals(ALTERNATE_UNIT, ALTERNATE_UNIT.toSystemUnit());
-  }
+			@Override
+			public Unit<ElectricCurrent> transform(UnitConverter arg0) {
+				return null;
+			}
+		};
+		assertThrows(IllegalArgumentException.class, () -> {
+			new AlternateUnit<ElectricCurrent>(nonAbstractUnit, SYMBOL);
+		});
+	}
 
-  /**
-   * Verifies that getBaseUnits returns the parent unit's base units.
-   */
-  @Test
-  public void getBaseUnitsReturnsTheParentUnitsBaseUnits() {
-    assertEquals(PARENT_UNIT.getBaseUnits(), ALTERNATE_UNIT.getBaseUnits());
-  }
+	/**
+	 * Verifies that if the parent unit isn't a system unit, an exception is thrown.
+	 */
+	@Test
+	public void constructorThrowsIllegalArgumentExceptionIfParentUnitIsNotASystemUnit() {
+		assertThrows(IllegalArgumentException.class, () -> {
+			new AlternateUnit<ElectricCurrent>(MILLI(PARENT_UNIT), SYMBOL);
+		});
+	}
 
-  /**
-   * Verifies that an alternate unit is equal to itself.
-   */
-  @Test
-  public void alternateUnitIsEqualToItself() {
-    assertEquals(ALTERNATE_UNIT, ALTERNATE_UNIT);
-  }
+	/**
+	 * Verifies that getDimension returns the parent unit's dimension.
+	 */
+	@Test
+	public void getDimensionReturnsTheParentUnitsDimension() {
+		assertEquals(PARENT_UNIT.getDimension(), ALTERNATE_UNIT.getDimension());
+	}
 
-  /**
-   * Verifies that an alternate unit is equal to another alternate unit with the same parent unit and symbol.
-   */
-  @Test
-  public void alternateUnitIsEqualToAnotherAlternateUnitWithTheSameParentUnitAndSymbol() {
-    AlternateUnit<ElectricCurrent> otherUnit = new AlternateUnit<ElectricCurrent>(PARENT_UNIT, SYMBOL);
-    assertEquals(ALTERNATE_UNIT, otherUnit);
-  }
+	/**
+	 * Verifies that getSystemConverter returns the parent unit's system converter.
+	 */
+	@Test
+	public void getSystemConverterReturnsTheParentUnitsSystemConverter() {
+		assertEquals(PARENT_UNIT.getConverterTo(PARENT_UNIT.getSystemUnit()), ALTERNATE_UNIT.getSystemConverter());
+	}
 
-  /**
-   * Verifies that an alternate unit is not equal to another alternate unit with another parent unit.
-   */
-  @Test
-  public void alternateUnitIsNotEqualToAnotherAlternateUnitWithAnotherParentUnit() {
-    AlternateUnit<Length> otherUnit = new AlternateUnit<Length>(Units.METRE, SYMBOL);
-    assertNotEquals(ALTERNATE_UNIT, otherUnit);
-  }
+	/**
+	 * Verifies that toSystemUnit returns the alternate unit.
+	 */
+	@Test
+	public void toSystemUnitReturnsTheAlternateUnit() {
+		assertEquals(ALTERNATE_UNIT, ALTERNATE_UNIT.toSystemUnit());
+	}
 
-  /**
-   * Verifies that an alternate unit is not equal to another alternate unit with another symbol.
-   */
-  @Test
-  public void alternateUnitIsNotEqualToAnotherAlternateUnitWithAnotherSymbol() {
-    AlternateUnit<ElectricCurrent> otherUnit = new AlternateUnit<ElectricCurrent>(PARENT_UNIT, OTHER_SYMBOL);
-    assertNotEquals(ALTERNATE_UNIT, otherUnit);
-  }
+	/**
+	 * Verifies that getBaseUnits returns the parent unit's base units.
+	 */
+	@Test
+	public void getBaseUnitsReturnsTheParentUnitsBaseUnits() {
+		assertEquals(PARENT_UNIT.getBaseUnits(), ALTERNATE_UNIT.getBaseUnits());
+	}
 
-  /**
-   * Verifies that an alternate unit is not equal to an object of a different type.
-   */
-  @Test
-  public void alternateUnitIsNotEqualToAString() {
-    assertNotEquals(ALTERNATE_UNIT, PARENT_UNIT);
-  }
+	/**
+	 * Verifies that an alternate unit is equal to itself.
+	 */
+	@Test
+	public void alternateUnitIsEqualToItself() {
+		assertEquals(ALTERNATE_UNIT, ALTERNATE_UNIT);
+	}
 
-  /**
-   * Verifies that an alternate unit is not equal to null.
-   */
-  @Test
-  public void alternateUnitIsNotEqualToNull() {
-    assertNotEquals(ALTERNATE_UNIT, null);
-  }
+	/**
+	 * Verifies that an alternate unit is equal to another alternate unit with the
+	 * same parent unit and symbol.
+	 */
+	@Test
+	public void alternateUnitIsEqualToAnotherAlternateUnitWithTheSameParentUnitAndSymbol() {
+		AlternateUnit<ElectricCurrent> otherUnit = new AlternateUnit<ElectricCurrent>(PARENT_UNIT, SYMBOL);
+		assertEquals(ALTERNATE_UNIT, otherUnit);
+	}
 
-  /**
-   * Verifies that an alternate unit has the same hash code as another alternate unit with the same parent unit and symbol.
-   */
-  @Test
-  public void alternateUnitHasTheSameHashCodeAsAnotherAlternateUnitWithTheSameParentUnitAndSymbol() {
-    AlternateUnit<ElectricCurrent> otherUnit = new AlternateUnit<ElectricCurrent>(PARENT_UNIT, SYMBOL);
-    assertEquals(ALTERNATE_UNIT.hashCode(), otherUnit.hashCode());
-  }
+	/**
+	 * Verifies that an alternate unit is not equal to another alternate unit with
+	 * another parent unit.
+	 */
+	@Test
+	public void alternateUnitIsNotEqualToAnotherAlternateUnitWithAnotherParentUnit() {
+		AlternateUnit<Length> otherUnit = new AlternateUnit<Length>(Units.METRE, SYMBOL);
+		assertNotEquals(ALTERNATE_UNIT, otherUnit);
+	}
 
-  /**
-   * Verifies that an alternate unit has a different hash code if the parent unit is different. Note that this isn't a requirement for the hashCode
-   * method, but generally a good property to have.
-   */
-  @Test
-  public void alternateUnitHasDifferentHashCodeForAlternateUnitWithDifferentParentUnit() {
-    AlternateUnit<Length> otherUnit = new AlternateUnit<Length>(Units.METRE, SYMBOL);
-    assertNotEquals(ALTERNATE_UNIT.hashCode(), otherUnit.hashCode());
-  }
+	/**
+	 * Verifies that an alternate unit is not equal to another alternate unit with
+	 * another symbol.
+	 */
+	@Test
+	public void alternateUnitIsNotEqualToAnotherAlternateUnitWithAnotherSymbol() {
+		AlternateUnit<ElectricCurrent> otherUnit = new AlternateUnit<ElectricCurrent>(PARENT_UNIT, OTHER_SYMBOL);
+		assertNotEquals(ALTERNATE_UNIT, otherUnit);
+	}
 
-  /**
-   * Verifies that an alternate unit has a different hash code if the symbol is different. Note that this isn't a requirement for the hashCode method,
-   * but generally a good property to have.
-   */
-  @Test
-  public void alternateUnitHasDifferentHashCodeForAlternateUnitWithDifferentSymbol() {
-    AlternateUnit<ElectricCurrent> otherUnit = new AlternateUnit<ElectricCurrent>(PARENT_UNIT, OTHER_SYMBOL);
-    assertNotEquals(ALTERNATE_UNIT.hashCode(), otherUnit.hashCode());
-  }
-  
-  /**
-   * Verifies the construction of an alternate unit via the of() method.
-   */
-  @Test
-  public void testUnitOf() {
-    AlternateUnit<Length> otherUnit = AlternateUnit.of(PARENT_UNIT, SYMBOL);
-    assertEquals(ALTERNATE_UNIT, otherUnit);
-  }
-  
-  /**
-   * Verifies the string representation of an alternate unit.
-   */
-  @Test
-  public void testStringRepresentation() {
-    assertEquals(SYMBOL, ALTERNATE_UNIT.toString());
-  }
-  
-  /**
-   * Verifies that the lead unit is wired correctly in the constructor.
-   */
-  @Test
-  public void actualUnitIsNotEqualToShift() {
-    assertNotEquals(ALTERNATE_UNIT.getParentUnit().shift(10), ALTERNATE_UNIT.shift(10));
-  }
+	/**
+	 * Verifies that an alternate unit is not equal to an object of a different
+	 * type.
+	 */
+	@Test
+	public void alternateUnitIsNotEqualToAString() {
+		assertNotEquals(ALTERNATE_UNIT, PARENT_UNIT);
+	}
+
+	/**
+	 * Verifies that an alternate unit is not equal to null.
+	 */
+	@Test
+	public void alternateUnitIsNotEqualToNull() {
+		assertNotEquals(ALTERNATE_UNIT, null);
+	}
+
+	/**
+	 * Verifies that an alternate unit has the same hash code as another alternate
+	 * unit with the same parent unit and symbol.
+	 */
+	@Test
+	public void alternateUnitHasTheSameHashCodeAsAnotherAlternateUnitWithTheSameParentUnitAndSymbol() {
+		AlternateUnit<ElectricCurrent> otherUnit = new AlternateUnit<ElectricCurrent>(PARENT_UNIT, SYMBOL);
+		assertEquals(ALTERNATE_UNIT.hashCode(), otherUnit.hashCode());
+	}
+
+	/**
+	 * Verifies that an alternate unit has a different hash code if the parent unit
+	 * is different. Note that this isn't a requirement for the hashCode method, but
+	 * generally a good property to have.
+	 */
+	@Test
+	public void alternateUnitHasDifferentHashCodeForAlternateUnitWithDifferentParentUnit() {
+		AlternateUnit<Length> otherUnit = new AlternateUnit<Length>(Units.METRE, SYMBOL);
+		assertNotEquals(ALTERNATE_UNIT.hashCode(), otherUnit.hashCode());
+	}
+
+	/**
+	 * Verifies that an alternate unit has a different hash code if the symbol is
+	 * different. Note that this isn't a requirement for the hashCode method, but
+	 * generally a good property to have.
+	 */
+	@Test
+	public void alternateUnitHasDifferentHashCodeForAlternateUnitWithDifferentSymbol() {
+		AlternateUnit<ElectricCurrent> otherUnit = new AlternateUnit<ElectricCurrent>(PARENT_UNIT, OTHER_SYMBOL);
+		assertNotEquals(ALTERNATE_UNIT.hashCode(), otherUnit.hashCode());
+	}
+
+	/**
+	 * Verifies the construction of an alternate unit via the of() method.
+	 */
+	@Test
+	public void testUnitOf() {
+		AlternateUnit<Length> otherUnit = AlternateUnit.of(PARENT_UNIT, SYMBOL);
+		assertEquals(ALTERNATE_UNIT, otherUnit);
+	}
+
+	/**
+	 * Verifies the string representation of an alternate unit.
+	 */
+	@Test
+	public void testStringRepresentation() {
+		assertEquals(SYMBOL, ALTERNATE_UNIT.toString());
+	}
+
+	/**
+	 * Verifies that the lead unit is wired correctly in the constructor.
+	 */
+	@Test
+	public void actualUnitIsNotEqualToShift() {
+		assertNotEquals(ALTERNATE_UNIT.getParentUnit().shift(10), ALTERNATE_UNIT.shift(10));
+	}
 }

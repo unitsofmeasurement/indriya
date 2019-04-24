@@ -53,8 +53,8 @@ import java.util.Objects;
  * @see <a href="http://en.wikipedia.org/wiki/SI_base_unit"> Wikipedia: SI base unit</a>
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
- * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.4, January 15, 2019
+ * @author <a href="mailto:werner@units.tech">Werner Keil</a>
+ * @version 1.5, April 24, 2019
  * @since 1.0
  */
 public final class BaseUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
@@ -121,21 +121,28 @@ public final class BaseUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
     return dimension;
   }
 
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj)
-      return true;
-    if (obj instanceof BaseUnit) {
-      BaseUnit<?> thatUnit = (BaseUnit<?>) obj;
-      return Objects.equals(this.getSymbol(), thatUnit.getSymbol()) && this.dimension.equals(thatUnit.dimension);
-    }
-    return false;
-  }
+@Override
+public int hashCode() {
+	final int prime = 31;
+	int result = 1;
+	result = prime * result + ((getSymbol() == null) ? 0 : getSymbol().hashCode());
+	//result = result + prime * result + ((name == null) ? 0 : name.hashCode());
+	result = result + prime * result + ((dimension == null) ? 0 : dimension.hashCode());
+	return result;
+}
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(getSymbol(), getDimension());
-  }
+@Override
+public boolean equals(Object obj) {
+	if (this == obj)
+		return true;
+	if (obj == null)
+		return false;
+	if (getClass() != obj.getClass())
+		return false;
+	@SuppressWarnings("rawtypes")
+	BaseUnit other = (BaseUnit) obj;
+	return Objects.equals(dimension, other.dimension) && Objects.equals(getSymbol(), other.getSymbol());
+}
 
   @Override
   public Map<? extends AbstractUnit<Q>, Integer> getBaseUnits() {
