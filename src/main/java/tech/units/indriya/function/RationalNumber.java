@@ -246,17 +246,16 @@ public class RationalNumber extends Number {
 
     @Override
     public long longValue() {
-//TODO[220] performance optimized, but needs proper rounding        
-//        synchronized ($lock2) {
-//            if(longValue==null) {
-//                longValue = signum()<0
-//                    ? absDividend.negate().divide(absDivisor).longValue()
-//                            : absDividend.divide(absDivisor).longValue();
-//            }
-//        }
-//        return longValue;
-        
-        return bigDecimalValue().longValue();
+        // performance optimized version, rounding mode is FLOOR
+        // equivalent to 'bigDecimalValue().longValue()';
+        synchronized ($lock2) {
+            if(longValue==null) {
+                longValue = signum()<0
+                    ? absDividend.negate().divide(absDivisor).longValue()
+                            : absDividend.divide(absDivisor).longValue();
+            }
+        }
+        return longValue;
     }
 
     @Override
