@@ -173,7 +173,7 @@ public class DefaultNumberSystem implements NumberSystem {
 
     @Override
     public Number reciprocal(Number number) {
-        if(isInteger(number)) {
+        if(isIntegerOnly(number)) {
             return RationalNumber.of(BigInteger.ONE, integerToBigInteger(number));
         }
         if(number instanceof BigDecimal) {
@@ -241,7 +241,58 @@ public class DefaultNumberSystem implements NumberSystem {
     
     @Override
     public Number narrow(Number number) {
-        // TODO[220]
+        
+        //Note: this is just for performance optimization
+        //this implementation will stop narrowing down at 'double' or 'integer' level
+        
+        if(number instanceof Double || number instanceof Float || 
+                number instanceof Integer || number instanceof AtomicInteger ||
+                number instanceof Short || number instanceof Byte) {
+            return number;
+        }
+        
+        if(isIntegerOnly(number)) {
+            
+            // number is one of {BigInteger, Long}
+            
+            final int total_bits_required = bitLengthOfInteger(number);
+            
+            // check whether we have enough bits to store the result into an int
+            if(total_bits_required<31) { 
+                return number.intValue();
+            }
+            
+            // check whether we have enough bits to store the result into a long
+            if(total_bits_required<63) { 
+                return number.longValue();
+            }
+            
+            return number; // cannot narrow down
+            
+        }
+
+        if(number instanceof BigDecimal) {
+            
+            final BigDecimal bigDec = ((BigDecimal) number);
+            
+            try {
+                BigInteger integer = bigDec.toBigIntegerExact();
+                return narrow(integer);
+            } catch (ArithmeticException e) {
+                return number; // cannot narrow to integer
+            }
+        }
+        
+        if(number instanceof RationalNumber) {
+            
+            final RationalNumber rational = ((RationalNumber) number);
+            
+            return rational.isInteger()
+                    ? narrow(rational.getDividend())
+                            : number; // cannot narrow to integer;
+        }
+
+        // for any other number type just do nothing
         return number;
     }
     
@@ -280,15 +331,8 @@ public class DefaultNumberSystem implements NumberSystem {
         return new IllegalArgumentException(msg);
     }
     
-    private boolean isInteger(Number number) {
-        if(number instanceof Long || 
-                number instanceof Integer || 
-                number instanceof BigInteger || 
-                number instanceof Short || 
-                number instanceof Byte) {
-            return true;
-        }
-        return false;
+    private boolean isIntegerOnly(Number number) {
+        return NumberType.valueOf(number).isIntegerOnly();
     }
     
     private int bitLengthOfInteger(Number number) {
@@ -379,7 +423,7 @@ public class DefaultNumberSystem implements NumberSystem {
             }
             
             return ((RationalNumber) wide).add(
-                    RationalNumber.ofWholeNumber(integerToBigInteger(narrow)));
+                    RationalNumber.ofInteger(integerToBigInteger(narrow)));
         }
         
         // at this point we know, that wide is one of {BigDecimal, Double, Float}
@@ -459,7 +503,7 @@ public class DefaultNumberSystem implements NumberSystem {
             }
             
             return ((RationalNumber) wide).multiply(
-                    RationalNumber.ofWholeNumber(integerToBigInteger(narrow)));
+                    RationalNumber.ofInteger(integerToBigInteger(narrow)));
         }
         
         // at this point we know, that wide is one of {BigDecimal, Double, Float}
@@ -532,7 +576,7 @@ public class DefaultNumberSystem implements NumberSystem {
             }
             
             return ((RationalNumber) wide).compareTo(
-                    RationalNumber.ofWholeNumber(integerToBigInteger(narrow)));
+                    RationalNumber.ofInteger(integerToBigInteger(narrow)));
         }
         
         // at this point we know, that wide is one of {BigDecimal, Double, Float}

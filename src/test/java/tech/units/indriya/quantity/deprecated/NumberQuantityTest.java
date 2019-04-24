@@ -33,6 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static tech.units.indriya.NumberAssertions.assertNumberEquals;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -262,12 +263,12 @@ public class NumberQuantityTest {
   @Test
   public void testNegateBig() throws Exception {
     final Quantity<Length> value = Quantities.getQuantity(BigInteger.valueOf(20), Units.METRE);
-    assertEquals(BigInteger.valueOf(20).negate(), value.negate().getValue());
+    assertNumberEquals(-20, value.negate().getValue(), 1E-12);
   }
 
   @Test
   public void testNegateDouble() throws Exception {
     final Quantity<Length> value = Quantities.getQuantity(30d, Units.METRE);
-    assertEquals(-30d, value.negate().getValue());
+    assertNumberEquals(-30, value.negate().getValue(), 1E-12);
   }
 }

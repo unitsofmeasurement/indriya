@@ -67,9 +67,9 @@ public class MixedRadixTest {
         private static final RationalNumber INCH_PER_METER = 
                 RationalNumber.of(254, 10000);
         private static final RationalNumber FOOT_PER_METER = 
-                INCH_PER_METER.multiply(RationalNumber.ofWholeNumber(12));
+                INCH_PER_METER.multiply(RationalNumber.ofInteger(12));
         private static final RationalNumber PICA_PER_METER = 
-                INCH_PER_METER.divide(RationalNumber.ofWholeNumber(6));
+                INCH_PER_METER.divide(RationalNumber.ofInteger(6));
         
         
         public static final Unit<Length> FOOT = Units.METRE.transform(

@@ -33,8 +33,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Objects;
 
-import tech.units.indriya.internal.function.calc.Calculator;
-
 /**
  * Represents a rational number {@code dividend/divisor} with {@code dividend} and 
  * {@code divisor} being integer numbers.
@@ -53,16 +51,17 @@ public class RationalNumber extends Number {
     private final BigInteger absDividend;
     private final BigInteger absDivisor;
     private final int hashCode;
+    private final boolean isInteger;
     private transient BigDecimal divisionResult;
 
-    public final static RationalNumber ZERO = ofWholeNumber(BigInteger.ZERO);
-    public final static RationalNumber ONE = ofWholeNumber(BigInteger.ONE);
+    public final static RationalNumber ZERO = ofInteger(BigInteger.ZERO);
+    public final static RationalNumber ONE = ofInteger(BigInteger.ONE);
     
-    public static RationalNumber ofWholeNumber(long number) {
-        return ofWholeNumber(BigInteger.valueOf(number));
+    public static RationalNumber ofInteger(long number) {
+        return ofInteger(BigInteger.valueOf(number));
     }
     
-    public static RationalNumber ofWholeNumber(BigInteger number) {
+    public static RationalNumber ofInteger(BigInteger number) {
         Objects.requireNonNull(number);
         return new RationalNumber(number.signum(), number.abs(), BigInteger.ONE);
     }
@@ -76,7 +75,7 @@ public class RationalNumber extends Number {
         Objects.requireNonNull(divisor);
         
         if(BigInteger.ONE.equals(divisor)) {
-            return ofWholeNumber(dividend);
+            return ofInteger(dividend);
         }
         
         if(BigInteger.ZERO.equals(divisor)) {
@@ -105,6 +104,7 @@ public class RationalNumber extends Number {
         this.absDividend = absDividend;
         this.absDivisor = absDivisor;
         this.hashCode = Objects.hash(signum, absDividend, absDivisor);
+        this.isInteger =  BigInteger.ONE.equals(absDivisor);
     }
 
     public BigInteger getDividend() {
@@ -115,6 +115,10 @@ public class RationalNumber extends Number {
     
     public BigInteger getDivisor() {
         return absDivisor;
+    }
+    
+    public boolean isInteger() {
+        return isInteger;
     }
     
     public int signum() {
@@ -252,6 +256,8 @@ public class RationalNumber extends Number {
     public double doubleValue() {
         return bigDecimalValue().doubleValue();
     }
+
+    
 
 
 }
