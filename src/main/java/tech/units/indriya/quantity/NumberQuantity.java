@@ -48,7 +48,6 @@ import tech.units.indriya.internal.function.calc.Calculator;
  * <p> 
  * This object is immutable. 
  * <p>
- * TODO[220] rename to NumberQuantity
  *
  * @see AbstractQuantity
  * @see Quantity
@@ -56,10 +55,12 @@ import tech.units.indriya.internal.function.calc.Calculator;
  * @param <Q>
  *          The type of the quantity.
  * @author Andi Huber
+ * @author Werner Keil
+ * @version 1.1
  * @since 1.0
  * 
  */
-public class NumberQuantity2<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
+public class NumberQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
 
     private static final long serialVersionUID = -6494337491031528402L;
     
@@ -68,12 +69,12 @@ public class NumberQuantity2<Q extends Quantity<Q>> extends AbstractQuantity<Q> 
     /**
      * @since 2.0
      */
-    protected NumberQuantity2(Number number, Unit<Q> unit, Scale sc) {
+    protected NumberQuantity(Number number, Unit<Q> unit, Scale sc) {
       super(unit, sc);
       value = number;
     }
     
-    protected NumberQuantity2(Number number, Unit<Q> unit) {
+    protected NumberQuantity(Number number, Unit<Q> unit) {
         this(number, unit, ABSOLUTE); 
     }
 

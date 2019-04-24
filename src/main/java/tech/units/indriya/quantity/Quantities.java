@@ -110,7 +110,7 @@ public final class Quantities {
         if (unit instanceof MixedUnit) {
             throw new MeasurementException(String.format("Cannot combine single value %s with a mixed unit %s", value, unit));
         } else {
-            return new NumberQuantity2<>(value, unit, scale);
+            return new NumberQuantity<>(value, unit, scale);
         }
     }
 
