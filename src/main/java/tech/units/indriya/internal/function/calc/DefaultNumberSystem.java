@@ -88,6 +88,7 @@ public class DefaultNumberSystem implements NumberSystem {
             return integerOnly;
         }
         
+        @SuppressWarnings("unused")
         public Class<? extends Number> getType() {
             return type;
         }
@@ -137,26 +138,14 @@ public class DefaultNumberSystem implements NumberSystem {
     @Override
     public Number add(Number x, Number y) {
         
-        if(isInteger(x) && isInteger(y)) {
-            
-            // +1 carry, not including sign
-            int total_bits_required = Math.max(bitLengthOfInteger(x), bitLengthOfInteger(y)) + 1; 
-            
-            if(total_bits_required<63) {
-                return longValueOfIntegerExact(x) + longValueOfIntegerExact(y);
-            }
-            
-            return integerToBigInteger(x).add(integerToBigInteger(y));
-            
-        }
+        final NumberType type_x = NumberType.valueOf(x);
+        final NumberType type_y = NumberType.valueOf(y);
         
-        if((x instanceof RationalNumber) && (y instanceof RationalNumber)) {
-            return ((RationalNumber) x).add((RationalNumber) y);
-        }
+        final boolean reorder_args = type_y.ordinal()>type_x.ordinal();
         
-        // TODO[220] certainly this can be further optimized
-        
-        return toBigDecimal(x).add(toBigDecimal(y));
+        return reorder_args
+                ? addWideAndNarrow(type_y, y, type_x, x)
+                        : addWideAndNarrow(type_x, x, type_y, y);
     }
 
     @Override
@@ -167,25 +156,14 @@ public class DefaultNumberSystem implements NumberSystem {
     @Override
     public Number multiply(Number x, Number y) {
         
-        if(isInteger(x) && isInteger(y)) {
-            
-            int total_bits_required = bitLengthOfInteger(x) + bitLengthOfInteger(y); // not including sign
-            
-            if(total_bits_required<63) {
-                return longValueOfIntegerExact(x) * longValueOfIntegerExact(y);
-            }
-            
-            return integerToBigInteger(x).multiply(integerToBigInteger(y));
-            
-        }
+        final NumberType type_x = NumberType.valueOf(x);
+        final NumberType type_y = NumberType.valueOf(y);
         
-        if((x instanceof RationalNumber) && (y instanceof RationalNumber)) {
-            return ((RationalNumber) x).multiply((RationalNumber) y);
-        }
+        final boolean reorder_args = type_y.ordinal()>type_x.ordinal();
         
-        // TODO[220] certainly this can be further optimized
-        
-        return toBigDecimal(x).multiply(toBigDecimal(y));
+        return reorder_args
+                ? multiplyWideAndNarrow(type_y, y, type_x, x)
+                        : multiplyWideAndNarrow(type_x, x, type_y, y);
     }
 
     @Override
@@ -230,17 +208,33 @@ public class DefaultNumberSystem implements NumberSystem {
         if(number instanceof Float) {
             return -((float)number);
         }
-        if(number instanceof Long) {
-            return -((long)number);
+        if(number instanceof Long || number instanceof AtomicLong) {
+            final long longValue = number.longValue();
+            if(longValue == Long.MIN_VALUE) {
+                return BigInteger.valueOf(longValue).negate(); // widen to BigInteger
+            }
+            return -longValue;
         }
-        if(number instanceof Integer) {
-            return -((int)number);
+        if(number instanceof Integer || number instanceof AtomicInteger) {
+            final int intValue = number.intValue();
+            if(intValue == Integer.MIN_VALUE) {
+                return -number.longValue(); // widen to long
+            }
+            return -intValue;
         }
         if(number instanceof Short) {
-            return -((short)number);
+            final short shortValue = (short)number;
+            if(shortValue == Short.MIN_VALUE) {
+                return -number.intValue(); // widen to int
+            }
+            return -shortValue;
         }
         if(number instanceof Byte) {
-            return -((byte)number);
+            final short byteValue = (byte)number;
+            if(byteValue == Byte.MIN_VALUE) {
+                return -number.intValue(); // widen to int
+            }
+            return -byteValue;
         }
         throw unsupportedNumberType(number);
     }
@@ -257,9 +251,9 @@ public class DefaultNumberSystem implements NumberSystem {
         final NumberType type_x = NumberType.valueOf(x);
         final NumberType type_y = NumberType.valueOf(y);
         
-        final boolean reorder = type_y.ordinal()>type_x.ordinal();
+        final boolean reorder_args = type_y.ordinal()>type_x.ordinal();
         
-        return reorder
+        return reorder_args
                 ? -compareWideVsNarrow(type_y, y, type_x, x)
                         : compareWideVsNarrow(type_x, x, type_y, y);
     }
@@ -329,6 +323,7 @@ public class DefaultNumberSystem implements NumberSystem {
         return BigInteger.valueOf(number.longValue());
     }
     
+    //TODO[220] should never be used on RationalNumber, because we might lose precision
     private BigDecimal toBigDecimal(Number number) {
         if(number instanceof BigDecimal) {
             return (BigDecimal) number;
@@ -353,6 +348,167 @@ public class DefaultNumberSystem implements NumberSystem {
         throw unsupportedNumberType(number);
     }
 
+    private Number addWideAndNarrow(
+            NumberType wideType, Number wide, 
+            NumberType narrowType, Number narrow) {
+        
+        if(wideType.isIntegerOnly()) {
+            // at this point we know, that narrow must also be an integer-only type
+            if(wide instanceof BigInteger) {
+                return ((BigInteger) wide).add(integerToBigInteger(narrow));
+            }
+            
+            // at this point we know, that 'wide' and 'narrow' are one of {(Atomic)Long, (Atomic)Integer, Short, Byte}
+            
+            // +1 carry, not including sign
+            int total_bits_required = Math.max(bitLengthOfInteger(wide), bitLengthOfInteger(narrow)) + 1; 
+            
+            // check whether we have enough bits to store the result into a long
+            if(total_bits_required<63) { 
+                return wide.longValue() + narrow.longValue();
+            }
+            
+            return integerToBigInteger(wide).add(integerToBigInteger(narrow));
+        }
+        
+        if(wide instanceof RationalNumber) {
+            
+            // at this point we know, that narrow must either be rational or an integer-only type
+            if(narrow instanceof RationalNumber) {
+                return ((RationalNumber) wide).add((RationalNumber) narrow);
+            }
+            
+            return ((RationalNumber) wide).add(
+                    RationalNumber.ofWholeNumber(integerToBigInteger(narrow)));
+        }
+        
+        // at this point we know, that wide is one of {BigDecimal, Double, Float}
+        
+        if(wide instanceof BigDecimal) {
+            
+            if(narrow instanceof BigDecimal) {
+                return ((BigDecimal) wide).add((BigDecimal) narrow, Calculus.MATH_CONTEXT);
+            }
+            
+            if(narrow instanceof Double || narrow instanceof Float) {
+                return ((BigDecimal) wide).add(BigDecimal.valueOf(narrow.doubleValue()), Calculus.MATH_CONTEXT);
+            }
+            
+            if(narrow instanceof RationalNumber) {
+                //TODO[220] can we do better than that, eg. by converting BigDecimal to RationalNumber 
+                return ((BigDecimal) wide).add(((RationalNumber) narrow).bigDecimalValue());
+            }
+            
+            // at this point we know, that 'narrow' is one of {(Atomic)Long, (Atomic)Integer, Short, Byte}
+            return ((BigDecimal) wide).add(BigDecimal.valueOf(narrow.longValue()));
+            
+        }
+        
+        // at this point we know, that wide is one of {Double, Float}
+        
+        if(narrow instanceof Double || narrow instanceof Float) {
+            //converting to BigDecimal, because especially fractional addition is sensitive to precision loss
+            return BigDecimal.valueOf(wide.doubleValue())
+                .add(BigDecimal.valueOf(narrow.doubleValue()));
+        }
+        
+        if(narrow instanceof RationalNumber) {
+            //TODO[220] can we do better than that, eg. by converting BigDecimal to RationalNumber
+            return BigDecimal.valueOf(wide.doubleValue())
+                    .add(((RationalNumber) narrow).bigDecimalValue());
+        }
+        
+        if(narrow instanceof BigInteger) {
+            return BigDecimal.valueOf(wide.doubleValue())
+                    .add(new BigDecimal((BigInteger) narrow));
+        }
+        
+        // at this point we know, that 'narrow' is one of {(Atomic)Long, (Atomic)Integer, Short, Byte}
+        return BigDecimal.valueOf(wide.doubleValue())
+                .add(BigDecimal.valueOf(narrow.longValue()));
+        
+    }
+    
+    private Number multiplyWideAndNarrow(
+            NumberType wideType, Number wide, 
+            NumberType narrowType, Number narrow) {
+        
+        if(wideType.isIntegerOnly()) {
+            // at this point we know, that narrow must also be an integer-only type
+            if(wide instanceof BigInteger) {
+                return ((BigInteger) wide).multiply(integerToBigInteger(narrow));
+            }
+            
+            // at this point we know, that 'wide' and 'narrow' are one of {(Atomic)Long, (Atomic)Integer, Short, Byte}
+            
+            int total_bits_required = bitLengthOfInteger(wide) + bitLengthOfInteger(narrow); // not including sign
+            
+            // check whether we have enough bits to store the result into a long
+            if(total_bits_required<63) { 
+                return wide.longValue() * narrow.longValue();
+            }
+            
+            return integerToBigInteger(wide).multiply(integerToBigInteger(narrow));
+        }
+        
+        if(wide instanceof RationalNumber) {
+            
+            // at this point we know, that narrow must either be rational or an integer-only type
+            if(narrow instanceof RationalNumber) {
+                return ((RationalNumber) wide).multiply((RationalNumber) narrow);
+            }
+            
+            return ((RationalNumber) wide).multiply(
+                    RationalNumber.ofWholeNumber(integerToBigInteger(narrow)));
+        }
+        
+        // at this point we know, that wide is one of {BigDecimal, Double, Float}
+        
+        if(wide instanceof BigDecimal) {
+            
+            if(narrow instanceof BigDecimal) {
+                return ((BigDecimal) wide).multiply((BigDecimal) narrow, Calculus.MATH_CONTEXT);
+            }
+            
+            if(narrow instanceof Double || narrow instanceof Float) {
+                return ((BigDecimal) wide).multiply(BigDecimal.valueOf(narrow.doubleValue()), Calculus.MATH_CONTEXT);
+            }
+            
+            if(narrow instanceof RationalNumber) {
+                //TODO[220] can we do better than that, eg. by converting BigDecimal to RationalNumber 
+                return ((BigDecimal) wide).multiply(((RationalNumber) narrow).bigDecimalValue());
+            }
+            
+            // at this point we know, that 'narrow' is one of {(Atomic)Long, (Atomic)Integer, Short, Byte}
+            return ((BigDecimal) wide).multiply(BigDecimal.valueOf(narrow.longValue()));
+            
+        }
+        
+        // at this point we know, that wide is one of {Double, Float}
+        
+        if(narrow instanceof Double || narrow instanceof Float) {
+            // not converting to BigDecimal, because fractional multiplication is not sensitive to precision loss
+            return wide.doubleValue() * narrow.doubleValue();
+        }
+        
+        if(narrow instanceof RationalNumber) {
+            //TODO[220] can we do better than that, eg. by converting BigDecimal to RationalNumber
+            return BigDecimal.valueOf(wide.doubleValue())
+                    .multiply(((RationalNumber) narrow).bigDecimalValue());
+        }
+        
+        if(narrow instanceof BigInteger) {
+            return BigDecimal.valueOf(wide.doubleValue())
+                    .multiply(new BigDecimal((BigInteger) narrow));
+        }
+        
+        // at this point we know, that 'narrow' is one of {(Atomic)Long, (Atomic)Integer, Short, Byte}
+        return BigDecimal.valueOf(wide.doubleValue())
+                .multiply(BigDecimal.valueOf(narrow.longValue()));              
+     
+    }
+    
+    
     private int compareWideVsNarrow(
             NumberType wideType, Number wide, 
             NumberType narrowType, Number narrow) {
@@ -364,7 +520,7 @@ public class DefaultNumberSystem implements NumberSystem {
                 return ((BigInteger) wide).compareTo(integerToBigInteger(narrow));
             }
             
-            // at this point we know, that 'wide' and 'narrow' are one of {Long, Integer, Short, Byte}
+            // at this point we know, that 'wide' and 'narrow' are one of {(Atomic)Long, (Atomic)Integer, Short, Byte}
             return Long.compare(wide.longValue(), narrow.longValue());
         }
         
@@ -379,7 +535,7 @@ public class DefaultNumberSystem implements NumberSystem {
                     RationalNumber.ofWholeNumber(integerToBigInteger(narrow)));
         }
         
-        // at this point we know, that wide is fractional
+        // at this point we know, that wide is one of {BigDecimal, Double, Float}
         
         if(wide instanceof BigDecimal) {
             
@@ -392,6 +548,7 @@ public class DefaultNumberSystem implements NumberSystem {
             }
             
             if(narrow instanceof RationalNumber) {
+                //TODO[220] can we do better than that, eg. by converting BigDecimal to RationalNumber
                 return ((BigDecimal) wide).compareTo(((RationalNumber) narrow).bigDecimalValue());
             }
             
@@ -407,6 +564,7 @@ public class DefaultNumberSystem implements NumberSystem {
         }
         
         if(narrow instanceof RationalNumber) {
+            //TODO[220] can we do better than that, eg. by converting BigDecimal to RationalNumber
             return BigDecimal.valueOf(wide.doubleValue())
                     .compareTo(((RationalNumber) narrow).bigDecimalValue());
         }

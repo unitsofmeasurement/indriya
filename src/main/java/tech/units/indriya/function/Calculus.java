@@ -109,6 +109,7 @@ public final class Calculus {
 	 *          the number to be converted
 	 * @return the number converted
 	 */
+	@Deprecated //TODO[220] use NUMBER_SYSTEM instead
 	public static BigDecimal toBigDecimal(Number number) {
 		Objects.requireNonNull(number, MSG_NUMBER_NON_NULL);
 		if(number instanceof BigDecimal) {
@@ -117,7 +118,7 @@ public final class Calculus {
 		if(number instanceof BigInteger) {
 			return new BigDecimal((BigInteger) number);
 		}
-		if(number instanceof Double) {
+		if(number instanceof Double || number instanceof Float) {
 			return BigDecimal.valueOf(number.doubleValue());
 		}
 		logger.fine(()->String.format(
@@ -133,6 +134,7 @@ public final class Calculus {
 	 *          the number to be converted
 	 * @return the number converted
 	 */
+	@Deprecated //TODO[220] use NUMBER_SYSTEM instead
 	public static BigInteger toBigInteger(Number number) {
 		Objects.requireNonNull(number, MSG_NUMBER_NON_NULL);
 		if(number instanceof BigInteger) {
@@ -162,6 +164,7 @@ public final class Calculus {
 	 * @param number
 	 * @return 
 	 */
+	@Deprecated //TODO[220] use NUMBER_SYSTEM instead
 	public static Number abs(Number number) {
 		Objects.requireNonNull(number, MSG_NUMBER_NON_NULL);
 		if(number instanceof BigInteger) {
@@ -196,6 +199,7 @@ public final class Calculus {
 	 * @param number
 	 * @return -number
 	 */
+	@Deprecated //TODO[220] use NUMBER_SYSTEM instead
 	public static Number negate(Number number) {
 		Objects.requireNonNull(number, MSG_NUMBER_NON_NULL);
 		if(number instanceof BigInteger) {
@@ -230,6 +234,7 @@ public final class Calculus {
 	 * @param number
 	 * @return
 	 */
+	@Deprecated //TODO[220] use NUMBER_SYSTEM instead
 	public static boolean isLessThanOne(Number number) {
 		Objects.requireNonNull(number, MSG_NUMBER_NON_NULL);
 		if(number instanceof BigInteger) {
@@ -255,6 +260,7 @@ public final class Calculus {
      * @param number
      * @return
      */
+	@Deprecated //TODO[220] use NUMBER_SYSTEM instead
     public static boolean isLessThanZero(Number number) {
         Objects.requireNonNull(number, MSG_NUMBER_NON_NULL);
         if(number instanceof BigInteger) {

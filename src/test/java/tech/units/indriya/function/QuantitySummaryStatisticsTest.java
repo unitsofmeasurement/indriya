@@ -30,9 +30,18 @@
 package tech.units.indriya.function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static tech.units.indriya.function.QuantityStreams.summarizeQuantity;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.measure.Quantity;
 import javax.measure.quantity.Time;
+import javax.measure.spi.QuantityFactory;
+import javax.measure.spi.ServiceProvider;
 
 import org.junit.jupiter.api.Test;
 
@@ -126,7 +135,22 @@ public class QuantitySummaryStatisticsTest {
     assertEquals(24L, summary.getSum().getValue().longValue());
     assertEquals(4L, summary.getAverage().getValue().longValue());
   }
+  
+  @Test
+  public void summaryTest() {
+    List<Quantity<Time>> times = createTimes();
+    QuantitySummaryStatistics<Time> summary = times.stream().collect(summarizeQuantity(Units.HOUR));
 
+    assertEquals(4, summary.getCount());
+    assertNotNull(summary.getAverage());
+    assertNotNull(summary.getCount());
+    assertNotNull(summary.getMax());
+    assertNotNull(summary.getMin());
+    assertNotNull(summary.getSum());
+  }
+
+  // -- HELPER
+  
   private static QuantitySummaryStatistics<Time> createSummaryTime() {
     QuantitySummaryStatistics<Time> summary = new QuantitySummaryStatistics<>(Units.DAY);
 
@@ -135,5 +159,20 @@ public class QuantitySummaryStatisticsTest {
     summary.accept(Quantities.getQuantity(1440, Units.MINUTE));
     return summary;
   }
+  
+  private List<Quantity<Time>> createTimes() {
+      ServiceProvider provider = ServiceProvider.current();
+      QuantityFactory<Time> timeFactory = provider.getQuantityFactory(Time.class);
+      Quantity<Time> minutes = timeFactory.create(BigDecimal.valueOf(15), Units.MINUTE);
+      Quantity<Time> hours = timeFactory.create(BigDecimal.valueOf(18), Units.HOUR);
+      Quantity<Time> day = timeFactory.create(BigDecimal.ONE, Units.DAY);
+      Quantity<Time> seconds = timeFactory.create(BigDecimal.valueOf(100), Units.SECOND);
+      List<Quantity<Time>> times = new ArrayList<>();
+      times.add(day);
+      times.add(hours);
+      times.add(minutes);
+      times.add(seconds);
+      return times;
+    }
 
 }

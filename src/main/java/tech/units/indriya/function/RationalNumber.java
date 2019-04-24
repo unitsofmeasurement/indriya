@@ -33,6 +33,8 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Objects;
 
+import tech.units.indriya.internal.function.calc.Calculator;
+
 /**
  * Represents a rational number {@code dividend/divisor} with {@code dividend} and 
  * {@code divisor} being integer numbers.
@@ -122,9 +124,10 @@ public class RationalNumber extends Number {
     public BigDecimal bigDecimalValue() {
         synchronized ($lock) {
             if(divisionResult==null) {
-                divisionResult = Calculus.toBigDecimal(absDividend)
+                divisionResult = 
+                        //FIXME[220] might throw java.lang.ArithmeticException: Non-terminating decimal expansion; no exact representable decimal result
+                        Calculus.toBigDecimal(absDividend)
                         .divide(Calculus.toBigDecimal(absDivisor));
-                
                 if(signum<0) {
                     divisionResult = divisionResult.negate();
                 }
