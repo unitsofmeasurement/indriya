@@ -42,6 +42,15 @@ import tech.units.indriya.function.Calculus;
  */
 public class NumberAssertions {
 
+    /**
+     * <em>Asserts</em> that {@code expected} and {@code actual} are equal within the given {@code delta}.
+     * <p>
+     * Arguments are converted to BigDecimal before comparison.
+     * 
+     * @param expected
+     * @param actual
+     * @param delta
+     */
     public static void assertNumberEquals(Number expected, Number actual, Number delta) {
 
         final boolean equal_withinDelta = testNumberEquals(expected, actual, delta);
@@ -52,6 +61,15 @@ public class NumberAssertions {
         }
     }
 
+    /**
+     * <em>Asserts</em> that {@code expected} and {@code actual} Number arrays are equal.
+     * <p>Equality imposed by this method is consistent with 
+     * {@link NumberAssertions#assertNumberEquals(Number, Number, Number)}.</p>
+     * 
+     * @param expected
+     * @param actual
+     * @param delta
+     */
     public static void assertNumberArrayEquals(Number[] expected, Number[] actual, Number delta) {
 
         Objects.requireNonNull(delta);
