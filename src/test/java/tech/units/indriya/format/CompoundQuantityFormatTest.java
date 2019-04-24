@@ -348,8 +348,6 @@ public class CompoundQuantityFormatTest {
     public void mixedParsing() {
         
         // given
-        
-        //MixedRadix<Length> mixedRadix = MixedRadix.ofPrimary(USCustomary.FOOT).mix(USCustomary.INCH);
         final NumberDelimiterQuantityFormat mixedRadixFormat = NumberDelimiterQuantityFormat.builder()
                 .setUnitFormat(SimpleUnitFormat.getInstance()).setNumberFormat(NumberFormat.getInstance())
                 .setDelimiter(" ").setRadixPartsDelimiter(" ").build();
@@ -378,5 +376,4 @@ public class CompoundQuantityFormatTest {
         // then
         NumberAssertions.assertNumberEquals(1.1666666666666667, lengthSingle.getValue(), 1E-9);
     }
-
 }
