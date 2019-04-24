@@ -37,7 +37,7 @@ import java.util.Objects;
  * Represents a rational number {@code dividend/divisor} with {@code dividend} and 
  * {@code divisor} being integer numbers.
  * <p>
- * This implementation uses {@link BigInteger} to represent dividend and divisor.
+ * This implementation uses {@link BigInteger} to represent 'dividend' and 'divisor'.
  *  
  * @author Andi Huber
  * @since 2.0
@@ -45,14 +45,17 @@ import java.util.Objects;
 public class RationalNumber extends Number {
     
     private static final long serialVersionUID = 1L;
-    private final Object $lock = new Object[0]; // serializable lock
+    private final Object $lock1 = new Object[0]; // serializable lock for 'divisionResult'
+    private final Object $lock2 = new Object[0]; // serializable lock for 'longValue'
     
     private final int signum;
     private final BigInteger absDividend;
     private final BigInteger absDivisor;
     private final int hashCode;
     private final boolean isInteger;
+    
     private transient BigDecimal divisionResult;
+    private transient Long longValue;
 
     public final static RationalNumber ZERO = ofInteger(BigInteger.ZERO);
     public final static RationalNumber ONE = ofInteger(BigInteger.ONE);
@@ -126,12 +129,11 @@ public class RationalNumber extends Number {
     }
     
     public BigDecimal bigDecimalValue() {
-        synchronized ($lock) {
+        synchronized ($lock1) {
             if(divisionResult==null) {
                 divisionResult = 
-                        //FIXME[220] might throw java.lang.ArithmeticException: Non-terminating decimal expansion; no exact representable decimal result
-                        Calculus.toBigDecimal(absDividend)
-                        .divide(Calculus.toBigDecimal(absDivisor));
+                        new BigDecimal(absDividend)
+                        .divide(new BigDecimal(absDivisor), Calculus.MATH_CONTEXT);
                 if(signum<0) {
                     divisionResult = divisionResult.negate();
                 }
@@ -244,6 +246,16 @@ public class RationalNumber extends Number {
 
     @Override
     public long longValue() {
+//TODO[220] performance optimized, but needs proper rounding        
+//        synchronized ($lock2) {
+//            if(longValue==null) {
+//                longValue = signum()<0
+//                    ? absDividend.negate().divide(absDivisor).longValue()
+//                            : absDividend.divide(absDivisor).longValue();
+//            }
+//        }
+//        return longValue;
+        
         return bigDecimalValue().longValue();
     }
 
