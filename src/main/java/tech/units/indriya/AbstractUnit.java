@@ -80,7 +80,7 @@ import tech.uom.lib.common.function.SymbolSupplier;
  *      International System of Units</a>
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 1.6.1, March 22, 2019
+ * @version 2.0, April 25, 2019
  * @since 1.0
  */
 public abstract class AbstractUnit<Q extends Quantity<Q>>
