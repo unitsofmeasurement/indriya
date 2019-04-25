@@ -33,7 +33,7 @@ package tech.units.indriya.format;
  * Defines the different variants of unit formatting.
  * 
  * @author Werner Keil
- * @version 1.1, February 3, 2019
+ * @version 1.2, April 25, 2019
  * @since 1.0.1
  */
 public enum UnitStyle {
@@ -57,6 +57,13 @@ public enum UnitStyle {
      * @see javax.measure.format.UnitFormat#label()
      */
     LABEL,
+    
+    /**
+     * The unit will be rendered as its name and symbol.
+     * @see javax.measure.Unit#getName()
+     * @see javax.measure.Unit#getSymbol()
+     */
+    NAME_AND_SYMBOL,
 
     /**
      * The unit will be rendered as its symbol and also labeled.

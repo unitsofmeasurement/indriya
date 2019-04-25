@@ -144,23 +144,8 @@ public abstract class AbstractSystemOfUnits implements SystemOfUnits, Nameable {
 		 * @return <code>unit</code>.
 		 * @since 1.0
 		 */
-		@SuppressWarnings("unchecked")
 		public static <U extends Unit<?>> U addUnit(Set<Unit<?>> units, U unit, String name, String symbol) {
-			if (name != null && symbol != null && unit instanceof AbstractUnit) {
-				AbstractUnit<?> aUnit = (AbstractUnit<?>) unit;
-				aUnit.setName(name);
-				aUnit.setSymbol(symbol);
-				units.add(aUnit);
-				return (U) aUnit;
-			}
-			if (name != null && unit instanceof AbstractUnit) {
-				AbstractUnit<?> aUnit = (AbstractUnit<?>) unit;
-				aUnit.setName(name);
-				units.add(aUnit);
-				return (U) aUnit;
-			}
-			units.add(unit);
-			return unit;
+			return addUnit(units, unit, name, symbol, NAME_AND_SYMBOL);
 		}
 
 		/**
@@ -182,7 +167,27 @@ public abstract class AbstractSystemOfUnits implements SystemOfUnits, Nameable {
 				UnitStyle style) {
 			switch (style) {
 			case NAME:
+				if (name != null && unit instanceof AbstractUnit) {
+					AbstractUnit<?> aUnit = (AbstractUnit<?>) unit;
+					aUnit.setName(name);
+					units.add(aUnit);
+					return (U) aUnit;
+				}
+				break;
+			case NAME_AND_SYMBOL:
 			case SYMBOL:
+				if (unit instanceof AbstractUnit) {
+					AbstractUnit<?> aUnit = (AbstractUnit<?>) unit;
+					if (name != null && NAME_AND_SYMBOL.equals(style)) { 
+						aUnit.setName(name);
+					}
+					if (name != null && (SYMBOL.equals(style) || NAME_AND_SYMBOL.equals(style))) {
+						aUnit.setSymbol(symbol);
+					}
+					units.add(aUnit);
+					return (U) aUnit;
+				}
+				break;
 			case SYMBOL_AND_LABEL:
 				if (name != null && symbol != null && unit instanceof AbstractUnit) {
 					AbstractUnit<?> aUnit = (AbstractUnit<?>) unit;
@@ -193,12 +198,6 @@ public abstract class AbstractSystemOfUnits implements SystemOfUnits, Nameable {
 					if (LABEL.equals(style) || SYMBOL_AND_LABEL.equals(style)) {
 						SimpleUnitFormat.getInstance().label(unit, symbol);
 					}
-					units.add(aUnit);
-					return (U) aUnit;
-				}
-				if (name != null && unit instanceof AbstractUnit) {
-					AbstractUnit<?> aUnit = (AbstractUnit<?>) unit;
-					aUnit.setName(name);
 					units.add(aUnit);
 					return (U) aUnit;
 				}
