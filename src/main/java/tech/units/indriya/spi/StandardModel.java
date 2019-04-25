@@ -126,7 +126,7 @@ class StandardModel extends DimensionalModel {
   /**
    * StandardModel constructor.
    */
-  public StandardModel() {
+  protected StandardModel() {
   }
 
 }

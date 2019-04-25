@@ -308,9 +308,8 @@ public abstract class AbstractUnit<Q extends Quantity<Q>>
 		if (!isCompatible(that))
 			throw new IncommensurableException(this + " is not compatible with " + that);
 		ComparableUnit thatAbstr = (ComparableUnit) that; // Since both units are
-		// compatible they must
-		// be both abstract units.
-		DimensionalModel model = DimensionalModel.current();
+		// compatible they must both be abstract units.
+		final DimensionalModel model = DimensionalModel.current();
 		Unit thisSystemUnit = this.getSystemUnit();
 		UnitConverter thisToDimension = model.getDimensionalTransform(thisSystemUnit.getDimension())
 				.concatenate(this.getSystemConverter());
