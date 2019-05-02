@@ -268,7 +268,7 @@ public final class TimeUnitQuantity extends AbstractQuantity<Time> {
    */
   @Override
   public ComparableQuantity<Time> add(Quantity<Time> that) {
-    final BigDecimal thisValueInSystemUnit = decimalValue(SECOND);
+    final BigDecimal thisValueInSystemUnit = convertedQuantityValueAsBigDecimal(this, SECOND);
     final BigDecimal thatValueInSystemUnit = convertedQuantityValueAsBigDecimal(that, SECOND);
     final BigDecimal resultValueInSystemUnit = thisValueInSystemUnit.add(thatValueInSystemUnit, Calculus.MATH_CONTEXT);
     final BigDecimal resultValueInThisUnit = numberAsBigDecimal(SECOND.getConverterTo(getUnit()).convert(resultValueInSystemUnit));
@@ -335,7 +335,7 @@ public final class TimeUnitQuantity extends AbstractQuantity<Time> {
 
   private ComparableQuantity<?> applyMultiplicativeQuantityOperation(Quantity<?> that,
       TriFunction<BigDecimal, BigDecimal, BigDecimal, MathContext> valueOperator, BiFunction<Unit<?>, Unit<?>, Unit<?>> unitOperator) {
-    final BigDecimal thisValue = decimalValue(getUnit());
+    final BigDecimal thisValue = quantityValueAsBigDecimal(this);
     final BigDecimal thatValue = quantityValueAsBigDecimal(that);
     final BigDecimal result = valueOperator.apply(thisValue, thatValue, Calculus.MATH_CONTEXT);
     if (isOverflowing(result)) {
@@ -347,7 +347,7 @@ public final class TimeUnitQuantity extends AbstractQuantity<Time> {
 
   private ComparableQuantity<Time> applyMultiplicativeNumberOperation(Number that,
       TriFunction<BigDecimal, BigDecimal, BigDecimal, MathContext> valueOperator) {
-    final BigDecimal thisValue = decimalValue(getUnit());
+    final BigDecimal thisValue = numberAsBigDecimal(this.value);
     final BigDecimal thatValue = numberAsBigDecimal(that);
     final BigDecimal result = valueOperator.apply(thisValue, thatValue, Calculus.MATH_CONTEXT);
     if (isOverflowing(result)) {
@@ -370,25 +370,6 @@ public final class TimeUnitQuantity extends AbstractQuantity<Time> {
   @Override
   public boolean isBig() {
     return false;
-  }
-
-  /**
-   * @since 1.0.1
-   */
-  @Override
-  public BigDecimal decimalValue(Unit<Time> unit) throws ArithmeticException {
-    return (BigDecimal) getUnit().getConverterTo(unit).convert(BigDecimal.valueOf(value));
-  }
-
-  /**
-   * @since 1.0.1
-   */
-  @Override
-  public double doubleValue(Unit<Time> unit) throws ArithmeticException {
-    final double result = getUnit().getConverterTo(unit).convert(getValue()).doubleValue();
-    if (Double.isInfinite(result))
-      throw new ArithmeticException();
-    return result;
   }
 
   /**

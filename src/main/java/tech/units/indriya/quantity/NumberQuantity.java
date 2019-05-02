@@ -32,6 +32,7 @@ package tech.units.indriya.quantity;
 import static javax.measure.Quantity.Scale.ABSOLUTE;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.function.BinaryOperator;
 
 import javax.measure.Quantity;
@@ -179,17 +180,6 @@ public class NumberQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
 
     @Override
     public boolean isBig() {
-        throw new UnsupportedOperationException();
+        return (value instanceof BigDecimal) || (value instanceof BigInteger);
     }
-
-    @Override
-    public BigDecimal decimalValue(Unit<Q> aUnit) throws ArithmeticException {
-        throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public double doubleValue(Unit<Q> aUnit) throws ArithmeticException {
-        throw new UnsupportedOperationException();
-    }
-
 }

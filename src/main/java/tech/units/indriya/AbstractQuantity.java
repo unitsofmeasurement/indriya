@@ -302,32 +302,6 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
         return SimpleQuantityFormat.getInstance().format(this);
     }
 
-    @Deprecated //TODO[220] remove method
-    public abstract BigDecimal decimalValue(Unit<Q> aUnit) throws ArithmeticException;
-
-    @Deprecated //TODO[220] remove method
-    public abstract double doubleValue(Unit<Q> aUnit) throws ArithmeticException;
-
-    public final int intValue(Unit<Q> aUnit) throws ArithmeticException {
-        long longValue = longValue(aUnit);
-        if ((longValue < Integer.MIN_VALUE) || (longValue > Integer.MAX_VALUE)) {
-            throw new ArithmeticException("Cannot convert " + longValue + " to int (overflow)");
-        }
-        return (int) longValue;
-    }
-
-    protected long longValue(Unit<Q> aUnit) throws ArithmeticException {
-        double result = doubleValue(aUnit);
-        if ((result < Long.MIN_VALUE) || (result > Long.MAX_VALUE)) {
-            throw new ArithmeticException("Overflow (" + result + ")");
-        }
-        return (long) result;
-    }
-
-    protected final float floatValue(Unit<Q> aUnit) {
-        return (float) doubleValue(aUnit);
-    }
-
     @Override
     public <T extends Quantity<T>, E extends Quantity<E>> ComparableQuantity<E> divide(Quantity<T> that, Class<E> asTypeQuantity) {
 

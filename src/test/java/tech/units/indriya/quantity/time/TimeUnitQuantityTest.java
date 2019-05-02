@@ -258,38 +258,6 @@ public class TimeUnitQuantityTest {
   }
 
   /**
-   * Verifies that the value is returned without conversion if decimalValue is called with the quantity's unit.
-   */
-  @Test
-  public void decimalValueReturnsValueForSameUnit() {
-    assertEquals(BigDecimal.valueOf(42), FORTY_TWO_MINUTES.decimalValue(Units.MINUTE));
-  }
-
-  /**
-   * Verifies that the value is correctly converted if decimalValue is called with another unit than the quantity's unit.
-   */
-  @Test
-  public void decimalValueReturnsConvertedValueForOtherUnit() {
-    assertEquals(BigDecimal.valueOf(0.7), FORTY_TWO_MINUTES.decimalValue(Units.HOUR));
-  }
-
-  /**
-   * Verifies that the value is returned without conversion if doubleValue is called with the quantity's unit.
-   */
-  @Test
-  public void doubleValueReturnsValueForSameUnit() {
-    assertEquals(42, FORTY_TWO_MINUTES.doubleValue(Units.MINUTE));
-  }
-
-  /**
-   * Verifies that the value is correctly converted if doubleValue is called with another unit than the quantity's unit.
-   */
-  @Test
-  public void doubleValueReturnsConvertedValueForOtherUnit() {
-    assertEquals(0.7, FORTY_TWO_MINUTES.doubleValue(Units.HOUR));
-  }
-
-  /**
    * Verifies that addition with a quantity with the same time unit preserves the time unit.
    */
   @Test
