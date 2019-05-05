@@ -60,7 +60,7 @@ import java.util.Objects;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.7, November 11, 2018
+ * @version 1.8, May 05, 2019
  * @since 1.0
  */
 public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
@@ -302,7 +302,11 @@ public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
         Arrays.sort(elements, new Comparator<Element>() {
           @Override
           public int compare(Element e0, Element e1) {
-            return e0.getUnit().getSystemUnit().getSymbol().compareTo(e1.getUnit().getSystemUnit().getSymbol());
+        	  if (e0.getUnit().getSystemUnit().getSymbol() != null && e1.getUnit().getSystemUnit().getSymbol() != null) {
+        		  return e0.getUnit().getSystemUnit().getSymbol().compareTo(e1.getUnit().getSystemUnit().getSymbol());
+        	  } else {
+        		  return e0.getUnit().getSystemUnit().toString().compareTo(e1.getUnit().getSystemUnit().toString());
+        	  }
           }});
         return Objects.hash((Object[]) elements);
     }
