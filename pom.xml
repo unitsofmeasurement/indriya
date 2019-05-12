@@ -15,7 +15,7 @@
 	<parent>
 		<groupId>tech.uom</groupId>
 		<artifactId>uom-parent</artifactId>
-		<version>2.0-SNAPSHOT</version>
+		<version>2.0-PRD</version>
 	</parent>
 
 	<scm>
@@ -36,8 +36,8 @@
 	<!-- Build Settings -->
 	<!-- ======================================================= -->
 	<properties>
-		<jsr.version>2.0-SNAPSHOT</jsr.version>
-		<lib.version>2.0-SNAPSHOT</lib.version>
+		<jsr.version>2.0-PRD</jsr.version>
+		<lib.version>2.0-PRD</lib.version>
 		<sourceEncoding>UTF-8</sourceEncoding>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>${sourceEncoding}</project.reporting.outputEncoding>
