@@ -37,6 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import javax.measure.MeasurementException;
 import javax.measure.Quantity;
 import javax.measure.Unit;
+import javax.measure.quantity.Length;
 import javax.measure.quantity.Temperature;
 
 import org.junit.jupiter.api.Disabled;
@@ -204,8 +205,8 @@ class AbsoluteVsRelativeTest {
     assertThrows(MeasurementException.class, ()->t_c.divide(t_f));
   }
   
-  @Test
-  @DisplayName("UnitConvert[Quantity[1.4, 'DegreesCelsius'], 'Kelvins'] /" + 
+	@Test
+	@DisplayName("UnitConvert[Quantity[1.4, 'DegreesCelsius'], 'Kelvins'] /" + 
       " UnitConvert[Quantity[8, 'DegreesFahrenheit'], 'Kelvins'] -> 1.05671")
   public void in13() {
     
@@ -220,4 +221,13 @@ class AbsoluteVsRelativeTest {
     assertEquals(1.05671, dimensionless.getValue().doubleValue(), 1E-3);
   }
 
+  @Test
+  @DisplayName("Adding or substracting two RELATIVE quantities should result in a relative quantity")
+  public void addRelativesTest() {
+    final Quantity<Length> utrechtSeaLevel = Quantities.getQuantity(5, Units.METRE, Quantity.Scale.RELATIVE);
+    final Quantity<Length> munichSeaLevel = Quantities.getQuantity(519, Units.METRE, Quantity.Scale.RELATIVE);
+    final Quantity<Length> combinedSeaLevel = utrechtSeaLevel.add(munichSeaLevel);
+    assertEquals(Quantity.Scale.RELATIVE, combinedSeaLevel.getScale());
+   }
+  
 }
