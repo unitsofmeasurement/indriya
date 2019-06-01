@@ -173,7 +173,11 @@ public class NumberQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
         final Number resultValueInThisUnit = c1.inverse().convert(resultValueInSystemUnit);
 
         //TODO[220] scale not handled at all !!!
-        return Quantities.getQuantity(resultValueInThisUnit, getUnit());
+        if (getScale().equals(that.getScale())) {
+        	return Quantities.getQuantity(resultValueInThisUnit, getUnit(), getScale());
+        } else {
+        	return Quantities.getQuantity(resultValueInThisUnit, getUnit()); // becomes ABSOLUTE TODO, should it be ABSOLUTE?
+        }
     }
     
     // -- DEPRECATIONS
