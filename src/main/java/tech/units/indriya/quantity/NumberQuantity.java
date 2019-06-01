@@ -30,6 +30,7 @@
 package tech.units.indriya.quantity;
 
 import static javax.measure.Quantity.Scale.ABSOLUTE;
+import static javax.measure.Quantity.Scale.RELATIVE;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -164,14 +165,14 @@ public class NumberQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
         final UnitConverter c1 = this.getUnit().getConverterTo(systemUnit);
         final UnitConverter c2 = that.getUnit().getConverterTo(systemUnit);
         
-        final Number thisValueInSystemUnit = c1.convert(this.getValue()); 
-        final Number thatValueInSystemUnit = c2.convert(that.getValue()); 
+        final Number thisValueInSystemUnit = this.getScale() == ABSOLUTE ? c1.convert(this.getValue()) : this.getValue();
+        final Number thatValueInSystemUnit = that.getScale() == ABSOLUTE ? c2.convert(that.getValue()) : this.getValue();
         
         final Number resultValueInSystemUnit = 
                 operator.apply(thisValueInSystemUnit, thatValueInSystemUnit);
 
-        final Number resultValueInThisUnit = c1.inverse().convert(resultValueInSystemUnit);
-
+		final Number resultValueInThisUnit = !(getScale().equals(that.getScale()) && getScale().equals(RELATIVE)) ?
+				c1.inverse().convert(resultValueInSystemUnit) : resultValueInSystemUnit;
         //TODO[220] scale not handled at all !!!
         if (getScale().equals(that.getScale())) {
         	return Quantities.getQuantity(resultValueInThisUnit, getUnit(), getScale());
