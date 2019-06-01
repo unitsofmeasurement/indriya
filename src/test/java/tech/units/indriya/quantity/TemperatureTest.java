@@ -29,17 +29,20 @@
  */
 package tech.units.indriya.quantity;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import static tech.units.indriya.unit.Units.CELSIUS;
-import static tech.units.indriya.unit.Units.KELVIN;
+import org.junit.jupiter.api.Test;
 
 import javax.measure.Quantity;
 import javax.measure.quantity.Temperature;
 
-import org.junit.jupiter.api.Test;
+import java.math.BigDecimal;
 
-public class TemperatureTest {
+import static javax.measure.Quantity.Scale.ABSOLUTE;
+import static javax.measure.Quantity.Scale.RELATIVE;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static tech.units.indriya.unit.Units.CELSIUS;
+import static tech.units.indriya.unit.Units.KELVIN;
+
+class TemperatureTest {
 
   @Test
   public void testInstantiate() {
@@ -60,11 +63,47 @@ public class TemperatureTest {
     assertEquals(Double.valueOf(303.15d), t2.getValue());
   }
 
-  @Test
-  public void testTo2() {
-    Quantity<Temperature> t = Quantities.getQuantity(Double.valueOf(2d), KELVIN);
-    Quantity<Temperature> t2 = t.to(CELSIUS);
-    assertEquals(Double.valueOf(-271.15d), t2.getValue());
-  }
+	@Test
+	void testTo2() {
+		Quantity<Temperature> t = Quantities.getQuantity(2d, KELVIN);
+		Quantity<Temperature> t2 = t.to(CELSIUS);
+		assertEquals(-271.15d, t2.getValue());
+	}
+
+	@Test
+	void addingRelativesProducesRelative() {
+		Quantity<Temperature> relT = Quantities.getQuantity(0d, KELVIN, RELATIVE);
+		Quantity<Temperature> relT2 = Quantities.getQuantity(0d, KELVIN, RELATIVE);
+		assertEquals(RELATIVE, relT.add(relT2).getScale());
+	}
+
+	@Test
+	void addingAbsoluteTemperatureToARelative() {
+		Quantity<Temperature> absT = Quantities.getQuantity(0d, CELSIUS, ABSOLUTE);
+		Quantity<Temperature> relT = Quantities.getQuantity(0d, CELSIUS, RELATIVE);
+		assertEquals(0, (absT.add(relT)).getValue());
+	}
+
+	@Test
+	void addingAbsoluteTemperatures() {
+		Quantity<Temperature> absT = Quantities.getQuantity(0d, CELSIUS, ABSOLUTE);
+		Quantity<Temperature> absT2 = Quantities.getQuantity(0d, CELSIUS, ABSOLUTE);
+		assertEquals(BigDecimal.valueOf(273.15d), absT.add(absT2).getValue());
+	}
+
+	@Test
+	void addingRelativeTemperatures() {
+		Quantity<Temperature> relT = Quantities.getQuantity(0d, CELSIUS, RELATIVE);
+		Quantity<Temperature> relT2 = Quantities.getQuantity(0d, CELSIUS, RELATIVE);
+		assertEquals(0, relT.add(relT2).getValue());
+	}
+
+	@Test
+	void productOfAbsoluteTemperatures() {
+		Quantity<Temperature> relT = Quantities.getQuantity(0d, CELSIUS, RELATIVE);
+		Quantity<Temperature> relT2 = Quantities.getQuantity(0d, CELSIUS, RELATIVE);
+		assertEquals(74610.9225d, relT.multiply(relT2).getValue());
+	}
+
 
 }
