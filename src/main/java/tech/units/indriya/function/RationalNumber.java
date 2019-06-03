@@ -69,6 +69,7 @@ public class RationalNumber extends Number {
      * a {@code RationalNumber} that represents given integer {@code number}. 
      * @param number
      * @return number/1
+     * @throws NullPointerException - if number is {@code null}
      */
     public static RationalNumber ofInteger(long number) {
         return ofInteger(BigInteger.valueOf(number));
@@ -79,6 +80,7 @@ public class RationalNumber extends Number {
      * a {@code RationalNumber} that represents given integer {@code number}. 
      * @param number
      * @return number/1
+     * @throws NullPointerException - if number is {@code null}
      */
     public static RationalNumber ofInteger(BigInteger number) {
         Objects.requireNonNull(number);
@@ -90,6 +92,8 @@ public class RationalNumber extends Number {
      * @param dividend 
      * @param divisor
      * @return dividend/divisor
+     * @throws IllegalArgumentException
+     *           if <code>divisor = 0</code>
      */
     public static RationalNumber of(long dividend, long divisor) {
         return of(BigInteger.valueOf(dividend), BigInteger.valueOf(divisor));
@@ -100,6 +104,9 @@ public class RationalNumber extends Number {
      * @param dividend 
      * @param divisor
      * @return dividend/divisor
+     * @throws IllegalArgumentException
+     *           if <code>divisor = 0</code>
+     * @throws NullPointerException - if dividend is {@code null} or divisor is {@code null}
      * 
      * @implNote this implementation stores dividend and divisor after canceling down from given parameters
      */
@@ -131,7 +138,7 @@ public class RationalNumber extends Number {
         return new RationalNumber(signum, absDividend.divide(gcd), absDivisor.divide(gcd));
     }
 
-    // hidden constructor, that expects non-negative dividend and divisor
+    // hidden constructor, that expects non-negative dividend and positive divisor, these already canceled down
     private RationalNumber(int signum, BigInteger absDividend, BigInteger absDivisor) {
         this.signum = signum;
         this.absDividend = absDividend;
@@ -241,9 +248,17 @@ public class RationalNumber extends Number {
         final BigInteger b = this.absDivisor;
         final BigInteger c = that.absDividend;
         final BigInteger d = that.absDivisor;
+        
+        
+        final BigInteger ac = a.multiply(c);
+        final BigInteger bd = b.multiply(d);
+        
+        // cancel down
+        final BigInteger gcd = ac.gcd(bd);
 
-        return new RationalNumber(productSignum, a.multiply(c), // bd
-                b.multiply(d) // bd
+        return new RationalNumber(productSignum, 
+                ac.divide(gcd),
+                bd.divide(gcd)
                 );
     }
 
@@ -270,6 +285,38 @@ public class RationalNumber extends Number {
      */
     public RationalNumber reciprocal() {
         return new RationalNumber(signum, absDivisor, absDividend);
+    }
+    
+    /**
+     * Returns a new instance of {@code RationalNumber} representing the reciprocal of {@code this}.
+     * @param exponent
+     * @return this^exponent
+     */
+    public RationalNumber pow(int exponent) {
+        if(exponent==0) {
+            if(signum==0) {
+                throw new ArithmeticException("0^0 is not defined");
+            }
+            return ONE; // x^0 == 1, for any x!=0
+        }
+        if(signum==0) {
+            return ZERO; 
+        }
+        
+        final boolean isExponentEven = (exponent & 1) == 0;
+        final int newSignum;
+        if(signum<0) {
+            newSignum = isExponentEven ? 1 : -1;
+        } else {
+            newSignum = 1;
+        }
+        
+        if(exponent>0) {
+            return new RationalNumber(newSignum, absDividend.pow(exponent), absDivisor.pow(exponent));    
+        } else {
+            return new RationalNumber(newSignum, absDivisor.pow(exponent), absDividend.pow(exponent));
+        }
+        
     }
 
     /**
@@ -361,4 +408,6 @@ public class RationalNumber extends Number {
         }
         return "(" + getDividend() + DIVIDE_CHARACTER + absDivisor + ")";
     }
+
+
 }

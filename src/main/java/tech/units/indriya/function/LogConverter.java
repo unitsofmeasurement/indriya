@@ -29,13 +29,12 @@
  */
 package tech.units.indriya.function;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
 import java.util.Objects;
 
 import javax.measure.UnitConverter;
 
 import tech.units.indriya.AbstractConverter;
+import tech.units.indriya.internal.function.calc.Calculator;
 import tech.uom.lib.common.function.ValueSupplier;
 
 /**
@@ -45,7 +44,8 @@ import tech.uom.lib.common.function.ValueSupplier;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.0.1, December 28, 2017
+ * @author Andi Huber
+ * @version 1.1, Jun 3, 2019
  * @since 1.0
  */
 public final class LogConverter extends AbstractConverter implements ValueSupplier<String> { // implements
@@ -132,17 +132,13 @@ public final class LogConverter extends AbstractConverter implements ValueSuppli
 		return Objects.hash(base);
 	}
 
-	@Override
-	public double convertWhenNotIdentity(double amount) {
-		return Math.log(amount) / logOfBase;
-	}
-
-	@Override
-	public BigDecimal convertWhenNotIdentity(BigDecimal value, MathContext ctx) throws ArithmeticException {
-		return BigDecimal.valueOf(convert(value.doubleValue())); // Reverts to
-		// double
-		// conversion.
-	}
+    @Override
+    protected Number convertWhenNotIdentity(Number value) {
+        return Calculator.loadDefault(value)
+              .log()
+              .divide(logOfBase)
+              .peek();
+    }
 
 	@Override
 	public boolean isLinear() {

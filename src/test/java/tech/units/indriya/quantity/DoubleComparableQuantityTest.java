@@ -43,12 +43,18 @@ import javax.measure.quantity.Length;
 import javax.measure.quantity.Speed;
 import javax.measure.quantity.Time;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.Units;
 
+@Deprecated 
+@Disabled("Calculations with Quantities including numerical comparison "
+        + "is no longer bound to the precision of the value a Quantity was created with."
+        + "Instead we always do caluclations with the highest precision possible as provided "
+        + "by the Calculus.NUMBER_SYSTEM")
 public class DoubleComparableQuantityTest {
 
   @Test

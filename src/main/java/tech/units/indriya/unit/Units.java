@@ -33,6 +33,7 @@ import tech.units.indriya.AbstractSystemOfUnits;
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.function.AddConverter;
 import tech.units.indriya.function.RationalConverter;
+import tech.units.indriya.function.RationalNumber;
 import tech.units.indriya.quantity.QuantityDimension;
 import static tech.units.indriya.AbstractUnit.ONE;
 
@@ -401,7 +402,7 @@ public class Units extends AbstractSystemOfUnits {
 	/**
 	 * A unit of velocity expressing the number of international {@link #KILOMETRE kilometres} per {@link #HOUR hour} (abbreviation <code>km/h</code>).
 	 */
-	public static final Unit<Speed> KILOMETRE_PER_HOUR = addUnit(METRE_PER_SECOND.multiply(0.277778d)).asType(Speed.class);
+	public static final Unit<Speed> KILOMETRE_PER_HOUR = addUnit(METRE_PER_SECOND.multiply(RationalNumber.of(5, 18))).asType(Speed.class);
 
 	// ///////////////////////////////////////////////////////////////
 	// Common Units outside the SI that are accepted for use with the SI. //

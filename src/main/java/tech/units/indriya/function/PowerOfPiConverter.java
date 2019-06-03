@@ -30,12 +30,12 @@
 package tech.units.indriya.function;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.util.Objects;
 
 import javax.measure.UnitConverter;
 
 import tech.units.indriya.AbstractConverter;
+import tech.units.indriya.internal.function.calc.Calculator;
 import tech.uom.lib.common.function.IntExponentSupplier;
 
 /**
@@ -43,7 +43,7 @@ import tech.uom.lib.common.function.IntExponentSupplier;
  * Pi to the power of an integer exponent (π^exponent).
  * @author Andi Huber
  * @author Werner Keil
- * @version 1.2, October 14, 2018
+ * @version 1.3, Jun 3, 2019
  * @since 2.0
  */
 public final class PowerOfPiConverter extends AbstractConverter 
@@ -52,7 +52,6 @@ public final class PowerOfPiConverter extends AbstractConverter
 	
 	private final int exponent;
 	private final int hashCode;
-	private final double doubleFactor; // for double calculus only
 
 	/**
      * A converter by Pi to the power of 1.
@@ -73,7 +72,6 @@ public final class PowerOfPiConverter extends AbstractConverter
 
 	protected PowerOfPiConverter(int exponent) {
 		this.exponent = exponent;
-		this.doubleFactor =  Math.pow(Math.PI, exponent);
 		this.hashCode = Objects.hash(exponent);
 	}
 
@@ -95,22 +93,20 @@ public final class PowerOfPiConverter extends AbstractConverter
 	public AbstractConverter inverseWhenNotIdentity() {
 		return new PowerOfPiConverter(-exponent);
 	}
-
-	@Override
-	public BigDecimal convertWhenNotIdentity(BigDecimal value, MathContext ctx) throws ArithmeticException {
-		int nbrDigits = ctx.getPrecision();
-		if (nbrDigits == 0) {
-			throw new ArithmeticException("Pi multiplication with unlimited precision");
-		}
-		BigDecimal pi = Constants.Pi.ofNumDigits(nbrDigits);
-		return pi.pow(exponent, ctx).multiply(value);
-	}
-
-	@Override
-	public double convertWhenNotIdentity(double value) {
-		//[ahuber] multiplication is probably non-critical regarding preservation of precision
-		return value * doubleFactor;
-	}
+	
+    @Override
+    protected Number convertWhenNotIdentity(Number value) {
+        int nbrDigits = Calculus.MATH_CONTEXT.getPrecision();
+        if (nbrDigits == 0) {
+            throw new ArithmeticException("Pi multiplication with unlimited precision");
+        }
+        BigDecimal pi = Constants.Pi.ofNumDigits(nbrDigits);
+        
+        return Calculator.loadDefault(pi)
+              .power(exponent)  
+              .multiply(value)
+              .peek();
+    }
 
 	@Override
 	protected boolean canReduceWith(AbstractConverter that) {

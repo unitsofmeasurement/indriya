@@ -34,21 +34,20 @@ import static tech.units.indriya.unit.Units.HOUR;
 import static tech.units.indriya.unit.Units.MINUTE;
 import static tech.units.indriya.unit.Units.SECOND;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.math.MathContext;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-import java.util.function.BiFunction;
+import java.util.function.BinaryOperator;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;
+import javax.measure.UnitConverter;
 import javax.measure.quantity.Frequency;
 import javax.measure.quantity.Time;
 
 import tech.units.indriya.AbstractQuantity;
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.function.Calculus;
+import tech.units.indriya.internal.function.calc.Calculator;
 import tech.units.indriya.quantity.Quantities;
 
 /**
@@ -56,7 +55,8 @@ import tech.units.indriya.quantity.Quantities;
  * 
  * @author otaviojava
  * @author keilw
- * @version 1.0.2
+ * @author Andi Huber
+ * @version 1.0.3
  * @since 1.0
  */
 public final class TimeUnitQuantity extends AbstractQuantity<Time> {
@@ -65,9 +65,6 @@ public final class TimeUnitQuantity extends AbstractQuantity<Time> {
    * 
    */
   private static final long serialVersionUID = -5840251813363744230L;
-
-  private static final BigDecimal LONG_MAX_VALUE = new BigDecimal(Long.MAX_VALUE);
-  private static final BigDecimal LONG_MIN_VALUE = new BigDecimal(Long.MIN_VALUE);
 
   private final TimeUnit timeUnit;
 
@@ -239,53 +236,25 @@ public final class TimeUnitQuantity extends AbstractQuantity<Time> {
     return "Time unit:" + timeUnit + " value: " + value;
   }
 
-  private static BigDecimal numberAsBigDecimal(Number that) {
-    if (that instanceof BigDecimal) {
-      return (BigDecimal) that;
-    } else if (that instanceof BigInteger) {
-      return new BigDecimal((BigInteger) that);
-    } else if (that instanceof Double || that instanceof Float) {
-      return new BigDecimal(that.doubleValue());
-    } else {
-      return new BigDecimal(that.longValue());
-    }
-  }
-
-  boolean isOverflowing(BigDecimal aValue) {
-    return aValue.compareTo(LONG_MIN_VALUE) < 0 || aValue.compareTo(LONG_MAX_VALUE) > 0;
-  }
-
-  private static <R extends Quantity<R>> BigDecimal quantityValueAsBigDecimal(Quantity<R> that) {
-    return convertedQuantityValueAsBigDecimal(that, that.getUnit());
-  }
-
-  private static <R extends Quantity<R>> BigDecimal convertedQuantityValueAsBigDecimal(Quantity<R> that, Unit<R> unit) {
-    return (BigDecimal) that.getUnit().getConverterTo(unit).convert(numberAsBigDecimal(that.getValue()));
-  }
-
   /**
    * @since 1.0.1
    */
   @Override
   public ComparableQuantity<Time> add(Quantity<Time> that) {
-    final BigDecimal thisValueInSystemUnit = convertedQuantityValueAsBigDecimal(this, SECOND);
-    final BigDecimal thatValueInSystemUnit = convertedQuantityValueAsBigDecimal(that, SECOND);
-    final BigDecimal resultValueInSystemUnit = thisValueInSystemUnit.add(thatValueInSystemUnit, Calculus.MATH_CONTEXT);
-    final BigDecimal resultValueInThisUnit = numberAsBigDecimal(SECOND.getConverterTo(getUnit()).convert(resultValueInSystemUnit));
-    final BigDecimal resultValueInThatUnit = numberAsBigDecimal(SECOND.getConverterTo(that.getUnit()).convert(resultValueInSystemUnit));
-    final TimeUnitQuantity resultInThisUnit = TimeQuantities.getQuantity(resultValueInThisUnit.longValue(), timeUnit);
-    final ComparableQuantity<Time> resultInThatUnit = Quantities.getQuantity(resultValueInThatUnit.longValue(), that.getUnit());
-    if (isOverflowing(resultValueInThisUnit)) {
-      if (isOverflowing(resultValueInThatUnit))
-        throw new ArithmeticException();
-      return resultInThatUnit;
-    } else if (isOverflowing(resultValueInThatUnit)) {
-      return resultInThisUnit;
-    } else if (hasFraction(resultValueInThisUnit)) {
-      return resultInThatUnit;
-    } else {
-      return resultInThisUnit;
-    }
+      final UnitConverter thisToThat = this.getUnit().getConverterTo(that.getUnit());
+      final boolean thatUnitIsSmaller = 
+              Calculus.NUMBER_SYSTEM.compare(thisToThat.convert(1.), 1.)>0;
+
+      final Unit<Time> preferedUnit = thatUnitIsSmaller ? that.getUnit() : this.getUnit();
+      
+      final Number thisValueInPreferedUnit = convertedQuantityValue(this, preferedUnit);
+      final Number thatValueInPreferedUnit = convertedQuantityValue(that, preferedUnit);
+      
+      final Number resultValueInPreferedUnit = Calculator.loadDefault(thisValueInPreferedUnit)
+              .add(thatValueInPreferedUnit)
+              .peek();
+      
+      return Quantities.getQuantity(resultValueInPreferedUnit, preferedUnit);
   }
 
   /**
@@ -301,7 +270,8 @@ public final class TimeUnitQuantity extends AbstractQuantity<Time> {
    */
   @Override
   public ComparableQuantity<?> divide(Quantity<?> that) {
-    return applyMultiplicativeQuantityOperation(that, BigDecimal::divide, Unit::divide);
+      return applyMultiplicativeQuantityOperation(
+              that, (a, b)->Calculator.loadDefault(a).divide(b).peek(), Unit::divide);
   }
 
   /**
@@ -309,7 +279,8 @@ public final class TimeUnitQuantity extends AbstractQuantity<Time> {
    */
   @Override
   public ComparableQuantity<Time> divide(Number that) {
-    return applyMultiplicativeNumberOperation(that, BigDecimal::divide);
+      return applyMultiplicativeNumberOperation(
+              that, (a, b)->Calculator.loadDefault(a).divide(b).peek());
   }
 
   /**
@@ -317,7 +288,8 @@ public final class TimeUnitQuantity extends AbstractQuantity<Time> {
    */
   @Override
   public ComparableQuantity<?> multiply(Quantity<?> that) {
-    return applyMultiplicativeQuantityOperation(that, BigDecimal::multiply, Unit::multiply);
+      return applyMultiplicativeQuantityOperation(
+              that, (a, b)->Calculator.loadDefault(a).multiply(b).peek(), Unit::multiply);
   }
 
   /**
@@ -325,37 +297,10 @@ public final class TimeUnitQuantity extends AbstractQuantity<Time> {
    */
   @Override
   public ComparableQuantity<Time> multiply(Number that) {
-    return applyMultiplicativeNumberOperation(that, BigDecimal::multiply);
+      return applyMultiplicativeNumberOperation(
+              that, (a, b)->Calculator.loadDefault(a).multiply(b).peek());
   }
-
-  @FunctionalInterface
-  private interface TriFunction<R, A, B, C> {
-    R apply(A a, B b, C c);
-  }
-
-  private ComparableQuantity<?> applyMultiplicativeQuantityOperation(Quantity<?> that,
-      TriFunction<BigDecimal, BigDecimal, BigDecimal, MathContext> valueOperator, BiFunction<Unit<?>, Unit<?>, Unit<?>> unitOperator) {
-    final BigDecimal thisValue = quantityValueAsBigDecimal(this);
-    final BigDecimal thatValue = quantityValueAsBigDecimal(that);
-    final BigDecimal result = valueOperator.apply(thisValue, thatValue, Calculus.MATH_CONTEXT);
-    if (isOverflowing(result)) {
-      throw new ArithmeticException();
-    }
-    final Unit<?> resultUnit = unitOperator.apply(getUnit(), that.getUnit());
-    return Quantities.getQuantity(result.longValue(), resultUnit);
-  }
-
-  private ComparableQuantity<Time> applyMultiplicativeNumberOperation(Number that,
-      TriFunction<BigDecimal, BigDecimal, BigDecimal, MathContext> valueOperator) {
-    final BigDecimal thisValue = numberAsBigDecimal(this.value);
-    final BigDecimal thatValue = numberAsBigDecimal(that);
-    final BigDecimal result = valueOperator.apply(thisValue, thatValue, Calculus.MATH_CONTEXT);
-    if (isOverflowing(result)) {
-      throw new ArithmeticException();
-    }
-    return Quantities.getQuantity(result.longValue(), getUnit());
-  }
-
+  
   /**
    * @since 1.0.1
    */
@@ -365,18 +310,40 @@ public final class TimeUnitQuantity extends AbstractQuantity<Time> {
   }
 
   /**
-   * @since 1.0.1
-   */
-  @Override
-  public boolean isBig() {
-    return false;
-  }
-
-  /**
    * @since 1.0.2
    */
   @Override
   public Quantity<Time> negate() {
     return of(-value, getTimeUnit());
+  }
+  
+  // -- HELPER
+  
+  private static <R extends Quantity<R>> Number quantityValue(Quantity<R> that) {
+      return convertedQuantityValue(that, that.getUnit());
+  }
+
+  private static <R extends Quantity<R>> Number convertedQuantityValue(Quantity<R> that, Unit<R> unit) {
+      return that.getUnit().getConverterTo(unit).convert(that.getValue());
+  }
+
+  private ComparableQuantity<?> applyMultiplicativeQuantityOperation(
+          Quantity<?> that,
+          BinaryOperator<Number> valueOperator,
+          BinaryOperator<Unit<?>> unitOperator) {
+
+      final Number thisValue = quantityValue(this);
+      final Number thatValue = quantityValue(that);
+      final Number result = valueOperator.apply(thisValue, thatValue);
+      final Unit<?> resultUnit = unitOperator.apply(getUnit(), that.getUnit());
+      return Quantities.getQuantity(result, resultUnit);
+  }
+
+  private ComparableQuantity<Time> applyMultiplicativeNumberOperation(Number that,
+          BinaryOperator<Number> valueOperator) {
+      final Number thisValue = this.getValue();
+      final Number thatValue = that;
+      final Number result = valueOperator.apply(thisValue, thatValue);
+      return Quantities.getQuantity(result, getUnit());
   }
 }

@@ -49,6 +49,7 @@ import tech.uom.lib.common.function.QuantityConverter;
 /**
  *
  * @author Werner Keil
+ * @author Andi Huber
  */
 public class CompoundQuantityTest {
     static final Logger logger = Logger.getLogger(CompoundQuantityTest.class.getName());
@@ -78,10 +79,10 @@ public class CompoundQuantityTest {
         assertEquals("1 m 70 cm", mixLen.toString());
         
         Quantity<Length> l2 = mixLen.to(Units.METRE);
-        assertEquals(BigDecimal.valueOf(1.7d), l2.getValue());
+        assertNumberEquals(BigDecimal.valueOf(1.7d), l2.getValue(), 1E-12);
         
         Quantity<Length> l3 = mixLen.to(CENTI(Units.METRE));
-        assertEquals(BigDecimal.valueOf(170d), l3.getValue());
+        assertNumberEquals(170, l3.getValue(), 1E-12);
     }
 
     /**
@@ -116,7 +117,7 @@ public class CompoundQuantityTest {
     }
 
     /**
-     * Verifies that an mixed quantity is not equal to another quantity that has the same numeric value.
+     * Verifies that a mixed quantity is not equal to another quantity that has the same numeric value.
      */
     @Test
     public void compoundQuantityIsEqualToAQuantityOfTheSameNumericValue() {
@@ -125,11 +126,11 @@ public class CompoundQuantityTest {
         CompoundQuantity<Time> mixTime = CompoundQuantity.of(numList);
         Quantity<Time> compareTime = Quantities.getQuantity(2.5d, Units.HOUR);
         assertNotEquals(mixTime, compareTime);
-        assertEquals(mixTime.to(Units.HOUR), compareTime);    
+        assertNumberEquals(mixTime.to(Units.HOUR).getValue(), compareTime.getValue(), 1E-12);    
      }
     
     /**
-     * Verifies that an mixed quantity can be represented as QuantityConverter.
+     * Verifies that a mixed quantity can be represented as QuantityConverter.
      */
     @Test
     public void compoundQuantityAsConverter() {
@@ -138,6 +139,6 @@ public class CompoundQuantityTest {
         QuantityConverter<Time> convTime = CompoundQuantity.of(numList);
         Quantity<Time> compareTime = Quantities.getQuantity(2.5d, Units.HOUR);
         assertNotEquals(convTime, compareTime);
-        assertEquals(convTime.to(Units.HOUR), compareTime);    
+        assertNumberEquals(convTime.to(Units.HOUR).getValue(), compareTime.getValue(), 1E-12);    
      }
 }

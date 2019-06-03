@@ -59,29 +59,34 @@ public class Calculator {
 
     public Calculator load(Number number) {
         Objects.requireNonNull(number);
-        this.acc = number;
+        this.acc = ns.narrow(number);
         return this;
     }
     
     public Calculator add(Number number) {
         Objects.requireNonNull(number);
-        acc = ns.add(acc, number);    
+        acc = ns.add(acc, ns.narrow(number));    
         return this;
     }
     
     public Calculator subtract(Number number) {
         Objects.requireNonNull(number);
-        acc = ns.subtract(acc, number);
+        acc = ns.subtract(acc, ns.narrow(number));
         return this;
     }
     
     public Calculator multiply(Number number) {
-        acc = ns.multiply(acc, number);    
+        acc = ns.multiply(acc, ns.narrow(number));    
         return this;
     }
 
     public Calculator divide(Number number) {
-        acc = ns.divide(acc, number);    
+        acc = ns.divide(acc, ns.narrow(number));    
+        return this;
+    }
+    
+    public Calculator power(int exponent) {
+        acc = ns.power(acc, exponent);    
         return this;
     }
 
@@ -95,9 +100,21 @@ public class Calculator {
         return this;
     }
     
+    public Calculator exp() {
+        acc = ns.exp(acc);
+        return this;
+    }
+    
+    public Calculator log() {
+        acc = ns.log(acc);
+        return this;
+    }
+    
     public Number peek() {
         return ns.narrow(acc);
     }
+
+
   
     
 }

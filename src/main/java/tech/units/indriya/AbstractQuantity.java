@@ -108,7 +108,7 @@ import tech.uom.lib.common.util.NaturalQuantityComparator;
  *
  * @author <a href="mailto:werner@uom.technology">Werner Keil</a>
  * @author Andi Huber
- * @version 1.9, April 24, 2019
+ * @version 1.10, Jun 3, 2019
  * @since 1.0
  */
 @SuppressWarnings("unchecked")
@@ -286,9 +286,6 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
     public int hashCode() {
         return Objects.hash(getUnit(), getScale(), getValue());
     }
-
-    @Deprecated //TODO[220] remove method
-    public abstract boolean isBig();
 
     /**
      * Returns the <code>String</code> representation of this quantity. The string produced for a given quantity is always the same; it is not

@@ -29,13 +29,12 @@
  */
 package tech.units.indriya.function;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
 import java.util.Objects;
 
 import javax.measure.UnitConverter;
 
 import tech.units.indriya.AbstractConverter;
+import tech.units.indriya.internal.function.calc.Calculator;
 import tech.uom.lib.common.function.DoubleFactorSupplier;
 import tech.uom.lib.common.function.ValueSupplier;
 
@@ -47,7 +46,8 @@ import tech.uom.lib.common.function.ValueSupplier;
  * 
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.1, Apr 18, 2018
+ * @author Andi Huber
+ * @version 1.2, Jun 3, 2019
  * @since 1.0
  */
 public final class MultiplyConverter extends AbstractConverter implements ValueSupplier<Double>, DoubleFactorSupplier {
@@ -111,16 +111,13 @@ public final class MultiplyConverter extends AbstractConverter implements ValueS
 		return new MultiplyConverter(1.0 / factor);
 	}
 
-	@Override
-	public double convertWhenNotIdentity(double value) {
-		return value * factor;
-	}
-
-	@Override
-	public BigDecimal convertWhenNotIdentity(BigDecimal value, MathContext ctx) throws ArithmeticException {
-		return value.multiply(BigDecimal.valueOf(factor), ctx);
-	}
-
+    @Override
+    protected Number convertWhenNotIdentity(Number value) {
+        return Calculator.loadDefault(factor)
+              .multiply(value)
+              .peek();
+    }
+	
 	@Override
 	public final String transformationLiteral() {
 		return String.format("x -> x * %s", factor);
