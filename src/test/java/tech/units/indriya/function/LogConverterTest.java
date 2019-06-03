@@ -31,6 +31,7 @@ package tech.units.indriya.function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -74,8 +75,8 @@ public class LogConverterTest {
   @Test
   public void convertLogTest() {
     assertEquals(1, logConverterBase10.convert(10));
-    assertEquals(Double.NaN, logConverterBase10.convert(-10));
-    assertTrue(Double.isInfinite(logConverterBase10.convert(0)));
+    assertThrows(NumberFormatException.class, ()->logConverterBase10.convert(-10));
+    assertThrows(NumberFormatException.class, ()->logConverterBase10.convert(0));
   }
 
   @Test

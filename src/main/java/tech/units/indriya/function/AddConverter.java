@@ -29,13 +29,12 @@
  */
 package tech.units.indriya.function;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
 import java.util.Objects;
 
 import javax.measure.UnitConverter;
 
 import tech.units.indriya.AbstractConverter;
+import tech.units.indriya.internal.function.calc.Calculator;
 import tech.uom.lib.common.function.ValueSupplier;
 
 /**
@@ -45,7 +44,8 @@ import tech.uom.lib.common.function.ValueSupplier;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author Werner Keil
- * @version 1.0, Oct 10, 2016
+ * @author Andi Huber
+ * @version 1.1, Jun 3, 2019
  */
 public final class AddConverter extends AbstractConverter implements ValueSupplier<Double> {
 
@@ -98,13 +98,10 @@ public final class AddConverter extends AbstractConverter implements ValueSuppli
   }
 
   @Override
-  public double convertWhenNotIdentity(double value) {
-    return value + offset;
-  }
-
-  @Override
-  public BigDecimal convertWhenNotIdentity(BigDecimal value, MathContext ctx) throws ArithmeticException {
-    return value.add(BigDecimal.valueOf(offset), ctx);
+  protected Number convertWhenNotIdentity(Number value) {
+      return Calculator.loadDefault(offset)
+              .add(value)
+              .peek();
   }
 
   @Override
@@ -149,6 +146,8 @@ public final class AddConverter extends AbstractConverter implements ValueSuppli
     }
     return -1;
   }
+
+
 
 
 }

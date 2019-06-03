@@ -29,6 +29,10 @@
  */
 package tech.units.indriya.function;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.math.BigDecimal;
 import java.util.Random;
 
@@ -41,11 +45,8 @@ import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
-
 import tech.units.indriya.AbstractConverter;
+import tech.units.indriya.NumberAssertions;
 import tech.units.indriya.function.ConverterTypeUtil.ConverterType;
 
 @DisplayName("Testing Composition of UnitConverters")
@@ -282,13 +283,11 @@ class CompositionEquivalenceTest {
 
       // we assume AbstractConverter.convert(BigDecimal) returns BigDecimal, 
       // but this is not a strict requirement
-      BigDecimal abValue = (BigDecimal) ab.convert(bdRandomValue);
-      BigDecimal baValue = (BigDecimal) ba.convert(bdRandomValue);
+      Number abValue = ab.convert(bdRandomValue);
+      Number baValue = ba.convert(bdRandomValue);
 
-      assertEquals(0, abValue.compareTo(baValue), 
-          String.format("testing %s: commuting calculus failed for double value %f "
-              + "using BigDecimal", 
-              a, randomValue));
+      NumberAssertions.assertNumberEquals(abValue, baValue, 1E-12);
+
     }
   }
 

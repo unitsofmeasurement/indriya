@@ -30,7 +30,7 @@
 package tech.units.indriya.quantity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
+import static tech.units.indriya.NumberAssertions.assertNumberEquals;
 import static tech.units.indriya.unit.Units.CELSIUS;
 import static tech.units.indriya.unit.Units.KELVIN;
 
@@ -50,21 +50,21 @@ public class TemperatureTest {
   @Test
   public void testTemperatureQuantityDoubleTemperatureUnit() {
     Quantity<Temperature> t = Quantities.getQuantity(Double.valueOf(20d), CELSIUS);
-    assertEquals(Double.valueOf(20d), t.getValue());
+    assertNumberEquals(20, t.getValue(), 1E-12);
   }
 
   @Test
   public void testTo() {
     Quantity<Temperature> t = Quantities.getQuantity(Double.valueOf(30d), CELSIUS);
     Quantity<Temperature> t2 = t.to(KELVIN);
-    assertEquals(Double.valueOf(303.15d), t2.getValue());
+    assertNumberEquals(303.15d, t2.getValue(), 1E-12);
   }
 
   @Test
   public void testTo2() {
     Quantity<Temperature> t = Quantities.getQuantity(Double.valueOf(2d), KELVIN);
     Quantity<Temperature> t2 = t.to(CELSIUS);
-    assertEquals(Double.valueOf(-271.15d), t2.getValue());
+    assertNumberEquals(-271.15d, t2.getValue(), 1E-12);
   }
 
 }

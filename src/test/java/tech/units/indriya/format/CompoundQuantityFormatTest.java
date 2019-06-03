@@ -144,7 +144,7 @@ public class CompoundQuantityFormatTest {
     public void testParseCompSimpleTime() {
         QuantityFormat format1 = SimpleQuantityFormat.getInstance("n u~:");
         Quantity<Time> parsed1 = format1.parse("1 h:30 min:10 s").asType(Time.class);
-        assertEquals(1.5027777777777778d, parsed1.getValue());
+        assertNumberEquals(1.5027777777777778d, parsed1.getValue(), 1E-12);
         assertEquals(HOUR, parsed1.getUnit());
     }
     
@@ -152,7 +152,7 @@ public class CompoundQuantityFormatTest {
     public void testParseCompSimpleSameDelimTime() {
         QuantityFormat format1 = SimpleQuantityFormat.getInstance("n u~ ");
         Quantity<?> parsed1 = format1.parse("1 h 30 min 10 s");
-        assertEquals(1.5027777777777778d, parsed1.getValue());
+        assertNumberEquals(1.5027777777777778d, parsed1.getValue(), 1E-12);
         assertEquals(HOUR, parsed1.getUnit());
     }
     
@@ -340,7 +340,7 @@ public class CompoundQuantityFormatTest {
         
         // then
         assertEquals("1. ft 2. in 3. P̸", formatedOutput);
-        assertEquals("1.2083333333333333 ft", simpleFormattedSingle);
+        assertEquals("(29 ÷ 24) ft", simpleFormattedSingle);
         assertEquals("1.2083333333333333 ft", ndFormattedSingle);
     }
     

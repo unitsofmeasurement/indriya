@@ -31,8 +31,6 @@ package tech.units.indriya.quantity;
 
 import static javax.measure.Quantity.Scale.ABSOLUTE;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.function.BinaryOperator;
 
 import javax.measure.Quantity;
@@ -57,7 +55,7 @@ import tech.units.indriya.internal.function.calc.Calculator;
  *          The type of the quantity.
  * @author Andi Huber
  * @author Werner Keil
- * @version 1.1
+ * @version 1.2
  * @since 1.0
  * 
  */
@@ -179,11 +177,5 @@ public class NumberQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
         	return Quantities.getQuantity(resultValueInThisUnit, getUnit()); // becomes ABSOLUTE TODO, should it be ABSOLUTE?
         }
     }
-    
-    // -- DEPRECATIONS
 
-    @Override
-    public boolean isBig() {
-        return (value instanceof BigDecimal) || (value instanceof BigInteger);
-    }
 }

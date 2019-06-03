@@ -240,6 +240,49 @@ public class DefaultNumberSystem implements NumberSystem {
     }
     
     @Override
+    public Number power(Number number, int exponent) {
+        if(exponent==0) {
+            if(isZero(number)) {
+                throw new ArithmeticException("0^0 is not defined");
+            }
+            return 1; // x^0 == 1, for any x!=0
+        }
+        if(number instanceof BigInteger ||
+                number instanceof Long || number instanceof AtomicLong ||
+                number instanceof Integer || number instanceof AtomicInteger ||
+                number instanceof Short || number instanceof Byte) {
+            final BigInteger bigInt = integerToBigInteger(number);
+            if(exponent>0) {
+                return bigInt.pow(exponent);    
+            }
+            return RationalNumber.ofInteger(bigInt).pow(exponent);
+            
+        }
+        if(number instanceof BigDecimal) {
+            return ((BigDecimal) number).pow(exponent, Calculus.MATH_CONTEXT);
+        }
+        if(number instanceof RationalNumber) {
+            ((RationalNumber) number).pow(exponent);
+        }
+        if(number instanceof Double || number instanceof Float) {
+            return toBigDecimal(number).pow(exponent, Calculus.MATH_CONTEXT);
+        }
+        throw unsupportedNumberType(number);
+    }
+    
+    @Override
+    public Number exp(Number number) {
+        //TODO[220] this is a poor implementation, certainly we can do better using BigDecimal 
+        return Math.exp(number.doubleValue());
+    }
+    
+    @Override
+    public Number log(Number number) {
+        //TODO[220] this is a poor implementation, certainly we can do better using BigDecimal
+        return Math.log(number.doubleValue());
+    }
+    
+    @Override
     public Number narrow(Number number) {
         
         //Note: this is just for performance optimization
@@ -344,7 +387,8 @@ public class DefaultNumberSystem implements NumberSystem {
         if(long_value == Long.MIN_VALUE) {
             return 63;
         } else {
-            return Long.bitCount(Math.abs(long_value));
+            int leadingZeros = Long.numberOfLeadingZeros(Math.abs(long_value));
+            return 64-leadingZeros;
         }
     }
     

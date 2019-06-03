@@ -30,9 +30,6 @@
 package tech.units.indriya;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -43,7 +40,6 @@ import java.util.stream.Collectors;
 import javax.measure.Prefix;
 import javax.measure.UnitConverter;
 
-import tech.units.indriya.function.Calculus;
 import tech.units.indriya.function.ConverterCompositionHandler;
 import tech.units.indriya.function.PowerOfIntConverter;
 import tech.uom.lib.common.function.Converter;
@@ -57,7 +53,7 @@ import tech.uom.lib.common.util.UnitComparator;
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author Andi Huber
- * @version 1.8, Mar 21, 2019
+ * @version 1.9, Jun 3, 2019
  * @since 1.0
  */
 public abstract class AbstractConverter
@@ -222,30 +218,12 @@ public abstract class AbstractConverter
 	// -- CONVERSION CONTRACTS (TO BE IMPLEMENTED BY SUB-CLASSES)
 	
 	/**
-	 * Non-API
-	 * @param value
-	 * @return transformed value 
-	 */
-	protected abstract double convertWhenNotIdentity(double value);
-
-	/**
-	 * Non-API
-	 * @param value
-	 * @param ctx
-	 * @return transformed value (most likely a BigInteger or BigDecimal)
-	 */
-	protected Number convertWhenNotIdentity(BigInteger value, MathContext ctx) {
-		return convertWhenNotIdentity(new BigDecimal(value), ctx);
-	}
+     * Non-API
+     * @param value
+     * @return transformed value 
+     */
+	protected abstract Number convertWhenNotIdentity(Number value);
 	
-	/**
-	 * Non-API
-	 * @param value
-	 * @param ctx
-	 * @return transformed value
-	 */
-	protected abstract BigDecimal convertWhenNotIdentity(BigDecimal value, MathContext ctx);
-
 	// -- CONVERSION INTERFACE IMPLEMENTATION (FINAL)
 	
 	@Override
@@ -253,7 +231,7 @@ public abstract class AbstractConverter
 		if(isIdentity()) {
 			return value;
 		}
-		return convertWhenNotIdentity(value);
+		return convertWhenNotIdentity(value).doubleValue();
 	}
 	
 	/**
@@ -268,13 +246,7 @@ public abstract class AbstractConverter
 		if (value == null) {
 			throw new IllegalArgumentException("Value cannot be null");
 		}
-		if (value instanceof BigDecimal) {
-			return convertWhenNotIdentity((BigDecimal) value, Calculus.MATH_CONTEXT);
-		}
-		if (value instanceof BigInteger) {
-			return convertWhenNotIdentity((BigInteger) value, Calculus.MATH_CONTEXT);
-		}
-		return convertWhenNotIdentity(value.doubleValue());
+		return convertWhenNotIdentity(value);
 	}
 	
 	// -- DEFAULT IMPLEMENTATION OF IDENTITY
@@ -294,21 +266,11 @@ public abstract class AbstractConverter
 			return true;
 		}
 
-		@Override
-		public double convertWhenNotIdentity(double value) {
-		    throw unreachable();
-		}
-
-		@Override
-		public Number convertWhenNotIdentity(BigInteger value, MathContext ctx) {
-		    throw unreachable();
-		}
+        @Override
+        protected Number convertWhenNotIdentity(Number value) {
+            throw unreachable();
+        }
 		
-		@Override
-		public BigDecimal convertWhenNotIdentity(BigDecimal value, MathContext ctx) {
-		    throw unreachable();
-		}
-
 		@Override
 		public boolean equals(Object cvtr) {
 			return (cvtr instanceof Identity); 
@@ -355,6 +317,8 @@ public abstract class AbstractConverter
 		private IllegalStateException unreachable() {
 		    return new IllegalStateException("code was reached, that is expected unreachable");
 		}
+
+
 		
 	}
 	
@@ -432,40 +396,20 @@ public abstract class AbstractConverter
 			return new Pair(right.inverse(), left.inverse());
 		}
 
-		@Override
-		public double convertWhenNotIdentity(double value) {
-			return left.convert(right.convert(value));
-		}
-		
-		@Override
-		public Number convertWhenNotIdentity(BigInteger value, MathContext ctx) {
-			if (right instanceof AbstractConverter) {
-			    //Implementation Note: assumes left is always instance of AbstractConverter
-				final AbstractConverter absLeft = (AbstractConverter) left;
-				final AbstractConverter absRight = (AbstractConverter) right;
-				
-				final Number rightValue = absRight.convertWhenNotIdentity(value, ctx);
-				if(rightValue instanceof BigDecimal) {
-					return absLeft.convertWhenNotIdentity((BigDecimal) rightValue, ctx);
-				}
-				if(rightValue instanceof BigInteger) {
-					return absLeft.convertWhenNotIdentity((BigInteger) rightValue, ctx);
-				}
-				return absLeft.convertWhenNotIdentity(Calculus.toBigDecimal(rightValue), ctx);
-			}
-			return convertWhenNotIdentity(new BigDecimal(value), ctx);
-		}
-
-		@Override
-		public BigDecimal convertWhenNotIdentity(BigDecimal value, MathContext ctx) {
-			if (right instanceof AbstractConverter) {
-				//Implementation Note: assumes left is always instance of AbstractConverter
-				final AbstractConverter _left = (AbstractConverter) left;
-				final AbstractConverter _right = (AbstractConverter) right;
-				return _left.convertWhenNotIdentity(_right.convertWhenNotIdentity(value, ctx), ctx);
-			}
-			return Calculus.toBigDecimal(left.convert(right.convert(value)));
-		}
+        @Override
+        protected Number convertWhenNotIdentity(Number value) {
+            
+            if(!(left instanceof AbstractConverter)) {
+                throw requiresAbstractConverter();
+            }
+            
+            if(!(right instanceof AbstractConverter)) {
+                throw requiresAbstractConverter();
+            }
+            final AbstractConverter absLeft = (AbstractConverter) left;
+            final AbstractConverter absRight = (AbstractConverter) right;
+            return absLeft.convertWhenNotIdentity(absRight.convertWhenNotIdentity(value));
+        }   
 		
 		@Override
 		public boolean equals(Object obj) {
@@ -518,6 +462,12 @@ public abstract class AbstractConverter
 		@Override
 		protected boolean canReduceWith(AbstractConverter that) {
 			return false;
-		}	
+		}
+		
+		private IllegalArgumentException requiresAbstractConverter() {
+            return new IllegalArgumentException("can only handle instances of AbstractConverter");
+        }
+
+
 	}
 }

@@ -34,7 +34,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.math.BigDecimal;
 import java.util.concurrent.TimeUnit;
 
 import javax.measure.Quantity;
@@ -42,6 +41,7 @@ import javax.measure.Unit;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Time;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.AbstractUnit;
@@ -250,14 +250,6 @@ public class TimeUnitQuantityTest {
   }
 
   /**
-   * Verifies that a TimeUnitQuantity isn't big.
-   */
-  @Test
-  public void timeUnitQuantityIsNotBig() {
-    assertFalse(FORTY_TWO_MINUTES.isBig());
-  }
-
-  /**
    * Verifies that addition with a quantity with the same time unit preserves the time unit.
    */
   @Test
@@ -270,7 +262,7 @@ public class TimeUnitQuantityTest {
   /**
    * Verifies that the addition of two quantities with the same time unit resulting in an overflow throws an exception.
    */
-  @Test
+  @Test @Deprecated @Disabled("overflowing is now handled by the Calculator")
   public void additionWithSameTimeUnitResultingInOverflowThrowsException() {
     assertThrows(ArithmeticException.class, () -> {
       ONE_MILLISECOND.add(MAX_VALUE_MILLISECONDS);
@@ -283,7 +275,7 @@ public class TimeUnitQuantityTest {
   @Test
   public void additionUpToMaxValueDoesNotCauseOverflow() {
     ComparableQuantity<Time> actual = ONE_MILLISECOND.add(TimeUnitQuantity.of(Long.MAX_VALUE - 1L, TimeUnit.MILLISECONDS));
-    assertEquals(MAX_VALUE_MILLISECONDS, actual);
+    assertTrue(MAX_VALUE_MILLISECONDS.isEquivalentTo((Quantity)actual));
   }
 
   /**
@@ -293,7 +285,7 @@ public class TimeUnitQuantityTest {
   public void subtractionDownToMinValueDoesNotCauseOverflow() {
     ComparableQuantity<Time> actual = TimeUnitQuantity.of(Long.MIN_VALUE + 1L, TimeUnit.MILLISECONDS).subtract(ONE_MILLISECOND);
     ComparableQuantity<Time> expected = TimeUnitQuantity.of(Long.MIN_VALUE, TimeUnit.MILLISECONDS);
-    assertEquals(expected, actual);
+    assertTrue(expected.isEquivalentTo((Quantity)actual));
   }
 
   /**
@@ -317,7 +309,7 @@ public class TimeUnitQuantityTest {
   /**
    * Verifies that adding a quantity with a larger time unit resulting in an overflowing sum casts the result to the larger time unit.
    */
-  @Test
+  @Test @Deprecated @Disabled("overflowing is now handled by the Calculator")
   public void additionWithLargerTimeUnitAndOverflowingResultCastsToLargerTimeUnit() {
     ComparableQuantity<Time> actual = MAX_VALUE_MILLISECONDS.add(ONE_SECOND);
     ComparableQuantity<Time> expected = TimeUnitQuantity.of(1L + Long.MAX_VALUE / 1000L, TimeUnit.SECONDS);
@@ -340,14 +332,14 @@ public class TimeUnitQuantityTest {
   @Test
   public void quantityMultiplicationMultipliesCorrectly() {
     Quantity<?> actual = FORTY_TWO_MINUTES.multiply(FORTY_TWO_MINUTES);
-    Quantity<?> expected = Quantities.getQuantity(1764L, SQUARE_MINUTE);
-    assertEquals(expected, actual);
+    ComparableQuantity<?> expected = Quantities.getQuantity(1764L, SQUARE_MINUTE);
+    assertTrue(expected.isEquivalentTo((Quantity)actual));
   }
 
   /**
    * Verifies that the multiplication of two quantities resulting in an overflow throws an exception.
    */
-  @Test
+  @Test @Deprecated @Disabled("overflowing is now handled by the Calculator")
   public void quantityMultiplicationResultingInOverflowThrowsException() {
     assertThrows(ArithmeticException.class, () -> {
       TimeUnitQuantity halfMaxValuePlusOne = TimeUnitQuantity.of(1L + Long.MAX_VALUE / 2L, TimeUnit.SECONDS);
@@ -361,8 +353,8 @@ public class TimeUnitQuantityTest {
   @Test
   public void quantityDivisionDividesCorrectly() {
     Quantity<?> actual = FORTY_TWO_MINUTES.divide(FORTY_TWO_MINUTES);
-    Quantity<Dimensionless> expected = Quantities.getQuantity(1L, AbstractUnit.ONE);
-    assertEquals(expected, actual);
+    ComparableQuantity<Dimensionless> expected = Quantities.getQuantity(1L, AbstractUnit.ONE);
+    assertTrue(expected.isEquivalentTo((Quantity)actual));
   }
 
   /**
@@ -378,7 +370,7 @@ public class TimeUnitQuantityTest {
   /**
    * Verifies that the multiplication with a number resulting in an overflow throws an exception.
    */
-  @Test
+  @Test @Deprecated @Disabled("overflowing is now handled by the Calculator")
   public void numberMultiplicationResultingInOverflowThrowsException() {
     assertThrows(ArithmeticException.class, () -> {
       TimeUnitQuantity halfMaxValuePlusOne = TimeUnitQuantity.of(1L + Long.MAX_VALUE / 2L, TimeUnit.SECONDS);

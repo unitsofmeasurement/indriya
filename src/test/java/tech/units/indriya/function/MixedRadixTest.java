@@ -272,7 +272,7 @@ public class MixedRadixTest {
         
         // then
         assertEquals(Integer.class, time_seconds.getValue().getClass());
-        assertEquals(Double.class, time_hours.getValue().getClass());
+        assertEquals(RationalNumber.class, time_hours.getValue().getClass());
     }
     
     @Test

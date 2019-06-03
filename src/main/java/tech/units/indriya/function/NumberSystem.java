@@ -84,6 +84,17 @@ public interface NumberSystem {
      */
     Number divide(Number x, Number y);
     
+    /**
+     * Returns given {@code number} to the power of {@code exponent} as a {@link Number} that best
+     * represents the arithmetic result within the set of number types this NumberSystem
+     * supports.
+     * 
+     * @param number
+     * @param exponent - an integer
+     * @return number^exponent
+     * @throws ArithmeticException if {@code number} and {@code exponent} are ZERO 
+     */
+    Number power(Number number, int exponent);
     
     /**
      * Returns the reciprocal of given {@code number} as a {@link Number} that best
@@ -104,6 +115,27 @@ public interface NumberSystem {
      * @return {@code -number}  
      */    
     Number negate(Number number);
+    
+    /**
+     * Returns Euler's Constant to the power of of given {@code number} as a {@link Number} that best
+     * represents the arithmetic result within the set of number types this NumberSystem
+     * supports.
+     * 
+     * @param number
+     * @return {@code e}^number, with {@code e} Euler's Constant)
+     */
+    Number exp(Number number);
+
+    /**
+     * Returns the natural logarithm of given {@code number} as a {@link Number} that best
+     * represents the arithmetic result within the set of number types this NumberSystem
+     * supports.
+     *  
+     * @param number
+     * @return natural logarithm of number
+     */
+    Number log(Number number);
+    
     
     /**
      * 'Narrows' given {@code number} as a {@link Number} that best
@@ -147,9 +179,6 @@ public interface NumberSystem {
         }
         return x.equals(y);
     }
-
-    
-    
 
     
 
