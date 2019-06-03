@@ -59,7 +59,7 @@ public class RationalNumber extends Number {
     private transient BigDecimal divisionResult;
     private transient Long longValue;
 
-    public static String DIVIDE_CHARACTER = " ÷ ";
+    private final static String DIVIDE_CHARACTER = " ÷ ";
 
     public final static RationalNumber ZERO = ofInteger(BigInteger.ZERO);
     public final static RationalNumber ONE = ofInteger(BigInteger.ONE);
