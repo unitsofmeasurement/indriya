@@ -35,6 +35,7 @@ import java.util.function.Consumer;
 
 import tech.units.indriya.function.Calculus;
 import tech.units.indriya.function.MixedRadix;
+import tech.units.indriya.internal.function.calc.Calculator;
 
 /**
  * Internal utility class to support {@link MixedRadix}.
@@ -99,7 +100,7 @@ public class MixedRadixSupport {
                 continue;
             }
             
-            sum = Calculus.add(sum, values[i+1]);    
+            sum = Calculator.loadDefault(sum).add(values[i+1]).peek();
             
         }
         

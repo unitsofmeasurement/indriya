@@ -44,6 +44,7 @@ import javax.measure.Quantity.Scale;
 import javax.measure.Unit;
 import javax.measure.UnitConverter;
 
+import tech.units.indriya.internal.function.calc.Calculator;
 import tech.units.indriya.internal.function.radix.MixedRadixSupport;
 import tech.units.indriya.internal.function.radix.Radix;
 import tech.units.indriya.quantity.CompoundQuantity;
@@ -310,7 +311,7 @@ public class MixedRadix<Q extends Quantity<Q>> {
     
     private void assertDecreasingOrderOfSignificanceAndLinearity(Unit<Q> tail, Unit<Q> appended) {
         
-        UnitConverter converter = appended.getConverterTo(tail);
+        final UnitConverter converter = appended.getConverterTo(tail);
         if(!converter.isLinear()) {
             String message = String.format("the appended mixed-radix unit <%s> "
                     + "must be linear", 
@@ -318,9 +319,9 @@ public class MixedRadix<Q extends Quantity<Q>> {
             throw new IllegalArgumentException(message);
         }
         
-        Number factor = appended.getConverterTo(tail).convert(1.);
+        final Number factor = appended.getConverterTo(tail).convert(1);
         
-        if(!Calculus.isLessThanOne(Calculus.abs(factor))) {
+        if(Calculator.loadDefault(factor).abs().isLessThanOne()) {
             String message = String.format("the appended mixed-radix unit <%s> "
                     + "must be of lesser significance "
                     + "than the one it is appended to: <%s>", 

@@ -69,39 +69,7 @@ public final class Calculus {
      */
     public static NumberSystem NUMBER_SYSTEM = DEFAULT_NUMBER_SYSTEM;
 	
-	/**
-	 * @param number
-	 * @return whether {@code number} is one of Long, Integer, Short or Byte 
-	 */
-	public static boolean isPrimitiveNonFractional(Number number) {
-	    Objects.requireNonNull(number, MSG_NUMBER_NON_NULL);
-	    if(number instanceof Long || number instanceof Integer || 
-	            number instanceof Short || number instanceof Byte) {
-	        return true;
-	    }
-        return false;
-    }
 	
-	public static boolean isNonFractional(Number number) {
-	    if(isPrimitiveNonFractional(number) || number instanceof BigInteger) {
-	        return true;
-	    }
-        return false;
-    }
-	
-	public static void assertNotFractional(Number number) {
-        if(!isNonFractional(number)) {
-            throw new ArithmeticException("number is fractional");       
-        }
-    }
-	
-	public static void assertNotNegative(Number number) {
-        if(isLessThanZero(number)) {
-            throw new ArithmeticException("number is fractional");       
-        }
-    }
-	
-
 	/**
 	 * Converts a number to {@link BigDecimal}
 	 *
@@ -159,269 +127,16 @@ public final class Calculus {
 		return BigInteger.valueOf(number.longValue());
 	}
 
-	/**
-	 * Returns the absolute value of {@code number}
-	 * @param number
-	 * @return 
-	 */
-	@Deprecated //TODO[220] use NUMBER_SYSTEM instead
-	public static Number abs(Number number) {
-		Objects.requireNonNull(number, MSG_NUMBER_NON_NULL);
-		if(number instanceof BigInteger) {
-			return ((BigInteger) number).abs();
-		}
-		if(number instanceof BigDecimal) {
-			return ((BigDecimal) number).abs();
-		}
-		if(number instanceof Double) {
-			return Math.abs((double)number);
-		}
-		if(number instanceof Long) {
-			return Math.abs((long)number);
-		}
-		if(number instanceof Integer) {
-			return Math.abs((int)number);
-		}
-		if(number instanceof Short) {
-			return Math.abs((short)number);
-		}
-		if(number instanceof Byte) {
-			return Math.abs((byte)number);
-		}
-		logger.fine(()->String.format(
-				"WARNING: possibly loosing precision, when converting from Number type '%s' to double.",
-				number.getClass().getName()));
-		return Math.abs(number.doubleValue());
-	}
-	
-	/**
-	 * Returns the negated value of {@code number}
-	 * @param number
-	 * @return -number
-	 */
-	@Deprecated //TODO[220] use NUMBER_SYSTEM instead
-	public static Number negate(Number number) {
-		Objects.requireNonNull(number, MSG_NUMBER_NON_NULL);
-		if(number instanceof BigInteger) {
-			return ((BigInteger) number).negate();
-		}
-		if(number instanceof BigDecimal) {
-			return ((BigDecimal) number).negate();
-		}
-		if(number instanceof Double) {
-			return -((double)number);
-		}
-		if(number instanceof Long) {
-			return -((long)number);
-		}
-		if(number instanceof Integer) {
-			return -((int)number);
-		}
-		if(number instanceof Short) {
-			return -((short)number);
-		}
-		if(number instanceof Byte) {
-			return -((byte)number);
-		}
-		logger.fine(()->String.format(
-				"WARNING: possibly loosing precision, when converting from Number type '%s' to double.",
-				number.getClass().getName()));
-		return -(number.doubleValue());
-	}
-
-	/**
-	 * Whether given number is &lt; 1
-	 * @param number
-	 * @return
-	 */
-	@Deprecated //TODO[220] use NUMBER_SYSTEM instead
-	public static boolean isLessThanOne(Number number) {
-		Objects.requireNonNull(number, MSG_NUMBER_NON_NULL);
-		if(number instanceof BigInteger) {
-			return ((BigInteger) number).compareTo(BigInteger.ONE) < 0;
-		}
-		if(number instanceof BigDecimal) {
-			return ((BigDecimal) number).compareTo(BigDecimal.ONE) < 0;
-		}
-		if(number instanceof Double) {
-			return ((double)number) < 1.0;
-		}
-		if(isPrimitiveNonFractional(number)) {
-			return number.longValue() < 1L;
-		}
-		logger.fine(()->String.format(
-				"WARNING: possibly loosing precision, when converting from Number type '%s' to double.",
-				number.getClass().getName()));
-		return number.doubleValue() < 1.0;
-	}
-	
-    /**
-     * Whether given number is &lt; 1
-     * @param number
-     * @return
-     */
-	@Deprecated //TODO[220] use NUMBER_SYSTEM instead
-    public static boolean isLessThanZero(Number number) {
-        Objects.requireNonNull(number, MSG_NUMBER_NON_NULL);
-        if(number instanceof BigInteger) {
-            return ((BigInteger) number).compareTo(BigInteger.ZERO) < 0;
-        }
-        if(number instanceof BigDecimal) {
-            return ((BigDecimal) number).compareTo(BigDecimal.ZERO) < 0;
-        }
-        if(number instanceof Double) {
-            return ((double)number) < 0.;
-        }
-        if(isPrimitiveNonFractional(number)) {
-            return number.longValue() < 0L;
-        }
-        logger.fine(()->String.format(
-                "WARNING: possibly loosing precision, when converting from Number type '%s' to double.",
-                number.getClass().getName()));
-        return number.doubleValue() < 0.;
-    }
-	
-	// -- OPTIMIZED ARITHMETIC
-	
-	/**
-     * @return number of bits in the minimal two's-complement
-     *         representation of this Number, <i>excluding</i> a sign bit; 
-     *         returns {@code -1}, iff the given number is a non-fractional type or {@code null} 
-     */
-	public static int bitLength(Number number) {
-	    if(number==null) {
-	        return -1;
-	    }
-        if(isPrimitiveNonFractional(number)) {
-            
-            long long_value = number.longValue(); 
-            
-            if(long_value == Long.MIN_VALUE) {
-                return 63;
-            } else {
-                return Long.bitCount(Math.abs(long_value));
-            }
-            
-        }
-        if(number instanceof BigInteger) {
-            return ((BigInteger) number).bitLength();
-        }
-        return -1;        
-    }
-
-	/**
-     * Converts this number to a int, checking for lost information. If the value of this 
-     * number is out of the range of the int type, then an ArithmeticException is thrown.
-     * @param number
-     */
-	public static int intValueExact(Number number) {
-	    Objects.requireNonNull(number, MSG_NUMBER_NON_NULL);
-        if(number instanceof BigInteger) {
-            return ((BigInteger) number).intValueExact();
-        }
-        if(isPrimitiveNonFractional(number)) {
-            long long_value = number.longValue();
-            return Math.toIntExact(long_value);
-        }
-        throw new ArithmeticException("Number out of int range");
-	}
-	
-	/**
-	 * Converts this number to a long, checking for lost information. If the value of this 
-	 * number is out of the range of the long type, then an ArithmeticException is thrown.
-	 * @param number
-	 */
-	public static long longValueExact(Number number) {
-	    Objects.requireNonNull(number, MSG_NUMBER_NON_NULL);
-        if(number instanceof BigInteger) {
-            return ((BigInteger) number).longValueExact();
-        }
-        if(isPrimitiveNonFractional(number)) {
-            return number.longValue();
-        }
-        throw new ArithmeticException("Number out of long range");
-    }
-	
-	public static Number longValueIfExact(Number number) {
-	    if(number==null) {
-	        return null;
-	    }
-	    
-        int total_bits_required = bitLength(number); // not including sign
-        
-        if(total_bits_required<63) {
-            return longValueExact(number);
-        }
-	    
-        return number;
-	}
-	
-	/**
-	 * Multiplication without loss of precision.
-	 * @param x
-	 * @param y
-	 * @return
-	 */
-	public static Number multiply(Number x, Number y) {
-	    
-	    if(isNonFractional(x) && isNonFractional(y)) {
-	        
-            int total_bits_required = bitLength(x) + bitLength(y); // not including sign
-            
-            if(total_bits_required<31) {
-                return intValueExact(x) * intValueExact(y);
-            }
-            
-            if(total_bits_required<63) {
-                return longValueExact(x) * longValueExact(y);
-            }
-            
-            return toBigInteger(x).multiply(toBigInteger(y));
-	        
-	    }
-	    
-	    return toBigDecimal(x).multiply(toBigDecimal(y));
-	    
-	}
-	
-    /**
-     * Addition without loss of precision.
-     * @param x
-     * @param y
-     * @return
-     */
-	public static Number add(Number x, Number y) {
-        
-        if(isNonFractional(x) && isNonFractional(y)) {
-            
-            int total_bits_required = Math.max(bitLength(x), bitLength(y)) + 1; // +1 carry, not including sign
-            
-            if(total_bits_required<31) {
-                return intValueExact(x) + intValueExact(y);
-            }
-            
-            if(total_bits_required<63) {
-                return longValueExact(x) + longValueExact(y);
-            }
-            
-            return toBigInteger(x).add(toBigInteger(y));
-            
-        }
-        
-        return toBigDecimal(x).add(toBigDecimal(y));
-
-    }
-	
 	// -- DOUBLE TO LONG
 	
 	private final static double upperBoundForLong = (double) Long.MAX_VALUE;
 	private final static double lowerBoundForLong = (double) Long.MIN_VALUE;
 	
-	public static boolean canBeRoundedToLong(double x) {
+	private static boolean canBeRoundedToLong(double x) {
 	    return (lowerBoundForLong<x) && (x<upperBoundForLong);   
 	}
 	
-	public static Number toLongIfCanBeRoundedToLong(double x) {
+	private static Number toLongIfCanBeRoundedToLong(double x) {
 	    return canBeRoundedToLong(x)
 	            ? (long) x
 	                    : x;
@@ -429,29 +144,29 @@ public final class Calculus {
 
 	// -- ROUNDING TOWARDS ZERO
 	
-	/**
-	 * 
-	 * @param number
-	 * @return
-	 */
-    public static Number roundTowardsZero(Number number) {
-        Objects.requireNonNull(number, MSG_NUMBER_NON_NULL);
-        if(number instanceof BigInteger || number instanceof Long || 
-                number instanceof Integer || number instanceof Short || 
-                number instanceof Byte) {
-            return number;
-        }
-        if(number instanceof BigDecimal) {
-            return ((BigDecimal) number).toBigInteger();
-        }
-        if(number instanceof Double) {
-            return roundTowardsZero((double)number);
-        }
-        logger.fine(()->String.format(
-                "WARNING: possibly loosing precision, when converting from Number type '%s' to double.",
-                number.getClass().getName()));
-        return roundTowardsZero(number.doubleValue());
-    }
+//	/**
+//	 * 
+//	 * @param number
+//	 * @return
+//	 */
+//    public static Number roundTowardsZero(Number number) {
+//        Objects.requireNonNull(number, MSG_NUMBER_NON_NULL);
+//        if(number instanceof BigInteger || number instanceof Long || 
+//                number instanceof Integer || number instanceof Short || 
+//                number instanceof Byte) {
+//            return number;
+//        }
+//        if(number instanceof BigDecimal) {
+//            return ((BigDecimal) number).toBigInteger();
+//        }
+//        if(number instanceof Double) {
+//            return roundTowardsZero((double)number);
+//        }
+//        logger.fine(()->String.format(
+//                "WARNING: possibly loosing precision, when converting from Number type '%s' to double.",
+//                number.getClass().getName()));
+//        return roundTowardsZero(number.doubleValue());
+//    }
     
     private final static double roundTowardsZero(double value) {
         if(Double.isNaN(value) || Double.isInfinite(value)) {
@@ -462,9 +177,11 @@ public final class Calculus {
                         : Math.floor(value);
     }
     
-    // -- ROUNDING TOWARDS ZERO WITH REMAINDER
+    // -- ROUNDING TOWARDS ZERO WITH REMAINDER 
     
-    public static class IntegerAndFraction {
+    // TODO[220] might be used when refactoring Radix implementations ...
+    
+    private static class IntegerAndFraction {
         private final Number integer;
         private final Number fraction;
         /**
@@ -489,7 +206,7 @@ public final class Calculus {
         }
     }
     
-    public static IntegerAndFraction roundTowardsZeroWithRemainder(Number number) {
+    private static IntegerAndFraction roundTowardsZeroWithRemainder(Number number) {
         Objects.requireNonNull(number, MSG_NUMBER_NON_NULL);
         if(number instanceof BigInteger || number instanceof Long || 
                 number instanceof Integer || number instanceof Short || 

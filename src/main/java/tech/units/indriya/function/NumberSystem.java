@@ -117,6 +117,16 @@ public interface NumberSystem {
     Number negate(Number number);
     
     /**
+     * Returns the absolute of given {@code number} as a {@link Number} that best
+     * represents the arithmetic result within the set of number types this NumberSystem
+     * supports.
+     * 
+     * @param number
+     * @return {@code abs(number)}  
+     */
+    Number abs(Number number);
+    
+    /**
      * Returns Euler's Constant to the power of of given {@code number} as a {@link Number} that best
      * represents the arithmetic result within the set of number types this NumberSystem
      * supports.
@@ -163,6 +173,14 @@ public interface NumberSystem {
     
     boolean isZero(Number number);
     boolean isOne(Number number);
+    boolean isLessThanOne(Number number);
+    
+    /**
+     * Checks whether given {@code number} has fractional parts or not.
+     * @param number
+     * @return whether {@code number} represents a whole number
+     */
+    boolean isInteger(Number number);
     
     /**
      * 
@@ -179,6 +197,8 @@ public interface NumberSystem {
         }
         return x.equals(y);
     }
+
+    
 
     
 

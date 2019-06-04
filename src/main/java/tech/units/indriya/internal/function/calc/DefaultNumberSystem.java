@@ -192,6 +192,43 @@ public class DefaultNumberSystem implements NumberSystem {
     }
 
     @Override
+    public Number abs(Number number) {
+        if(number instanceof BigInteger) {
+            return ((BigInteger) number).abs();
+        }
+        if(number instanceof BigDecimal) {
+            return ((BigDecimal) number).abs();
+        }
+        if(number instanceof RationalNumber) {
+            return ((RationalNumber) number).abs();
+        }
+        if(number instanceof Double) {
+            return Math.abs((double)number);
+        }
+        if(number instanceof Float) {
+            return Math.abs((float)number);
+        }
+        if(number instanceof Long || number instanceof AtomicLong) {
+            final long longValue = number.longValue();
+            if(longValue == Long.MIN_VALUE) {
+                return BigInteger.valueOf(longValue).abs(); // widen to BigInteger
+            }
+            return Math.abs(longValue);
+        }
+        if(number instanceof Integer || number instanceof AtomicInteger) {
+            final int intValue = number.intValue();
+            if(intValue == Integer.MIN_VALUE) {
+                return Math.abs(number.longValue()); // widen to long
+            }
+            return Math.abs(intValue);
+        }
+        if(number instanceof Short || number instanceof Byte) {
+            Math.abs(number.intValue()); // widen to int
+        }
+        throw unsupportedNumberType(number);    
+    }
+    
+    @Override
     public Number negate(Number number) {
         if(number instanceof BigInteger) {
             return ((BigInteger) number).negate();
@@ -285,12 +322,19 @@ public class DefaultNumberSystem implements NumberSystem {
     @Override
     public Number narrow(Number number) {
         
-        //Note: this is just for performance optimization
-        //this implementation will stop narrowing down at 'double' or 'integer' level
+        //Implementation Note: for performance we stop narrowing down at 'double' or 'integer' level
         
-        if(number instanceof Double || number instanceof Float || 
-                number instanceof Integer || number instanceof AtomicInteger ||
+        if(number instanceof Integer || number instanceof AtomicInteger ||
                 number instanceof Short || number instanceof Byte) {
+            return number;
+        }
+        
+        if(number instanceof Double || number instanceof Float) {
+            final double doubleValue = number.doubleValue();
+            if(doubleValue % 1 == 0) {
+                // double represents an integer
+                return narrow(BigDecimal.valueOf(doubleValue));
+            }
             return number;
         }
         
@@ -316,10 +360,9 @@ public class DefaultNumberSystem implements NumberSystem {
 
         if(number instanceof BigDecimal) {
             
-            final BigDecimal bigDec = ((BigDecimal) number);
-            
+            final BigDecimal decimal = ((BigDecimal) number);
             try {
-                BigInteger integer = bigDec.toBigIntegerExact();
+                BigInteger integer = decimal.toBigIntegerExact(); 
                 return narrow(integer);
             } catch (ArithmeticException e) {
                 return number; // cannot narrow to integer
@@ -330,8 +373,8 @@ public class DefaultNumberSystem implements NumberSystem {
             
             final RationalNumber rational = ((RationalNumber) number);
             
-            return rational.isInteger()
-                    ? narrow(rational.getDividend())
+            return rational.isInteger() 
+                    ? narrow(rational.getDividend()) // divisor is ONE
                             : number; // cannot narrow to integer;
         }
 
@@ -363,7 +406,20 @@ public class DefaultNumberSystem implements NumberSystem {
         NumberType numberType = NumberType.valueOf(number);
         return compare(numberType.one, number) == 0;
     }
-        
+    
+    @Override
+    public boolean isLessThanOne(Number number) {
+        NumberType numberType = NumberType.valueOf(number);
+        return compare(numberType.one, number) < 0;
+    }
+     
+    @Override
+    public boolean isInteger(Number number) {
+        NumberType numberType = NumberType.valueOf(number);
+        return isInteger(numberType, number);
+    }
+    
+    
     // -- HELPER
     
     private IllegalArgumentException unsupportedNumberType(Number number) {
@@ -374,8 +430,44 @@ public class DefaultNumberSystem implements NumberSystem {
         return new IllegalArgumentException(msg);
     }
     
+    private IllegalStateException unexpectedCodeReach() {
+        final String msg = String.format("Implementation Error: Code was reached that is expected unreachable");
+        return new IllegalStateException(msg);
+    }
+    
     private boolean isIntegerOnly(Number number) {
         return NumberType.valueOf(number).isIntegerOnly();
+    }
+    
+    private boolean isInteger(NumberType numberType, Number number) {
+        if(numberType.isIntegerOnly()) {
+            return true; // numberType only allows integer
+        }
+        if(number instanceof RationalNumber) {
+            return ((RationalNumber)number).isInteger();
+        }
+        
+        // remaining types to check: Double, Float, BigDecimal ...
+        
+        if(number instanceof BigDecimal) {
+            final BigDecimal decimal = (BigDecimal)number; 
+            // see https://stackoverflow.com/questions/1078953/check-if-bigdecimal-is-integer-value
+            if(decimal.scale()<=0) {
+                return true;
+            }
+            try {
+                decimal.toBigIntegerExact();
+                return true;
+            } catch (ArithmeticException ex) {
+                return false;
+            }
+        }
+        if(number instanceof Double || number instanceof Float) {
+            double doubleValue = number.doubleValue();
+            // see https://stackoverflow.com/questions/15963895/how-to-check-if-a-double-value-has-no-decimal-part
+            return doubleValue % 1 == 0; 
+        }
+        throw unsupportedNumberType(number);
     }
     
     private int bitLengthOfInteger(Number number) {
@@ -392,18 +484,6 @@ public class DefaultNumberSystem implements NumberSystem {
         }
     }
     
-    /**
-     * Converts this integer number to a long, checking for lost information. If the value 
-     * of this number is out of the range of the long type, then an ArithmeticException is thrown.
-     * @param number
-     */
-    private long longValueOfIntegerExact(Number number) {
-        if(number instanceof BigInteger) {
-            return ((BigInteger) number).longValueExact();
-        }
-        return number.longValue();
-    }
-    
     private BigInteger integerToBigInteger(Number number) {
         if(number instanceof BigInteger) {
             return (BigInteger) number;
@@ -411,7 +491,6 @@ public class DefaultNumberSystem implements NumberSystem {
         return BigInteger.valueOf(number.longValue());
     }
     
-    //TODO[220] should never be used on RationalNumber, because we might lose precision
     private BigDecimal toBigDecimal(Number number) {
         if(number instanceof BigDecimal) {
             return (BigDecimal) number;
@@ -431,7 +510,9 @@ public class DefaultNumberSystem implements NumberSystem {
             return BigDecimal.valueOf(number.doubleValue());
         }
         if(number instanceof RationalNumber) {
-            return ((RationalNumber) number).bigDecimalValue();
+            throw unexpectedCodeReach();
+            //Note: don't do that (potential precision loss)
+            //return ((RationalNumber) number).bigDecimalValue(); 
         }
         throw unsupportedNumberType(number);
     }

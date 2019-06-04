@@ -89,6 +89,11 @@ public class Calculator {
         acc = ns.power(acc, exponent);    
         return this;
     }
+    
+    public Calculator abs() {
+        acc = ns.abs(acc);
+        return this;
+    }
 
     public Calculator negate() {
         acc = ns.negate(acc);
@@ -110,10 +115,15 @@ public class Calculator {
         return this;
     }
     
+    // -- TERMINALS
+    
     public Number peek() {
         return ns.narrow(acc);
     }
-
+    
+    public boolean isLessThanOne() {
+        return ns.isLessThanOne(acc);
+    }
 
   
     
