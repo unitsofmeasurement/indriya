@@ -213,7 +213,9 @@ public final class TimeUnitQuantity extends AbstractQuantity<Time> {
     }
     if (obj instanceof Quantity<?>) {
       Quantity<?> that = (Quantity<?>) obj;
-      return Objects.equals(getUnit(), that.getUnit()) && Equalizer.hasEquality(value, that.getValue());
+      return Objects.equals(getUnit(), that.getUnit()) && 
+              Calculus.NUMBER_SYSTEM.compare(value, that.getValue()) == 0;
+              
     }
     return super.equals(obj);
   }

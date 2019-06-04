@@ -310,13 +310,15 @@ public class TimeUnitQuantityTest {
   }
 
   /**
-   * Verifies that adding a quantity with a larger time unit resulting in an overflowing sum casts the result to the larger time unit.
+   * Verifies that adding a quantity with a larger time unit resulting in an overflowing sum casts the result to the smaller unit.
    */
-  @Test @Deprecated @Disabled("overflowing is now handled by the Calculator")
-  public void additionWithLargerTimeUnitAndOverflowingResultCastsToLargerTimeUnit() {
+  @Test
+  public void additionWithLargerTimeUnitAndOverflowingResultCastsToSmallerTimeUnit() {
     ComparableQuantity<Time> actual = MAX_VALUE_MILLISECONDS.add(ONE_SECOND);
-    ComparableQuantity<Time> expected = TimeUnitQuantity.of(1L + Long.MAX_VALUE / 1000L, TimeUnit.SECONDS);
-    assertEquals(expected, actual);
+    Number expectedValue = BigInteger.valueOf(1000).add(BigInteger.valueOf(Long.MAX_VALUE));
+    ComparableQuantity<Time> expected = TimeUnitQuantity.of(expectedValue, TimeUnit.MILLISECONDS);
+    assertEquals(expected.getUnit(), actual.getUnit());
+    assertNumberEquals(expected.getValue(), actual.getValue(), 1E-12);
   }
 
   /**

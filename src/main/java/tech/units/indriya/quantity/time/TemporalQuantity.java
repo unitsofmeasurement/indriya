@@ -60,56 +60,43 @@ import tech.units.indriya.unit.Units;
  * @author Werner Keil
  * @author Filip van Laenen
  * @author Andi Huber
- * @version 1.2, Jun 3, 2019
+ * @version 1.3, Jun 4, 2019
  * @since 1.0
  */
 public final class TemporalQuantity extends AbstractQuantity<Time> {
-  /**
-   * 
-   */
-  private static final long serialVersionUID = 6835738653744691425L;
-
+  
+  private static final long serialVersionUID = -707159906206272775L;
+  
+  private final Object $lock1 = new Object[0]; // serializable lock for 'amount'
+  
   private final TemporalUnit timeUnit;
-  private final Long value;
-  private final TemporalAmount amount;
+  private final Number value;
+  private transient TemporalAmount amount;
 
   /**
-   * creates the {@link TemporalQuantity} using {@link TemporalUnit} and {@link Long}
+   * creates the {@link TemporalQuantity} using {@link TemporalUnit} and {@link Number}
    * 
    * @param timeUnit
    *          - time to be used
    * @param value
    *          - value to be used
    */
-  TemporalQuantity(Long value, TemporalUnit timeUnit) {
+  TemporalQuantity(Number value, TemporalUnit timeUnit) {
     super(toUnit(timeUnit));
     this.timeUnit = timeUnit;
-    this.amount = Duration.of(value, timeUnit);
     this.value = value;
   }
 
   /**
-   * creates the {@link TemporalQuantity} using {@link TemporalUnit} and {@link Long}
+   * creates the {@link TemporalQuantity} using {@link TemporalUnit} and {@link Number}
    * 
    * @param value
    *          - value to be used
    * @param timeUnit
    *          - time to be used
    */
-  public static TemporalQuantity of(Long number, TemporalUnit timeUnit) {
+  public static TemporalQuantity of(Number number, TemporalUnit timeUnit) {
     return new TemporalQuantity(Objects.requireNonNull(number), Objects.requireNonNull(timeUnit));
-  }
-
-  /**
-   * creates the {@link TemporalQuantity} using {@link TemporalUnit} and {@link Integer}
-   * 
-   * @param value
-   *          - value to be used
-   * @param timeUnit
-   *          - time to be used
-   */
-  public static TemporalQuantity of(Integer number, TemporalUnit timeUnit) {
-    return new TemporalQuantity(Objects.requireNonNull(number).longValue(), Objects.requireNonNull(timeUnit));
   }
 
   /**
@@ -121,15 +108,35 @@ public final class TemporalQuantity extends AbstractQuantity<Time> {
    */
   public static TemporalQuantity of(Quantity<Time> quantity) {
     Quantity<Time> seconds = Objects.requireNonNull(quantity).to(SECOND);
-    return new TemporalQuantity(seconds.getValue().longValue(), ChronoUnit.SECONDS);
+    return new TemporalQuantity(seconds.getValue(), ChronoUnit.SECONDS);
   }
 
   /**
-   * get to {@link TemporalAmount}
+   * Returns the {@link TemporalAmount} of this {@code TemporalQuantity}, which may involve rounding or truncation.
    * 
    * @return the TemporalAmount
+   * @throws ArithmeticException when the {@code value} of this {@code TemporalQuantity} cannot be converted to long
    */
   public TemporalAmount getTemporalAmount() {
+    synchronized ($lock1) {
+        if(amount==null) {
+            
+            long longValue = value.longValue();
+            
+            Number error = Calculator.loadDefault(value)
+            .subtract(longValue)
+            .abs()
+            .peek();
+
+            //TODO[220] we should try to switch to smaller units to minimize the error
+            if(Calculus.NUMBER_SYSTEM.compare(error, 1)>0) {
+                String msg = String.format("cannot round number %s to long", "" + value);
+                throw new ArithmeticException(msg);
+            }
+            amount = Duration.of(longValue, timeUnit);
+            
+        }
+    }
     return amount;
   }
 
@@ -143,11 +150,11 @@ public final class TemporalQuantity extends AbstractQuantity<Time> {
   }
 
   /**
-   * get value expressed in {@link Long}
+   * get value expressed in {@link Number}
    * 
    * @return the value
    */
-  public Long getValue() {
+  public Number getValue() {
     return value;
   }
 
@@ -215,7 +222,8 @@ public final class TemporalQuantity extends AbstractQuantity<Time> {
     }
     if (obj instanceof Quantity<?>) {
       Quantity<?> that = (Quantity<?>) obj;
-      return Objects.equals(getUnit(), that.getUnit()) && Equalizer.hasEquality(value, that.getValue());
+      return Objects.equals(getUnit(), that.getUnit()) && 
+              Calculus.NUMBER_SYSTEM.compare(value, that.getValue()) == 0;
     }
     return super.equals(obj);
   }
@@ -275,7 +283,9 @@ public final class TemporalQuantity extends AbstractQuantity<Time> {
 
   @Override
   public ComparableQuantity<Frequency> inverse() {
-    return Quantities.getQuantity(1d / value.doubleValue(), toUnit(timeUnit).inverse()).asType(Frequency.class);
+    return Quantities.getQuantity(
+            Calculator.loadDefault(value).reciprocal().peek(),
+            toUnit(timeUnit).inverse()).asType(Frequency.class);
   }
 
   /**
@@ -283,7 +293,7 @@ public final class TemporalQuantity extends AbstractQuantity<Time> {
    */
   @Override
   public Quantity<Time> negate() {
-    return of(-value, getTemporalUnit());
+    return of(Calculator.loadDefault(value).negate().peek(), getTemporalUnit());
   }
   
   // -- HELPER

@@ -192,6 +192,43 @@ public class DefaultNumberSystem implements NumberSystem {
     }
 
     @Override
+    public Number abs(Number number) {
+        if(number instanceof BigInteger) {
+            return ((BigInteger) number).abs();
+        }
+        if(number instanceof BigDecimal) {
+            return ((BigDecimal) number).abs();
+        }
+        if(number instanceof RationalNumber) {
+            return ((RationalNumber) number).abs();
+        }
+        if(number instanceof Double) {
+            return Math.abs((double)number);
+        }
+        if(number instanceof Float) {
+            return Math.abs((float)number);
+        }
+        if(number instanceof Long || number instanceof AtomicLong) {
+            final long longValue = number.longValue();
+            if(longValue == Long.MIN_VALUE) {
+                return BigInteger.valueOf(longValue).abs(); // widen to BigInteger
+            }
+            return Math.abs(longValue);
+        }
+        if(number instanceof Integer || number instanceof AtomicInteger) {
+            final int intValue = number.intValue();
+            if(intValue == Integer.MIN_VALUE) {
+                return Math.abs(number.longValue()); // widen to long
+            }
+            return Math.abs(intValue);
+        }
+        if(number instanceof Short || number instanceof Byte) {
+            Math.abs(number.intValue()); // widen to int
+        }
+        throw unsupportedNumberType(number);    
+    }
+    
+    @Override
     public Number negate(Number number) {
         if(number instanceof BigInteger) {
             return ((BigInteger) number).negate();
@@ -368,6 +405,12 @@ public class DefaultNumberSystem implements NumberSystem {
     public boolean isOne(Number number) {
         NumberType numberType = NumberType.valueOf(number);
         return compare(numberType.one, number) == 0;
+    }
+    
+    @Override
+    public boolean isLessThanOne(Number number) {
+        NumberType numberType = NumberType.valueOf(number);
+        return compare(numberType.one, number) < 0;
     }
      
     @Override

@@ -69,18 +69,6 @@ public final class Calculus {
      */
     public static NumberSystem NUMBER_SYSTEM = DEFAULT_NUMBER_SYSTEM;
 	
-	/**
-	 * @param number
-	 * @return whether {@code number} is one of Long, Integer, Short or Byte 
-	 */
-	private static boolean isPrimitiveNonFractional(Number number) {
-	    Objects.requireNonNull(number, MSG_NUMBER_NON_NULL);
-	    if(number instanceof Long || number instanceof Integer || 
-	            number instanceof Short || number instanceof Byte) {
-	        return true;
-	    }
-        return false;
-    }
 	
 	/**
 	 * Converts a number to {@link BigDecimal}
@@ -139,144 +127,16 @@ public final class Calculus {
 		return BigInteger.valueOf(number.longValue());
 	}
 
-	/**
-	 * Returns the absolute value of {@code number}
-	 * @param number
-	 * @return 
-	 */
-	@Deprecated //TODO[220] use NUMBER_SYSTEM instead
-	public static Number abs(Number number) {
-		Objects.requireNonNull(number, MSG_NUMBER_NON_NULL);
-		if(number instanceof RationalNumber) {
-			return ((RationalNumber) number).abs();
-		}
-		if(number instanceof BigDecimal) {
-			return ((BigDecimal) number).abs();
-		}
-		if(number instanceof BigDecimal) {
-            return ((BigDecimal) number).abs();
-        }
-		if(number instanceof Double) {
-			return Math.abs((double)number);
-		}
-		if(number instanceof Long) {
-			return Math.abs((long)number);
-		}
-		if(number instanceof Integer) {
-			return Math.abs((int)number);
-		}
-		if(number instanceof Short) {
-			return Math.abs((short)number);
-		}
-		if(number instanceof Byte) {
-			return Math.abs((byte)number);
-		}
-		logger.fine(()->String.format(
-				"WARNING: possibly loosing precision, when converting from Number type '%s' to double.",
-				number.getClass().getName()));
-		return Math.abs(number.doubleValue());
-	}
-	
-	/**
-	 * Returns the negated value of {@code number}
-	 * @param number
-	 * @return -number
-	 */
-	@Deprecated //TODO[220] use NUMBER_SYSTEM instead
-	public static Number negate(Number number) {
-		Objects.requireNonNull(number, MSG_NUMBER_NON_NULL);
-		if(number instanceof RationalNumber) {
-            return ((RationalNumber) number).negate();
-        }
-		if(number instanceof BigInteger) {
-			return ((BigInteger) number).negate();
-		}
-		if(number instanceof BigDecimal) {
-			return ((BigDecimal) number).negate();
-		}
-		if(number instanceof Double) {
-			return -((double)number);
-		}
-		if(number instanceof Long) {
-			return -((long)number);
-		}
-		if(number instanceof Integer) {
-			return -((int)number);
-		}
-		if(number instanceof Short) {
-			return -((short)number);
-		}
-		if(number instanceof Byte) {
-			return -((byte)number);
-		}
-		logger.fine(()->String.format(
-				"WARNING: possibly loosing precision, when converting from Number type '%s' to double.",
-				number.getClass().getName()));
-		return -(number.doubleValue());
-	}
-
-	/**
-	 * Whether given number is &lt; 1
-	 * @param number
-	 * @return
-	 */
-	@Deprecated //TODO[220] use NUMBER_SYSTEM instead
-	public static boolean isLessThanOne(Number number) {
-		Objects.requireNonNull(number, MSG_NUMBER_NON_NULL);
-		if(number instanceof BigInteger) {
-			return ((BigInteger) number).compareTo(BigInteger.ONE) < 0;
-		}
-		if(number instanceof BigDecimal) {
-			return ((BigDecimal) number).compareTo(BigDecimal.ONE) < 0;
-		}
-		if(number instanceof Double) {
-			return ((double)number) < 1.0;
-		}
-		if(isPrimitiveNonFractional(number)) {
-			return number.longValue() < 1L;
-		}
-		logger.fine(()->String.format(
-				"WARNING: possibly loosing precision, when converting from Number type '%s' to double.",
-				number.getClass().getName()));
-		return number.doubleValue() < 1.0;
-	}
-	
-    /**
-     * Whether given number is &lt; 1
-     * @param number
-     * @return
-     */
-	@Deprecated //TODO[220] use NUMBER_SYSTEM instead
-    public static boolean isLessThanZero(Number number) {
-        Objects.requireNonNull(number, MSG_NUMBER_NON_NULL);
-        if(number instanceof BigInteger) {
-            return ((BigInteger) number).compareTo(BigInteger.ZERO) < 0;
-        }
-        if(number instanceof BigDecimal) {
-            return ((BigDecimal) number).compareTo(BigDecimal.ZERO) < 0;
-        }
-        if(number instanceof Double) {
-            return ((double)number) < 0.;
-        }
-        if(isPrimitiveNonFractional(number)) {
-            return number.longValue() < 0L;
-        }
-        logger.fine(()->String.format(
-                "WARNING: possibly loosing precision, when converting from Number type '%s' to double.",
-                number.getClass().getName()));
-        return number.doubleValue() < 0.;
-    }
-	
 	// -- DOUBLE TO LONG
 	
 	private final static double upperBoundForLong = (double) Long.MAX_VALUE;
 	private final static double lowerBoundForLong = (double) Long.MIN_VALUE;
 	
-	public static boolean canBeRoundedToLong(double x) {
+	private static boolean canBeRoundedToLong(double x) {
 	    return (lowerBoundForLong<x) && (x<upperBoundForLong);   
 	}
 	
-	public static Number toLongIfCanBeRoundedToLong(double x) {
+	private static Number toLongIfCanBeRoundedToLong(double x) {
 	    return canBeRoundedToLong(x)
 	            ? (long) x
 	                    : x;
@@ -284,29 +144,29 @@ public final class Calculus {
 
 	// -- ROUNDING TOWARDS ZERO
 	
-	/**
-	 * 
-	 * @param number
-	 * @return
-	 */
-    public static Number roundTowardsZero(Number number) {
-        Objects.requireNonNull(number, MSG_NUMBER_NON_NULL);
-        if(number instanceof BigInteger || number instanceof Long || 
-                number instanceof Integer || number instanceof Short || 
-                number instanceof Byte) {
-            return number;
-        }
-        if(number instanceof BigDecimal) {
-            return ((BigDecimal) number).toBigInteger();
-        }
-        if(number instanceof Double) {
-            return roundTowardsZero((double)number);
-        }
-        logger.fine(()->String.format(
-                "WARNING: possibly loosing precision, when converting from Number type '%s' to double.",
-                number.getClass().getName()));
-        return roundTowardsZero(number.doubleValue());
-    }
+//	/**
+//	 * 
+//	 * @param number
+//	 * @return
+//	 */
+//    public static Number roundTowardsZero(Number number) {
+//        Objects.requireNonNull(number, MSG_NUMBER_NON_NULL);
+//        if(number instanceof BigInteger || number instanceof Long || 
+//                number instanceof Integer || number instanceof Short || 
+//                number instanceof Byte) {
+//            return number;
+//        }
+//        if(number instanceof BigDecimal) {
+//            return ((BigDecimal) number).toBigInteger();
+//        }
+//        if(number instanceof Double) {
+//            return roundTowardsZero((double)number);
+//        }
+//        logger.fine(()->String.format(
+//                "WARNING: possibly loosing precision, when converting from Number type '%s' to double.",
+//                number.getClass().getName()));
+//        return roundTowardsZero(number.doubleValue());
+//    }
     
     private final static double roundTowardsZero(double value) {
         if(Double.isNaN(value) || Double.isInfinite(value)) {
@@ -317,9 +177,11 @@ public final class Calculus {
                         : Math.floor(value);
     }
     
-    // -- ROUNDING TOWARDS ZERO WITH REMAINDER
+    // -- ROUNDING TOWARDS ZERO WITH REMAINDER 
     
-    public static class IntegerAndFraction {
+    // TODO[220] might be used when refactoring Radix implementations ...
+    
+    private static class IntegerAndFraction {
         private final Number integer;
         private final Number fraction;
         /**
@@ -344,7 +206,7 @@ public final class Calculus {
         }
     }
     
-    public static IntegerAndFraction roundTowardsZeroWithRemainder(Number number) {
+    private static IntegerAndFraction roundTowardsZeroWithRemainder(Number number) {
         Objects.requireNonNull(number, MSG_NUMBER_NON_NULL);
         if(number instanceof BigInteger || number instanceof Long || 
                 number instanceof Integer || number instanceof Short || 
