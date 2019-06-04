@@ -29,8 +29,6 @@
  */
 package tech.units.indriya.function;
 
-import java.util.function.BooleanSupplier;
-
 /**
  * Provides basic {@link Number} operations. 
  * <p>

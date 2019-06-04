@@ -56,7 +56,7 @@ import tech.units.indriya.quantity.Quantities;
  * @author otaviojava
  * @author keilw
  * @author Andi Huber
- * @version 1.0.3
+ * @version 1.1
  * @since 1.0
  */
 public final class TimeUnitQuantity extends AbstractQuantity<Time> {
@@ -68,7 +68,7 @@ public final class TimeUnitQuantity extends AbstractQuantity<Time> {
 
   private final TimeUnit timeUnit;
 
-  private final Long value;
+  private final Number value;
 
   /**
    * creates the {@link TimeUnitQuantity} using {@link TimeUnit} and {@link Long}
@@ -78,7 +78,7 @@ public final class TimeUnitQuantity extends AbstractQuantity<Time> {
    * @param value
    *          - value to be used
    */
-  TimeUnitQuantity(TimeUnit timeUnit, Long value) {
+  TimeUnitQuantity(TimeUnit timeUnit, Number value) {
     super(toUnit(timeUnit));
     this.timeUnit = timeUnit;
     this.value = value;
@@ -93,21 +93,8 @@ public final class TimeUnitQuantity extends AbstractQuantity<Time> {
    *          - value to be used
    * @since 1.0.9
    */
-  public static TimeUnitQuantity of(Long number, TimeUnit timeUnit) {
+  public static TimeUnitQuantity of(Number number, TimeUnit timeUnit) {
     return new TimeUnitQuantity(Objects.requireNonNull(timeUnit), Objects.requireNonNull(number));
-  }
-
-  /**
-   * creates the {@link TimeUnitQuantity} using {@link TimeUnit} and {@link Integer}
-   * 
-   * @param timeUnit
-   *          - time to be used
-   * @param value
-   *          - value to be used
-   * @since 1.0.9
-   */
-  public static TimeUnitQuantity of(Integer number, TimeUnit timeUnit) {
-    return new TimeUnitQuantity(Objects.requireNonNull(timeUnit), Objects.requireNonNull(number).longValue());
   }
 
   /**
@@ -135,7 +122,7 @@ public final class TimeUnitQuantity extends AbstractQuantity<Time> {
    */
   public static TimeUnitQuantity of(Quantity<Time> quantity) {
     Quantity<Time> seconds = Objects.requireNonNull(quantity).to(SECOND);
-    return new TimeUnitQuantity(TimeUnit.SECONDS, seconds.getValue().longValue());
+    return new TimeUnitQuantity(TimeUnit.SECONDS, seconds.getValue());
   }
 
   /**
@@ -149,12 +136,12 @@ public final class TimeUnitQuantity extends AbstractQuantity<Time> {
   }
 
   /**
-   * get value expressed in {@link Long}
+   * get value expressed in {@link Number}
    * 
    * @return the value
-   * @since 1.0
+   * @since 1.1
    */
-  public Long getValue() {
+  public Number getValue() {
     return value;
   }
 
@@ -306,7 +293,9 @@ public final class TimeUnitQuantity extends AbstractQuantity<Time> {
    */
   @Override
   public ComparableQuantity<Frequency> inverse() {
-    return Quantities.getQuantity(1.0 / value, toUnit(timeUnit).inverse()).asType(Frequency.class);
+    return Quantities.getQuantity(
+            Calculator.loadDefault(value).reciprocal().peek(),
+            toUnit(timeUnit).inverse()).asType(Frequency.class);
   }
 
   /**
@@ -314,7 +303,9 @@ public final class TimeUnitQuantity extends AbstractQuantity<Time> {
    */
   @Override
   public Quantity<Time> negate() {
-    return of(-value, getTimeUnit());
+    return of(
+            Calculator.loadDefault(value).negate().peek(), 
+            getTimeUnit());
   }
   
   // -- HELPER
