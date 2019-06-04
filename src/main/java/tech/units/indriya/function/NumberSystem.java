@@ -29,6 +29,8 @@
  */
 package tech.units.indriya.function;
 
+import java.util.function.BooleanSupplier;
+
 /**
  * Provides basic {@link Number} operations. 
  * <p>
@@ -165,6 +167,13 @@ public interface NumberSystem {
     boolean isOne(Number number);
     
     /**
+     * Checks whether given {@code number} has fractional parts or not.
+     * @param number
+     * @return whether {@code number} represents a whole number
+     */
+    boolean isInteger(Number number);
+    
+    /**
      * 
      * @param x
      * @param y
@@ -179,6 +188,8 @@ public interface NumberSystem {
         }
         return x.equals(y);
     }
+
+
 
     
 

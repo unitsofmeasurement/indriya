@@ -112,7 +112,7 @@ public interface Radix {
         @Override
         public Number multiply(Number number) {
             
-            if(Calculus.isNonFractional(number)) {
+            if(Calculus.NUMBER_SYSTEM.isInteger(number)) {
                 // multiply by this radix's rational
                 BigInteger[] divideAndRemainder = Calculus.toBigInteger(number)
                         .multiply(r_dividend).divideAndRemainder(r_divisor);
@@ -130,7 +130,7 @@ public interface Radix {
         @Override
         public Number[] divideAndRemainder(Number number, MathContext mc, boolean fractionalDivide) {
             
-            if(Calculus.isNonFractional(number)) {
+            if(Calculus.NUMBER_SYSTEM.isInteger(number)) {
                 // divide by this radix's rational, that is multiply by its reciprocal
                 return Calculus.toBigInteger(number).multiply(r_divisor).divideAndRemainder(r_dividend);
             } 

@@ -318,6 +318,18 @@ public class RationalNumber extends Number {
         }
         
     }
+    
+    /**
+     * Returns a {@code RationalNumber} whose value is the absolute value
+     * of this {@code RationalNumber}.
+     *
+     * @return {@code abs(this)}
+     */
+    public RationalNumber abs() {
+        return signum<0
+                ? new RationalNumber(1, absDividend, absDivisor)
+                        : this;
+    }
 
     /**
      * Compares two {@code RationalNumber} values numerically.
@@ -408,6 +420,8 @@ public class RationalNumber extends Number {
         }
         return "(" + getDividend() + DIVIDE_CHARACTER + absDivisor + ")";
     }
+
+    
 
 
 }

@@ -213,11 +213,6 @@ public class DecimalComparableQuantityTest {
     ComparableQuantity<Time> dayInHour = Quantities.getQuantity(BigDecimal.valueOf(24), Units.HOUR);
     ComparableQuantity<Time> daysInHour = Quantities.getQuantity(BigDecimal.valueOf(48), Units.HOUR);
 
-    ComparableQuantity<Time> c = dayInHour.to(day.getUnit());
-
-    System.out.println("convert: " + c.getValue());
-    
-    
     assertTrue(day.isGreaterThanOrEqualTo(hours));
     assertTrue(day.isGreaterThanOrEqualTo(dayInHour));
     assertFalse(day.isGreaterThanOrEqualTo(daysInHour));
