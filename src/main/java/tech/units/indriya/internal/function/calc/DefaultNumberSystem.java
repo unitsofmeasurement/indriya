@@ -31,6 +31,8 @@ package tech.units.indriya.internal.function.calc;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.UnaryOperator;
@@ -210,6 +212,9 @@ public class DefaultNumberSystem implements NumberSystem {
             
         } else {
             
+            final MathContext mathContext = 
+                    new MathContext(Calculus.MATH_CONTEXT.getPrecision(), RoundingMode.FLOOR);
+            
             final BigDecimal decimal_x = (type_x==NumberType.RATIONAL)
                     ? ((RationalNumber) absX).bigDecimalValue()
                             : toBigDecimal(absX);
@@ -217,7 +222,7 @@ public class DefaultNumberSystem implements NumberSystem {
                     ? ((RationalNumber) absY).bigDecimalValue()
                             : toBigDecimal(absY);
             
-            final BigDecimal[] divAndRemainder = decimal_x.divideAndRemainder(decimal_y, Calculus.MATH_CONTEXT);
+            final BigDecimal[] divAndRemainder = decimal_x.divideAndRemainder(decimal_y, mathContext);
             
             if(roundRemainderTowardsZero) {
                 return new Number[] {

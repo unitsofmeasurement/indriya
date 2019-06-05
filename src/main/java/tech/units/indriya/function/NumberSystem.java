@@ -88,7 +88,7 @@ public interface NumberSystem {
      * Returns a two-element Number array containing {x / y, x % y} 
      * @param x
      * @param y
-     * @param roundRemainder - whether the division remainder should be rounded towards zero 
+     * @param roundRemainderTowardsZero - whether the division remainder should be rounded towards zero 
      * @return
      */
     Number[] divideAndRemainder(Number x, Number y, boolean roundRemainderTowardsZero);

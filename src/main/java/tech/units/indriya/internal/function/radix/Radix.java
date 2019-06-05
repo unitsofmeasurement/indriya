@@ -29,8 +29,6 @@
  */
 package tech.units.indriya.internal.function.radix;
 
-import java.math.MathContext;
-
 import javax.measure.UnitConverter;
 
 import tech.units.indriya.function.Calculus;
@@ -54,11 +52,10 @@ public interface Radix {
     /**
      * Returns a two-element Number array containing {number / radix, number % radix} 
      * @param number
-     * @param mc
-     * @param fractionalRemainder - whether the division remainder should be fractional 
+     * @param roundRemainderTowardsZero - whether the division remainder should be rounded towards ZERO
      * @return
      */
-    Number[] divideAndRemainder(Number number, MathContext mc, boolean fractionalRemainder);
+    Number[] divideAndRemainder(Number number, boolean roundRemainderTowardsZero);
     
     // -- RADIX IMPLEMENTATION - UnitConverterRadix
 
@@ -78,9 +75,8 @@ public interface Radix {
         }
 
         @Override
-        public Number[] divideAndRemainder(Number number, MathContext mc, boolean fractionalRemainder) {
+        public Number[] divideAndRemainder(Number number, boolean roundRemainderTowardsZero) {
             
-            boolean roundRemainderTowardsZero = !fractionalRemainder;
             Number[] result =  ns().divideAndRemainder(
                     ns().narrow(number), 
                     radix, 
