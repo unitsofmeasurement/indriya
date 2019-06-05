@@ -33,6 +33,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.function.UnaryOperator;
 
 import tech.units.indriya.function.Calculus;
 import tech.units.indriya.function.NumberSystem;
@@ -170,6 +171,66 @@ public class DefaultNumberSystem implements NumberSystem {
     public Number divide(Number x, Number y) {
         return multiply(x, reciprocal(y));
     }
+    
+    @Override
+    public Number[] divideAndRemainder(Number x, Number y, boolean roundRemainderTowardsZero) {
+        
+        final int sign_x = signum(x);
+        final int sign_y = signum(y);
+        
+        final int sign = sign_x * sign_y;
+        // handle corner cases when x or y are zero
+        if(sign==0) {
+            if(sign_y==0) {
+                throw new ArithmeticException("division by zero");
+            }
+            if(sign_x==0) {
+                return new Number[] {0, 0};
+            }
+        }
+        
+        final Number absX = abs(x);
+        final Number absY = abs(y);
+        
+        final NumberType type_x = NumberType.valueOf(absX);
+        final NumberType type_y = NumberType.valueOf(absY);
+        
+        // if x and y are both integer types than we can calculate integer results,
+        // otherwise we resort to BigDecimal
+        final boolean yieldIntegerResult = type_x.isIntegerOnly() && type_y.isIntegerOnly();
+        
+        if(yieldIntegerResult) {
+                            
+            final BigInteger integer_x = integerToBigInteger(absX);
+            final BigInteger integer_y = integerToBigInteger(absY);
+            
+            final BigInteger[] divAndRemainder = integer_x.divideAndRemainder(integer_y);
+            
+            return applyToArray(divAndRemainder, number->copySignTo(sign, (BigInteger)number));
+            
+        } else {
+            
+            final BigDecimal decimal_x = (type_x==NumberType.RATIONAL)
+                    ? ((RationalNumber) absX).bigDecimalValue()
+                            : toBigDecimal(absX);
+            final BigDecimal decimal_y = (type_y==NumberType.RATIONAL)
+                    ? ((RationalNumber) absY).bigDecimalValue()
+                            : toBigDecimal(absY);
+            
+            final BigDecimal[] divAndRemainder = decimal_x.divideAndRemainder(decimal_y, Calculus.MATH_CONTEXT);
+            
+            if(roundRemainderTowardsZero) {
+                return new Number[] {
+                        copySignTo(sign, divAndRemainder[0]), 
+                        copySignTo(sign, divAndRemainder[1].toBigInteger())};
+                
+            } else {
+                return applyToArray(divAndRemainder, number->copySignTo(sign, (BigDecimal)number));
+            }
+            
+        }
+
+    }
 
     @Override
     public Number reciprocal(Number number) {
@@ -191,6 +252,35 @@ public class DefaultNumberSystem implements NumberSystem {
         throw unsupportedNumberType(number);
     }
 
+    @Override
+    public int signum(Number number) {
+        if(number instanceof BigInteger) {
+            return ((BigInteger) number).signum();
+        }
+        if(number instanceof BigDecimal) {
+            return ((BigDecimal) number).signum();
+        }
+        if(number instanceof RationalNumber) {
+            return ((RationalNumber) number).signum();
+        }
+        if(number instanceof Double) {
+            return (int)Math.signum((double)number);
+        }
+        if(number instanceof Float) {
+            return (int)Math.signum((float)number);
+        }
+        if(number instanceof Long || number instanceof AtomicLong) {
+            final long longValue = number.longValue();
+            return Long.signum(longValue);
+        }
+        if(number instanceof Integer || number instanceof AtomicInteger ||
+                number instanceof Short || number instanceof Byte) {
+            final int intValue = number.intValue();
+            return Integer.signum(intValue);
+        }
+        throw unsupportedNumberType(number);    
+    }
+    
     @Override
     public Number abs(Number number) {
         if(number instanceof BigInteger) {
@@ -749,7 +839,29 @@ public class DefaultNumberSystem implements NumberSystem {
         
     }
 
-
+    // only for non-zero sign
+    private static BigInteger copySignTo(int sign, BigInteger absNumber) {
+        if(sign==-1) {
+            return absNumber.negate();
+        }    
+        return absNumber;
+    }
+    
+    // only for non-zero sign
+    private static BigDecimal copySignTo(int sign, BigDecimal absNumber) {
+        if(sign==-1) {
+            return absNumber.negate();
+        }    
+        return absNumber;
+    }
+    
+    private static Number[] applyToArray(Number[] array, UnaryOperator<Number> operator) {
+        // only ever used for length=2
+        return new Number[] {
+                operator.apply(array[0]),
+                operator.apply(array[1])
+        };
+    }
     
 
 }

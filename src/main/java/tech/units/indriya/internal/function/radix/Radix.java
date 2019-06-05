@@ -29,11 +29,12 @@
  */
 package tech.units.indriya.internal.function.radix;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.math.MathContext;
 
+import javax.measure.UnitConverter;
+
 import tech.units.indriya.function.Calculus;
+import tech.units.indriya.function.NumberSystem;
 
 /**
  * Internal utility for {@link MixedRadixSupport}.
@@ -59,86 +60,123 @@ public interface Radix {
      */
     Number[] divideAndRemainder(Number number, MathContext mc, boolean fractionalRemainder);
     
-    // -- RADIX IMPLEMENTATION - DECIMAL
+    // -- RADIX IMPLEMENTATION - UnitConverterRadix
 
-    public static class DecimalRadix implements Radix {
+    public static class UnitConverterRadix implements Radix {
         
-        private final BigDecimal r;
-
-        public DecimalRadix(BigDecimal r) {
-            this.r = r;
+        private final UnitConverter unitConverter;
+        private final Number radix;
+        
+        public UnitConverterRadix(UnitConverter unitConverter) {
+            this.unitConverter = unitConverter;
+            this.radix = ns().narrow(unitConverter.convert(1));
         }
 
         @Override
         public Number multiply(Number number) {
-            return Calculus.toBigDecimal(number).multiply(r);
+            return unitConverter.convert(number);
         }
-        
+
         @Override
         public Number[] divideAndRemainder(Number number, MathContext mc, boolean fractionalRemainder) {
-            Number[] result = Calculus.toBigDecimal(number).divideAndRemainder(r, mc);
             
-            return new Number[] {
-                    toNonFractional((BigDecimal)result[0]),
-                    fractionalRemainder ? result[1] : toNonFractional((BigDecimal)result[1])};
+            boolean roundRemainderTowardsZero = !fractionalRemainder;
+            Number[] result =  ns().divideAndRemainder(
+                    ns().narrow(number), 
+                    radix, 
+                    roundRemainderTowardsZero);
+            result[0] = ns().narrow(result[0]);
+            result[1] = ns().narrow(result[1]);
+            return result;
         }
-
-        private Number toNonFractional(BigDecimal bigDecimal) {
-            try {
-                return bigDecimal.toBigIntegerExact();
-            } catch (ArithmeticException e) {
-                return bigDecimal; // fallback
-            }
+        
+        private NumberSystem ns() {
+            return Calculus.NUMBER_SYSTEM;
         }
         
     }
-    
-    // -- RADIX IMPLEMENTATION - RATIONAL
-    
-    public static class RationalRadix implements Radix {
-        
-        private final BigInteger r_dividend;
-        private final BigInteger r_divisor;
-        private final DecimalRadix decimalRadix;
 
-        public RationalRadix(BigInteger r_dividend, BigInteger r_divisor) {
-            this.r_dividend = r_dividend;
-            this.r_divisor = r_divisor;
-            
-            BigDecimal r = Calculus.toBigDecimal(r_dividend).divide(Calculus.toBigDecimal(r_divisor));
-            this.decimalRadix = new DecimalRadix(r); 
-        }
-        
-        @Override
-        public Number multiply(Number number) {
-            
-            if(Calculus.NUMBER_SYSTEM.isInteger(number)) {
-                // multiply by this radix's rational
-                BigInteger[] divideAndRemainder = Calculus.toBigInteger(number)
-                        .multiply(r_dividend).divideAndRemainder(r_divisor);
-                
-                BigInteger remainder = divideAndRemainder[1];
-                if(BigInteger.ZERO.equals(remainder)) {
-                    return divideAndRemainder[0];
-                }
-                
-            } 
-            
-            return decimalRadix.multiply(number);
-        }
-
-        @Override
-        public Number[] divideAndRemainder(Number number, MathContext mc, boolean fractionalDivide) {
-            
-            if(Calculus.NUMBER_SYSTEM.isInteger(number)) {
-                // divide by this radix's rational, that is multiply by its reciprocal
-                return Calculus.toBigInteger(number).multiply(r_divisor).divideAndRemainder(r_dividend);
-            } 
-            
-            return decimalRadix.divideAndRemainder(number, mc, fractionalDivide);
-        }
-        
-    }
+//TODO[220] remove once we know we don't need this anymore
+//    // -- RADIX IMPLEMENTATION - DECIMAL
+//
+//    public static class DecimalRadix implements Radix {
+//        
+//        private final BigDecimal r;
+//
+//        public DecimalRadix(BigDecimal r) {
+//            this.r = r;
+//        }
+//
+//        @Override
+//        public Number multiply(Number number) {
+//            return Calculus.toBigDecimal(number).multiply(r);
+//        }
+//        
+//        @Override
+//        public Number[] divideAndRemainder(Number number, MathContext mc, boolean fractionalRemainder) {
+//            Number[] result = Calculus.toBigDecimal(number).divideAndRemainder(r, mc);
+//            
+//            return new Number[] {
+//                    toNonFractional((BigDecimal)result[0]),
+//                    fractionalRemainder ? result[1] : toNonFractional((BigDecimal)result[1])};
+//        }
+//
+//        private Number toNonFractional(BigDecimal bigDecimal) {
+//            try {
+//                return bigDecimal.toBigIntegerExact();
+//            } catch (ArithmeticException e) {
+//                return bigDecimal; // fallback
+//            }
+//        }
+//        
+//    }
+//    
+//    // -- RADIX IMPLEMENTATION - RATIONAL
+//    
+//    public static class RationalRadix implements Radix {
+//        
+//        private final BigInteger r_dividend;
+//        private final BigInteger r_divisor;
+//        private final DecimalRadix decimalRadix;
+//
+//        public RationalRadix(BigInteger r_dividend, BigInteger r_divisor) {
+//            this.r_dividend = r_dividend;
+//            this.r_divisor = r_divisor;
+//            
+//            BigDecimal r = Calculus.toBigDecimal(r_dividend).divide(Calculus.toBigDecimal(r_divisor));
+//            this.decimalRadix = new DecimalRadix(r); 
+//        }
+//        
+//        @Override
+//        public Number multiply(Number number) {
+//            
+//            if(Calculus.NUMBER_SYSTEM.isInteger(number)) {
+//                // multiply by this radix's rational
+//                BigInteger[] divideAndRemainder = Calculus.toBigInteger(number)
+//                        .multiply(r_dividend).divideAndRemainder(r_divisor);
+//                
+//                BigInteger remainder = divideAndRemainder[1];
+//                if(BigInteger.ZERO.equals(remainder)) {
+//                    return divideAndRemainder[0];
+//                }
+//                
+//            } 
+//            
+//            return decimalRadix.multiply(number);
+//        }
+//
+//        @Override
+//        public Number[] divideAndRemainder(Number number, MathContext mc, boolean fractionalDivide) {
+//            
+//            if(Calculus.NUMBER_SYSTEM.isInteger(number)) {
+//                // divide by this radix's rational, that is multiply by its reciprocal
+//                return Calculus.toBigInteger(number).multiply(r_divisor).divideAndRemainder(r_dividend);
+//            } 
+//            
+//            return decimalRadix.divideAndRemainder(number, mc, fractionalDivide);
+//        }
+//        
+//    }
 
     
     

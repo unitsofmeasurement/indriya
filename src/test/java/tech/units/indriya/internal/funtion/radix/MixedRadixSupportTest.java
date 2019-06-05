@@ -30,16 +30,16 @@
 package tech.units.indriya.internal.funtion.radix;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.NumberAssertions;
+import tech.units.indriya.function.MultiplyConverter;
+import tech.units.indriya.function.RationalConverter;
+import tech.units.indriya.function.RationalNumber;
 import tech.units.indriya.internal.function.radix.MixedRadixSupport;
 import tech.units.indriya.internal.function.radix.Radix;
-import tech.units.indriya.internal.function.radix.Radix.DecimalRadix;
-import tech.units.indriya.internal.function.radix.Radix.RationalRadix;
 
 /**
 *
@@ -48,13 +48,17 @@ import tech.units.indriya.internal.function.radix.Radix.RationalRadix;
 public class MixedRadixSupportTest {
     
     private Radix[] decimalRadices = {
-      new DecimalRadix(BigDecimal.valueOf(60.)),
-      new DecimalRadix(BigDecimal.valueOf(15.))
+            
+            new Radix.UnitConverterRadix(MultiplyConverter.of(60.)),
+            new Radix.UnitConverterRadix(MultiplyConverter.of(15.)),
+            
+//            new Radix.UnitConverterRadix(MultiplyConverter.of(BigDecimal.valueOf(60.))),
+//            new Radix.UnitConverterRadix(MultiplyConverter.of(BigDecimal.valueOf(15.))),
     };
 
     private Radix[] rationalRadices = {
-      new RationalRadix(BigInteger.valueOf(60), BigInteger.ONE),
-      new RationalRadix(BigInteger.valueOf(15), BigInteger.ONE)
+            new Radix.UnitConverterRadix(RationalConverter.of(RationalNumber.ofInteger(60))),
+            new Radix.UnitConverterRadix(RationalConverter.of(RationalNumber.ofInteger(15))),
     };
 
     @Test
@@ -73,7 +77,7 @@ public class MixedRadixSupportTest {
         });
         
         Assertions.assertEquals(
-                " 5.234 (BigDecimal), 13 (BigInteger), 9 (BigInteger),", 
+                " 5.234 (BigDecimal), 13 (Integer), 9 (Integer),", 
                 sb.toString());
         
     }
@@ -94,7 +98,7 @@ public class MixedRadixSupportTest {
         });
         
         Assertions.assertEquals(
-                " 5.234 (BigDecimal), 13 (BigInteger), 9 (BigInteger),", 
+                " 5.234 (BigDecimal), 13 (Integer), 9 (Integer),", 
                 sb.toString());
         
     }
