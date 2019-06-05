@@ -77,7 +77,7 @@ public class NumberAssertions {
         assertArraysNotNull(expected, actual);
         assertArraysHaveSameLength(expected.length, actual.length);
 
-        final BigDecimal delta_asBig = Calculus.toBigDecimal(delta);
+        final BigDecimal delta_asBig = NumberAssertions_Calculus.toBigDecimal(delta);
 
 
         for(int i=0; i<expected.length; ++i) {
@@ -108,9 +108,9 @@ public class NumberAssertions {
 
         Objects.requireNonNull(delta);
 
-        final BigDecimal expected_asBig = Calculus.toBigDecimal(expected);
-        final BigDecimal actual_asBig = Calculus.toBigDecimal(actual);
-        final BigDecimal delta_asBig = Calculus.toBigDecimal(delta);
+        final BigDecimal expected_asBig = NumberAssertions_Calculus.toBigDecimal(expected);
+        final BigDecimal actual_asBig = NumberAssertions_Calculus.toBigDecimal(actual);
+        final BigDecimal delta_asBig = NumberAssertions_Calculus.toBigDecimal(delta);
 
         final boolean equal_withinDelta =
                 expected_asBig.subtract(actual_asBig, Calculus.MATH_CONTEXT).abs()
