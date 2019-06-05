@@ -50,370 +50,320 @@ import tech.units.indriya.quantity.CompoundQuantity;
 import tech.units.indriya.quantity.Quantities;
 
 /**
- * Immutable class that represents mixed-radix units (like "hour:min:sec" or "ft, in")
+ * Immutable class that represents mixed-radix units (like "hour:min:sec" or
+ * "ft, in")
  * 
  * 
  * @author Andi Huber
  * @author Werner Keil
- * @version 1.6
+ * @version 1.7, Jun 5, 2019
  * @since 2.0
- * @see <a href="https://en.wikipedia.org/wiki/Mixed_radix">Wikipedia: Mixed radix</a>
- * @see <a href="https://reference.wolfram.com/language/ref/MixedUnit.html">Wolfram Language & System: MixedUnit</a>
- * @see <a href="https://en.wikipedia.org/wiki/Metrication">Wikipedia: Metrication</a>
+ * @see <a href="https://en.wikipedia.org/wiki/Mixed_radix">Wikipedia: Mixed
+ *      radix</a>
+ * @see <a href=
+ *      "https://reference.wolfram.com/language/ref/MixedUnit.html">Wolfram
+ *      Language & System: MixedUnit</a>
+ * @see <a href="https://en.wikipedia.org/wiki/Metrication">Wikipedia:
+ *      Metrication</a>
  * @see CompoundQuantity
  */
 public class MixedRadix<Q extends Quantity<Q>> {
 // TODO could it be final or is there a use case for extending it?
+
+	// -- PRIVATE FIELDS
+
+	private final PrimaryUnitPickState pickState;
+	private final Unit<Q> primaryUnit;
+	private final List<Unit<Q>> mixedRadixUnits;
+	private final MixedRadixSupport mixedRadixSupport;
+
+	// -- PRIMARY UNIT PICK CONVENTION
+
+	public static enum PrimaryUnitPick {
+		LEADING_UNIT, TRAILING_UNIT
+	}
+
+	public static final PrimaryUnitPick PRIMARY_UNIT_PICK_DEFAULT = PrimaryUnitPick.TRAILING_UNIT;
+
+	public static PrimaryUnitPick PRIMARY_UNIT_PICK = PRIMARY_UNIT_PICK_DEFAULT;
+
+	// -- FACTORIES
+
+	public static <X extends Quantity<X>> MixedRadix<X> of(Unit<X> leadingUnit) {
+		Objects.requireNonNull(leadingUnit);
+		return new MixedRadix<>(PrimaryUnitPickState.pickByConvention(), Collections.singletonList(leadingUnit));
+	}
+
+	@SafeVarargs
+	public static <X extends Quantity<X>> MixedRadix<X> of(Unit<X>... units) {
+		Objects.requireNonNull(units);
+		if (units.length < 1) {
+			throw new IllegalArgumentException("at least the leading unit is required");
+		}
+		return of(Arrays.asList(units));
+	}
+
+	public static <X extends Quantity<X>> MixedRadix<X> of(Collection<Unit<X>> units) {
+		Objects.requireNonNull(units);
+		if (units == null || units.size() < 1) {
+			throw new IllegalArgumentException("at least the leading unit is required");
+		}
+		MixedRadix<X> mixedRadix = null;
+		for (Unit<X> unit : units) {
+			mixedRadix = mixedRadix == null ? of(unit) : mixedRadix.mix(unit);
+		}
+		return mixedRadix;
+	}
+
+	public static <X extends Quantity<X>> MixedRadix<X> ofPrimary(Unit<X> primaryUnit) {
+		Objects.requireNonNull(primaryUnit);
+		return new MixedRadix<>(PrimaryUnitPickState.pickLeading(), Collections.singletonList(primaryUnit));
+	}
+
+	public MixedRadix<Q> mix(Unit<Q> mixedRadixUnit) {
+		Objects.requireNonNull(mixedRadixUnit);
+		return append(pickState, mixedRadixUnit); // pickState is immutable, so reuse
+	}
+
+	public MixedRadix<Q> mixPrimary(Unit<Q> mixedRadixUnit) {
+		pickState.assertNotExplicitlyPicked();
+		Objects.requireNonNull(mixedRadixUnit);
+		return append(PrimaryUnitPickState.pickByExplicitIndex(getUnitCount()), mixedRadixUnit);
+	}
+
+	// -- GETTERS
+
+	public Unit<Q> getPrimaryUnit() {
+		return primaryUnit;
+	}
+
+	private Unit<Q> getTrailingUnit() {
+		return mixedRadixUnits.get(mixedRadixUnits.size() - 1);
+	}
+
+	public List<Unit<Q>> getUnits() {
+		return Collections.unmodifiableList(mixedRadixUnits);
+	}
+
+	private int getUnitCount() {
+		return mixedRadixUnits.size();
+	}
+
+	// -- QUANTITY FACTORY
+
+	public Quantity<Q> createQuantity(final Number[] values, final Scale scale) {
+
+		// TODO consolidate with createCompound
+		Objects.requireNonNull(scale);
+		Objects.requireNonNull(values);
+		if (values.length < 1) {
+			throw new IllegalArgumentException("at least the leading unit's number is required");
+		}
+
+		int totalValuesGiven = values.length;
+		int totalValuesAllowed = mixedRadixUnits.size();
+
+		if (totalValuesGiven > totalValuesAllowed) {
+			String message = String.format(
+					"number of values given <%d> exceeds the number of mixed-radix units available <%d>",
+					totalValuesGiven, totalValuesAllowed);
+			throw new IllegalArgumentException(message);
+		}
+
+		Number sum = mixedRadixSupport.sumMostSignificant(values);
+
+		return Quantities.getQuantity(sum, getTrailingUnit(), scale).to(getPrimaryUnit());
+	}
+
+	public Quantity<Q> createQuantity(Number... values) {
+		return createQuantity(values, Scale.ABSOLUTE);
+	}
+
+	public CompoundQuantity<Q> createCompoundQuantity(final Number[] values, final Scale scale) {
+		Objects.requireNonNull(scale);
+		Objects.requireNonNull(values);
+		if (values.length < 1) {
+			throw new IllegalArgumentException("at least the leading unit's number is required");
+		}
+
+		int totalValuesGiven = values.length;
+		int totalValuesAllowed = mixedRadixUnits.size();
+
+		if (totalValuesGiven > totalValuesAllowed) {
+			String message = String.format(
+					"number of values given <%d> exceeds the number of mixed-radix units available <%d>",
+					totalValuesGiven, totalValuesAllowed);
+			throw new IllegalArgumentException(message);
+		}
+
+		List<Quantity<Q>> quantities = new ArrayList<>();
+		for (int i = 0; i < values.length; i++) {
+			quantities.add(Quantities.getQuantity(values[i], mixedRadixUnits.get(i), scale));
+		}
+		return CompoundQuantity.of(quantities);
+	}
+
+	public CompoundQuantity<Q> createCompoundQuantity(Number... values) {
+		return createCompoundQuantity(values, Scale.ABSOLUTE);
+	}
+
+	// -- VALUE EXTRACTION
+
+	public Number[] extractValues(Quantity<Q> quantity) {
+		Objects.requireNonNull(quantity);
+		final Number[] target = new Number[mixedRadixUnits.size()];
+		return extractValuesInto(quantity, target);
+	}
+
+	public Number[] extractValuesInto(Quantity<Q> quantity, Number[] target) {
+		Objects.requireNonNull(quantity);
+		Objects.requireNonNull(target);
+
+		visitQuantity(quantity, target.length, (index, unit, value) -> {
+			target[index] = value;
+		});
+
+		return target;
+	}
+
+	// -- THE VISITOR
+
+	@FunctionalInterface
+	public static interface MixedRadixVisitor<Q extends Quantity<Q>> {
+		public void accept(int index, Unit<Q> unit, Number value);
+	}
+
+	// -- IMPLEMENTATION DETAILS
 	
-    // -- PRIVATE FIELDS 
+	void visitQuantity(Quantity<Q> quantity, int maxPartsToVisit, MixedRadixVisitor<Q> partVisitor) {
 
-    private final PrimaryUnitPickState pickState; 
-    private final Unit<Q> primaryUnit;
-    private final List<Unit<Q>> mixedRadixUnits;
-    private final MixedRadixSupport mixedRadixSupport; 
-    
-    // -- PRIMARY UNIT PICK CONVENTION
-    
-    public static enum PrimaryUnitPick {
-        LEADING_UNIT,
-        TRAILING_UNIT
-    }
-    
-    public static final PrimaryUnitPick PRIMARY_UNIT_PICK_DEFAULT = PrimaryUnitPick.TRAILING_UNIT;
-    
-    public static PrimaryUnitPick PRIMARY_UNIT_PICK = PRIMARY_UNIT_PICK_DEFAULT;
-    
-    // -- FACTORIES
-    
-    public static <X extends Quantity<X>> MixedRadix<X> of(Unit<X> leadingUnit) {
-        Objects.requireNonNull(leadingUnit);
-        return new MixedRadix<>(
-                PrimaryUnitPickState.pickByConvention(), 
-                Collections.singletonList(leadingUnit));
-    }
-    
-    @SafeVarargs
-    public static <X extends Quantity<X>> MixedRadix<X> of(Unit<X>... units) {
-        Objects.requireNonNull(units); 
-        if(units.length<1) {
-            throw new IllegalArgumentException("at least the leading unit is required");
-        }
-        return of(Arrays.asList(units));
-    }
-    
-    public static <X extends Quantity<X>> MixedRadix<X> of(Collection<Unit<X>> units) {
-        Objects.requireNonNull(units); 
-        if(units==null || units.size()<1) {
-            throw new IllegalArgumentException("at least the leading unit is required");
-        }
-        MixedRadix<X> mixedRadix = null;
-        for(Unit<X> unit : units) {
-            mixedRadix = mixedRadix==null
-                    ? of(unit)
-                            : mixedRadix.mix(unit);
-        }
-        return mixedRadix;
-    }
-    
-    
-    public static <X extends Quantity<X>> MixedRadix<X> ofPrimary(Unit<X> primaryUnit) {
-        Objects.requireNonNull(primaryUnit);
-        return new MixedRadix<>(
-                PrimaryUnitPickState.pickLeading(), 
-                Collections.singletonList(primaryUnit));
-    }
+		final int partsToVisitCount = Math.min(maxPartsToVisit, getUnitCount());
 
-    public MixedRadix<Q> mix(Unit<Q> mixedRadixUnit) {
-        Objects.requireNonNull(mixedRadixUnit);
-        return append(pickState, mixedRadixUnit); // pickState is immutable, so reuse
-    }
-    
-    public MixedRadix<Q> mixPrimary(Unit<Q> mixedRadixUnit) {
-        pickState.assertNotExplicitlyPicked();
-        Objects.requireNonNull(mixedRadixUnit);
-        return append(PrimaryUnitPickState.pickByExplicitIndex(getUnitCount()), mixedRadixUnit);
-    }
-    
-    
-    // -- GETTERS
+		// corner case (partsToVisitCount == 0)
 
-    public Unit<Q> getPrimaryUnit() {
-        return primaryUnit;
-    }
-    
-    private Unit<Q> getTrailingUnit() {
-        return mixedRadixUnits.get(mixedRadixUnits.size()-1);
-    }
-    
-    public List<Unit<Q>> getUnits() {
-        return Collections.unmodifiableList(mixedRadixUnits);
-    }
-    
-    private int getUnitCount() {
-        return mixedRadixUnits.size();
-    }
-    
-    // -- QUANTITY FACTORY
-    
-    public Quantity<Q> createQuantity(final Number[] values, final Scale scale) {
-        
-    	// TODO consolidate with createCompound
-    	Objects.requireNonNull(scale);
-        Objects.requireNonNull(values);
-        if(values.length < 1) {
-            throw new IllegalArgumentException("at least the leading unit's number is required");
-        }
+		if (partsToVisitCount == 0) {
+			return;
+		}
 
-        int totalValuesGiven = values.length;
-        int totalValuesAllowed = mixedRadixUnits.size();
-        
-        if(totalValuesGiven > totalValuesAllowed) {
-            String message = String.format(
-                    "number of values given <%d> exceeds the number of mixed-radix units available <%d>", 
-                    totalValuesGiven, totalValuesAllowed);
-            throw new IllegalArgumentException(message);
-        }
+		// for partsToVisitCount >= 1
 
-        Number sum = mixedRadixSupport.sumMostSignificant(values);
-        
-        return Quantities.getQuantity(sum, getTrailingUnit(), scale).to(getPrimaryUnit());
-    }
-    
-    public Quantity<Q> createQuantity(Number ... values) {
-    	return createQuantity(values, Scale.ABSOLUTE);
-    }
-    
-    public CompoundQuantity<Q> createCompoundQuantity(final Number[] values, final Scale scale) {       
-    	Objects.requireNonNull(scale);
-    	Objects.requireNonNull(values); 
-        if(values.length < 1) {
-            throw new IllegalArgumentException("at least the leading unit's number is required");
-        }
+		final Number value_inTrailingUnits = quantity.to(getTrailingUnit()).getValue();
+		final List<Number> extractedValues = new ArrayList<>(getUnitCount());
 
-        int totalValuesGiven = values.length;
-        int totalValuesAllowed = mixedRadixUnits.size();
-        
-        if(totalValuesGiven > totalValuesAllowed) {
-            String message = String.format(
-                    "number of values given <%d> exceeds the number of mixed-radix units available <%d>", 
-                    totalValuesGiven, totalValuesAllowed);
-            throw new IllegalArgumentException(message);
-        }
+		mixedRadixSupport.visitRadixNumbers(value_inTrailingUnits, extractedValues::add);
 
-        List<Quantity<Q>> quantities = new ArrayList<>();
-        for (int i = 0; i < values.length; i++) {
-        	quantities.add(Quantities.getQuantity(values[i], mixedRadixUnits.get(i), scale));
-        }
-        return CompoundQuantity.of(quantities);
-    }
-    
-    public CompoundQuantity<Q> createCompoundQuantity(Number ... values) { 
-    	return createCompoundQuantity(values, Scale.ABSOLUTE);
-    }
-    
-    // -- VALUE EXTRACTION
+		for (int i = 0; i < partsToVisitCount; ++i) {
+			int invertedIndex = getUnitCount() - 1 - i;
+			partVisitor.accept(i, mixedRadixUnits.get(i), extractedValues.get(invertedIndex));
+		}
+	}
 
-    public Number[] extractValues(Quantity<Q> quantity) {
-        Objects.requireNonNull(quantity);
-        final Number[] target = new Number[mixedRadixUnits.size()];
-        return extractValuesInto(quantity, target);
-    }
+	/**
+	 * 
+	 * @param primaryUnitIndex - if negative, the index is relative to the number of
+	 *                         units
+	 * @param mixedRadixUnits
+	 */
+	private MixedRadix(PrimaryUnitPickState pickState, final List<Unit<Q>> mixedRadixUnits) {
+		this.pickState = pickState;
+		this.mixedRadixUnits = mixedRadixUnits;
+		this.primaryUnit = mixedRadixUnits.get(pickState.nonNegativePrimaryUnitIndex(getUnitCount()));
 
-    public Number[] extractValuesInto(Quantity<Q> quantity, Number[] target) {
-        Objects.requireNonNull(quantity);
-        Objects.requireNonNull(target);
+		final Radix[] radices = new Radix[getUnitCount() - 1];
+		for (int i = 0; i < radices.length; ++i) {
+			Unit<Q> higher = mixedRadixUnits.get(i);
+			Unit<Q> lesser = mixedRadixUnits.get(i + 1);
+			radices[i] = toRadix(higher.getConverterTo(lesser));
+		}
 
-        visitQuantity(quantity, target.length, (index, unit, value)->{
-            target[index] = value;
-        });
+		this.mixedRadixSupport = new MixedRadixSupport(radices);
 
-        return target;
-    }
-    
-    // -- THE VISITOR
-    
-    @FunctionalInterface
-    public static interface MixedRadixVisitor<Q extends Quantity<Q>> {
-        public void accept(int index, Unit<Q> unit, Number value);
-    }
-    
-    public void visitQuantity(
-            Quantity<Q> quantity,
-            int maxPartsToVisit,
-            MixedRadixVisitor<Q> partVisitor) {
+	}
 
-        final int partsToVisitCount = Math.min(maxPartsToVisit, getUnitCount());
+	private Radix toRadix(UnitConverter converter) {
+		return new Radix.UnitConverterRadix(converter);
+	}
 
-        // corner case (partsToVisitCount == 0)
+	private MixedRadix<Q> append(PrimaryUnitPickState state, Unit<Q> mixedRadixUnit) {
 
-        if(partsToVisitCount==0) {
-            return;
-        }
+		Unit<Q> tail = getTrailingUnit();
 
-        // for partsToVisitCount >= 1
-        
-        final Number value_inTrailingUnits = quantity.to(getTrailingUnit()).getValue();
-        final List<Number> extractedValues = new ArrayList<>(getUnitCount());
-        
-        mixedRadixSupport.visitRadixNumbers(value_inTrailingUnits, extractedValues::add);
+		assertDecreasingOrderOfSignificanceAndLinearity(tail, mixedRadixUnit);
 
-        for(int i=0; i<partsToVisitCount; ++i) {
-            int invertedIndex = getUnitCount() - 1 - i;
-            partVisitor.accept(i, mixedRadixUnits.get(i), extractedValues.get(invertedIndex));
-        }
-    }
-    
-    // -- IMPLEMENTATION DETAILS
+		final List<Unit<Q>> mixedRadixUnits = new ArrayList<>(this.mixedRadixUnits);
+		mixedRadixUnits.add(mixedRadixUnit);
+		return new MixedRadix<>(state, mixedRadixUnits);
+	}
 
-    /**
-     * 
-     * @param primaryUnitIndex - if negative, the index is relative to the number of units
-     * @param mixedRadixUnits
-     */
-    private MixedRadix(PrimaryUnitPickState pickState, final List<Unit<Q>> mixedRadixUnits) {
-        this.pickState = pickState;
-        this.mixedRadixUnits = mixedRadixUnits;
-        this.primaryUnit = mixedRadixUnits.get(pickState.nonNegativePrimaryUnitIndex(getUnitCount()));
+	private void assertDecreasingOrderOfSignificanceAndLinearity(Unit<Q> tail, Unit<Q> appended) {
 
-        final Radix[] radices = new Radix[getUnitCount()-1];
-        for(int i=0;i<radices.length;++i) {
-            Unit<Q> higher = mixedRadixUnits.get(i);
-            Unit<Q> lesser = mixedRadixUnits.get(i+1);
-            radices[i] = toRadix(higher.getConverterTo(lesser));
-        }
-        
-        this.mixedRadixSupport = new MixedRadixSupport(radices);
-        
-    }
-    
-    private Radix toRadix(UnitConverter converter) {
-        return new Radix.UnitConverterRadix(converter);
-    }
+		final UnitConverter converter = appended.getConverterTo(tail);
+		if (!converter.isLinear()) {
+			String message = String.format("the appended mixed-radix unit <%s> " + "must be linear",
+					appended.getClass());
+			throw new IllegalArgumentException(message);
+		}
 
-    private MixedRadix<Q> append(PrimaryUnitPickState state, Unit<Q> mixedRadixUnit) {
-        
-        Unit<Q> tail = getTrailingUnit(); 
-        
-        assertDecreasingOrderOfSignificanceAndLinearity(tail, mixedRadixUnit);
-        
-        final List<Unit<Q>> mixedRadixUnits = new ArrayList<>(this.mixedRadixUnits);
-        mixedRadixUnits.add(mixedRadixUnit);
-        return new MixedRadix<>(state, mixedRadixUnits);
-    }
-    
-    private void assertDecreasingOrderOfSignificanceAndLinearity(Unit<Q> tail, Unit<Q> appended) {
-        
-        final UnitConverter converter = appended.getConverterTo(tail);
-        if(!converter.isLinear()) {
-            String message = String.format("the appended mixed-radix unit <%s> "
-                    + "must be linear", 
-                    appended.getClass());
-            throw new IllegalArgumentException(message);
-        }
-        
-        final Number factor = appended.getConverterTo(tail).convert(1);
-        
-        if(Calculator.loadDefault(factor).abs().isLessThanOne()) {
-            String message = String.format("the appended mixed-radix unit <%s> "
-                    + "must be of lesser significance "
-                    + "than the one it is appended to: <%s>", 
-                    appended.getClass(),
-                    tail.getClass());
-            throw new IllegalArgumentException(message);
-        }
-    }
-    
-    private static class PrimaryUnitPickState {
-        
-        private final static int LEADING_IS_PRIMARY_UNIT = 0;
-        private final static int TRAILING_IS_PRIMARY_UNIT = -1;
-        private final boolean explicitlyPicked;
-        private final int pickedIndex;
-        
-        private static PrimaryUnitPickState pickByConvention() {
-            
-            final int pickedIndex_byConvention;
-            
-            switch (PRIMARY_UNIT_PICK) {
-            case LEADING_UNIT:
-                pickedIndex_byConvention = LEADING_IS_PRIMARY_UNIT;
-                break;
+		final Number factor = appended.getConverterTo(tail).convert(1);
 
-            case TRAILING_UNIT:
-                pickedIndex_byConvention = TRAILING_IS_PRIMARY_UNIT;
-                break;
-                
-            default:
-                throw new MeasurementException(String.format("internal error: unmatched switch case <%s>", PRIMARY_UNIT_PICK));
-                
-            }
-            
-            return new PrimaryUnitPickState(false, pickedIndex_byConvention);
-        }
+		if (Calculator.loadDefault(factor).abs().isLessThanOne()) {
+			String message = String.format("the appended mixed-radix unit <%s> " + "must be of lesser significance "
+					+ "than the one it is appended to: <%s>", appended.getClass(), tail.getClass());
+			throw new IllegalArgumentException(message);
+		}
+	}
 
-        private void assertNotExplicitlyPicked() {
-            if(explicitlyPicked) {
-                throw new IllegalStateException("a primary unit was already picked");
-            }
-        }
+	private static class PrimaryUnitPickState {
 
-        private static PrimaryUnitPickState pickByExplicitIndex(int explicitIndex) {
-            return new PrimaryUnitPickState(true, explicitIndex);
-        }
+		private final static int LEADING_IS_PRIMARY_UNIT = 0;
+		private final static int TRAILING_IS_PRIMARY_UNIT = -1;
+		private final boolean explicitlyPicked;
+		private final int pickedIndex;
 
-        private static PrimaryUnitPickState pickLeading() {
-            return new PrimaryUnitPickState(true, LEADING_IS_PRIMARY_UNIT);
-        }
+		private static PrimaryUnitPickState pickByConvention() {
 
-        private PrimaryUnitPickState(boolean explicitlyPicked, int pickedIndex) {
-            this.explicitlyPicked = explicitlyPicked;
-            this.pickedIndex = pickedIndex;
-        }
-        
-        private int nonNegativePrimaryUnitIndex(int unitCount) {
-            return pickedIndex < 0
-                    ? unitCount + pickedIndex
-                            : pickedIndex;
-        }
-        
-    
-    }
-    
-/* TODO check what's usable based on the QuantityFormat implementation?
-    mixedRadix.visitQuantity(quantity_typed, mixedRadixUnitCount, (index, unit, value)->{
-        try {
-            
-            boolean isLast = index == lastIndex;
-            
-            DecimalFormat numberFormat = isLast
-                    ? formatOptions.getRealFormat() // to format real number value
-                            : formatOptions.getIntegerFormat(); // to format whole number value
+			final int pickedIndex_byConvention;
 
-            // number value 
-                    destination.append(numberFormat.format(value));
-            
-            if (!quantity.getUnit().equals(AbstractUnit.ONE)) {
-                // number to unit delimiter 
-                destination.append(formatOptions.getNumberToUnitDelimiter());
-                
-                // unit
-                formatOptions.getUnitFormat().format(unit, destination);
-            }
-            
-            if(!isLast) {
-                
-                // radix delimiter
-                destination.append(formatOptions.getRadixPartsDelimiter());
-                
-            } 
-            
-        } catch (IOException e) {
-            throw new MeasurementException(e);
-        }
-    });
-    
-    return destination;
-}
-*/    
-    
+			switch (PRIMARY_UNIT_PICK) {
+			case LEADING_UNIT:
+				pickedIndex_byConvention = LEADING_IS_PRIMARY_UNIT;
+				break;
+
+			case TRAILING_UNIT:
+				pickedIndex_byConvention = TRAILING_IS_PRIMARY_UNIT;
+				break;
+
+			default:
+				throw new MeasurementException(
+						String.format("internal error: unmatched switch case <%s>", PRIMARY_UNIT_PICK));
+
+			}
+
+			return new PrimaryUnitPickState(false, pickedIndex_byConvention);
+		}
+
+		private void assertNotExplicitlyPicked() {
+			if (explicitlyPicked) {
+				throw new IllegalStateException("a primary unit was already picked");
+			}
+		}
+
+		private static PrimaryUnitPickState pickByExplicitIndex(int explicitIndex) {
+			return new PrimaryUnitPickState(true, explicitIndex);
+		}
+
+		private static PrimaryUnitPickState pickLeading() {
+			return new PrimaryUnitPickState(true, LEADING_IS_PRIMARY_UNIT);
+		}
+
+		private PrimaryUnitPickState(boolean explicitlyPicked, int pickedIndex) {
+			this.explicitlyPicked = explicitlyPicked;
+			this.pickedIndex = pickedIndex;
+		}
+
+		private int nonNegativePrimaryUnitIndex(int unitCount) {
+			return pickedIndex < 0 ? unitCount + pickedIndex : pickedIndex;
+		}
+
+	}
 }
