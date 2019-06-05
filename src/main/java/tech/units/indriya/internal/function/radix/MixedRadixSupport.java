@@ -29,11 +29,8 @@
  */
 package tech.units.indriya.internal.function.radix;
 
-import java.math.MathContext;
-import java.math.RoundingMode;
 import java.util.function.Consumer;
 
-import tech.units.indriya.function.Calculus;
 import tech.units.indriya.function.MixedRadix;
 import tech.units.indriya.internal.function.calc.Calculator;
 
@@ -46,7 +43,6 @@ import tech.units.indriya.internal.function.calc.Calculator;
 public class MixedRadixSupport {
 
     private final Radix[] radices;
-    private final MathContext mc;
 
     /**
      * 
@@ -54,7 +50,6 @@ public class MixedRadixSupport {
      */
     public MixedRadixSupport(Radix[] radices) {
         this.radices = radices;
-        this.mc = new MathContext(Calculus.MATH_CONTEXT.getPrecision(), RoundingMode.FLOOR);
     }
     
     /**
@@ -72,7 +67,7 @@ public class MixedRadixSupport {
             
             boolean fractionalRemainder = i==0;
             
-            Number[] divideAndRemainder = radix.divideAndRemainder(total, mc, fractionalRemainder); 
+            Number[] divideAndRemainder = radix.divideAndRemainder(total, !fractionalRemainder); 
             
             Number remainder = divideAndRemainder[1];
             

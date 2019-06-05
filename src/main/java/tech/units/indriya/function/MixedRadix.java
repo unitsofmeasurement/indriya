@@ -30,7 +30,6 @@
 
 package tech.units.indriya.function;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -288,14 +287,7 @@ public class MixedRadix<Q extends Quantity<Q>> {
     }
     
     private Radix toRadix(UnitConverter converter) {
-
-        // use optimized radix converter is rational 
-        if(converter instanceof RationalConverter) {
-            RationalConverter rConverter = (RationalConverter) converter;
-            return new Radix.RationalRadix(rConverter.getDividend(), rConverter.getDivisor());
-        }
-
-        return new Radix.DecimalRadix(Calculus.toBigDecimal(converter.convert(BigDecimal.ONE)));
+        return new Radix.UnitConverterRadix(converter);
     }
 
     private MixedRadix<Q> append(PrimaryUnitPickState state, Unit<Q> mixedRadixUnit) {

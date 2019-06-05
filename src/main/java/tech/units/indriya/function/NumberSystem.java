@@ -85,6 +85,15 @@ public interface NumberSystem {
     Number divide(Number x, Number y);
     
     /**
+     * Returns a two-element Number array containing {x / y, x % y} 
+     * @param x
+     * @param y
+     * @param roundRemainderTowardsZero - whether the division remainder should be rounded towards zero 
+     * @return
+     */
+    Number[] divideAndRemainder(Number x, Number y, boolean roundRemainderTowardsZero);
+    
+    /**
      * Returns given {@code number} to the power of {@code exponent} as a {@link Number} that best
      * represents the arithmetic result within the set of number types this NumberSystem
      * supports.
@@ -115,6 +124,14 @@ public interface NumberSystem {
      * @return {@code -number}  
      */    
     Number negate(Number number);
+    
+    /**
+     * Returns the signum function of given {@code number}.
+     * 
+     * @param number
+     * @return {@code signum(number)}  
+     */
+    int signum(Number number);
     
     /**
      * Returns the absolute of given {@code number} as a {@link Number} that best
