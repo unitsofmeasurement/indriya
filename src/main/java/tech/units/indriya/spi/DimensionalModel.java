@@ -74,7 +74,7 @@ import tech.units.indriya.quantity.QuantityDimension;
  * @see <a href="http://en.wikipedia.org/wiki/Dimensional_analysis">Wikipedia: Dimensional Analysis</a>
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 0.6, $Date: 2018-05-31 $
+ * @version 1.0, $Date: 2019-06-07 $
  * @since 1.0
  */
 public abstract class DimensionalModel {
@@ -105,7 +105,7 @@ public abstract class DimensionalModel {
   }
 
   /**
-   * DefaultQuantityFactory constructor (allows for derivation).
+   * DimensionalModel constructor (allows for derivation).
    */
   protected DimensionalModel() {
   }
