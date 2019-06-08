@@ -36,10 +36,10 @@ import java.util.function.Predicate;
  * Package private bit mask utility for CompositionTask.
  * 
  * @author Andi Huber
- * @version 1.0
+ * @version 1.1
  * @since 2.0
  */
-final class CompositionTask_BitScanner {
+final class CompositionTaskBitScanner {
 
   @FunctionalInterface
   public static interface BiIntConsumer {
@@ -48,7 +48,7 @@ final class CompositionTask_BitScanner {
 
   private final BitSet bitSet;
 
-  private CompositionTask_BitScanner(BitSet bitSet) {
+  private CompositionTaskBitScanner(BitSet bitSet) {
     this.bitSet = bitSet;
   }
 
@@ -59,7 +59,7 @@ final class CompositionTask_BitScanner {
    * and ones, whether the specified predicate {@code bitTest} is false or true 
    * with respect to the elements of the specified {@code array}  
    */
-  public static <T> CompositionTask_BitScanner of(T[] array, Predicate<T> bitTest) {
+  public static <T> CompositionTaskBitScanner of(T[] array, Predicate<T> bitTest) {
     final BitSet mask = new BitSet(array.length);
     int bitIndex = 0;
     for(T element : array) {
@@ -68,7 +68,7 @@ final class CompositionTask_BitScanner {
       }
       bitIndex++;
     }
-    return new CompositionTask_BitScanner(mask);
+    return new CompositionTaskBitScanner(mask);
   }
 
   /**

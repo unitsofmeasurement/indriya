@@ -103,7 +103,7 @@ final class CompositionTask {
   /**@returns the number of simplifications that could be found and were applied*/
   private int trySimplify() {
 
-    final CompositionTask_ArrayAdapter<AbstractConverter> adapter = CompositionTask_ArrayAdapter.of(arrayOfConverters);
+    final CompositionTaskArrayAdapter<AbstractConverter> adapter = CompositionTaskArrayAdapter.of(arrayOfConverters);
     int simplificationCount = adapter.visitSequentialPairsAndSimplify((a, b)->{
       if(a.isIdentity()) {
         return b;
@@ -121,7 +121,7 @@ final class CompositionTask {
 
   /**sorts an array of converters to normal-form order*/
   private void sortToNormalFormOrder(AbstractConverter[] arrayOfConverters) {
-    final CompositionTask_BitScanner bitScanner = CompositionTask_BitScanner.of(arrayOfConverters, UnitConverter::isLinear);
+    final CompositionTaskBitScanner bitScanner = CompositionTaskBitScanner.of(arrayOfConverters, UnitConverter::isLinear);
     // a bit-set 0-0-1-1-1-0 would indicate 3rd to 5th position are allowed to be put in arbitrary order
     // we sort this sub-sequences of '1's according to normal-form-order
     bitScanner.visitBitSequences((fromIndex, toIndex) -> {
