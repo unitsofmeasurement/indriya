@@ -134,7 +134,7 @@ public final class LogConverter extends AbstractConverter implements ValueSuppli
 
     @Override
     protected Number convertWhenNotIdentity(Number value) {
-        return Calculator.loadDefault(value)
+        return Calculator.of(value)
               .log()
               .divide(logOfBase)
               .peek();

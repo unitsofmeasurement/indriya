@@ -43,7 +43,7 @@ import tech.units.indriya.function.MultiplyConverter;
 import tech.units.indriya.function.PowerOfIntConverter;
 import tech.units.indriya.function.PowerOfPiConverter;
 import tech.units.indriya.function.RationalConverter;
-import tech.units.indriya.spi.ConverterCompositionHandler;
+import tech.units.indriya.function.ConverterCompositionHandler;
 
 /**
  * UnitCompositionHandler yielding a normal-form.

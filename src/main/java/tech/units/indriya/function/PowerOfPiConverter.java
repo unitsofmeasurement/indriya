@@ -102,7 +102,7 @@ public final class PowerOfPiConverter extends AbstractConverter
         }
         BigDecimal pi = Constants.Pi.ofNumDigits(nbrDigits);
         
-        return Calculator.loadDefault(pi)
+        return Calculator.of(pi)
               .power(exponent)  
               .multiply(value)
               .peek();

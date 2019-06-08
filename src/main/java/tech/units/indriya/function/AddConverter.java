@@ -99,7 +99,7 @@ public final class AddConverter extends AbstractConverter implements ValueSuppli
 
   @Override
   protected Number convertWhenNotIdentity(Number value) {
-      return Calculator.loadDefault(offset)
+      return Calculator.of(offset)
               .add(value)
               .peek();
   }

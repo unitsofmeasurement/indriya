@@ -149,7 +149,7 @@ public final class ExpConverter extends AbstractConverter implements ValueSuppli
 
     @Override
     protected Number convertWhenNotIdentity(Number value) {
-        return Calculator.loadDefault(logOfBase)
+        return Calculator.of(logOfBase)
               .multiply(value)
               .exp()
               .peek();

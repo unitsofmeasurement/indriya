@@ -30,11 +30,15 @@
 package tech.units.indriya.function;
 
 import java.math.MathContext;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ServiceLoader;
 
-import tech.units.indriya.internal.function.calc.DefaultNumberSystem;
+import tech.units.indriya.spi.NumberSystem;
 
 /**
- * Configuration for any internal number arithmetic.
+ * Facade for internal number arithmetic.
  * 
  * @author Andi Huber
  * @author Werner Keil
@@ -52,16 +56,40 @@ public final class Calculus {
 	 */
 	public static MathContext MATH_CONTEXT = DEFAULT_MATH_CONTEXT;
 	
-	
-	/**
-     * The default NumberSystem used for Number arithmetic.
-     */
-    public static final NumberSystem DEFAULT_NUMBER_SYSTEM = new DefaultNumberSystem();
+    private static final String DEFAULT_NUMBER_SYSTEM = "tech.units.indriya.internal.function.calc.DefaultNumberSystem";
 
     /**
-     * Exposes (non-final) the NumberSystem used for Number arithmetic.
+     * All available {@link NumberSystem NumberSystems} used for Number arithmetic.
      */
-    public static NumberSystem NUMBER_SYSTEM = DEFAULT_NUMBER_SYSTEM;
-	
+    public static List<NumberSystem> getAvailableNumberSystems() {
+        List<NumberSystem> systems = new ArrayList<>();
+        ServiceLoader<NumberSystem> loader = ServiceLoader.load(NumberSystem.class);
+        loader.forEach(NumberSystem -> {
+            systems.add(NumberSystem);
+        });
+        return systems;
+    }
+
+    /**
+     * Returns the default {@link NumberSystem} used for Number arithmetic.
+     */
+    public static NumberSystem getNumberSystem() {
+        return getNumberSystem(DEFAULT_NUMBER_SYSTEM);
+    }
+
+    /**
+     * Returns the given {@link NumberSystem} used for Number arithmetic by (class) name.
+     */
+    public static NumberSystem getNumberSystem(String providerName) {
+        ServiceLoader<NumberSystem> loader = ServiceLoader.load(NumberSystem.class);
+        Iterator<NumberSystem> it = loader.iterator();
+        while (it.hasNext()) {
+            NumberSystem provider = it.next();
+            if (providerName.equals(provider.getClass().getName())) {
+                return provider;
+            }
+        }
+        throw new IllegalArgumentException("NumberSystem " + providerName + " not found");
+    }
     
 }

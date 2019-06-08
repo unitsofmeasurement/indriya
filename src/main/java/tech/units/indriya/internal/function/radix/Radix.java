@@ -34,7 +34,7 @@ import java.util.Objects;
 import javax.measure.UnitConverter;
 
 import tech.units.indriya.function.Calculus;
-import tech.units.indriya.function.NumberSystem;
+import tech.units.indriya.spi.NumberSystem;
 
 /**
  * Internal utility for {@link MixedRadixSupport}.
@@ -93,7 +93,7 @@ public interface Radix {
         }
         
         private NumberSystem ns() {
-            return Calculus.NUMBER_SYSTEM;
+            return Calculus.getNumberSystem();
         }
         
     }

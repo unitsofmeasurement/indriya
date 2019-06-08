@@ -81,7 +81,7 @@ public class NumberQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
     public ComparableQuantity<Q> add(Quantity<Q> that) {
         return addition(that, (thisValueInSystemUnit, thatValueInSystemUnit) ->
         Calculator
-            .loadDefault(thisValueInSystemUnit)
+            .of(thisValueInSystemUnit)
             .add(thatValueInSystemUnit)
             .peek());
     }
@@ -90,7 +90,7 @@ public class NumberQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
     public ComparableQuantity<Q> subtract(Quantity<Q> that) {
         return addition(that, (thisValueInSystemUnit, thatValueInSystemUnit) -> 
         Calculator
-            .loadDefault(thisValueInSystemUnit)
+            .of(thisValueInSystemUnit)
             .subtract(thatValueInSystemUnit)
             .peek());
     }
@@ -98,7 +98,7 @@ public class NumberQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
     @Override
     public ComparableQuantity<?> divide(Quantity<?> that) {
         final Number resultValueInThisUnit = Calculator
-                .loadDefault(getValue())
+                .of(getValue())
                 .divide(that.getValue())
                 .peek();
         return Quantities.getQuantity(resultValueInThisUnit, getUnit().divide(that.getUnit()));
@@ -107,7 +107,7 @@ public class NumberQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
     @Override
     public ComparableQuantity<Q> divide(Number divisor) {
         final Number resultValueInThisUnit = Calculator
-                .loadDefault(getValue())
+                .of(getValue())
                 .divide(divisor)
                 .peek();
         return Quantities.getQuantity(resultValueInThisUnit, getUnit());
@@ -116,7 +116,7 @@ public class NumberQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
     @Override
     public ComparableQuantity<?> multiply(Quantity<?> that) {
         final Number resultValueInThisUnit = Calculator
-                .loadDefault(getValue())
+                .of(getValue())
                 .multiply(that.getValue())
                 .peek();
         return Quantities.getQuantity(resultValueInThisUnit, getUnit().multiply(that.getUnit()));
@@ -125,7 +125,7 @@ public class NumberQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
     @Override
     public ComparableQuantity<Q> multiply(Number multiplier) {
         final Number resultValueInThisUnit = Calculator
-                .loadDefault(getValue())
+                .of(getValue())
                 .multiply(multiplier)
                 .peek();
         return Quantities.getQuantity(resultValueInThisUnit, getUnit());
@@ -134,7 +134,7 @@ public class NumberQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
     @Override
     public ComparableQuantity<?> inverse() {
         final Number resultValueInThisUnit = Calculator
-                .loadDefault(getValue())
+                .of(getValue())
                 .reciprocal()
                 .peek();
         return Quantities.getQuantity(resultValueInThisUnit, getUnit().inverse());
@@ -143,7 +143,7 @@ public class NumberQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
     @Override
     public Quantity<Q> negate() {
         final Number resultValueInThisUnit = Calculator
-                .loadDefault(getValue())
+                .of(getValue())
                 .negate()
                 .peek();
         return Quantities.getQuantity(resultValueInThisUnit, getUnit());

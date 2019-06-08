@@ -123,13 +123,13 @@ public final class TemporalQuantity extends AbstractQuantity<Time> {
             
             long longValue = value.longValue();
             
-            Number error = Calculator.loadDefault(value)
+            Number error = Calculator.of(value)
             .subtract(longValue)
             .abs()
             .peek();
 
             //TODO[220] we should try to switch to smaller units to minimize the error
-            if(Calculus.NUMBER_SYSTEM.compare(error, 1)>0) {
+            if(Calculus.getNumberSystem().compare(error, 1)>0) {
                 String msg = String.format("cannot round number %s to long", "" + value);
                 throw new ArithmeticException(msg);
             }
@@ -223,7 +223,7 @@ public final class TemporalQuantity extends AbstractQuantity<Time> {
     if (obj instanceof Quantity<?>) {
       Quantity<?> that = (Quantity<?>) obj;
       return Objects.equals(getUnit(), that.getUnit()) && 
-              Calculus.NUMBER_SYSTEM.compare(value, that.getValue()) == 0;
+              Calculus.getNumberSystem().compare(value, that.getValue()) == 0;
     }
     return super.equals(obj);
   }
@@ -238,14 +238,14 @@ public final class TemporalQuantity extends AbstractQuantity<Time> {
       
       final UnitConverter thisToThat = this.getUnit().getConverterTo(that.getUnit());
       final boolean thatUnitIsSmaller = 
-              Calculus.NUMBER_SYSTEM.compare(thisToThat.convert(1.), 1.)>0;
+              Calculus.getNumberSystem().compare(thisToThat.convert(1.), 1.)>0;
 
       final Unit<Time> preferedUnit = thatUnitIsSmaller ? that.getUnit() : this.getUnit();
       
       final Number thisValueInPreferedUnit = convertedQuantityValue(this, preferedUnit);
       final Number thatValueInPreferedUnit = convertedQuantityValue(that, preferedUnit);
       
-      final Number resultValueInPreferedUnit = Calculator.loadDefault(thisValueInPreferedUnit)
+      final Number resultValueInPreferedUnit = Calculator.of(thisValueInPreferedUnit)
               .add(thatValueInPreferedUnit)
               .peek();
       
@@ -260,31 +260,31 @@ public final class TemporalQuantity extends AbstractQuantity<Time> {
   @Override
   public ComparableQuantity<?> divide(Quantity<?> that) {
     return applyMultiplicativeQuantityOperation(
-            that, (a, b)->Calculator.loadDefault(a).divide(b).peek(), Unit::divide);
+            that, (a, b)->Calculator.of(a).divide(b).peek(), Unit::divide);
   }
 
   @Override
   public ComparableQuantity<Time> divide(Number that) {
     return applyMultiplicativeNumberOperation(
-            that, (a, b)->Calculator.loadDefault(a).divide(b).peek());
+            that, (a, b)->Calculator.of(a).divide(b).peek());
   }
 
   @Override
   public ComparableQuantity<?> multiply(Quantity<?> that) {
     return applyMultiplicativeQuantityOperation(
-            that, (a, b)->Calculator.loadDefault(a).multiply(b).peek(), Unit::multiply);
+            that, (a, b)->Calculator.of(a).multiply(b).peek(), Unit::multiply);
   }
 
   @Override
   public ComparableQuantity<Time> multiply(Number that) {
     return applyMultiplicativeNumberOperation(
-            that, (a, b)->Calculator.loadDefault(a).multiply(b).peek());
+            that, (a, b)->Calculator.of(a).multiply(b).peek());
   }
 
   @Override
   public ComparableQuantity<Frequency> inverse() {
     return Quantities.getQuantity(
-            Calculator.loadDefault(value).reciprocal().peek(),
+            Calculator.of(value).reciprocal().peek(),
             toUnit(timeUnit).inverse()).asType(Frequency.class);
   }
 
@@ -293,7 +293,7 @@ public final class TemporalQuantity extends AbstractQuantity<Time> {
    */
   @Override
   public Quantity<Time> negate() {
-    return of(Calculator.loadDefault(value).negate().peek(), getTemporalUnit());
+    return of(Calculator.of(value).negate().peek(), getTemporalUnit());
   }
   
   // -- HELPER

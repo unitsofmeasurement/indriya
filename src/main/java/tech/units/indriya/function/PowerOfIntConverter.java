@@ -143,12 +143,12 @@ public final class PowerOfIntConverter extends AbstractConverter
         final BigInteger bintFactor = BigInteger.valueOf(base).pow(Math.abs(exponent));
         
         if(exponent>0) {
-            return Calculator.loadDefault(bintFactor)
+            return Calculator.of(bintFactor)
                   .multiply(value)
                   .peek();
         }
         
-        return Calculator.loadDefault(bintFactor)
+        return Calculator.of(bintFactor)
                 .reciprocal()
                 .multiply(value)
                 .peek();

@@ -306,7 +306,7 @@ public class MixedRadix<Q extends Quantity<Q>> {
 
 		final Number factor = appended.getConverterTo(tail).convert(1);
 
-		if (Calculator.loadDefault(factor).abs().isLessThanOne()) {
+		if (Calculator.of(factor).abs().isLessThanOne()) {
 			String message = String.format("the appended mixed-radix unit <%s> " + "must be of lesser significance "
 					+ "than the one it is appended to: <%s>", appended.getClass(), tail.getClass());
 			throw new IllegalArgumentException(message);

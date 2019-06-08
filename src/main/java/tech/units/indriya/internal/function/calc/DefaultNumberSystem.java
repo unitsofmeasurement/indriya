@@ -38,8 +38,8 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.UnaryOperator;
 
 import tech.units.indriya.function.Calculus;
-import tech.units.indriya.function.NumberSystem;
 import tech.units.indriya.function.RationalNumber;
+import tech.units.indriya.spi.NumberSystem;
 
 /**
  * {@link NumberSystem} implementation to support Java's built-in {@link Number}s and the
@@ -182,8 +182,8 @@ public class DefaultNumberSystem implements NumberSystem {
         
         final int sign = sign_x * sign_y;
         // handle corner cases when x or y are zero
-        if(sign==0) {
-            if(sign_y==0) {
+        if(sign == 0) {
+            if(sign_y == 0) {
                 throw new ArithmeticException("division by zero");
             }
             if(sign_x==0) {
@@ -215,10 +215,10 @@ public class DefaultNumberSystem implements NumberSystem {
             final MathContext mathContext = 
                     new MathContext(Calculus.MATH_CONTEXT.getPrecision(), RoundingMode.FLOOR);
             
-            final BigDecimal decimal_x = (type_x==NumberType.RATIONAL)
+            final BigDecimal decimal_x = (type_x == NumberType.RATIONAL)
                     ? ((RationalNumber) absX).bigDecimalValue()
                             : toBigDecimal(absX);
-            final BigDecimal decimal_y = (type_y==NumberType.RATIONAL)
+            final BigDecimal decimal_y = (type_y == NumberType.RATIONAL)
                     ? ((RationalNumber) absY).bigDecimalValue()
                             : toBigDecimal(absY);
             

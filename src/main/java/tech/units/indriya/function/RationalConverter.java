@@ -169,7 +169,7 @@ public final class RationalConverter extends AbstractConverter implements ValueS
 
     @Override
     protected Number convertWhenNotIdentity(Number value) {
-        return Calculator.loadDefault(factor)
+        return Calculator.of(factor)
               .multiply(value)
               .peek();
     }

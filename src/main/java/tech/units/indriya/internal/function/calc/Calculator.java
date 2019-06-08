@@ -32,7 +32,7 @@ package tech.units.indriya.internal.function.calc;
 import java.util.Objects;
 
 import tech.units.indriya.function.Calculus;
-import tech.units.indriya.function.NumberSystem;
+import tech.units.indriya.spi.NumberSystem;
 
 /**
  * Provides arithmetic on Java {@link Number}s utilizing a provided {@link NumberSystem}.    
@@ -44,22 +44,22 @@ public class Calculator {
 
     /**
      * Returns a new instance of a {@code Calculator} initialized with the default {@link NumberSystem}, 
-     * as set at {@link Calculus#NUMBER_SYSTEM}
+     * as set at {@link Calculus#getNumberSystem()}
      * <p>
      * This implementation is *not* thread-safe, hence threads should not share instances of this. 
      * @return a {@code Calculator} initialized with the default {@link NumberSystem} 
      */
-    public static Calculator getDefault() {
-        return new Calculator(Calculus.NUMBER_SYSTEM);
+    protected static Calculator getInstance() {
+        return new Calculator(Calculus.getNumberSystem());
     }
 
     /**
-     * Shortcut for {@code getDefault().load(number)}. See {@link #getDefault()} and {@link #load(Number)}
+     * Shortcut for {@code getDefault().load(number)}. See {@link #getInstance()} and {@link #load(Number)}
      * @param number
      * @return default {@code Calculator} with {@code number} loaded into its accumulator
      */
-    public static Calculator loadDefault(Number number) {
-        return getDefault().load(number);
+    public static Calculator of(Number number) {
+        return getInstance().load(number);
     }
 
     private final NumberSystem ns;

@@ -95,7 +95,7 @@ public class MixedRadixSupport {
                 continue;
             }
             
-            sum = Calculator.loadDefault(sum).add(values[i+1]).peek();
+            sum = Calculator.of(sum).add(values[i+1]).peek();
             
         }
         

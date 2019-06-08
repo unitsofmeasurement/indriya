@@ -214,7 +214,7 @@ public final class TimeUnitQuantity extends AbstractQuantity<Time> {
     if (obj instanceof Quantity<?>) {
       Quantity<?> that = (Quantity<?>) obj;
       return Objects.equals(getUnit(), that.getUnit()) && 
-              Calculus.NUMBER_SYSTEM.compare(value, that.getValue()) == 0;
+              Calculus.getNumberSystem().compare(value, that.getValue()) == 0;
               
     }
     return super.equals(obj);
@@ -232,14 +232,14 @@ public final class TimeUnitQuantity extends AbstractQuantity<Time> {
   public ComparableQuantity<Time> add(Quantity<Time> that) {
       final UnitConverter thisToThat = this.getUnit().getConverterTo(that.getUnit());
       final boolean thatUnitIsSmaller = 
-              Calculus.NUMBER_SYSTEM.compare(thisToThat.convert(1.), 1.)>0;
+              Calculus.getNumberSystem().compare(thisToThat.convert(1.), 1.)>0;
 
       final Unit<Time> preferedUnit = thatUnitIsSmaller ? that.getUnit() : this.getUnit();
       
       final Number thisValueInPreferedUnit = convertedQuantityValue(this, preferedUnit);
       final Number thatValueInPreferedUnit = convertedQuantityValue(that, preferedUnit);
       
-      final Number resultValueInPreferedUnit = Calculator.loadDefault(thisValueInPreferedUnit)
+      final Number resultValueInPreferedUnit = Calculator.of(thisValueInPreferedUnit)
               .add(thatValueInPreferedUnit)
               .peek();
       
@@ -260,7 +260,7 @@ public final class TimeUnitQuantity extends AbstractQuantity<Time> {
   @Override
   public ComparableQuantity<?> divide(Quantity<?> that) {
       return applyMultiplicativeQuantityOperation(
-              that, (a, b)->Calculator.loadDefault(a).divide(b).peek(), Unit::divide);
+              that, (a, b)->Calculator.of(a).divide(b).peek(), Unit::divide);
   }
 
   /**
@@ -269,7 +269,7 @@ public final class TimeUnitQuantity extends AbstractQuantity<Time> {
   @Override
   public ComparableQuantity<Time> divide(Number that) {
       return applyMultiplicativeNumberOperation(
-              that, (a, b)->Calculator.loadDefault(a).divide(b).peek());
+              that, (a, b)->Calculator.of(a).divide(b).peek());
   }
 
   /**
@@ -278,7 +278,7 @@ public final class TimeUnitQuantity extends AbstractQuantity<Time> {
   @Override
   public ComparableQuantity<?> multiply(Quantity<?> that) {
       return applyMultiplicativeQuantityOperation(
-              that, (a, b)->Calculator.loadDefault(a).multiply(b).peek(), Unit::multiply);
+              that, (a, b)->Calculator.of(a).multiply(b).peek(), Unit::multiply);
   }
 
   /**
@@ -287,7 +287,7 @@ public final class TimeUnitQuantity extends AbstractQuantity<Time> {
   @Override
   public ComparableQuantity<Time> multiply(Number that) {
       return applyMultiplicativeNumberOperation(
-              that, (a, b)->Calculator.loadDefault(a).multiply(b).peek());
+              that, (a, b)->Calculator.of(a).multiply(b).peek());
   }
   
   /**
@@ -296,7 +296,7 @@ public final class TimeUnitQuantity extends AbstractQuantity<Time> {
   @Override
   public ComparableQuantity<Frequency> inverse() {
     return Quantities.getQuantity(
-            Calculator.loadDefault(value).reciprocal().peek(),
+            Calculator.of(value).reciprocal().peek(),
             toUnit(timeUnit).inverse()).asType(Frequency.class);
   }
 
@@ -306,7 +306,7 @@ public final class TimeUnitQuantity extends AbstractQuantity<Time> {
   @Override
   public Quantity<Time> negate() {
     return of(
-            Calculator.loadDefault(value).negate().peek(), 
+            Calculator.of(value).negate().peek(), 
             getTimeUnit());
   }
   

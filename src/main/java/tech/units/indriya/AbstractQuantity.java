@@ -43,8 +43,8 @@ import javax.measure.quantity.Dimensionless;
 import tech.units.indriya.format.SimpleQuantityFormat;
 import tech.units.indriya.format.SimpleUnitFormat;
 import tech.units.indriya.function.Calculus;
-import tech.units.indriya.function.NumberSystem;
 import tech.units.indriya.quantity.Quantities;
+import tech.units.indriya.spi.NumberSystem;
 import tech.uom.lib.common.function.UnitSupplier;
 import tech.uom.lib.common.function.ValueSupplier;
 import tech.uom.lib.common.util.NaturalQuantityComparator;
@@ -108,7 +108,7 @@ import tech.uom.lib.common.util.NaturalQuantityComparator;
  *
  * @author <a href="mailto:werner@uom.technology">Werner Keil</a>
  * @author Andi Huber
- * @version 1.10, Jun 3, 2019
+ * @version 1.11, Jun 9, 2019
  * @since 1.0
  */
 @SuppressWarnings("unchecked")
@@ -238,9 +238,9 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
     @Override
     public int compareTo(Quantity<Q> that) {
         if (this.getUnit().equals(that.getUnit())) {
-            return ns().compare(this.getValue(), that.getValue());
+            return numberSystem().compare(this.getValue(), that.getValue());
         }
-        return ns().compare(this.getValue(), that.to(this.getUnit()).getValue());
+        return numberSystem().compare(this.getValue(), that.to(this.getUnit()).getValue());
     }
 
     /**
@@ -366,8 +366,7 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
         return value.remainder(BigDecimal.ONE).compareTo(BigDecimal.ZERO) != 0;
     }
 
-    protected NumberSystem ns() {
-        return Calculus.NUMBER_SYSTEM;
+    protected NumberSystem numberSystem() {
+        return Calculus.getNumberSystem();
     }
-
 }
