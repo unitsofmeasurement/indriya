@@ -214,7 +214,7 @@ public final class TimeUnitQuantity extends AbstractQuantity<Time> {
     if (obj instanceof Quantity<?>) {
       Quantity<?> that = (Quantity<?>) obj;
       return Objects.equals(getUnit(), that.getUnit()) && 
-              Calculus.getNumberSystem().compare(value, that.getValue()) == 0;
+              Calculus.currentNumberSystem().compare(value, that.getValue()) == 0;
               
     }
     return super.equals(obj);
@@ -232,7 +232,7 @@ public final class TimeUnitQuantity extends AbstractQuantity<Time> {
   public ComparableQuantity<Time> add(Quantity<Time> that) {
       final UnitConverter thisToThat = this.getUnit().getConverterTo(that.getUnit());
       final boolean thatUnitIsSmaller = 
-              Calculus.getNumberSystem().compare(thisToThat.convert(1.), 1.)>0;
+              Calculus.currentNumberSystem().compare(thisToThat.convert(1.), 1.)>0;
 
       final Unit<Time> preferedUnit = thatUnitIsSmaller ? that.getUnit() : this.getUnit();
       

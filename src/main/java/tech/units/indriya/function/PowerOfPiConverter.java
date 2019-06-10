@@ -43,7 +43,7 @@ import tech.uom.lib.common.function.IntExponentSupplier;
  * Pi to the power of an integer exponent (π^exponent).
  * @author Andi Huber
  * @author Werner Keil
- * @version 1.3, Jun 3, 2019
+ * @version 1.4, Jun 10, 2019
  * @since 2.0
  */
 public final class PowerOfPiConverter extends AbstractConverter 
@@ -100,7 +100,7 @@ public final class PowerOfPiConverter extends AbstractConverter
         if (nbrDigits == 0) {
             throw new ArithmeticException("Pi multiplication with unlimited precision");
         }
-        BigDecimal pi = Constants.Pi.ofNumDigits(nbrDigits);
+        BigDecimal pi = Calculus.Pi.ofNumDigits(nbrDigits);
         
         return Calculator.of(pi)
               .power(exponent)  

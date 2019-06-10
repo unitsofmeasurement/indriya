@@ -93,7 +93,7 @@ public interface Radix {
         }
         
         private NumberSystem ns() {
-            return Calculus.getNumberSystem();
+            return Calculus.currentNumberSystem();
         }
         
     }

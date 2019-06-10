@@ -129,7 +129,7 @@ public final class TemporalQuantity extends AbstractQuantity<Time> {
             .peek();
 
             //TODO[220] we should try to switch to smaller units to minimize the error
-            if(Calculus.getNumberSystem().compare(error, 1)>0) {
+            if(Calculus.currentNumberSystem().compare(error, 1)>0) {
                 String msg = String.format("cannot round number %s to long", "" + value);
                 throw new ArithmeticException(msg);
             }
@@ -223,7 +223,7 @@ public final class TemporalQuantity extends AbstractQuantity<Time> {
     if (obj instanceof Quantity<?>) {
       Quantity<?> that = (Quantity<?>) obj;
       return Objects.equals(getUnit(), that.getUnit()) && 
-              Calculus.getNumberSystem().compare(value, that.getValue()) == 0;
+              Calculus.currentNumberSystem().compare(value, that.getValue()) == 0;
     }
     return super.equals(obj);
   }
@@ -238,7 +238,7 @@ public final class TemporalQuantity extends AbstractQuantity<Time> {
       
       final UnitConverter thisToThat = this.getUnit().getConverterTo(that.getUnit());
       final boolean thatUnitIsSmaller = 
-              Calculus.getNumberSystem().compare(thisToThat.convert(1.), 1.)>0;
+              Calculus.currentNumberSystem().compare(thisToThat.convert(1.), 1.)>0;
 
       final Unit<Time> preferedUnit = thatUnitIsSmaller ? that.getUnit() : this.getUnit();
       

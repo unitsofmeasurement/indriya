@@ -44,13 +44,13 @@ public class Calculator {
 
     /**
      * Returns a new instance of a {@code Calculator} initialized with the default {@link NumberSystem}, 
-     * as set at {@link Calculus#getNumberSystem()}
+     * as set at {@link Calculus#currentNumberSystem()}
      * <p>
      * This implementation is *not* thread-safe, hence threads should not share instances of this. 
      * @return a {@code Calculator} initialized with the default {@link NumberSystem} 
      */
     protected static Calculator getInstance() {
-        return new Calculator(Calculus.getNumberSystem());
+        return new Calculator(Calculus.currentNumberSystem());
     }
 
     /**

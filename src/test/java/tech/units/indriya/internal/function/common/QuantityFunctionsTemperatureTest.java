@@ -27,7 +27,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package tech.units.indriya.internal.function;
+package tech.units.indriya.internal.function.common;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static tech.units.indriya.NumberAssertions.assertNumberEquals;

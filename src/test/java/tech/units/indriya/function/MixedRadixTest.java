@@ -293,9 +293,9 @@ public class MixedRadixTest {
         
         assertEquals(Integer.class, time.getValue().getClass());
         
-        assertTrue(Calculus.getNumberSystem().isInteger(timeParts[0])); // should be non-fractional
-        assertTrue(Calculus.getNumberSystem().isInteger(timeParts[1])); // should be non-fractional
-        assertTrue(Calculus.getNumberSystem().isInteger(timeParts[2])); // should be non-fractional
+        assertTrue(Calculus.currentNumberSystem().isInteger(timeParts[0])); // should be non-fractional
+        assertTrue(Calculus.currentNumberSystem().isInteger(timeParts[1])); // should be non-fractional
+        assertTrue(Calculus.currentNumberSystem().isInteger(timeParts[2])); // should be non-fractional
         
     }
 

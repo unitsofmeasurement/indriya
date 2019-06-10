@@ -367,6 +367,6 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
     }
 
     protected NumberSystem numberSystem() {
-        return Calculus.getNumberSystem();
+        return Calculus.currentNumberSystem();
     }
 }

@@ -32,8 +32,8 @@
  * Therefore we test the Lambda features here in the RI.
  * 
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.0
+ * @version 1.1
  * @since 2.0
  */
-package tech.units.indriya.internal.function;
+package tech.units.indriya.internal.function.common;
 
