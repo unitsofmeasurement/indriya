@@ -39,6 +39,11 @@ import javax.measure.quantity.Temperature;
 
 import org.junit.jupiter.api.Test;
 
+/**
+ * 
+ * @author Werner Keil
+ *
+ */
 public class TemperatureTest {
 
   @Test
@@ -48,20 +53,20 @@ public class TemperatureTest {
   }
 
   @Test
-  public void testTemperatureQuantityDoubleTemperatureUnit() {
+  public void testTemperatureNumberQuantity() {
     Quantity<Temperature> t = Quantities.getQuantity(Double.valueOf(20d), CELSIUS);
     assertNumberEquals(20, t.getValue(), 1E-12);
   }
 
   @Test
-  public void testTo() {
+  public void testToKelvin() {
     Quantity<Temperature> t = Quantities.getQuantity(Double.valueOf(30d), CELSIUS);
     Quantity<Temperature> t2 = t.to(KELVIN);
     assertNumberEquals(303.15d, t2.getValue(), 1E-12);
   }
 
   @Test
-  public void testTo2() {
+  public void testToCelsius() {
     Quantity<Temperature> t = Quantities.getQuantity(Double.valueOf(2d), KELVIN);
     Quantity<Temperature> t2 = t.to(CELSIUS);
     assertNumberEquals(-271.15d, t2.getValue(), 1E-12);
