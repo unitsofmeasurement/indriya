@@ -41,6 +41,7 @@ import static tech.units.indriya.unit.Units.HOUR;
 import static tech.units.indriya.unit.Units.MINUTE;
 import static tech.units.indriya.unit.Units.SECOND;
 
+import javax.measure.MeasurementException;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.quantity.Length;
@@ -146,14 +147,12 @@ public class MixedRadixTest {
         // then
         assertEquals(MINUTE, mixedRadix1.getPrimaryUnit());
         assertEquals(SECOND, mixedRadix2.getPrimaryUnit());
-        
     }
     
 
     @Test
     public void wrongOrderOfSignificance() {
-        assertThrows(IllegalArgumentException.class, ()->{
-            
+        assertThrows(MeasurementException.class, ()->{
             MixedRadix.ofPrimary(USCustomary.INCH).mix(USCustomary.FOOT);
         });
     }

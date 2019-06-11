@@ -32,11 +32,13 @@ package tech.units.indriya.quantity;
 import static javax.measure.MetricPrefix.CENTI;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static tech.units.indriya.NumberAssertions.assertNumberEquals;
 
 import java.math.BigDecimal;
 import java.util.logging.Logger;
 
+import javax.measure.MeasurementException;
 import javax.measure.Quantity;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Time;
@@ -52,93 +54,111 @@ import tech.uom.lib.common.function.QuantityConverter;
  * @author Andi Huber
  */
 public class CompoundQuantityTest {
-    static final Logger logger = Logger.getLogger(CompoundQuantityTest.class.getName());
+	static final Logger logger = Logger.getLogger(CompoundQuantityTest.class.getName());
 
-    @Test
-    public void testLengthSingleValueCompositeUnit() {
-        CompoundQuantity<Length> mixLen = CompoundQuantity.of(Quantities.getQuantity(1, Units.METRE));
-      
-        assertEquals("[m]", mixLen.getUnits().toString());
-        assertEquals("1 m", mixLen.toString());
-        
-        Quantity<Length> length = mixLen.to(Units.METRE);
-        assertNumberEquals(1, length.getValue(), 1E-28);
-    }
-    
-    @Test
-    public void testLengths() {
-        
-        @SuppressWarnings("unchecked")
-        final Quantity<Length>[] quants = new Quantity[] { 
-                Quantities.getQuantity(1, Units.METRE),  
-                Quantities.getQuantity(70, CENTI(Units.METRE)) };
-        
-        CompoundQuantity<Length> mixLen = CompoundQuantity.of(quants);
-      
-        assertEquals("[m, cm]", mixLen.getUnits().toString());
-        assertEquals("1 m 70 cm", mixLen.toString());
-        
-        Quantity<Length> l2 = mixLen.to(Units.METRE);
-        assertNumberEquals(BigDecimal.valueOf(1.7d), l2.getValue(), 1E-12);
-        
-        Quantity<Length> l3 = mixLen.to(CENTI(Units.METRE));
-        assertNumberEquals(170, l3.getValue(), 1E-12);
-    }
+	@Test
+	public void testLengthSingleValueCompositeUnit() {
+		CompoundQuantity<Length> mixLen = CompoundQuantity.of(Quantities.getQuantity(1, Units.METRE));
 
-    /**
-     * Inspired by Time conversion in https://reference.wolfram.com/language/ref/MixedUnit.html
-     */
-    @Test
-    public void testTimes() {
-        @SuppressWarnings("unchecked")
-        final Quantity<Time>[] quants = new Quantity[] { Quantities.getQuantity(3, Units.DAY),  Quantities.getQuantity(4, Units.HOUR), 
-                Quantities.getQuantity(48, Units.MINUTE)};
-        final CompoundQuantity<Time> time = CompoundQuantity.of(quants);
-       
-        assertEquals("[day, h, min]", time.getUnits().toString());
-        assertEquals("3 day 4 h 48 min", time.toString());
-        
-        assertNumberEquals(3.2d, time.to(Units.DAY).getValue(), 1E-28);
-        assertNumberEquals(4608, time.to(Units.MINUTE).getValue(), 1E-28);
-        assertNumberEquals(276480, time.to(Units.SECOND).getValue(), 1E-28);
-    }
+		assertEquals("[m]", mixLen.getUnits().toString());
+		assertEquals("1 m", mixLen.toString());
 
-    /**
-     * Verifies that an mixed quantity is not equal to another quantity.
-     */
-    @Test
-    public void compoundQuantityIsNotEqualToAnotherQuantity() {
-        @SuppressWarnings("unchecked")
-        final Quantity<Time>[] numList = new Quantity[] { Quantities.getQuantity(2, Units.HOUR),  Quantities.getQuantity(6, Units.MINUTE) };
-        CompoundQuantity<Time> mixTime = CompoundQuantity.of(numList);
-        Quantity<Time> compareTime = Quantities.getQuantity(2.5d, Units.HOUR);
-        assertNotEquals(mixTime, compareTime);
-        assertNotEquals(mixTime.to(Units.HOUR), compareTime);
-    }
+		Quantity<Length> length = mixLen.to(Units.METRE);
+		assertNumberEquals(1, length.getValue(), 1E-28);
+	}
 
-    /**
-     * Verifies that a mixed quantity is not equal to another quantity that has the same numeric value.
-     */
-    @Test
-    public void compoundQuantityIsEqualToAQuantityOfTheSameNumericValue() {
-        @SuppressWarnings("unchecked")
-        final Quantity<Time>[] numList = new Quantity[] { Quantities.getQuantity(2, Units.HOUR),  Quantities.getQuantity(30, Units.MINUTE) };
-        CompoundQuantity<Time> mixTime = CompoundQuantity.of(numList);
-        Quantity<Time> compareTime = Quantities.getQuantity(2.5d, Units.HOUR);
-        assertNotEquals(mixTime, compareTime);
-        assertNumberEquals(mixTime.to(Units.HOUR).getValue(), compareTime.getValue(), 1E-12);    
-     }
-    
-    /**
-     * Verifies that a mixed quantity can be represented as QuantityConverter.
-     */
-    @Test
-    public void compoundQuantityAsConverter() {
-        @SuppressWarnings("unchecked")
-        final Quantity<Time>[] numList = new Quantity[] { Quantities.getQuantity(2, Units.HOUR),  Quantities.getQuantity(30, Units.MINUTE) };
-        QuantityConverter<Time> convTime = CompoundQuantity.of(numList);
-        Quantity<Time> compareTime = Quantities.getQuantity(2.5d, Units.HOUR);
-        assertNotEquals(convTime, compareTime);
-        assertNumberEquals(convTime.to(Units.HOUR).getValue(), compareTime.getValue(), 1E-12);    
-     }
+	@Test
+	public void testLengths() {
+
+		@SuppressWarnings("unchecked")
+		final Quantity<Length>[] quants = new Quantity[] { Quantities.getQuantity(1, Units.METRE),
+				Quantities.getQuantity(70, CENTI(Units.METRE)) };
+
+		CompoundQuantity<Length> mixLen = CompoundQuantity.of(quants);
+
+		assertEquals("[m, cm]", mixLen.getUnits().toString());
+		assertEquals("1 m 70 cm", mixLen.toString());
+
+		Quantity<Length> l2 = mixLen.to(Units.METRE);
+		assertNumberEquals(BigDecimal.valueOf(1.7d), l2.getValue(), 1E-12);
+
+		Quantity<Length> l3 = mixLen.to(CENTI(Units.METRE));
+		assertNumberEquals(170, l3.getValue(), 1E-12);
+	}
+
+	@Test
+	public void testLengthsReverse() {
+		@SuppressWarnings({ "unchecked" })
+		final Quantity<Length>[] quants = new Quantity[] { Quantities.getQuantity(70, CENTI(Units.METRE)),
+				Quantities.getQuantity(1, Units.METRE) };
+		assertThrows(MeasurementException.class, () -> {
+		CompoundQuantity<Length> mixLen = CompoundQuantity.of(quants);
+			assertEquals("[cm, m]", mixLen.getUnits().toString());
+			assertEquals("70 cm 1 m", mixLen.toString());
+	
+			Quantity<Length> l2 = mixLen.to(Units.METRE);
+		});
+	}
+
+	/**
+	 * Inspired by Time conversion in
+	 * https://reference.wolfram.com/language/ref/MixedUnit.html
+	 */
+	@Test
+	public void testTimes() {
+		@SuppressWarnings("unchecked")
+		final Quantity<Time>[] quants = new Quantity[] { Quantities.getQuantity(3, Units.DAY),
+				Quantities.getQuantity(4, Units.HOUR), Quantities.getQuantity(48, Units.MINUTE) };
+		final CompoundQuantity<Time> time = CompoundQuantity.of(quants);
+
+		assertEquals("[day, h, min]", time.getUnits().toString());
+		assertEquals("3 day 4 h 48 min", time.toString());
+
+		assertNumberEquals(3.2d, time.to(Units.DAY).getValue(), 1E-28);
+		assertNumberEquals(4608, time.to(Units.MINUTE).getValue(), 1E-28);
+		assertNumberEquals(276480, time.to(Units.SECOND).getValue(), 1E-28);
+	}
+
+	/**
+	 * Verifies that an mixed quantity is not equal to another quantity.
+	 */
+	@Test
+	public void compoundQuantityIsNotEqualToAnotherQuantity() {
+		@SuppressWarnings("unchecked")
+		final Quantity<Time>[] numList = new Quantity[] { Quantities.getQuantity(2, Units.HOUR),
+				Quantities.getQuantity(6, Units.MINUTE) };
+		CompoundQuantity<Time> mixTime = CompoundQuantity.of(numList);
+		Quantity<Time> compareTime = Quantities.getQuantity(2.5d, Units.HOUR);
+		assertNotEquals(mixTime, compareTime);
+		assertNotEquals(mixTime.to(Units.HOUR), compareTime);
+	}
+
+	/**
+	 * Verifies that a mixed quantity is not equal to another quantity that has the
+	 * same numeric value.
+	 */
+	@Test
+	public void compoundQuantityIsEqualToAQuantityOfTheSameNumericValue() {
+		@SuppressWarnings("unchecked")
+		final Quantity<Time>[] numList = new Quantity[] { Quantities.getQuantity(2, Units.HOUR),
+				Quantities.getQuantity(30, Units.MINUTE) };
+		CompoundQuantity<Time> mixTime = CompoundQuantity.of(numList);
+		Quantity<Time> compareTime = Quantities.getQuantity(2.5d, Units.HOUR);
+		assertNotEquals(mixTime, compareTime);
+		assertNumberEquals(mixTime.to(Units.HOUR).getValue(), compareTime.getValue(), 1E-12);
+	}
+
+	/**
+	 * Verifies that a mixed quantity can be represented as QuantityConverter.
+	 */
+	@Test
+	public void compoundQuantityAsConverter() {
+		@SuppressWarnings("unchecked")
+		final Quantity<Time>[] numList = new Quantity[] { Quantities.getQuantity(2, Units.HOUR),
+				Quantities.getQuantity(30, Units.MINUTE) };
+		QuantityConverter<Time> convTime = CompoundQuantity.of(numList);
+		Quantity<Time> compareTime = Quantities.getQuantity(2.5d, Units.HOUR);
+		assertNotEquals(convTime, compareTime);
+		assertNumberEquals(convTime.to(Units.HOUR).getValue(), compareTime.getValue(), 1E-12);
+	}
 }

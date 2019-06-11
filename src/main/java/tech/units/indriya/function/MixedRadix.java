@@ -56,7 +56,7 @@ import tech.units.indriya.quantity.Quantities;
  * 
  * @author Andi Huber
  * @author Werner Keil
- * @version 1.7, Jun 5, 2019
+ * @version 1.8, Jun 11, 2019
  * @since 2.0
  * @see <a href="https://en.wikipedia.org/wiki/Mixed_radix">Wikipedia: Mixed
  *      radix</a>
@@ -309,7 +309,7 @@ public class MixedRadix<Q extends Quantity<Q>> {
 		if (Calculator.of(factor).abs().isLessThanOne()) {
 			String message = String.format("the appended mixed-radix unit <%s> " + "must be of lesser significance "
 					+ "than the one it is appended to: <%s>", appended.getClass(), tail.getClass());
-			throw new IllegalArgumentException(message);
+			throw new MeasurementException(message);
 		}
 	}
 
