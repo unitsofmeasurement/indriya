@@ -32,6 +32,7 @@ package tech.units.indriya;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static javax.measure.MetricPrefix.*;
@@ -41,17 +42,21 @@ import java.math.BigDecimal;
 import java.util.Map;
 
 import javax.measure.Dimension;
+import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.UnitConverter;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
+import javax.measure.quantity.Power;
 
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.format.SimpleUnitFormat;
+import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.BaseUnit;
+import tech.units.indriya.unit.TransformedUnit;
 
 /**
  * Unit tests on the AbstractUnit class.
@@ -370,5 +375,55 @@ public class AbsUnitTest {
 			Unit result = sut.shift(NULL_NUMBER);
 		});
 	}
+
+    /**
+     * Test method for {@link javax.measure.Unit#pow(int)}.
+     */
+    @Test
+    public void testPow() {
+        Unit<?> result = WATT.pow(10);
+        assertEquals("W^10", result.toString());
+    }
+
+    @Test
+    public void testKiloIsAThousand() {
+        ComparableQuantity<Power> w2000 = Quantities.getQuantity(2000, WATT);
+        Quantity<Power> kW2 = Quantities.getQuantity(2, KILO(WATT));
+        assertTrue(w2000.isEquivalentTo(kW2));
+    }
+
+    @Test
+    public void testOf() {
+        assertEquals(KILO(GRAM).toString(), AbstractUnit.parse("kg").toString());
+    }
+
+    @Test
+    public void testParse3() {
+        assertEquals(KILO(GRAM).toString(), AbstractUnit.parse("kg").toString()); // TODO: Problem
+        // with kg...?
+    }
+
+    @Test
+    public void testParse4() {
+        assertEquals(KILO(METRE), AbstractUnit.parse("km"));
+    }
+
+    @Test
+    public void testToString() {
+        assertEquals("kg", KILO(GRAM).toString());
+    }
+
+    @Test
+    public void testGetSymbol() {
+        // TODO see https://github.com/unitsofmeasurement/uom-se/issues/54 /
+        assertEquals("kg", KILOGRAM.getSymbol());
+        assertNull(GRAM.getSymbol());
+    }
+
+    @Test
+    public void testGetParentUnit() {
+        assertEquals("TransformedUnit", GRAM.getClass().getSimpleName());
+        assertEquals("kg", ((TransformedUnit<Mass>) GRAM).getParentUnit().getSymbol());
+    }
 
 }

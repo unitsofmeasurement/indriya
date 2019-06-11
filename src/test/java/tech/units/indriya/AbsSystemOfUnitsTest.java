@@ -31,68 +31,22 @@ package tech.units.indriya;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import java.util.Set;
-
-import javax.measure.Dimension;
-import javax.measure.Unit;
-import javax.measure.spi.SystemOfUnits;
 
 import org.junit.jupiter.api.Test;
 
-import tech.units.indriya.quantity.QuantityDimension;
 import tech.units.indriya.unit.Units;
 
 public class AbsSystemOfUnitsTest {
-	private static final SystemOfUnits sut = Units.getInstance();
+	private static final AbstractSystemOfUnits sut = (AbstractSystemOfUnits) Units.getInstance();
 
 	@Test
 	public void testName() {
 		assertEquals("Units", sut.getName());
 	}
-
-	@Test
-	public void testGetByDimensionAoS() {
-		testGetByDimension(QuantityDimension.AMOUNT_OF_SUBSTANCE, 1);
-	}
 	
 	@Test
-	public void testGetByDimensionElCurrent() {
-		testGetByDimension(QuantityDimension.ELECTRIC_CURRENT, 1);
-	}
-
-	@Test
-	public void testGetByDimensionLen() {
-		testGetByDimension(QuantityDimension.LENGTH, 1);
-	}
-	
-	@Test
-	public void testGetByDimensionLumInt() {
-		testGetByDimension(QuantityDimension.LUMINOUS_INTENSITY, 2);
-	}
-
-	@Test
-	public void testGetByDimensionMass() {
-		testGetByDimension(QuantityDimension.MASS, 2);
-	}
-	
-	@Test
-	public void testGetByDimensionNone() {
-		testGetByDimension(QuantityDimension.NONE, 4);
-	}
-
-	@Test
-	public void testGetByDimensionTemperature() {
-		testGetByDimension(QuantityDimension.TEMPERATURE, 2);
-	}
-	
-	@Test
-	public void testGetByDimensionTime() {
-		testGetByDimension(QuantityDimension.TIME, 6);
-	}
-	
-	private void testGetByDimension(final Dimension dim, int expectedSize) {
-		Set<? extends Unit<?>> units = sut.getUnits(dim);
-		assertNotNull(units);
-		assertEquals(expectedSize, units.size());
+	public void testUnits() {
+		assertNotNull(sut.getUnits());
+		assertEquals(43, sut.getUnits().size());
 	}
 }

@@ -44,7 +44,7 @@ import tech.units.indriya.internal.function.calc.DefaultNumberSystem;
  * @author Andi Huber
  *
  */
-final class NumberAssertions_Calculus {
+final class NumberAssertionsCalculus {
     
     private static final String MSG_NUMBER_NON_NULL = "number cannot be null";
 
@@ -85,7 +85,4 @@ final class NumberAssertions_Calculus {
                 number.getClass().getName());
         throw new IllegalArgumentException(msg);
     }
-    
-    
-    
 }
