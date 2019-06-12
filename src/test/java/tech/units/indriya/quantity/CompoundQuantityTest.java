@@ -32,13 +32,11 @@ package tech.units.indriya.quantity;
 import static javax.measure.MetricPrefix.CENTI;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static tech.units.indriya.NumberAssertions.assertNumberEquals;
 
 import java.math.BigDecimal;
 import java.util.logging.Logger;
 
-import javax.measure.MeasurementException;
 import javax.measure.Quantity;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Time;
@@ -91,13 +89,15 @@ public class CompoundQuantityTest {
 		@SuppressWarnings({ "unchecked" })
 		final Quantity<Length>[] quants = new Quantity[] { Quantities.getQuantity(70, CENTI(Units.METRE)),
 				Quantities.getQuantity(1, Units.METRE) };
-		assertThrows(MeasurementException.class, () -> {
+		
 		CompoundQuantity<Length> mixLen = CompoundQuantity.of(quants);
-			assertEquals("[cm, m]", mixLen.getUnits().toString());
-			assertEquals("70 cm 1 m", mixLen.toString());
+		assertEquals("[cm, m]", mixLen.getUnits().toString());
+		assertEquals("70 cm 1 m", mixLen.toString());
 	
-			Quantity<Length> l2 = mixLen.to(Units.METRE);
-		});
+		Quantity<Length> l2 = mixLen.to(Units.METRE);
+		assertNumberEquals(new BigDecimal("1.7"), l2.getValue(), 1E-12);
+		
+		
 	}
 
 	/**

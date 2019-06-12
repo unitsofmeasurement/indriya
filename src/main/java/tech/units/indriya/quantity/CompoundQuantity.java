@@ -39,13 +39,15 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.measure.MeasurementException;
 import javax.measure.Quantity;
 import javax.measure.Quantity.Scale;
 import javax.measure.Unit;
 
 import tech.units.indriya.format.SimpleQuantityFormat;
+import tech.units.indriya.function.Calculus;
 import tech.units.indriya.function.MixedRadix;
+import tech.units.indriya.internal.function.calc.Calculator;
+import tech.units.indriya.spi.NumberSystem;
 import tech.uom.lib.common.function.QuantityConverter;
 
 /**
@@ -68,32 +70,59 @@ public class CompoundQuantity<Q extends Quantity<Q>> implements QuantityConverte
     private static final long serialVersionUID = 5863961588282485676L;
 
     private final Map<Unit<Q>, Quantity<Q>> quantMap = new LinkedHashMap<>();
+    private Unit<Q> leastSignificantUnit;
+    private Scale commonScale;
+    
+    // MixedRadix is optimized for best accuracy, when calculating the radix sum, so we try to use it if possible
+    private MixedRadix<Q> mixedRadixIfPossible;
 
     /**
-     * @param quantities the list of quantities to construct this CompoundQuantity.
-     * @throws NullPointerException
-     *             if the given quantities are <code>null</code>.
-     * @throws IllegalArgumentException
-     *             if given {@code quantities} is empty 
-     *             or contains any <code>null</code> values
-     *             or contains quantities of mixed scale
+     * @param quantities - the list of quantities to construct this CompoundQuantity.
      */
     protected CompoundQuantity(final List<Quantity<Q>> quantities) {
-        final Scale firstScale = quantities.get(0).getScale();        
         for (Quantity<Q> q : quantities) {
-            if (firstScale.equals(q.getScale())) {
-                quantMap.put(q.getUnit(), q);
+            
+            final Unit<Q> unit = q.getUnit();
+            quantMap.put(unit, q);
+            
+            commonScale = q.getScale();
+            
+            // keep track of the least significant unit, thats the one that should 'drive' arithmetic operations
+
+            if(leastSignificantUnit==null) {
+                leastSignificantUnit = unit;
             } else {
-                throw new MeasurementException("Quantities do not have the same scale.");
+                final NumberSystem ns = Calculus.currentNumberSystem();
+                final Number leastSignificantToCurrentFactor = leastSignificantUnit.getConverterTo(unit).convert(1);
+                final boolean isLessSignificant = ns.isLessThanOne(ns.abs(leastSignificantToCurrentFactor));
+                if(isLessSignificant) {
+                    leastSignificantUnit = unit;
+                }
             }
+            
         }
+        
+        try {
+                        
+            // - will throw if units are not in decreasing order of significance
+            mixedRadixIfPossible = MixedRadix.of(getUnits());
+            
+        } catch (Exception e) {
+            
+            mixedRadixIfPossible = null;
+        }
+        
     }
 
     /**
-     * Returns an {@code CompoundQuantity} with the specified values.
-     * 
      * @param <Q>
-     *            The type of the quantity.
+     * @param quantities
+     * @return a {@code CompoundQuantity} with the specified {@code quantities}
+     * @throws IllegalArgumentException
+     *             if given {@code quantities} is {@code null} or empty 
+     *             or contains any <code>null</code> values
+     *             or contains quantities of mixed scale
+     * 
      */
     @SafeVarargs
     public static <Q extends Quantity<Q>> CompoundQuantity<Q> of(Quantity<Q>... quantities) {
@@ -102,10 +131,14 @@ public class CompoundQuantity<Q extends Quantity<Q>> implements QuantityConverte
     }
 
     /**
-     * Returns an {@code CompoundQuantity} with the specified values.
-     * 
      * @param <Q>
-     *            The type of the quantity.
+     * @param quantities
+     * @return a {@code CompoundQuantity} with the specified {@code quantities}
+     * @throws IllegalArgumentException
+     *             if given {@code quantities} is {@code null} or empty 
+     *             or contains any <code>null</code> values
+     *             or contains quantities of mixed scale
+     * 
      */
     public static <Q extends Quantity<Q>> CompoundQuantity<Q> of(List<Quantity<Q>> quantities) {
         guardAgainstIllegalQuantitiesArgument(quantities);
@@ -159,37 +192,36 @@ public class CompoundQuantity<Q extends Quantity<Q>> implements QuantityConverte
      * @return the sum of all quantities in this CompoundQuantity or a new quantity stated in the specified unit.
      * @throws ArithmeticException
      *             if the result is inexact and the quotient has a non-terminating decimal expansion.
-     * @throws IllegalArgumentException
-     *             if this CompoundQuantity is empty or contains only <code>null</code> values.
      */
     @Override
     public Quantity<Q> to(Unit<Q> unit) {
-        if (quantMap.isEmpty()) {
-            throw new IllegalArgumentException("No quantity found, cannot convert an empty value");
+        
+        // MixedRadix is optimized for best accuracy, when calculating the radix sum, so we use it if possible
+        if(mixedRadixIfPossible!=null) {
+            Number[] values = getQuantities()
+            .stream()
+            .map(Quantity::getValue)
+            .collect(Collectors.toList())
+            .toArray(new Number[0]);
+            
+            return mixedRadixIfPossible.createQuantity(values).to(unit);            
         }
         
-        // non optimized quick fix ...
-        // - will throw if units are not in decreasing order of significance
-        MixedRadix<Q> mixedRadix = MixedRadix.of(getUnits());
-        Number[] values = getQuantities()
-        .stream()
-        .map(Quantity::getValue)
-        .collect(Collectors.toList())
-        .toArray(new Number[0]);
+        // fallback
+
+        final Calculator calc = Calculator.of(0);
         
-        //TODO[220] what about scale?
+        for (Quantity<Q> q : quantMap.values()) {
+            
+            final Number termInLeastSignificantUnits = 
+                    q.getUnit().getConverterTo(leastSignificantUnit).convert(q.getValue());
+            
+            calc.add(termInLeastSignificantUnits);
+        }
         
-        return mixedRadix.createQuantity(values).to(unit);
+        final Number sumInLeastSignificantUnits = calc.peek();
         
-//        Quantity<Q> result = null;
-//        for (Quantity<Q> q : quantMap.values()) {
-//            if (result == null) {
-//                result = q;
-//            } else {
-//                result = result.add(q);
-//            }
-//        }
-//        return result.to(unit);
+        return Quantities.getQuantity(sumInLeastSignificantUnits, leastSignificantUnit, commonScale).to(unit);
     }
 
     /**
