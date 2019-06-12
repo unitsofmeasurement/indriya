@@ -229,6 +229,9 @@ public class MixedRadixTest {
         // then
         
         NumberAssertions.assertNumberArrayEquals(new Number[] {1, 2, 3}, valueParts, 1E-9);
+        final Number compValue = lengthQuantity.getValue();
+        assertEquals(1.2083333333333333d, compValue.doubleValue());
+        assertEquals(USCustomary.FOOT, lengthQuantity.getUnit());
     }
     
     @Test @Disabled("not well defined yet, how to handle negative numbers") //TODO[211] enable once clarified
