@@ -56,7 +56,7 @@ import tech.units.indriya.quantity.Quantities;
  * 
  * @author Andi Huber
  * @author Werner Keil
- * @version 1.8, Jun 11, 2019
+ * @version 1.9, Jun 12, 2019
  * @since 2.0
  * @see <a href="https://en.wikipedia.org/wiki/Mixed_radix">Wikipedia: Mixed
  *      radix</a>
@@ -96,15 +96,13 @@ public class MixedRadix<Q extends Quantity<Q>> {
 
 	@SafeVarargs
 	public static <X extends Quantity<X>> MixedRadix<X> of(Unit<X>... units) {
-		Objects.requireNonNull(units);
-		if (units.length < 1) {
+		if (units == null || units.length < 1) {
 			throw new IllegalArgumentException("at least the leading unit is required");
 		}
 		return of(Arrays.asList(units));
 	}
 
 	public static <X extends Quantity<X>> MixedRadix<X> of(Collection<Unit<X>> units) {
-		Objects.requireNonNull(units);
 		if (units == null || units.size() < 1) {
 			throw new IllegalArgumentException("at least the leading unit is required");
 		}
@@ -151,50 +149,40 @@ public class MixedRadix<Q extends Quantity<Q>> {
 
 	// -- QUANTITY FACTORY
 
+	/**
+	 * Creates a {@link Quantity} from given {@code values} and {@code scale}.
+	 * @param values - numbers corresponding to the radices in most significant first order, 
+     *      allowed to be of shorter length than the total count of radices of this {@code MixedRadix} instance
+	 * @param scale - the {@link Scale} to be used for the returned {@link Quantity}
+	 */
 	public Quantity<Q> createQuantity(final Number[] values, final Scale scale) {
-
-		// TODO consolidate with createCompound
-		Objects.requireNonNull(scale);
-		Objects.requireNonNull(values);
-		if (values.length < 1) {
-			throw new IllegalArgumentException("at least the leading unit's number is required");
-		}
-
-		int totalValuesGiven = values.length;
-		int totalValuesAllowed = mixedRadixUnits.size();
-
-		if (totalValuesGiven > totalValuesAllowed) {
-			String message = String.format(
-					"number of values given <%d> exceeds the number of mixed-radix units available <%d>",
-					totalValuesGiven, totalValuesAllowed);
-			throw new IllegalArgumentException(message);
-		}
+	    Objects.requireNonNull(scale);
+	    guardAgainstIllegalNumbersArgument(values);
 
 		Number sum = mixedRadixSupport.sumMostSignificant(values);
 
 		return Quantities.getQuantity(sum, getTrailingUnit(), scale).to(getPrimaryUnit());
 	}
 
-	public Quantity<Q> createQuantity(Number... values) {
+    public Quantity<Q> createQuantity(Number... values) {
 		return createQuantity(values, Scale.ABSOLUTE);
 	}
 
+    /**
+     * Creates a {@link CompoundQuantity} from given {@code values} and {@code scale}.
+     * <p>
+     * Note: Not every {@code CompoundQuantity} can be represented by a {@code MixedRadix}. 
+     * {@code MixedRadix} strictly requires its coefficients to be in decreasing order of significance, 
+     * while a {@code CompoundQuantity} in principle does not.
+     * 
+     * @param values - numbers corresponding to the radix coefficients in most significant first order, 
+     *      allowed to be of shorter length than the total count of radix coefficients of this 
+     *      {@code MixedRadix} instance
+     * @param scale - the {@link Scale} to be used for the elements of the returned {@link CompoundQuantity}
+     */
 	public CompoundQuantity<Q> createCompoundQuantity(final Number[] values, final Scale scale) {
 		Objects.requireNonNull(scale);
-		Objects.requireNonNull(values);
-		if (values.length < 1) {
-			throw new IllegalArgumentException("at least the leading unit's number is required");
-		}
-
-		int totalValuesGiven = values.length;
-		int totalValuesAllowed = mixedRadixUnits.size();
-
-		if (totalValuesGiven > totalValuesAllowed) {
-			String message = String.format(
-					"number of values given <%d> exceeds the number of mixed-radix units available <%d>",
-					totalValuesGiven, totalValuesAllowed);
-			throw new IllegalArgumentException(message);
-		}
+		guardAgainstIllegalNumbersArgument(values);
 
 		List<Quantity<Q>> quantities = new ArrayList<>();
 		for (int i = 0; i < values.length; i++) {
@@ -234,6 +222,22 @@ public class MixedRadix<Q extends Quantity<Q>> {
 	}
 
 	// -- IMPLEMENTATION DETAILS
+	
+   private void guardAgainstIllegalNumbersArgument(Number[] values) {
+        if (values == null || values.length < 1) {
+            throw new IllegalArgumentException("at least the leading unit's number is required");
+        }
+
+        int totalValuesGiven = values.length;
+        int totalValuesAllowed = mixedRadixUnits.size();
+
+        if (totalValuesGiven > totalValuesAllowed) {
+            String message = String.format(
+                    "number of values given <%d> exceeds the number of mixed-radix units available <%d>",
+                    totalValuesGiven, totalValuesAllowed);
+            throw new IllegalArgumentException(message);
+        }
+    }
 	
 	void visitQuantity(Quantity<Q> quantity, int maxPartsToVisit, MixedRadixVisitor<Q> partVisitor) {
 
