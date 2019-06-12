@@ -81,6 +81,12 @@ public class MixedRadixSupport {
         
     }
 
+    /**
+     * @param values - numbers corresponding to the radices in most significant first order, 
+     *      allowed to be of shorter length than the total count of radices
+     * @return sum of {@code values} each converted to the 'scale' of the trailing radix (the least significant), 
+     *      as given by the constructor of this instance
+     */
     public Number sumMostSignificant(Number[] values) {
 
         int maxAllowedValueIndex = values.length - 1; 
@@ -92,10 +98,10 @@ public class MixedRadixSupport {
             sum = radices[i].multiply(sum);
             
             if(i >= maxAllowedValueIndex) {
-                continue;
+                continue; 
             }
             
-            sum = Calculator.of(sum).add(values[i+1]).peek();
+            sum = Calculator.of(sum).add(values[i+1]).peek(); // narrow each addition step
             
         }
         
