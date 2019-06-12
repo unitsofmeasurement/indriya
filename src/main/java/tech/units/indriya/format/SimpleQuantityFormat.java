@@ -29,10 +29,9 @@
  */
 package tech.units.indriya.format;
 
-import static tech.units.indriya.format.CommonFormatter.*;
+import static tech.units.indriya.format.CommonFormatter.parseCompoundAsLeading;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
 
@@ -41,6 +40,7 @@ import javax.measure.Unit;
 import javax.measure.format.MeasurementParseException;
 
 import tech.units.indriya.AbstractUnit;
+import tech.units.indriya.internal.format.SimpleNumberScanner;
 import tech.units.indriya.quantity.CompoundQuantity;
 import tech.units.indriya.quantity.Quantities;
 
@@ -193,7 +193,7 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
     		return SimpleUnitFormat.getInstance().format(unit, dest);
         //}
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	@Override
 	public Quantity<?> parse(CharSequence csq, ParsePosition cursor) throws MeasurementParseException {
@@ -202,18 +202,12 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
         } else if (mixDelimiter != null && mixDelimiter.equals(delimiter)) {
             return parseCompoundAsLeading(csq.toString(), NumberFormat.getInstance(), SimpleUnitFormat.getInstance(), delimiter, cursor.getIndex());
         }
-	    int startDecimal = cursor.getIndex();
-		while ((startDecimal < csq.length()) && Character.isWhitespace(csq.charAt(startDecimal))) {
-			startDecimal++;
-		}
-		int endDecimal = startDecimal + 1;
-		while ((endDecimal < csq.length()) && !Character.isWhitespace(csq.charAt(endDecimal))) {
-			endDecimal++;
-		}
-		BigDecimal decimal = new BigDecimal(csq.subSequence(startDecimal, endDecimal).toString());
-		cursor.setIndex(endDecimal + 1);
+        
+        final SimpleNumberScanner scanner = new SimpleNumberScanner(csq, cursor, null);
+        final Number number = scanner.getNumber();
+		
 		Unit unit = SimpleUnitFormat.getInstance().parse(csq, cursor);
-		return Quantities.getQuantity(decimal, unit);
+		return Quantities.getQuantity(number, unit);
 	}
 
 	@Override
