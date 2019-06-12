@@ -73,11 +73,12 @@ public class CompoundQuantity<Q extends Quantity<Q>> implements QuantityConverte
      * @param quantities the list of quantities to construct this CompoundQuantity.
      * @throws NullPointerException
      *             if the given quantities are <code>null</code>.
-    * @throws MeasurementException
-    *             if this CompoundQuantity is empty or contains only <code>null</code> values.
-    */
+     * @throws IllegalArgumentException
+     *             if given {@code quantities} is empty 
+     *             or contains any <code>null</code> values
+     *             or contains quantities of mixed scale
+     */
     protected CompoundQuantity(final List<Quantity<Q>> quantities) {
-        Objects.requireNonNull(quantities);
         final Scale firstScale = quantities.get(0).getScale();        
         for (Quantity<Q> q : quantities) {
             if (firstScale.equals(q.getScale())) {
@@ -96,9 +97,10 @@ public class CompoundQuantity<Q extends Quantity<Q>> implements QuantityConverte
      */
     @SafeVarargs
     public static <Q extends Quantity<Q>> CompoundQuantity<Q> of(Quantity<Q>... quantities) {
-        return of(Arrays.asList(quantities));
+        guardAgainstIllegalQuantitiesArgument(quantities);
+        return new CompoundQuantity<>(Arrays.asList(quantities));
     }
-    
+
     /**
      * Returns an {@code CompoundQuantity} with the specified values.
      * 
@@ -106,6 +108,7 @@ public class CompoundQuantity<Q extends Quantity<Q>> implements QuantityConverte
      *            The type of the quantity.
      */
     public static <Q extends Quantity<Q>> CompoundQuantity<Q> of(List<Quantity<Q>> quantities) {
+        guardAgainstIllegalQuantitiesArgument(quantities);
         return new CompoundQuantity<>(quantities);
     }
 
@@ -212,4 +215,51 @@ public class CompoundQuantity<Q extends Quantity<Q>> implements QuantityConverte
     public int hashCode() {
         return Objects.hash(quantMap);
     }
+    
+    // -- IMPLEMENTATION DETAILS
+    
+    private static void guardAgainstIllegalQuantitiesArgument(Quantity<?>[] quantities) {
+        if (quantities == null || quantities.length < 1) {
+            throw new IllegalArgumentException("At least one quantity is required.");
+        }
+        Scale firstScale = null;  
+        for(Quantity<?> q : quantities) {
+            if(q==null) {
+                throw new IllegalArgumentException("Quantities must not contain null.");
+            }
+            if(firstScale==null) {
+                firstScale = q.getScale();
+                if(firstScale==null) {
+                    throw new IllegalArgumentException("Quantities must have a scale.");
+                }   
+            }
+            if (!firstScale.equals(q.getScale())) {
+                throw new IllegalArgumentException("Quantities do not have the same scale.");
+            }
+        }
+    }
+    
+    // almost a duplicate of the above, this is to keep heap pollution at a minimum
+    private static <Q extends Quantity<Q>> void guardAgainstIllegalQuantitiesArgument(List<Quantity<Q>> quantities) {
+        if (quantities == null || quantities.size() < 1) {
+            throw new IllegalArgumentException("At least one quantity is required.");
+        }
+        Scale firstScale = null;  
+        for(Quantity<Q> q : quantities) {
+            if(q==null) {
+                throw new IllegalArgumentException("Quantities must not contain null.");
+            }
+            if(firstScale==null) {
+                firstScale = q.getScale();
+                if(firstScale==null) {
+                    throw new IllegalArgumentException("Quantities must have a scale.");
+                }
+            }
+            if (!firstScale.equals(q.getScale())) {
+                throw new IllegalArgumentException("Quantities do not have the same scale.");
+            }
+        }
+    }
+
+
 }
