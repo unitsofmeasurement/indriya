@@ -30,13 +30,11 @@
 package tech.units.indriya.quantity;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedHashMap;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.measure.Quantity;
@@ -59,7 +57,8 @@ import tech.uom.lib.common.function.QuantityConverter;
  *            The type of the quantity.
  * 
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 1.3, April 20, 2019
+ * @author Andi Huber
+ * @version 1.4, June 12, 2019
  * @see <a href="http://www.thefreedictionary.com/Compound+quantity">Free Dictionary: Compound Quantity</a>
  */
 public class CompoundQuantity<Q extends Quantity<Q>> implements QuantityConverter<Q>, Serializable {
@@ -69,7 +68,9 @@ public class CompoundQuantity<Q extends Quantity<Q>> implements QuantityConverte
     */
     private static final long serialVersionUID = 5863961588282485676L;
 
-    private final Map<Unit<Q>, Quantity<Q>> quantMap = new LinkedHashMap<>();
+    private final List<Quantity<Q>> quantityList;
+    private final Object[] quantityArray;
+    private final List<Unit<Q>> unitList;
     private Unit<Q> leastSignificantUnit;
     private Scale commonScale;
     
@@ -80,15 +81,20 @@ public class CompoundQuantity<Q extends Quantity<Q>> implements QuantityConverte
      * @param quantities - the list of quantities to construct this CompoundQuantity.
      */
     protected CompoundQuantity(final List<Quantity<Q>> quantities) {
+        
+        final List<Unit<Q>> unitList = new ArrayList<>();
+        
         for (Quantity<Q> q : quantities) {
             
             final Unit<Q> unit = q.getUnit();
-            quantMap.put(unit, q);
+            
+            unitList.add(unit);
             
             commonScale = q.getScale();
             
             // keep track of the least significant unit, thats the one that should 'drive' arithmetic operations
 
+            
             if(leastSignificantUnit==null) {
                 leastSignificantUnit = unit;
             } else {
@@ -101,6 +107,11 @@ public class CompoundQuantity<Q extends Quantity<Q>> implements QuantityConverte
             }
             
         }
+        
+        this.quantityList = Collections.unmodifiableList(new ArrayList<>(quantities));
+        this.quantityArray = quantities.toArray();
+        
+        this.unitList = Collections.unmodifiableList(unitList);
         
         try {
                         
@@ -152,28 +163,29 @@ public class CompoundQuantity<Q extends Quantity<Q>> implements QuantityConverte
      *
      * @return a set containing the units, not null
      */
-    public Set<Unit<Q>> getUnits() {
-        return quantMap.keySet();
+    public List<Unit<Q>> getUnits() {
+        return unitList;
     }
 
     /**
      * Gets quantities in this CompoundQuantity.
      *
-     * @return a collection containing the quantities, not null
+     * @return a list containing the quantities, not null
      */
-    public Collection<Quantity<Q>> getQuantities() {
-        return quantMap.values();
+    public List<Quantity<Q>> getQuantities() {
+        return quantityList;
     }
 
-    /**
-     * Gets the Quantity of the requested Unit.
-     * <p>
-     * This returns a value for each Unit in this CompoundQuantity. Or <type>null</type> if the given unit is not included.
-     *
-     */
-    public Quantity<Q> get(Unit<Q> unit) {
-        return quantMap.get(unit);
-    }
+//TODO[211] deprecated    
+//    /**
+//     * Gets the Quantity of the requested Unit.
+//     * <p>
+//     * This returns a value for each Unit in this CompoundQuantity. Or <type>null</type> if the given unit is not included.
+//     *
+//     */
+//    public Quantity<Q> get(Unit<Q> unit) {
+//        return quantMap.get(unit);
+//    }
 
     /*
      * (non-Javadoc)
@@ -211,7 +223,7 @@ public class CompoundQuantity<Q extends Quantity<Q>> implements QuantityConverte
 
         final Calculator calc = Calculator.of(0);
         
-        for (Quantity<Q> q : quantMap.values()) {
+        for (Quantity<Q> q : quantityList) {
             
             final Number termInLeastSignificantUnits = 
                     q.getUnit().getConverterTo(leastSignificantUnit).convert(q.getValue());
@@ -237,7 +249,7 @@ public class CompoundQuantity<Q extends Quantity<Q>> implements QuantityConverte
         }
         if (obj instanceof CompoundQuantity) {
             CompoundQuantity<?> c = (CompoundQuantity<?>) obj;
-            return Objects.equals(quantMap, c.quantMap);
+            return Arrays.equals(quantityArray, c.quantityArray);
         } else {
             return false;
         }
@@ -245,7 +257,7 @@ public class CompoundQuantity<Q extends Quantity<Q>> implements QuantityConverte
     
     @Override
     public int hashCode() {
-        return Objects.hash(quantMap);
+        return Objects.hash(quantityArray);
     }
     
     // -- IMPLEMENTATION DETAILS
