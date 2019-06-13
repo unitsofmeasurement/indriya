@@ -58,7 +58,7 @@ import tech.uom.lib.common.function.QuantityConverter;
  * 
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author Andi Huber
- * @version 1.4, June 12, 2019
+ * @version 1.5, June 12, 2019
  * @see <a href="http://www.thefreedictionary.com/Compound+quantity">Free Dictionary: Compound Quantity</a>
  */
 public class CompoundQuantity<Q extends Quantity<Q>> implements QuantityConverter<Q>, Serializable {
@@ -157,11 +157,11 @@ public class CompoundQuantity<Q extends Quantity<Q>> implements QuantityConverte
     }
 
     /**
-     * Gets the set of units in this CompoundQuantity.
+     * Gets the list of units in this CompoundQuantity.
      * <p>
-     * This set can be used in conjunction with {@link #get(Unit)} to access the entire quantity.
+     * This list can be used in conjunction with {@link #getQuantities()} to access the entire quantity.
      *
-     * @return a set containing the units, not null
+     * @return a list containing the units, not null
      */
     public List<Unit<Q>> getUnits() {
         return unitList;

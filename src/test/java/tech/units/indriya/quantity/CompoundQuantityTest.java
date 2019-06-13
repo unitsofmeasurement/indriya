@@ -35,9 +35,11 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static tech.units.indriya.NumberAssertions.assertNumberEquals;
 
 import java.math.BigDecimal;
+import java.util.List;
 import java.util.logging.Logger;
 
 import javax.measure.Quantity;
+import javax.measure.Unit;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Time;
 
@@ -55,13 +57,13 @@ public class CompoundQuantityTest {
 	static final Logger logger = Logger.getLogger(CompoundQuantityTest.class.getName());
 
 	@Test
-	public void testLengthSingleValueCompositeUnit() {
-		CompoundQuantity<Length> mixLen = CompoundQuantity.of(Quantities.getQuantity(1, Units.METRE));
+	public void testLengthSingleUnitCompoundQuantity() {
+		CompoundQuantity<Length> compLen = CompoundQuantity.of(Quantities.getQuantity(1, Units.METRE));
 
-		assertEquals("[m]", mixLen.getUnits().toString());
-		assertEquals("1 m", mixLen.toString());
+		assertEquals("[m]", compLen.getUnits().toString());
+		assertEquals("1 m", compLen.toString());
 
-		Quantity<Length> length = mixLen.to(Units.METRE);
+		Quantity<Length> length = compLen.to(Units.METRE);
 		assertNumberEquals(1, length.getValue(), 1E-28);
 	}
 
@@ -72,32 +74,63 @@ public class CompoundQuantityTest {
 		final Quantity<Length>[] quants = new Quantity[] { Quantities.getQuantity(1, Units.METRE),
 				Quantities.getQuantity(70, CENTI(Units.METRE)) };
 
-		CompoundQuantity<Length> mixLen = CompoundQuantity.of(quants);
+		CompoundQuantity<Length> compLen = CompoundQuantity.of(quants);
 
-		assertEquals("[m, cm]", mixLen.getUnits().toString());
-		assertEquals("1 m 70 cm", mixLen.toString());
+		assertEquals("[m, cm]", compLen.getUnits().toString());
+		assertEquals("1 m 70 cm", compLen.toString());
 
-		Quantity<Length> l2 = mixLen.to(Units.METRE);
+		Quantity<Length> l2 = compLen.to(Units.METRE);
 		assertNumberEquals(BigDecimal.valueOf(1.7d), l2.getValue(), 1E-12);
 
-		Quantity<Length> l3 = mixLen.to(CENTI(Units.METRE));
+		Quantity<Length> l3 = compLen.to(CENTI(Units.METRE));
 		assertNumberEquals(170, l3.getValue(), 1E-12);
 	}
 
 	@Test
 	public void testLengthsReverse() {
+		final Quantity<Length> cm = Quantities.getQuantity(70, CENTI(Units.METRE));
+		final Quantity<Length> m = Quantities.getQuantity(1, Units.METRE);
+		@SuppressWarnings({ "unchecked" })
+		final Quantity<Length>[] quants = new Quantity[] { cm,	m };
+		
+		CompoundQuantity<Length> compLen = CompoundQuantity.of(quants);
+		assertEquals("[cm, m]", compLen.getUnits().toString());
+		assertEquals("70 cm 1 m", compLen.toString());
+		final List<Unit<Length>> compUnits = compLen.getUnits();
+		assertEquals(2, compUnits.size());
+		for (Unit<Length> u : compUnits) {
+			int pos = compUnits.indexOf(u);
+			switch (pos) {
+			case 0:
+				assertEquals(CENTI(Units.METRE), u);
+				assertEquals(cm, compLen.getQuantities().get(pos));
+				break;
+			case 1:
+				assertEquals(Units.METRE, u);
+				assertEquals(m, compLen.getQuantities().get(pos));
+				break;
+			default:
+				break;
+			}
+		}
+		Quantity<Length> l2 = compLen.to(Units.METRE);
+		assertNumberEquals(new BigDecimal("1.7"), l2.getValue(), 1E-12);
+	}
+	
+	@Test
+	public void testLengthsDuplicate() {
 		@SuppressWarnings({ "unchecked" })
 		final Quantity<Length>[] quants = new Quantity[] { Quantities.getQuantity(70, CENTI(Units.METRE)),
-				Quantities.getQuantity(1, Units.METRE) };
+				Quantities.getQuantity(90, CENTI(Units.METRE)) };
 		
-		CompoundQuantity<Length> mixLen = CompoundQuantity.of(quants);
-		assertEquals("[cm, m]", mixLen.getUnits().toString());
-		assertEquals("70 cm 1 m", mixLen.toString());
+		CompoundQuantity<Length> compLen = CompoundQuantity.of(quants);
+		assertEquals("[cm, cm]", compLen.getUnits().toString());
+		assertEquals(2, compLen.getUnits().size());
+		assertEquals(2, compLen.getQuantities().size());
+		assertEquals("70 cm 90 cm", compLen.toString());
 	
-		Quantity<Length> l2 = mixLen.to(Units.METRE);
-		assertNumberEquals(new BigDecimal("1.7"), l2.getValue(), 1E-12);
-		
-		
+		Quantity<Length> l2 = compLen.to(Units.METRE);
+		assertEquals(1.6d, l2.getValue().doubleValue());
 	}
 
 	/**
