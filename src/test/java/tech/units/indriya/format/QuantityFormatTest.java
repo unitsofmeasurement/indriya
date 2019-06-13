@@ -29,10 +29,17 @@
  */
 package tech.units.indriya.format;
 
+import static javax.measure.MetricPrefix.CENTI;
+import static javax.measure.MetricPrefix.KILO;
+import static javax.measure.MetricPrefix.MEGA;
 import static org.junit.Assert.assertEquals;
-import static org.junit.jupiter.api.Assertions.*;
-import static javax.measure.MetricPrefix.*;
-import static tech.units.indriya.unit.Units.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
+import static tech.units.indriya.NumberAssertions.assertNumberEquals;
+import static tech.units.indriya.unit.Units.HERTZ;
+import static tech.units.indriya.unit.Units.KILOGRAM;
+import static tech.units.indriya.unit.Units.METRE;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
@@ -45,14 +52,17 @@ import javax.measure.format.MeasurementParseException;
 import javax.measure.format.QuantityFormat;
 import javax.measure.quantity.Frequency;
 import javax.measure.quantity.Length;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import tech.units.indriya.function.RationalNumber;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.Units;
 
 /**
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
+ * @author Andi Huber
  *
  */
 public class QuantityFormatTest {
@@ -105,7 +115,7 @@ public class QuantityFormatTest {
     public void testParseSimpleTime() {
         Quantity<?> parsed1 = SimpleQuantityFormat.getInstance().parse("10 min");
         assertNotNull(parsed1);
-        assertEquals(BigDecimal.valueOf(10), parsed1.getValue());
+        assertNumberEquals(BigDecimal.valueOf(10), parsed1.getValue(), 1E-24);
         assertEquals(Units.MINUTE, parsed1.getUnit());
     }
 
@@ -113,15 +123,32 @@ public class QuantityFormatTest {
     public void testParseSimpleLen() {
         Quantity<?> parsed1 = format.parse("60 m");
         assertNotNull(parsed1);
-        assertEquals(BigDecimal.valueOf(60), parsed1.getValue());
+        assertNumberEquals(BigDecimal.valueOf(60), parsed1.getValue(), 1E-24);
         assertEquals(Units.METRE, parsed1.getUnit());
     }
+    
+    @Test
+    public void testParseRationalLen() {
+        Quantity<?> parsed1 = format.parse("5÷3 m");
+        assertNotNull(parsed1);
+        assertNumberEquals(RationalNumber.of(5, 3), parsed1.getValue(), 1E-24);
+        assertEquals(Units.METRE, parsed1.getUnit());
+    }
+    
+    @Test
+    public void testParseRationalLenNegative() {
+        Quantity<?> parsed1 = format.parse("-5÷3 m");
+        assertNotNull(parsed1);
+        assertNumberEquals(RationalNumber.of(-5, 3), parsed1.getValue(), 1E-24);
+        assertEquals(Units.METRE, parsed1.getUnit());
+    }
+    
 
     @Test
     public void testParseAsType() {
         Quantity<Length> parsed1 = SimpleQuantityFormat.getInstance().parse("60 m").asType(Length.class);
         assertNotNull(parsed1);
-        assertEquals(BigDecimal.valueOf(60), parsed1.getValue());
+        assertNumberEquals(BigDecimal.valueOf(60), parsed1.getValue(), 1E-24);
         assertEquals(Units.METRE, parsed1.getUnit());
     }
 
@@ -130,7 +157,7 @@ public class QuantityFormatTest {
         try {
             Quantity<?> parsed1 = format.parse("5 kg");
             assertNotNull(parsed1);
-            assertEquals(BigDecimal.valueOf(5), parsed1.getValue());
+            assertNumberEquals(BigDecimal.valueOf(5), parsed1.getValue(), 1E-24);
             assertNotNull(parsed1.getUnit());
             assertEquals("kg", parsed1.getUnit().getSymbol());
             assertEquals(KILOGRAM, parsed1.getUnit());
@@ -154,10 +181,24 @@ public class QuantityFormatTest {
     }
     
     @Test
+    public void testAnotherPatternRational() {
+        final SimpleQuantityFormat patternFormat = SimpleQuantityFormat.getInstance("n_u");
+        assertEquals("n_u", patternFormat.getPattern());
+        assertEquals("-5÷3_m", patternFormat.format(Quantities.getQuantity(RationalNumber.of(-5, 3), METRE)));
+    }
+    
+    @Test
     public void testCondensedPattern() {
         final SimpleQuantityFormat patternFormat = SimpleQuantityFormat.getInstance("nu");
         assertEquals("nu", patternFormat.getPattern());
         assertEquals("10m", patternFormat.format(sut));
+    }
+    
+    @Test
+    public void testCondensedPatternRational() {
+        final SimpleQuantityFormat patternFormat = SimpleQuantityFormat.getInstance("nu");
+        assertEquals("nu", patternFormat.getPattern());
+        assertEquals("-5÷3m", patternFormat.format(Quantities.getQuantity(RationalNumber.of(-5, 3), METRE)));
     }
 
     @Test
