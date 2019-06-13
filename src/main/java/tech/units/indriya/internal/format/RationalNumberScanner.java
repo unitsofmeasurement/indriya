@@ -66,9 +66,6 @@ public class RationalNumberScanner {
     private int scanForStart(int pos) {
         while (pos < csq.length()) {
             char c = csq.charAt(pos);
-            if(c == RationalNumber.DIVISION_CHARACTER) {
-                return pos;
-            }
             if(!Character.isWhitespace(c)) {
                 return pos;
             }
