@@ -40,7 +40,7 @@ import javax.measure.Unit;
 import javax.measure.format.MeasurementParseException;
 
 import tech.units.indriya.AbstractUnit;
-import tech.units.indriya.internal.format.SimpleNumberScanner;
+import tech.units.indriya.internal.format.RationalNumberScanner;
 import tech.units.indriya.quantity.CompoundQuantity;
 import tech.units.indriya.quantity.Quantities;
 
@@ -207,7 +207,7 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
             return parseCompoundAsLeading(csq.toString(), numberFormat, simpleUnitFormat, delimiter, cursor.getIndex());
         }
         
-        final SimpleNumberScanner scanner = new SimpleNumberScanner(csq, cursor, null /*TODO should'nt this be numberFormat as well*/);
+        final RationalNumberScanner scanner = new RationalNumberScanner(csq, cursor, null /*TODO should'nt this be numberFormat as well*/);
         final Number number = scanner.getNumber();
 		
 		Unit unit = simpleUnitFormat.parse(csq, cursor);

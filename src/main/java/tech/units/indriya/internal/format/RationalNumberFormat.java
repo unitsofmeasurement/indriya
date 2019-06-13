@@ -66,7 +66,7 @@ public class RationalNumberFormat extends NumberFormat {
 
     @Override
     public Number parse(String source, ParsePosition parsePosition) {
-        return new SimpleNumberScanner(source, parsePosition, numberFormat).getNumber();
+        return new RationalNumberScanner(source, parsePosition, numberFormat).getNumber();
     }
 
 }

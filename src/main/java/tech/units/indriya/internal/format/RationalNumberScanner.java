@@ -44,12 +44,12 @@ import tech.units.indriya.internal.function.calc.Calculator;
 /**
  * Support class for {@link SimpleQuantityFormat} and {@link RationalNumberFormat}.
  * <p>
- * In addition to decimal formats this also parses rarional number format {@code (5 ÷ 3)}.
+ * In addition to decimal formats this also parses rational number format {@code 5÷3} or  {@code -5÷3}.
  * 
  * @author Andi Huber
  *
  */
-public class SimpleNumberScanner {
+public class RationalNumberScanner {
 
     private final CharSequence csq; 
     private final ParsePosition cursor;
@@ -57,7 +57,7 @@ public class SimpleNumberScanner {
     
     private boolean divisionCharacterDetected = false;
     
-    public SimpleNumberScanner(CharSequence csq, ParsePosition cursor, NumberFormat numberFormat) {
+    public RationalNumberScanner(CharSequence csq, ParsePosition cursor, NumberFormat numberFormat) {
         this.csq = csq;
         this.cursor = cursor;
         this.numberFormat = numberFormat;
