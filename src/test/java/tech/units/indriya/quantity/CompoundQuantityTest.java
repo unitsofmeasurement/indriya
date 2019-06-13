@@ -99,15 +99,15 @@ public class CompoundQuantityTest {
 		final List<Unit<Length>> compUnits = compLen.getUnits();
 		assertEquals(2, compUnits.size());
 		for (Unit<Length> u : compUnits) {
-			int pos = compUnits.indexOf(u);
-			switch (pos) {
+			int index = compUnits.indexOf(u);
+			switch (index) {
 			case 0:
 				assertEquals(CENTI(Units.METRE), u);
-				assertEquals(cm, compLen.getQuantities().get(pos));
+				assertEquals(cm, compLen.getQuantities().get(index));
 				break;
 			case 1:
 				assertEquals(Units.METRE, u);
-				assertEquals(m, compLen.getQuantities().get(pos));
+				assertEquals(m, compLen.getQuantities().get(index));
 				break;
 			default:
 				break;
