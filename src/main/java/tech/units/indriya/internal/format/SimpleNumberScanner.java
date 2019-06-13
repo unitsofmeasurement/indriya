@@ -33,11 +33,13 @@ import java.math.BigInteger;
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.text.ParsePosition;
+import java.util.Stack;
 
 import javax.measure.format.MeasurementParseException;
 
 import tech.units.indriya.format.SimpleQuantityFormat;
 import tech.units.indriya.function.RationalNumber;
+import tech.units.indriya.internal.function.calc.Calculator;
 
 /**
  * Support class for {@link SimpleQuantityFormat} and {@link RationalNumberFormat}.
@@ -53,8 +55,7 @@ public class SimpleNumberScanner {
     private final ParsePosition cursor;
     private final NumberFormat numberFormat;
     
-    private int openedParenthesis = 0;
-    private int divisorDetected = 0;
+    private boolean divisionCharacterDetected = false;
     
     public SimpleNumberScanner(CharSequence csq, ParsePosition cursor, NumberFormat numberFormat) {
         this.csq = csq;
@@ -64,33 +65,25 @@ public class SimpleNumberScanner {
     
     private int scanForStart(int pos) {
         while (pos < csq.length()) {
-            char c = csq.charAt(pos); 
-            if(Character.isWhitespace(c)) {
-                pos++;
-                continue;
+            char c = csq.charAt(pos);
+            if(c == RationalNumber.DIVISION_CHARACTER) {
+                return pos;
             }
-            if(c == '÷') {
-                pos++;
-                divisorDetected++;
-                continue;
+            if(!Character.isWhitespace(c)) {
+                return pos;
             }
-            if(c == '(') {
-                pos++;
-                openedParenthesis++;
-                continue;
-            }
-            break;
+            pos++;
         }
         return pos;       
     }
     
     private int scanForEnd(int pos) {
+        divisionCharacterDetected = false;
         while (pos < csq.length()) {
             char c = csq.charAt(pos);
-            if(c == ')') {
-                openedParenthesis--;
-                cursor.setIndex(pos + 2);
-                return pos;
+            if(c == RationalNumber.DIVISION_CHARACTER) {
+                divisionCharacterDetected = true;
+                break;
             }
             if(Character.isWhitespace(c)) {
                 break;
@@ -103,41 +96,49 @@ public class SimpleNumberScanner {
 
     public Number getNumber() {
         
-        BigInteger dividend = null;
-        BigInteger divisor = null;
-        Number decimalNumber = null;
-        
+        Stack<String> numberLiterals = new Stack<>();
+                
         do {
             int startDecimal = scanForStart(cursor.getIndex());
             int endDecimal = scanForEnd(startDecimal+1);
             
             String numberLiteral = csq.subSequence(startDecimal, endDecimal).toString();
             
-            if(divisorDetected>0) {
-                divisor = new BigInteger(numberLiteral);
-                divisorDetected--;
-            } else if(openedParenthesis>0) {
-                dividend = new BigInteger(numberLiteral);
-            } else {
-                
-                if(numberFormat==null) {
-                    return new BigDecimal(numberLiteral);
-                }
-                
+            numberLiterals.push(numberLiteral);
+            
+        } while (divisionCharacterDetected);
+        
+        if(numberLiterals.size()==2) {
+            // parsing RationalNumber
+            
+            BigInteger divisor = new BigInteger(numberLiterals.pop());
+            BigInteger dividend = new BigInteger(numberLiterals.pop());
+            return RationalNumber.of(dividend, divisor);
+        }
+
+        if(numberLiterals.size()==1) {
+            // parsing decimal number
+            
+            String numberLiteral = numberLiterals.pop();
+            
+            if(numberFormat==null) {
                 try {
-                    decimalNumber = numberFormat.parse(numberLiteral);
-                } catch (ParseException e) {
-                    throw new MeasurementParseException(e);
+                    Number bigDecimal = new BigDecimal(numberLiteral);
+                    return Calculator.of(bigDecimal).peek();
+                } catch (Exception e) {
+                    throw new MeasurementParseException("Failed to parse number-literal '"+numberLiteral+"'.");
                 }
+            } 
+            
+            try {
+                return numberFormat.parse(numberLiteral);
+            } catch (ParseException e) {
+                throw new MeasurementParseException(e);
             }
             
-        } while (openedParenthesis>0);
-        
-        if(decimalNumber!=null) {
-            return decimalNumber;
         }
         
-        return RationalNumber.of(dividend, divisor);
+        throw new MeasurementParseException("Unexpected number of number-literals in '" + csq + "'");
         
     }
     

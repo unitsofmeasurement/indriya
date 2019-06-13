@@ -197,16 +197,20 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
 	@SuppressWarnings("unchecked")
 	@Override
 	public Quantity<?> parse(CharSequence csq, ParsePosition cursor) throws MeasurementParseException {
+	    
+	    final NumberFormat numberFormat = NumberFormat.getInstance();
+	    final SimpleUnitFormat simpleUnitFormat = SimpleUnitFormat.getInstance();
+	    
         if (mixDelimiter != null && !mixDelimiter.equals(delimiter)) {
-            return parseCompoundAsLeading(csq.toString(), NumberFormat.getInstance(), SimpleUnitFormat.getInstance(), delimiter, mixDelimiter, cursor.getIndex());
+            return parseCompoundAsLeading(csq.toString(), numberFormat, simpleUnitFormat, delimiter, mixDelimiter, cursor.getIndex());
         } else if (mixDelimiter != null && mixDelimiter.equals(delimiter)) {
-            return parseCompoundAsLeading(csq.toString(), NumberFormat.getInstance(), SimpleUnitFormat.getInstance(), delimiter, cursor.getIndex());
+            return parseCompoundAsLeading(csq.toString(), numberFormat, simpleUnitFormat, delimiter, cursor.getIndex());
         }
         
-        final SimpleNumberScanner scanner = new SimpleNumberScanner(csq, cursor, null);
+        final SimpleNumberScanner scanner = new SimpleNumberScanner(csq, cursor, null /*TODO should'nt this be numberFormat as well*/);
         final Number number = scanner.getNumber();
 		
-		Unit unit = SimpleUnitFormat.getInstance().parse(csq, cursor);
+		Unit unit = simpleUnitFormat.parse(csq, cursor);
 		return Quantities.getQuantity(number, unit);
 	}
 

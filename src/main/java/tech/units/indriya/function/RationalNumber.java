@@ -59,7 +59,14 @@ public class RationalNumber extends Number {
     private transient BigDecimal divisionResult;
     private transient Long longValue;
 
-    private final static String DIVIDE_CHARACTER = " ÷ ";
+    /**
+     * The default {@code DIVISION_CHARACTER} is ÷ which (on Windows) can by typed
+     * using Alt+ 246.
+     * <p>
+     * Note: Number parsing will fail if this is a white-space character.
+     */
+    public static char DIVISION_CHARACTER = '÷'; // Alt+ 246
+    
 
     public final static RationalNumber ZERO = ofInteger(BigInteger.ZERO);
     public final static RationalNumber ONE = ofInteger(BigInteger.ONE);
@@ -418,7 +425,7 @@ public class RationalNumber extends Number {
         if(isInteger) {
             return getDividend().toString(); // already includes the sign
         }
-        return "(" + getDividend() + DIVIDE_CHARACTER + absDivisor + ")";
+        return getDividend().toString() + DIVISION_CHARACTER + absDivisor;
     }
 
     

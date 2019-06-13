@@ -35,7 +35,7 @@ import java.text.ParsePosition;
 /**
  * Wraps a given {@link NumberFormat} and extends it to also support the rational number format. 
  * <p>
- * eg. {@code (5 ÷ 3)}
+ * eg. {@code 5÷3}
  *  
  * @author Andi Huber
  *
