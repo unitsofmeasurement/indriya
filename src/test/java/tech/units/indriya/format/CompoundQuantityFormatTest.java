@@ -67,6 +67,7 @@ import tech.units.indriya.unit.Units;
 
 /**
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
+ * @author Andi Huber
  *
  */
 public class CompoundQuantityFormatTest {
