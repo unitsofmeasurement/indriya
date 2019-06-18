@@ -491,5 +491,55 @@
 				</pluginRepository>
 			</pluginRepositories>
 		</profile>
+		
+		<profile>
+			<!-- profile that activates on eclipse, to specifically fix eclipse build and test issues -->
+			<id>m2e</id>
+			<activation>
+                <property>
+                    <name>m2e.version</name>
+                </property>
+            </activation>
+			<properties>
+				<junit.jupiter.version>5.4.1</junit.jupiter.version>
+				<junit.platform.version>1.4.1</junit.platform.version>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-compiler-plugin</artifactId>
+						<configuration>
+							<release>1.8</release>
+						</configuration>
+						<executions>
+							<execution>
+								<id>default-compile</id>
+								<configuration>
+									<jdkToolchain>
+										<version>8</version>
+									</jdkToolchain>
+									<release>8</release>
+								</configuration>
+							</execution>
+							<execution>
+								<id>base-compile</id>
+								<goals>
+									<goal>compile</goal>
+								</goals>
+								<configuration>
+									<source>8</source>
+									<target>8</target>
+									<excludes>
+										<exclude>tech/units/indriya/module-info.java</exclude>
+									</excludes>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		
 	</profiles>
 </project>
