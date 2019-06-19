@@ -368,7 +368,8 @@ public class CompoundQuantityFormatTest {
         
         // then
         assertEquals("1. ft 2. in 3. P̸", formatedOutput);
-        assertEquals("29÷24 ft", simpleFormattedSingle);
+        //assertEquals("29÷24 ft", simpleFormattedSingle);
+        assertEquals("1.208333333333333333333333333333333 ft", simpleFormattedSingle);
         assertEquals("1.2083333333333333 ft", ndFormattedSingle);
     }
     
