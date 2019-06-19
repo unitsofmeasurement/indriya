@@ -53,6 +53,7 @@ import tech.units.indriya.function.RationalConverter;
 import tech.units.indriya.quantity.QuantityDimension;
 import tech.units.indriya.spi.DimensionalModel;
 import tech.units.indriya.unit.AlternateUnit;
+import tech.units.indriya.unit.AnnotatedUnit;
 import tech.units.indriya.unit.ProductUnit;
 import tech.units.indriya.unit.TransformedUnit;
 import tech.units.indriya.unit.Units;
@@ -80,7 +81,7 @@ import tech.uom.lib.common.function.SymbolSupplier;
  *      International System of Units</a>
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 2.0, April 25, 2019
+ * @version 2.1, June 19, 2019
  * @since 1.0
  */
 public abstract class AbstractUnit<Q extends Quantity<Q>>
@@ -365,6 +366,10 @@ public abstract class AbstractUnit<Q extends Quantity<Q>>
 		return divide(divisor.doubleValue());
 	}
 
+	public final Unit<Q> annotate(String annotation) {
+		return new AnnotatedUnit<>(this, annotation);
+	}
+	
 	/**
 	 * Internal helper for isCompatible
 	 */

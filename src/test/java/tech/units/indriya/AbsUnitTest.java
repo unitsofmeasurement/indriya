@@ -95,14 +95,16 @@ public class AbsUnitTest {
 		assertEquals(MILLI(CELSIUS), AbstractUnit.parse("m°C"));
 	}
 
-	/*
-	 * @Test public void testAnnotate() { assertEquals("g{Gr}",
-	 * (((AbstractUnit<Mass>) GRAM).annotate("Gr")).toString()); }
-	 * 
-	 * @Test public void testAnnotateClass() {
-	 * assertEquals("tech.units.indriya.unit.AnnotatedUnit", (((AbstractUnit<Mass>)
-	 * GRAM).annotate("Gr")).getClass().getName()); }
-	 */
+	@Test
+	public void testAnnotate() {
+		assertEquals("g{Gr}", (((AbstractUnit<Mass>) GRAM).annotate("Gr")).toString());
+	}
+
+	@Test
+	public void testAnnotateClass() {
+		assertEquals("tech.units.indriya.unit.AnnotatedUnit",
+				(((AbstractUnit<Mass>) GRAM).annotate("Gr")).getClass().getName());
+	}
 
 	private static final String SYMBOL = "symbol";
 	private static final String NAME = "name";
@@ -302,16 +304,16 @@ public class AbsUnitTest {
 	public void testDivideDouble() {
 		Unit<Length> result = sut.divide(3d);
 		assertNotNull(result);
-		//assertEquals(METRE, result.getSystemUnit()); TODO they should be equal
+		// assertEquals(METRE, result.getSystemUnit()); TODO they should be equal
 		assertEquals(METRE.toString(), result.getSystemUnit().toString());
 		assertEquals("m/3.0", result.toString());
 	}
-	
+
 	@Test
 	public void testDivideNumber() {
 		Unit<Length> result = sut.divide(BigDecimal.valueOf(3d));
 		assertNotNull(result);
-		//assertEquals(METRE, result.getSystemUnit()); TODO they should be equal
+		// assertEquals(METRE, result.getSystemUnit()); TODO they should be equal
 		assertEquals(METRE.toString(), result.getSystemUnit().toString());
 		assertEquals("m/3.0", result.toString());
 	}
@@ -323,21 +325,21 @@ public class AbsUnitTest {
 			Unit result = sut.divide(NULL_NUMBER);
 		});
 	}
-	
+
 	@Test
 	public void testMultiplyDouble() {
 		Unit<Length> result = sut.multiply(4d);
 		assertNotNull(result);
-		//assertEquals(METRE, result.getSystemUnit()); TODO they should be equal
+		// assertEquals(METRE, result.getSystemUnit()); TODO they should be equal
 		assertEquals(METRE.toString(), result.getSystemUnit().toString());
 		assertEquals("m*4.0", result.toString());
 	}
-	
+
 	@Test
 	public void testMultiplyNumber() {
 		Unit<Length> result = sut.multiply(BigDecimal.valueOf(4d));
 		assertNotNull(result);
-		//assertEquals(METRE, result.getSystemUnit()); TODO they should be equal
+		// assertEquals(METRE, result.getSystemUnit()); TODO they should be equal
 		assertEquals(METRE.toString(), result.getSystemUnit().toString());
 		assertEquals("m*4.0", result.toString());
 	}
@@ -354,20 +356,20 @@ public class AbsUnitTest {
 	public void testShiftDouble() {
 		Unit<Length> result = sut.shift(5d);
 		assertNotNull(result);
-		//assertEquals(METRE, result.getSystemUnit()); TODO they should be equal
+		// assertEquals(METRE, result.getSystemUnit()); TODO they should be equal
 		assertEquals(METRE.toString(), result.getSystemUnit().toString());
 		assertEquals("m+5.0", result.toString());
 	}
-	
+
 	@Test
 	public void testShiftNumber() {
 		Unit<Length> result = sut.shift(BigDecimal.valueOf(5d));
 		assertNotNull(result);
-		//assertEquals(METRE, result.getSystemUnit()); TODO they should be equal
+		// assertEquals(METRE, result.getSystemUnit()); TODO they should be equal
 		assertEquals(METRE.toString(), result.getSystemUnit().toString());
 		assertEquals("m+5.0", result.toString());
 	}
-	
+
 	@Test
 	public void testShiftNull() {
 		assertThrows(NullPointerException.class, () -> {
@@ -376,54 +378,54 @@ public class AbsUnitTest {
 		});
 	}
 
-    /**
-     * Test method for {@link javax.measure.Unit#pow(int)}.
-     */
-    @Test
-    public void testPow() {
-        Unit<?> result = WATT.pow(10);
-        assertEquals("W^10", result.toString());
-    }
+	/**
+	 * Test method for {@link javax.measure.Unit#pow(int)}.
+	 */
+	@Test
+	public void testPow() {
+		Unit<?> result = WATT.pow(10);
+		assertEquals("W^10", result.toString());
+	}
 
-    @Test
-    public void testKiloIsAThousand() {
-        ComparableQuantity<Power> w2000 = Quantities.getQuantity(2000, WATT);
-        Quantity<Power> kW2 = Quantities.getQuantity(2, KILO(WATT));
-        assertTrue(w2000.isEquivalentTo(kW2));
-    }
+	@Test
+	public void testKiloIsAThousand() {
+		ComparableQuantity<Power> w2000 = Quantities.getQuantity(2000, WATT);
+		Quantity<Power> kW2 = Quantities.getQuantity(2, KILO(WATT));
+		assertTrue(w2000.isEquivalentTo(kW2));
+	}
 
-    @Test
-    public void testOf() {
-        assertEquals(KILO(GRAM).toString(), AbstractUnit.parse("kg").toString());
-    }
+	@Test
+	public void testOf() {
+		assertEquals(KILO(GRAM).toString(), AbstractUnit.parse("kg").toString());
+	}
 
-    @Test
-    public void testParse3() {
-        assertEquals(KILO(GRAM).toString(), AbstractUnit.parse("kg").toString()); // TODO: Problem
-        // with kg...?
-    }
+	@Test
+	public void testParse3() {
+		assertEquals(KILO(GRAM).toString(), AbstractUnit.parse("kg").toString()); // TODO: Problem
+		// with kg...?
+	}
 
-    @Test
-    public void testParse4() {
-        assertEquals(KILO(METRE), AbstractUnit.parse("km"));
-    }
+	@Test
+	public void testParse4() {
+		assertEquals(KILO(METRE), AbstractUnit.parse("km"));
+	}
 
-    @Test
-    public void testToString() {
-        assertEquals("kg", KILO(GRAM).toString());
-    }
+	@Test
+	public void testToString() {
+		assertEquals("kg", KILO(GRAM).toString());
+	}
 
-    @Test
-    public void testGetSymbol() {
-        // TODO see https://github.com/unitsofmeasurement/uom-se/issues/54 /
-        assertEquals("kg", KILOGRAM.getSymbol());
-        assertNull(GRAM.getSymbol());
-    }
+	@Test
+	public void testGetSymbol() {
+		// TODO see https://github.com/unitsofmeasurement/uom-se/issues/54 /
+		assertEquals("kg", KILOGRAM.getSymbol());
+		assertNull(GRAM.getSymbol());
+	}
 
-    @Test
-    public void testGetParentUnit() {
-        assertEquals("TransformedUnit", GRAM.getClass().getSimpleName());
-        assertEquals("kg", ((TransformedUnit<Mass>) GRAM).getParentUnit().getSymbol());
-    }
+	@Test
+	public void testGetParentUnit() {
+		assertEquals("TransformedUnit", GRAM.getClass().getSimpleName());
+		assertEquals("kg", ((TransformedUnit<Mass>) GRAM).getParentUnit().getSymbol());
+	}
 
 }
