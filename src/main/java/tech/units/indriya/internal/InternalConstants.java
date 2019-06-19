@@ -34,6 +34,6 @@ package tech.units.indriya.internal;
  * @author werner
  * @since 2.0
  */
-class Constants {
-	static final String DEFAULT_PROVIDER_NAME = "Default";
+interface InternalConstants {
+	String DEFAULT_PROVIDER_NAME = "Default";
 }

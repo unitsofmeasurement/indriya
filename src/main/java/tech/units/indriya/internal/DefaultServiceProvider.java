@@ -29,7 +29,7 @@
  */
 package tech.units.indriya.internal;
 
-import static tech.units.indriya.internal.Constants.*;
+import static tech.units.indriya.internal.InternalConstants.DEFAULT_PROVIDER_NAME;
 
 import javax.inject.Named;
 import javax.measure.Quantity;
@@ -54,7 +54,7 @@ import java.util.logging.Logger;
  * services.
  *
  * @author Werner Keil
- * @version 1.3
+ * @version 1.4
  * @since 1.0
  */
 @Named(DEFAULT_PROVIDER_NAME)
