@@ -487,17 +487,16 @@ public final class RationalNumber extends Number {
 
         final RationalNumber other = (RationalNumber) x;
         
-        if (signum != other.signum) {
-            return false;
-        }
-        
         // This test is just an optimization, which may or may not help
         if (hashCode != other.hashCode) {
             return false;
         }
         
         // null checks not needed, since the constructor guards against dividend or divisor being null
-        return this.absDividend.equals(other.absDividend) && this.absDivisor.equals(other.absDivisor);
+        return 
+                this.signum == other.signum &&
+                this.absDividend.equals(other.absDividend) && 
+                this.absDivisor.equals(other.absDivisor);
     }
 	
 
