@@ -392,20 +392,6 @@ public class RationalNumber extends Number {
 		return this.signum > 0 ? absCompare : -absCompare;
 	}
 
-	/**
-	 * Default {@code Java Object} equality check. To check for numerical equality
-	 * use {@link #compareTo(RationalNumber)} instead.
-	 */
-	@Override
-	public boolean equals(Object obj) {
-		return super.equals(obj);
-	}
-
-	@Override
-	public int hashCode() {
-		return hashCode;
-	}
-
 	// -- NUMBER IMPLEMENTATION
 
 	@Override
@@ -473,6 +459,46 @@ public class RationalNumber extends Number {
 	 */
 	public String toFractionalString() {
 		return layoutChars(true);
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((absDividend == null) ? 0 : absDividend.hashCode());
+		result = prime * result + ((absDivisor == null) ? 0 : absDivisor.hashCode());
+		result = prime * result + hashCode;
+		result = prime * result + (isInteger ? 1231 : 1237);
+		result = prime * result + signum;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		RationalNumber other = (RationalNumber) obj;
+		if (absDividend == null) {
+			if (other.absDividend != null)
+				return false;
+		} else if (!absDividend.equals(other.absDividend))
+			return false;
+		if (absDivisor == null) {
+			if (other.absDivisor != null)
+				return false;
+		} else if (!absDivisor.equals(other.absDivisor))
+			return false;
+		if (hashCode != other.hashCode)
+			return false;
+		if (isInteger != other.isInteger)
+			return false;
+		if (signum != other.signum)
+			return false;
+		return true;
 	}
 
 }
