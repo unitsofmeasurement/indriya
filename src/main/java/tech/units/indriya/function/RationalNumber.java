@@ -44,7 +44,7 @@ import java.util.Objects;
  * @author Werner Keil
  * @since 2.0
  */
-public class RationalNumber extends Number {
+public final class RationalNumber extends Number {
 
 	private static final long serialVersionUID = 1L;
 	private final Object $lock1 = new Object[0]; // serializable lock for 'divisionResult'
@@ -423,21 +423,21 @@ public class RationalNumber extends Number {
 	}
 
 	/**
-	 * Lay out this {@code RationalNumber} into a {@code char[]} array.
+	 * Lay out this {@code RationalNumber} into a {@code String}.
 	 *
-	 * @param fractional {@code true} for fractional representation; {@code false}
-	 *                   for non fractional.
+	 * @param useFractionalRepresentation {@code true} for fractional representation {@code 5÷3}; 
+	 *         {@code false} for decimal {@code 1.66667}.
 	 * @return string with canonical string representation of this
 	 *         {@code RationalNumber}
 	 */
-	private String layoutChars(boolean fractional) {
+	private String layoutChars(boolean useFractionalRepresentation) {
 		if (signum == 0) {
 			return "0";
 		}
 		if (isInteger) {
 			return getDividend().toString(); // already includes the sign
 		}
-		if (fractional) {
+		if (useFractionalRepresentation) {
 			return getDividend().toString() + DIVISION_CHARACTER + absDivisor;
 		} else {
 			return String.valueOf(bigDecimalValue());
@@ -451,7 +451,7 @@ public class RationalNumber extends Number {
 
 	/**
 	 * Returns a string representation of this {@code RationalNumber}, using
-	 * fractional notation.
+	 * fractional notation, eg. {@code 5÷3}.
 	 *
 	 * @return string representation of this {@code RationalNumber}, using
 	 *         fractional notation.
@@ -463,42 +463,41 @@ public class RationalNumber extends Number {
 
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((absDividend == null) ? 0 : absDividend.hashCode());
-		result = prime * result + ((absDivisor == null) ? 0 : absDivisor.hashCode());
-		result = prime * result + hashCode;
-		result = prime * result + (isInteger ? 1231 : 1237);
-		result = prime * result + signum;
-		return result;
+		return hashCode;
 	}
 
+	/**
+     * Compares this RationalNumber with the specified Object for equality.
+     *
+     * @param  x Object to which this RationalNumber is to be compared.
+     * @return {@code true} if and only if the specified Object is a
+     *         RationalNumber whose value is numerically equal to this RationalNumber.
+     */
 	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		RationalNumber other = (RationalNumber) obj;
-		if (absDividend == null) {
-			if (other.absDividend != null)
-				return false;
-		} else if (!absDividend.equals(other.absDividend))
-			return false;
-		if (absDivisor == null) {
-			if (other.absDivisor != null)
-				return false;
-		} else if (!absDivisor.equals(other.absDivisor))
-			return false;
-		if (hashCode != other.hashCode)
-			return false;
-		if (isInteger != other.isInteger)
-			return false;
-		if (signum != other.signum)
-			return false;
-		return true;
-	}
+    public boolean equals(Object x) {
+        // This test is just an optimization, which may or may not help
+        if (x == this) {
+            return true;
+        }
+
+        // no explicit null check required
+        if (!(x instanceof RationalNumber)) { 
+            return false; // will also return here if x is null 
+        }
+
+        final RationalNumber other = (RationalNumber) x;
+        
+        // This test is just an optimization, which may or may not help
+        if (hashCode != other.hashCode) {
+            return false;
+        }
+        
+        // null checks not needed, since the constructor guards against dividend or divisor being null
+        return 
+                this.signum == other.signum &&
+                this.absDividend.equals(other.absDividend) && 
+                this.absDivisor.equals(other.absDivisor);
+    }
+	
 
 }
