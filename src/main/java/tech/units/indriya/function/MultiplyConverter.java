@@ -211,24 +211,6 @@ Serializable, Comparable<UnitConverter> {
     default Number getScaleFactor() {
         return getValue();
     }
-
-    // -- PREDICATES FOR RI INTERNAL USE ONLY
-    
-    public static boolean isRational(UnitConverter converter) {
-        return (converter instanceof RationalConverter);
-    }
-    
-    public static boolean isDouble(UnitConverter converter) {
-        return (converter instanceof DoubleMultiplyConverter);
-    }
-    
-    public static boolean isPowerOfPi(UnitConverter converter) {
-        return (converter instanceof PowerOfPiConverter);
-    }
-    
-    public static boolean isPowerOfInt(UnitConverter converter) {
-        return (converter instanceof PowerOfIntConverter);
-    }
     
 
 }
