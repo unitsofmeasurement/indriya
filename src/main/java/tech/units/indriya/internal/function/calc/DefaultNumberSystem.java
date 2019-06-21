@@ -243,16 +243,16 @@ public class DefaultNumberSystem implements NumberSystem {
             return RationalNumber.of(BigInteger.ONE, integerToBigInteger(number));
         }
         if(number instanceof BigDecimal) {
-            return RationalNumber.ofBigDecimal((BigDecimal) number).reciprocal();
+            return RationalNumber.of((BigDecimal) number).reciprocal();
         }
         if(number instanceof RationalNumber) {
             return ((RationalNumber) number).reciprocal();
         }
         if(number instanceof Double) {
-            return RationalNumber.ofDouble((double)number).reciprocal();
+            return RationalNumber.of((double)number).reciprocal();
         }
         if(number instanceof Float) {
-            return RationalNumber.ofDouble(number.doubleValue()).reciprocal();
+            return RationalNumber.of(number.doubleValue()).reciprocal();
         }
         throw unsupportedNumberType(number);
     }

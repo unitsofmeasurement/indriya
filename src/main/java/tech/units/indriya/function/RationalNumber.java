@@ -42,6 +42,7 @@ import java.util.Objects;
  * 
  * @author Andi Huber
  * @author Werner Keil
+ * @version 1.2, June 21, 2019
  * @since 2.0
  */
 public final class RationalNumber extends Number {
@@ -116,9 +117,9 @@ public final class RationalNumber extends Number {
      * 
 	 * @param number
 	 */
-	public static RationalNumber ofDouble(double number) {
+	public static RationalNumber of(double number) {
 	    final BigDecimal decimalValue = BigDecimal.valueOf(number);
-	    return ofBigDecimal(decimalValue);
+	    return of(decimalValue);
 	}
 
 	/**
@@ -126,7 +127,7 @@ public final class RationalNumber extends Number {
 	 * 
 	 * @param decimalValue
 	 */
-	public static RationalNumber ofBigDecimal(BigDecimal decimalValue) {
+	public static RationalNumber of(BigDecimal decimalValue) {
 	    Objects.requireNonNull(decimalValue);
 	    
 	    final int scale = decimalValue.scale();

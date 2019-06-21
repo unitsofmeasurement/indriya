@@ -103,7 +103,7 @@ public interface MultiplyConverter extends UnitConverter, Converter<Number, Numb
 	 * @param factor
 	 * @return
 	 */
-	public static MultiplyConverter ofNumber(Number factor) {
+	public static MultiplyConverter of(Number factor) {
 
 		NumberSystem ns = Calculus.currentNumberSystem();
 
@@ -133,12 +133,12 @@ public interface MultiplyConverter extends UnitConverter, Converter<Number, Numb
 		}
 
 		if (narrowedFactor instanceof Double || narrowedFactor instanceof Float) {
-			return ofDouble(narrowedFactor.doubleValue());
+			return of(narrowedFactor.doubleValue());
 		}
 
 		if (narrowedFactor instanceof BigDecimal) {
 			BigDecimal decimal = (BigDecimal) narrowedFactor;
-			RationalNumber rational = RationalNumber.ofBigDecimal(decimal);
+			RationalNumber rational = RationalNumber.of(decimal);
 			return ofRational(rational);
 		}
 
@@ -153,11 +153,11 @@ public interface MultiplyConverter extends UnitConverter, Converter<Number, Numb
 	 * @param factor
 	 * @return
 	 */
-	public static MultiplyConverter ofDouble(double factor) {
+	public static MultiplyConverter of(double factor) {
 		if (factor == 0.d) {
 			return identity();
 		}
-		RationalNumber rational = RationalNumber.ofDouble(factor);
+		RationalNumber rational = RationalNumber.of(factor);
 		return ofRational(rational);
 	}
 

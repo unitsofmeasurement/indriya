@@ -54,7 +54,7 @@ public class RationalNumberTest {
                 BigInteger.valueOf(1660538782L), 
                 new BigInteger("1000000000000000000000000000000000000"));
         
-        RationalNumber rational_2 = RationalNumber.ofDouble(1.660538782E-27);
+        RationalNumber rational_2 = RationalNumber.of(1.660538782E-27);
         
         assertEquals(rational_1, rational_2);
         
@@ -66,7 +66,7 @@ public class RationalNumberTest {
         RationalNumber rational_1 = RationalNumber.ofInteger(
                 new BigInteger("123456789000000000000000000000000000"));
         
-        RationalNumber rational_2 = RationalNumber.ofDouble(1.23456789E35);
+        RationalNumber rational_2 = RationalNumber.of(1.23456789E35);
         
         assertEquals(rational_1, rational_2);
         
@@ -77,7 +77,7 @@ public class RationalNumberTest {
         
         RationalNumber rational_1 = RationalNumber.ofInteger(3);
         
-        RationalNumber rational_2 = RationalNumber.ofDouble(3.);
+        RationalNumber rational_2 = RationalNumber.of(3.);
         
         assertEquals(rational_1, rational_2);
         
@@ -87,7 +87,7 @@ public class RationalNumberTest {
     @Test
     public void veryLargeNumberRepresentation() {
         
-        RationalNumber veryLargeRational= RationalNumber.ofDouble(Double.MAX_VALUE);
+        RationalNumber veryLargeRational= RationalNumber.of(Double.MAX_VALUE);
         
         double actual = veryLargeRational
                 .divide(RationalNumber.ofInteger(Long.MAX_VALUE))
