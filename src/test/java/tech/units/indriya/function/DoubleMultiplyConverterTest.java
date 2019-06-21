@@ -30,64 +30,62 @@
 package tech.units.indriya.function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static tech.units.indriya.NumberAssertions.assertNumberEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import tech.units.indriya.NumberAssertions;
+public class DoubleMultiplyConverterTest {
 
-public class AddConverterTest {
-
-  private AddConverter converter;
+  private DoubleMultiplyConverter converter;
 
   @BeforeEach
   public void setUp() throws Exception {
-    converter = new AddConverter(10);
+    converter = DoubleMultiplyConverter.of(2);
   }
 
   @Test
-  public void testEqualityOfTwoConverter() {
-    AddConverter addConverter = new AddConverter(10);
-    assertEquals(addConverter, converter);
-    assertNotNull(addConverter);
+  public void testConvertMethod() {
+    assertEquals(200, converter.convert(100), 0.1);
+    assertEquals(0, converter.convert(0));
+    assertEquals(-200, converter.convert(-100), 0.1);
+  }
+
+  @Test
+  public void testEqualityOfTwoLogConverter() {
+    assertNotNull(converter);
+    assertEquals(DoubleMultiplyConverter.of(2), converter);
+  }
+
+  @Test
+  public void testGetValuePiDivisorConverter() {
+    assertEquals(Double.valueOf(2d), converter.getValue());
+  }
+
+  @Test
+  public void isLinearOfLogConverterTest() {
+    assertTrue(converter.isLinear());
   }
 
   @Test
   public void inverseTest() {
-    assertEquals(new AddConverter(-10), converter.inverse());
-  }
-
-  @Test
-  public void linearTest() {
-    assertFalse(converter.isLinear());
-  }
-
-  @Test
-  public void offsetTest() {
-    assertNumberEquals(10, converter.getOffset(), 1E-12);
-  }
-
-  @Test
-  public void valueTest() {
-    assertNumberEquals(10, converter.getValue(), 1E-12);
-  }
-
-  @Test
-  public void toStringTest() {
-    assertEquals("Add(x -> x + 10)", converter.toString());
-    assertEquals("Add(x -> x - 10)", converter.inverse().toString());
+    assertNotNull(converter.inverse());
+    assertEquals(DoubleMultiplyConverter.of(0.5), converter.inverse());
   }
 
   @Test
   public void identityTest() {
-    assertFalse(converter.isIdentity());
+	  assertTrue(DoubleMultiplyConverter.of(1).isIdentity());
   }
 
   @Test
-  public void conversionStepsTest() {
-    assertNotNull(converter.getConversionSteps());
+  public void valueTest() {
+    assertEquals(Double.valueOf(2), converter.getValue());
+  }
+
+  @Test
+  public void toStringTest() {
+    assertEquals("DoubleMultiply(x -> x * 2.0)", converter.toString());
   }
 }

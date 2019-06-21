@@ -36,7 +36,6 @@ import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.NumberAssertions;
 import tech.units.indriya.function.MultiplyConverter;
-import tech.units.indriya.function.RationalConverter;
 import tech.units.indriya.function.RationalNumber;
 import tech.units.indriya.internal.function.radix.MixedRadixSupport;
 import tech.units.indriya.internal.function.radix.Radix;
@@ -49,16 +48,14 @@ public class MixedRadixSupportTest {
     
     private Radix[] decimalRadices = {
             
-            new Radix.UnitConverterRadix(MultiplyConverter.of(60.)),
-            new Radix.UnitConverterRadix(MultiplyConverter.of(15.)),
+            Radix.ofNumberFactor(BigDecimal.valueOf(60.)),
+            Radix.ofNumberFactor(BigDecimal.valueOf(15.)),
             
-//            new Radix.UnitConverterRadix(MultiplyConverter.of(BigDecimal.valueOf(60.))),
-//            new Radix.UnitConverterRadix(MultiplyConverter.of(BigDecimal.valueOf(15.))),
     };
 
     private Radix[] rationalRadices = {
-            new Radix.UnitConverterRadix(RationalConverter.of(RationalNumber.ofInteger(60))),
-            new Radix.UnitConverterRadix(RationalConverter.of(RationalNumber.ofInteger(15))),
+            Radix.ofMultiplyConverter(MultiplyConverter.ofRational(RationalNumber.ofInteger(60))),
+            Radix.ofMultiplyConverter(MultiplyConverter.ofRational(RationalNumber.ofInteger(15))),
     };
 
     @Test

@@ -30,7 +30,8 @@
 package tech.units.indriya.quantity;
 
 import static javax.measure.MetricPrefix.KILO;
-import static javax.measure.Quantity.Scale.*;
+import static javax.measure.Quantity.Scale.ABSOLUTE;
+import static javax.measure.Quantity.Scale.RELATIVE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -44,8 +45,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.function.AddConverter;
-import tech.units.indriya.function.RationalConverter;
-import tech.units.indriya.quantity.Quantities;
+import tech.units.indriya.function.MultiplyConverter;
 import tech.units.indriya.unit.TransformedUnit;
 import tech.units.indriya.unit.Units;
 
@@ -59,16 +59,16 @@ import tech.units.indriya.unit.Units;
 class WolframTuturialTemperatureTest {
 
 	public static final Unit<Temperature> DegreesFahrenheit = new TransformedUnit<>(Units.KELVIN,
-			RationalConverter.of(5, 9).concatenate(new AddConverter(459.67)));
+			MultiplyConverter.ofRational(5, 9).concatenate(new AddConverter(459.67)));
 
 	public static final Unit<Temperature> DegreesFahrenheitDifference = new TransformedUnit<>(Units.KELVIN,
-			RationalConverter.of(5, 9));
+	        MultiplyConverter.ofRational(5, 9));
 
 	public static final Unit<Temperature> KelvinsDifference = new TransformedUnit<>(Units.KELVIN,
-			RationalConverter.of(1, 1));
+	        MultiplyConverter.ofRational(1, 1));
 
 	public static final Unit<Temperature> DegreesCelsiusDifference = new TransformedUnit<>(Units.KELVIN,
-			RationalConverter.of(1, 1));
+	        MultiplyConverter.ofRational(1, 1));
 
 	// -- (1) -- Absolute Temperature versus Temperature Difference
 

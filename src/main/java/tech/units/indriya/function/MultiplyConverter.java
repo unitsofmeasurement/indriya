@@ -29,135 +29,188 @@
  */
 package tech.units.indriya.function;
 
-import java.util.Objects;
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.function.Supplier;
 
+import javax.measure.Prefix;
 import javax.measure.UnitConverter;
 
-import tech.units.indriya.AbstractConverter;
-import tech.units.indriya.internal.function.calc.Calculator;
-import tech.uom.lib.common.function.DoubleFactorSupplier;
+import tech.units.indriya.internal.function.calc.DefaultNumberSystem;
+import tech.units.indriya.spi.NumberSystem;
+import tech.uom.lib.common.function.Converter;
 import tech.uom.lib.common.function.ValueSupplier;
 
 /**
  * <p>
  * This class represents a converter multiplying numeric values by a constant
- * scaling factor (<code>double</code> based).
+ * scaling factor represented by the {@link Number} type.
  * </p>
  * 
- * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
- * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
  * @author Andi Huber
- * @version 1.2, Jun 3, 2019
- * @since 1.0
+ * @since 2.0
  */
-public final class MultiplyConverter extends AbstractConverter implements ValueSupplier<Double>, DoubleFactorSupplier {
+public interface MultiplyConverter 
+extends UnitConverter, Converter<Number, Number>, ValueSupplier<Number>, Supplier<Number>,
+Serializable, Comparable<UnitConverter> {
+    
+    // -- FACTORIES
+    
+    /**
+     * Creates a MultiplyConverter with the specified constant rational factor.
+     * 
+     * @param factor
+     */
+    public static MultiplyConverter ofRational(RationalNumber factor) {
+        if(factor.equals(RationalNumber.ONE)) {
+            return identity();
+        }
+        return RationalConverter.of(factor);
+    }
+    
+    /**
+     * Creates a MultiplyConverter with the specified rational factor made up 
+     * of {@code dividend} and {@code divisor}
+     * 
+     * @param dividend
+     * @param divisor
+     */
+    public static MultiplyConverter ofRational(long dividend, long divisor) {
+        RationalNumber rational = RationalNumber.of(dividend, divisor); 
+        return ofRational(rational);
+    }
+    
+    /**
+     * Creates a MultiplyConverter with the specified rational factor made up 
+     * of {@code dividend} and {@code divisor}
+     * 
+     * @param dividend
+     * @param divisor
+     */
+    public static MultiplyConverter ofRational(BigInteger dividend, BigInteger divisor) {
+        RationalNumber rational = RationalNumber.of(dividend, divisor);
+        return ofRational(rational);
+    }
+    
+    /**
+     * Creates a MultiplyConverter with the specified constant factor.
+     * 
+     * @param factor
+     * @return
+     */
+    public static MultiplyConverter ofNumber(Number factor) {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 6588759878444545649L;
+        NumberSystem ns = Calculus.currentNumberSystem();
+        
+        if(ns.isOne(factor)) {
+            return identity();
+        }
+        
+        Number narrowedFactor = ns.narrow(factor);
+        
+        if(narrowedFactor instanceof RationalNumber) {
+            return ofRational((RationalNumber)narrowedFactor);
+        }
+        
+        if(ns.isInteger(narrowedFactor)) {
+            if(narrowedFactor instanceof BigInteger) {
+                return ofRational(RationalNumber.ofInteger((BigInteger)narrowedFactor));    
+            }
 
-	/**
-	 * Holds the scale factor.
-	 */
-	private final double factor;
-
-	/**
-	 * Creates a multiply converter with the specified scale factor.
-	 * 
-	 * @param factor
-	 *            the scaling factor.
-	 */
-	public MultiplyConverter(double factor) {
-		this.factor = factor;
-	}
-
-	/**
-	 * Creates a multiply converter with the specified scale factor.
-	 * 
-	 * @param factor
-	 *            the scaling factor.
-	 */
-	public static MultiplyConverter of(double factor) {
-		return new MultiplyConverter(factor);
-	}
-
-	/**
-	 * Returns the scale factor of this converter.
-	 * 
-	 * @return the scale factor.
-	 */
-	public double getFactor() {
-		return factor;
-	}
-
-	@Override
-	public boolean isIdentity() {
-		return factor == 1.0;
-	}
-
-	@Override
-	protected boolean canReduceWith(AbstractConverter that) {
-		return that instanceof MultiplyConverter;
-	}
-
-	@Override
-	protected AbstractConverter reduce(AbstractConverter that) {
-		return new MultiplyConverter(factor * ((MultiplyConverter) that).factor);
-	}
-
-	@Override
-	public MultiplyConverter inverseWhenNotIdentity() {
-		return new MultiplyConverter(1.0 / factor);
-	}
+            // TODO[220] yet only implemented for the default number system, 
+            // any other implementation might behave differently;
+            // could fall back to long, but instead fail early
+            if(!(ns instanceof DefaultNumberSystem)) {
+                throw new UnsupportedOperationException("not yet supported");
+            }
+            
+            return ofRational(RationalNumber.ofInteger(narrowedFactor.longValue()));
+        }
+                
+        if(narrowedFactor instanceof Double || narrowedFactor instanceof Float) {
+            return ofDouble(narrowedFactor.doubleValue());
+        }
+        
+        if(narrowedFactor instanceof BigDecimal) {
+            BigDecimal decimal = (BigDecimal)narrowedFactor;
+            RationalNumber rational = RationalNumber.ofBigDecimal(decimal);
+            return ofRational(rational);
+        }
+                
+        // TODO[220] any other case not supported yet, could fall back to double, but instead fail early
+        throw new UnsupportedOperationException("not yet supported");
+    }
+    
+    /**
+     * Creates a MultiplyConverter with the specified constant factor.
+     * 
+     * @param factor
+     * @return
+     */
+    public static MultiplyConverter ofDouble(double factor) {
+        if(factor==0.d) {
+            return identity();
+        }
+        RationalNumber rational = RationalNumber.ofDouble(factor);
+        return ofRational(rational);
+    }
+    
+    /**
+     * Creates a MultiplyConverter with the specified Prefix.
+     * 
+     * @param prefix
+     *            the prefix for the factor.
+     */
+    public static MultiplyConverter ofPrefix(Prefix prefix) {
+        if(prefix==null) {
+            return identity();
+        }
+        return PowerOfIntConverter.of(prefix);
+    }
+    
+    /**
+     * Creates a MultiplyConverter with the specified exponent.
+     * 
+     * @param exponent
+     *            the exponent for the factor π^exponent.
+     */
+    public static MultiplyConverter ofPiToThePowerOf(int exponent) {
+        if(exponent==0) {
+            return identity();
+        }
+        return PowerOfPiConverter.of(exponent);
+    }
+    
+    /**
+     * Returns the an MultiplyConverter that acts as a 'pass-through'.
+     * 
+     */
+    public static MultiplyConverter identity() {
+        return IdentityMultiplyConverter.INSTANCE;
+    }
+    
+    
+    // -- DEFAULTS
+    
+    @Override
+    default boolean isLinear() {
+        return true;
+    }
 
     @Override
-    protected Number convertWhenNotIdentity(Number value) {
-        return Calculator.of(factor)
-              .multiply(value)
-              .peek();
+    default Number get() {
+        return getValue();
     }
-	
-	@Override
-	public final String transformationLiteral() {
-		return String.format("x -> x * %s", factor);
-	}
+    
+    /**
+     * Returns the scale factor of this converter.
+     * 
+     * @return the scale factor.
+     */
+    default Number getScaleFactor() {
+        return getValue();
+    }
+    
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj instanceof MultiplyConverter) {
-			MultiplyConverter that = (MultiplyConverter) obj;
-			return Objects.equals(factor, that.factor);
-		}
-		return false;
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hashCode(factor);
-	}
-
-	@Override
-	public boolean isLinear() {
-		return true;
-	}
-
-	@Override
-	public Double getValue() {
-		return factor;
-	}
-
-	@Override
-	public int compareTo(UnitConverter o) {
-		if (this == o) {
-			return 0;
-		}
-		if (o instanceof MultiplyConverter) {
-			return getValue().compareTo(((MultiplyConverter) o).getValue());
-		}
-		return -1;
-	}
 }

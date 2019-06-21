@@ -34,6 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
+import static tech.units.indriya.NumberAssertions.assertNumberEquals;
 import static tech.units.indriya.function.MixedRadixTest.USCustomary.FOOT;
 import static tech.units.indriya.function.MixedRadixTest.USCustomary.INCH;
 import static tech.units.indriya.function.MixedRadixTest.USCustomary.PICA;
@@ -74,13 +75,13 @@ public class MixedRadixTest {
         
         
         public static final Unit<Length> FOOT = Units.METRE.transform(
-                new RationalConverter(FOOT_PER_METER.getDividend(), FOOT_PER_METER.getDivisor()));
+                MultiplyConverter.ofRational(FOOT_PER_METER.getDividend(), FOOT_PER_METER.getDivisor()));
         
         public static final Unit<Length> INCH = Units.METRE.transform(
-                new RationalConverter(INCH_PER_METER.getDividend(), INCH_PER_METER.getDivisor()));
+                MultiplyConverter.ofRational(INCH_PER_METER.getDividend(), INCH_PER_METER.getDivisor()));
         
         public static final Unit<Length> PICA = Units.METRE.transform(
-                new RationalConverter(PICA_PER_METER.getDividend(), PICA_PER_METER.getDivisor()));
+                MultiplyConverter.ofRational(PICA_PER_METER.getDividend(), PICA_PER_METER.getDivisor()));
                 
     }
     
@@ -172,8 +173,8 @@ public class MixedRadixTest {
         // then
         
         assertEquals(USCustomary.FOOT, mixedRadix.getPrimaryUnit());
-        NumberAssertions.assertNumberEquals(1.1666666666666667, lengthQuantity.getValue(), 1E-9);
-        NumberAssertions.assertNumberEquals(1.1666666666666667, lengthComp.to(USCustomary.FOOT).getValue(), 1E-9);
+        assertNumberEquals(1.1666666666666667, lengthQuantity.getValue(), 1E-9);
+        assertNumberEquals(1.1666666666666667, lengthComp.to(USCustomary.FOOT).getValue(), 1E-9);
         
     }
     

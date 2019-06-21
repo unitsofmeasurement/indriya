@@ -29,18 +29,29 @@
  */
 package tech.units.indriya.format;
 
-import javax.measure.Prefix;
-import javax.measure.UnitConverter;
-
-import tech.units.indriya.AbstractConverter;
-import tech.units.indriya.function.*;
+import static java.lang.StrictMath.E;
+import static tech.units.indriya.format.FormatConstants.ADDITION_PRECEDENCE;
+import static tech.units.indriya.format.FormatConstants.EXPONENT_PRECEDENCE;
+import static tech.units.indriya.format.FormatConstants.MIDDLE_DOT;
+import static tech.units.indriya.format.FormatConstants.NOOP_PRECEDENCE;
+import static tech.units.indriya.format.FormatConstants.PRODUCT_PRECEDENCE;
 
 import java.math.BigInteger;
 import java.util.Formattable;
 import java.util.Formatter;
 
-import static java.lang.StrictMath.E;
-import static tech.units.indriya.format.FormatConstants.*;
+import javax.measure.Prefix;
+import javax.measure.UnitConverter;
+
+import tech.units.indriya.AbstractConverter;
+import tech.units.indriya.function.AddConverter;
+import tech.units.indriya.function.Calculus;
+import tech.units.indriya.function.ExpConverter;
+import tech.units.indriya.function.LogConverter;
+import tech.units.indriya.function.MultiplyConverter;
+import tech.units.indriya.function.PowerOfIntConverter;
+import tech.units.indriya.function.RationalNumber;
+import tech.units.indriya.spi.NumberSystem;
 
 /**
  * Helper class that handles internals of formatting {@link UnitConverter} instances.
@@ -73,10 +84,11 @@ class ConverterFormatter {
             return exponentPrecedenceLogConveter((LogConverter) converter, buffer);
         } else if (converter instanceof ExpConverter) {
             return exponentPrecedenceExpConveter((ExpConverter) converter, unitPrecedence, buffer);
-        } else if (converter instanceof MultiplyConverter) {
+        } else if ((converter instanceof MultiplyConverter) && 
+                !(converter instanceof PowerOfIntConverter)) {
+            
             return productPrecedence((MultiplyConverter) converter, continued, unitPrecedence, buffer);
-        } else if (converter instanceof RationalConverter) {
-            return productPrecedence((RationalConverter) converter, continued, unitPrecedence, buffer);
+            
         } else if (converter instanceof PowerOfIntConverter) {
             final Prefix prefix = symbolMap.getPrefix(converter);
             if ((prefix != null) && (unitPrecedence == NOOP_PRECEDENCE))
@@ -125,39 +137,61 @@ class ConverterFormatter {
         return PRODUCT_PRECEDENCE;
     }
 
-    private static int productPrecedence(RationalConverter converter, boolean continued, int unitPrecedence, StringBuilder buffer) {
-        if (unitPrecedence < PRODUCT_PRECEDENCE) {
-            buffer.insert(0, '(');
-            buffer.append(')');
-        }
-        RationalConverter rationalConverter = converter;
-        if (rationalConverter.getDividend() != BigInteger.ONE) {
-            if (continued) {
-                buffer.append(MIDDLE_DOT);
-            }
-            buffer.append(rationalConverter.getDividend());
-        }
-        if (rationalConverter.getDivisor() != BigInteger.ONE) {
-            buffer.append('/');
-            buffer.append(rationalConverter.getDivisor());
-        }
-        return PRODUCT_PRECEDENCE;
-    }
+//TODO[220] remove comment    
+//    private static int productPrecedence(RationalConverter converter, boolean continued, int unitPrecedence, StringBuilder buffer) {
+//        if (unitPrecedence < PRODUCT_PRECEDENCE) {
+//            buffer.insert(0, '(');
+//            buffer.append(')');
+//        }
+//        RationalConverter rationalConverter = converter;
+//        if (rationalConverter.getDividend() != BigInteger.ONE) {
+//            if (continued) {
+//                buffer.append(MIDDLE_DOT);
+//            }
+//            buffer.append(rationalConverter.getDividend());
+//        }
+//        if (rationalConverter.getDivisor() != BigInteger.ONE) {
+//            buffer.append('/');
+//            buffer.append(rationalConverter.getDivisor());
+//        }
+//        return PRODUCT_PRECEDENCE;
+//    }
 
     private static int productPrecedence(MultiplyConverter converter, boolean continued, int unitPrecedence, StringBuilder buffer) {
         if (unitPrecedence < PRODUCT_PRECEDENCE) {
             buffer.insert(0, '(');
             buffer.append(')');
         }
-        if (continued) {
-            buffer.append(MIDDLE_DOT);
-        }
-        double factor = converter.getFactor();
-        long lFactor = (long) factor;
-        if (lFactor == factor) {
-            buffer.append(lFactor);
+        Number factor = converter.getScaleFactor();
+        if(factor instanceof RationalNumber) {
+            RationalNumber rational = (RationalNumber)factor;
+            if (continued) {
+
+                if(rational.isInteger()) {
+                    buffer.append(MIDDLE_DOT);
+                    buffer.append(rational.toString()); // renders as integer
+                } else {
+                    
+                    RationalNumber reciprocal = rational.reciprocal();
+                    
+                    if(reciprocal.isInteger()) {
+                        buffer.append('/');
+                        buffer.append(reciprocal.toString()); // renders as integer
+                    } else {
+                        buffer.append(MIDDLE_DOT);
+                        buffer.append(rational.toRationalString('/'));
+                    }
+                    
+                }
+                
+            } else {
+                buffer.append(rational.toRationalString('/'));    
+            }
         } else {
-            buffer.append(factor);
+            if (continued) {
+                buffer.append(MIDDLE_DOT);
+            }
+            buffer.append(String.valueOf(factor));    
         }
         return PRODUCT_PRECEDENCE;
     }
@@ -201,19 +235,22 @@ class ConverterFormatter {
             buffer.insert(0, '(');
             buffer.append(')');
         }
-        double offset = converter.getOffset();
-        if (offset < 0) {
+        NumberSystem ns = Calculus.currentNumberSystem();
+        Number offset = converter.getOffset();
+        if (ns.compare(offset, 0)<0) {
             buffer.append("-"); //$NON-NLS-1$
-            offset = -offset;
+            offset = ns.negate(offset);
         } else if (continued) {
             buffer.append("+"); //$NON-NLS-1$
         }
-        long lOffset = (long) offset;
-        if (lOffset == offset) {
-            buffer.append(lOffset);
-        } else {
-            buffer.append(offset);
-        }
+        buffer.append(offset);
+//TODO[220] remove comment        
+//        long lOffset = (long) offset;
+//        if (lOffset == offset) {
+//            buffer.append(lOffset);
+//        } else {
+//            buffer.append(offset);
+//        }
         return ADDITION_PRECEDENCE;
     }
 
@@ -268,19 +305,15 @@ class ConverterFormatter {
                 buffer.insert(0, '(');
                 buffer.append(')');
             }
-            double offset = ((AddConverter) converter).getOffset();
-            if (offset < 0) {
+            NumberSystem ns = Calculus.currentNumberSystem();
+            Number offset = ((AddConverter) converter).getOffset();
+            if (ns.compare(offset, 0)<0) {
                 buffer.append("-");
-                offset = -offset;
+                offset = ns.negate(offset);
             } else if (continued) {
                 buffer.append("+");
             }
-            long lOffset = (long) offset;
-            if (lOffset == offset) {
-                buffer.append(lOffset);
-            } else {
-                buffer.append(offset);
-            }
+            buffer.append(offset);
             return ADDITION_PRECEDENCE;
         } else if (converter instanceof MultiplyConverter) {
             if (unitPrecedence < PRODUCT_PRECEDENCE) {
@@ -290,29 +323,12 @@ class ConverterFormatter {
             if (continued) {
                 buffer.append(MIDDLE_DOT);
             }
-            double factor = ((MultiplyConverter) converter).getFactor();
-            long lFactor = (long) factor;
-            if (lFactor == factor) {
-                buffer.append(lFactor);
+            Number factor = ((MultiplyConverter) converter).getScaleFactor();
+            if(factor instanceof RationalNumber) {
+                RationalNumber rational = (RationalNumber)factor;
+                buffer.append(rational.toRationalString('/'));
             } else {
-                buffer.append(factor);
-            }
-            return PRODUCT_PRECEDENCE;
-        } else if (converter instanceof RationalConverter) {
-            if (unitPrecedence < PRODUCT_PRECEDENCE) {
-                buffer.insert(0, '(');
-                buffer.append(')');
-            }
-            RationalConverter rationalConverter = (RationalConverter) converter;
-            if (!rationalConverter.getDividend().equals(BigInteger.ONE)) {
-                if (continued) {
-                    buffer.append(MIDDLE_DOT);
-                }
-                buffer.append(rationalConverter.getDividend());
-            }
-            if (!rationalConverter.getDivisor().equals(BigInteger.ONE)) {
-                buffer.append('/');
-                buffer.append(rationalConverter.getDivisor());
+                buffer.append(factor);    
             }
             return PRODUCT_PRECEDENCE;
         } else { // All other converter type (e.g. exponential) we use the

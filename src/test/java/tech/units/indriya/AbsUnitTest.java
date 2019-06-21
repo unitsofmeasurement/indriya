@@ -29,14 +29,19 @@
  */
 package tech.units.indriya;
 
+import static javax.measure.MetricPrefix.KILO;
+import static javax.measure.MetricPrefix.MILLI;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static javax.measure.MetricPrefix.*;
-import static tech.units.indriya.unit.Units.*;
+import static tech.units.indriya.unit.Units.CELSIUS;
+import static tech.units.indriya.unit.Units.GRAM;
+import static tech.units.indriya.unit.Units.KILOGRAM;
+import static tech.units.indriya.unit.Units.METRE;
+import static tech.units.indriya.unit.Units.WATT;
 
 import java.math.BigDecimal;
 import java.util.Map;
@@ -52,7 +57,6 @@ import javax.measure.quantity.Power;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.format.SimpleUnitFormat;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.BaseUnit;
@@ -306,7 +310,7 @@ public class AbsUnitTest {
 		assertNotNull(result);
 		// assertEquals(METRE, result.getSystemUnit()); TODO they should be equal
 		assertEquals(METRE.toString(), result.getSystemUnit().toString());
-		assertEquals("m/3.0", result.toString());
+		assertEquals("m/3", result.toString());
 	}
 
 	@Test
@@ -315,7 +319,7 @@ public class AbsUnitTest {
 		assertNotNull(result);
 		// assertEquals(METRE, result.getSystemUnit()); TODO they should be equal
 		assertEquals(METRE.toString(), result.getSystemUnit().toString());
-		assertEquals("m/3.0", result.toString());
+		assertEquals("m/3", result.toString());
 	}
 
 	@Test
@@ -332,7 +336,7 @@ public class AbsUnitTest {
 		assertNotNull(result);
 		// assertEquals(METRE, result.getSystemUnit()); TODO they should be equal
 		assertEquals(METRE.toString(), result.getSystemUnit().toString());
-		assertEquals("m*4.0", result.toString());
+		assertEquals("m*4", result.toString());
 	}
 
 	@Test
@@ -341,7 +345,7 @@ public class AbsUnitTest {
 		assertNotNull(result);
 		// assertEquals(METRE, result.getSystemUnit()); TODO they should be equal
 		assertEquals(METRE.toString(), result.getSystemUnit().toString());
-		assertEquals("m*4.0", result.toString());
+		assertEquals("m*4", result.toString());
 	}
 
 	@Test
@@ -358,7 +362,7 @@ public class AbsUnitTest {
 		assertNotNull(result);
 		// assertEquals(METRE, result.getSystemUnit()); TODO they should be equal
 		assertEquals(METRE.toString(), result.getSystemUnit().toString());
-		assertEquals("m+5.0", result.toString());
+		assertEquals("m+5", result.toString());
 	}
 
 	@Test
@@ -367,7 +371,7 @@ public class AbsUnitTest {
 		assertNotNull(result);
 		// assertEquals(METRE, result.getSystemUnit()); TODO they should be equal
 		assertEquals(METRE.toString(), result.getSystemUnit().toString());
-		assertEquals("m+5.0", result.toString());
+		assertEquals("m+5", result.toString());
 	}
 
 	@Test

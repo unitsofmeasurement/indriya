@@ -183,7 +183,7 @@ class CompositionEquivalenceTest {
   public void equivalenceHappyCase() {
 
     AbstractConverter a = new AddConverter(3);
-    AbstractConverter b = new MultiplyConverter(2);
+    AbstractConverter b = DoubleMultiplyConverter.of(2);
 
     AbstractConverter ab = (AbstractConverter) a.concatenate(b);
     AbstractConverter Ba = (AbstractConverter) b.inverse().concatenate(a);
@@ -202,7 +202,7 @@ class CompositionEquivalenceTest {
   public void equivalenceUnhappyCase() {
 
     AbstractConverter a = new AddConverter(3);
-    AbstractConverter b = new MultiplyConverter(2);
+    AbstractConverter b = DoubleMultiplyConverter.of(2);
     AbstractConverter c = new AddConverter(-7);
 
     {        

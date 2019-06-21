@@ -37,11 +37,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import javax.measure.Prefix;
 import javax.measure.UnitConverter;
 
 import tech.units.indriya.function.ConverterCompositionHandler;
-import tech.units.indriya.function.PowerOfIntConverter;
 import tech.uom.lib.common.function.Converter;
 import tech.uom.lib.common.util.UnitComparator;
 
@@ -87,16 +85,6 @@ public abstract class AbstractConverter
 	 * DefaultQuantityFactory constructor.
 	 */
 	protected AbstractConverter() {
-	}
-
-	/**
-	 * Creates a converter with the specified Prefix.
-	 * 
-	 * @param prefix
-	 *            the prefix for the factor.
-	 */
-	public static UnitConverter of(Prefix prefix) {
-		return PowerOfIntConverter.of(prefix);
 	}
 
 	@Override

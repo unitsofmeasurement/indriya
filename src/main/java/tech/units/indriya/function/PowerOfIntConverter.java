@@ -44,16 +44,18 @@ import tech.uom.lib.common.function.IntExponentSupplier;
  * UnitConverter for numbers in base^exponent representation.
  * @author Andi Huber
  * @author Werner Keil
- * @version 1.3, Jun 3, 2019
+ * @version 1.4, Jun 21, 2019
  * @since 2.0
  */
+//TODO[220] make this like all the other MultiplyConverter package private
 public final class PowerOfIntConverter extends AbstractConverter 
- implements IntBaseSupplier, IntExponentSupplier {
+ implements MultiplyConverter, IntBaseSupplier, IntExponentSupplier {
 	private static final long serialVersionUID = 3546932001671571300L;
 
 	private final int base;
 	private final int exponent;
 	private final int hashCode;
+	private final RationalNumber rationalFactor;
 
 	/**
 	 * Creates a converter with the specified Prefix.
@@ -61,7 +63,7 @@ public final class PowerOfIntConverter extends AbstractConverter
 	 * @param prefix
 	 *            the prefix for the factor.
 	 */
-	public static PowerOfIntConverter of(Prefix prefix) {
+	static PowerOfIntConverter of(Prefix prefix) {
 		return new PowerOfIntConverter(prefix.getBase(), prefix.getExponent());
 	}
 
@@ -72,7 +74,7 @@ public final class PowerOfIntConverter extends AbstractConverter
 	 * @param exponent
 	 * @return
 	 */
-	public static PowerOfIntConverter of(int base, int exponent) {
+	static PowerOfIntConverter of(int base, int exponent) {
 		return new PowerOfIntConverter(base, exponent);
 	}
 
@@ -83,6 +85,7 @@ public final class PowerOfIntConverter extends AbstractConverter
 		this.base = base;
 		this.exponent = exponent;
 		this.hashCode = Objects.hash(base, exponent);
+		this.rationalFactor = calculateRationalNumberFactor();
 	}
 
 	public int getBase() {
@@ -101,11 +104,6 @@ public final class PowerOfIntConverter extends AbstractConverter
 		return exponent == 0; // x^0 = 1, for any x!=0
 		// [ahuber] 0^0 is undefined, but we guard against base==0 in the constructor,
 		// and there is no composition, that changes the base
-	}
-
-	@Override
-	public boolean isLinear() {
-		return true;
 	}
 
 	@Override
@@ -139,21 +137,11 @@ public final class PowerOfIntConverter extends AbstractConverter
 
     @Override
     protected Number convertWhenNotIdentity(Number value) {
-        //[ahuber] exact number representation of factor 
-        final BigInteger bintFactor = BigInteger.valueOf(base).pow(Math.abs(exponent));
-        
-        if(exponent>0) {
-            return Calculator.of(bintFactor)
-                  .multiply(value)
-                  .peek();
-        }
-        
-        return Calculator.of(bintFactor)
-                .reciprocal()
+        return Calculator.of(rationalFactor)
                 .multiply(value)
                 .peek();
     }
-
+    
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
@@ -205,6 +193,17 @@ public final class PowerOfIntConverter extends AbstractConverter
 	}
 
 	// -- HELPER
+	
+	private RationalNumber calculateRationalNumberFactor() {
+        if(exponent==0) {
+            return RationalNumber.ONE;
+        }
+        BigInteger bintFactor = BigInteger.valueOf(base).pow(Math.abs(exponent));
+        if(exponent>0) {
+            return RationalNumber.ofInteger(bintFactor);
+        }
+        return RationalNumber.of(BigInteger.ONE, bintFactor);
+    }
 
 	private PowerOfIntConverter composeSameBaseNonIdentity(PowerOfIntConverter other) {
 		// no check for identity required
@@ -212,8 +211,12 @@ public final class PowerOfIntConverter extends AbstractConverter
 	}
 
 	public RationalConverter toRationalConverter() {
-		return exponent>0
-				? new RationalConverter(BigInteger.valueOf(base).pow(exponent), BigInteger.ONE)
-						: new RationalConverter(BigInteger.ONE, BigInteger.valueOf(base).pow(-exponent));
+		return new RationalConverter(rationalFactor);
 	}
+
+    @Override
+    public Number getValue() {
+        return rationalFactor;
+    }
+
 }

@@ -59,25 +59,36 @@ public interface Radix {
      */
     Number[] divideAndRemainder(Number number, boolean roundRemainderTowardsZero);
     
-    // -- RADIX IMPLEMENTATION - UnitConverterRadix
-
-    public static class UnitConverterRadix implements Radix {
+    // -- FACTORIES
+    
+    public static Radix ofNumberFactor(Number number) {
+        return new NumberFactorRadix(number);
+    }
+    
+    public static Radix ofMultiplyConverter(UnitConverter linearUnitConverter) {
+        Objects.requireNonNull(linearUnitConverter, "unitConverter cannot be null");
+        if(!linearUnitConverter.isLinear()) {
+            throw new IllegalArgumentException("unitConverter is expected to be linear");
+        }
+        Number radix = Calculus.currentNumberSystem().narrow(linearUnitConverter.convert(1));
+        return new NumberFactorRadix(radix);
+    }
+    
+    // -- RADIX IMPLEMENTATION
+    
+    //can be made private with later java versions 
+    public static class NumberFactorRadix implements Radix {
         
-        private final UnitConverter unitConverter;
         private final Number radix;
         
-        public UnitConverterRadix(UnitConverter unitConverter) {
-            Objects.requireNonNull(unitConverter, "unitConverter cannot be null");
-            if(!unitConverter.isLinear()) {
-                throw new IllegalArgumentException("unitConverter is expected to be linear");
-            }
-            this.unitConverter = unitConverter;
-            this.radix = ns().narrow(unitConverter.convert(1));
+        public NumberFactorRadix(Number radix) {
+            this.radix = ns().narrow(radix);
         }
 
         @Override
         public Number multiply(Number number) {
-            return unitConverter.convert(number);
+            Number result = ns().multiply(radix, ns().narrow(number));
+            return ns().narrow(result);
         }
 
         @Override
@@ -92,7 +103,7 @@ public interface Radix {
             return result;
         }
         
-        private NumberSystem ns() {
+        private static NumberSystem ns() {
             return Calculus.currentNumberSystem();
         }
         

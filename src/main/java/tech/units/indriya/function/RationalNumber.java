@@ -109,6 +109,37 @@ public final class RationalNumber extends Number {
 	public static RationalNumber of(long dividend, long divisor) {
 		return of(BigInteger.valueOf(dividend), BigInteger.valueOf(divisor));
 	}
+	
+	/**
+     * Returns a {@code RationalNumber} that represents the given double precision 
+     * {@code number}, with an accuracy equivalent to {@link BigDecimal#valueOf(double)}.
+     * 
+	 * @param number
+	 */
+	public static RationalNumber ofDouble(double number) {
+	    final BigDecimal decimalValue = BigDecimal.valueOf(number);
+	    return ofBigDecimal(decimalValue);
+	}
+
+	/**
+	 * Returns a {@code RationalNumber} that represents the given BigDecimal decimalValue.
+	 * 
+	 * @param decimalValue
+	 */
+	public static RationalNumber ofBigDecimal(BigDecimal decimalValue) {
+	    Objects.requireNonNull(decimalValue);
+	    
+	    final int scale = decimalValue.scale();
+        
+        if(scale<=0) {
+            return ofInteger(decimalValue.toBigIntegerExact()); 
+        }
+        
+        final BigInteger dividend = decimalValue.unscaledValue();
+        final BigInteger divisor = BigInteger.TEN.pow(scale);
+        
+        return of(dividend, divisor);
+	}
 
 	/**
 	 * Returns a {@code RationalNumber} that represents the division
@@ -427,10 +458,11 @@ public final class RationalNumber extends Number {
 	 *
 	 * @param useFractionalRepresentation {@code true} for fractional representation {@code 5÷3}; 
 	 *         {@code false} for decimal {@code 1.66667}.
+	 *         
 	 * @return string with canonical string representation of this
 	 *         {@code RationalNumber}
 	 */
-	private String layoutChars(boolean useFractionalRepresentation) {
+	private String layoutChars(boolean useFractionalRepresentation, char divisionCharacter) {
 		if (signum == 0) {
 			return "0";
 		}
@@ -438,7 +470,7 @@ public final class RationalNumber extends Number {
 			return getDividend().toString(); // already includes the sign
 		}
 		if (useFractionalRepresentation) {
-			return getDividend().toString() + DIVISION_CHARACTER + absDivisor;
+			return getDividend().toString() + divisionCharacter + absDivisor;
 		} else {
 			return String.valueOf(bigDecimalValue());
 		}
@@ -446,20 +478,33 @@ public final class RationalNumber extends Number {
 
 	@Override
 	public String toString() {
-		return layoutChars(false);
+		return layoutChars(false, DIVISION_CHARACTER);
 	}
 
 	/**
 	 * Returns a string representation of this {@code RationalNumber}, using
-	 * fractional notation, eg. {@code 5÷3}.
+	 * fractional notation, eg. {@code 5÷3} or {@code -5÷3}.
 	 *
 	 * @return string representation of this {@code RationalNumber}, using
 	 *         fractional notation.
 	 * @since 2.0
 	 */
-	public String toFractionalString() {
-		return layoutChars(true);
+	public String toRationalString() {
+		return layoutChars(true, DIVISION_CHARACTER);
 	}
+	
+	/**
+     * Returns a string representation of this {@code RationalNumber}, using
+     * fractional notation, eg. {@code 5÷3} or {@code -5÷3}.
+     * 
+     * @param divisionCharacter the character to use instead of the default {@code ÷}
+     * @return string representation of this {@code RationalNumber}, using
+     *         fractional notation.
+     * @since 2.0
+     */
+	public String toRationalString(char divisionCharacter) {
+	    return layoutChars(true, divisionCharacter);
+    }
 
 	@Override
 	public int hashCode() {

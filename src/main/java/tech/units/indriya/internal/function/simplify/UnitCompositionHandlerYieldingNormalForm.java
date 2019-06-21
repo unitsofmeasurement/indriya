@@ -29,44 +29,30 @@
  */
 package tech.units.indriya.internal.function.simplify;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiPredicate;
 import java.util.function.BinaryOperator;
 
 import tech.units.indriya.AbstractConverter;
-import tech.units.indriya.function.AddConverter;
-import tech.units.indriya.function.ExpConverter;
-import tech.units.indriya.function.LogConverter;
-import tech.units.indriya.function.MultiplyConverter;
-import tech.units.indriya.function.PowerOfIntConverter;
-import tech.units.indriya.function.PowerOfPiConverter;
-import tech.units.indriya.function.RationalConverter;
+import tech.units.indriya.function.Calculus;
 import tech.units.indriya.function.ConverterCompositionHandler;
+import tech.units.indriya.function.PowerOfIntConverter;
 
 /**
  * UnitCompositionHandler yielding a normal-form.
  * A normal-form is required to decide whether two UnitConverters are equivalent.
  * 
  * @author Andi Huber
- * @version 1.0
+ * @version 1.1
  * @since 2.0
  */
 public class UnitCompositionHandlerYieldingNormalForm implements ConverterCompositionHandler {
 
-  private final Map<Class<?>, Integer> normalFormOrder = new HashMap<>(9);
+  private final Map<Class<? extends AbstractConverter>, Integer> normalFormOrder;
 
   public UnitCompositionHandlerYieldingNormalForm() {
-    normalFormOrder.put(AbstractConverter.IDENTITY.getClass(), 0);
-    normalFormOrder.put(PowerOfIntConverter.class, 1); 
-    normalFormOrder.put(RationalConverter.class, 2); 
-    normalFormOrder.put(PowerOfPiConverter.class, 3);
-    normalFormOrder.put(MultiplyConverter.class, 4);
-    normalFormOrder.put(AddConverter.class, 5);
-    normalFormOrder.put(LogConverter.class, 6); 
-    normalFormOrder.put(ExpConverter.class, 7);
-    normalFormOrder.put(AbstractConverter.Pair.class, 99);
+    normalFormOrder = Calculus.getNormalFormOrder();
   }
 
   @Override
