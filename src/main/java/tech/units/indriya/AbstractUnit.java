@@ -349,22 +349,22 @@ public abstract class AbstractUnit<Q extends Quantity<Q>>
 	public final Unit<Q> multiply(Number factor) {
 		if (Calculus.currentNumberSystem().isOne(factor))
 			return this;
-		return transform(MultiplyConverter.ofNumber(factor));
+		return transform(MultiplyConverter.of(factor));
 	}
 
 	@Override
 	public Unit<Q> shift(double offset) {
-		return shift(RationalNumber.ofDouble(offset));
+		return shift(RationalNumber.of(offset));
 	}
 
 	@Override
 	public Unit<Q> multiply(double multiplier) {
-		return multiply(RationalNumber.ofDouble(multiplier));
+		return multiply(RationalNumber.of(multiplier));
 	}
 
 	@Override
 	public Unit<Q> divide(double divisor) {
-		return divide(RationalNumber.ofDouble(divisor));
+		return divide(RationalNumber.of(divisor));
 	}
 
 	public final Unit<Q> annotate(String annotation) {
@@ -480,7 +480,7 @@ public abstract class AbstractUnit<Q extends Quantity<Q>>
 	    if (Calculus.currentNumberSystem().isOne(divisor))
 			return this;
 	    Number factor = Calculator.of(divisor).reciprocal().peek(); 
-		return transform(MultiplyConverter.ofNumber(factor));
+		return transform(MultiplyConverter.of(factor));
 	}
 
 	/**
