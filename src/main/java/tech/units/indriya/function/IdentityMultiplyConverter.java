@@ -34,8 +34,6 @@ import java.util.List;
 
 import javax.measure.UnitConverter;
 
-import tech.units.indriya.AbstractConverter;
-
 /**
  * @author Andi Huber
  * @since 2.0

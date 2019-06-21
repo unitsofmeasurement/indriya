@@ -42,7 +42,6 @@ import java.util.ServiceLoader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import tech.units.indriya.AbstractConverter;
 import tech.units.indriya.spi.NumberSystem;
 
 /**

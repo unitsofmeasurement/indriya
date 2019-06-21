@@ -36,7 +36,7 @@ import java.util.function.BinaryOperator;
 
 import javax.measure.UnitConverter;
 
-import tech.units.indriya.AbstractConverter;
+import tech.units.indriya.function.AbstractConverter;
 
 /**
  * Package private normal-form yielding worker task. 

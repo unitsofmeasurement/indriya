@@ -35,7 +35,6 @@ import java.util.function.DoubleSupplier;
 
 import javax.measure.UnitConverter;
 
-import tech.units.indriya.AbstractConverter;
 import tech.units.indriya.internal.function.calc.Calculator;
 
 /**

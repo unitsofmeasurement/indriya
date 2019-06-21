@@ -34,7 +34,7 @@ import java.util.Objects;
 import java.util.function.BiPredicate;
 import java.util.function.BinaryOperator;
 
-import tech.units.indriya.AbstractConverter;
+import tech.units.indriya.function.AbstractConverter;
 import tech.units.indriya.function.Calculus;
 import tech.units.indriya.function.ConverterCompositionHandler;
 import tech.units.indriya.function.PowerOfIntConverter;

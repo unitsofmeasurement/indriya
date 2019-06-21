@@ -33,7 +33,6 @@ import java.util.Objects;
 
 import javax.measure.UnitConverter;
 
-import tech.units.indriya.AbstractConverter;
 import tech.units.indriya.internal.function.calc.Calculator;
 import tech.uom.lib.common.function.ValueSupplier;
 
@@ -48,7 +47,7 @@ import tech.uom.lib.common.function.ValueSupplier;
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
  * @author Andi Huber
- * @version 1.4, Jun 3, 2019
+ * @version 1.5, Jun 21, 2019
  * @since 1.0
  */
 public final class ExpConverter extends AbstractConverter implements ValueSupplier<String> {

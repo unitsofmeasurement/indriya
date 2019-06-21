@@ -45,7 +45,6 @@ import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 
-import tech.units.indriya.AbstractConverter;
 import tech.units.indriya.NumberAssertions;
 import tech.units.indriya.function.ConverterTypeUtil.ConverterType;
 

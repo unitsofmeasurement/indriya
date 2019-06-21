@@ -27,7 +27,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package tech.units.indriya;
+package tech.units.indriya.function;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -39,7 +39,6 @@ import java.util.stream.Collectors;
 
 import javax.measure.UnitConverter;
 
-import tech.units.indriya.function.ConverterCompositionHandler;
 import tech.uom.lib.common.function.Converter;
 import tech.uom.lib.common.util.UnitComparator;
 
@@ -51,7 +50,7 @@ import tech.uom.lib.common.util.UnitComparator;
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author Andi Huber
- * @version 1.9, Jun 3, 2019
+ * @version 2.0, Jun 21, 2019
  * @since 1.0
  */
 public abstract class AbstractConverter

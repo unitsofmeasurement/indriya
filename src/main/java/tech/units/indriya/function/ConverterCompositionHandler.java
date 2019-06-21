@@ -32,7 +32,6 @@ package tech.units.indriya.function;
 import java.util.function.BiPredicate;
 import java.util.function.BinaryOperator;
 
-import tech.units.indriya.AbstractConverter;
 import tech.units.indriya.internal.function.simplify.UnitCompositionHandlerYieldingNormalForm;
 
 /**

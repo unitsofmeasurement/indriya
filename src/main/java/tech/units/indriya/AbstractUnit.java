@@ -46,6 +46,7 @@ import javax.measure.quantity.Dimensionless;
 
 import tech.units.indriya.format.LocalUnitFormat;
 import tech.units.indriya.format.SimpleUnitFormat;
+import tech.units.indriya.function.AbstractConverter;
 import tech.units.indriya.function.AddConverter;
 import tech.units.indriya.function.Calculus;
 import tech.units.indriya.function.MultiplyConverter;

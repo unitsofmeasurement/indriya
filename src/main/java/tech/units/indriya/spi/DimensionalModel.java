@@ -33,7 +33,7 @@ import java.util.Map;
 
 import javax.measure.Dimension;
 
-import tech.units.indriya.AbstractConverter;
+import tech.units.indriya.function.AbstractConverter;
 import tech.units.indriya.quantity.QuantityDimension;
 
 /**

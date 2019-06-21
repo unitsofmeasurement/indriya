@@ -43,7 +43,7 @@ import java.util.Formatter;
 import javax.measure.Prefix;
 import javax.measure.UnitConverter;
 
-import tech.units.indriya.AbstractConverter;
+import tech.units.indriya.function.AbstractConverter;
 import tech.units.indriya.function.AddConverter;
 import tech.units.indriya.function.Calculus;
 import tech.units.indriya.function.ExpConverter;
