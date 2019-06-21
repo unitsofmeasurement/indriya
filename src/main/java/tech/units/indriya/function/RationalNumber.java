@@ -109,6 +109,27 @@ public final class RationalNumber extends Number {
 	public static RationalNumber of(long dividend, long divisor) {
 		return of(BigInteger.valueOf(dividend), BigInteger.valueOf(divisor));
 	}
+	
+	/**
+     * Returns a {@code RationalNumber} that represents the given double precision 
+     * {@code number}, with an accuracy equivalent to {@link BigDecimal#valueOf(double)}.
+     * 
+	 * @param number
+	 */
+	public static RationalNumber ofDouble(double number) {
+	     
+	    final BigDecimal decimalValue = BigDecimal.valueOf(number);
+	    final int scale = decimalValue.scale();
+	    
+	    if(scale<=0) {
+	        return ofInteger(decimalValue.toBigIntegerExact()); 
+	    }
+	    
+	    final BigInteger dividend = BigDecimal.valueOf(number).unscaledValue();
+	    final BigInteger divisor = BigInteger.TEN.pow(scale);
+	    
+        return of(dividend, divisor);
+    }
 
 	/**
 	 * Returns a {@code RationalNumber} that represents the division
@@ -451,13 +472,13 @@ public final class RationalNumber extends Number {
 
 	/**
 	 * Returns a string representation of this {@code RationalNumber}, using
-	 * fractional notation, eg. {@code 5÷3}.
+	 * fractional notation, eg. {@code 5÷3} or {@code -5÷3}.
 	 *
 	 * @return string representation of this {@code RationalNumber}, using
 	 *         fractional notation.
 	 * @since 2.0
 	 */
-	public String toFractionalString() {
+	public String toRationalString() {
 		return layoutChars(true);
 	}
 
