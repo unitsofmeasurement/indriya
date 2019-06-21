@@ -300,7 +300,7 @@ public final class UnitFormatParser implements UnitTokenConstants {
             if (unit != null) {
               {
                 if (true)
-                  return unit.transform(MultiplyConverter.of(prefix)); // TODO try unit.multiply(factor)
+                  return unit.transform(MultiplyConverter.ofPrefix(prefix)); // TODO try unit.multiply(factor)
               }
             }
           }

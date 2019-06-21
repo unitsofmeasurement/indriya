@@ -29,12 +29,6 @@
  */
 package tech.units.indriya.unit;
 
-import tech.units.indriya.AbstractSystemOfUnits;
-import tech.units.indriya.AbstractUnit;
-import tech.units.indriya.function.AddConverter;
-import tech.units.indriya.function.RationalConverter;
-import tech.units.indriya.function.RationalNumber;
-import tech.units.indriya.quantity.QuantityDimension;
 import static tech.units.indriya.AbstractUnit.ONE;
 
 import javax.measure.Quantity;
@@ -73,6 +67,13 @@ import javax.measure.quantity.Temperature;
 import javax.measure.quantity.Time;
 import javax.measure.quantity.Volume;
 import javax.measure.spi.SystemOfUnits;
+
+import tech.units.indriya.AbstractSystemOfUnits;
+import tech.units.indriya.AbstractUnit;
+import tech.units.indriya.function.AddConverter;
+import tech.units.indriya.function.MultiplyConverter;
+import tech.units.indriya.function.RationalNumber;
+import tech.units.indriya.quantity.QuantityDimension;
 
 /**
  * <p>
@@ -411,7 +412,7 @@ public class Units extends AbstractSystemOfUnits {
 	/**
 	 * A dimensionless unit accepted for use with SI units (standard name <code>%</code>).
 	 */
-	public static final Unit<Dimensionless> PERCENT = addUnit(new TransformedUnit<>(ONE, new RationalConverter(1, 100)));
+	public static final Unit<Dimensionless> PERCENT = addUnit(new TransformedUnit<>(ONE, MultiplyConverter.ofRational(1, 100)));
 
 	// ////////
 	// Time //
@@ -419,17 +420,17 @@ public class Units extends AbstractSystemOfUnits {
 	/**
 	 * A time unit accepted for use with SI units (standard name <code>min</code>).
 	 */
-	public static final Unit<Time> MINUTE = addUnit(new TransformedUnit<>("min", SECOND, SECOND, new RationalConverter(60, 1)));
+	public static final Unit<Time> MINUTE = addUnit(new TransformedUnit<>("min", SECOND, SECOND, MultiplyConverter.ofRational(60, 1)));
 
 	/**
 	 * A time unit accepted for use with SI units (standard name <code>h</code> ).
 	 */
-	public static final Unit<Time> HOUR = addUnit(new TransformedUnit<>("h", SECOND, SECOND, new RationalConverter(60 * 60, 1)));
+	public static final Unit<Time> HOUR = addUnit(new TransformedUnit<>("h", SECOND, SECOND, MultiplyConverter.ofRational(60 * 60, 1)));
 
 	/**
 	 * A time unit accepted for use with SI units (standard name <code>d</code> ).
 	 */
-	public static final Unit<Time> DAY = addUnit(new TransformedUnit<>("d", SECOND, SECOND, new RationalConverter(24 * 60 * 60, 1)));
+	public static final Unit<Time> DAY = addUnit(new TransformedUnit<>("d", SECOND, SECOND, MultiplyConverter.ofRational(24 * 60 * 60, 1)));
 
 	/**
 	 * A unit of duration equal to 7 {@link #DAY} (standard name <code>week</code>).
@@ -447,7 +448,7 @@ public class Units extends AbstractSystemOfUnits {
 	 * @see <a href="https://en.wikipedia.org/wiki/Litre"> Wikipedia: Litre</a>
 	 */
 	public static final Unit<Volume> LITRE = AbstractSystemOfUnits.Helper.addUnit(INSTANCE.units, new TransformedUnit<Volume>(CUBIC_METRE,
-		new RationalConverter(1, 1000)), "Litre", "l");
+		MultiplyConverter.ofRational(1, 1000)), "Litre", "l");
 
 	/**
 	 * Returns the unique instance of this class.

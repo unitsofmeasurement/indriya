@@ -285,7 +285,7 @@ public class MixedRadix<Q extends Quantity<Q>> {
 	}
 
 	private Radix toRadix(UnitConverter converter) {
-		return new Radix.UnitConverterRadix(converter);
+		return Radix.ofMultiplyConverter(converter);
 	}
 
 	private MixedRadix<Q> append(PrimaryUnitPickState state, Unit<Q> mixedRadixUnit) {

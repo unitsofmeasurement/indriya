@@ -29,16 +29,21 @@
  */
 package tech.units.indriya.format;
 
+import static javax.measure.BinaryPrefix.KIBI;
+import static javax.measure.BinaryPrefix.TEBI;
+import static javax.measure.MetricPrefix.KILO;
+import static javax.measure.MetricPrefix.MEGA;
+import static javax.measure.MetricPrefix.MICRO;
+import static javax.measure.MetricPrefix.MILLI;
+import static javax.measure.MetricPrefix.NANO;
 import static org.junit.Assert.assertEquals;
-import static org.junit.jupiter.api.Assertions.*;
-import static javax.measure.BinaryPrefix.*;
-import static javax.measure.MetricPrefix.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static tech.units.indriya.format.SimpleUnitFormat.Flavor.ASCII;
 import static tech.units.indriya.unit.Units.CANDELA;
 import static tech.units.indriya.unit.Units.GRAM;
 import static tech.units.indriya.unit.Units.HERTZ;
 import static tech.units.indriya.unit.Units.KILOGRAM;
 import static tech.units.indriya.unit.Units.METRE;
-import static tech.units.indriya.format.SimpleUnitFormat.Flavor.ASCII;
 
 import java.math.BigInteger;
 import java.util.logging.Level;
@@ -59,7 +64,8 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.function.ExpConverter;
-import tech.units.indriya.function.RationalConverter;
+import tech.units.indriya.function.MultiplyConverter;
+import tech.units.indriya.function.RationalNumber;
 import tech.units.indriya.unit.AlternateUnit;
 import tech.units.indriya.unit.ProductUnit;
 import tech.units.indriya.unit.TransformedUnit;
@@ -146,7 +152,7 @@ public class SimpleUnitFormatTest {
     public void testTransformed() {
         final String ANGSTROEM_SYM = "\u212B";
         final Unit<Length> ANGSTROEM = new TransformedUnit<Length>(ANGSTROEM_SYM, METRE, METRE,
-                new RationalConverter(BigInteger.ONE, BigInteger.TEN.pow(10)));
+                MultiplyConverter.ofRational(RationalNumber.of(BigInteger.ONE, BigInteger.TEN.pow(10))));
         final String s = format.format(ANGSTROEM);
         assertEquals(ANGSTROEM_SYM, s);
     }

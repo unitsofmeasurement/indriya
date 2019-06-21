@@ -33,6 +33,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -41,6 +42,7 @@ import java.util.ServiceLoader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import tech.units.indriya.AbstractConverter;
 import tech.units.indriya.spi.NumberSystem;
 
 /**
@@ -48,7 +50,7 @@ import tech.units.indriya.spi.NumberSystem;
  * 
  * @author Andi Huber
  * @author Werner Keil
- * @version 1.2, June 10, 2019
+ * @version 1.3, June 21, 2019
  * @since 2.0
  */
 public final class Calculus {
@@ -189,4 +191,27 @@ public final class Calculus {
 			return sum;
 		}
 	}
+	
+	// -- NORMAL FORM TABLE OF COMPOSITION
+	
+	private final static Map<Class<? extends AbstractConverter>, Integer> normalFormOrder = new HashMap<>(9);
+
+    public static Map<Class<? extends AbstractConverter>, Integer> getNormalFormOrder() {
+        synchronized (normalFormOrder) {
+            if(normalFormOrder.isEmpty()) {
+                normalFormOrder.put(AbstractConverter.IDENTITY.getClass(), 0);
+                normalFormOrder.put(PowerOfIntConverter.class, 1); 
+                normalFormOrder.put(RationalConverter.class, 2); 
+                normalFormOrder.put(PowerOfPiConverter.class, 3);
+                normalFormOrder.put(DoubleMultiplyConverter.class, 4);
+                normalFormOrder.put(AddConverter.class, 5);
+                normalFormOrder.put(LogConverter.class, 6); 
+                normalFormOrder.put(ExpConverter.class, 7);
+                normalFormOrder.put(AbstractConverter.Pair.class, 99);        
+            }
+        }
+        
+        return Collections.unmodifiableMap(normalFormOrder);
+    }
+	
 }

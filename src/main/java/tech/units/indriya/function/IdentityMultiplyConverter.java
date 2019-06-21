@@ -29,63 +29,65 @@
  */
 package tech.units.indriya.function;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.util.Collections;
+import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import javax.measure.UnitConverter;
 
-public class MultiplyConverterTest {
+import tech.units.indriya.AbstractConverter;
 
-  private MultiplyConverter converter;
+/**
+ * @author Andi Huber
+ * @since 2.0
+ */
+final class IdentityMultiplyConverter implements MultiplyConverter {
 
-  @BeforeEach
-  public void setUp() throws Exception {
-    converter = new MultiplyConverter(2);
-  }
+    private static final long serialVersionUID = 1L;
+    
+    public final static IdentityMultiplyConverter INSTANCE = new IdentityMultiplyConverter();
 
-  @Test
-  public void testConvertMethod() {
-    assertEquals(200, converter.convert(100), 0.1);
-    assertEquals(0, converter.convert(0));
-    assertEquals(-200, converter.convert(-100), 0.1);
-  }
+    private IdentityMultiplyConverter() {
+        // hidden
+    }
+    
+    @Override
+    public boolean isIdentity() {
+        return true;
+    }
 
-  @Test
-  public void testEqualityOfTwoLogConverter() {
-    assertNotNull(converter);
-    assertEquals(new MultiplyConverter(2), converter);
-  }
+    @Override
+    public UnitConverter inverse() {
+        return this;
+    }
 
-  @Test
-  public void testGetValuePiDivisorConverter() {
-    assertEquals(Double.valueOf(2d), converter.getValue());
-  }
+    @Override
+    public Number convert(Number value) {
+        return value;
+    }
 
-  @Test
-  public void isLinearOfLogConverterTest() {
-    assertTrue(converter.isLinear());
-  }
+    @Override
+    public double convert(double value) {
+        return value;
+    }
 
-  @Test
-  public void inverseTest() {
-    assertNotNull(converter.inverse());
-    assertEquals(new MultiplyConverter(0.5), converter.inverse());
-  }
+    @Override
+    public UnitConverter concatenate(UnitConverter converter) {
+        return converter;
+    }
 
-  @Test
-  public void identityTest() {
-	  assertTrue(new MultiplyConverter(1).isIdentity());
-  }
+    @Override
+    public List<? extends UnitConverter> getConversionSteps() {
+        return Collections.emptyList();
+    }
 
-  @Test
-  public void valueTest() {
-    assertEquals(Double.valueOf(2), converter.getValue());
-  }
+    @Override
+    public Number getValue() {
+        return 1;
+    }
 
-  @Test
-  public void toStringTest() {
-    assertEquals("Multiply(x -> x * 2.0)", converter.toString());
-  }
+    @Override
+    public int compareTo(UnitConverter o) {
+        return AbstractConverter.IDENTITY.compareTo(o);
+    }
+
 }
