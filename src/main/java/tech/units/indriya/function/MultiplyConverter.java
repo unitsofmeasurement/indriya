@@ -29,7 +29,6 @@
  */
 package tech.units.indriya.function;
 
-import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.function.Supplier;
@@ -48,16 +47,14 @@ import tech.uom.lib.common.function.ValueSupplier;
  * scaling factor represented by the {@link Number} type.
  * </p>
  * 
- * @author Andi Huber
- * @since 2.0
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
  * @author Andi Huber
- * @version 2.0, Jun 21, 2019
+ * @version 2.1, Jun 21, 2019
  * @since 1.0
  */
 public interface MultiplyConverter extends UnitConverter, Converter<Number, Number>, ValueSupplier<Number>,
-		Supplier<Number>, Serializable, Comparable<UnitConverter> {
+		Supplier<Number>, Comparable<UnitConverter> {
 
 	// -- FACTORIES
 
