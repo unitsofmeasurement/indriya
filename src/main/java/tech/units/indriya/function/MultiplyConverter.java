@@ -51,7 +51,7 @@ import tech.uom.lib.common.function.ValueSupplier;
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
  * @author Andi Huber
- * @version 2.2, Jun 23, 2019
+ * @version 2.3, Jun 23, 2019
  * @since 1.0
  */
 public interface MultiplyConverter extends UnitConverter, Converter<Number, Number>, ValueSupplier<Number>,
@@ -172,7 +172,7 @@ public interface MultiplyConverter extends UnitConverter, Converter<Number, Numb
 	}
 
 	/**
-	 * Creates a MultiplyConverter with the specified exponent.
+	 * Creates a MultiplyConverter with the specified exponent of Pi.
 	 * 
 	 * @param exponent the exponent for the factor π^exponent.
 	 */
@@ -181,6 +181,18 @@ public interface MultiplyConverter extends UnitConverter, Converter<Number, Numb
 			return identity();
 		}
 		return PowerOfPiConverter.of(exponent);
+	}
+	
+	/**
+	 * Creates a MultiplyConverter with the specified base and exponent.
+	 * @param base the base.
+	 * @param exponent the exponent.
+	 */
+	public static MultiplyConverter ofExponent(int base, int exponent) {
+		if (exponent == 0) {
+			return identity();
+		}
+		return PowerOfIntConverter.of(base, exponent);
 	}
 
 	/**
