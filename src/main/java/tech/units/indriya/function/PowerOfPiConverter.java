@@ -97,7 +97,7 @@ final class PowerOfPiConverter extends AbstractConverter
 	
     @Override
     protected Number convertWhenNotIdentity(Number value) {
-        return Calculator.of(getScaleFactor())
+        return Calculator.of(getFactor())
               .multiply(value)
               .peek();
     }

@@ -162,7 +162,7 @@ class ConverterFormatter {
             buffer.insert(0, '(');
             buffer.append(')');
         }
-        Number factor = converter.getScaleFactor();
+        Number factor = converter.getFactor();
         if(factor instanceof RationalNumber) {
             RationalNumber rational = (RationalNumber)factor;
             if (continued) {
@@ -323,7 +323,7 @@ class ConverterFormatter {
             if (continued) {
                 buffer.append(MIDDLE_DOT);
             }
-            Number factor = ((MultiplyConverter) converter).getScaleFactor();
+            Number factor = ((MultiplyConverter) converter).getFactor();
             if(factor instanceof RationalNumber) {
                 RationalNumber rational = (RationalNumber)factor;
                 buffer.append(rational.toRationalString('/'));

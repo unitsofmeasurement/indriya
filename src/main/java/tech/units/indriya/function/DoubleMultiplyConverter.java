@@ -34,7 +34,6 @@ import java.util.Objects;
 import javax.measure.UnitConverter;
 
 import tech.units.indriya.internal.function.calc.Calculator;
-import tech.uom.lib.common.function.DoubleFactorSupplier;
 
 /**
  * <p>
@@ -45,12 +44,12 @@ import tech.uom.lib.common.function.DoubleFactorSupplier;
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
  * @author Andi Huber
- * @version 1.3, Jun 21, 2019
+ * @version 1.4, Jun 23, 2019
  * @since 1.0
  */
 final class DoubleMultiplyConverter 
 extends AbstractConverter 
-implements MultiplyConverter, DoubleFactorSupplier {
+implements MultiplyConverter {
 
 	/**
 	 * 
@@ -80,11 +79,6 @@ implements MultiplyConverter, DoubleFactorSupplier {
 	 */
 	static DoubleMultiplyConverter of(double factor) {
 		return new DoubleMultiplyConverter(factor);
-	}
-
-	@Override
-	public double getFactor() {
-		return doubleFactor;
 	}
 
 	@Override

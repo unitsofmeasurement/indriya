@@ -39,6 +39,7 @@ import javax.measure.UnitConverter;
 import tech.units.indriya.internal.function.calc.DefaultNumberSystem;
 import tech.units.indriya.spi.NumberSystem;
 import tech.uom.lib.common.function.Converter;
+import tech.uom.lib.common.function.FactorSupplier;
 import tech.uom.lib.common.function.ValueSupplier;
 
 /**
@@ -50,11 +51,11 @@ import tech.uom.lib.common.function.ValueSupplier;
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
  * @author Andi Huber
- * @version 2.1, Jun 21, 2019
+ * @version 2.2, Jun 23, 2019
  * @since 1.0
  */
 public interface MultiplyConverter extends UnitConverter, Converter<Number, Number>, ValueSupplier<Number>,
-		Supplier<Number>, Comparable<UnitConverter> {
+		Supplier<Number>, FactorSupplier<Number>, Comparable<UnitConverter> {
 
 	// -- FACTORIES
 
@@ -207,8 +208,7 @@ public interface MultiplyConverter extends UnitConverter, Converter<Number, Numb
 	 * 
 	 * @return the scale factor.
 	 */
-	default Number getScaleFactor() {
+	default Number getFactor() {
 		return getValue();
 	}
-
 }

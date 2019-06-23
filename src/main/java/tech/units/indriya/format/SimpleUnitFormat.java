@@ -405,7 +405,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
             result.append('+');
             result.append(((AddConverter) cvtr).getOffset());
           } else if (cvtr instanceof MultiplyConverter) {
-            Number scaleFactor = ((MultiplyConverter) cvtr).getScaleFactor();
+            Number scaleFactor = ((MultiplyConverter) cvtr).getFactor();
             if(scaleFactor instanceof RationalNumber) {
                 
                 RationalNumber rational = (RationalNumber)scaleFactor;
