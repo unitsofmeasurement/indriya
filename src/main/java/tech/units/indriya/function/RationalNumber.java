@@ -534,16 +534,14 @@ public final class RationalNumber extends Number {
 
         final RationalNumber other = (RationalNumber) x;
         
-        // This test is just an optimization, which may or may not help
-        if (hashCode != other.hashCode) {
-            return false;
-        }
+//        // null checks not needed, since the constructor guards against dividend or divisor being null
+//        boolean result = (
+//                this.signum == other.signum &&
+//                Objects.equals(this.absDividend, other.absDividend) && 
+//                Objects.equals(this.absDivisor, other.absDivisor));
+//        return result; This is still broken
         
-        // null checks not needed, since the constructor guards against dividend or divisor being null
-        return 
-                this.signum == other.signum &&
-                this.absDividend.equals(other.absDividend) && 
-                this.absDivisor.equals(other.absDivisor);
+        return Objects.equals(this.bigDecimalValue(), other.bigDecimalValue());
     }
 	
 
