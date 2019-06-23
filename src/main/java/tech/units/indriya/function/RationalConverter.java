@@ -46,10 +46,10 @@ import tech.units.indriya.internal.function.calc.Calculator;
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
  * @author Andi Huber
- * @version 1.2, Jun 21, 2019
+ * @version 1.3, Jun 23, 2019
  * @since 1.0
  */
-final class RationalConverter extends AbstractConverter 
+public final class RationalConverter extends AbstractConverter 
 implements MultiplyConverter, DoubleSupplier {
 
 	/**
@@ -200,12 +200,12 @@ implements MultiplyConverter, DoubleSupplier {
 
 
 	@Override
-	public RationalConverter inverseWhenNotIdentity() {
+	protected RationalConverter inverseWhenNotIdentity() {
 		return RationalConverter.of(factor.reciprocal());
 	}
 
 	@Override
-	public final String transformationLiteral() {
+	protected final String transformationLiteral() {
 		return String.format("x -> x * %s", factor);
 	}
 
@@ -232,6 +232,7 @@ implements MultiplyConverter, DoubleSupplier {
 	}
 
 	@Override
+	@Deprecated //Seems unused
 	public double getAsDouble() {
 		return factor.doubleValue();
 	}
