@@ -37,6 +37,7 @@ import java.util.Objects;
  * Represents a rational number {@code dividend/divisor} with {@code dividend}
  * and {@code divisor} being integer numbers.
  * <p>
+ * @implSpec
  * This implementation uses {@link BigInteger} to represent 'dividend' and
  * 'divisor'.
  * 
