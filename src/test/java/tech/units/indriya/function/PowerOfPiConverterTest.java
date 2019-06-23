@@ -30,7 +30,7 @@
 package tech.units.indriya.function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -43,8 +43,8 @@ import org.junit.jupiter.api.Test;
 public class PowerOfPiConverterTest {
 
 	// for reference
-	protected final static String HUNDRED_DIGITS_OF_PI =
-			"3.141592653589793238462643383279502884197169399375105820974944592307816406286208998628034825342117068";
+	//protected final static String HUNDRED_DIGITS_OF_PI =
+		//	"3.141592653589793238462643383279502884197169399375105820974944592307816406286208998628034825342117068";
 
 	//	@BeforeEach
 	//	public void setUp() throws Exception {
@@ -81,8 +81,8 @@ public class PowerOfPiConverterTest {
 		PowerOfPiConverter a = new PowerOfPiConverter(-1);
 		PowerOfPiConverter b = new PowerOfPiConverter(-1);
 		PowerOfPiConverter c = PowerOfPiConverter.ONE;
-		assertTrue(a.equals(b)); 
-		assertFalse(a.equals(c));
+		assertEquals(a, b); 
+		assertNotEquals(a,c);
 	}
 
 	@Test
