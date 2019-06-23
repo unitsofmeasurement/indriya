@@ -148,8 +148,8 @@ public interface MultiplyConverter extends UnitConverter, Converter<Number, Numb
 	/**
 	 * Creates a MultiplyConverter with the specified constant factor.
 	 * 
-	 * @param factor
-	 * @return
+	 * @param factor the double factor.
+	 * @return a new MultiplyConverter.
 	 */
 	public static MultiplyConverter of(double factor) {
 		if (factor == 0.d) {
@@ -163,6 +163,7 @@ public interface MultiplyConverter extends UnitConverter, Converter<Number, Numb
 	 * Creates a MultiplyConverter with the specified Prefix.
 	 * 
 	 * @param prefix the prefix for the factor.
+	 * @return a new MultiplyConverter.
 	 */
 	public static MultiplyConverter ofPrefix(Prefix prefix) {
 		if (prefix == null) {
@@ -175,6 +176,7 @@ public interface MultiplyConverter extends UnitConverter, Converter<Number, Numb
 	 * Creates a MultiplyConverter with the specified exponent of Pi.
 	 * 
 	 * @param exponent the exponent for the factor π^exponent.
+	 * @return a new MultiplyConverter.
 	 */
 	public static MultiplyConverter ofPiExponent(int exponent) {
 		if (exponent == 0) {
@@ -187,12 +189,24 @@ public interface MultiplyConverter extends UnitConverter, Converter<Number, Numb
 	 * Creates a MultiplyConverter with the specified base and exponent.
 	 * @param base the base.
 	 * @param exponent the exponent.
+	 * @return a new MultiplyConverter.
 	 */
 	public static MultiplyConverter ofExponent(int base, int exponent) {
 		if (exponent == 0) {
 			return identity();
 		}
 		return PowerOfIntConverter.of(base, exponent);
+	}
+	
+	/**
+	 * Creates a MultiplyConverter with base 10 and an exponent.
+	 * @param exponent the exponent for the factor 10^exponent.
+	 */
+	public static MultiplyConverter ofTenExponent(int exponent) {
+		if (exponent == 0) {
+			return identity();
+		}
+		return PowerOfIntConverter.of(10, exponent);
 	}
 
 	/**
