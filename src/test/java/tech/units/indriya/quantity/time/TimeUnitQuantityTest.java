@@ -31,10 +31,11 @@ package tech.units.indriya.quantity.time;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static tech.units.indriya.NumberAssertions.assertNumberEquals;
 
-import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.time.temporal.ChronoUnit;
 import java.util.concurrent.TimeUnit;
 
 import javax.measure.Quantity;
@@ -42,6 +43,7 @@ import javax.measure.Unit;
 import javax.measure.quantity.Dimensionless;
 import javax.measure.quantity.Time;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.AbstractUnit;
@@ -86,7 +88,7 @@ public class TimeUnitQuantityTest {
   /**
    * Verifies that the factory method {@code of} with an integer value and a time unit has the value wired correctly.
    */
-  @Test
+  @Test @Deprecated @Disabled("TimeUnitQuantity implementation is no longer backed by Long")
   public void valueWiredCorrectlyInFactoryMethodOfWithIntegerValueAndTimeUnit() {
     final Integer testValue = 42;
     TimeUnitQuantity quantity = TimeUnitQuantity.of(testValue, TimeUnit.MINUTES);
@@ -106,7 +108,7 @@ public class TimeUnitQuantityTest {
   /**
    * Verifies that the factory method {@code of} with a time unit and an integer value has the value wired correctly.
    */
-  @Test
+  @Test @Deprecated @Disabled("TimeUnitQuantity implementation is no longer backed by Long")
   public void valueWiredCorrectlyInFactoryMethodOfWithTimeUnitAndIntegerValue() {
     final Integer testValue = 42;
     TimeUnitQuantity quantity = TimeUnitQuantity.of(TimeUnit.MINUTES, testValue);
@@ -130,7 +132,7 @@ public class TimeUnitQuantityTest {
   public void valueIsCalculatedCorrectlyFromTimeQuantity() {
     TimeUnitQuantity quantity = TimeUnitQuantity.of(FORTY_TWO_MINUTES_TIME_QUANTITY);
     final Long expected = 42L * 60L;
-    assertEquals(expected, quantity.getValue());
+    assertNumberEquals(expected, quantity.getValue(), 1E-12);
   }
 
   /**
@@ -250,14 +252,6 @@ public class TimeUnitQuantityTest {
   }
 
   /**
-   * Verifies that a TimeUnitQuantity isn't big.
-   */
-  @Test
-  public void timeUnitQuantityIsNotBig() {
-    assertFalse(FORTY_TWO_MINUTES.isBig());
-  }
-
-  /**
    * Verifies that addition with a quantity with the same time unit preserves the time unit.
    */
   @Test
@@ -268,22 +262,23 @@ public class TimeUnitQuantityTest {
   }
 
   /**
-   * Verifies that the addition of two quantities with the same time unit resulting in an overflow throws an exception.
+   * Verifies that the addition of two quantities with the same time unit resulting in an overflow produces a correct result.
    */
   @Test
-  public void additionWithSameTimeUnitResultingInOverflowThrowsException() {
-    assertThrows(ArithmeticException.class, () -> {
-      ONE_MILLISECOND.add(MAX_VALUE_MILLISECONDS);
-    });
+  public void additionWithSameTimeUnitResultingInCorrectResult() {
+      ComparableQuantity<Time> actual = ONE_MILLISECOND.add(MAX_VALUE_MILLISECONDS);
+      ComparableQuantity<Time> expected = TemporalQuantity.of(new BigInteger("9223372036854775808"), ChronoUnit.MILLIS);
+      assertEquals(expected.getUnit(), actual.getUnit());
+      assertNumberEquals(expected.getValue(), actual.getValue(), 1E-12);
   }
-
+  
   /**
    * Verifies that addition with a quantity up to the max value doesn't cause an overflow.
    */
   @Test
   public void additionUpToMaxValueDoesNotCauseOverflow() {
     ComparableQuantity<Time> actual = ONE_MILLISECOND.add(TimeUnitQuantity.of(Long.MAX_VALUE - 1L, TimeUnit.MILLISECONDS));
-    assertEquals(MAX_VALUE_MILLISECONDS, actual);
+    assertTrue(MAX_VALUE_MILLISECONDS.isEquivalentTo((Quantity)actual));
   }
 
   /**
@@ -293,7 +288,7 @@ public class TimeUnitQuantityTest {
   public void subtractionDownToMinValueDoesNotCauseOverflow() {
     ComparableQuantity<Time> actual = TimeUnitQuantity.of(Long.MIN_VALUE + 1L, TimeUnit.MILLISECONDS).subtract(ONE_MILLISECOND);
     ComparableQuantity<Time> expected = TimeUnitQuantity.of(Long.MIN_VALUE, TimeUnit.MILLISECONDS);
-    assertEquals(expected, actual);
+    assertTrue(expected.isEquivalentTo((Quantity)actual));
   }
 
   /**
@@ -315,13 +310,15 @@ public class TimeUnitQuantityTest {
   }
 
   /**
-   * Verifies that adding a quantity with a larger time unit resulting in an overflowing sum casts the result to the larger time unit.
+   * Verifies that adding a quantity with a larger time unit resulting in an overflowing sum casts the result to the smaller unit.
    */
   @Test
-  public void additionWithLargerTimeUnitAndOverflowingResultCastsToLargerTimeUnit() {
+  public void additionWithLargerTimeUnitAndOverflowingResultCastsToSmallerTimeUnit() {
     ComparableQuantity<Time> actual = MAX_VALUE_MILLISECONDS.add(ONE_SECOND);
-    ComparableQuantity<Time> expected = TimeUnitQuantity.of(1L + Long.MAX_VALUE / 1000L, TimeUnit.SECONDS);
-    assertEquals(expected, actual);
+    Number expectedValue = BigInteger.valueOf(1000).add(BigInteger.valueOf(Long.MAX_VALUE));
+    ComparableQuantity<Time> expected = TimeUnitQuantity.of(expectedValue, TimeUnit.MILLISECONDS);
+    assertEquals(expected.getUnit(), actual.getUnit());
+    assertNumberEquals(expected.getValue(), actual.getValue(), 1E-12);
   }
 
   /**
@@ -340,19 +337,18 @@ public class TimeUnitQuantityTest {
   @Test
   public void quantityMultiplicationMultipliesCorrectly() {
     Quantity<?> actual = FORTY_TWO_MINUTES.multiply(FORTY_TWO_MINUTES);
-    Quantity<?> expected = Quantities.getQuantity(1764L, SQUARE_MINUTE);
-    assertEquals(expected, actual);
+    ComparableQuantity<?> expected = Quantities.getQuantity(1764L, SQUARE_MINUTE);
+    assertTrue(expected.isEquivalentTo((Quantity)actual));
   }
 
   /**
-   * Verifies that the multiplication of two quantities resulting in an overflow throws an exception.
+   * Verifies that the multiplication of two quantities resulting in an overflow produces a correct result.
    */
   @Test
-  public void quantityMultiplicationResultingInOverflowThrowsException() {
-    assertThrows(ArithmeticException.class, () -> {
+  public void quantityMultiplicationResultingInOverflowIsCorrect() {
       TimeUnitQuantity halfMaxValuePlusOne = TimeUnitQuantity.of(1L + Long.MAX_VALUE / 2L, TimeUnit.SECONDS);
-      halfMaxValuePlusOne.multiply(TimeUnitQuantity.of(2L, TimeUnit.SECONDS));
-    });
+      Number actual = halfMaxValuePlusOne.multiply(TimeUnitQuantity.of(2L, TimeUnit.SECONDS)).getValue();
+      assertNumberEquals(new BigInteger("9223372036854775808"), actual, 1E-12);
   }
 
   /**
@@ -361,8 +357,8 @@ public class TimeUnitQuantityTest {
   @Test
   public void quantityDivisionDividesCorrectly() {
     Quantity<?> actual = FORTY_TWO_MINUTES.divide(FORTY_TWO_MINUTES);
-    Quantity<Dimensionless> expected = Quantities.getQuantity(1L, AbstractUnit.ONE);
-    assertEquals(expected, actual);
+    ComparableQuantity<Dimensionless> expected = Quantities.getQuantity(1L, AbstractUnit.ONE);
+    assertTrue(expected.isEquivalentTo((Quantity)actual));
   }
 
   /**
@@ -376,14 +372,13 @@ public class TimeUnitQuantityTest {
   }
 
   /**
-   * Verifies that the multiplication with a number resulting in an overflow throws an exception.
+   * Verifies that the multiplication with a number resulting in an overflow produces a correct result.
    */
   @Test
-  public void numberMultiplicationResultingInOverflowThrowsException() {
-    assertThrows(ArithmeticException.class, () -> {
+  public void numberMultiplicationResultingInOverflowIsCorrect() {
       TimeUnitQuantity halfMaxValuePlusOne = TimeUnitQuantity.of(1L + Long.MAX_VALUE / 2L, TimeUnit.SECONDS);
-      halfMaxValuePlusOne.multiply(2L);
-    });
+      Number actual = halfMaxValuePlusOne.multiply(2L).getValue();
+      assertNumberEquals(new BigInteger("9223372036854775808"), actual, 1E-12);
   }
 
   /**

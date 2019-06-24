@@ -30,12 +30,11 @@
 package tech.units.indriya.function;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.util.Objects;
 
 import javax.measure.UnitConverter;
 
-import tech.units.indriya.AbstractConverter;
+import tech.units.indriya.internal.function.calc.Calculator;
 import tech.uom.lib.common.function.IntExponentSupplier;
 
 /**
@@ -43,16 +42,17 @@ import tech.uom.lib.common.function.IntExponentSupplier;
  * Pi to the power of an integer exponent (π^exponent).
  * @author Andi Huber
  * @author Werner Keil
- * @version 1.2, October 14, 2018
+ * @version 1.5, Jun 21, 2019
  * @since 2.0
  */
-public final class PowerOfPiConverter extends AbstractConverter 
- implements IntExponentSupplier {
+final class PowerOfPiConverter extends AbstractConverter 
+ implements MultiplyConverter, IntExponentSupplier {
 	private static final long serialVersionUID = 5000593326722785126L;
+	private final Object $lock1 = new Object[0]; // serializable lock for 'scaleFactor'
 	
 	private final int exponent;
 	private final int hashCode;
-	private final double doubleFactor; // for double calculus only
+	private transient Number scaleFactor;
 
 	/**
      * A converter by Pi to the power of 1.
@@ -67,13 +67,12 @@ public final class PowerOfPiConverter extends AbstractConverter
 	 * @param exponent
 	 *            the exponent for the factor π^exponent.
 	 */
-	public static PowerOfPiConverter of(int exponent) {
+	static PowerOfPiConverter of(int exponent) {
 		return new PowerOfPiConverter(exponent);
 	}
 
 	protected PowerOfPiConverter(int exponent) {
 		this.exponent = exponent;
-		this.doubleFactor =  Math.pow(Math.PI, exponent);
 		this.hashCode = Objects.hash(exponent);
 	}
 
@@ -95,22 +94,13 @@ public final class PowerOfPiConverter extends AbstractConverter
 	public AbstractConverter inverseWhenNotIdentity() {
 		return new PowerOfPiConverter(-exponent);
 	}
-
-	@Override
-	public BigDecimal convertWhenNotIdentity(BigDecimal value, MathContext ctx) throws ArithmeticException {
-		int nbrDigits = ctx.getPrecision();
-		if (nbrDigits == 0) {
-			throw new ArithmeticException("Pi multiplication with unlimited precision");
-		}
-		BigDecimal pi = Constants.Pi.ofNumDigits(nbrDigits);
-		return pi.pow(exponent, ctx).multiply(value);
-	}
-
-	@Override
-	public double convertWhenNotIdentity(double value) {
-		//[ahuber] multiplication is probably non-critical regarding preservation of precision
-		return value * doubleFactor;
-	}
+	
+    @Override
+    protected Number convertWhenNotIdentity(Number value) {
+        return Calculator.of(getFactor())
+              .multiply(value)
+              .peek();
+    }
 
 	@Override
 	protected boolean canReduceWith(AbstractConverter that) {
@@ -121,6 +111,27 @@ public final class PowerOfPiConverter extends AbstractConverter
 	protected AbstractConverter reduce(AbstractConverter that) {
 		return new PowerOfPiConverter(this.exponent + ((PowerOfPiConverter)that).exponent);
 	}
+	
+	@Override
+    public Number getValue() {
+	    
+	    synchronized ($lock1) {
+	       if(scaleFactor==null) {
+	           
+	           int nbrDigits = Calculus.MATH_CONTEXT.getPrecision();
+	           if (nbrDigits == 0) {
+	               throw new ArithmeticException("Pi multiplication with unlimited precision");
+	           }
+	           BigDecimal pi = Calculus.Pi.ofNumDigits(nbrDigits);
+	           
+	           scaleFactor = Calculator.of(pi)
+	                   .power(exponent)
+	                   .peek();
+	       }
+        }
+
+        return scaleFactor;
+    }
 
 	@Override
 	public boolean equals(Object obj) {
@@ -164,4 +175,6 @@ public final class PowerOfPiConverter extends AbstractConverter
 	public int hashCode() {
 		return hashCode;
 	}
+
+   
 }

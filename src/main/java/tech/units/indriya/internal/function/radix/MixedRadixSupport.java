@@ -29,12 +29,10 @@
  */
 package tech.units.indriya.internal.function.radix;
 
-import java.math.MathContext;
-import java.math.RoundingMode;
 import java.util.function.Consumer;
 
-import tech.units.indriya.function.Calculus;
 import tech.units.indriya.function.MixedRadix;
+import tech.units.indriya.internal.function.calc.Calculator;
 
 /**
  * Internal utility class to support {@link MixedRadix}.
@@ -45,7 +43,6 @@ import tech.units.indriya.function.MixedRadix;
 public class MixedRadixSupport {
 
     private final Radix[] radices;
-    private final MathContext mc;
 
     /**
      * 
@@ -53,7 +50,6 @@ public class MixedRadixSupport {
      */
     public MixedRadixSupport(Radix[] radices) {
         this.radices = radices;
-        this.mc = new MathContext(Calculus.MATH_CONTEXT.getPrecision(), RoundingMode.FLOOR);
     }
     
     /**
@@ -71,7 +67,7 @@ public class MixedRadixSupport {
             
             boolean fractionalRemainder = i==0;
             
-            Number[] divideAndRemainder = radix.divideAndRemainder(total, mc, fractionalRemainder); 
+            Number[] divideAndRemainder = radix.divideAndRemainder(total, !fractionalRemainder); 
             
             Number remainder = divideAndRemainder[1];
             
@@ -85,6 +81,12 @@ public class MixedRadixSupport {
         
     }
 
+    /**
+     * @param values - numbers corresponding to the radices in most significant first order, 
+     *      allowed to be of shorter length than the total count of radices
+     * @return sum of {@code values} each converted to the 'scale' of the trailing radix (the least significant), 
+     *      as given by the constructor of this instance
+     */
     public Number sumMostSignificant(Number[] values) {
 
         int maxAllowedValueIndex = values.length - 1; 
@@ -96,10 +98,10 @@ public class MixedRadixSupport {
             sum = radices[i].multiply(sum);
             
             if(i >= maxAllowedValueIndex) {
-                continue;
+                continue; 
             }
             
-            sum = Calculus.add(sum, values[i+1]);    
+            sum = Calculator.of(sum).add(values[i+1]).peek(); // narrow each addition step
             
         }
         

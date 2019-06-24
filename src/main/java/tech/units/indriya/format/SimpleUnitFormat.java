@@ -52,8 +52,7 @@ import javax.measure.format.UnitFormat;
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.function.AddConverter;
 import tech.units.indriya.function.MultiplyConverter;
-import tech.units.indriya.function.PowerOfIntConverter;
-import tech.units.indriya.function.RationalConverter;
+import tech.units.indriya.function.RationalNumber;
 import tech.units.indriya.unit.AlternateUnit;
 import tech.units.indriya.unit.AnnotatedUnit;
 import tech.units.indriya.unit.BaseUnit;
@@ -113,7 +112,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
   // TODO try to consolidate those
   private static final UnitConverter[] METRIC_PREFIX_CONVERTERS =  
 		  Stream.of(MetricPrefix.values())
-		  .map(PowerOfIntConverter::of)
+		  .map(MultiplyConverter::ofPrefix)
 		  .collect(Collectors.toList())
   		  .toArray(new UnitConverter[] {});
   
@@ -125,7 +124,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
   
   private static final UnitConverter[] BINARY_PREFIX_CONVERTERS =  
           Stream.of(BinaryPrefix.values())
-          .map(PowerOfIntConverter::of)
+          .map(MultiplyConverter::ofPrefix)
           .collect(Collectors.toList())
           .toArray(new UnitConverter[] {});
 
@@ -405,20 +404,25 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
           if (cvtr instanceof AddConverter) {
             result.append('+');
             result.append(((AddConverter) cvtr).getOffset());
-          } else if (cvtr instanceof RationalConverter) {
-            double dividend = ((RationalConverter) cvtr).getDividend().doubleValue();
-            if (dividend != 1) {
-              result.append('*');
-              result.append(dividend);
-            }
-            double divisor = ((RationalConverter) cvtr).getDivisor().doubleValue();
-            if (divisor != 1) {
-              result.append('/');
-              result.append(divisor);
-            }
           } else if (cvtr instanceof MultiplyConverter) {
-            result.append('*');
-            result.append(((MultiplyConverter) cvtr).getFactor());
+            Number scaleFactor = ((MultiplyConverter) cvtr).getFactor();
+            if(scaleFactor instanceof RationalNumber) {
+                
+                RationalNumber rational = (RationalNumber)scaleFactor;
+                RationalNumber reciprocal = rational.reciprocal();
+                if(reciprocal.isInteger()) {
+                    result.append('/');
+                    result.append(reciprocal.toString()); // renders as integer
+                } else {
+                    result.append('*');
+                    result.append(scaleFactor);  
+                }
+                
+            } else {
+                result.append('*');
+                result.append(scaleFactor);
+            }
+            
           } else { // Other converters.
             return "[" + baseUnit + "?]";
           }

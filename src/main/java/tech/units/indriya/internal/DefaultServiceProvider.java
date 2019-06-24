@@ -29,6 +29,8 @@
  */
 package tech.units.indriya.internal;
 
+import static tech.units.indriya.internal.InternalConstants.DEFAULT_PROVIDER_NAME;
+
 import javax.inject.Named;
 import javax.measure.Quantity;
 import javax.measure.spi.FormatService;
@@ -52,12 +54,13 @@ import java.util.logging.Logger;
  * services.
  *
  * @author Werner Keil
- * @version 1.3
+ * @version 1.4
  * @since 1.0
  */
-@Named("Default")
+@Named(DEFAULT_PROVIDER_NAME)
 public class DefaultServiceProvider extends ServiceProvider implements Comparable<ServiceProvider> {
-    /**
+    
+	/**
      * List of services loaded, per class.
      */
     @SuppressWarnings("rawtypes")
@@ -187,6 +190,6 @@ public class DefaultServiceProvider extends ServiceProvider implements Comparabl
 
     @Override
     public String toString() {
-        return "Default";
+        return DEFAULT_PROVIDER_NAME;
     }
 }

@@ -47,7 +47,7 @@ import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.quantity.Time;
 
-import tech.units.indriya.function.PowerOfIntConverter;
+import tech.units.indriya.function.MultiplyConverter;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.TransformedUnit;
 import tech.units.indriya.unit.Units;
@@ -55,7 +55,8 @@ import tech.units.indriya.unit.Units;
 /**
  * @author Otavio
  * @author Werner
- * @version 1.0
+ * @author Andi Huber
+ * @version 1.1
  * @since 1.0
  */
 public final class TimeQuantities {
@@ -66,13 +67,13 @@ public final class TimeQuantities {
 	// Convenience constants outside the unit system (multiples are not held there)
 
 	public static final Unit<Time> MICROSECOND = new TransformedUnit<>("μs", SECOND, SECOND,
-			PowerOfIntConverter.of(MetricPrefix.MICRO));
+			MultiplyConverter.ofPrefix(MetricPrefix.MICRO));
 
 	public static final TransformedUnit<Time> MILLISECOND = new TransformedUnit<>("ms", SECOND, SECOND,
-			PowerOfIntConverter.of(MetricPrefix.MILLI));
+	        MultiplyConverter.ofPrefix(MetricPrefix.MILLI));
 
 	public static final TransformedUnit<Time> NANOSECOND = new TransformedUnit<>("ns", SECOND, SECOND,
-			PowerOfIntConverter.of(MetricPrefix.NANO));
+	        MultiplyConverter.ofPrefix(MetricPrefix.NANO));
 
 	/**
 	 * Creates the {@link Quantity<Time>} based in the difference of the two

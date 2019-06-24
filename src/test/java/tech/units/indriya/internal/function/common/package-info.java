@@ -27,65 +27,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package tech.units.indriya.function;
+/**
+ * These tests cannot be run directly inside uom-lib-common because there are no concrete unit implementations. 
+ * Therefore we test the Lambda features here in the RI.
+ * 
+ * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
+ * @version 1.1
+ * @since 2.0
+ */
+package tech.units.indriya.internal.function.common;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-public class MultiplyConverterTest {
-
-  private MultiplyConverter converter;
-
-  @BeforeEach
-  public void setUp() throws Exception {
-    converter = new MultiplyConverter(2);
-  }
-
-  @Test
-  public void testConvertMethod() {
-    assertEquals(200, converter.convert(100), 0.1);
-    assertEquals(0, converter.convert(0));
-    assertEquals(-200, converter.convert(-100), 0.1);
-  }
-
-  @Test
-  public void testEqualityOfTwoLogConverter() {
-    assertNotNull(converter);
-    assertEquals(new MultiplyConverter(2), converter);
-  }
-
-  @Test
-  public void testGetValuePiDivisorConverter() {
-    assertEquals(Double.valueOf(2d), converter.getValue());
-  }
-
-  @Test
-  public void isLinearOfLogConverterTest() {
-    assertTrue(converter.isLinear());
-  }
-
-  @Test
-  public void inverseTest() {
-    assertNotNull(converter.inverse());
-    assertEquals(new MultiplyConverter(0.5), converter.inverse());
-  }
-
-  @Test
-  public void identityTest() {
-	  assertTrue(new MultiplyConverter(1).isIdentity());
-  }
-
-  @Test
-  public void valueTest() {
-    assertEquals(Double.valueOf(2), converter.getValue());
-  }
-
-  @Test
-  public void toStringTest() {
-    assertEquals("Multiply(x -> x * 2.0)", converter.toString());
-  }
-}

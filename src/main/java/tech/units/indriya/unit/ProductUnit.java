@@ -34,8 +34,8 @@ import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.UnitConverter;
 
-import tech.units.indriya.AbstractConverter;
 import tech.units.indriya.AbstractUnit;
+import tech.units.indriya.function.AbstractConverter;
 import tech.units.indriya.quantity.QuantityDimension;
 
 import java.io.Serializable;

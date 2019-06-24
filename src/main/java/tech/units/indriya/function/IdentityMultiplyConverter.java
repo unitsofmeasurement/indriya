@@ -29,52 +29,63 @@
  */
 package tech.units.indriya.function;
 
-import java.util.function.BiPredicate;
-import java.util.function.BinaryOperator;
+import java.util.Collections;
+import java.util.List;
 
-import tech.units.indriya.internal.function.simplify.UnitCompositionHandlerYieldingNormalForm;
+import javax.measure.UnitConverter;
 
 /**
- * Functional interface for handling the composition (concatenation) of two unit converters.
- * 
  * @author Andi Huber
- * @author Werner Keil
- * @version 1.2
  * @since 2.0
  */
-public interface ConverterCompositionHandler {
+final class IdentityMultiplyConverter implements MultiplyConverter {
 
-    /**
-     * Takes two converters {@code left}, {@code right} and returns a (not necessarily new) 
-     * converter that is equivalent to the mathematical composition of these:
-     * <p>
-     * compose(left, right) === left o right 
-     * 
-     * <p>
-     * Implementation Note: Instead of using AbstractConverter as parameter 
-     * and result types, this could be generalized to UnitConverter, but that 
-     * would require some careful changes within AbstractConverter itself.
-     *  
-     * @param left
-     * @param right
-     * @param canReduce
-     * @param doReduce
-     * @return
-     */
-    public AbstractConverter compose(
-            AbstractConverter left, 
-            AbstractConverter right,
-            BiPredicate<AbstractConverter, AbstractConverter> canReduce,
-            BinaryOperator<AbstractConverter> doReduce);
+    private static final long serialVersionUID = 1L;
     
-    // -- FACTORIES (BUILT-IN) 
+    final static IdentityMultiplyConverter INSTANCE = new IdentityMultiplyConverter();
+
+    private IdentityMultiplyConverter() {
+        // hidden
+    }
     
-    /**
-     * @return the default built-in UnitCompositionHandler which is yielding a normal-form, 
-     * required to decide whether two UnitConverters are equivalent
-     */
-    public static ConverterCompositionHandler yieldingNormalForm() {
-        return new UnitCompositionHandlerYieldingNormalForm();
+    @Override
+    public boolean isIdentity() {
+        return true;
+    }
+
+    @Override
+    public UnitConverter inverse() {
+        return this;
+    }
+
+    @Override
+    public Number convert(Number value) {
+        return value;
+    }
+
+    @Override
+    public double convert(double value) {
+        return value;
+    }
+
+    @Override
+    public UnitConverter concatenate(UnitConverter converter) {
+        return converter;
+    }
+
+    @Override
+    public List<? extends UnitConverter> getConversionSteps() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public Number getValue() {
+        return 1;
+    }
+
+    @Override
+    public int compareTo(UnitConverter o) {
+        return AbstractConverter.IDENTITY.compareTo(o);
     }
 
 }

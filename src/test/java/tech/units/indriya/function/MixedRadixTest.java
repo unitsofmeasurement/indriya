@@ -34,6 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
+import static tech.units.indriya.NumberAssertions.assertNumberEquals;
 import static tech.units.indriya.function.MixedRadixTest.USCustomary.FOOT;
 import static tech.units.indriya.function.MixedRadixTest.USCustomary.INCH;
 import static tech.units.indriya.function.MixedRadixTest.USCustomary.PICA;
@@ -41,6 +42,7 @@ import static tech.units.indriya.unit.Units.HOUR;
 import static tech.units.indriya.unit.Units.MINUTE;
 import static tech.units.indriya.unit.Units.SECOND;
 
+import javax.measure.MeasurementException;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.quantity.Length;
@@ -73,13 +75,13 @@ public class MixedRadixTest {
         
         
         public static final Unit<Length> FOOT = Units.METRE.transform(
-                new RationalConverter(FOOT_PER_METER.getDividend(), FOOT_PER_METER.getDivisor()));
+                MultiplyConverter.ofRational(FOOT_PER_METER.getDividend(), FOOT_PER_METER.getDivisor()));
         
         public static final Unit<Length> INCH = Units.METRE.transform(
-                new RationalConverter(INCH_PER_METER.getDividend(), INCH_PER_METER.getDivisor()));
+                MultiplyConverter.ofRational(INCH_PER_METER.getDividend(), INCH_PER_METER.getDivisor()));
         
         public static final Unit<Length> PICA = Units.METRE.transform(
-                new RationalConverter(PICA_PER_METER.getDividend(), PICA_PER_METER.getDivisor()));
+                MultiplyConverter.ofRational(PICA_PER_METER.getDividend(), PICA_PER_METER.getDivisor()));
                 
     }
     
@@ -146,14 +148,12 @@ public class MixedRadixTest {
         // then
         assertEquals(MINUTE, mixedRadix1.getPrimaryUnit());
         assertEquals(SECOND, mixedRadix2.getPrimaryUnit());
-        
     }
     
 
     @Test
     public void wrongOrderOfSignificance() {
-        assertThrows(IllegalArgumentException.class, ()->{
-            
+        assertThrows(MeasurementException.class, ()->{
             MixedRadix.ofPrimary(USCustomary.INCH).mix(USCustomary.FOOT);
         });
     }
@@ -173,8 +173,8 @@ public class MixedRadixTest {
         // then
         
         assertEquals(USCustomary.FOOT, mixedRadix.getPrimaryUnit());
-        NumberAssertions.assertNumberEquals(1.1666666666666667, lengthQuantity.getValue(), 1E-9);
-        NumberAssertions.assertNumberEquals(1.1666666666666667, lengthComp.to(USCustomary.FOOT).getValue(), 1E-9);
+        assertNumberEquals(1.1666666666666667, lengthQuantity.getValue(), 1E-9);
+        assertNumberEquals(1.1666666666666667, lengthComp.to(USCustomary.FOOT).getValue(), 1E-9);
         
     }
     
@@ -230,6 +230,9 @@ public class MixedRadixTest {
         // then
         
         NumberAssertions.assertNumberArrayEquals(new Number[] {1, 2, 3}, valueParts, 1E-9);
+        final Number compValue = lengthQuantity.getValue();
+        assertEquals(1.2083333333333333d, compValue.doubleValue());
+        assertEquals(USCustomary.FOOT, lengthQuantity.getUnit());
     }
     
     @Test @Disabled("not well defined yet, how to handle negative numbers") //TODO[211] enable once clarified
@@ -272,7 +275,7 @@ public class MixedRadixTest {
         
         // then
         assertEquals(Integer.class, time_seconds.getValue().getClass());
-        assertEquals(Double.class, time_hours.getValue().getClass());
+        assertEquals(RationalNumber.class, time_hours.getValue().getClass());
     }
     
     @Test
@@ -293,9 +296,9 @@ public class MixedRadixTest {
         
         assertEquals(Integer.class, time.getValue().getClass());
         
-        assertTrue(Calculus.isNonFractional(timeParts[0])); // should be non-fractional
-        assertTrue(Calculus.isNonFractional(timeParts[1])); // should be non-fractional
-        assertTrue(Calculus.isNonFractional(timeParts[2])); // should be non-fractional
+        assertTrue(Calculus.currentNumberSystem().isInteger(timeParts[0])); // should be non-fractional
+        assertTrue(Calculus.currentNumberSystem().isInteger(timeParts[1])); // should be non-fractional
+        assertTrue(Calculus.currentNumberSystem().isInteger(timeParts[2])); // should be non-fractional
         
     }
 

@@ -31,58 +31,61 @@ package tech.units.indriya.function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import tech.units.indriya.function.ExpConverter;
-import tech.units.indriya.function.LogConverter;
+public class DoubleMultiplyConverterTest {
 
-public class LogConverterTest {
-
-  private LogConverter logConverterBase10;
+  private DoubleMultiplyConverter converter;
 
   @BeforeEach
   public void setUp() throws Exception {
-    logConverterBase10 = new LogConverter(10.);
+    converter = DoubleMultiplyConverter.of(2);
   }
 
   @Test
-  public void testBaseUnmodified() {
-    assertEquals(10., logConverterBase10.getBase());
+  public void testConvertMethod() {
+    assertEquals(200, converter.convert(100), 0.1);
+    assertEquals(0, converter.convert(0));
+    assertEquals(-200, converter.convert(-100), 0.1);
   }
 
   @Test
   public void testEqualityOfTwoLogConverter() {
-    LogConverter logConverter = new LogConverter(10.);
-    assertNotNull(logConverter);
-    assertEquals(logConverter, logConverterBase10);
+    assertNotNull(converter);
+    assertEquals(DoubleMultiplyConverter.of(2), converter);
   }
 
   @Test
-  public void testGetValueLogConverter() {
-    LogConverter logConverter = new LogConverter(Math.E);
-    assertEquals("Log(x -> log(base=10.0, x))", logConverterBase10.getValue());
-    assertEquals("Log(x -> ln(x))", logConverter.getValue());
+  public void testGetValuePiDivisorConverter() {
+    assertEquals(Double.valueOf(2d), converter.getValue());
   }
 
   @Test
   public void isLinearOfLogConverterTest() {
-    assertTrue(!logConverterBase10.isLinear());
+    assertTrue(converter.isLinear());
   }
 
   @Test
-  public void convertLogTest() {
-    assertEquals(1, logConverterBase10.convert(10));
-    assertThrows(NumberFormatException.class, ()->logConverterBase10.convert(-10));
-    assertThrows(NumberFormatException.class, ()->logConverterBase10.convert(0));
+  public void inverseTest() {
+    assertNotNull(converter.inverse());
+    assertEquals(DoubleMultiplyConverter.of(0.5), converter.inverse());
   }
 
   @Test
-  public void inverseLogTest() {
-    LogConverter logConverter = new LogConverter(Math.E);
-    assertEquals(new ExpConverter(10.), logConverterBase10.inverse());
-    assertEquals(new ExpConverter(Math.E), logConverter.inverse());
+  public void identityTest() {
+	  assertTrue(DoubleMultiplyConverter.of(1).isIdentity());
+  }
+
+  @Test
+  public void valueTest() {
+    assertEquals(Double.valueOf(2), converter.getValue());
+  }
+
+  @Test
+  public void toStringTest() {
+    assertEquals("DoubleMultiply(x -> x * 2.0)", converter.toString());
   }
 }

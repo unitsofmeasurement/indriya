@@ -40,6 +40,7 @@ import javax.measure.Unit;
 import javax.measure.format.MeasurementParseException;
 import javax.measure.format.UnitFormat;
 
+import tech.units.indriya.internal.format.RationalNumberFormat;
 import tech.units.indriya.quantity.CompoundQuantity;
 import tech.units.indriya.quantity.Quantities;
 
@@ -58,6 +59,7 @@ abstract class CommonFormatter {
         final String section = str.substring(position);
         final String[] sectionParts = section.split(mixDelimiter);
         final List<Quantity> quants = new ArrayList<>();
+        final RationalNumberFormat rationalNumberFormat = RationalNumberFormat.wrap(numberFormat);  
         for (String compStr : sectionParts) {
             final String[] parts = compStr.split(delimiter);
             if (parts.length < 2) {
@@ -65,7 +67,7 @@ abstract class CommonFormatter {
             } else {
                 Number num = null;
                 try {
-                    num = numberFormat.parse(parts[0]);
+                    num = rationalNumberFormat.parse(parts[0]);
                 } catch (ParseException pe) {
                     throw new MeasurementParseException(pe);
                 }
@@ -91,6 +93,7 @@ abstract class CommonFormatter {
         Objects.requireNonNull(str);
         final String section = str.substring(position);
         final List<Quantity<?>> quants = new ArrayList<>();
+        final RationalNumberFormat rationalNumberFormat = RationalNumberFormat.wrap(numberFormat);
         final String[] parts = section.split(delimiter);
         if (parts.length < 2) {
             throw new IllegalArgumentException("No Unit found");
@@ -98,7 +101,7 @@ abstract class CommonFormatter {
             for (int i=0; i < parts.length-1; i++) {
                 Number num = null;
                 try {
-                    num = numberFormat.parse(parts[i]);
+                    num = rationalNumberFormat.parse(parts[i]);
                 } catch (ParseException pe) {
                     throw new MeasurementParseException(pe);
                 }

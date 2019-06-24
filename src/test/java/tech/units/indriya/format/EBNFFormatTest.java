@@ -29,9 +29,12 @@
  */
 package tech.units.indriya.format;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static javax.measure.MetricPrefix.*;
-import static tech.units.indriya.unit.Units.*;
+import static javax.measure.MetricPrefix.KILO;
+import static javax.measure.MetricPrefix.MILLI;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static tech.units.indriya.unit.Units.METRE;
 
 import java.math.BigInteger;
 import java.util.logging.Level;
@@ -41,14 +44,13 @@ import javax.measure.Unit;
 import javax.measure.format.MeasurementParseException;
 import javax.measure.format.UnitFormat;
 import javax.measure.quantity.Length;
-import javax.measure.quantity.Time;
 import javax.measure.spi.ServiceProvider;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import tech.units.indriya.function.RationalConverter;
+import tech.units.indriya.function.MultiplyConverter;
+import tech.units.indriya.function.RationalNumber;
 import tech.units.indriya.unit.TransformedUnit;
 import tech.units.indriya.unit.Units;
 
@@ -130,7 +132,7 @@ public class EBNFFormatTest {
     public void testTransformed() {
         final String ANGSTROEM_SYM = "\u212B";
         final Unit<Length> ANGSTROEM = new TransformedUnit<Length>(ANGSTROEM_SYM, METRE, METRE,
-                new RationalConverter(BigInteger.ONE, BigInteger.TEN.pow(10)));
+                MultiplyConverter.ofRational(BigInteger.ONE, BigInteger.TEN.pow(10)));
         final String s = format.format(ANGSTROEM);
         assertEquals(ANGSTROEM_SYM, s);
     }

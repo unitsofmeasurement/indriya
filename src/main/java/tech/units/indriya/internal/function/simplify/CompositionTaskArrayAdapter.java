@@ -40,15 +40,15 @@ import java.util.function.BinaryOperator;
  * @version 1.0
  * @since 2.0
  */
-final class CompositionTask_ArrayAdapter<T> {
+final class CompositionTaskArrayAdapter<T> {
 
   private final T[] array;
 
-  public static <T> CompositionTask_ArrayAdapter<T> of(T[] array){
-    return new CompositionTask_ArrayAdapter<T>(array);
+  public static <T> CompositionTaskArrayAdapter<T> of(T[] array){
+    return new CompositionTaskArrayAdapter<T>(array);
   }
 
-  private CompositionTask_ArrayAdapter(T[] array) {
+  private CompositionTaskArrayAdapter(T[] array) {
     this.array = array;
   }
 

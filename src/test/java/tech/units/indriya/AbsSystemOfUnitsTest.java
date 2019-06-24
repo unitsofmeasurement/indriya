@@ -31,32 +31,22 @@ package tech.units.indriya;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import java.util.Set;
-
-import javax.measure.Dimension;
-import javax.measure.Unit;
-import javax.measure.spi.SystemOfUnits;
 
 import org.junit.jupiter.api.Test;
 
-import tech.units.indriya.quantity.QuantityDimension;
 import tech.units.indriya.unit.Units;
 
 public class AbsSystemOfUnitsTest {
-  private static final SystemOfUnits sut = Units.getInstance();
+	private static final AbstractSystemOfUnits sut = (AbstractSystemOfUnits) Units.getInstance();
 
-  @Test
-  public void testName() {
-    assertEquals("Units", sut.getName());
-  }
-
-  @Test
-  public void testGetByDim() {
-	Dimension len = QuantityDimension.LENGTH;
-    Set<? extends Unit<?>> lens = sut.getUnits(len);
-    assertNotNull(lens);
-    assertEquals(1, lens.size());
-  }
-
-
+	@Test
+	public void testName() {
+		assertEquals("Units", sut.getName());
+	}
+	
+	@Test
+	public void testUnits() {
+		assertNotNull(sut.getUnits());
+		assertEquals(43, sut.getUnits().size());
+	}
 }

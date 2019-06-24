@@ -31,9 +31,9 @@ package tech.units.indriya;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.measure.Dimension;
 import javax.measure.IncommensurableException;
 import javax.measure.Prefix;
@@ -46,13 +46,16 @@ import javax.measure.quantity.Dimensionless;
 
 import tech.units.indriya.format.LocalUnitFormat;
 import tech.units.indriya.format.SimpleUnitFormat;
+import tech.units.indriya.function.AbstractConverter;
 import tech.units.indriya.function.AddConverter;
+import tech.units.indriya.function.Calculus;
 import tech.units.indriya.function.MultiplyConverter;
-import tech.units.indriya.function.PowerOfIntConverter;
-import tech.units.indriya.function.RationalConverter;
+import tech.units.indriya.function.RationalNumber;
+import tech.units.indriya.internal.function.calc.Calculator;
 import tech.units.indriya.quantity.QuantityDimension;
 import tech.units.indriya.spi.DimensionalModel;
 import tech.units.indriya.unit.AlternateUnit;
+import tech.units.indriya.unit.AnnotatedUnit;
 import tech.units.indriya.unit.ProductUnit;
 import tech.units.indriya.unit.TransformedUnit;
 import tech.units.indriya.unit.Units;
@@ -80,7 +83,7 @@ import tech.uom.lib.common.function.SymbolSupplier;
  *      International System of Units</a>
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 2.0, April 25, 2019
+ * @version 2.1, June 19, 2019
  * @since 1.0
  */
 public abstract class AbstractUnit<Q extends Quantity<Q>>
@@ -337,34 +340,38 @@ public abstract class AbstractUnit<Q extends Quantity<Q>>
 	}
 
 	@Override
-	public final Unit<Q> shift(double offset) {
-		if (offset == 0)
+	public final Unit<Q> shift(Number offset) {
+		if (Calculus.currentNumberSystem().isZero(offset))
 			return this;
 		return transform(new AddConverter(offset));
 	}
 
 	@Override
-	public final Unit<Q> multiply(double factor) {
-		if (factor == 1)
+	public final Unit<Q> multiply(Number factor) {
+		if (Calculus.currentNumberSystem().isOne(factor))
 			return this;
-		return transform(converterOf(factor));
+		return transform(MultiplyConverter.of(factor));
 	}
 
 	@Override
-	public Unit<Q> shift(Number offset) {
-		return shift(offset.doubleValue());
+	public Unit<Q> shift(double offset) {
+		return shift(RationalNumber.of(offset));
 	}
 
 	@Override
-	public Unit<Q> multiply(Number multiplier) {
-		return multiply(multiplier.doubleValue());
+	public Unit<Q> multiply(double multiplier) {
+		return multiply(RationalNumber.of(multiplier));
 	}
 
 	@Override
-	public Unit<Q> divide(Number divisor) {
-		return divide(divisor.doubleValue());
+	public Unit<Q> divide(double divisor) {
+		return divide(RationalNumber.of(divisor));
 	}
 
+	public final Unit<Q> annotate(String annotation) {
+		return new AnnotatedUnit<>(this, annotation);
+	}
+	
 	/**
 	 * Internal helper for isCompatible
 	 */
@@ -409,17 +416,6 @@ public abstract class AbstractUnit<Q extends Quantity<Q>>
 		UnitConverter thisToSI = this.getSystemConverter();
 		UnitConverter thatToSI = that.getConverterTo(thatSystemUnit);
 		return thatToSI.inverse().concatenate(thisToSI);
-	}
-
-	private static boolean isLongValue(double value) {
-		return !(value < Long.MIN_VALUE || value > Long.MAX_VALUE) && Math.floor(value) == value;
-	}
-
-	private static UnitConverter converterOf(double factor) {
-		if (isLongValue(factor)) {
-			return new RationalConverter(BigInteger.valueOf((long) factor), BigInteger.ONE);
-		}
-		return new MultiplyConverter(factor);
 	}
 
 	/**
@@ -481,12 +477,11 @@ public abstract class AbstractUnit<Q extends Quantity<Q>>
 	 * @return this unit divided by the specified divisor.
 	 */
 	@Override
-	public final Unit<Q> divide(double divisor) {
-		if (divisor == 1)
+	public final Unit<Q> divide(Number divisor) {
+	    if (Calculus.currentNumberSystem().isOne(divisor))
 			return this;
-		if (isLongValue(divisor)) // TODO [ahuber] you can not reach every long with a double!
-			return transform(new RationalConverter(BigInteger.ONE, BigInteger.valueOf((long) divisor)));
-		return transform(new MultiplyConverter(1.0 / divisor));
+	    Number factor = Calculator.of(divisor).reciprocal().peek(); 
+		return transform(MultiplyConverter.of(factor));
 	}
 
 	/**
@@ -548,7 +543,7 @@ public abstract class AbstractUnit<Q extends Quantity<Q>>
 
 	@Override
 	public Unit<Q> prefix(Prefix prefix) {
-		return this.transform(PowerOfIntConverter.of(prefix));
+		return this.transform(MultiplyConverter.ofPrefix(prefix));
 	}
 
 	/*

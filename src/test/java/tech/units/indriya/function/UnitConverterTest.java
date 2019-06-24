@@ -29,9 +29,17 @@
  */
 package tech.units.indriya.function;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static javax.measure.MetricPrefix.*;
-import static tech.units.indriya.unit.Units.*;
+import static javax.measure.MetricPrefix.CENTI;
+import static javax.measure.MetricPrefix.KILO;
+import static javax.measure.MetricPrefix.MICRO;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static tech.units.indriya.NumberAssertions.assertNumberEquals;
+import static tech.units.indriya.unit.Units.CELSIUS;
+import static tech.units.indriya.unit.Units.GRAM;
+import static tech.units.indriya.unit.Units.KELVIN;
+import static tech.units.indriya.unit.Units.KILOGRAM;
+import static tech.units.indriya.unit.Units.METRE;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;
@@ -55,8 +63,8 @@ public class UnitConverterTest {
     double length2 = 6.0;
     double result1 = converter.convert(length1);
     double result2 = converter.convert(length2);
-    assertEquals(400, result1);
-    assertEquals(600, result2);
+    assertNumberEquals(400, result1, 1E-12);
+    assertNumberEquals(600, result2, 1E-12);
   }
 
   @Test
@@ -66,7 +74,7 @@ public class UnitConverterTest {
     // targetUnit);
     Quantity<Length> quantResult1 = quantLength1.to(targetUnit);
     assertNotNull(quantResult1);
-    assertEquals(400.0, quantResult1.getValue());
+    assertNumberEquals(400, quantResult1.getValue(), 1E-12);
     assertEquals(targetUnit, quantResult1.getUnit());
   }
 
@@ -75,7 +83,7 @@ public class UnitConverterTest {
     Quantity<Temperature> sut = Quantities.getQuantity(273.15d, KELVIN).to(CELSIUS);
     assertNotNull(sut);
     assertEquals(CELSIUS, sut.getUnit());
-    assertEquals(0d, sut.getValue());
+    assertNumberEquals(0, sut.getValue(), 1E-12);
   }
 
   @Test

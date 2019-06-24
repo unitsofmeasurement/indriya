@@ -34,19 +34,22 @@ import org.junit.jupiter.api.Test;
 import tech.units.indriya.unit.Units;
 
 import javax.measure.Quantity;
-import javax.measure.quantity.Length;
 import javax.measure.quantity.Temperature;
 import javax.measure.quantity.Time;
-
 import java.math.BigDecimal;
 
 import static javax.measure.Quantity.Scale.ABSOLUTE;
 import static javax.measure.Quantity.Scale.RELATIVE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static tech.units.indriya.NumberAssertions.assertNumberEquals;
 import static tech.units.indriya.unit.Units.CELSIUS;
 import static tech.units.indriya.unit.Units.KELVIN;
 
+/**
+ *
+ * @author Werner Keil
+ *
+ */
 class TemperatureTest {
 
 	@Test
@@ -56,23 +59,23 @@ class TemperatureTest {
 	}
 
 	@Test
-	void testTemperatureQuantityDoubleTemperatureUnit() {
+	void testTemperatureNumberQuantity() {
 		Quantity<Temperature> t = Quantities.getQuantity(Double.valueOf(20d), CELSIUS);
-		assertEquals(Double.valueOf(20d), t.getValue());
+		assertNumberEquals(20, t.getValue(), 1E-12);
 	}
 
 	@Test
-	void testTo() {
+	void testToKelvin() {
 		Quantity<Temperature> t = Quantities.getQuantity(Double.valueOf(30d), CELSIUS);
 		Quantity<Temperature> t2 = t.to(KELVIN);
-		assertEquals(Double.valueOf(303.15d), t2.getValue());
+		assertNumberEquals(303.15d, t2.getValue(), 1E-12);
 	}
 
 	@Test
 	void testTo2() {
 		Quantity<Temperature> t = Quantities.getQuantity(2d, KELVIN);
 		Quantity<Temperature> t2 = t.to(CELSIUS);
-		assertEquals(-271.15d, t2.getValue());
+		assertNumberEquals(-271.15d, t2.getValue(), 1E-12);
 	}
 
 	@Test
@@ -124,8 +127,14 @@ class TemperatureTest {
 		Quantity<Time> absTime = Quantities.getQuantity(1d,Units.DAY,ABSOLUTE);
 		Quantity<Time> addedTime = relTime.add(absTime);
 		Quantity<Time> expectedTime = Quantities.getQuantity(25d,Units.HOUR,ABSOLUTE);
-		assertEquals(expectedTime,addedTime);
+		assertNumberEquals(expectedTime.getValue(), addedTime.getValue(), 1E-12);
 	}
 
+	@Test
+	void testToCelsius() {
+		Quantity<Temperature> t = Quantities.getQuantity(Double.valueOf(2d), KELVIN);
+		Quantity<Temperature> t2 = t.to(CELSIUS);
+		assertNumberEquals(-271.15d, t2.getValue(), 1E-12);
+	}
 
 }

@@ -29,52 +29,20 @@
  */
 package tech.units.indriya.function;
 
-import java.util.function.BiPredicate;
-import java.util.function.BinaryOperator;
+import static org.junit.jupiter.api.Assertions.*;
 
-import tech.units.indriya.internal.function.simplify.UnitCompositionHandlerYieldingNormalForm;
+import java.util.List;
 
-/**
- * Functional interface for handling the composition (concatenation) of two unit converters.
- * 
- * @author Andi Huber
- * @author Werner Keil
- * @version 1.2
- * @since 2.0
- */
-public interface ConverterCompositionHandler {
+import org.junit.jupiter.api.Test;
 
-    /**
-     * Takes two converters {@code left}, {@code right} and returns a (not necessarily new) 
-     * converter that is equivalent to the mathematical composition of these:
-     * <p>
-     * compose(left, right) === left o right 
-     * 
-     * <p>
-     * Implementation Note: Instead of using AbstractConverter as parameter 
-     * and result types, this could be generalized to UnitConverter, but that 
-     * would require some careful changes within AbstractConverter itself.
-     *  
-     * @param left
-     * @param right
-     * @param canReduce
-     * @param doReduce
-     * @return
-     */
-    public AbstractConverter compose(
-            AbstractConverter left, 
-            AbstractConverter right,
-            BiPredicate<AbstractConverter, AbstractConverter> canReduce,
-            BinaryOperator<AbstractConverter> doReduce);
-    
-    // -- FACTORIES (BUILT-IN) 
-    
-    /**
-     * @return the default built-in UnitCompositionHandler which is yielding a normal-form, 
-     * required to decide whether two UnitConverters are equivalent
-     */
-    public static ConverterCompositionHandler yieldingNormalForm() {
-        return new UnitCompositionHandlerYieldingNormalForm();
-    }
+import tech.units.indriya.spi.NumberSystem;
 
+public class CalculusTest {
+
+	@Test
+	public void testGetAvailable() {
+		List<NumberSystem> availableNumberSystems = Calculus.getAvailableNumberSystems();
+		assertNotNull(availableNumberSystems);
+		assertFalse(availableNumberSystems.isEmpty());
+	}
 }

@@ -28,7 +28,7 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 /**
- * This package provides a Java SE 8 implementation of the
+ * This package provides the Reference Implementation of the
  * <a href="http://unitsofmeasurement.github.io/">Units of Measurement API</a>.
  *
  *
@@ -36,12 +36,12 @@
  * <code>
  *
  * import javax.measure.quantity.*; // Holds quantity types.
+ * import static javax.measure.MetricPrefix.*;
  * 
  * import tech.units.indriya.AbstractUnit;
  * import tech.units.indriya.function.AbstractConverter;
  * 
  * import static tech.units.indriya.unit.Units.*; // Standard CommonUnits.
- * import static tech.units.indriya.unit.MetricPrefix.*;
  * import static tech.units.indriya.spi.UCUM.*; // Standard & Non-Standard CommonUnits.
  *
  * public class Main {
@@ -104,8 +104,7 @@
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.0
+ * @version 1.1
  * @since 1.0
  */
 package tech.units.indriya;
-

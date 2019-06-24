@@ -29,13 +29,12 @@
  */
 package tech.units.indriya.function;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
 import java.util.Objects;
 
 import javax.measure.UnitConverter;
 
-import tech.units.indriya.AbstractConverter;
+import tech.units.indriya.internal.function.calc.Calculator;
+import tech.units.indriya.spi.NumberSystem;
 import tech.uom.lib.common.function.ValueSupplier;
 
 /**
@@ -45,9 +44,10 @@ import tech.uom.lib.common.function.ValueSupplier;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author Werner Keil
- * @version 1.0, Oct 10, 2016
+ * @author Andi Huber
+ * @version 1.2, Jun 21, 2019
  */
-public final class AddConverter extends AbstractConverter implements ValueSupplier<Double> {
+public final class AddConverter extends AbstractConverter implements ValueSupplier<Number> {
 
   /**
      * 
@@ -56,7 +56,7 @@ public final class AddConverter extends AbstractConverter implements ValueSuppli
   /**
    * Holds the offset.
    */
-  private final double offset;
+  private final Number offset;
 
   /**
    * Creates an additive converter having the specified offset.
@@ -64,8 +64,8 @@ public final class AddConverter extends AbstractConverter implements ValueSuppli
    * @param offset
    *          the offset value.
    */
-  public AddConverter(double offset) {
-    this.offset = offset;
+  public AddConverter(Number offset) {
+    this.offset = Calculus.currentNumberSystem().narrow(offset);
   }
 
   /**
@@ -73,13 +73,13 @@ public final class AddConverter extends AbstractConverter implements ValueSuppli
    *
    * @return the offset value.
    */
-  public double getOffset() {
+  public Number getOffset() {
     return offset;
   }
   
   @Override
   public boolean isIdentity() {
-    return offset == 0.0;
+    return Calculus.currentNumberSystem().isZero(offset);
   }
 
   @Override
@@ -89,27 +89,30 @@ public final class AddConverter extends AbstractConverter implements ValueSuppli
 
   @Override
   protected AbstractConverter reduce(AbstractConverter that) {
-    return new AddConverter(offset + ((AddConverter)that).offset);
+    NumberSystem ns = Calculus.currentNumberSystem();
+    Number newOffset = ns.add(offset, ((AddConverter)that).offset);
+    return new AddConverter(newOffset);
   }
   
   @Override
   public AddConverter inverseWhenNotIdentity() {
-    return new AddConverter(-offset);
+    NumberSystem ns = Calculus.currentNumberSystem();
+    Number newOffset = ns.negate(offset);
+    return new AddConverter(newOffset);
   }
 
   @Override
-  public double convertWhenNotIdentity(double value) {
-    return value + offset;
-  }
-
-  @Override
-  public BigDecimal convertWhenNotIdentity(BigDecimal value, MathContext ctx) throws ArithmeticException {
-    return value.add(BigDecimal.valueOf(offset), ctx);
+  protected Number convertWhenNotIdentity(Number value) {
+      return Calculator.of(offset)
+              .add(value)
+              .peek();
   }
 
   @Override
   public String transformationLiteral() {
-    return String.format("x -> x %s %s", offset < 0 ? "-" : "+", Math.abs(offset));
+    NumberSystem ns = Calculus.currentNumberSystem();
+    int signum = ns.signum(offset);
+    return String.format("x -> x %s %s", signum < 0 ? "-" : "+", ns.abs(offset));
   }
 
   @Override
@@ -135,7 +138,8 @@ public final class AddConverter extends AbstractConverter implements ValueSuppli
     return isIdentity();
   }
 
-  public Double getValue() {
+  @Override
+  public Number getValue() {
     return offset;
   }
 
@@ -145,10 +149,13 @@ public final class AddConverter extends AbstractConverter implements ValueSuppli
       return 0;
     }
     if (o instanceof AddConverter) {
-      return getValue().compareTo(((AddConverter) o).getValue());
+      NumberSystem ns = Calculus.currentNumberSystem();  
+      return ns.compare(this.getValue(), ((AddConverter) o).getValue());
     }
     return -1;
   }
+
+
 
 
 }

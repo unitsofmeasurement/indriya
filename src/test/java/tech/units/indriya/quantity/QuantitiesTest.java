@@ -29,27 +29,33 @@
  */
 package tech.units.indriya.quantity;
 
-import org.junit.jupiter.api.Test;
+import static javax.measure.Quantity.Scale.RELATIVE;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static tech.units.indriya.NumberAssertions.assertNumberEquals;
+import static tech.units.indriya.unit.Units.CELSIUS;
+import static tech.units.indriya.unit.Units.PASCAL;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+
+import javax.measure.Quantity;
+import javax.measure.quantity.Pressure;
+import javax.measure.quantity.Speed;
+import javax.measure.quantity.Temperature;
+import javax.measure.quantity.Time;
+
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.unit.Units;
 
-import javax.measure.Quantity;
-import javax.measure.quantity.*;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.math.RoundingMode;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static javax.measure.Quantity.Scale.*;
-import static tech.units.indriya.unit.Units.CELSIUS;
-import static tech.units.indriya.unit.Units.PASCAL;
-
 /**
  *
  * @author Werner Keil
- * @version 0.4
+ * @author Andi Huber
+ * @version 0.5
  */
 public class QuantitiesTest {
 
@@ -136,10 +142,7 @@ public class QuantitiesTest {
   public void toTest() {
     Quantity<Time> minute = Quantities.getQuantity(BigDecimal.ONE, Units.YEAR);
     Quantity<Time> second = minute.to(Units.SECOND);
-    BigDecimal value = (BigDecimal) second.getValue();
-    value.setScale(4, RoundingMode.HALF_EVEN);
-    BigDecimal expected = BigDecimal.valueOf(31556952);
-    assertEquals(expected.setScale(4, RoundingMode.HALF_EVEN), value.setScale(4, RoundingMode.HALF_EVEN));
+    assertNumberEquals(31556952, second.getValue(), 1E-12);
   }
 
   @Test

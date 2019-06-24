@@ -37,6 +37,7 @@ import static java.util.concurrent.TimeUnit.MINUTES;
 import static java.util.concurrent.TimeUnit.NANOSECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static tech.units.indriya.NumberAssertions.assertNumberEquals;
 import static tech.units.indriya.unit.Units.DAY;
 import static tech.units.indriya.unit.Units.HOUR;
 import static tech.units.indriya.unit.Units.MINUTE;
@@ -65,25 +66,25 @@ public class TimeQuantitiesConcurrentTest {
     TimeUnitQuantity nanoSecond = TimeUnitQuantity.of(1, NANOSECONDS);
 
     assertEquals(DAYS, day.getTimeUnit());
-    assertEquals(Long.valueOf(1), day.getValue());
+    assertNumberEquals(1, day.getValue(), 1E-12);
 
     assertEquals(HOURS, hour.getTimeUnit());
-    assertEquals(Long.valueOf(1), hour.getValue());
+    assertNumberEquals(1, hour.getValue(), 1E-12);
 
     assertEquals(MINUTES, minute.getTimeUnit());
-    assertEquals(Long.valueOf(1), minute.getValue());
+    assertNumberEquals(1, minute.getValue(), 1E-12);
 
     assertEquals(SECONDS, second.getTimeUnit());
-    assertEquals(Long.valueOf(1), second.getValue());
+    assertNumberEquals(1, second.getValue(), 1E-12);
 
     assertEquals(MICROSECONDS, microSecond.getTimeUnit());
-    assertEquals(Long.valueOf(1), microSecond.getValue());
+    assertNumberEquals(1, microSecond.getValue(), 1E-12);
 
     assertEquals(MILLISECONDS, milliSecond.getTimeUnit());
-    assertEquals(Long.valueOf(1), milliSecond.getValue());
+    assertNumberEquals(1, milliSecond.getValue(), 1E-12);
 
     assertEquals(NANOSECONDS, nanoSecond.getTimeUnit());
-    assertEquals(Long.valueOf(1), nanoSecond.getValue());
+    assertNumberEquals(1, nanoSecond.getValue(), 1E-12);
   }
 
   @Test
@@ -93,7 +94,7 @@ public class TimeQuantitiesConcurrentTest {
 
     assertEquals(SECONDS, timeQuantity.getTimeUnit());
     assertEquals(SECOND, timeQuantity.toUnit());
-    assertEquals(Long.valueOf(3600), timeQuantity.getValue());
+    assertNumberEquals(3600, timeQuantity.getValue(), 1E-12);
   }
 
   @Test

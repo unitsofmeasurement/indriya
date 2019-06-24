@@ -27,54 +27,47 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package tech.units.indriya.function;
+package tech.units.indriya.internal.format;
 
-import java.util.function.BiPredicate;
-import java.util.function.BinaryOperator;
-
-import tech.units.indriya.internal.function.simplify.UnitCompositionHandlerYieldingNormalForm;
+import java.text.FieldPosition;
+import java.text.NumberFormat;
+import java.text.ParsePosition;
 
 /**
- * Functional interface for handling the composition (concatenation) of two unit converters.
- * 
+ * Wraps a given {@link NumberFormat} and extends it to also support the rational number format. 
+ * <p>
+ * eg. {@code 5÷3}
+ *  
  * @author Andi Huber
- * @author Werner Keil
- * @version 1.2
- * @since 2.0
+ *
  */
-public interface ConverterCompositionHandler {
+public class RationalNumberFormat extends NumberFormat {
+    
+    private static final long serialVersionUID = 1L;
+    
+    private final NumberFormat numberFormat;
 
-    /**
-     * Takes two converters {@code left}, {@code right} and returns a (not necessarily new) 
-     * converter that is equivalent to the mathematical composition of these:
-     * <p>
-     * compose(left, right) === left o right 
-     * 
-     * <p>
-     * Implementation Note: Instead of using AbstractConverter as parameter 
-     * and result types, this could be generalized to UnitConverter, but that 
-     * would require some careful changes within AbstractConverter itself.
-     *  
-     * @param left
-     * @param right
-     * @param canReduce
-     * @param doReduce
-     * @return
-     */
-    public AbstractConverter compose(
-            AbstractConverter left, 
-            AbstractConverter right,
-            BiPredicate<AbstractConverter, AbstractConverter> canReduce,
-            BinaryOperator<AbstractConverter> doReduce);
+    public static RationalNumberFormat wrap(NumberFormat numberFormat) {
+        return new RationalNumberFormat(numberFormat);
+    }
     
-    // -- FACTORIES (BUILT-IN) 
-    
-    /**
-     * @return the default built-in UnitCompositionHandler which is yielding a normal-form, 
-     * required to decide whether two UnitConverters are equivalent
-     */
-    public static ConverterCompositionHandler yieldingNormalForm() {
-        return new UnitCompositionHandlerYieldingNormalForm();
+    private RationalNumberFormat(NumberFormat numberFormat) {
+        this.numberFormat = numberFormat;
+    }
+
+    @Override
+    public StringBuffer format(double number, StringBuffer toAppendTo, FieldPosition pos) {
+        return numberFormat.format(number, toAppendTo, pos);
+    }
+
+    @Override
+    public StringBuffer format(long number, StringBuffer toAppendTo, FieldPosition pos) {
+        return numberFormat.format(number, toAppendTo, pos);
+    }
+
+    @Override
+    public Number parse(String source, ParsePosition parsePosition) {
+        return new RationalNumberScanner(source, parsePosition, numberFormat).getNumber();
     }
 
 }

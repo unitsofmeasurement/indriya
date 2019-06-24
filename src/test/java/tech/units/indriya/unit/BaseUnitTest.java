@@ -34,9 +34,8 @@ import javax.measure.Unit;
 
 import org.junit.jupiter.api.Test;
 
-import tech.units.indriya.AbstractConverter;
 import tech.units.indriya.AbstractUnit;
-
+import tech.units.indriya.function.AbstractConverter;
 import tech.units.indriya.quantity.QuantityDimension;
 import tech.units.indriya.unit.BaseUnit;
 

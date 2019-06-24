@@ -43,8 +43,8 @@ import javax.measure.quantity.Dimensionless;
 import tech.units.indriya.format.SimpleQuantityFormat;
 import tech.units.indriya.format.SimpleUnitFormat;
 import tech.units.indriya.function.Calculus;
-import tech.units.indriya.function.NumberSystem;
 import tech.units.indriya.quantity.Quantities;
+import tech.units.indriya.spi.NumberSystem;
 import tech.uom.lib.common.function.UnitSupplier;
 import tech.uom.lib.common.function.ValueSupplier;
 import tech.uom.lib.common.util.NaturalQuantityComparator;
@@ -108,7 +108,7 @@ import tech.uom.lib.common.util.NaturalQuantityComparator;
  *
  * @author <a href="mailto:werner@uom.technology">Werner Keil</a>
  * @author Andi Huber
- * @version 1.9, April 24, 2019
+ * @version 1.11, Jun 9, 2019
  * @since 1.0
  */
 @SuppressWarnings("unchecked")
@@ -238,9 +238,9 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
     @Override
     public int compareTo(Quantity<Q> that) {
         if (this.getUnit().equals(that.getUnit())) {
-            return ns().compare(this.getValue(), that.getValue());
+            return numberSystem().compare(this.getValue(), that.getValue());
         }
-        return ns().compare(this.getValue(), that.to(this.getUnit()).getValue());
+        return numberSystem().compare(this.getValue(), that.to(this.getUnit()).getValue());
     }
 
     /**
@@ -286,9 +286,6 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
     public int hashCode() {
         return Objects.hash(getUnit(), getScale(), getValue());
     }
-
-    @Deprecated //TODO[220] remove method
-    public abstract boolean isBig();
 
     /**
      * Returns the <code>String</code> representation of this quantity. The string produced for a given quantity is always the same; it is not
@@ -369,47 +366,7 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
         return value.remainder(BigDecimal.ONE).compareTo(BigDecimal.ZERO) != 0;
     }
 
-    protected NumberSystem ns() {
-        return Calculus.NUMBER_SYSTEM;
-    }
-    
-    /**
-     * Utility class for number comparison and equality
-     */
-    @Deprecated //TODO[220] use Calculus.NUMBER_SYSTEM instead 
-    protected static final class Equalizer {
-
-        /**
-         * Check if the both value has equality number, in other words, 1 is equals to 1.0000 and 1.0.
-         * 
-         * If the first value is a <type>Number</type> of either <type>Double</type>, <type>Float</type>, <type>Integer</type>, <type>Long</type>,
-         * <type>Short</type> or <type>Byte</type> it is compared using the respective <code>*value()</code> method of <type>Number</type>. Otherwise
-         * it is checked, if {@link BigDecimal#compareTo(Object)} is equal to zero.
-         *
-         * @param valueA
-         *            the value a
-         * @param valueB
-         *            the value B
-         * @return {@link BigDecimal#compareTo(Object)} == zero
-         */
-        public static boolean hasEquality(Number valueA, Number valueB) {
-            Objects.requireNonNull(valueA);
-            Objects.requireNonNull(valueB);
-
-            if (valueA instanceof Double && valueB instanceof Double) {
-                return valueA.doubleValue() == valueB.doubleValue();
-            } else if (valueA instanceof Float && valueB instanceof Float) {
-                return valueA.floatValue() == valueB.floatValue();
-            } else if (valueA instanceof Integer && valueB instanceof Integer) {
-                return valueA.intValue() == valueB.intValue();
-            } else if (valueA instanceof Long && valueB instanceof Long) {
-                return valueA.longValue() == valueB.longValue();
-            } else if (valueA instanceof Short && valueB instanceof Short) {
-                return valueA.shortValue() == valueB.shortValue();
-            } else if (valueA instanceof Byte && valueB instanceof Byte) {
-                return valueA.byteValue() == valueB.byteValue();
-            }
-            return Calculus.toBigDecimal(valueA).compareTo(Calculus.toBigDecimal(valueB)) == 0;
-        }
+    protected NumberSystem numberSystem() {
+        return Calculus.currentNumberSystem();
     }
 }

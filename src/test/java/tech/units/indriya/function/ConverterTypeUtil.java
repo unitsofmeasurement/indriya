@@ -41,8 +41,6 @@ import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;
 import org.junit.jupiter.api.extension.ParameterResolver;
 
-import tech.units.indriya.AbstractConverter;
-
 class ConverterTypeUtil {
 
   /**
@@ -63,10 +61,10 @@ class ConverterTypeUtil {
         ()->RationalConverter.of(1, 1), // identity as expressed by this type ... x -> 1/1 * x
         RationalConverter.of(17, 13), // concrete example a ... x -> 17/13 * x
         RationalConverter.of(-34, 17)   ), // concrete example b ... x -> -34/17 * x
-    MULTIPLY(MultiplyConverter.class, 
-        ()->new MultiplyConverter(1.), // identity as expressed by this type ... x -> 1.0 * x
-        new MultiplyConverter(17.23), // concrete example a ... x -> 17.23 * x
-        new MultiplyConverter(-0.333) ), // concrete example b ... x -> -0.333 * x
+    MULTIPLY(DoubleMultiplyConverter.class, 
+        ()->DoubleMultiplyConverter.of(1.), // identity as expressed by this type ... x -> 1.0 * x
+        DoubleMultiplyConverter.of(17.23), // concrete example a ... x -> 17.23 * x
+        DoubleMultiplyConverter.of(-0.333) ), // concrete example b ... x -> -0.333 * x
     ADD(AddConverter.class, 
         ()->new AddConverter(0.), // identity as expressed by this type ... x -> 0 + x
         new AddConverter(-4.5), // concrete example a ... x -> -4.5 + x

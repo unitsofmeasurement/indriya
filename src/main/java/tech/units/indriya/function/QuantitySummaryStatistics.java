@@ -42,7 +42,7 @@ import tech.units.indriya.quantity.Quantities;
 /**
  * @author Otavio
  * @author Werner
- * @version 1.1
+ * @version 1.2
  * @since 1.0
  * @param <Q>
  */
@@ -259,7 +259,7 @@ public class QuantitySummaryStatistics<Q extends Quantity<Q>> {
   @Override
   public String toString() {
     final StringBuilder sb = new StringBuilder();
-    sb.append("[currency: ").append(empty.getUnit()).append(",");
+    sb.append("[unit: ").append(empty.getUnit()).append(",");
     sb.append("count:").append(count).append(",");
     sb.append("min:").append(min).append(",");
     sb.append("max:").append(max).append(",");

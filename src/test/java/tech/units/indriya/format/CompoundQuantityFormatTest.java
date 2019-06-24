@@ -45,6 +45,7 @@ import static tech.units.indriya.unit.Units.HOUR;
 import static tech.units.indriya.unit.Units.KILOGRAM;
 import static tech.units.indriya.unit.Units.METRE;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -66,6 +67,7 @@ import tech.units.indriya.unit.Units;
 
 /**
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
+ * @author Andi Huber
  *
  */
 public class CompoundQuantityFormatTest {
@@ -144,7 +146,7 @@ public class CompoundQuantityFormatTest {
     public void testParseCompSimpleTime() {
         QuantityFormat format1 = SimpleQuantityFormat.getInstance("n u~:");
         Quantity<Time> parsed1 = format1.parse("1 h:30 min:10 s").asType(Time.class);
-        assertEquals(1.5027777777777778d, parsed1.getValue());
+        assertNumberEquals(1.5027777777777778d, parsed1.getValue(), 1E-12);
         assertEquals(HOUR, parsed1.getUnit());
     }
     
@@ -152,7 +154,7 @@ public class CompoundQuantityFormatTest {
     public void testParseCompSimpleSameDelimTime() {
         QuantityFormat format1 = SimpleQuantityFormat.getInstance("n u~ ");
         Quantity<?> parsed1 = format1.parse("1 h 30 min 10 s");
-        assertEquals(1.5027777777777778d, parsed1.getValue());
+        assertNumberEquals(1.5027777777777778d, parsed1.getValue(), 1E-12);
         assertEquals(HOUR, parsed1.getUnit());
     }
     
@@ -169,6 +171,20 @@ public class CompoundQuantityFormatTest {
         assertNumberEquals(1.3d, parsed1.getValue(), 1E-12);
         assertEquals(METRE, parsed1.getUnit());
     }
+    
+    @Test
+    public void testParseCompSingleRationalNumDelimLen() {
+        QuantityFormat format1 = new NumberDelimiterQuantityFormat.Builder()
+                .setNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH))
+                .setUnitFormat(SimpleUnitFormat.getInstance())
+                .setDelimiter(" ")
+                .setRadixPartsDelimiter(";")
+                .build();
+        Quantity<?> parsed1 = format1.parse("1÷2 m;10 cm");
+        
+        assertNumberEquals(new BigDecimal("0.6"), parsed1.getValue(), 1E-12);
+        assertEquals(METRE, parsed1.getUnit());
+    }
  
     @Test
     public void testParseCompSingleNumDelimSameDelimLen() {
@@ -179,6 +195,18 @@ public class CompoundQuantityFormatTest {
                 .build();
         Quantity<?> parsed1 = format1.parse("1 m 30 cm");
         assertNumberEquals(1.3d, parsed1.getValue(), 1E-12);
+        assertEquals(METRE, parsed1.getUnit());
+    }
+    
+    @Test
+    public void testParseCompSingleRationalNumDelimSameDelimLen() {
+        final QuantityFormat format1 = new NumberDelimiterQuantityFormat.Builder()
+                .setNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH))
+                .setUnitFormat(SimpleUnitFormat.getInstance())
+                .setDelimiter(" ").setRadixPartsDelimiter(" ")
+                .build();
+        Quantity<?> parsed1 = format1.parse("1÷2 m 10 cm");
+        assertNumberEquals(new BigDecimal("0.6"), parsed1.getValue(), 1E-12);
         assertEquals(METRE, parsed1.getUnit());
     }
     
@@ -340,7 +368,8 @@ public class CompoundQuantityFormatTest {
         
         // then
         assertEquals("1. ft 2. in 3. P̸", formatedOutput);
-        assertEquals("1.2083333333333333 ft", simpleFormattedSingle);
+        //assertEquals("29÷24 ft", simpleFormattedSingle);
+        assertEquals("1.208333333333333333333333333333333 ft", simpleFormattedSingle);
         assertEquals("1.2083333333333333 ft", ndFormattedSingle);
     }
     

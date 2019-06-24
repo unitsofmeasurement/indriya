@@ -5,6 +5,7 @@
 	<groupId>tech.units</groupId>
 	<artifactId>indriya</artifactId>
 	<url>https://unitsofmeasurement.github.io/indriya</url>
+	<version>2.0-SNAPSHOT</version>
 	<organization>
 		<name>Units of Measurement project</name>
 		<url>http://unitsofmeasurement.github.io</url>
@@ -47,7 +48,7 @@
 		<maven.compile.sourceLevel>${jdkVersion}</maven.compile.sourceLevel>
 		<additionalparam>-Xdoclint:none</additionalparam>
 		<hamcrest.version>2.0.0.0</hamcrest.version>
-		<junit.jupiter.version>5.1.0</junit.jupiter.version>
+		<junit.jupiter.version>5.4.0</junit.jupiter.version>
 		<junit.platform.version>1.1.0</junit.platform.version>
 		<jacoco.version>0.8.2</jacoco.version>
 		<compile.exclude.files>module-info.java</compile.exclude.files>
@@ -246,7 +247,6 @@
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>${jacoco.version}</version>
 				<configuration>
 					<destfile>${basedir}/target/coverage-reports/jacoco-unit.exec</destfile>
 					<datafile>${basedir}/target/coverage-reports/jacoco-unit.exec</datafile>
@@ -327,7 +327,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			
+
 			<!-- Attach JavaDocs -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -365,45 +365,45 @@
 				</configuration>
 			</plugin>
 
-            <!-- ======================================================= -->
-            <!-- Maven License Plugin -->
-            <!-- ======================================================= -->
-            <plugin>
-                <groupId>com.mycila</groupId>
-                <artifactId>license-maven-plugin</artifactId>
-                <configuration>
-                    <header>src/main/config/header.txt</header>
-                    <properties>
-                        <owner>${project.organization.name}</owner>
-                        <currentYear>${thisYear}</currentYear>
-                    </properties>
-                    <excludes>
-                        <exclude>.editorconfig</exclude>
-                        <exclude>.gitattributes</exclude>
-                        <exclude>.circleci/**</exclude>
-                        <exclude>**/LICENSE</exclude>
-                        <exclude>**/README</exclude>
-                        <exclude>**/pom.xml</exclude>
-                        <exclude>**/settings.xml</exclude>
-                        <exclude>src/test/resources/**</exclude>
-                        <exclude>src/main/resources/**</exclude>
-                        <exclude>src/main/config/**</exclude>
-                        <exclude>src/main/emf/**</exclude>
-                        <exclude>src/site/**</exclude>
-                        <exclude>src/etc/**</exclude>
-                        <exclude>*.css</exclude>
-                        <exclude>*.jpg</exclude>
-                        <exclude>*.png</exclude>
-                        <exclude>*.yml</exclude>
-                    </excludes>
-                    <headerDefinitions>
-                        <headerDefinition>src/main/config/headers.xml</headerDefinition>
-                    </headerDefinitions>
-                    <mapping>
-                        <java>JAVA_STYLE</java>
-                    </mapping>
-                </configuration>
-            </plugin>
+			<!-- ======================================================= -->
+			<!-- Maven License Plugin -->
+			<!-- ======================================================= -->
+			<plugin>
+				<groupId>com.mycila</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+				<configuration>
+					<header>src/main/config/header.txt</header>
+					<properties>
+						<owner>${project.organization.name}</owner>
+						<currentYear>${thisYear}</currentYear>
+					</properties>
+					<excludes>
+						<exclude>.editorconfig</exclude>
+						<exclude>.gitattributes</exclude>
+						<exclude>.circleci/**</exclude>
+						<exclude>**/LICENSE</exclude>
+						<exclude>**/README</exclude>
+						<exclude>**/pom.xml</exclude>
+						<exclude>**/settings.xml</exclude>
+						<exclude>src/test/resources/**</exclude>
+						<exclude>src/main/resources/**</exclude>
+						<exclude>src/main/config/**</exclude>
+						<exclude>src/main/emf/**</exclude>
+						<exclude>src/site/**</exclude>
+						<exclude>src/etc/**</exclude>
+						<exclude>*.css</exclude>
+						<exclude>*.jpg</exclude>
+						<exclude>*.png</exclude>
+						<exclude>*.yml</exclude>
+					</excludes>
+					<headerDefinitions>
+						<headerDefinition>src/main/config/headers.xml</headerDefinition>
+					</headerDefinitions>
+					<mapping>
+						<java>JAVA_STYLE</java>
+					</mapping>
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
@@ -490,6 +490,55 @@
 				</pluginRepository>
 			</pluginRepositories>
 		</profile>
+		
+		<profile>
+			<!-- profile that activates on eclipse, to specifically fix eclipse build and test issues -->
+			<id>m2e</id>
+			<activation>
+                <property>
+                    <name>m2e.version</name>
+                </property>
+            </activation>
+			<properties>
+				<junit.jupiter.version>5.4.1</junit.jupiter.version>
+				<junit.platform.version>1.4.1</junit.platform.version>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-compiler-plugin</artifactId>
+						<configuration>
+							<release>1.8</release>
+						</configuration>
+						<executions>
+							<execution>
+								<id>default-compile</id>
+								<configuration>
+									<jdkToolchain>
+										<version>8</version>
+									</jdkToolchain>
+									<release>8</release>
+								</configuration>
+							</execution>
+							<execution>
+								<id>base-compile</id>
+								<goals>
+									<goal>compile</goal>
+								</goals>
+								<configuration>
+									<source>8</source>
+									<target>8</target>
+									<excludes>
+										<exclude>tech/units/indriya/module-info.java</exclude>
+									</excludes>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		
 	</profiles>
-	<version>2.0-SNAPSHOT</version>
 </project>

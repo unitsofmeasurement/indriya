@@ -27,13 +27,13 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package tech.units.indriya.internal;
+
 /**
- * These tests cannot be run directly inside uom-lib-common because there are no concrete unit implementations. 
- * Therefore we test the Lambda features here in the RI.
- * 
- * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.0
+ * Internal constants collection
+ * @author werner
  * @since 2.0
  */
-package tech.units.indriya.internal.function;
-
+interface InternalConstants {
+	String DEFAULT_PROVIDER_NAME = "Default";
+}

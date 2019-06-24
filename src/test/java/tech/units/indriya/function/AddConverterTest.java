@@ -29,12 +29,15 @@
  */
 package tech.units.indriya.function;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static tech.units.indriya.NumberAssertions.assertNumberEquals;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import tech.units.indriya.function.AddConverter;
+import tech.units.indriya.NumberAssertions;
 
 public class AddConverterTest {
 
@@ -64,18 +67,18 @@ public class AddConverterTest {
 
   @Test
   public void offsetTest() {
-    assertEquals(10d, converter.getOffset());
+    assertNumberEquals(10, converter.getOffset(), 1E-12);
   }
 
   @Test
   public void valueTest() {
-    assertEquals(Double.valueOf(10), converter.getValue());
+    assertNumberEquals(10, converter.getValue(), 1E-12);
   }
 
   @Test
   public void toStringTest() {
-    assertEquals("Add(x -> x + 10.0)", converter.toString());
-    assertEquals("Add(x -> x - 10.0)", converter.inverse().toString());
+    assertEquals("Add(x -> x + 10)", converter.toString());
+    assertEquals("Add(x -> x - 10)", converter.inverse().toString());
   }
 
   @Test

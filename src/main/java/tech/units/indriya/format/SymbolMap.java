@@ -33,8 +33,8 @@ import javax.measure.Prefix;
 import javax.measure.Unit;
 import javax.measure.UnitConverter;
 
-import tech.units.indriya.AbstractConverter;
 import tech.units.indriya.AbstractUnit;
+import tech.units.indriya.function.AbstractConverter;
 import tech.units.indriya.function.MultiplyConverter;
 
 import java.lang.reflect.Field;
@@ -182,7 +182,7 @@ public final class SymbolMap {
   public void label(Prefix prefix, String symbol) {
     symbolToPrefix.put(symbol, prefix);
     prefixToSymbol.put(prefix, symbol);
-    converterToPrefix.put(MultiplyConverter.of(prefix), prefix);
+    converterToPrefix.put(MultiplyConverter.ofPrefix(prefix), prefix);
   }
 
   /**

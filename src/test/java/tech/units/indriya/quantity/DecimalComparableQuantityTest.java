@@ -33,6 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static tech.units.indriya.NumberAssertions.assertNumberEquals;
 
 import java.math.BigDecimal;
 
@@ -45,7 +46,7 @@ import javax.measure.quantity.Time;
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.ComparableQuantity;
-import tech.units.indriya.quantity.Quantities;
+import tech.units.indriya.function.RationalNumber;
 import tech.units.indriya.unit.Units;
 
 public class DecimalComparableQuantityTest {
@@ -173,14 +174,14 @@ public class DecimalComparableQuantityTest {
   public void inverseTestLength() {
     @SuppressWarnings("unchecked")
     ComparableQuantity<Length> metre = (ComparableQuantity<Length>) Quantities.getQuantity(BigDecimal.TEN, Units.METRE).inverse();
-    assertEquals(BigDecimal.valueOf(0.1d), metre.getValue());
+    assertNumberEquals(RationalNumber.of(1,  10), metre.getValue(), 1E-12);
     assertEquals("1/m", String.valueOf(metre.getUnit()));
   }
 
   @Test
   public void inverseTestTime() {
     ComparableQuantity<?> secInv = Quantities.getQuantity(BigDecimal.valueOf(2d), Units.SECOND).inverse();
-    assertEquals(BigDecimal.valueOf(0.5d), secInv.getValue());
+    assertNumberEquals(RationalNumber.of(1,  2), secInv.getValue(), 1E-12);
     assertEquals("1/s", String.valueOf(secInv.getUnit()));
   }
 
