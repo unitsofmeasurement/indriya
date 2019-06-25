@@ -74,7 +74,7 @@ public class MixedRadix<Q extends Quantity<Q>> {
 
 	@Override
 	public String toString() {
-		return "MixedRadix [mixedRadixUnits=" + mixedRadixUnits + "]";
+		return "MixedRadix [units=" + mixedRadixUnits + "]";
 	}
 
 	private final PrimaryUnitPickState pickState;
