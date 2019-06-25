@@ -56,7 +56,7 @@ import tech.units.indriya.quantity.Quantities;
  * 
  * @author Andi Huber
  * @author Werner Keil
- * @version 1.9, Jun 12, 2019
+ * @version 1.10, Jun 25, 2019
  * @since 2.0
  * @see <a href="https://en.wikipedia.org/wiki/Mixed_radix">Wikipedia: Mixed
  *      radix</a>
@@ -71,6 +71,11 @@ public class MixedRadix<Q extends Quantity<Q>> {
 // TODO could it be final or is there a use case for extending it?
 
 	// -- PRIVATE FIELDS
+
+	@Override
+	public String toString() {
+		return "MixedRadix [mixedRadixUnits=" + mixedRadixUnits + "]";
+	}
 
 	private final PrimaryUnitPickState pickState;
 	private final Unit<Q> primaryUnit;
