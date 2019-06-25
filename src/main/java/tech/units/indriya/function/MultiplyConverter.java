@@ -31,8 +31,6 @@ package tech.units.indriya.function;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.function.Supplier;
-
 import javax.measure.Prefix;
 import javax.measure.UnitConverter;
 
@@ -51,11 +49,11 @@ import tech.uom.lib.common.function.ValueSupplier;
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
  * @author Andi Huber
- * @version 2.3, Jun 23, 2019
+ * @version 2.4, Jun 25, 2019
  * @since 1.0
  */
-public interface MultiplyConverter extends UnitConverter, Converter<Number, Number>, ValueSupplier<Number>,
-		Supplier<Number>, FactorSupplier<Number>, Comparable<UnitConverter> {
+public interface MultiplyConverter extends UnitConverter, Converter<Number, Number>, 
+ ValueSupplier<Number>,	FactorSupplier<Number>, Comparable<UnitConverter> {
 
 	// -- FACTORIES
 
@@ -169,6 +167,9 @@ public interface MultiplyConverter extends UnitConverter, Converter<Number, Numb
 		if (prefix == null) {
 			return identity();
 		}
+		if (prefix.getExponent() == 1) {
+			return of(prefix.getValue());
+		}
 		return PowerOfIntConverter.of(prefix);
 	}
 
@@ -222,11 +223,6 @@ public interface MultiplyConverter extends UnitConverter, Converter<Number, Numb
 	@Override
 	default boolean isLinear() {
 		return true;
-	}
-
-	@Override
-	default Number get() {
-		return getValue();
 	}
 
 	/**

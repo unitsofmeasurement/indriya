@@ -43,7 +43,7 @@ import tech.uom.lib.common.function.IntExponentSupplier;
  * UnitConverter for numbers in base^exponent representation.
  * @author Andi Huber
  * @author Werner Keil
- * @version 1.4, Jun 21, 2019
+ * @version 1.5, Jun 25, 2019
  * @since 2.0
  */
 //TODO[220] make this like all the other MultiplyConverter package private
@@ -63,7 +63,7 @@ public final class PowerOfIntConverter extends AbstractConverter
 	 *            the prefix for the factor.
 	 */
 	static PowerOfIntConverter of(Prefix prefix) {
-		return new PowerOfIntConverter(prefix.getBase(), prefix.getExponent());
+		return of(prefix.getValue(), prefix.getExponent());
 	}
 
 	/**
@@ -75,6 +75,17 @@ public final class PowerOfIntConverter extends AbstractConverter
 	 */
 	static PowerOfIntConverter of(int base, int exponent) {
 		return new PowerOfIntConverter(base, exponent);
+	}
+	
+	/**
+	 * Creates a converter with a factor represented by specified base^exponent.
+	 * 
+	 * @param base
+	 * @param exponent
+	 * @return
+	 */
+	static PowerOfIntConverter of(Number base, int exponent) {
+		return new PowerOfIntConverter(base.intValue(), exponent);
 	}
 
 	protected PowerOfIntConverter(int base, int exponent) {
