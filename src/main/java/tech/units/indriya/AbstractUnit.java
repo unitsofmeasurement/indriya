@@ -183,9 +183,9 @@ public abstract class AbstractUnit<Q extends Quantity<Q>>
 	 * @param annotation the unit annotation.
 	 * @return the annotated unit.
 	 */
-//  public Unit<Q> annotate(String annotation) {
-//    return new AnnotatedUnit<>(this, annotation);
-//  }
+    public final Unit<Q> annotate(String annotation) {
+      return new AnnotatedUnit<>(this, annotation);
+    }
 
 	/**
 	 * Returns the abstract unit represented by the specified characters as per
@@ -366,10 +366,6 @@ public abstract class AbstractUnit<Q extends Quantity<Q>>
 	@Override
 	public Unit<Q> divide(double divisor) {
 		return divide(RationalNumber.of(divisor));
-	}
-
-	public final Unit<Q> annotate(String annotation) {
-		return new AnnotatedUnit<>(this, annotation);
 	}
 	
 	/**
