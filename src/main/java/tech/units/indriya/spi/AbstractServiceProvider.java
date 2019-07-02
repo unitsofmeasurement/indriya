@@ -169,8 +169,6 @@ public abstract class AbstractServiceProvider extends ServiceProvider implements
         if (!QUANTITY_FACTORIES.containsKey(quantity)) {
             synchronized (QUANTITY_FACTORIES) {
                 QUANTITY_FACTORIES.put(quantity, DefaultQuantityFactory.getInstance(quantity));
-                // QUANTITY_FACTORIES.put(quantity, ProxyQuantityFactory.getInstance(quantity)); FIXME this currently fails because some Quantity
-                // methods are not implemented by the proxy
             }
         }
         return QUANTITY_FACTORIES.get(quantity);
