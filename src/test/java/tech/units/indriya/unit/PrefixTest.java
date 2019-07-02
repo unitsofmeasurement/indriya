@@ -189,8 +189,8 @@ public class PrefixTest {
 	public void testEquivalence() {
 		final ComparableUnit a = (ComparableUnit) MICRO(GRAM);
 		final ComparableUnit b = (ComparableUnit) GRAM.divide(1_000_000);
-		assertEquals(true, a.isEquivalentOf(b));
-		assertEquals(true, b.isEquivalentOf(a));
+		assertEquals(true, a.isEquivalentTo(b));
+		assertEquals(true, b.isEquivalentTo(a));
 	}
 
 	@Test
@@ -208,8 +208,8 @@ public class PrefixTest {
 	public void testNestedEquivalence() {
 		ComparableUnit<Mass> a = (ComparableUnit<Mass>) MICRO(GRAM);
 		ComparableUnit<Mass> b = (ComparableUnit<Mass>) GRAM.divide(1000).divide(1000);
-		assertEquals(true, a.isEquivalentOf(b));
-		assertEquals(true, b.isEquivalentOf(a));
+		assertEquals(true, a.isEquivalentTo(b));
+		assertEquals(true, b.isEquivalentTo(a));
 	}
 
 	@Test

@@ -599,7 +599,7 @@ public abstract class AbstractUnit<Q extends Quantity<Q>>
 	}
 
 	@Override
-	public boolean isEquivalentOf(Unit<Q> that) {
+	public boolean isEquivalentTo(Unit<Q> that) {
 		return this.getConverterTo(that).isIdentity();
 	}
 

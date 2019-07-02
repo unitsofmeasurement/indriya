@@ -42,20 +42,19 @@ import javax.measure.UnitConverter;
  * @see {@link Unit}
  * @author werner
  * @param <Q>
- * @version 1.2
+ * @version 1.3
  * @since 1.0.9
  */
 public interface ComparableUnit<Q extends Quantity<Q>> extends Unit<Q>, Comparable<Unit<Q>>, Serializable {
 
 	/**
-	 * Compares two instances of {@link Unit
-	 * <Q>}, doing the conversion of unit if necessary.
+	 * Compares two instances of {@code Unit<Q>}, doing the conversion of unit if necessary.
 	 *
 	 * @param that the {@code Unit<Q>} to be compared with this instance.
 	 * @return {@code true} if {@code that < this}.
 	 * @throws NullPointerException if the unit is null
 	 */
-	boolean isEquivalentOf(Unit<Q> that);
+	boolean isEquivalentTo(Unit<Q> that);
 
 	/**
 	 * Indicates if this unit belongs to the set of coherent SI units (unscaled SI

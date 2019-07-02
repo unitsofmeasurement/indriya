@@ -148,7 +148,7 @@ public interface ComparableQuantity<Q extends Quantity<Q>> extends Quantity<Q>, 
   boolean isLessThanOrEqualTo(Quantity<Q> that);
 
   /**
-   * Compares two instances of {@link Quantity <Q>}, doing the conversion of unit if necessary.
+   * Compares two instances of {@code Quantity <Q>}, doing the conversion of unit if necessary.
    *
    * @param that
    *          the {@code quantity<Q>} to be compared with this instance.
