@@ -52,7 +52,6 @@ import tech.units.indriya.format.SimpleQuantityFormat;
  * @since 2.0
  */
 public class DefaultFormatService extends DefaultUnitFormatService implements FormatService {
-  static final int PRIO = 1000;
 
   private static final String DEFAULT_FORMAT_NAME = "Simple";
 
@@ -74,10 +73,6 @@ public class DefaultFormatService extends DefaultUnitFormatService implements Fo
     quantityFormats.put("Local", NumberDelimiterQuantityFormat.getInstance(LOCALE_SENSITIVE));
   }
 
-  @Override
-  public int getPriority() {
-    return PRIO;
-  }
 
   @Override
   public QuantityFormat getQuantityFormat(String name) {

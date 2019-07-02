@@ -37,7 +37,7 @@ import tech.units.indriya.unit.Units;
 /**
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
  * @author Martin Desruisseaux
- * @version 1.1, May 31, 2018
+ * @version 1.2, July 2, 2019
  * @since 1.0
  */
 public class DefaultSystemOfUnitsService extends AbstractSystemOfUnitsService {
