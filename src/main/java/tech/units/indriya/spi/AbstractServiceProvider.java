@@ -27,7 +27,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package tech.units.indriya.internal;
+package tech.units.indriya.spi;
 
 import javax.measure.Quantity;
 import javax.measure.spi.FormatService;
@@ -35,6 +35,8 @@ import javax.measure.spi.QuantityFactory;
 import javax.measure.spi.ServiceProvider;
 import javax.measure.spi.SystemOfUnitsService;
 import javax.measure.spi.UnitFormatService;
+
+import tech.units.indriya.internal.DefaultQuantityFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;

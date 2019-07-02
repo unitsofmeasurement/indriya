@@ -33,6 +33,8 @@ import static tech.units.indriya.internal.InternalConstants.DEFAULT_PROVIDER_NAM
 
 import javax.inject.Named;
 
+import tech.units.indriya.spi.AbstractServiceProvider;
+
 /**
  * This class extends the {@link javax.measure.spi.ServiceProvider} class and hereby uses the JDK {@link java.util.ServiceLoader} to load the required
  * services.
