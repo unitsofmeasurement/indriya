@@ -43,7 +43,7 @@ import tech.uom.lib.common.function.QuantityConverter;
  * @author otaviojava
  * @author werner
  * @param <Q>
- * @version 1.0.2, December 29, 2017
+ * @version 1.1, July 2, 2019
  * @since 1.0
  */
 public interface ComparableQuantity<Q extends Quantity<Q>> extends Quantity<Q>, Comparable<Quantity<Q>>, QuantityConverter<Q>, Serializable {
@@ -155,6 +155,9 @@ public interface ComparableQuantity<Q extends Quantity<Q>> extends Quantity<Q>, 
    * @return {@code true} if {@code that < this}.
    * @throws NullPointerException
    *           if the quantity is null
+   *           
+   * @see <a href= "https://dictionary.cambridge.org/dictionary/english/equivalent">Cambridge Dictionary: equivalent</a>
+   * @see <a href= "https://www.lexico.com/en/definition/equivalent">LEXICO: equivalent</a>       
    */
   boolean isEquivalentTo(Quantity<Q> that);
 

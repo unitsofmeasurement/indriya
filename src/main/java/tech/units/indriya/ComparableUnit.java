@@ -42,7 +42,7 @@ import javax.measure.UnitConverter;
  * @see {@link Unit}
  * @author werner
  * @param <Q>
- * @version 1.3
+ * @version 1.4, July 2, 2019
  * @since 1.0.9
  */
 public interface ComparableUnit<Q extends Quantity<Q>> extends Unit<Q>, Comparable<Unit<Q>>, Serializable {
@@ -53,6 +53,9 @@ public interface ComparableUnit<Q extends Quantity<Q>> extends Unit<Q>, Comparab
 	 * @param that the {@code Unit<Q>} to be compared with this instance.
 	 * @return {@code true} if {@code that < this}.
 	 * @throws NullPointerException if the unit is null
+	 * 
+	 * @see <a href= "https://dictionary.cambridge.org/dictionary/english/equivalent">Cambridge Dictionary: equivalent</a>
+	 * @see <a href= "https://www.lexico.com/en/definition/equivalent">LEXICO: equivalent</a>
 	 */
 	boolean isEquivalentTo(Unit<Q> that);
 
@@ -89,20 +92,4 @@ public interface ComparableUnit<Q extends Quantity<Q>> extends Unit<Q>, Comparab
 	 * @see #toSystemUnit
 	 */
 	UnitConverter getSystemConverter();
-
-	/**
-	 * Annotates the specified unit. Annotation does not change the unit semantic.
-	 * Annotations are often written between curly braces behind units. For
-	 * example:<br>
-	 * <code> Unit<Volume> PERCENT_VOL = ((AbstractUnit)Units.PERCENT).annotate("vol"); // "%{vol}" Unit<Mass> KG_TOTAL =
-	 * ((AbstractUnit)Units.KILOGRAM).annotate("total"); // "kg{total}" Unit<Dimensionless> RED_BLOOD_CELLS = ((AbstractUnit)Units.ONE).annotate("RBC"); // "{RBC}" </code>
-	 *
-	 * Note: Annotation of system units are not considered themselves as system
-	 * units.
-	 *
-	 * @param annotation the unit annotation.
-	 * @return the annotated unit.
-	 * @since 2.0
-	 */
-//  public Unit<Q> annotate(String annotation);
 }
