@@ -56,7 +56,7 @@ import tech.units.indriya.unit.Units;
  * 
  * @author Andi Huber
  */
-class WolframTuturialTemperatureTest {
+class WolframTutorialTemperatureTest {
 
 	public static final Unit<Temperature> DegreesFahrenheit = new TransformedUnit<>(Units.KELVIN,
 			MultiplyConverter.ofRational(5, 9).concatenate(new AddConverter(459.67)));
