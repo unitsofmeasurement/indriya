@@ -52,12 +52,12 @@ import tech.units.indriya.function.Calculus;
 import tech.units.indriya.function.MultiplyConverter;
 import tech.units.indriya.function.RationalNumber;
 import tech.units.indriya.internal.function.calc.Calculator;
-import tech.units.indriya.quantity.QuantityDimension;
 import tech.units.indriya.spi.DimensionalModel;
 import tech.units.indriya.unit.AlternateUnit;
 import tech.units.indriya.unit.AnnotatedUnit;
 import tech.units.indriya.unit.ProductUnit;
 import tech.units.indriya.unit.TransformedUnit;
+import tech.units.indriya.unit.UnitDimension;
 import tech.units.indriya.unit.Units;
 import tech.uom.lib.common.function.Nameable;
 import tech.uom.lib.common.function.PrefixOperator;
@@ -83,7 +83,7 @@ import tech.uom.lib.common.function.SymbolSupplier;
  *      International System of Units</a>
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 2.1, June 19, 2019
+ * @version 2.2, July 5, 2019
  * @since 1.0
  */
 public abstract class AbstractUnit<Q extends Quantity<Q>>
@@ -272,7 +272,7 @@ public abstract class AbstractUnit<Q extends Quantity<Q>>
 	@SuppressWarnings("unchecked")
 	@Override
 	public final <T extends Quantity<T>> ComparableUnit<T> asType(Class<T> type) {
-		Dimension typeDimension = QuantityDimension.of(type);
+		Dimension typeDimension = UnitDimension.of(type);
 		if (typeDimension != null && !typeDimension.equals(this.getDimension()))
 			throw new ClassCastException("The unit: " + this + " is not compatible with quantities of type " + type);
 		return (ComparableUnit<T>) this;

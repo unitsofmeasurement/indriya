@@ -34,7 +34,7 @@ import java.util.Map;
 import javax.measure.Dimension;
 
 import tech.units.indriya.function.AbstractConverter;
-import tech.units.indriya.quantity.QuantityDimension;
+import tech.units.indriya.unit.UnitDimension;
 
 /**
  * <p>
@@ -44,7 +44,7 @@ import tech.units.indriya.quantity.QuantityDimension;
  * <p>
  * In principle, dimensions of physical quantities could be defined as "fundamental" (such as momentum or energy or electric current) making such
  * quantities uncommensurate (not comparable). Modern physics has cast doubt on the very existence of incompatible fundamental dimensions of physical
- * quantities. For example, most physicists do not recognize temperature, {@link QuantityDimension#TEMPERATURE Θ}, as a fundamental dimension since it
+ * quantities. For example, most physicists do not recognize temperature, {@link UnitDimension#TEMPERATURE Θ}, as a fundamental dimension since it
  * essentially expresses the energy per particle per degree of freedom, which can be expressed in terms of energy (or mass, length, and time). To
  * support, such model the method {@link #getConverter} may returns a non-null value for distinct dimensions.
  * </p>
@@ -74,7 +74,7 @@ import tech.units.indriya.quantity.QuantityDimension;
  * @see <a href="http://en.wikipedia.org/wiki/Dimensional_analysis">Wikipedia: Dimensional Analysis</a>
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.0, $Date: 2019-06-07 $
+ * @version 1.1, $Date: 2019-07-05 $
  * @since 1.0
  */
 public abstract class DimensionalModel {
@@ -124,7 +124,7 @@ public abstract class DimensionalModel {
     if (dimensions == null)
       return dimension; // Fundamental dimension.
     // Dimensional Product.
-    Dimension fundamentalProduct = QuantityDimension.NONE;
+    Dimension fundamentalProduct = UnitDimension.NONE;
     for (Map.Entry<? extends Dimension, Integer> e : dimensions.entrySet()) {
       fundamentalProduct = fundamentalProduct.multiply(this.getFundamentalDimension(e.getKey())).pow(e.getValue());
     }

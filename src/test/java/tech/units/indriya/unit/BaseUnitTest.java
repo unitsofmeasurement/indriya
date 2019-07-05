@@ -36,7 +36,7 @@ import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.function.AbstractConverter;
-import tech.units.indriya.quantity.QuantityDimension;
+import tech.units.indriya.unit.UnitDimension;
 import tech.units.indriya.unit.BaseUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -52,8 +52,8 @@ public class BaseUnitTest {
   private static final String OTHER_SYMBOL = "o";
   private static final String A_NAME = "name";
   private static final String OTHER_NAME = "other name";
-  private static final Dimension A_DIMENSION = QuantityDimension.LENGTH;
-  private static final Dimension OTHER_DIMENSION = QuantityDimension.MASS;
+  private static final Dimension A_DIMENSION = UnitDimension.LENGTH;
+  private static final Dimension OTHER_DIMENSION = UnitDimension.MASS;
 
   /**
    * Verifies that a base unit created using a symbol only has the symbol wired correctly.
@@ -79,7 +79,7 @@ public class BaseUnitTest {
   @Test
   public void baseUnitWithSymbolOnlyHasNoDimension() {
     AbstractUnit<?> unit = new BaseUnit<>(A_SYMBOL);
-    assertEquals(QuantityDimension.NONE, unit.getDimension());
+    assertEquals(UnitDimension.NONE, unit.getDimension());
   }
 
   /**
@@ -106,7 +106,7 @@ public class BaseUnitTest {
   @Test
   public void baseUnitWithSymbolAndNameHasNoDimension() {
     AbstractUnit<?> unit = new BaseUnit<>(A_SYMBOL, A_NAME);
-    assertEquals(QuantityDimension.NONE, unit.getDimension());
+    assertEquals(UnitDimension.NONE, unit.getDimension());
   }
 
   /**

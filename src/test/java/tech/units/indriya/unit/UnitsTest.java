@@ -33,10 +33,7 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import javax.measure.Dimension;
-import javax.measure.Quantity;
 import javax.measure.Unit;
-import javax.measure.quantity.Mass;
-import javax.measure.quantity.Power;
 import javax.measure.quantity.Time;
 import javax.measure.spi.SystemOfUnits;
 
@@ -44,11 +41,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import tech.units.indriya.AbstractUnit;
-import tech.units.indriya.ComparableQuantity;
-import tech.units.indriya.quantity.Quantities;
-import tech.units.indriya.quantity.QuantityDimension;
-import tech.units.indriya.unit.TransformedUnit;
+import tech.units.indriya.unit.UnitDimension;
 import tech.units.indriya.unit.Units;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -56,7 +49,6 @@ import static tech.units.indriya.unit.Units.METRE;
 import static tech.units.indriya.unit.Units.GRAM;
 import static tech.units.indriya.unit.Units.KILOGRAM;
 import static tech.units.indriya.unit.Units.WATT;
-import static javax.measure.MetricPrefix.*;
 
 /**
  *
@@ -124,42 +116,42 @@ public class UnitsTest {
     
 	@Test
 	public void testGetByDimensionAoS() {
-		testGetByDimension(QuantityDimension.AMOUNT_OF_SUBSTANCE, 1);
+		testGetByDimension(UnitDimension.AMOUNT_OF_SUBSTANCE, 1);
 	}
 	
 	@Test
 	public void testGetByDimensionElCurrent() {
-		testGetByDimension(QuantityDimension.ELECTRIC_CURRENT, 1);
+		testGetByDimension(UnitDimension.ELECTRIC_CURRENT, 1);
 	}
 
 	@Test
 	public void testGetByDimensionLen() {
-		testGetByDimension(QuantityDimension.LENGTH, 1);
+		testGetByDimension(UnitDimension.LENGTH, 1);
 	}
 	
 	@Test
 	public void testGetByDimensionLumInt() {
-		testGetByDimension(QuantityDimension.LUMINOUS_INTENSITY, 2);
+		testGetByDimension(UnitDimension.LUMINOUS_INTENSITY, 2);
 	}
 
 	@Test
 	public void testGetByDimensionMass() {
-		testGetByDimension(QuantityDimension.MASS, 2);
+		testGetByDimension(UnitDimension.MASS, 2);
 	}
 	
 	@Test
 	public void testGetByDimensionNone() {
-		testGetByDimension(QuantityDimension.NONE, 4);
+		testGetByDimension(UnitDimension.NONE, 4);
 	}
 
 	@Test
 	public void testGetByDimensionTemperature() {
-		testGetByDimension(QuantityDimension.TEMPERATURE, 2);
+		testGetByDimension(UnitDimension.TEMPERATURE, 2);
 	}
 	
 	@Test
 	public void testGetByDimensionTime() {
-		testGetByDimension(QuantityDimension.TIME, 6);
+		testGetByDimension(UnitDimension.TIME, 6);
 	}
 	
 	private void testGetByDimension(final Dimension dim, int expectedSize) {

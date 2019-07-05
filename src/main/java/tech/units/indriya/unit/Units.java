@@ -73,14 +73,14 @@ import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.function.AddConverter;
 import tech.units.indriya.function.MultiplyConverter;
 import tech.units.indriya.function.RationalNumber;
-import tech.units.indriya.quantity.QuantityDimension;
+import tech.units.indriya.unit.UnitDimension;
 
 /**
  * <p>
  * This class defines commonly used units.
  *
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.3.1, November 20, 2018
+ * @version 1.4, July 05, 2019
  * @since 1.0
  */
 public class Units extends AbstractSystemOfUnits {
@@ -112,7 +112,7 @@ public class Units extends AbstractSystemOfUnits {
 	 *
 	 * @implNote SI Base Unit
 	 */
-	public static final Unit<ElectricCurrent> AMPERE = addUnit(new BaseUnit<ElectricCurrent>("A", QuantityDimension.ELECTRIC_CURRENT),
+	public static final Unit<ElectricCurrent> AMPERE = addUnit(new BaseUnit<ElectricCurrent>("A", UnitDimension.ELECTRIC_CURRENT),
 		ElectricCurrent.class);
 
 	/**
@@ -132,7 +132,7 @@ public class Units extends AbstractSystemOfUnits {
 	 *
 	 * @implNote SI Base Unit
 	 */
-	public static final Unit<LuminousIntensity> CANDELA = addUnit(new BaseUnit<LuminousIntensity>("cd", QuantityDimension.LUMINOUS_INTENSITY),
+	public static final Unit<LuminousIntensity> CANDELA = addUnit(new BaseUnit<LuminousIntensity>("cd", UnitDimension.LUMINOUS_INTENSITY),
 		LuminousIntensity.class);
 
 	/**
@@ -150,7 +150,7 @@ public class Units extends AbstractSystemOfUnits {
 	 * @see #JOULE
 	 * @implNote SI Base Unit
 	 */
-	public static final Unit<Temperature> KELVIN = addUnit(new BaseUnit<Temperature>("K", QuantityDimension.TEMPERATURE), Temperature.class);
+	public static final Unit<Temperature> KELVIN = addUnit(new BaseUnit<Temperature>("K", UnitDimension.TEMPERATURE), Temperature.class);
 
 	/**
 	 * The kilogram, symbol kg, is the SI unit of mass. It is defined by taking the fixed
@@ -171,7 +171,7 @@ public class Units extends AbstractSystemOfUnits {
 	 *
 	 * @implNote SI Base Unit
 	 */
-	public static final Unit<Mass> KILOGRAM = addUnit(new BaseUnit<Mass>("kg", QuantityDimension.MASS), Mass.class);
+	public static final Unit<Mass> KILOGRAM = addUnit(new BaseUnit<Mass>("kg", UnitDimension.MASS), Mass.class);
 
 	/**
 	 * The metre, symbol m, is the SI unit of length. It is defined by taking the fixed
@@ -186,7 +186,7 @@ public class Units extends AbstractSystemOfUnits {
 	 *
 	 * @implNote SI Base Unit
 	 */
-	public static final Unit<Length> METRE = addUnit(new BaseUnit<>("m", QuantityDimension.LENGTH), Length.class);
+	public static final Unit<Length> METRE = addUnit(new BaseUnit<>("m", UnitDimension.LENGTH), Length.class);
 
 	/**
 	 * The mole, symbol mol, is the SI unit of amount of substance. One mole contains
@@ -205,7 +205,7 @@ public class Units extends AbstractSystemOfUnits {
 	 *
 	 * @implNote SI Base Unit
 	 */
-	public static final Unit<AmountOfSubstance> MOLE = addUnit(new BaseUnit<>("mol", QuantityDimension.AMOUNT_OF_SUBSTANCE), AmountOfSubstance.class);
+	public static final Unit<AmountOfSubstance> MOLE = addUnit(new BaseUnit<>("mol", UnitDimension.AMOUNT_OF_SUBSTANCE), AmountOfSubstance.class);
 
 	/**
 	 * The second, symbol s, is the SI unit of time. It is defined by taking the fixed
@@ -219,7 +219,7 @@ public class Units extends AbstractSystemOfUnits {
 	 * 1 Hz = ∆νCs / 9 192 631 770  or  1 s = 9 192 631 770 / ∆νCs
 	 * @implNote SI Base Unit
 	 */
-	public static final Unit<Time> SECOND = addUnit(new BaseUnit<>("s", QuantityDimension.TIME), Time.class);
+	public static final Unit<Time> SECOND = addUnit(new BaseUnit<>("s", UnitDimension.TIME), Time.class);
 
 	// //////////////////////////////
 	// SI DERIVED ALTERNATE UNITS //

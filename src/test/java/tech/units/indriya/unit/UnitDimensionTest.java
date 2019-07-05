@@ -27,7 +27,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package tech.units.indriya.quantity;
+package tech.units.indriya.unit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -38,18 +38,27 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.Map;
 
 import javax.measure.Dimension;
+import javax.measure.IncommensurableException;
+import javax.measure.Quantity;
+import javax.measure.UnconvertibleException;
+import javax.measure.Unit;
 import javax.measure.quantity.Length;
+import javax.measure.quantity.Volume;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-public class QuantityDimensionTest {
+/**
+ * UnitDimension tests.
+ */
+public class UnitDimensionTest {
 
   /**
    * Verifies that the factory method returns null for null.
    */
   @Test
   public void ofReturnsNullForNull() {
-    assertNull(QuantityDimension.of(null));
+    assertNull(UnitDimension.of(null));
   }
 
   /**
@@ -57,7 +66,7 @@ public class QuantityDimensionTest {
    */
   @Test
   public void ofReturnsLengthDimensionForLengthQuantityClass() {
-    assertEquals(QuantityDimension.LENGTH, QuantityDimension.of(Length.class));
+    assertEquals(UnitDimension.LENGTH, UnitDimension.of(Length.class));
   }
 
   /**
@@ -65,7 +74,7 @@ public class QuantityDimensionTest {
    */
   @Test
   public void parseReturnsLengthForL() {
-    assertEquals(QuantityDimension.LENGTH, QuantityDimension.parse('L'));
+    assertEquals(UnitDimension.LENGTH, UnitDimension.parse('L'));
   }
 
   /**
@@ -73,7 +82,7 @@ public class QuantityDimensionTest {
    */
   @Test
   public void multiplicationIsDoneCorrectly() {
-    Dimension result = QuantityDimension.LENGTH.multiply(QuantityDimension.MASS);
+    Dimension result = UnitDimension.LENGTH.multiply(UnitDimension.MASS);
     assertEquals("[L]·[M]", result.toString());
   }
 
@@ -82,17 +91,17 @@ public class QuantityDimensionTest {
    */
   @Test
   public void divisionIsDoneCorrectly() {
-    Dimension result = QuantityDimension.LENGTH.divide(QuantityDimension.MASS);
+    Dimension result = UnitDimension.LENGTH.divide(UnitDimension.MASS);
     assertEquals("[L]/[M]", result.toString());
   }
 
   /**
-   * Verifies that the division is done correctly by the division overloaded method that takes a QuantityDimension. Relies on the toString method to
+   * Verifies that the division is done correctly by the division overloaded method that takes a UnitDimension. Relies on the toString method to
    * verify the result.
    */
   @Test
-  public void divisionIsDoneCorrectlyInOverloadedQuantityDimensionMethod() {
-    Dimension result = ((QuantityDimension) QuantityDimension.LENGTH).divide((QuantityDimension) QuantityDimension.MASS);
+  public void divisionIsDoneCorrectlyInOverloadedUnitDimensionMethod() {
+    Dimension result = ((UnitDimension) UnitDimension.LENGTH).divide((UnitDimension) UnitDimension.MASS);
     assertEquals("[L]/[M]", result.toString());
   }
 
@@ -102,8 +111,8 @@ public class QuantityDimensionTest {
    */
   @Test
   public void divisionIsDoneCorrectlyOnPoweredBaseUnits() {
-    Dimension m2 = QuantityDimension.MASS.pow(2);
-    Dimension result = QuantityDimension.LENGTH.divide(m2);
+    Dimension m2 = UnitDimension.MASS.pow(2);
+    Dimension result = UnitDimension.LENGTH.divide(m2);
     assertEquals("[L]/[M]²", result.toString());
   }
 
@@ -113,8 +122,8 @@ public class QuantityDimensionTest {
    */
   @Test
   public void divisionIsDoneCorrectlyOnPoweredProductUnits() {
-    Dimension ml = QuantityDimension.MASS.multiply(QuantityDimension.LENGTH);
-    Dimension result = QuantityDimension.LENGTH.divide(ml);
+    Dimension ml = UnitDimension.MASS.multiply(UnitDimension.LENGTH);
+    Dimension result = UnitDimension.LENGTH.divide(ml);
     assertEquals("1/[M]", result.toString());
   }
 
@@ -123,8 +132,8 @@ public class QuantityDimensionTest {
    */
   @Test
   public void powerIsDoneCorrectly() {
-    Dimension actual = QuantityDimension.LENGTH.pow(2);
-    Dimension expected = QuantityDimension.LENGTH.multiply(QuantityDimension.LENGTH);
+    Dimension actual = UnitDimension.LENGTH.pow(2);
+    Dimension expected = UnitDimension.LENGTH.multiply(UnitDimension.LENGTH);
     assertEquals(expected, actual);
   }
 
@@ -133,8 +142,8 @@ public class QuantityDimensionTest {
    */
   @Test
   public void rootIsDoneCorrectly() {
-    Dimension result = QuantityDimension.LENGTH.pow(2).root(2);
-    assertEquals(QuantityDimension.LENGTH, result);
+    Dimension result = UnitDimension.LENGTH.pow(2).root(2);
+    assertEquals(UnitDimension.LENGTH, result);
   }
 
   /**
@@ -142,7 +151,7 @@ public class QuantityDimensionTest {
    */
   @Test
   public void getBaseDimensionsIsNullForBaseDimension() {
-    assertNull(QuantityDimension.LENGTH.getBaseDimensions());
+    assertNull(UnitDimension.LENGTH.getBaseDimensions());
   }
 
   /**
@@ -150,19 +159,19 @@ public class QuantityDimensionTest {
    */
   @Test
   public void getBaseDimensionsReturnsCorrectMap() {
-    Dimension dimension = QuantityDimension.LENGTH.pow(2).multiply(QuantityDimension.MASS);
+    Dimension dimension = UnitDimension.LENGTH.pow(2).multiply(UnitDimension.MASS);
     Map<? extends Dimension, Integer> baseDimensions = dimension.getBaseDimensions();
     assertEquals(2, baseDimensions.size());
-    assertEquals(1, baseDimensions.get(QuantityDimension.MASS).intValue());
-    assertEquals(2, baseDimensions.get(QuantityDimension.LENGTH).intValue());
+    assertEquals(1, baseDimensions.get(UnitDimension.MASS).intValue());
+    assertEquals(2, baseDimensions.get(UnitDimension.LENGTH).intValue());
   }
 
   /**
    * Verifies that a quantity dimension isn't equal to null.
    */
   @Test
-  public void quantityDimensionIsNotEqualToNull() {
-    assertNotNull(QuantityDimension.LENGTH);
+  public void UnitDimensionIsNotEqualToNull() {
+    assertNotNull(UnitDimension.LENGTH);
   }
 
   /**
@@ -170,23 +179,23 @@ public class QuantityDimensionTest {
    */
   @Test
   public void integerQuantityIsEqualToItself() {
-    assertTrue(QuantityDimension.LENGTH.equals(QuantityDimension.LENGTH));
+    assertTrue(UnitDimension.LENGTH.equals(UnitDimension.LENGTH));
   }
 
   /**
    * Verifies that a quantity dimension is not equal to another quantity dimension.
    */
   @Test
-  public void quantityDimensionIsNotEqualToAnotherQuantityDimension() {
-    assertFalse(QuantityDimension.LENGTH.equals(QuantityDimension.MASS));
+  public void UnitDimensionIsNotEqualToAnotherUnitDimension() {
+    assertFalse(UnitDimension.LENGTH.equals(UnitDimension.MASS));
   }
 
   /**
    * Verifies that a quantity dimension is not equal to an object of a different class.
    */
   @Test
-  public void quantityDimensionIsNotEqualToObjectOfDifferentClass() {
-    assertFalse(QuantityDimension.LENGTH.equals("A String"));
+  public void UnitDimensionIsNotEqualToObjectOfDifferentClass() {
+    assertFalse(UnitDimension.LENGTH.equals("A String"));
   }
 
   /**
@@ -194,7 +203,58 @@ public class QuantityDimensionTest {
    * method, and that hash collisions may occur, but in general, objects that aren't equal shouldn't have an equal hash code.
    */
   @Test
-  public void hashCodesAreDifferentForMassAndLengthQuantityDimension() {
-    assertFalse(QuantityDimension.LENGTH.hashCode() == QuantityDimension.MASS.hashCode());
+  public void hashCodesAreDifferentForMassAndLengthUnitDimension() {
+    assertFalse(UnitDimension.LENGTH.hashCode() == UnitDimension.MASS.hashCode());
   }
+  
+  private static class USCustomary {
+	    public static final Unit<Length> MILE = Units.METRE.multiply(1609.344).asType(Length.class);
+	    public static final Unit<Volume> GALLON_LIQUID = Units.LITRE.multiply(3.785411784).asType(Volume.class);
+	  }
+
+	  interface FuelConsumption extends Quantity<FuelConsumption> {
+	    static final Unit<FuelConsumption> LITRE_PER_100KM  = 
+	        Units.LITRE.divide(Units.METRE).divide(100_000).asType(FuelConsumption.class);
+	  }
+
+	  interface FuelEconomy extends Quantity<FuelEconomy> {
+	    static final Unit<FuelEconomy> MILES_PER_GALLON = 
+	        USCustomary.MILE.divide(USCustomary.GALLON_LIQUID).asType(FuelEconomy.class);
+	  }
+	  
+	  @Test
+	  @DisplayName("dimensions should be equal when same (shared) BaseUnit")
+	  public void dimensionsShouldBeEqual() {
+	    
+	    // multiplication of these two results in a dimensionless entity  
+	    Dimension consumptionDim = FuelConsumption.LITRE_PER_100KM.getDimension();
+	    Dimension economyDim = FuelEconomy.MILES_PER_GALLON.getDimension();
+	    
+	    assertTrue(consumptionDim.equals(economyDim.pow(-1)));
+	    assertTrue(economyDim.equals(consumptionDim.pow(-1)));
+	    
+	    assertTrue(economyDim.equals(consumptionDim.pow(-1)));
+	    assertTrue(consumptionDim.equals(economyDim.pow(-1)));
+	    
+	  }
+
+	  @Test
+	  @DisplayName("units should be compatible when 'same' dimensions")
+	  public void unitsShouldBeCompatible() 
+	      throws UnconvertibleException, IncommensurableException {
+	    
+	    // given: a and b, having compatible dimensions
+	    
+	    Unit<FuelConsumption> a = FuelConsumption.LITRE_PER_100KM;
+	    Unit<?> b = FuelEconomy.MILES_PER_GALLON.pow(-1);
+	    
+	    // when: even though a and b are different
+	    
+	    assertFalse(a.getConverterToAny(b).isIdentity());
+	    
+	    // then: a and b should be compatible
+	    
+	    assertTrue(a.isCompatible(b));
+	    
+	  }
 }

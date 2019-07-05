@@ -36,7 +36,7 @@ import javax.measure.UnitConverter;
 
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.function.AbstractConverter;
-import tech.units.indriya.quantity.QuantityDimension;
+import tech.units.indriya.unit.UnitDimension;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -60,7 +60,7 @@ import java.util.Objects;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.8, May 05, 2019
+ * @version 1.9, July 05, 2019
  * @since 1.0
  */
 public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
@@ -349,7 +349,7 @@ public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
 
     @Override
     public Dimension getDimension() {
-        Dimension dimension = QuantityDimension.NONE;
+        Dimension dimension = UnitDimension.NONE;
         for (int i = 0; i < this.getUnitCount(); i++) {
             Unit<?> unit = this.getUnit(i);
             if (this.elements != null && unit.getDimension() != null) {
