@@ -31,8 +31,6 @@ package tech.units.indriya.function;
 
 import java.math.BigInteger;
 import java.util.Objects;
-import java.util.function.DoubleSupplier;
-
 import javax.measure.UnitConverter;
 
 import tech.units.indriya.internal.function.calc.Calculator;
@@ -46,11 +44,11 @@ import tech.units.indriya.internal.function.calc.Calculator;
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
  * @author Andi Huber
- * @version 1.3, Jun 23, 2019
+ * @version 1.7, Jul 6, 2019
  * @since 1.0
  */
 public final class RationalConverter extends AbstractConverter 
-implements MultiplyConverter, DoubleSupplier {
+implements MultiplyConverter {
 
 	/**
      * 
@@ -229,12 +227,6 @@ implements MultiplyConverter, DoubleSupplier {
 	@Override
 	public Number getValue() {
 		return factor;
-	}
-
-	@Override
-	@Deprecated //Seems unused
-	public double getAsDouble() {
-		return factor.doubleValue();
 	}
 
 	@Override
