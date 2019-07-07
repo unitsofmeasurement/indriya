@@ -29,9 +29,15 @@
  */
 package tech.units.indriya.quantity;
 
+import static javax.measure.Quantity.Scale.ABSOLUTE;
+import static javax.measure.Quantity.Scale.RELATIVE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static tech.units.indriya.NumberAssertions.assertNumberEquals;
+
 import javax.measure.Quantity;
 import javax.measure.quantity.Length;
+import javax.measure.quantity.Time;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -51,5 +57,13 @@ class AbsoluteVsRelativeTest {
 		final Quantity<Length> combinedSeaLevel = utrechtSeaLevel.add(munichSeaLevel);
 		assertEquals(Quantity.Scale.RELATIVE, combinedSeaLevel.getScale());
 	}
-
+	
+	@Test
+	void addingHoursToDays(){
+		Quantity<Time> relTime = Quantities.getQuantity(1d,Units.HOUR,RELATIVE);
+		Quantity<Time> absTime = Quantities.getQuantity(1d,Units.DAY,ABSOLUTE);
+		Quantity<Time> addedTime = relTime.add(absTime);
+		Quantity<Time> expectedTime = Quantities.getQuantity(25d,Units.HOUR,ABSOLUTE);
+		assertNumberEquals(expectedTime.getValue(), addedTime.getValue(), 1E-12);
+	}
 }

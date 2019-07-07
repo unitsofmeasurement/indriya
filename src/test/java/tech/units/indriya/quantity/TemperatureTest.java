@@ -31,11 +31,8 @@ package tech.units.indriya.quantity;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import tech.units.indriya.unit.Units;
-
 import javax.measure.Quantity;
 import javax.measure.quantity.Temperature;
-import javax.measure.quantity.Time;
 import java.math.BigDecimal;
 
 import static javax.measure.Quantity.Scale.ABSOLUTE;
@@ -113,21 +110,19 @@ class TemperatureTest {
 		Quantity<Temperature> relT2 = Quantities.getQuantity(0d, CELSIUS, RELATIVE);
 		assertEquals(0, relT.add(relT2).getValue());
 	}
-
-	@Test @Disabled("Currently not working")
-	void productOfAbsoluteTemperatures() {
+	
+	@Test @Disabled("Currently not working, see https://github.com/unitsofmeasurement/indriya/issues/247")
+	void productOfRelativeTemperatures() {
 		Quantity<Temperature> relT = Quantities.getQuantity(0d, CELSIUS, RELATIVE);
 		Quantity<Temperature> relT2 = Quantities.getQuantity(0d, CELSIUS, RELATIVE);
 		assertEquals(74610.9225d, relT.multiply(relT2).getValue());
 	}
 
-	@Test
-	void addingHoursToDays(){
-		Quantity<Time> relTime = Quantities.getQuantity(1d,Units.HOUR,RELATIVE);
-		Quantity<Time> absTime = Quantities.getQuantity(1d,Units.DAY,ABSOLUTE);
-		Quantity<Time> addedTime = relTime.add(absTime);
-		Quantity<Time> expectedTime = Quantities.getQuantity(25d,Units.HOUR,ABSOLUTE);
-		assertNumberEquals(expectedTime.getValue(), addedTime.getValue(), 1E-12);
+	@Test @Disabled("Currently not working, see https://github.com/unitsofmeasurement/indriya/issues/247")
+	void productOfAbsoluteTemperatures() {
+		Quantity<Temperature> relT = Quantities.getQuantity(0d, CELSIUS, ABSOLUTE);
+		Quantity<Temperature> relT2 = Quantities.getQuantity(0d, CELSIUS, ABSOLUTE);
+		assertEquals(74610.9225d, relT.multiply(relT2).getValue());
 	}
 
 	@Test
@@ -136,5 +131,4 @@ class TemperatureTest {
 		Quantity<Temperature> t2 = t.to(CELSIUS);
 		assertNumberEquals(-271.15d, t2.getValue(), 1E-12);
 	}
-
 }

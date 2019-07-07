@@ -47,10 +47,10 @@ import javax.measure.quantity.Length;
 import javax.measure.spi.ServiceProvider;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.function.MultiplyConverter;
-import tech.units.indriya.function.RationalNumber;
 import tech.units.indriya.unit.TransformedUnit;
 import tech.units.indriya.unit.Units;
 
@@ -144,4 +144,13 @@ public class EBNFFormatTest {
         Unit<?> anotherOnePerSecond = ServiceProvider.current().getFormatService().getUnitFormat().parse("one/s");
         assertEquals(onePerSecond, anotherOnePerSecond);
     }
+    
+	@Test
+	@Disabled("We might revisit this for an update, see https://github.com/unitsofmeasurement/indriya/issues/141")
+	public void testParseM3() {
+		final UnitFormat unitFormat = ServiceProvider.current().getFormatService().getUnitFormat("EBNF");
+		Unit<?> u = unitFormat.parse("m3");
+		assertNotNull(u);
+		assertEquals(Units.CUBIC_METRE, u);
+	}
 }
