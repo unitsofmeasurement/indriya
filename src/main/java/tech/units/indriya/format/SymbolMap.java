@@ -66,7 +66,7 @@ import java.util.stream.Collectors;
  * </p>
  *
  * @author <a href="mailto:eric-r@northwestern.edu">Eric Russell</a>
- * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
+ * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @version 1.7, February 25, 2017
  */
 @SuppressWarnings("rawtypes")

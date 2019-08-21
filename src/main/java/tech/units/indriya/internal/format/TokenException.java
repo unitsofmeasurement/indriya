@@ -40,7 +40,7 @@ import javax.measure.format.MeasurementParseException;
  * You can modify this class to customize your error reporting mechanisms so long as you retain the public fields.
  * 
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
- * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
+ * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @version 0.6, Mar 27, 2018
  */
 public class TokenException extends MeasurementParseException {

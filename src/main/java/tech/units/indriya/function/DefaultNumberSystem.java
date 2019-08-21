@@ -27,7 +27,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package tech.units.indriya.internal.function.calc;
+package tech.units.indriya.function;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -37,8 +37,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.UnaryOperator;
 
-import tech.units.indriya.function.Calculus;
-import tech.units.indriya.function.RationalNumber;
 import tech.units.indriya.spi.NumberSystem;
 
 /**

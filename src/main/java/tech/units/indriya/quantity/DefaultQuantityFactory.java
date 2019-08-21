@@ -27,7 +27,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package tech.units.indriya.internal;
+package tech.units.indriya.quantity;
 
 import static tech.units.indriya.unit.Units.AMPERE;
 import static tech.units.indriya.unit.Units.BECQUEREL;
@@ -76,7 +76,6 @@ import javax.measure.quantity.*;
 import javax.measure.spi.QuantityFactory;
 
 import tech.units.indriya.AbstractUnit;
-import tech.units.indriya.quantity.Quantities;
 
 /**
  * A factory producing simple quantities instances (tuples {@link Number}/ {@link Unit}).<br>
@@ -91,7 +90,7 @@ import tech.units.indriya.quantity.Quantities;
  *            The type of the quantity.
  *
  * @author <a href="mailto:martin.desruisseaux@geomatys.com">Martin Desruisseaux</a>
- * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
+ * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:otaviojava@java.net">Otavio Santana</a>
  * @version 1.3, $Date: 2018-11-02 $

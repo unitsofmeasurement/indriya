@@ -35,8 +35,8 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
+import tech.units.indriya.function.DefaultNumberSystem;
 import tech.units.indriya.function.RationalNumber;
-import tech.units.indriya.internal.function.calc.DefaultNumberSystem;
 
 /**
  * Package private arithmetic helper for {@link NumberAssertions}

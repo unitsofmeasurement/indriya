@@ -36,7 +36,7 @@ import javax.measure.spi.ServiceProvider;
 import javax.measure.spi.SystemOfUnitsService;
 import javax.measure.spi.UnitFormatService;
 
-import tech.units.indriya.internal.DefaultQuantityFactory;
+import tech.units.indriya.quantity.DefaultQuantityFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -53,7 +53,7 @@ import java.util.logging.Logger;
  * services.
  *
  * @author Werner Keil
- * @version 1.0
+ * @version 1.1
  * @since 2.0
  */
 public abstract class AbstractServiceProvider extends ServiceProvider implements Comparable<ServiceProvider> {

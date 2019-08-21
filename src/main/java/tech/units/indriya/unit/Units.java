@@ -79,7 +79,7 @@ import tech.units.indriya.unit.UnitDimension;
  * <p>
  * This class defines commonly used units.
  *
- * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
+ * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @version 1.4, July 05, 2019
  * @since 1.0
  */

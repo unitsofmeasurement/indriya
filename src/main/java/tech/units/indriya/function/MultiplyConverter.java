@@ -34,7 +34,6 @@ import java.math.BigInteger;
 import javax.measure.Prefix;
 import javax.measure.UnitConverter;
 
-import tech.units.indriya.internal.function.calc.DefaultNumberSystem;
 import tech.units.indriya.spi.NumberSystem;
 import tech.uom.lib.common.function.Converter;
 import tech.uom.lib.common.function.FactorSupplier;
@@ -47,9 +46,9 @@ import tech.uom.lib.common.function.ValueSupplier;
  * </p>
  * 
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
- * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
+ * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author Andi Huber
- * @version 2.4, Jun 25, 2019
+ * @version 2.5, August 21, 2019
  * @since 1.0
  */
 public interface MultiplyConverter extends UnitConverter, Converter<Number, Number>, 

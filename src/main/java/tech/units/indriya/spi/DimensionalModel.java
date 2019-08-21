@@ -73,8 +73,8 @@ import tech.units.indriya.unit.UnitDimension;
  * 
  * @see <a href="http://en.wikipedia.org/wiki/Dimensional_analysis">Wikipedia: Dimensional Analysis</a>
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
- * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.1, $Date: 2019-07-05 $
+ * @author <a href="mailto:werner@units.tech">Werner Keil</a>
+ * @version 1.2, $Date: 2019-08-21 $
  * @since 1.0
  */
 public abstract class DimensionalModel {

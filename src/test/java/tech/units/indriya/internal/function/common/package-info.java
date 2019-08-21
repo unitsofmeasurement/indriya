@@ -31,7 +31,7 @@
  * These tests cannot be run directly inside uom-lib-common because there are no concrete unit implementations. 
  * Therefore we test the Lambda features here in the RI.
  * 
- * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
+ * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @version 1.1
  * @since 2.0
  */

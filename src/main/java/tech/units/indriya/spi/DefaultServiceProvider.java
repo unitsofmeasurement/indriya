@@ -27,13 +27,35 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package tech.units.indriya.internal;
+package tech.units.indriya.spi;
+
+import static tech.units.indriya.spi.ServiceConstants.DEFAULT_PROVIDER_NAME;
+
+import javax.inject.Named;
 
 /**
- * Internal constants collection
- * @author werner
- * @since 2.0
+ * This class extends the {@link javax.measure.spi.ServiceProvider} class and hereby uses the JDK {@link java.util.ServiceLoader} to load the required
+ * services.
+ *
+ * @author Werner Keil
+ * @version 1.4
+ * @since 1.0
  */
-interface InternalConstants {
-	String DEFAULT_PROVIDER_NAME = "Default";
+@Named(DEFAULT_PROVIDER_NAME)
+public class DefaultServiceProvider extends AbstractServiceProvider {
+
+    /**
+     * Returns a priority value of 10.
+     *
+     * @return 10, overriding the default provider.
+     */
+    @Override
+    public int getPriority() {
+        return 10;
+    }
+
+    @Override
+    public String toString() {
+        return DEFAULT_PROVIDER_NAME;
+    }
 }

@@ -37,8 +37,8 @@ import javax.measure.spi.SystemOfUnits;
 import javax.measure.spi.SystemOfUnitsService;
 
 /**
- * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.0, July 2, 2019
+ * @author <a href="mailto:werner@units.tech">Werner Keil</a>
+ * @version 1.1, August 21, 2019
  * @since 2.0
  */
 public abstract class AbstractSystemOfUnitsService implements SystemOfUnitsService {

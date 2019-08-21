@@ -27,7 +27,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package tech.units.indriya.internal.format;
+package tech.units.indriya.format;
 
 import static tech.units.indriya.format.FormatBehavior.LOCALE_SENSITIVE;
 
@@ -39,10 +39,6 @@ import java.util.Set;
 
 import javax.measure.format.QuantityFormat;
 import javax.measure.spi.FormatService;
-
-import tech.units.indriya.format.EBNFUnitFormat;
-import tech.units.indriya.format.NumberDelimiterQuantityFormat;
-import tech.units.indriya.format.SimpleQuantityFormat;
 
 /**
  * Default format service.

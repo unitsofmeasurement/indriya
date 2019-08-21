@@ -43,7 +43,7 @@ import tech.uom.lib.common.function.Nameable;
  * @param <T>
  *          The data value.
  * 
- * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
+ * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @version 0.7
  * @since 1.0
  * @see <a href="http://en.wikipedia.org/wiki/Time_series"> Wikipedia: Time Series</a>

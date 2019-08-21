@@ -46,8 +46,8 @@ import tech.uom.lib.common.util.NumberComparator;
  * All instances of this class shall be immutable.
  * </p>
  *
- * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 0.5 $Date: 2019-03-26 $
+ * @author <a href="mailto:werner@units.tech">Werner Keil</a>
+ * @version 1.0 $Date: 2019-08-21 $
  */
 abstract class AbstractMeasurement<Q extends Quantity<Q>> implements Measurement<Q>, Comparable<Measurement<Q>> {
 

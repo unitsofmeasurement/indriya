@@ -49,7 +49,7 @@ import tech.units.indriya.spi.NumberSystem;
  * 
  * @author Andi Huber
  * @author Werner Keil
- * @version 1.3, June 21, 2019
+ * @version 1.4, August 21, 2019
  * @since 2.0
  */
 public final class Calculus {
@@ -68,7 +68,7 @@ public final class Calculus {
 	
 	private static NumberSystem currentSystem;
 	
-    private static final String DEFAULT_NUMBER_SYSTEM = "tech.units.indriya.internal.function.calc.DefaultNumberSystem";
+    private static final String DEFAULT_NUMBER_SYSTEM = "tech.units.indriya.function.DefaultNumberSystem";
 
     /**
      * All available {@link NumberSystem NumberSystems} used for Number arithmetic.

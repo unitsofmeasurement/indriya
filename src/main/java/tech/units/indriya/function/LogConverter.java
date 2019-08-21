@@ -42,7 +42,7 @@ import tech.uom.lib.common.function.ValueSupplier;
  * Unit<Dimensionless> BEL = Unit.ONE.transform(new LogConverter(10).inverse()); </code>
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
- * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
+ * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author Andi Huber
  * @version 1.2, Jun 21, 2019
  * @since 1.0

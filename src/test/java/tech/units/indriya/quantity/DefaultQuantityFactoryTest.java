@@ -43,8 +43,6 @@ import javax.measure.spi.QuantityFactory;
 
 import org.junit.jupiter.api.Test;
 
-import tech.units.indriya.internal.DefaultQuantityFactory;
-
 /**
  * @author Werner Keil
  */
@@ -230,7 +228,7 @@ public class DefaultQuantityFactoryTest {
 	@Test
 	public void toStringMustProduceCorrectText() {
 		assertEquals(
-				"tech.units.indriya.internal.DefaultQuantityFactory <tech.units.indriya.quantity.DefaultQuantityFactoryTest$QuantityInterface>",
+				"tech.units.indriya.quantity.DefaultQuantityFactory <tech.units.indriya.quantity.DefaultQuantityFactoryTest$QuantityInterface>",
 				testFactory.toString());
 	}
 

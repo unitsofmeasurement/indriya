@@ -50,7 +50,7 @@ import java.util.stream.Collectors;
  * An abstract base class for unit systems.
  * </p>
  *
- * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
+ * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @version 1.2, June 21, 2018
  * @since 1.0
  */

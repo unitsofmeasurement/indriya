@@ -45,7 +45,7 @@ import tech.uom.lib.common.function.ValueSupplier;
  * </p>
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
- * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
+ * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author Andi Huber
  * @version 1.5, Jun 21, 2019
  * @since 1.0

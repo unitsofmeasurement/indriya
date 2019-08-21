@@ -45,7 +45,7 @@ import tech.units.indriya.spi.Range;
  * @param <Q>
  *          The value of the range.
  * 
- * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
+ * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @version 0.6, June 5, 2018
  * @see <a href= "http://www.botts-inc.com/SensorML_1.0.1/schemaBrowser/SensorML_QuantityRange.html"> SensorML: QuantityRange</a>
  */

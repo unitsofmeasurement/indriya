@@ -41,7 +41,7 @@ import org.junit.jupiter.api.Test;
 import tech.units.indriya.format.LocalUnitFormat;
 
 /**
- * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
+ * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  *
  */
 public class LocalUnitFormatTest {

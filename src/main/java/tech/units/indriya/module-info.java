@@ -33,6 +33,10 @@ module tech.units.indriya {
     requires transitive tech.uom.lib.common;
     requires transitive javax.inject;
     
+    requires static org.osgi.core;
+    requires static org.osgi.compendium;
+    requires static org.osgi.annotation;
+    
     exports tech.units.indriya;
     exports tech.units.indriya.format;
     exports tech.units.indriya.function;
@@ -42,11 +46,22 @@ module tech.units.indriya {
     exports tech.units.indriya.unit;
 
     provides javax.measure.spi.FormatService with
-        tech.units.indriya.internal.format.DefaultFormatService;
+        tech.units.indriya.format.DefaultFormatService;
     provides javax.measure.spi.ServiceProvider with
-    	tech.units.indriya.internal.DefaultServiceProvider;
+    	tech.units.indriya.spi.DefaultServiceProvider;
     provides javax.measure.spi.SystemOfUnitsService with
-        tech.units.indriya.internal.DefaultSystemOfUnitsService;
+    	tech.units.indriya.unit.DefaultSystemOfUnitsService;
     provides javax.measure.spi.UnitFormatService with
-        tech.units.indriya.internal.format.DefaultUnitFormatService;
+        tech.units.indriya.format.DefaultUnitFormatService;
+    provides tech.units.indriya.spi.NumberSystem with
+    	tech.units.indriya.function.DefaultNumberSystem;
+    
+    uses javax.measure.format.QuantityFormat;
+    uses javax.measure.format.UnitFormat;
+    
+    uses javax.measure.spi.FormatService;
+    uses javax.measure.spi.ServiceProvider;
+    uses javax.measure.spi.SystemOfUnitsService;
+    uses javax.measure.spi.UnitFormatService;
+    uses tech.units.indriya.spi.NumberSystem;
 }

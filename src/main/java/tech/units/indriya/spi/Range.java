@@ -42,8 +42,8 @@ import tech.uom.lib.common.function.MinimumSupplier;
  * @param <T>
  *          The value of the range.
  * 
- * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
- * @version 1.0.1, September 4, 2018
+ * @author <a href="mailto:werner@units.tech">Werner Keil</a>
+ * @version 1.1, August 21, 2019
  * @since 1.0
  * @see <a href="http://en.wikipedia.org/wiki/Range">Wikipedia: Range</a>
  */

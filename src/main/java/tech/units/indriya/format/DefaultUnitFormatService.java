@@ -27,7 +27,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package tech.units.indriya.internal.format;
+package tech.units.indriya.format;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -37,9 +37,6 @@ import java.util.Set;
 import javax.measure.format.UnitFormat;
 import javax.measure.spi.UnitFormatService;
 
-import tech.units.indriya.format.EBNFUnitFormat;
-import tech.units.indriya.format.LocalUnitFormat;
-import tech.units.indriya.format.SimpleUnitFormat;
 import tech.units.indriya.format.SimpleUnitFormat.Flavor;
 import tech.uom.lib.common.function.IntPrioritySupplier;
 
@@ -47,7 +44,7 @@ import tech.uom.lib.common.function.IntPrioritySupplier;
  * Default unit format service.
  *
  * @author Werner Keil
- * @version 0.9, March 11, 2019
+ * @version 1.0, August 21, 2019
  * @since 1.0
  * @deprecated For backward-compatibility, to be removed in a future version.
  */

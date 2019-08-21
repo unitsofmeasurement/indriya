@@ -156,7 +156,7 @@ import java.util.ResourceBundle;
  * </table>
  *
  * @author <a href="mailto:eric-r@northwestern.edu">Eric Russell</a>
- * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
+ * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @version 1.2.2, March 11, 2019
  * @since 1.0
  */

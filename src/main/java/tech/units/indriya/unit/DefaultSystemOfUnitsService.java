@@ -27,17 +27,16 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package tech.units.indriya.internal;
+package tech.units.indriya.unit;
 
 import javax.measure.spi.SystemOfUnits;
 
 import tech.units.indriya.spi.AbstractSystemOfUnitsService;
-import tech.units.indriya.unit.Units;
 
 /**
- * @author <a href="mailto:units@catmedia.us">Werner Keil</a>
+ * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author Martin Desruisseaux
- * @version 1.2, July 2, 2019
+ * @version 1.3, August 21, 2019
  * @since 1.0
  */
 public class DefaultSystemOfUnitsService extends AbstractSystemOfUnitsService {
