@@ -56,6 +56,7 @@
 		<felix.version>3.4.0</felix.version>
 		<maven.jar.version>3.1.0</maven.jar.version>
 		<maven.source.version>3.1.0</maven.source.version>
+		<maven.javadoc.version>3.1.1</maven.javadoc.version>
 
 		<!-- OSGI support -->
 		<osgi.version>5.0.0</osgi.version>
@@ -238,7 +239,7 @@
 							<Implementation-Title>${project.name}</Implementation-Title>
 							<Implementation-Version>${project.version}</Implementation-Version>
 							<Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
-							<Implementation-URL>http://unitsofmeasurement.github.io</Implementation-URL>
+							<Implementation-URL>http://units.tech</Implementation-URL>
 						</manifestEntries>
 					</archive>
 				</configuration>
@@ -379,6 +380,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>${maven.javadoc.version}</version>
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
