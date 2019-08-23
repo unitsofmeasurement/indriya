@@ -11,7 +11,7 @@
 	</organization>
 	<name>Units of Measurement Reference Implementation</name>
 	<description>Unit Standard (JSR 385) Reference Implementation.</description>
-	<packaging>bundle</packaging>
+	<packaging>multi-release-jar</packaging>
 	<parent>
 		<groupId>tech.uom</groupId>
 		<artifactId>uom-parent</artifactId>
@@ -46,6 +46,8 @@
 		<project.build.javaVersion>${jdkVersion}</project.build.javaVersion>
 		<maven.compile.targetLevel>${jdkVersion}</maven.compile.targetLevel>
 		<maven.compile.sourceLevel>${jdkVersion}</maven.compile.sourceLevel>
+		<maven.compiler.source>${jdkVersion}</maven.compiler.source>
+		<maven.compiler.target>${jdkVersion}</maven.compiler.target>
 		<additionalparam>-Xdoclint:none</additionalparam>
 		<hamcrest.version>2.0.0.0</hamcrest.version>
 		<junit.platform.version>1.1.0</junit.platform.version>
@@ -142,7 +144,7 @@
 				<artifactId>uom-lib-common</artifactId>
 				<version>${lib.version}</version>
 			</dependency>
-			
+
 			<!-- OSGI support -->
 			<dependency>
 				<groupId>org.osgi</groupId>
@@ -165,7 +167,7 @@
 				<scope>provided</scope>
 				<optional>true</optional>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>org.hamcrest</groupId>
 				<artifactId>hamcrest-all</artifactId>
@@ -175,42 +177,26 @@
 		</dependencies>
 	</dependencyManagement>
 	<build>
+		<extensions>
+			<extension>
+				<groupId>pw.krejci</groupId>
+				<artifactId>multi-release-jar-maven-plugin</artifactId>
+				<version>0.1.5</version>
+			</extension>
+		</extensions>
 		<plugins>
 			<!-- Compilation -->
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
+				<groupId>pw.krejci</groupId>
+				<artifactId>multi-release-jar-maven-plugin</artifactId>
+				<version>0.1.5</version>
 				<configuration>
-					<source>9</source>
-					<target>9</target>
+					<source>${jdkVersion}</source>
+					<target>${jdkVersion}</target>
+					<excludes>
+						<exclude>module-info.java</exclude>
+					</excludes>
 				</configuration>
-				<executions>
-					<execution>
-						<id>default-compile</id>
-						<configuration>
-							<!-- compile everything to ensure module-info contains right entries -->
-							<!-- required when JAVA_HOME is JDK 8 or below -->
-							<jdkToolchain>
-								<version>9</version>
-							</jdkToolchain>
-							<release>9</release>
-						</configuration>
-					</execution>
-					<execution>
-						<id>base-compile</id>
-						<goals>
-							<goal>compile</goal>
-						</goals>
-						<!-- recompile everything for target VM except the module-info.java -->
-						<configuration>
-							<source>${maven.compile.sourceLevel}</source>
-							<target>${maven.compile.targetLevel}</target>
-							<excludes>
-								<exclude>tech/units/indriya/module-info.java</exclude>
-							</excludes>
-						</configuration>
-					</execution>
-				</executions>
 			</plugin>
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
@@ -454,6 +440,40 @@
 				</configuration>
 			</plugin>
 		</plugins>
+		<pluginManagement>
+			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>pw.krejci</groupId>
+										<artifactId>
+											multi-release-jar-maven-plugin
+										</artifactId>
+										<versionRange>
+											[0.1.5,)
+										</versionRange>
+										<goals>
+											<goal>compile</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore></ignore>
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 	</build>
 
 	<!-- Additional repositories -->
@@ -579,7 +599,7 @@
 									<source>8</source>
 									<target>8</target>
 									<excludes>
-										<exclude>tech/units/indriya/module-info.java</exclude>
+										<exclude>module-info.java</exclude>
 									</excludes>
 								</configuration>
 							</execution>
