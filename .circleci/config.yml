@@ -7,12 +7,7 @@ jobs:
   build:
     docker:
       # specify the version you desire here
-      - image: circleci/openjdk:9.0.4
-      
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/postgres:9.4
+      - image: openjdk:12.0.1-jdk
 
     working_directory: ~/repo
 
@@ -30,7 +25,7 @@ jobs:
   deployment:
     docker:
       # specify the version you desire here
-      - image: circleci/openjdk:9.0.4
+      - image: openjdk:12.0.1-jdk
       
       # Specify service dependencies here if necessary
       # CircleCI maintains a library of pre-built images
