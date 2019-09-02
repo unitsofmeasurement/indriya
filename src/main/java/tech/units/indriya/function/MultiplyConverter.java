@@ -31,6 +31,12 @@ package tech.units.indriya.function;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.AbstractMap;
+import java.util.Collections;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import javax.measure.Prefix;
 import javax.measure.UnitConverter;
 
@@ -61,10 +67,41 @@ public interface MultiplyConverter extends UnitConverter, Converter<Number, Numb
 	 * 
 	 * @param factor
 	 */
+	
+	static Map<RationalNumber, MultiplyConverter> powerLookupMap = Collections.unmodifiableMap(Stream.of(new AbstractMap.SimpleImmutableEntry<>(RationalNumber.of(10, 1), MultiplyConverter.ofExponent(10, 1)),
+			new AbstractMap.SimpleImmutableEntry<>(RationalNumber.of(100, 1), MultiplyConverter.ofExponent(10, 2)),
+			new AbstractMap.SimpleImmutableEntry<>(RationalNumber.of(1_000, 1), MultiplyConverter.ofExponent(10, 3)),
+			new AbstractMap.SimpleImmutableEntry<>(RationalNumber.of(1_000_000, 1), MultiplyConverter.ofExponent(10, 6)),
+			new AbstractMap.SimpleImmutableEntry<>(RationalNumber.of(1_000_000_000, 1), MultiplyConverter.ofExponent(10, 9)),
+			new AbstractMap.SimpleImmutableEntry<>(RationalNumber.of(BigInteger.valueOf(10).pow(12) ,BigInteger.valueOf(1)), MultiplyConverter.ofExponent(10, 12)),
+			new AbstractMap.SimpleImmutableEntry<>(RationalNumber.of(BigInteger.valueOf(10).pow(15), BigInteger.valueOf(10).pow(1)), MultiplyConverter.ofExponent(10, 15)),
+			new AbstractMap.SimpleImmutableEntry<>(RationalNumber.of(BigInteger.valueOf(10).pow(18), BigInteger.valueOf(10).pow(1)), MultiplyConverter.ofExponent(10, 18)),
+			new AbstractMap.SimpleImmutableEntry<>(RationalNumber.of(BigInteger.valueOf(10).pow(21), BigInteger.valueOf(10).pow(1)), MultiplyConverter.ofExponent(10, 21)),
+			new AbstractMap.SimpleImmutableEntry<>(RationalNumber.of(BigInteger.valueOf(10).pow(24), BigInteger.valueOf(10).pow(1)), MultiplyConverter.ofExponent(10, 24)),
+			new AbstractMap.SimpleImmutableEntry<>(RationalNumber.of(1, 10), MultiplyConverter.ofExponent(10, -1)),
+			new AbstractMap.SimpleImmutableEntry<>(RationalNumber.of(1, 100), MultiplyConverter.ofExponent(10, -2)),
+			new AbstractMap.SimpleImmutableEntry<>(RationalNumber.of(1, 1_000), MultiplyConverter.ofExponent(10, -3)),
+			new AbstractMap.SimpleImmutableEntry<>(RationalNumber.of(1, 1_000_000), MultiplyConverter.ofExponent(10, -6)),
+			new AbstractMap.SimpleImmutableEntry<>(RationalNumber.of(1, 1_000_000_000), MultiplyConverter.ofExponent(10, -9)),
+			new AbstractMap.SimpleImmutableEntry<>(RationalNumber.of(BigInteger.valueOf(1), BigInteger.valueOf(10).pow(12)), MultiplyConverter.ofExponent(10, -12)),
+			new AbstractMap.SimpleImmutableEntry<>(RationalNumber.of(BigInteger.valueOf(1), BigInteger.valueOf(10).pow(15)), MultiplyConverter.ofExponent(10, -15)),
+			new AbstractMap.SimpleImmutableEntry<>(RationalNumber.of(BigInteger.valueOf(1), BigInteger.valueOf(10).pow(18)), MultiplyConverter.ofExponent(10, -18)),
+			new AbstractMap.SimpleImmutableEntry<>(RationalNumber.of(BigInteger.valueOf(1), BigInteger.valueOf(10).pow(21)), MultiplyConverter.ofExponent(10, -21)),
+			new AbstractMap.SimpleImmutableEntry<>(RationalNumber.of(BigInteger.valueOf(1), BigInteger.valueOf(10).pow(24)), MultiplyConverter.ofExponent(10, -24))).collect(
+					Collectors.toMap((e) -> e.getKey(), (e) -> e.getValue())));
+	
+	
+	
 	public static MultiplyConverter ofRational(RationalNumber factor) {
 		if (factor.equals(RationalNumber.ONE)) {
 			return identity();
 		}
+		MultiplyConverter convertor = powerLookupMap.get(factor);
+		if (convertor != null) {
+			return convertor;
+		}
+		
+		
 		return RationalConverter.of(factor);
 	}
 
@@ -166,9 +203,9 @@ public interface MultiplyConverter extends UnitConverter, Converter<Number, Numb
 		if (prefix == null) {
 			return identity();
 		}
-		if (prefix.getExponent() == 1) {
-			return of(prefix.getValue());
-		}
+//		if (prefix.getExponent() == 1) {
+//			return of(prefix.getValue());
+//		}
 		return PowerOfIntConverter.of(prefix);
 	}
 
