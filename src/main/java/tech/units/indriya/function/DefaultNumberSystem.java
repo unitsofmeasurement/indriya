@@ -377,6 +377,9 @@ public class DefaultNumberSystem implements NumberSystem {
             }
             return 1; // x^0 == 1, for any x!=0
         }
+        if(exponent==1) {
+            return number; // x^1 == x, for any x
+        }
         if(number instanceof BigInteger ||
                 number instanceof Long || number instanceof AtomicLong ||
                 number instanceof Integer || number instanceof AtomicInteger ||

@@ -31,11 +31,6 @@ package tech.units.indriya.function;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.AbstractMap;
-import java.util.Collections;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import javax.measure.Prefix;
 import javax.measure.UnitConverter;
@@ -54,7 +49,7 @@ import tech.uom.lib.common.function.ValueSupplier;
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author Andi Huber
- * @version 2.5, August 21, 2019
+ * @version 2.6, September 10, 2019
  * @since 1.0
  */
 public interface MultiplyConverter extends UnitConverter, Converter<Number, Number>, 
@@ -62,46 +57,10 @@ public interface MultiplyConverter extends UnitConverter, Converter<Number, Numb
 
 	// -- FACTORIES
 
-	/**
-	 * Creates a MultiplyConverter with the specified constant rational factor.
-	 * 
-	 * @param factor
-	 */
-	
-	static Map<RationalNumber, MultiplyConverter> powerLookupMap = Collections.unmodifiableMap(Stream.of(new AbstractMap.SimpleImmutableEntry<>(RationalNumber.of(10, 1), MultiplyConverter.ofExponent(10, 1)),
-			new AbstractMap.SimpleImmutableEntry<>(RationalNumber.of(100, 1), MultiplyConverter.ofExponent(10, 2)),
-			new AbstractMap.SimpleImmutableEntry<>(RationalNumber.of(1_000, 1), MultiplyConverter.ofExponent(10, 3)),
-			new AbstractMap.SimpleImmutableEntry<>(RationalNumber.of(1_000_000, 1), MultiplyConverter.ofExponent(10, 6)),
-			new AbstractMap.SimpleImmutableEntry<>(RationalNumber.of(1_000_000_000, 1), MultiplyConverter.ofExponent(10, 9)),
-			new AbstractMap.SimpleImmutableEntry<>(RationalNumber.of(BigInteger.valueOf(10).pow(12) ,BigInteger.valueOf(1)), MultiplyConverter.ofExponent(10, 12)),
-			new AbstractMap.SimpleImmutableEntry<>(RationalNumber.of(BigInteger.valueOf(10).pow(15), BigInteger.valueOf(10).pow(1)), MultiplyConverter.ofExponent(10, 15)),
-			new AbstractMap.SimpleImmutableEntry<>(RationalNumber.of(BigInteger.valueOf(10).pow(18), BigInteger.valueOf(10).pow(1)), MultiplyConverter.ofExponent(10, 18)),
-			new AbstractMap.SimpleImmutableEntry<>(RationalNumber.of(BigInteger.valueOf(10).pow(21), BigInteger.valueOf(10).pow(1)), MultiplyConverter.ofExponent(10, 21)),
-			new AbstractMap.SimpleImmutableEntry<>(RationalNumber.of(BigInteger.valueOf(10).pow(24), BigInteger.valueOf(10).pow(1)), MultiplyConverter.ofExponent(10, 24)),
-			new AbstractMap.SimpleImmutableEntry<>(RationalNumber.of(1, 10), MultiplyConverter.ofExponent(10, -1)),
-			new AbstractMap.SimpleImmutableEntry<>(RationalNumber.of(1, 100), MultiplyConverter.ofExponent(10, -2)),
-			new AbstractMap.SimpleImmutableEntry<>(RationalNumber.of(1, 1_000), MultiplyConverter.ofExponent(10, -3)),
-			new AbstractMap.SimpleImmutableEntry<>(RationalNumber.of(1, 1_000_000), MultiplyConverter.ofExponent(10, -6)),
-			new AbstractMap.SimpleImmutableEntry<>(RationalNumber.of(1, 1_000_000_000), MultiplyConverter.ofExponent(10, -9)),
-			new AbstractMap.SimpleImmutableEntry<>(RationalNumber.of(BigInteger.valueOf(1), BigInteger.valueOf(10).pow(12)), MultiplyConverter.ofExponent(10, -12)),
-			new AbstractMap.SimpleImmutableEntry<>(RationalNumber.of(BigInteger.valueOf(1), BigInteger.valueOf(10).pow(15)), MultiplyConverter.ofExponent(10, -15)),
-			new AbstractMap.SimpleImmutableEntry<>(RationalNumber.of(BigInteger.valueOf(1), BigInteger.valueOf(10).pow(18)), MultiplyConverter.ofExponent(10, -18)),
-			new AbstractMap.SimpleImmutableEntry<>(RationalNumber.of(BigInteger.valueOf(1), BigInteger.valueOf(10).pow(21)), MultiplyConverter.ofExponent(10, -21)),
-			new AbstractMap.SimpleImmutableEntry<>(RationalNumber.of(BigInteger.valueOf(1), BigInteger.valueOf(10).pow(24)), MultiplyConverter.ofExponent(10, -24))).collect(
-					Collectors.toMap((e) -> e.getKey(), (e) -> e.getValue())));
-	
-	
-	
 	public static MultiplyConverter ofRational(RationalNumber factor) {
 		if (factor.equals(RationalNumber.ONE)) {
 			return identity();
 		}
-		MultiplyConverter convertor = powerLookupMap.get(factor);
-		if (convertor != null) {
-			return convertor;
-		}
-		
-		
 		return RationalConverter.of(factor);
 	}
 
@@ -186,7 +145,7 @@ public interface MultiplyConverter extends UnitConverter, Converter<Number, Numb
 	 * @return a new MultiplyConverter.
 	 */
 	public static MultiplyConverter of(double factor) {
-		if (factor == 0.d) {
+		if (factor == 1.d) {
 			return identity();
 		}
 		RationalNumber rational = RationalNumber.of(factor);
@@ -203,10 +162,23 @@ public interface MultiplyConverter extends UnitConverter, Converter<Number, Numb
 		if (prefix == null) {
 			return identity();
 		}
-//		if (prefix.getExponent() == 1) {
-//			return of(prefix.getValue());
-//		}
+
+	    // this is an optimization for the special case of exponent == 1, where we simply use
+		// Prefix.getValue() as the factor 
+        if (prefix.getExponent() == 1) {
+            return of(prefix.getValue());
+        }
+		
+		// as the spec allows for Prefix.getValue() to also return non integer numbers, 
+		// we do have to account for these (rare) cases 
+		NumberSystem ns = Calculus.currentNumberSystem();
+		if(!ns.isInteger(prefix.getValue())) {
+		    Number factor = ns.power(prefix.getValue(), prefix.getExponent());
+		    return of(factor);    
+		}
+		
 		return PowerOfIntConverter.of(prefix);
+		
 	}
 
 	/**
@@ -247,7 +219,7 @@ public interface MultiplyConverter extends UnitConverter, Converter<Number, Numb
 	}
 
 	/**
-	 * Returns the an MultiplyConverter that acts as a 'pass-through'.
+	 * Returns a MultiplyConverter that acts as a 'pass-through'.
 	 * 
 	 */
 	public static MultiplyConverter identity() {
