@@ -111,7 +111,7 @@ public class PowerOfPiConverterTest {
 		Calculus.MATH_CONTEXT = new MathContext(MathContext.DECIMAL128.getPrecision() * 2);
 		BigDecimal value = (BigDecimal) converter.convert(BigDecimal.valueOf(1.));
 		assertEquals(
-				"3.1415926535897932384626433832795028841971693993751058209749445923078", 
+				"3.14159265358979323846264338327950288419716939937510582097494459230781", 
 				value.toPlainString());
 	}
 
