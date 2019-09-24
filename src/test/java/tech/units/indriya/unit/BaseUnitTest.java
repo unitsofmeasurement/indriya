@@ -269,4 +269,20 @@ public class BaseUnitTest {
     Unit<?> unit = new BaseUnit<>(A_SYMBOL, A_DIMENSION);
     assertEquals(A_SYMBOL, unit.toString());
   }
+
+  /**
+   * Verifies that the getBaseUnits return base units in correct order
+   */
+  @Test
+  public void testGetBaseUnitsReturnsInCorrectOrder() {
+	String expected = Units.KELVIN.getName() + Units.CANDELA.getName() + Units.AMPERE.getName();
+	
+	final ProductUnit<?> cdK = new ProductUnit<>(Units.KELVIN.multiply(Units.CANDELA).multiply(Units.AMPERE));
+	StringBuilder actualBaseUnit = new StringBuilder();
+	
+	for (Unit<?> product : cdK.getBaseUnits().keySet()) {
+	  actualBaseUnit.append(product.getName());
+	}
+    assertEquals(expected, actualBaseUnit.toString());
+  }
 }
