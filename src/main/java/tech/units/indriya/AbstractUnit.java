@@ -83,7 +83,7 @@ import tech.uom.lib.common.function.SymbolSupplier;
  *      International System of Units</a>
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 2.2, July 5, 2019
+ * @version 2.3, September 27, 2019
  * @since 1.0
  */
 public abstract class AbstractUnit<Q extends Quantity<Q>>
@@ -541,36 +541,6 @@ public abstract class AbstractUnit<Q extends Quantity<Q>>
 	public Unit<Q> prefix(Prefix prefix) {
 		return this.transform(MultiplyConverter.ofPrefix(prefix));
 	}
-
-	/*
-	 * Returns the combination of this unit with the specified unit. Mixed units can
-	 * be used for formatting purpose or conversion and calculation between mixed
-	 * and other units.<br>
-	 * Examples of mixed units:<br>
-	 * <code> 
-	 *     Unit<Length> FOOT_INCH = FOOT.mix(INCH);<br>
-	 *     Unit<Time> HOUR_MINUTE_SECOND = HOUR.mix(MINUTE).mix(SECOND);
-	 * </code>
-	 * 
-	 * @param that the unit to mix with this unit.
-	 * @return the corresponding mixed unit.
-	 *
-	public final Unit<Q> mix(Unit<Q> that) {
-		if (this instanceof MixedUnit) {
-			final MixedUnit<Q> thisComp = (MixedUnit<Q>) this;
-			final List<Unit<Q>> comps = new ArrayList<>();
-			comps.addAll(thisComp.getUnits());
-			comps.add(that);
-			@SuppressWarnings("unchecked")
-			final Unit<Q>[] mixArray = new Unit[comps.size()];
-			comps.toArray(mixArray);
-			return MixedUnit.of(mixArray);
-			// TODO special case for that being a MixedUnit as well
-		} else {
-			return MixedUnit.of(this, that);
-		}
-	}
-*/
 	
 	/**
 	 * Compares this unit to the specified unit. The default implementation compares
