@@ -75,9 +75,8 @@ class EncodingUtilTest {
     
 
     /**
-     * We cycle through all {@code FormatTestingUtil.NonPrefixedUnits} and 
-     * for each such candidate test, whether XML encoding/decoding are 
-     * consistent.
+     * We cycle through all {Unit, Amount} combinations and test 
+     * whether XML encoding/decoding are consistent.
      * @throws IOException 
      */
     @ParameterizedTest(name = "{index} => unit=''{0}'', amount=''{1}'' ")
@@ -89,12 +88,11 @@ class EncodingUtilTest {
     }
     
     /**
-     * We cycle through all {@code FormatTestingUtil.NonPrefixedUnits} and 
-     * for each such candidate test, whether XML encoding/decoding are 
-     * consistent.
+     * We cycle through all {Unit, Prefix} combinations and test 
+     * whether XML encoding/decoding are consistent.
      * @throws IOException 
      */
-    @ParameterizedTest(name = "{index} => unit=''{0}'', amount=''{1}'' ")
+    @ParameterizedTest(name = "{index} => unit=''{0}'', prefix=''{1}'' ")
     @DisplayName("XML serialization roundtrip spanning {Unit, Prefix} should succeed")
     @MethodSource("provideRoundtripArgs_unit_prefix")
     void encodeDecodeRoundtrip(Unit<?> unit, Prefix prefix) throws IOException {
