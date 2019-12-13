@@ -83,7 +83,7 @@ import tech.uom.lib.common.function.SymbolSupplier;
  *      International System of Units</a>
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 2.3, September 27, 2019
+ * @version 2.4, December 14, 2019
  * @since 1.0
  */
 public abstract class AbstractUnit<Q extends Quantity<Q>>
@@ -605,7 +605,7 @@ public abstract class AbstractUnit<Q extends Quantity<Q>>
 			 * } else { return u1.toString().equals(u2.toString()) &&
 			 * u1.internalIsCompatible(u2, false); } } else {
 			 */
-			if (u1 == u2)
+			if (u1 != null && u1.equals(u2))
 				return true;
 			return false;
 		}
