@@ -50,90 +50,58 @@ import tech.units.indriya.unit.Units;
 /**
  * Samples Units, Numbers and Prefixes to feed test cases.
  */
-public class SamplingUtil {
+abstract class SamplingUtil {
 
-    public static Stream<Number> numbers() {
-        return Stream.of(
-                1.2345d,
-                RationalNumber.of(2,3),
-                1234,
-                1234L,
-                BigInteger.valueOf(1234L),
-                new BigDecimal("0.1")
-                );
-    }
-    
-    public static Stream<Prefix> prefixes() {
-        return Stream.of(MetricPrefix.values(), BinaryPrefix.values())
-                .flatMap(Stream::of);
-    }
-    
-    public static Stream<Unit<?>> units() {
-        return Stream.of(
-                nonPrefixedUnits(),
-                additionalUnits(),
-                temporalQuantityUnits(),
-                composedUnits(),
-                compoundUnits()
-                )
-                .flatMap(Function.identity());
-    }
-    
-    // -- HELPER
-    
-    private static Stream<Unit<?>> nonPrefixedUnits() {
-        return Stream.of(NonPrefixedUnits.values())
-                .map(u->u.unit);
-    }
-    
-    private static Stream<Unit<?>> additionalUnits() {
-        return Stream.of(
-                Units.PERCENT,
-                Units.SQUARE_METRE,
-                Units.CUBIC_METRE
-                );
-    }
-    
-    private static Stream<Unit<?>> composedUnits() {
-        return Stream.of(
-                Quantities.getQuantity(1, Units.METRE)
-                .multiply(Quantities.getQuantity(1, Units.SECOND))
-                .getUnit(),
-                
-                Quantities.getQuantity(1, Units.METRE)
-                .divide(Quantities.getQuantity(1, Units.SECOND))
-                .getUnit()
-                
-                );
-    }
-    
-    private static Stream<Unit<?>> compoundUnits() {
-        return Stream.of(
-                Quantities.getQuantity(1, Units.METRE)
-                .multiply(Quantities.getQuantity(1, Units.SECOND))
-                .getUnit(),
-                
-                Quantities.getQuantity(1, Units.METRE)
-                .divide(Quantities.getQuantity(1, Units.SECOND))
-                .getUnit()
-                
-                );
-    }
-    
-    
-    private static Stream<Unit<?>> temporalQuantityUnits() {
-        
-        return Stream.of(ChronoUnit.values())
-        .map(chronoUnit->{
-            try {
-                return TemporalQuantity.of(1, chronoUnit);
-            } catch (Exception e) {
-                // TemporalQuantity only supports DAYS, HOURS, MICROS, MILLIS, MINUTES, NANOS, SECONDS
-                return null; 
-            }
-        })
-        .filter(Objects::nonNull)
-        .map(TemporalQuantity::getUnit);
-    }
-    
+	public static Stream<Number> numbers() {
+		return Stream.of(1.2345d, RationalNumber.of(2, 3), 1234, 1234L, BigInteger.valueOf(1234L),
+				new BigDecimal("0.1"));
+	}
+
+	public static Stream<Prefix> prefixes() {
+		return Stream.of(MetricPrefix.values(), BinaryPrefix.values()).flatMap(Stream::of);
+	}
+
+	public static Stream<Unit<?>> units() {
+		return Stream
+				.of(nonPrefixedUnits(), additionalUnits(), temporalQuantityUnits(), composedUnits(), compoundUnits())
+				.flatMap(Function.identity());
+	}
+
+	// -- HELPER
+
+	private static Stream<Unit<?>> nonPrefixedUnits() {
+		return Stream.of(NonPrefixedUnits.values()).map(u -> u.unit);
+	}
+
+	private static Stream<Unit<?>> additionalUnits() {
+		return Stream.of(Units.PERCENT, Units.SQUARE_METRE, Units.CUBIC_METRE);
+	}
+
+	private static Stream<Unit<?>> composedUnits() {
+		return Stream.of(
+				Quantities.getQuantity(1, Units.METRE).multiply(Quantities.getQuantity(1, Units.SECOND)).getUnit(),
+				Quantities.getQuantity(1, Units.METRE).divide(Quantities.getQuantity(1, Units.SECOND)).getUnit()
+		);
+	}
+
+	private static Stream<Unit<?>> compoundUnits() {
+		return Stream.of(
+				Quantities.getQuantity(1, Units.METRE).multiply(Quantities.getQuantity(1, Units.SECOND)).getUnit(),
+				Quantities.getQuantity(1, Units.METRE).divide(Quantities.getQuantity(1, Units.SECOND)).getUnit()
+		);
+	}
+
+	private static Stream<Unit<?>> temporalQuantityUnits() {
+
+		return Stream.of(ChronoUnit.values()).map(chronoUnit -> {
+			try {
+				return TemporalQuantity.of(1, chronoUnit);
+			} catch (Exception e) {
+				// TemporalQuantity only supports DAYS, HOURS, MICROS, MILLIS, MINUTES, NANOS,
+				// SECONDS
+				return null;
+			}
+		}).filter(Objects::nonNull).map(TemporalQuantity::getUnit);
+	}
+
 }
