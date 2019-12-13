@@ -64,12 +64,6 @@ public class TokenMgrError extends Error {
   static final int LOOP_DETECTED = 3;
 
   /**
-   * Indicates the reason why the exception is thrown. It will have one of the above 4 values.
-   */
-  @SuppressWarnings("unused")
-private int errorCode;
-
-  /**
    * Replaces unprintable characters by their escaped (or unicode escaped) equivalents in the given string
    */
   protected static String addEscapes(String str) {
@@ -150,7 +144,8 @@ private int errorCode;
   /** Constructor with message and reason. */
   public TokenMgrError(String message, int reason) {
     super(message);
-    errorCode = reason;
+    @SuppressWarnings("unused")
+	int errorCode = reason; // TODO use?
   }
 
   /** Full Constructor. */
