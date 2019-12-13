@@ -30,15 +30,48 @@
 package tech.units.indriya.spi;
 
 /**
- * Provides basic {@link Number} operations. 
+ * Provides arithmetic {@link Number} operations on an implementation specific set of 
+ * {@link Number} types.
  * <p>
- * Within a given set of {@link Number} types, supports any combination of number operations, 
- * such that any operation result is also a member of this set. 
+ * Let <em>S</em> be the set of possible {@link Number} values within the (given) set of 
+ * {@link Number} types.<br>
+ * Then <em>S</em> is <a href="https://en.wikipedia.org/wiki/Closure_(mathematics)">closed</a> 
+ * under the collection of {@link NumberSystem}'s methods.   
+ * 
+ * @implNote
+ * Given <em>S</em> the set of possible {@link Number} values within implementation specific 
+ * set of (supported) {@link Number} types:<br>
+ * - implemented methods must support any {@link Number} arguments from <em>S</em><br>
+ * - implemented methods must also have their {@link Number} results to be in <em>S</em><br>
  *  
  * @author Andi Huber
  * @since 2.0
+ * @see <a href="https://en.wikipedia.org/wiki/Closure_(mathematics)">Closure (wikipedia)</a>
  */
 public interface NumberSystem {
+    
+    /**
+     * Immutable value type, holder of 2 numbers.
+     */
+    public final static class DivisionResult {
+        /**
+         * originating from x / y
+         */
+        public final Number quotient;
+        /**
+         * originating from x % y 
+         */
+        public final Number remainder;
+        
+        public static DivisionResult of(Number quotient, Number remainder) {
+            return new DivisionResult(quotient, remainder);
+        }
+        
+        private DivisionResult(Number quotient, Number remainder) {
+            this.quotient = quotient;
+            this.remainder = remainder;
+        }
+    }
 
     /**
      * Returns the sum of given {@code x} and {@code y} as a {@link Number} that best
