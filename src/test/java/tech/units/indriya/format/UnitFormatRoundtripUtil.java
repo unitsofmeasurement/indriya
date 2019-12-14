@@ -1,5 +1,5 @@
 /*
- * Units of Measurement Clients
+ * Units of Measurement Reference Implementation
  * Copyright (c) 2005-2019, Units of Measurement project.
  *
  * All rights reserved.
