@@ -51,9 +51,9 @@
 		<junit.platform.version>1.1.0</junit.platform.version>
 		<jacoco.version>0.8.3</jacoco.version>
 		<compile.exclude.files>module-info.java</compile.exclude.files>
-		<thisYear>2019</thisYear>
+		<thisYear>2020</thisYear>
 		<!-- Plugins -->
-		<felix.version>3.4.0</felix.version>
+		<felix.version>4.1.0</felix.version>
 		<maven.jar.version>3.1.0</maven.jar.version>
 		<maven.source.version>3.1.0</maven.source.version>
 		<maven.javadoc.version>3.1.1</maven.javadoc.version>

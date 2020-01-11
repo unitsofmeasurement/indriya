@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2019, Units of Measurement project.
+ * Copyright (c) 2005-2020, Units of Measurement project.
  *
  * All rights reserved.
  *
@@ -34,8 +34,6 @@ import javax.measure.Unit;
 import javax.measure.format.MeasurementParseException;
 
 import tech.units.indriya.AbstractUnit;
-import tech.units.indriya.internal.format.TokenException;
-import tech.units.indriya.internal.format.TokenMgrError;
 import tech.units.indriya.internal.format.UnitFormatParser;
 import tech.units.indriya.unit.AnnotatedUnit;
 

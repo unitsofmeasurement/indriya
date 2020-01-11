@@ -27,40 +27,52 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package tech.units.indriya.internal.format.l10n;
+package tech.units.indriya;
 
-import static org.junit.jupiter.api.Assertions.*;
 
-import java.util.ResourceBundle;
+/**
+ * This error is used to indicate problems with creating, retrieving and manipulating units of measurement objects.
+ * </p>
+ *
+ * implSpec This class is intended for use in a single thread. Exception thrown when errors occur during Units of Measurement operations.
+ *
+ * @author <a href="mailto:werner@uom.technology">Werner Keil</a>
+ * @version 1.0, Jan 11, 2020
+ * @since 2.0.2
+ */
+// TODO this could be moved into the API at a later point
+public class MeasurementError extends Error {
 
-import org.junit.jupiter.api.Test;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -412360965273525777L;
 
-import tech.units.indriya.internal.format.l10n.MultiPropertyResourceBundle;
+	/**
+     * Constructs a {@code MeasurementError} with no detail message.
+     */
+    public MeasurementError() {
+        super();
+    }
 
-public class ResourcesTest {
+    /**
+     * Constructs a {@code MeasurementError} with the specified detail
+     * message.
+     *
+     * @param   s   the detail message.
+     */
+    public MeasurementError(String s) {
+        super(s);
+    }
 
-  @Test
-  public void testResources() {
-    ResourceBundle bundle = ResourceBundle.getBundle("format/messages");
-
-    assertNotNull(bundle.getString("res1"));
-
-    MultiPropertyResourceBundle multiBundle = new MultiPropertyResourceBundle(bundle, "format");
-    assertNotNull(multiBundle.getString("res1"));
-
-    ResourceBundle bundle2 = ResourceBundle.getBundle("other_format/more_messages");
-    assertNotNull(bundle2.getString("more1"));
-
-    multiBundle.merge(bundle2, "other_format");
-
-    assertNotNull(multiBundle.getString("res1"));
-    assertNotNull(multiBundle.getString("res2"));
-    assertNotNull(multiBundle.getString("res3"));
-
-    assertEquals("res1", multiBundle.getString("res1"));
-    assertEquals("res2", multiBundle.getString("res2"));
-    assertEquals("res3", multiBundle.getString("res3"));
-    assertEquals("more message1", multiBundle.getString("more1"));
-  }
-
+    /**
+     * Constructs a {@code MeasurementError} with the specified detail
+     * message and cause.
+     *
+     * @param s     the detail message.
+     * @param cause the cause, may be {@code null}
+     */
+    public MeasurementError(String s, Throwable cause) {
+        super(s, cause);
+    }
 }
