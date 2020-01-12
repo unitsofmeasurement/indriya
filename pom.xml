@@ -57,7 +57,8 @@
 		<maven.jar.version>3.1.0</maven.jar.version>
 		<maven.source.version>3.1.0</maven.source.version>
 		<maven.javadoc.version>3.1.1</maven.javadoc.version>
-
+		<maven.surefire.version>2.20</maven.surefire.version>
+		
 		<!-- OSGI support -->
 		<osgi.version>5.0.0</osgi.version>
 		<osgi.compendium.version>${osgi.version}</osgi.compendium.version>
@@ -274,7 +275,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.19</version>
+				<version>${maven.surefire.version}</version>
 				<dependencies>
 					<dependency>
 						<groupId>org.junit.platform</groupId>
