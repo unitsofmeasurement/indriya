@@ -195,6 +195,7 @@ public class EBNFUnitFormat extends AbstractUnitFormat {
    * 
    */
   EBNFUnitFormat() {
+    // TODO try to use MultiPropertyResourceBundle with at least one extension point in a package other than tech.units.indriya.format for additional resources.
     this(SymbolMap.of(ResourceBundle.getBundle(BUNDLE_NAME, Locale.ROOT)));
   }
 

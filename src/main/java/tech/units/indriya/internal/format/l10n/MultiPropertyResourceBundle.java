@@ -48,9 +48,11 @@ import java.util.Vector;
  * </p>
  * 
  * @author Werner Keil
+ * @version 1.0
  */
 public class MultiPropertyResourceBundle extends ResourceBundle {
-
+// also see https://github.com/vitorzachi/tcc-multitenancy/blob/master/tccMultitenancy/src/net/sf/trugger/util/MultiResourceBundle.java but that code might be older
+	
   /**
    * <p>
    * The location of the properties file that was used to instantiate the <code>MultiPropertyResourceBundle</code> instance. This field is set by the
