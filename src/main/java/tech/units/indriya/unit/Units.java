@@ -66,8 +66,6 @@ import javax.measure.quantity.Speed;
 import javax.measure.quantity.Temperature;
 import javax.measure.quantity.Time;
 import javax.measure.quantity.Volume;
-import javax.measure.spi.SystemOfUnits;
-
 import tech.units.indriya.AbstractSystemOfUnits;
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.function.AddConverter;
@@ -77,10 +75,11 @@ import tech.units.indriya.unit.UnitDimension;
 
 /**
  * <p>
- * This class defines commonly used units.
+ * This class defines common units.
  *
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 2.0, February 09, 2020
+ * @author <a href="mailto:thodoris.bais@gmail.com">Thodoris Bais</a>
+ * @version 2.1, February 18, 2020
  * @since 1.0
  */
 public class Units extends AbstractSystemOfUnits {
@@ -228,7 +227,7 @@ public class Units extends AbstractSystemOfUnits {
 	 * defining constant ∆νCs:
 	 *
 	 * 1 Hz = ∆νCs / 9 192 631 770 or 1 s = 9 192 631 770 / ∆νCs
-	 * 
+	 *
 	 * @implNote SI Base Unit
 	 */
 	public static final Unit<Time> SECOND = addUnit(new BaseUnit<>("s", "Second", UnitDimension.TIME), Time.class);
@@ -249,7 +248,7 @@ public class Units extends AbstractSystemOfUnits {
 	 * radian is the angle between two radii of a circle such that the length of the
 	 * arc between them is equal to the radius.
 	 */
-	public static final Unit<Angle> RADIAN = addUnit(AlternateUnit.of(ONE, "rad"), Angle.class);
+	public static final Unit<Angle> RADIAN = addUnit(AlternateUnit.of(ONE, "rad", "Radian"), Angle.class);
 
 	/**
 	 * The SI unit for solid angle quantities (standard name <code>sr</code>). One
@@ -257,7 +256,7 @@ public class Units extends AbstractSystemOfUnits {
 	 * on the surface of the sphere that is equal to the radius squared. The total
 	 * solid angle of a sphere is 4*Pi steradians.
 	 */
-	public static final Unit<SolidAngle> STERADIAN = addUnit(new AlternateUnit<>(ONE, "sr"), SolidAngle.class);
+	public static final Unit<SolidAngle> STERADIAN = addUnit(new AlternateUnit<>(ONE, "sr", "Steradian"), SolidAngle.class);
 
 	/**
 	 * The SI unit for frequency (standard name <code>Hz</code>). A unit of
@@ -265,7 +264,7 @@ public class Units extends AbstractSystemOfUnits {
 	 * (1857-1894), German physicist who was the first to produce radio waves
 	 * artificially.
 	 */
-	public static final Unit<Frequency> HERTZ = addUnit(new AlternateUnit<Frequency>(ONE.divide(SECOND), "Hz"),
+	public static final Unit<Frequency> HERTZ = addUnit(new AlternateUnit<Frequency>(ONE.divide(SECOND), "Hz", "Hertz"),
 			Frequency.class);
 
 	/**
@@ -275,7 +274,7 @@ public class Units extends AbstractSystemOfUnits {
 	 * Newton (1642-1727).
 	 */
 	public static final Unit<Force> NEWTON = addUnit(
-			new AlternateUnit<Force>(METRE.multiply(KILOGRAM).divide(SECOND.pow(2)), "N"), Force.class);
+			new AlternateUnit<Force>(METRE.multiply(KILOGRAM).divide(SECOND.pow(2)), "N", "Newton"), Force.class);
 
 	/**
 	 * The SI unit for pressure, stress (standard name <code>Pa</code>). One pascal
@@ -283,7 +282,7 @@ public class Units extends AbstractSystemOfUnits {
 	 * philosopher and mathematician Blaise Pascal (1623-1662).
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public static final Unit<Pressure> PASCAL = addUnit(new AlternateUnit(NEWTON.divide(METRE.pow(2)), "Pa"),
+	public static final Unit<Pressure> PASCAL = addUnit(new AlternateUnit(NEWTON.divide(METRE.pow(2)), "Pa", "Pascal"),
 			Pressure.class);
 
 	/**
@@ -292,7 +291,7 @@ public class Units extends AbstractSystemOfUnits {
 	 * distance of 1 metre in the direction of the force. It is named after the
 	 * English physicist James Prescott Joule (1818-1889).
 	 */
-	public static final Unit<Energy> JOULE = addUnit(new AlternateUnit<Energy>(NEWTON.multiply(METRE), "J"),
+	public static final Unit<Energy> JOULE = addUnit(new AlternateUnit<Energy>(NEWTON.multiply(METRE), "J", "Joule"),
 			Energy.class);
 
 	/**
@@ -300,7 +299,7 @@ public class Units extends AbstractSystemOfUnits {
 	 * is equal to one joule per second. It is named after the British scientist
 	 * James Watt (1736-1819).
 	 */
-	public static final Unit<Power> WATT = addUnit(new AlternateUnit<Power>(JOULE.divide(SECOND), "W"), Power.class);
+	public static final Unit<Power> WATT = addUnit(new AlternateUnit<Power>(JOULE.divide(SECOND), "W", "Watt"), Power.class);
 
 	/**
 	 * The SI unit for electric charge, quantity of electricity (standard name
@@ -309,7 +308,7 @@ public class Units extends AbstractSystemOfUnits {
 	 * physicist Charles Augustin de Coulomb (1736-1806).
 	 */
 	public static final Unit<ElectricCharge> COULOMB = addUnit(
-			new AlternateUnit<ElectricCharge>(SECOND.multiply(AMPERE), "C"), ElectricCharge.class);
+			new AlternateUnit<ElectricCharge>(SECOND.multiply(AMPERE), "C", "Coulomb"), ElectricCharge.class);
 
 	/**
 	 * The SI unit for electric potential difference, electromotive force (standard
@@ -319,7 +318,7 @@ public class Units extends AbstractSystemOfUnits {
 	 * named after the Italian physicist Count Alessandro Volta (1745-1827).
 	 */
 	public static final Unit<ElectricPotential> VOLT = addUnit(
-			new AlternateUnit<ElectricPotential>(WATT.divide(AMPERE), "V"), ElectricPotential.class);
+			new AlternateUnit<ElectricPotential>(WATT.divide(AMPERE), "V", "Volt"), ElectricPotential.class);
 
 	/**
 	 * The SI unit for capacitance (standard name <code>F</code>). One Farad is
@@ -329,7 +328,7 @@ public class Units extends AbstractSystemOfUnits {
 	 * (1791-1867).
 	 */
 	public static final Unit<ElectricCapacitance> FARAD = addUnit(
-			new AlternateUnit<ElectricCapacitance>(COULOMB.divide(VOLT), "F"), ElectricCapacitance.class);
+			new AlternateUnit<ElectricCapacitance>(COULOMB.divide(VOLT), "F", "Farad"), ElectricCapacitance.class);
 
 	/**
 	 * The SI unit for electric resistance (standard name <code>Ohm</code>). One Ohm
@@ -338,7 +337,7 @@ public class Units extends AbstractSystemOfUnits {
 	 * the German physicist Georg Simon Ohm (1789-1854).
 	 */
 	public static final Unit<ElectricResistance> OHM = addUnit(
-			new AlternateUnit<ElectricResistance>(VOLT.divide(AMPERE), "Ω"), ElectricResistance.class);
+			new AlternateUnit<ElectricResistance>(VOLT.divide(AMPERE), "Ω", "Ohm"), ElectricResistance.class);
 
 	/**
 	 * The SI unit for electric conductance (standard name <code>S</code>). One
@@ -346,7 +345,7 @@ public class Units extends AbstractSystemOfUnits {
 	 * engineer Ernst Werner von Siemens (1816-1892).
 	 */
 	public static final Unit<ElectricConductance> SIEMENS = addUnit(
-			new AlternateUnit<ElectricConductance>(AMPERE.divide(VOLT), "S"), ElectricConductance.class);
+			new AlternateUnit<ElectricConductance>(AMPERE.divide(VOLT), "S", "Siemens"), ElectricConductance.class);
 
 	/**
 	 * The SI unit for magnetic flux (standard name <code>Wb</code>). One Weber is
@@ -355,7 +354,7 @@ public class Units extends AbstractSystemOfUnits {
 	 * within one second. It is named after the German physicist Wilhelm Eduard
 	 * Weber (1804-1891).
 	 */
-	public static final Unit<MagneticFlux> WEBER = addUnit(new AlternateUnit<MagneticFlux>(VOLT.multiply(SECOND), "Wb"),
+	public static final Unit<MagneticFlux> WEBER = addUnit(new AlternateUnit<MagneticFlux>(VOLT.multiply(SECOND), "Wb", "Weber"),
 			MagneticFlux.class);
 
 	/**
@@ -365,7 +364,7 @@ public class Units extends AbstractSystemOfUnits {
 	 * (1856-1943).
 	 */
 	public static final Unit<MagneticFluxDensity> TESLA = addUnit(
-			new AlternateUnit<MagneticFluxDensity>(WEBER.divide(METRE.pow(2)), "T"), MagneticFluxDensity.class);
+			new AlternateUnit<MagneticFluxDensity>(WEBER.divide(METRE.pow(2)), "T", "Tesla"), MagneticFluxDensity.class);
 
 	/**
 	 * The alternate unit for inductance (standard name <code>H</code>). One Henry
@@ -374,7 +373,7 @@ public class Units extends AbstractSystemOfUnits {
 	 * second. It is named after the American physicist Joseph Henry (1791-1878).
 	 */
 	public static final Unit<ElectricInductance> HENRY = addUnit(
-			new AlternateUnit<ElectricInductance>(WEBER.divide(AMPERE), "H"), ElectricInductance.class);
+			new AlternateUnit<ElectricInductance>(WEBER.divide(AMPERE), "H", "Henry"), ElectricInductance.class);
 
 	/**
 	 * The SI unit for Celsius temperature (standard name <code>Cel</code>). This is
@@ -391,14 +390,14 @@ public class Units extends AbstractSystemOfUnits {
 	 * one candela intensity radiating equally in all directions.
 	 */
 	public static final Unit<LuminousFlux> LUMEN = addUnit(
-			new AlternateUnit<LuminousFlux>(CANDELA.multiply(STERADIAN), "lm"), LuminousFlux.class);
+			new AlternateUnit<LuminousFlux>(CANDELA.multiply(STERADIAN), "lm", "Lumen"), LuminousFlux.class);
 
 	/**
 	 * The SI unit for illuminance (standard name <code>lx</code>). One Lux is equal
 	 * to one lumen per square metre.
 	 */
 	public static final Unit<Illuminance> LUX = addUnit(
-			new AlternateUnit<Illuminance>(LUMEN.divide(METRE.pow(2)), "lx"), Illuminance.class);
+			new AlternateUnit<Illuminance>(LUMEN.divide(METRE.pow(2)), "lx", "Lux"), Illuminance.class);
 
 	/**
 	 * The SI unit for activity of a radionuclide (standard name <code>Bq</code> ).
@@ -415,7 +414,7 @@ public class Units extends AbstractSystemOfUnits {
 	 * L. H. Gray (1905-1965).
 	 */
 	public static final Unit<RadiationDoseAbsorbed> GRAY = addUnit(
-			new AlternateUnit<RadiationDoseAbsorbed>(JOULE.divide(KILOGRAM), "Gy"), RadiationDoseAbsorbed.class);
+			new AlternateUnit<RadiationDoseAbsorbed>(JOULE.divide(KILOGRAM), "Gy", "Gray"), RadiationDoseAbsorbed.class);
 
 	/**
 	 * The SI unit for dose equivalent (standard name <code>Sv</code>). One Sievert
@@ -424,13 +423,13 @@ public class Units extends AbstractSystemOfUnits {
 	 * after the Swedish physicist Rolf Sievert (1898-1966).
 	 */
 	public static final Unit<RadiationDoseEffective> SIEVERT = addUnit(
-			new AlternateUnit<RadiationDoseEffective>(JOULE.divide(KILOGRAM), "Sv"), RadiationDoseEffective.class);
+			new AlternateUnit<RadiationDoseEffective>(JOULE.divide(KILOGRAM), "Sv", "Sievert"), RadiationDoseEffective.class);
 
 	/**
 	 * The SI unit for catalytic activity (standard name <code>kat</code>).
 	 */
 	public static final Unit<CatalyticActivity> KATAL = addUnit(
-			new AlternateUnit<CatalyticActivity>(MOLE.divide(SECOND), "kat"), CatalyticActivity.class);
+			new AlternateUnit<CatalyticActivity>(MOLE.divide(SECOND), "kat", "Katal"), CatalyticActivity.class);
 
 	// ////////////////////////////
 	// SI DERIVED PRODUCT UNITS //
@@ -520,7 +519,7 @@ public class Units extends AbstractSystemOfUnits {
 	 *
 	 * @return the Units instance.
 	 */
-	public static SystemOfUnits getInstance() {
+	public static AbstractSystemOfUnits getInstance() {
 		return INSTANCE;
 	}
 

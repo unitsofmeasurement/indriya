@@ -51,7 +51,7 @@ import java.util.stream.Collectors;
  * </p>
  *
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 1.2, June 21, 2018
+ * @version 2.0, Feb 18, 2020
  * @since 1.0
  */
 public abstract class AbstractSystemOfUnits implements SystemOfUnits, Nameable {
@@ -94,21 +94,76 @@ public abstract class AbstractSystemOfUnits implements SystemOfUnits, Nameable {
 				.collect(Collectors.toSet());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see SystemOfUnits#getUnit()
+	 */
 	@SuppressWarnings("unchecked")
 	@Override
 	public <Q extends Quantity<Q>> Unit<Q> getUnit(Class<Q> quantityType) {
 		return quantityToUnit.get(quantityType);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see SystemOfUnits#getUnit()
+	 */
 	@Override
 	public Unit<?> getUnit(String string) {
 		Objects.requireNonNull(string);
-		return this.getUnits().stream()
-	              .filter((u) -> string.equals(u.toString()))
-	              .findAny()
-	              .orElse(null);
+		return this.getUnits().stream().filter((u) -> string.equals(u.toString())).findAny().orElse(null);
+	}
+
+	/**
+	 * <p>
+	 * Returns a unit with the given {@linkplain String string} representation in a
+	 * particular {@linkplain UnitStyle style} or {@code null} if none is found in
+	 * this unit system and requested style.</p>
+	 * <p>
+	 * <b>NOTE:</b> Use {@code ignoreCase} carefully, as it will find the <b>FIRST</b> unit for a particular string, e.g. the symbol of {@code SECOND} and {@code SIEMENS} would the same without case.
+	 * </p>
+	 * @param string the string representation of a unit, not {@code null}.
+	 * @param style the style of unit representation.
+	 * @param ignoreCase ignore the case or not?
+	 * @return the unit with the given string representation.
+	 * @since 2.0
+	 */
+	public Unit<?> getUnit(String string, UnitStyle style, boolean ignoreCase) {
+		Objects.requireNonNull(string);
+		switch (style) {
+		case NAME:
+			if (ignoreCase) {
+				return this.getUnits().stream().filter((u) -> string.equalsIgnoreCase(u.getName())).findAny().orElse(null);
+			} else {
+				return this.getUnits().stream().filter((u) -> string.equals(u.getName())).findAny().orElse(null);
+			}
+		case SYMBOL:
+			if (ignoreCase) {
+				return this.getUnits().stream().filter((u) -> string.equalsIgnoreCase(u.getSymbol())).findAny().orElse(null);
+			} else {
+				return this.getUnits().stream().filter((u) -> string.equals(u.getSymbol())).findAny().orElse(null);
+			}
+		default:
+			return getUnit(string);
+		}
 	}
 	
+	/**
+	 * Returns a unit with the given {@linkplain String string} representation in a
+	 * particular {@linkplain UnitStyle style} or {@code null} if none is found in
+	 * this unit system and requested style.
+	 *
+	 * @param string the string representation of a unit, not {@code null}.
+	 * @param style the style of unit representation.
+	 * @return the unit with the given string representation.
+	 * @since 2.0
+	 */
+	public Unit<?> getUnit(String string, UnitStyle style) {
+		return getUnit(string, style, false);
+	}
+
 	protected static class Helper {
 		static Set<Unit<?>> getUnitsOfDimension(final Set<Unit<?>> units, Dimension dimension) {
 			if (dimension != null) {
@@ -121,10 +176,8 @@ public abstract class AbstractSystemOfUnits implements SystemOfUnits, Nameable {
 		/**
 		 * Adds a new named unit to the collection.
 		 * 
-		 * @param unit
-		 *            the unit being added.
-		 * @param name
-		 *            the name of the unit.
+		 * @param unit the unit being added.
+		 * @param name the name of the unit.
 		 * @return <code>unit</code>.
 		 * @since 1.0
 		 */
@@ -135,12 +188,9 @@ public abstract class AbstractSystemOfUnits implements SystemOfUnits, Nameable {
 		/**
 		 * Adds a new named unit to the collection.
 		 * 
-		 * @param unit
-		 *            the unit being added.
-		 * @param name
-		 *            the name of the unit.
-		 * @param name
-		 *            the symbol of the unit.
+		 * @param unit the unit being added.
+		 * @param name the name of the unit.
+		 * @param name the symbol of the unit.
 		 * @return <code>unit</code>.
 		 * @since 1.0
 		 */
@@ -151,14 +201,10 @@ public abstract class AbstractSystemOfUnits implements SystemOfUnits, Nameable {
 		/**
 		 * Adds a new named unit to the collection.
 		 * 
-		 * @param unit
-		 *            the unit being added.
-		 * @param name
-		 *            the name of the unit.
-		 * @param name
-		 *            the symbol of the unit.
-		 * @param style
-		 *            style of the unit.
+		 * @param unit  the unit being added.
+		 * @param name  the name of the unit.
+		 * @param name  the symbol of the unit.
+		 * @param style style of the unit.
 		 * @return <code>unit</code>.
 		 * @since 1.0.1
 		 */
@@ -178,7 +224,7 @@ public abstract class AbstractSystemOfUnits implements SystemOfUnits, Nameable {
 			case SYMBOL:
 				if (unit instanceof AbstractUnit) {
 					AbstractUnit<?> aUnit = (AbstractUnit<?>) unit;
-					if (name != null && NAME_AND_SYMBOL.equals(style)) { 
+					if (name != null && NAME_AND_SYMBOL.equals(style)) {
 						aUnit.setName(name);
 					}
 					if (name != null && (SYMBOL.equals(style) || NAME_AND_SYMBOL.equals(style))) {
@@ -219,15 +265,11 @@ public abstract class AbstractSystemOfUnits implements SystemOfUnits, Nameable {
 		/**
 		 * Adds a new labeled unit to the set.
 		 * 
-		 * @param units
-		 *            the set to add to.
+		 * @param units the set to add to.
 		 * 
-		 * @param unit
-		 *            the unit being added.
-		 * @param text
-		 *            the text for the unit.
-		 * @param style
-		 *            style of the unit.
+		 * @param unit  the unit being added.
+		 * @param text  the text for the unit.
+		 * @param style style of the unit.
 		 * @return <code>unit</code>.
 		 * @since 1.0.1
 		 */
@@ -257,7 +299,7 @@ public abstract class AbstractSystemOfUnits implements SystemOfUnits, Nameable {
 					units.add(aUnit);
 					SimpleUnitFormat.getInstance().label(aUnit, text);
 					return (U) aUnit;
-				} 
+				}
 				// label in any case, returning below
 				SimpleUnitFormat.getInstance().label(unit, text);
 				break;

@@ -30,12 +30,13 @@
 package tech.units.indriya.format;
 
 /**
- * Defines the different variants of unit formatting.
+ * Defines the different variants of unit representation.
  * 
  * @author Werner Keil
- * @version 1.2, April 25, 2019
+ * @version 2.0, February 18, 2020
  * @since 1.0.1
  */
+// TODO relocate to parent package?
 public enum UnitStyle {
     /**
      * The unit will be rendered as its name.

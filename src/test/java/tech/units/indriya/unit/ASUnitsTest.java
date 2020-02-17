@@ -29,36 +29,30 @@
  */
 package tech.units.indriya.unit;
 
-import java.util.Set;
+import static tech.units.indriya.format.UnitStyle.*;
+
 import java.util.logging.Logger;
 
-import javax.measure.Dimension;
 import javax.measure.Unit;
-import javax.measure.quantity.Time;
-import javax.measure.spi.SystemOfUnits;
-
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import tech.units.indriya.unit.UnitDimension;
+import tech.units.indriya.AbstractSystemOfUnits;
 import tech.units.indriya.unit.Units;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static tech.units.indriya.unit.Units.METRE;
-import static tech.units.indriya.unit.Units.GRAM;
-import static tech.units.indriya.unit.Units.KILOGRAM;
-import static tech.units.indriya.unit.Units.WATT;
+import static tech.units.indriya.unit.Units.*;
 
 /**
- * Tests the Units class.
+ * Tests the AbstractSystemOfUnits aspect of the Units class.
  * 
  * @author Werner Keil
  */
-public class UnitsTest {
-    static final Logger logger = Logger.getLogger(UnitsTest.class.getName());
+public class ASUnitsTest {
+    static final Logger logger = Logger.getLogger(ASUnitsTest.class.getName());
 
-    private SystemOfUnits sou;
+    private AbstractSystemOfUnits sou;
 
     /*
      * (non-Javadoc)
@@ -81,83 +75,87 @@ public class UnitsTest {
     }
 
     @Test
-    public void testByClassTime() {
-        Unit<?> result = sou.getUnit(Time.class);
-        assertNotNull(result);
-        assertEquals("s", result.toString());
+    public void testByNameM() {
+        final Unit<?> u = sou.getUnit("Metre", NAME);
+        assertNotNull(u);
+        assertEquals(METRE, u);
     }
-
+    
     @Test
-    public void testByStringM() {
-        final Unit<?> u = sou.getUnit("m");
+    public void testByNameMIgnoreCase() {
+        final Unit<?> u = sou.getUnit("mEtre", NAME, true);
         assertNotNull(u);
         assertEquals(METRE, u);
     }
 
     @Test
-    public void testByStringG() {
-        final Unit<?> u = sou.getUnit("g");
+    public void testByNameKg() {
+        final Unit<?> u = sou.getUnit("Kilogram", NAME);
         assertNotNull(u);
-        assertEquals(GRAM, u);
+        assertEquals(KILOGRAM, u);
     }
-
+    
     @Test
-    public void testByStringKg() {
-        final Unit<?> u = sou.getUnit("kg");
+    public void testByNameKgIgnoreCase() {
+        final Unit<?> u = sou.getUnit("kilogram", NAME, true);
         assertNotNull(u);
         assertEquals(KILOGRAM, u);
     }
 
     @Test
-    public void testByStringW() {
-        final Unit<?> u = sou.getUnit("W");
+    public void testBySymbolKg() {
+        final Unit<?> u = sou.getUnit("kg", SYMBOL);
+        assertNotNull(u);
+        assertEquals(KILOGRAM, u);
+    }
+
+    @Test
+    public void testBySymbolW() {
+        final Unit<?> u = sou.getUnit("W", SYMBOL);
+        assertNotNull(u);
+        assertEquals(WATT, u);
+    }
+    	
+    @Test
+    public void testByNameW() {
+        final Unit<?> u = sou.getUnit("Watt", NAME);
         assertNotNull(u);
         assertEquals(WATT, u);
     }
     
-	@Test
-	public void testGetByDimensionAoS() {
-		testGetByDimension(UnitDimension.AMOUNT_OF_SUBSTANCE, 1);
-	}
-	
-	@Test
-	public void testGetByDimensionElCurrent() {
-		testGetByDimension(UnitDimension.ELECTRIC_CURRENT, 1);
-	}
-
-	@Test
-	public void testGetByDimensionLen() {
-		testGetByDimension(UnitDimension.LENGTH, 1);
-	}
-	
-	@Test
-	public void testGetByDimensionLumInt() {
-		testGetByDimension(UnitDimension.LUMINOUS_INTENSITY, 2);
-	}
-
-	@Test
-	public void testGetByDimensionMass() {
-		testGetByDimension(UnitDimension.MASS, 2);
-	}
-	
-	@Test
-	public void testGetByDimensionNone() {
-		testGetByDimension(UnitDimension.NONE, 4);
-	}
-
-	@Test
-	public void testGetByDimensionTemperature() {
-		testGetByDimension(UnitDimension.TEMPERATURE, 2);
-	}
-	
-	@Test
-	public void testGetByDimensionTime() {
-		testGetByDimension(UnitDimension.TIME, 6);
-	}
-	
-	private void testGetByDimension(final Dimension dim, int expectedSize) {
-		Set<? extends Unit<?>> units = sou.getUnits(dim);
-		assertNotNull(units);
-		assertEquals(expectedSize, units.size());
-	}
+    @Test
+    public void testByNameWIgnoreCase() {
+        final Unit<?> u = sou.getUnit("WATT", NAME, true);
+        assertNotNull(u);
+        assertEquals(WATT, u);
+    }
+    
+    @Test
+    public void testBySymbolS() {
+        final Unit<?> u = sou.getUnit("s", SYMBOL);
+        assertNotNull(u);
+        assertEquals(SECOND, u);
+    }
+    	
+    @Test
+    public void testByNameS() {
+        final Unit<?> u = sou.getUnit("Second", NAME);
+        assertNotNull(u);
+        assertEquals(SECOND, u);
+    }
+    
+    @Test
+    public void testBySymbolSIgnoreCase() {
+        final Unit<?> u = sou.getUnit("S", SYMBOL, true);
+        assertNotNull(u);
+        assertEquals(SIEMENS, u);
+        // Here we actually get SIEMENS, only in a UNIQUE system like UCUM this can be avoided, otherwise it should be case-sensitive.
+    }
+    
+    @Test
+    public void testByNameSIgnoreCase() {
+        final Unit<?> u = sou.getUnit("second", NAME, true);
+        assertNotNull(u);
+        assertEquals(SECOND, u);
+    }
 }
