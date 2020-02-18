@@ -84,11 +84,19 @@ import tech.units.indriya.unit.UnitDimension;
  */
 public class Units extends AbstractSystemOfUnits {
 
+	/** Constructor may only be called by subclasses */
 	protected Units() {
 	}
 
+	/** Singleton instance */
 	private static final Units INSTANCE = new Units();
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see SystemOfUnits#getName()
+	 */
+	@Override
 	public String getName() {
 		return Units.class.getSimpleName();
 	}
@@ -519,7 +527,7 @@ public class Units extends AbstractSystemOfUnits {
 	 *
 	 * @return the Units instance.
 	 */
-	public static AbstractSystemOfUnits getInstance() {
+	public static Units getInstance() {
 		return INSTANCE;
 	}
 
