@@ -29,6 +29,22 @@
  */
 package tech.units.indriya;
 
+import static tech.units.indriya.format.UnitStyle.LABEL;
+import static tech.units.indriya.format.UnitStyle.NAME;
+import static tech.units.indriya.format.UnitStyle.NAME_AND_SYMBOL;
+import static tech.units.indriya.format.UnitStyle.SYMBOL;
+import static tech.units.indriya.format.UnitStyle.SYMBOL_AND_LABEL;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
+
 import javax.measure.Dimension;
 import javax.measure.Quantity;
 import javax.measure.Unit;
@@ -37,13 +53,6 @@ import javax.measure.spi.SystemOfUnits;
 import tech.units.indriya.format.SimpleUnitFormat;
 import tech.units.indriya.format.UnitStyle;
 import tech.uom.lib.common.function.Nameable;
-
-import static tech.units.indriya.format.UnitStyle.*;
-
-import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -120,12 +129,17 @@ public abstract class AbstractSystemOfUnits implements SystemOfUnits, Nameable {
 	 * <p>
 	 * Returns a unit with the given {@linkplain String string} representation in a
 	 * particular {@linkplain UnitStyle style} or {@code null} if none is found in
-	 * this unit system and requested style.</p>
-	 * <p>
-	 * <b>NOTE:</b> Use {@code ignoreCase} carefully, as it will find the <b>FIRST</b> unit for a particular string, e.g. the symbol of {@code SECOND} and {@code SIEMENS} would the same without case.
+	 * this unit system and requested style.
 	 * </p>
-	 * @param string the string representation of a unit, not {@code null}.
-	 * @param style the style of unit representation.
+	 * <p>
+	 * <b>NOTE:</b> Use {@code ignoreCase} carefully, as it will find the
+	 * <b>FIRST</b> unit for a particular string, e.g. the symbol of {@code SECOND}
+	 * and {@code SIEMENS} would be the same without case, but the UPPERCASE letter
+	 * sorted first.
+	 * </p>
+	 * 
+	 * @param string     the string representation of a unit, not {@code null}.
+	 * @param style      the style of unit representation.
 	 * @param ignoreCase ignore the case or not?
 	 * @return the unit with the given string representation.
 	 * @since 2.0
@@ -135,28 +149,30 @@ public abstract class AbstractSystemOfUnits implements SystemOfUnits, Nameable {
 		switch (style) {
 		case NAME:
 			if (ignoreCase) {
-				return this.getUnits().stream().filter((u) -> string.equalsIgnoreCase(u.getName())).findAny().orElse(null);
+				return this.getUnits().stream().filter((u) -> string.equalsIgnoreCase(u.getName())).findFirst()
+						.orElse(null);
 			} else {
-				return this.getUnits().stream().filter((u) -> string.equals(u.getName())).findAny().orElse(null);
+				return this.getUnits().stream().filter((u) -> string.equals(u.getName())).findFirst().orElse(null);
 			}
 		case SYMBOL:
 			if (ignoreCase) {
-				return this.getUnits().stream().filter((u) -> string.equalsIgnoreCase(u.getSymbol())).findAny().orElse(null);
+				return this.getUnits().stream().filter((u) -> string.equalsIgnoreCase(u.getSymbol())).findFirst()
+						.orElse(null);
 			} else {
-				return this.getUnits().stream().filter((u) -> string.equals(u.getSymbol())).findAny().orElse(null);
+				return this.getUnits().stream().filter((u) -> string.equals(u.getSymbol())).findFirst().orElse(null);
 			}
 		default:
 			return getUnit(string);
 		}
 	}
-	
+
 	/**
 	 * Returns a unit with the given {@linkplain String string} representation in a
 	 * particular {@linkplain UnitStyle style} or {@code null} if none is found in
 	 * this unit system and requested style.
 	 *
 	 * @param string the string representation of a unit, not {@code null}.
-	 * @param style the style of unit representation.
+	 * @param style  the style of unit representation.
 	 * @return the unit with the given string representation.
 	 * @since 2.0
 	 */
