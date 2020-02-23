@@ -50,7 +50,7 @@ import tech.uom.lib.common.function.Parser;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 1.6, $Date: 2019-04-13 $
+ * @version 2.0, $Date: 2020-02-23 $
  * @since 1.0
  * 
  */
@@ -173,7 +173,7 @@ public abstract class AbstractQuantityFormat extends Format implements QuantityF
         try {
             return (StringBuffer) this.format(quantity, (Appendable) dest);
         } catch (IOException ex) {
-            throw new RuntimeException(ex); // Should not happen.
+            throw new MeasurementException(ex); // Should not happen.
         }
     }
     
