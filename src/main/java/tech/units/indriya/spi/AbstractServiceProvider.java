@@ -43,6 +43,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.ServiceLoader;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
@@ -53,7 +54,7 @@ import java.util.logging.Logger;
  * services.
  *
  * @author Werner Keil
- * @version 1.1
+ * @version 1.2
  * @since 2.0
  */
 public abstract class AbstractServiceProvider extends ServiceProvider implements Comparable<ServiceProvider> {
@@ -159,13 +160,12 @@ public abstract class AbstractServiceProvider extends ServiceProvider implements
      * @param quantity
      *            the quantity type
      * @return the {@link QuantityFactory}
-     * @throws NullPointerException
+     * @throws NullPointerException if quantity is {@code null}
      */
     @Override
     @SuppressWarnings("unchecked")
     public final <Q extends Quantity<Q>> QuantityFactory<Q> getQuantityFactory(Class<Q> quantity) {
-        if (quantity == null)
-            throw new NullPointerException();
+        Objects.requireNonNull(quantity);
         if (!QUANTITY_FACTORIES.containsKey(quantity)) {
             synchronized (QUANTITY_FACTORIES) {
                 QUANTITY_FACTORIES.put(quantity, DefaultQuantityFactory.getInstance(quantity));
