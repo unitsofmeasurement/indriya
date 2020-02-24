@@ -42,15 +42,15 @@
  * import tech.units.indriya.function.AbstractConverter;
  * 
  * import static tech.units.indriya.unit.Units.*; // Standard CommonUnits.
- * import static tech.units.indriya.spi.UCUM.*; // Standard & Non-Standard CommonUnits.
- *
+ * import static system.uom.common.USCustomary.MILE; // Non-standard unit.
+ * 
  * public class Main {
  *     public void main(String[] args) {
  *
  *         // Conversion between units (explicit way).
  *         AbstractUnit<Length> sourceUnit = KILO(METRE);
  *         AbstractUnit<Length> targetUnit = MILE;
- *         PhysicsConverter uc = sourceUnit.getConverterTo(targetUnit);
+ *         UnitConverter uc = sourceUnit.getConverterTo(targetUnit);
  *         System.out.println(uc.convert(10)); // Converts 10 km to miles.
  *
  *         // Same conversion than above, packed in one line.
@@ -67,44 +67,42 @@
  *     }
  * }
  *
- * > 6.2137119223733395
- * > 6.2137119223733395
- * > rad/s
- * > true
- * > [L]²·[M]/[T]²
+ * &gt; 6.2137119223733395
+ * &gt; 6.2137119223733395
+ * &gt; rad/s
+ * &gt; true
+ * &gt; [L]²·[M]/[T]²
  * </code>
  *
  * <h3>Unit Parameterization</h3>
  *
  *     CommonUnits are parameterized enforce compile-time checks of units/measures consistency, for example:<code>
  *
- *     AbstractUnit<Time> MINUTE = SECOND.times(60); // Ok.
- *     AbstractUnit<Time> MINUTE = METRE.times(60); // Compile error.
+ *     Unit<Time> MINUTE = SECOND.multiply(60); // Ok.
+ *     Unit<Time> MINUTE = METRE.multiply(60); // Compile error.
  *
- *     AbstractUnit<Pressure> HECTOPASCAL = HECTO(PASCAL); // Ok.
- *     AbstractUnit<Pressure> HECTOPASCAL = HECTO(NEWTON); // Compile error.
+ *     Unit<Pressure> HECTOPASCAL = HECTO(PASCAL); // Ok.
+ *     Unit<Pressure> HECTOPASCAL = HECTO(NEWTON); // Compile error.
  *
- *     Quantity<Time> duration = ComparableQuantity.of(2, MINUTE); // Ok.
- *     Quantity<Time> duration = ComparableQuantity.of(2, CELSIUS); // Compile error.
+ *     Quantity<Time> duration = Quantities.getQuantity(2, MINUTE); // Ok.
+ *     Quantity<Time> duration = Quantities.getQuantity(2, CELSIUS); // Compile error.
  *
- *     long milliseconds = duration.longValue(MILLI(SECOND)); // Ok.
- *     long milliseconds = duration.longValue(POUND); // Compile error.
  *     </code>
  *
  *     Runtime checks of dimension consistency can be done for more complex cases.
  *
  *     <code>
- *     AbstractUnit<Area> SQUARE_FOOT = FOOT.times(FOOT).asType(Area.class); // Ok.
- *     AbstractUnit<Area> SQUARE_FOOT = FOOT.times(KELVIN).asType(Area.class); // Runtime error.
+ *     Unit<Area> SQUARE_FOOT = FOOT.times(FOOT).asType(Area.class); // Ok.
+ *     Unit<Area> SQUARE_FOOT = FOOT.times(KELVIN).asType(Area.class); // Runtime error.
  *
- *     AbstractUnit<Temperature> KELVIN = AbstractUnit.of("K").asType(Temperature.class); // Ok.
- *     AbstractUnit<Temperature> KELVIN = AbstractUnit.of("kg").asType(Temperature.class); // Runtime error.
+ *     Unit<Temperature> KELVIN = AbstractUnit.parse("K").asType(Temperature.class); // Ok.
+ *     Unit<Temperature> KELVIN = AbstractUnit.parse("kg").asType(Temperature.class); // Runtime error.
  *     </code>
  *     </p>
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 1.1
+ * @version 2.0
  * @since 1.0
  */
 package tech.units.indriya;
