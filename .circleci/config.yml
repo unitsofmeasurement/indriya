@@ -24,7 +24,7 @@ jobs:
       - checkout
         
       # run tests!
-      - run: mvn --batch-mode test jacoco:report -Xmx3072m -Xms1024m -XX:MaxPermSize=512m
+      - run: mvn --batch-mode test jacoco:report
       
       - run: bash <(curl -s https://codecov.io/bash)
   deployment:
