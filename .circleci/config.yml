@@ -18,7 +18,7 @@ jobs:
 
     environment:
       # Customize the JVM maximum heap limit
-      MAVEN_OPTS: -Xmx3200m
+      MAVEN_OPTS: -Xmx3200m -XX:MaxPermSize=128m
     
     steps:
       - checkout
@@ -41,7 +41,7 @@ jobs:
 
     environment:
       # Customize the JVM maximum heap limit
-      MAVEN_OPTS: -Xmx3200m
+      MAVEN_OPTS: -Xmx3200m -XX:MaxPermSize=128m
     
     steps:
       - checkout
