@@ -52,8 +52,9 @@ import static tech.units.indriya.unit.Units.WATT;
 
 /**
  * Tests the Units class.
- * 
+ *
  * @author Werner Keil
+ * @author Thodoris Bais
  */
 public class UnitsTest {
     static final Logger logger = Logger.getLogger(UnitsTest.class.getName());
@@ -62,7 +63,7 @@ public class UnitsTest {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see junit.framework.TestCase#setUp()
      */
     @BeforeEach
@@ -72,7 +73,7 @@ public class UnitsTest {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see junit.framework.TestCase#tearDown()
      */
     @AfterEach
@@ -94,12 +95,28 @@ public class UnitsTest {
         assertEquals(METRE, u);
     }
 
+	@Test
+	public void testByStringNameM() {
+		final Unit<?> u = sou.getUnit("m");
+		assertNotNull(u);
+		assertNotNull(u.getName());
+		assertEquals(METRE.getName(), u.getName());
+	}
+
     @Test
     public void testByStringG() {
         final Unit<?> u = sou.getUnit("g");
         assertNotNull(u);
         assertEquals(GRAM, u);
     }
+
+	@Test
+	public void testByStringNameG() {
+		final Unit<?> u = sou.getUnit("g");
+		assertNotNull(u);
+		assertNotNull(u.getName());
+		assertEquals(GRAM.getName(), u.getName());
+	}
 
     @Test
     public void testByStringKg() {
@@ -108,18 +125,34 @@ public class UnitsTest {
         assertEquals(KILOGRAM, u);
     }
 
+	@Test
+	public void testByStringNameKg() {
+		final Unit<?> u = sou.getUnit("kg");
+		assertNotNull(u);
+		assertNotNull(u.getName());
+		assertEquals(KILOGRAM.getName(), u.getName());
+	}
+
     @Test
     public void testByStringW() {
         final Unit<?> u = sou.getUnit("W");
         assertNotNull(u);
         assertEquals(WATT, u);
     }
-    
+
+	@Test
+	public void testByStringNameW() {
+		final Unit<?> u = sou.getUnit("W");
+		assertNotNull(u);
+		assertNotNull(u.getName());
+		assertEquals(WATT.getName(), u.getName());
+	}
+
 	@Test
 	public void testGetByDimensionAoS() {
 		testGetByDimension(UnitDimension.AMOUNT_OF_SUBSTANCE, 1);
 	}
-	
+
 	@Test
 	public void testGetByDimensionElCurrent() {
 		testGetByDimension(UnitDimension.ELECTRIC_CURRENT, 1);
@@ -129,7 +162,7 @@ public class UnitsTest {
 	public void testGetByDimensionLen() {
 		testGetByDimension(UnitDimension.LENGTH, 1);
 	}
-	
+
 	@Test
 	public void testGetByDimensionLumInt() {
 		testGetByDimension(UnitDimension.LUMINOUS_INTENSITY, 2);
@@ -139,7 +172,7 @@ public class UnitsTest {
 	public void testGetByDimensionMass() {
 		testGetByDimension(UnitDimension.MASS, 2);
 	}
-	
+
 	@Test
 	public void testGetByDimensionNone() {
 		testGetByDimension(UnitDimension.NONE, 4);
@@ -149,12 +182,12 @@ public class UnitsTest {
 	public void testGetByDimensionTemperature() {
 		testGetByDimension(UnitDimension.TEMPERATURE, 2);
 	}
-	
+
 	@Test
 	public void testGetByDimensionTime() {
 		testGetByDimension(UnitDimension.TIME, 6);
 	}
-	
+
 	private void testGetByDimension(final Dimension dim, int expectedSize) {
 		Set<? extends Unit<?>> units = sou.getUnits(dim);
 		assertNotNull(units);
