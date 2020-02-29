@@ -110,14 +110,6 @@ public class UnitsTest {
         assertEquals(GRAM, u);
     }
 
-	@Test
-	public void testByStringNameG() {
-		final Unit<?> u = sou.getUnit("g");
-		assertNotNull(u);
-		assertNotNull(u.getName());
-		assertEquals(GRAM.getName(), u.getName());
-	}
-
     @Test
     public void testByStringKg() {
         final Unit<?> u = sou.getUnit("kg");
