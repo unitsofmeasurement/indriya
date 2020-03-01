@@ -31,12 +31,13 @@ package tech.units.indriya.format;
 
 import static javax.measure.BinaryPrefix.KIBI;
 import static javax.measure.BinaryPrefix.TEBI;
+import static javax.measure.MetricPrefix.GIGA;
 import static javax.measure.MetricPrefix.KILO;
 import static javax.measure.MetricPrefix.MEGA;
 import static javax.measure.MetricPrefix.MICRO;
 import static javax.measure.MetricPrefix.MILLI;
 import static javax.measure.MetricPrefix.NANO;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static tech.units.indriya.format.SimpleUnitFormat.Flavor.ASCII;
 import static tech.units.indriya.unit.Units.CANDELA;
@@ -44,6 +45,8 @@ import static tech.units.indriya.unit.Units.GRAM;
 import static tech.units.indriya.unit.Units.HERTZ;
 import static tech.units.indriya.unit.Units.KILOGRAM;
 import static tech.units.indriya.unit.Units.METRE;
+import static tech.units.indriya.unit.Units.METRE_PER_SECOND;
+import static tech.units.indriya.unit.Units.NEWTON;
 
 import java.math.BigInteger;
 import java.util.logging.Level;
@@ -256,4 +259,11 @@ public class SimpleUnitFormatTest {
       Unit<?> u = format.parse("ng");
       assertEquals(NANO(GRAM), u);
     }
+    
+	@Test
+	public void testPrefix() {
+		logger.log(LOG_LEVEL, format.format(GIGA(METRE_PER_SECOND))); 
+		assertEquals("N", format.format(NEWTON));
+		assertEquals("mN", format.format(MILLI(NEWTON)));
+	}
 }
