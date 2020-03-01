@@ -35,6 +35,7 @@ import javax.measure.UnitConverter;
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.unit.AnnotatedUnit;
 import tech.units.indriya.unit.BaseUnit;
+import tech.units.indriya.unit.ProductUnit;
 import tech.units.indriya.unit.TransformedUnit;
 
 import static tech.units.indriya.format.ConverterFormatter.formatConverter;
@@ -70,7 +71,7 @@ static int formatInternal(Unit<?> unit, Appendable buffer, SymbolMap symbolMap) 
     final String symbol = symbolMap.getSymbol(unit);
     if (symbol != null) {
       return noopPrecedenceInternal(buffer, symbol);
-    } else if (unit.getBaseUnits() != null) {
+    } else if (unit instanceof ProductUnit<?> && unit.getBaseUnits() != null) {
       return productPrecedenceInternal(unit, buffer, symbolMap);
     } else if (unit instanceof BaseUnit<?>) {
       return noopPrecedenceInternal(buffer, ((BaseUnit<?>) unit).getSymbol());

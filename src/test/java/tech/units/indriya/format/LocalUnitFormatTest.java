@@ -33,6 +33,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import static javax.measure.MetricPrefix.*;
 import static tech.units.indriya.unit.Units.*;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import javax.measure.Unit;
 import javax.measure.format.UnitFormat;
 import org.junit.jupiter.api.Disabled;
@@ -45,37 +48,60 @@ import tech.units.indriya.format.LocalUnitFormat;
  *
  */
 public class LocalUnitFormatTest {
+	private static final Logger logger = Logger.getLogger(SimpleUnitFormatTest.class.getName());
+	private static final Level LOG_LEVEL = Level.FINER;
 
-  @Test
-  @Disabled
-  // TODO LocalUnitFormat won't parse mixed units, EBNF does, also see https://github.com/unitsofmeasurement/uom-se/issues/145
-  public void testPrefixKm() {
-    final UnitFormat format = LocalUnitFormat.getInstance();
-    Unit<?> u = format.parse("km");
-    assertEquals(KILO(METRE), u);
-    assertEquals("km", u.toString());
-  }
+	@Test
+	public void testPrefixSpecialG() {
+		final UnitFormat format = LocalUnitFormat.getInstance();
+		logger.log(LOG_LEVEL, format.format(GIGA(METRE_PER_SECOND)));
+	}
 
-  @Test
-  public void testFormatKm() {
-    final UnitFormat format = LocalUnitFormat.getInstance();
-    String s = format.format(KILO(METRE));
-    assertEquals("km", s);
-  }
+	@Test
+	@Disabled
+	// TODO LocalUnitFormat won't parse mixed units, EBNF does, also see
+	// https://github.com/unitsofmeasurement/uom-se/issues/145
+	public void testPrefixKm() {
+		final UnitFormat format = LocalUnitFormat.getInstance();
+		Unit<?> u = format.parse("km");
+		assertEquals(KILO(METRE), u);
+		assertEquals("km", u.toString());
+	}
 
-  @Test
-  public void testFormatMm() {
-    final UnitFormat format = LocalUnitFormat.getInstance();
-    String s = format.format(MILLI(METRE));
-    assertEquals("mm", s);
-  }
+	@Test
+	public void testFormatKm() {
+		final UnitFormat format = LocalUnitFormat.getInstance();
+		String s = format.format(KILO(METRE));
+		assertEquals("km", s);
+	}
 
-  @Test
-  public void testParseIrregularStringLocal() {
-	  assertThrows(IllegalArgumentException.class, () -> { // TODO should behave like EBNFUnitFormat (throwing a MeasurementParseException)
-    final UnitFormat format = LocalUnitFormat.getInstance();
-    @SuppressWarnings("unused")
-	Unit<?> u = format.parse("bl//^--1a");
-	  });
-  }
+	@Test
+	public void testFormatN() {
+		final UnitFormat format = LocalUnitFormat.getInstance();
+		assertEquals("N", format.format(NEWTON));
+	}
+	
+	@Test
+	public void testFormatMm() {
+		final UnitFormat format = LocalUnitFormat.getInstance();
+		final String s = format.format(MILLI(METRE));
+		assertEquals("mm", s);
+	}
+
+	@Test
+	public void testFormatmN() {
+		final UnitFormat format = LocalUnitFormat.getInstance();
+		final String s = format.format(MILLI(NEWTON));
+		assertEquals("mN", s);
+	}
+	
+	@Test
+	public void testParseIrregularStringLocal() {
+		assertThrows(IllegalArgumentException.class, () -> { // TODO should behave like EBNFUnitFormat (throwing a
+																// MeasurementParseException)
+			final UnitFormat format = LocalUnitFormat.getInstance();
+			@SuppressWarnings("unused")
+			Unit<?> u = format.parse("bl//^--1a");
+		});
+	}
 }

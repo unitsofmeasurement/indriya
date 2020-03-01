@@ -31,10 +31,11 @@ package tech.units.indriya.format;
 
 import static javax.measure.MetricPrefix.KILO;
 import static javax.measure.MetricPrefix.MILLI;
+import static javax.measure.MetricPrefix.GIGA;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static tech.units.indriya.unit.Units.METRE;
+import static tech.units.indriya.unit.Units.*;
 
 import java.math.BigInteger;
 import java.util.logging.Level;
@@ -60,7 +61,8 @@ import tech.units.indriya.unit.Units;
  */
 public class EBNFFormatTest {
     private static final Logger logger = Logger.getLogger(EBNFFormatTest.class.getName());
-
+    private static final Level LOG_LEVEL = Level.INFO;
+    
     private UnitFormat format;
 
     @BeforeEach
@@ -112,6 +114,11 @@ public class EBNFFormatTest {
         String s = format.format(KILO(METRE));
         assertEquals("km", s);
     }
+    
+	@Test
+	public void testFormatN() {
+		assertEquals("N", format.format(NEWTON));
+	}
 
     @Test
     // TODO address https://github.com/unitsofmeasurement/uom-se/issues/145
@@ -120,6 +127,12 @@ public class EBNFFormatTest {
         assertEquals("mm", s);
     }
 
+	@Test
+	public void testFormatmN() {
+		final String s = format.format(MILLI(NEWTON));
+		assertEquals("mN", s);
+	}
+    
     @Test
     public void testParseIrregularStringEBNF() {
         assertThrows(MeasurementParseException.class, () -> {
@@ -152,5 +165,10 @@ public class EBNFFormatTest {
 		Unit<?> u = unitFormat.parse("m3");
 		assertNotNull(u);
 		assertEquals(Units.CUBIC_METRE, u);
+	}
+	
+	@Test
+	public void testPrefixSpecialG() {
+		logger.log(LOG_LEVEL, format.format(GIGA(METRE_PER_SECOND))); 
 	}
 }

@@ -41,6 +41,7 @@ import tech.units.indriya.internal.format.UnitFormatParser;
 import tech.units.indriya.unit.AlternateUnit;
 import tech.units.indriya.unit.AnnotatedUnit;
 import tech.units.indriya.unit.BaseUnit;
+import tech.units.indriya.unit.ProductUnit;
 import tech.units.indriya.unit.TransformedUnit;
 
 import static tech.units.indriya.unit.Units.CUBIC_METRE;
@@ -312,7 +313,7 @@ public class LocalUnitFormat extends AbstractUnitFormat {
     if (symbol != null) {
       buffer.append(symbol);
       return NOOP_PRECEDENCE;
-    } else if (unit.getBaseUnits() != null) {
+    } else if (unit instanceof ProductUnit<?> && unit.getBaseUnits() != null) {
       Map<Unit<?>, Integer> productUnits = (Map<Unit<?>, Integer>) unit.getBaseUnits();
       int negativeExponentCount = 0;
       // Write positive exponents first...
