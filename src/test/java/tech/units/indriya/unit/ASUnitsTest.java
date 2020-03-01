@@ -172,4 +172,19 @@ public class ASUnitsTest {
         assertNotNull(u);
         assertEquals(CELSIUS, u);
     }
+    
+    @Test
+    public void testByNameKat() {
+        final Unit<?> u = sou.getUnit("Katal", NAME);
+        assertNotNull(u);
+        assertEquals(KATAL, u);
+    }
+    
+    @Test
+    public void testByNameKatIgnoreCase() {
+        final Unit<?> u = sou.getUnit("KaTAL", NAME, true);
+        assertNotNull(u);
+        assertEquals(KATAL, u);
+    }
+
 }
