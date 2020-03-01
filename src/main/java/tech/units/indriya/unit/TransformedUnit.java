@@ -67,7 +67,7 @@ import tech.uom.lib.common.function.UnitConverterSupplier;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 1.2.1, October 12, 2018
+ * @version 2.0, March 1, 2020
  * @since 1.0
  */
 public final class TransformedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> implements UnitConverterSupplier {
@@ -109,6 +109,23 @@ public final class TransformedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q
    *
    * @param symbol
    *          the symbol to use with this transformed unit.
+   * @param name
+   *          the name to use with this transformed unit.
+   * @param parentUnit
+   *          the parent unit from which this unit is derived.
+   * @param unitConverter
+   *          the converter to the parent units.
+   * @since 2.0
+   */
+  public TransformedUnit(String symbol, String name, Unit<Q> parentUnit, UnitConverter unitConverter) {
+    this(symbol, name, parentUnit, parentUnit.getSystemUnit(), unitConverter);
+  }
+  
+  /**
+   * Creates a transformed unit from the specified parent unit.
+   *
+   * @param symbol
+   *          the symbol to use with this transformed unit.
    * @param parentUnit
    *          the parent unit from which this unit is derived.
    * @param unitConverter
@@ -119,16 +136,21 @@ public final class TransformedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q
   }
 
   /**
-   * Creates a transformed unit from the specified parent and system unit. using the parent as symbol
+   * Creates a transformed unit from the specified parent and system unit. using a specific symbol and name.
    * 
+   * @param symbol
+   *          the symbol for this unit.
+   * @param name
+   *          the name for this unit.
    * @param parentUnit
    *          the parent unit from which this unit is derived.
    * @param sysUnit
    *          the system unit which this unit is based on.
    * @param converter
    *          the converter to the parent units.
+   * @since 2.0
    */
-  public TransformedUnit(String symbol, Unit<Q> parentUnit, Unit<Q> sysUnit, UnitConverter unitConverter) {
+  public TransformedUnit(String symbol, String name, Unit<Q> parentUnit, Unit<Q> sysUnit, UnitConverter unitConverter) {
     if (parentUnit instanceof AbstractUnit) {
       final AbstractUnit<Q> abParent = (AbstractUnit<Q>) parentUnit;
 
@@ -141,9 +163,26 @@ public final class TransformedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q
       this.converter = unitConverter;
       setSymbol(symbol);
       // see https://github.com/unitsofmeasurement/uom-se/issues/54
+      setName(name);
     } else {
       throw new IllegalArgumentException("The parent unit: " + parentUnit + " is not an abstract unit.");
     }
+  }
+  
+  /**
+   * Creates a transformed unit from the specified parent and system unit. using a specific symbol.
+   * 
+   * @param symbol
+   *          the symbol for this unit.
+   * @param parentUnit
+   *          the parent unit from which this unit is derived.
+   * @param sysUnit
+   *          the system unit which this unit is based on.
+   * @param converter
+   *          the converter to the parent units.
+   */
+  public TransformedUnit(String symbol, Unit<Q> parentUnit, Unit<Q> sysUnit, UnitConverter unitConverter) {
+	  this(symbol, null, parentUnit, sysUnit, unitConverter);
   }
 
   @Override

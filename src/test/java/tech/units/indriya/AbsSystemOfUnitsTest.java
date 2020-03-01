@@ -32,6 +32,8 @@ package tech.units.indriya;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import javax.measure.Unit;
+
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.unit.Units;

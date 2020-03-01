@@ -440,9 +440,9 @@ public class Units extends AbstractSystemOfUnits {
 	public static final Unit<CatalyticActivity> KATAL = addUnit(
 			new AlternateUnit<CatalyticActivity>(MOLE.divide(SECOND), "kat", "Katal"), CatalyticActivity.class);
 
-	// ////////////////////////////
+	//////////////////////////////
 	// SI DERIVED PRODUCT UNITS //
-	// ////////////////////////////
+	//////////////////////////////
 
 	/**
 	 * The SI unit for velocity quantities (standard name <code>m/s</code>).
@@ -473,47 +473,49 @@ public class Units extends AbstractSystemOfUnits {
 	public static final Unit<Speed> KILOMETRE_PER_HOUR = addUnit(METRE_PER_SECOND.multiply(RationalNumber.of(5, 18)))
 			.asType(Speed.class);
 
-	// ///////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
 	// Common Units outside the SI that are accepted for use with the SI. //
-	// ///////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////
 
 	/**
 	 * A dimensionless unit accepted for use with SI units (standard name
 	 * <code>%</code>).
 	 */
 	public static final Unit<Dimensionless> PERCENT = addUnit(
-			new TransformedUnit<>(ONE, MultiplyConverter.ofRational(1, 100)));
+			new TransformedUnit<>("%", "Percent", ONE, MultiplyConverter.ofRational(1, 100)));
 
-	// ////////
+	//////////
 	// Time //
-	// ////////
+	//////////
 	/**
 	 * A time unit accepted for use with SI units (standard name <code>min</code>).
 	 */
 	public static final Unit<Time> MINUTE = addUnit(
-			new TransformedUnit<>("min", SECOND, SECOND, MultiplyConverter.ofRational(60, 1)));
+			new TransformedUnit<>("min", "Minute", SECOND, SECOND, MultiplyConverter.ofRational(60, 1)));
 
 	/**
 	 * A time unit accepted for use with SI units (standard name <code>h</code> ).
 	 */
 	public static final Unit<Time> HOUR = addUnit(
-			new TransformedUnit<>("h", SECOND, SECOND, MultiplyConverter.ofRational(60 * 60, 1)));
+			new TransformedUnit<>("h", "Hour", SECOND, SECOND, MultiplyConverter.ofRational(60 * 60, 1)));
 
 	/**
 	 * A time unit accepted for use with SI units (standard name <code>d</code> ).
 	 */
 	public static final Unit<Time> DAY = addUnit(
-			new TransformedUnit<>("d", SECOND, SECOND, MultiplyConverter.ofRational(24 * 60 * 60, 1)));
+			new TransformedUnit<>("d", "Day", SECOND, SECOND, MultiplyConverter.ofRational(24 * 60 * 60, 1)));
 
 	/**
-	 * A unit of duration equal to 7 {@link #DAY} (standard name <code>week</code>).
+	 * A unit of duration equal to 7 {@link #DAY} (standard name <code>w</code>).
 	 */
-	public static final Unit<Time> WEEK = addUnit(DAY.multiply(7));
+	public static final Unit<Time> WEEK = AbstractSystemOfUnits.Helper.addUnit(INSTANCE.units, 
+			DAY.multiply(7), "Week", "w");
 
 	/**
 	 * A time unit accepted for use with SI units (standard name <code>y</code> ).
 	 */
-	public static final Unit<Time> YEAR = addUnit(Units.DAY.multiply(365.2425));
+	public static final Unit<Time> YEAR = AbstractSystemOfUnits.Helper.addUnit(INSTANCE.units,
+			Units.DAY.multiply(365.2425), "Year", "y");
 
 	/**
 	 * A volume unit accepted for use with SI units (standard name <code>l</code>).
