@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>tech.units</groupId>
 	<artifactId>indriya</artifactId>
-	<url>https://unitsofmeasurement.github.io/indriya</url>
+	<url>http://units.tech</url>
 	<organization>
 		<name>Units of Measurement project</name>
 		<url>http://unitsofmeasurement.github.io</url>
@@ -414,7 +414,7 @@
 				<configuration>
 					<header>src/main/config/header.txt</header>
 					<properties>
-						<owner>${project.organization.name}</owner>
+						<owner>Jean-Marie Dautelle, Werner Keil, Otavio Santana</owner>
 						<currentYear>${thisYear}</currentYear>
 					</properties>
 					<excludes>

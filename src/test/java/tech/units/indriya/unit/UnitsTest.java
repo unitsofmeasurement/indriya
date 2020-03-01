@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2020, Units of Measurement project.
+ * Copyright (c) 2005-2020, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
  *
  * All rights reserved.
  *
@@ -45,10 +45,7 @@ import tech.units.indriya.unit.UnitDimension;
 import tech.units.indriya.unit.Units;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static tech.units.indriya.unit.Units.METRE;
-import static tech.units.indriya.unit.Units.GRAM;
-import static tech.units.indriya.unit.Units.KILOGRAM;
-import static tech.units.indriya.unit.Units.WATT;
+import static tech.units.indriya.unit.Units.*;
 
 /**
  * Tests the Units class.
@@ -93,12 +90,6 @@ public class UnitsTest {
         final Unit<?> u = sou.getUnit("m");
         assertNotNull(u);
         assertEquals(METRE, u);
-    }
-
-	@Test
-	public void testByStringNameM() {
-		final Unit<?> u = sou.getUnit("m");
-		assertNotNull(u);
 		assertNotNull(u.getName());
 		assertEquals(METRE.getName(), u.getName());
 	}
@@ -115,12 +106,6 @@ public class UnitsTest {
         final Unit<?> u = sou.getUnit("kg");
         assertNotNull(u);
         assertEquals(KILOGRAM, u);
-    }
-
-	@Test
-	public void testByStringNameKg() {
-		final Unit<?> u = sou.getUnit("kg");
-		assertNotNull(u);
 		assertNotNull(u.getName());
 		assertEquals(KILOGRAM.getName(), u.getName());
 	}
@@ -130,15 +115,18 @@ public class UnitsTest {
         final Unit<?> u = sou.getUnit("W");
         assertNotNull(u);
         assertEquals(WATT, u);
-    }
-
-	@Test
-	public void testByStringNameW() {
-		final Unit<?> u = sou.getUnit("W");
-		assertNotNull(u);
 		assertNotNull(u.getName());
 		assertEquals(WATT.getName(), u.getName());
 	}
+	
+    @Test
+    public void testByStringCel() {
+        final Unit<?> u = sou.getUnit("\u2103");
+        assertNotNull(u);
+        assertEquals(CELSIUS, u);
+        assertNotNull(u.getName());
+        assertEquals("Celsius", u.getName());
+    }
 
 	@Test
 	public void testGetByDimensionAoS() {

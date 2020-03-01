@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2020, Units of Measurement project.
+ * Copyright (c) 2005-2020, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
  *
  * All rights reserved.
  *
@@ -79,7 +79,7 @@ import tech.units.indriya.unit.UnitDimension;
  *
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author <a href="mailto:thodoris.bais@gmail.com">Thodoris Bais</a>
- * @version 2.1, February 18, 2020
+ * @version 2.2, March 1, 2020
  * @since 1.0
  */
 public class Units extends AbstractSystemOfUnits {
@@ -384,12 +384,13 @@ public class Units extends AbstractSystemOfUnits {
 			new AlternateUnit<ElectricInductance>(WEBER.divide(AMPERE), "H", "Henry"), ElectricInductance.class);
 
 	/**
-	 * The SI unit for Celsius temperature (standard name <code>Cel</code>). This is
+	 * The SI unit for Celsius temperature (standard name <code>°C</code>). This is
 	 * a unit of temperature such as the freezing point of water (at one atmosphere
-	 * of pressure) is 0 Cel, while the boiling point is 100 Cel.
+	 * of pressure) is 0 °C, while the boiling point is 100 °C.
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static final Unit<Temperature> CELSIUS = addUnit(new TransformedUnit(KELVIN, new AddConverter(273.15)));
+	public static final Unit<Temperature> CELSIUS = AbstractSystemOfUnits.Helper.addUnit(INSTANCE.units, 
+			new TransformedUnit(KELVIN, new AddConverter(273.15)), "Celsius", "\u2103");
 	// Not mapping to Temperature since temperature is mapped to Kelvin.
 
 	/**

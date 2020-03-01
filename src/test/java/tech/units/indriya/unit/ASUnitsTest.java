@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2020, Units of Measurement project.
+ * Copyright (c) 2005-2020, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
  *
  * All rights reserved.
  *
@@ -157,5 +157,19 @@ public class ASUnitsTest {
         final Unit<?> u = sou.getUnit("second", NAME, true);
         assertNotNull(u);
         assertEquals(SECOND, u);
+    }
+    
+    @Test
+    public void testByNameCel() {
+        final Unit<?> u = sou.getUnit("Celsius", NAME);
+        assertNotNull(u);
+        assertEquals(CELSIUS, u);
+    }
+    
+    @Test
+    public void testByNameCelIgnoreCase() {
+        final Unit<?> u = sou.getUnit("CELSIUS", NAME, true);
+        assertNotNull(u);
+        assertEquals(CELSIUS, u);
     }
 }
