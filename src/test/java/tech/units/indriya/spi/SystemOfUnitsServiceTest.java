@@ -91,7 +91,7 @@ public class SystemOfUnitsServiceTest {
   @Test
   public void testWrongPrefix() {
 	    assertThrows(ClassCastException.class, () -> {
-	    	@SuppressWarnings("unused")
+	    	@SuppressWarnings({ "unused", "unchecked", "rawtypes" })
 			Collection<Prefix> prefixes = service.getPrefixes((Class) BigDecimal.class);
         });
   }
