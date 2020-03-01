@@ -61,7 +61,7 @@ import tech.units.indriya.unit.Units;
  */
 public class EBNFFormatTest {
     private static final Logger logger = Logger.getLogger(EBNFFormatTest.class.getName());
-    private static final Level LOG_LEVEL = Level.INFO;
+    private static final Level LOG_LEVEL = Level.FINER;
     
     private UnitFormat format;
 
