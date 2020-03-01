@@ -52,7 +52,7 @@ public class LocalUnitFormatTest {
 	private static final Level LOG_LEVEL = Level.FINER;
 
 	@Test
-	public void testPrefixSpecialG() {
+	public void testFormatPrefixGmps() {
 		final UnitFormat format = LocalUnitFormat.getInstance();
 		logger.log(LOG_LEVEL, format.format(GIGA(METRE_PER_SECOND)));
 	}

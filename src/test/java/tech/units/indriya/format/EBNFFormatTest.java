@@ -107,7 +107,13 @@ public class EBNFFormatTest {
             }
         }
     }
-
+    
+	@Test
+	public void testParsemN() {
+		final Unit<?> p = format.parse("mN");
+		assertEquals(MILLI(NEWTON), p);
+	}
+    
     @Test
     // TODO address https://github.com/unitsofmeasurement/uom-se/issues/145
     public void testFormatKm() {
@@ -142,7 +148,7 @@ public class EBNFFormatTest {
     }
 
     @Test
-    public void testTransformed() {
+    public void testFormatTransformed() {
         final String ANGSTROEM_SYM = "\u212B";
         final Unit<Length> ANGSTROEM = new TransformedUnit<Length>(ANGSTROEM_SYM, METRE, METRE,
                 MultiplyConverter.ofRational(BigInteger.ONE, BigInteger.TEN.pow(10)));
@@ -151,7 +157,7 @@ public class EBNFFormatTest {
     }
 
     @Test
-    public void parseHertz() {
+    public void testParseHertz() {
         Unit<?> onePerSecond = ServiceProvider.current().getFormatService().getUnitFormat("EBNF").parse("1/s");
 
         Unit<?> anotherOnePerSecond = ServiceProvider.current().getFormatService().getUnitFormat().parse("one/s");
@@ -168,7 +174,14 @@ public class EBNFFormatTest {
 	}
 	
 	@Test
-	public void testPrefixSpecialG() {
+	public void testFormatGmps() {
 		logger.log(LOG_LEVEL, format.format(GIGA(METRE_PER_SECOND))); 
+	}
+	
+	@Test
+	@Disabled("FIXME Parsing fails here")
+	public void testParseGmps() {
+		final Unit<?> gms = format.parse("m/s·10^9");
+		assertEquals(GIGA(METRE_PER_SECOND), gms); 
 	}
 }

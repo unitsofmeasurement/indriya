@@ -50,6 +50,7 @@ import java.util.Map;
  * 
  * @author otaviojava
  * @author keilw
+ * @version 1.3
  */
 class EBNFHelper {
 
