@@ -108,7 +108,7 @@ public class LocalUnitFormatTest {
 	
 	@Test
 	public void testFormatKmHDe() {
-		final UnitFormat format = LocalUnitFormat.getInstance(new Locale("de"));
+		final UnitFormat format = LocalUnitFormat.getInstance(Locale.GERMAN);
 		String s = format.format(KILOMETRE_PER_HOUR);
 		assertEquals("km/h", s);
 	}
@@ -170,9 +170,23 @@ public class LocalUnitFormatTest {
 	}
 	
 	@Test
-	public void testFormatDayDE() {
-		final UnitFormat format = LocalUnitFormat.getInstance(new Locale("de"));
+	public void testFormatDayDe() {
+		final UnitFormat format = LocalUnitFormat.getInstance(Locale.GERMAN);
 		String s = format.format(DAY);
 		assertEquals("tag", s);
+	}
+	
+	@Test
+	public void testFormatWeekDe() {
+		final UnitFormat format = LocalUnitFormat.getInstance(Locale.GERMAN);
+		String s = format.format(WEEK);
+		assertEquals("woche", s);
+	}
+	
+	@Test
+	public void testFormatYearDe() {
+		final UnitFormat format = LocalUnitFormat.getInstance(Locale.GERMAN);
+		String s = format.format(YEAR);
+		assertEquals("jahr", s);
 	}
 }
