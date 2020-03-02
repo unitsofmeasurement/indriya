@@ -48,6 +48,7 @@ import tech.units.indriya.format.LocalUnitFormat;
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  *
  */
+// TODO put those tests on a separate tag like "slow", "heavy", etc.
 @Disabled
 public class LocalUnitFormatTest {
 	private static final Logger logger = Logger.getLogger(SimpleUnitFormatTest.class.getName());
