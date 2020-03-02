@@ -79,8 +79,9 @@ import tech.units.indriya.unit.UnitDimension;
  *
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author <a href="mailto:thodoris.bais@gmail.com">Thodoris Bais</a>
- * @version 2.2, March 1, 2020
+ * @version 2.3, March 2, 2020
  * @since 1.0
+ * @see <a href="https://usma.org/detailed-list-of-metric-system-units-symbols-and-prefixes">USMA: Detailed list of metric system units, symbols, and prefixes</a>
  */
 public class Units extends AbstractSystemOfUnits {
 
@@ -506,10 +507,10 @@ public class Units extends AbstractSystemOfUnits {
 			new TransformedUnit<>("d", "Day", SECOND, SECOND, MultiplyConverter.ofRational(24 * 60 * 60, 1)));
 
 	/**
-	 * A unit of duration equal to 7 {@link #DAY} (standard name <code>w</code>).
+	 * A unit of duration equal to 7 {@link #DAY} (standard name <code>wk</code>).
 	 */
 	public static final Unit<Time> WEEK = AbstractSystemOfUnits.Helper.addUnit(INSTANCE.units, 
-			DAY.multiply(7), "Week", "w");
+			DAY.multiply(7), "Week", "wk");
 
 	/**
 	 * A time unit accepted for use with SI units (standard name <code>y</code> ).
@@ -517,6 +518,13 @@ public class Units extends AbstractSystemOfUnits {
 	public static final Unit<Time> YEAR = AbstractSystemOfUnits.Helper.addUnit(INSTANCE.units,
 			Units.DAY.multiply(365.2425), "Year", "y");
 
+	/**
+	 * A unit of duration equal to 1/12 {@link #YEAR} (standard name <code>mon</code>).
+	 * @since 2.3
+	 */
+	public static final Unit<Time> MONTH = AbstractSystemOfUnits.Helper.addUnit(INSTANCE.units, 
+			YEAR.divide(12), "Month", "mon");
+	
 	/**
 	 * A volume unit accepted for use with SI units (standard name <code>l</code>).
 	 *

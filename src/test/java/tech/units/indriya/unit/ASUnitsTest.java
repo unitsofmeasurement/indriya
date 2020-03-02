@@ -31,8 +31,6 @@ package tech.units.indriya.unit;
 
 import static tech.units.indriya.format.UnitStyle.*;
 
-import java.util.logging.Logger;
-
 import javax.measure.Unit;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -50,7 +48,6 @@ import static tech.units.indriya.unit.Units.*;
  * @author Werner Keil
  */
 public class ASUnitsTest {
-    static final Logger logger = Logger.getLogger(ASUnitsTest.class.getName());
 
     private AbstractSystemOfUnits sou;
 
@@ -129,36 +126,7 @@ public class ASUnitsTest {
         assertNotNull(u);
         assertEquals(WATT, u);
     }
-    
-    @Test
-    public void testBySymbolS() {
-        final Unit<?> u = sou.getUnit("s", SYMBOL);
-        assertNotNull(u);
-        assertEquals(SECOND, u);
-    }
-    	
-    @Test
-    public void testByNameS() {
-        final Unit<?> u = sou.getUnit("Second", NAME);
-        assertNotNull(u);
-        assertEquals(SECOND, u);
-    }
-    
-    @Test
-    public void testBySymbolSIgnoreCase() {
-        final Unit<?> u = sou.getUnit("S", SYMBOL, true);
-        assertNotNull(u);
-        assertEquals(SIEMENS, u);
-        // Here we actually get SIEMENS, only in a UNIQUE system like UCUM this can be avoided, otherwise it should be case-sensitive.
-    }
-    
-    @Test
-    public void testByNameSIgnoreCase() {
-        final Unit<?> u = sou.getUnit("second", NAME, true);
-        assertNotNull(u);
-        assertEquals(SECOND, u);
-    }
-    
+       
     @Test
     public void testByNameCel() {
         final Unit<?> u = sou.getUnit("Celsius", NAME);
@@ -186,5 +154,4 @@ public class ASUnitsTest {
         assertNotNull(u);
         assertEquals(KATAL, u);
     }
-
 }

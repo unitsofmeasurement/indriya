@@ -32,13 +32,13 @@ package tech.units.indriya;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import javax.measure.Unit;
-
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.unit.Units;
 
 public class AbsSystemOfUnitsTest {
+	private static final int NUM_OF_UNITS = 44;
+	
 	private static final AbstractSystemOfUnits sut = (AbstractSystemOfUnits) Units.getInstance();
 
 	@Test
@@ -49,6 +49,6 @@ public class AbsSystemOfUnitsTest {
 	@Test
 	public void testUnits() {
 		assertNotNull(sut.getUnits());
-		assertEquals(43, sut.getUnits().size());
+		assertEquals(NUM_OF_UNITS, sut.getUnits().size());
 	}
 }

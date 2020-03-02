@@ -37,7 +37,7 @@ import java.util.ResourceBundle;
 import org.junit.jupiter.api.Test;
 
 public class MessagesTest {
-    private static final int BUNDLE_ENTRIES = 72;
+    private static final int BUNDLE_ENTRIES = 73;
 
     @Test
     public void testMessageBundle() {

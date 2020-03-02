@@ -47,6 +47,8 @@ import org.junit.jupiter.api.Test;
 
 
 public class SystemOfUnitsServiceTest {
+  private static final int NUM_OF_UNITS = 44;
+  
   private static SystemOfUnitsService service;
 
   @BeforeAll
@@ -69,7 +71,7 @@ public class SystemOfUnitsServiceTest {
      * Arrays.asList((units.toArray())); Collections.sort(list); for (Object
      * o : list) { System.out.println(o.toString()); }
      */
-    assertEquals(43, system.getUnits().size());
+    assertEquals(NUM_OF_UNITS, system.getUnits().size());
   }
 
   @Test

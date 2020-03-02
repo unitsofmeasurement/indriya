@@ -37,7 +37,7 @@ import java.util.ResourceBundle;
 import org.junit.jupiter.api.Test;
 
 public class LocalMessagesTest {
-  private static final int BUNDLE_ENTRIES = 72;
+  private static final int BUNDLE_ENTRIES = 73;
   private static final String BUNDLE_NAME = "tech.units.indriya.format.messages";
   private static final String KEY = "tech.units.indriya.unit.Units.KILOMETRE_PER_HOUR";
 

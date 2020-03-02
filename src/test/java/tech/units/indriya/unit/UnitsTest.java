@@ -165,7 +165,7 @@ public class UnitsTest {
 
 	@Test
 	public void testGetByDimensionTime() {
-		testGetByDimension(UnitDimension.TIME, 6);
+		testGetByDimension(UnitDimension.TIME, 7);
 	}
 
 	private void testGetByDimension(final Dimension dim, int expectedSize) {
