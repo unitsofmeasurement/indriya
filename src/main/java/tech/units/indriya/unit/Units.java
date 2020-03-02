@@ -470,6 +470,8 @@ public class Units extends AbstractSystemOfUnits {
 	/**
 	 * A unit of velocity expressing the number of international {@link #KILOMETRE
 	 * kilometres} per {@link #HOUR hour} (abbreviation <code>km/h</code>).
+	 * 
+	 * @see <a href="https://en.wikipedia.org/wiki/Kilometres_per_hour"> Wikipedia: Kilometres per hour</a>
 	 */
 	public static final Unit<Speed> KILOMETRE_PER_HOUR = addUnit(METRE_PER_SECOND.multiply(RationalNumber.of(5, 18)))
 			.asType(Speed.class);

@@ -33,6 +33,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static javax.measure.MetricPrefix.*;
 import static tech.units.indriya.unit.Units.*;
 
+import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -103,5 +104,75 @@ public class LocalUnitFormatTest {
 			@SuppressWarnings("unused")
 			Unit<?> u = format.parse("bl//^--1a");
 		});
+	}
+	
+	@Test
+	public void testFormatKmHDe() {
+		final UnitFormat format = LocalUnitFormat.getInstance(new Locale("de"));
+		String s = format.format(KILOMETRE_PER_HOUR);
+		assertEquals("km/h", s);
+	}
+	
+	@Test
+	public void testFormatKmHSv() {
+		final UnitFormat format = LocalUnitFormat.getInstance(new Locale("sv"));
+		String s = format.format(KILOMETRE_PER_HOUR);
+		assertEquals("km/t", s);
+	}
+	
+	@Test
+	public void testFormatKmHNbNO() {
+		final UnitFormat format = LocalUnitFormat.getInstance(new Locale("nb", "NO"));
+		String s = format.format(KILOMETRE_PER_HOUR);
+		assertEquals("km/t", s);
+	}
+	
+	@Test
+	public void testFormatKmHNoNO() {
+		final UnitFormat format = LocalUnitFormat.getInstance(new Locale("no", "NO"));
+		String s = format.format(KILOMETRE_PER_HOUR);
+		assertEquals("km/t", s);
+	}
+	
+	@Test
+	public void testFormatKmHIN() {
+		final UnitFormat format = LocalUnitFormat.getInstance(new Locale("en", "IN"));
+		String s = format.format(KILOMETRE_PER_HOUR);
+		assertEquals("kmph", s);
+	}
+	
+	@Test
+	public void testFormatKmHID() {
+		final UnitFormat format = LocalUnitFormat.getInstance(new Locale("en", "ID"));
+		String s = format.format(KILOMETRE_PER_HOUR);
+		assertEquals("km/j", s);
+	}
+	
+	@Test
+	public void testFormatKmHMY() {
+		final UnitFormat format = LocalUnitFormat.getInstance(new Locale("en", "MY"));
+		String s = format.format(KILOMETRE_PER_HOUR);
+		assertEquals("km/j", s);
+	}
+	
+	@Test
+	public void testFormatKmHTH() {
+		final UnitFormat format = LocalUnitFormat.getInstance(new Locale("th", "TH"));
+		String s = format.format(KILOMETRE_PER_HOUR);
+		assertEquals("กม./ชม.", s);
+	}
+	
+	@Test
+	public void testFormatKmHAr() {
+		final UnitFormat format = LocalUnitFormat.getInstance(new Locale("ar"));
+		String s = format.format(KILOMETRE_PER_HOUR);
+		assertEquals("كم/س", s);
+	}
+	
+	@Test
+	public void testFormatDayDE() {
+		final UnitFormat format = LocalUnitFormat.getInstance(new Locale("de"));
+		String s = format.format(DAY);
+		assertEquals("tag", s);
 	}
 }

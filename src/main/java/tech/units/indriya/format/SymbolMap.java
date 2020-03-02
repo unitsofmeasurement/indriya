@@ -79,6 +79,8 @@ public final class SymbolMap {
   private final Map<Object, String> prefixToSymbol;
   private final Map<UnitConverter, Prefix> converterToPrefix;
 
+  private transient ResourceBundle bundle;
+  
   /**
    * Creates an empty mapping.
    */
@@ -98,6 +100,7 @@ public final class SymbolMap {
    */
   private SymbolMap(ResourceBundle rb) {
     this();
+    bundle = rb;
     for (Enumeration<String> i = rb.getKeys(); i.hasMoreElements();) {
       String fqn = i.nextElement();
       String symbol = rb.getString(fqn);
@@ -249,7 +252,11 @@ public final class SymbolMap {
     return prefixToSymbol.get(prefix);
   }
 
-  @Override
+  public ResourceBundle getBundle() {
+	return bundle;
+  }
+
+@Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("tech.units.indriya.format.SymbolMap: [");
