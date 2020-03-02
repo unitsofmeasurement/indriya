@@ -48,6 +48,7 @@ import tech.units.indriya.format.LocalUnitFormat;
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  *
  */
+@Disabled
 public class LocalUnitFormatTest {
 	private static final Logger logger = Logger.getLogger(SimpleUnitFormatTest.class.getName());
 	private static final Level LOG_LEVEL = Level.FINER;
