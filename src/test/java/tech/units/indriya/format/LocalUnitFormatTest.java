@@ -40,6 +40,7 @@ import java.util.logging.Logger;
 import javax.measure.Unit;
 import javax.measure.format.UnitFormat;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.format.LocalUnitFormat;
@@ -49,7 +50,7 @@ import tech.units.indriya.format.LocalUnitFormat;
  *
  */
 // TODO put those tests on a separate tag like "slow", "heavy", etc.
-//@Disabled
+@Tag("heavy")
 public class LocalUnitFormatTest {
 	private static final Logger logger = Logger.getLogger(SimpleUnitFormatTest.class.getName());
 	private static final Level LOG_LEVEL = Level.FINER;

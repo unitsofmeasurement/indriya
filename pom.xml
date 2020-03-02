@@ -216,6 +216,8 @@
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
+				<!-- exclude tags -->
+					<excludedGroups>heavy</excludedGroups>
         			<argLine>${argLine} -Xmx2048m -XX:MaxPermSize=512m</argLine>
     			</configuration>
 			</plugin>
