@@ -15,9 +15,8 @@
 	<parent>
 		<groupId>tech.uom</groupId>
 		<artifactId>uom-parent</artifactId>
-		<version>2.0.2</version>
+		<version>2.0.3-SNAPSHOT</version>
 	</parent>
-	<version>2.0.3-SNAPSHOT</version>
 
 	<scm>
 		<url>https://github.com/unitsofmeasurement/indriya.git</url>
@@ -63,6 +62,9 @@
 		<osgi.version>5.0.0</osgi.version>
 		<osgi.compendium.version>${osgi.version}</osgi.compendium.version>
 		<osgi.annotation.version>6.0.0</osgi.annotation.version>
+		
+		<!-- Test settings -->
+		<excludedTests>**/Local*Test.java</excludedTests>
 	</properties>
 
 	<dependencies>
@@ -219,8 +221,7 @@
 					<!-- exclude tags -->
 					<excludedGroups>l10n</excludedGroups>
 					<excludes>
-						<exclude>**/LocalMessagesTest.java</exclude>
-						<exclude>**/LocalUnitFormatTest.java</exclude>
+						<exclude>${excludedTests}</exclude>
 					</excludes>
 					<argLine>${argLine} -Xmx2048m -XX:MaxPermSize=512m</argLine>
 				</configuration>
@@ -284,7 +285,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-report-plugin</artifactId>
-				<version>2.16</version>
 			</plugin>
 
 			<!-- Coverage -->
@@ -582,6 +582,14 @@
 					</plugin>
 				</plugins>
 			</build>
+		</profile>
+
+		<profile>
+			<!-- profile that runs all tests, also those consuming more memory -->
+			<id>allTests</id>
+			<properties>
+				<excludedTests></excludedTests>
+			</properties>
 		</profile>
 	</profiles>
 </project>
