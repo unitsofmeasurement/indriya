@@ -143,7 +143,7 @@ import java.util.ResourceBundle;
  * 
  * @author <a href="mailto:eric-r@northwestern.edu">Eric Russell</a>
  * @author <a href="mailto:werner@uom.tech">Werner Keil</a>
- * @version 1.4, $Date: 2019-03-21 $
+ * @version 1.5, $Date: 2020-03-02 $
  * @since 1.0
  */
 public class EBNFUnitFormat extends AbstractUnitFormat {

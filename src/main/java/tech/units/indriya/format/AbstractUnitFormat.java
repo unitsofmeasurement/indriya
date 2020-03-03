@@ -53,7 +53,7 @@ import tech.units.indriya.AbstractUnit;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 1.2, $Date: 2019-02-23 $
+ * @version 2.0, $Date: 2020-03-02 $
  * @since 1.0
  * 
  */
@@ -64,7 +64,7 @@ public abstract class AbstractUnitFormat implements UnitFormat {
    *
    * @return the symbol map used by this format.
    */
-  protected abstract SymbolMap getSymbols();
+  //protected abstract SymbolMap getSymbols();
 
   /**
    * Formats the specified unit.

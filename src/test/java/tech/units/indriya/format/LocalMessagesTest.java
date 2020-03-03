@@ -34,8 +34,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+@Tag("l10n")
 public class LocalMessagesTest {
   private static final int BUNDLE_ENTRIES = 73;
   private static final String BUNDLE_NAME = "tech.units.indriya.format.messages";

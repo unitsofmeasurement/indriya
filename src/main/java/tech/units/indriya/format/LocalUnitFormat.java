@@ -156,7 +156,7 @@ import java.util.ResourceBundle;
  *
  * @author <a href="mailto:eric-r@northwestern.edu">Eric Russell</a>
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 1.3, March 1, 2020
+ * @version 1.4, March 3, 2020
  * @since 1.0
  */
 public class LocalUnitFormat extends AbstractUnitFormat {
@@ -183,7 +183,7 @@ public class LocalUnitFormat extends AbstractUnitFormat {
   /**
    * Returns an instance for the given locale.
    * 
-   * @param locale
+   * @param locale the locale to use
    */
   public static LocalUnitFormat getInstance(Locale locale) {
     return new LocalUnitFormat(SymbolMap.of(ResourceBundle.getBundle(LocalUnitFormat.class.getPackage().getName() + ".messages", locale)));
@@ -223,7 +223,6 @@ public class LocalUnitFormat extends AbstractUnitFormat {
    * 
    * @return SymbolMap the current symbol map
    */
-  @Override
   protected SymbolMap getSymbols() {
     return symbolMap;
   }
@@ -233,9 +232,9 @@ public class LocalUnitFormat extends AbstractUnitFormat {
     return getClass().getSimpleName();
   }
 
-  // //////////////
+  ////////////////
   // Formatting //
-  // //////////////
+  ////////////////
   @Override
   public Appendable format(Unit<?> unit, Appendable appendable) throws IOException {
     if (!(unit instanceof AbstractUnit)) {

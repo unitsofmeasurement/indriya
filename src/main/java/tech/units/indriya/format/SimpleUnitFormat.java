@@ -78,7 +78,7 @@ import tech.units.indriya.unit.Units;
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author Eric Russell
- * @version 1.7, April 14, 2019
+ * @version 2.0, March 2, 2020
  * @since 1.0
  */
 public abstract class SimpleUnitFormat extends AbstractUnitFormat {
@@ -822,11 +822,6 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
     @Override
     public Unit<?> parse(CharSequence csq) throws MeasurementParseException {
       return parse(csq, 0);
-    }
-
-    @Override
-    protected SymbolMap getSymbols() {
-      return null;
     }
 
     protected Unit<?> parse(CharSequence csq, int index) throws IllegalArgumentException {

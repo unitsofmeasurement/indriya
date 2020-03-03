@@ -58,7 +58,7 @@
 		<maven.source.version>3.1.0</maven.source.version>
 		<maven.javadoc.version>3.1.1</maven.javadoc.version>
 		<maven.surefire.version>2.20</maven.surefire.version>
-		
+
 		<!-- OSGI support -->
 		<osgi.version>5.0.0</osgi.version>
 		<osgi.compendium.version>${osgi.version}</osgi.compendium.version>
@@ -143,7 +143,7 @@
 				<artifactId>uom-lib-common</artifactId>
 				<version>${lib.version}</version>
 			</dependency>
-			
+
 			<!-- OSGI support -->
 			<dependency>
 				<groupId>org.osgi</groupId>
@@ -166,7 +166,7 @@
 				<scope>provided</scope>
 				<optional>true</optional>
 			</dependency>
-			
+
 			<dependency>
 				<groupId>org.hamcrest</groupId>
 				<artifactId>hamcrest-all</artifactId>
@@ -216,13 +216,21 @@
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
-					<!-- exclude tags >
-					<excludedGroups>heavy</excludedGroups -->
+					<!-- exclude tags -->
+					<excludedGroups>l10n</excludedGroups>
 					<excludes>
-    					<exclude>**/LocalUnitFormatTest</exclude>
+						<exclude>**/LocalMessagesTest.java</exclude>
+						<exclude>**/LocalUnitFormatTest.java</exclude>
 					</excludes>
-        			<argLine>${argLine} -Xmx2048m -XX:MaxPermSize=512m</argLine>
-    			</configuration>
+					<argLine>${argLine} -Xmx2048m -XX:MaxPermSize=512m</argLine>
+				</configuration>
+				<dependencies>
+					<dependency>
+						<groupId>org.junit.platform</groupId>
+						<artifactId>junit-platform-surefire-provider</artifactId>
+						<version>${junit.platform.version}</version>
+					</dependency>
+				</dependencies>
 			</plugin>
 
 			<!-- JAR packaging -->
@@ -270,19 +278,6 @@
 					<sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
 					<targetJdk>${project.build.javaVersion}</targetJdk>
 				</configuration>
-			</plugin>
-
-			<!-- Test results -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<dependencies>
-					<dependency>
-						<groupId>org.junit.platform</groupId>
-						<artifactId>junit-platform-surefire-provider</artifactId>
-						<version>${junit.platform.version}</version>
-					</dependency>
-				</dependencies>
 			</plugin>
 
 			<!-- Report on test results -->

@@ -50,7 +50,7 @@ import tech.units.indriya.format.LocalUnitFormat;
  *
  */
 // TODO put those tests on a separate tag like "slow", "heavy", etc.
-@Tag("heavy")
+@Tag("l10n")
 public class LocalUnitFormatTest {
 	private static final Logger logger = Logger.getLogger(SimpleUnitFormatTest.class.getName());
 	private static final Level LOG_LEVEL = Level.FINER;

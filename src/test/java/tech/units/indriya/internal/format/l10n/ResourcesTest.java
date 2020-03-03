@@ -33,10 +33,12 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ResourceBundle;
 
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.internal.format.l10n.MultiPropertyResourceBundle;
 
+@Tag("l10n")
 public class ResourcesTest {
 
   @Test
