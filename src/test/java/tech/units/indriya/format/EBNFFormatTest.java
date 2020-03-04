@@ -32,6 +32,7 @@ package tech.units.indriya.format;
 import static javax.measure.MetricPrefix.KILO;
 import static javax.measure.MetricPrefix.MILLI;
 import static javax.measure.MetricPrefix.GIGA;
+import static javax.measure.MetricPrefix.NANO;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -129,8 +130,14 @@ public class EBNFFormatTest {
     @Test
     // TODO address https://github.com/unitsofmeasurement/uom-se/issues/145
     public void testFormatmm() {
-        String s = format.format(MILLI(METRE));
+        final String s = format.format(MILLI(METRE));
         assertEquals("mm", s);
+    }
+    
+    @Test
+    public void testFormatnm() {
+        final String s = format.format(NANO(METRE));
+        assertEquals("nm", s);
     }
 
 	@Test
