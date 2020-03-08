@@ -27,7 +27,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package tech.units.indriya.internal.format;
+package tech.units.indriya.spi;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static javax.measure.spi.FormatService.FormatType.*;

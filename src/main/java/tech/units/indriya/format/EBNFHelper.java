@@ -101,9 +101,12 @@ static int formatInternal(Unit<?> unit, Appendable buffer, SymbolMap symbolMap) 
       } else if (CUBIC_METRE.equals(parentUnit)) {
         if (converter != null) {
           parentUnit = LITRE;
+        	
         }
+      } else if (METRE.equals(parentUnit)) {
+        final String s = "m";  
       }
-
+      
       if (unit instanceof TransformedUnit) {
         TransformedUnit<?> transUnit = (TransformedUnit<?>) unit;
         if (parentUnit == null)

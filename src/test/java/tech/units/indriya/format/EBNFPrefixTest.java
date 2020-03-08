@@ -1,0 +1,227 @@
+/*
+ * Units of Measurement Reference Implementation
+ * Copyright (c) 2005-2020, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+ *
+ * All rights reserved.
+ *
+ * Redistribution and use in source and binary forms, with or without modification,
+ * are permitted provided that the following conditions are met:
+ *
+ * 1. Redistributions of source code must retain the above copyright notice,
+ *    this list of conditions and the following disclaimer.
+ *
+ * 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions
+ *    and the following disclaimer in the documentation and/or other materials provided with the distribution.
+ *
+ * 3. Neither the name of JSR-385, Indriya nor the names of their contributors may be used to endorse or promote products
+ *    derived from this software without specific prior written permission.
+ *
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+ * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED
+ * AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+ * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+package tech.units.indriya.format;
+
+import static javax.measure.BinaryPrefix.EXBI;
+import static javax.measure.BinaryPrefix.GIBI;
+import static javax.measure.BinaryPrefix.KIBI;
+import static javax.measure.BinaryPrefix.MEBI;
+import static javax.measure.BinaryPrefix.PEBI;
+import static javax.measure.BinaryPrefix.TEBI;
+import static javax.measure.BinaryPrefix.YOBI;
+import static javax.measure.BinaryPrefix.ZEBI;
+import static javax.measure.MetricPrefix.DECI;
+import static javax.measure.MetricPrefix.KILO;
+import static javax.measure.MetricPrefix.MEGA;
+import static javax.measure.MetricPrefix.MICRO;
+import static javax.measure.MetricPrefix.MILLI;
+import static javax.measure.MetricPrefix.NANO;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static tech.units.indriya.NumberAssertions.assertNumberEquals;
+import static tech.units.indriya.unit.Units.GRAM;
+import static tech.units.indriya.unit.Units.KILOGRAM;
+import static tech.units.indriya.unit.Units.LITRE;
+import static tech.units.indriya.unit.Units.METRE;
+
+import javax.measure.Quantity;
+import javax.measure.quantity.Length;
+import javax.measure.quantity.Mass;
+import javax.measure.quantity.Volume;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
+import tech.units.indriya.quantity.Quantities;
+import tech.units.indriya.unit.Units;
+
+public class EBNFPrefixTest {
+	private static EBNFUnitFormat format;
+	
+	@BeforeAll
+	static void init() {
+		format = EBNFUnitFormat.getInstance();
+	}
+	
+	@Test
+	public void testKilo() {
+		// TODO how to handle equals for units?
+		// assertEquals(KILOGRAM.getSymbol(), KILO(GRAM).getSymbol());
+		assertEquals(format.format(KILOGRAM), format.format(KILO(GRAM)));
+	}
+
+	@Test
+	public void testMega() {
+		Quantity<Mass> m1 = Quantities.getQuantity(1.0, MEGA(Units.GRAM));
+		assertEquals(1d, m1.getValue());
+		assertEquals("Mg", format.format(m1.getUnit()));
+	}
+
+	@Test
+	public void testDeci() {
+		Quantity<Volume> m1 = Quantities.getQuantity(1.0, LITRE);
+		assertEquals(1d, m1.getValue());
+		assertEquals("l", format.format(m1.getUnit()));
+
+		Quantity<Volume> m2 = m1.to(DECI(LITRE));
+		assertNumberEquals(10, m2.getValue(), 1E-12);
+		assertEquals("dl", format.format(m2.getUnit()));
+	}
+
+	@Test
+	public void testMilli() {
+		Quantity<Mass> m1 = Quantities.getQuantity(1.0, MILLI(Units.GRAM));
+		assertEquals(1d, m1.getValue());
+		assertEquals("mg", format.format(m1.getUnit()));
+	}
+
+	@Test
+	public void testMilli2() {
+		Quantity<Volume> m1 = Quantities.getQuantity(10, MILLI(LITRE));
+		assertEquals(10, m1.getValue());
+		assertEquals("ml", format.format(m1.getUnit()));
+	}
+
+	@Test
+	public void testMilli3() {
+		Quantity<Volume> m1 = Quantities.getQuantity(1.0, LITRE);
+		assertEquals(1d, m1.getValue());
+		assertEquals("l", format.format(m1.getUnit()));
+
+		Quantity<Volume> m2 = m1.to(MILLI(LITRE));
+		assertNumberEquals(1000L, m2.getValue(), 1E-12);
+		assertEquals("ml", format.format(m2.getUnit()));
+	}
+
+	@Test
+	public void testMilli4() {
+		Quantity<Volume> m1 = Quantities.getQuantity(1.0, MILLI(LITRE));
+		assertEquals(1d, m1.getValue());
+		assertEquals("ml", format.format(m1.getUnit()));
+
+		Quantity<Volume> m2 = m1.to(LITRE);
+		assertNumberEquals(0.001d, m2.getValue(), 1E-12);
+		assertEquals("l", format.format(m2.getUnit()));
+	}
+
+	@Test
+	public void testMicro2() {
+		Quantity<Length> m1 = Quantities.getQuantity(1.0, Units.METRE);
+		assertEquals(1d, m1.getValue());
+		assertEquals("m", format.format(m1.getUnit()));
+
+		final Quantity<Length> m2 = m1.to(MICRO(Units.METRE));
+		assertNumberEquals(1000_000L, m2.getValue(), 1E-12);
+		assertEquals("µm", format.format(m2.getUnit()));
+	}
+
+	@Test
+	public void testNano() {
+		Quantity<Mass> m1 = Quantities.getQuantity(1.0, Units.GRAM);
+		assertEquals(1d, m1.getValue());
+		assertEquals("g", format.format(m1.getUnit()));
+
+		final Quantity<Mass> m2 = m1.to(NANO(Units.GRAM));
+		assertNumberEquals(1000_000_000L, m2.getValue(), 1E-12);
+		assertEquals("ng", format.format(m2.getUnit()));
+	}
+
+	@Test
+	public void testNano2() {
+		Quantity<Length> m1 = Quantities.getQuantity(1.0, Units.METRE);
+		assertEquals(1d, m1.getValue());
+		assertEquals("m", format.format(m1.getUnit()));
+
+		final Quantity<Length> m2 = m1.to(NANO(Units.METRE));
+		assertNumberEquals(1000000000L, m2.getValue(), 1E-12);
+		assertEquals("nm", format.format(m2.getUnit()));
+	}
+
+	@Test
+	public void testHashMapAccessingMap() {
+		assertThat(LITRE.toString(), is("l"));
+		assertThat(MILLI(LITRE).toString(), is("ml"));
+		assertThat(MILLI(GRAM).toString(), is("mg"));
+	}
+
+	@Test
+    @Disabled("FIXME https://github.com/unitsofmeasurement/indriya/issues/278")
+	public void testKibi() {
+		final String s = format.format(KIBI(METRE));
+		assertEquals("Kim", s);
+	}
+	
+	public void testKibiL() {
+		final String s = format.format(KIBI(LITRE));
+		assertEquals("Kil", s);
+	}
+	
+	public void testKibiG() {
+		final String s = format.format(KIBI(GRAM));
+		assertEquals("Kig", s);
+	}
+
+	@Test
+	public void testMebi() {
+		assertEquals("Mim", format.format(MEBI(METRE)));
+	}
+
+	@Test
+	public void testGibi() {
+		assertEquals("Gim", format.format(GIBI(METRE)));
+	}
+
+	@Test
+	public void testTebi() {
+		assertEquals("Til", format.format(TEBI(LITRE)));
+	}
+
+	@Test
+	public void testPebi() {
+		assertEquals("Pil", format.format(PEBI(LITRE)));
+	}
+
+	@Test
+	public void testExbi() {
+		assertEquals("Eig", format.format(EXBI(GRAM)));
+	}
+
+	@Test
+	public void testZebi() {
+		assertEquals("Zig", format.format(ZEBI(GRAM)));	
+	}
+
+	@Test
+	public void testYobi() {
+		assertEquals("Yig", format.format(YOBI(GRAM)));	
+	}
+}

@@ -27,21 +27,22 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package tech.units.indriya.internal.format;
+package tech.units.indriya.spi;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 
-import javax.measure.format.QuantityFormat;
-import javax.measure.spi.FormatService;
+import javax.measure.format.UnitFormat;
 import javax.measure.spi.ServiceProvider;
+import javax.measure.spi.UnitFormatService;
+
 import org.junit.jupiter.api.Test;
 
 /**
  * Tests for services provided via {@link ServiceProvider}.
  */
-public class QuantityFormatServiceTest {
+public class UnitFormatServiceTest {
 
   @Test
   public void testGetServices() throws Exception {
@@ -53,29 +54,27 @@ public class QuantityFormatServiceTest {
 
   @Test
   public void testGetService() throws Exception {
-    FormatService fs = ServiceProvider.current().getFormatService();
-    assertNotNull(fs);
-    assertNotNull(fs.getQuantityFormat());
-    final QuantityFormat qf = fs.getQuantityFormat();
-    assertNotNull(qf);
-    assertEquals("SimpleQuantityFormat", qf.getClass().getSimpleName());
-    assertFalse(qf.isLocaleSensitive());
+    UnitFormatService ufs = ServiceProvider.current().getUnitFormatService();
+    assertNotNull(ufs);
+    assertNotNull(ufs.getUnitFormat());
+    final UnitFormat uf = ufs.getUnitFormat();
+    assertNotNull(uf);
+    assertEquals("DefaultFormat", uf.getClass().getSimpleName());
   }
 
   @Test
   public void testGetFormatFound() throws Exception {
-    final FormatService fs = ServiceProvider.current().getFormatService();
-    assertNotNull(fs);
-    final QuantityFormat qf = fs.getQuantityFormat("EBNF");
-    assertNotNull(qf);
-    assertEquals("NumberDelimiterQuantityFormat", qf.toString());
-    assertFalse(qf.isLocaleSensitive());
+    UnitFormatService ufs = ServiceProvider.current().getUnitFormatService();
+    assertNotNull(ufs);
+    final UnitFormat uf = ufs.getUnitFormat("EBNF");
+    assertNotNull(uf);
+    assertEquals("EBNFUnitFormat", uf.toString());
   }
 
   @Test
   public void testGetFormatNotFound() throws Exception {
-    final FormatService fs = ServiceProvider.current().getFormatService();
-    assertNotNull(fs);
-    assertNull(fs.getQuantityFormat("XYZ"));
+    UnitFormatService ufs = ServiceProvider.current().getUnitFormatService();
+    assertNotNull(ufs);
+    assertNull(ufs.getUnitFormat("XYZ"));
   }
 }

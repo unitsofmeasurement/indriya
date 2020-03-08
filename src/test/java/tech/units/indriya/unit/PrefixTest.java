@@ -223,6 +223,7 @@ public class PrefixTest {
 
 	@Test
 	public void testKibi() {
+		assertEquals("Kim", KIBI(METRE).toString());
 		final RationalNumber rational = RationalNumber.of(128, 125);
 		final UnitConverter converter = KIBI(METRE).getConverterTo(KILO(METRE));
 		assertEquals("Ki", KIBI.getSymbol());
@@ -232,6 +233,7 @@ public class PrefixTest {
 
 	@Test
 	public void testMebi() {
+		assertEquals("Mim", MEBI(METRE).toString());
 		final RationalNumber rational = RationalNumber.of(16384, 15625);
 		final UnitConverter converter = MEBI(METRE).getConverterTo(MEGA(METRE));
 		assertNumberEquals(rational.getDividend(), converter.convert(rational.getDivisor()), 1E-12);
@@ -240,6 +242,7 @@ public class PrefixTest {
 
 	@Test
 	public void testGibi() {
+		assertEquals("Gim", GIBI(METRE).toString());
 		final BigInteger exactFactor = BigInteger.valueOf(
 				GIBI.getValue().longValue()).pow(GIBI.getExponent());
 		assertEquals(1073741824L, exactFactor.longValue());
@@ -252,6 +255,7 @@ public class PrefixTest {
 
 	@Test
 	public void testTebi() {
+		assertEquals("Til", TEBI(LITRE).toString());
 		final RationalNumber rational = RationalNumber.of(268_435_456L, 244_140_625L);
 		final UnitConverter converter = TEBI(LITRE).getConverterTo(TERA(LITRE));
 		assertNumberEquals(rational.getDividend(), converter.convert(rational.getDivisor()), 1E-12);
@@ -260,6 +264,7 @@ public class PrefixTest {
 
 	@Test
 	public void testPebi() {
+		assertEquals("Pil", PEBI(LITRE).toString());
 		final RationalNumber rational = RationalNumber.of(34_359_738_368L, 30_517_578_125L);
 		final UnitConverter converter = PEBI(LITRE).getConverterTo(PETA(LITRE));
 		assertNumberEquals(rational.getDividend(), converter.convert(rational.getDivisor()), 1E-12);
@@ -268,6 +273,7 @@ public class PrefixTest {
 
 	@Test
 	public void testExbi() {
+		assertEquals("Eig", EXBI(GRAM).toString());
 		final RationalNumber rational = RationalNumber.of(4_398_046_511_104L, 3_814_697_265_625L);
 		final UnitConverter converter = EXBI(GRAM).getConverterTo(EXA(GRAM));
 		assertNumberEquals(rational.getDividend(), converter.convert(rational.getDivisor()), 1E-12);
@@ -276,6 +282,7 @@ public class PrefixTest {
 
 	@Test
 	public void testZebi() {
+		assertEquals("Zig", ZEBI(GRAM).toString());
 		final RationalNumber rational = RationalNumber.of(562_949_953_421_312L, 47_683_715_8203_125L);
 		final UnitConverter converter = ZEBI(GRAM).getConverterTo(ZETTA(GRAM));
 		assertNumberEquals(rational.getDividend(), converter.convert(rational.getDivisor()), 1E-12);
@@ -284,13 +291,12 @@ public class PrefixTest {
 
 	@Test
 	public void testYobi() {
+		assertEquals("Yig", YOBI(GRAM).toString());
 		final RationalNumber rational = RationalNumber.of(72_057_594_037_927_936L, 59_604_644_775_390_625L);
 		final UnitConverter converter = YOBI(GRAM).getConverterTo(YOTTA(GRAM));
 		assertNumberEquals(rational.getDividend(), converter.convert(rational.getDivisor()), 1E-12);
 		assertNumberEquals(rational.doubleValue(), converter.convert(1.), 1E-12);
 	}
-
-	// -- HELPER
 
 	@Test
 	public void testPrefixMethod() {

@@ -46,17 +46,9 @@
 		<maven.compile.targetLevel>${jdkVersion}</maven.compile.targetLevel>
 		<maven.compile.sourceLevel>${jdkVersion}</maven.compile.sourceLevel>
 		<additionalparam>-Xdoclint:none</additionalparam>
-		<hamcrest.version>2.0.0.0</hamcrest.version>
-		<junit.platform.version>1.1.1</junit.platform.version>
 		<jacoco.version>0.8.5</jacoco.version>
 		<compile.exclude.files>module-info.java</compile.exclude.files>
 		<thisYear>2020</thisYear>
-		<!-- Plugins -->
-		<felix.version>4.1.0</felix.version>
-		<maven.jar.version>3.1.0</maven.jar.version>
-		<maven.source.version>3.1.0</maven.source.version>
-		<maven.javadoc.version>3.1.1</maven.javadoc.version>
-		<maven.surefire.version>2.20</maven.surefire.version>
 
 		<!-- OSGI support -->
 		<osgi.version>5.0.0</osgi.version>
@@ -64,6 +56,8 @@
 		<osgi.annotation.version>6.0.0</osgi.annotation.version>
 		
 		<!-- Test settings -->
+		<hamcrest.version>2.2</hamcrest.version>
+		<junit.platform.version>1.1.1</junit.platform.version>
 		<excludedTests>**/Local*Test.java</excludedTests>
 	</properties>
 
@@ -102,7 +96,7 @@
 		</dependency>
 		<dependency>
 			<groupId>org.hamcrest</groupId>
-			<artifactId>hamcrest-junit</artifactId>
+			<artifactId>hamcrest-library</artifactId>
 			<version>${hamcrest.version}</version>
 			<scope>test</scope>
 		</dependency>
