@@ -313,7 +313,7 @@
 										<limit implementation="org.jacoco.report.check.Limit">
 											<counter>INSTRUCTION</counter>
 											<value>COVEREDRATIO</value>
-											<minimum>0.3</minimum>
+											<minimum>0.4</minimum>
 										</limit>
 										<limit>
 											<counter>COMPLEXITY</counter>
@@ -419,6 +419,7 @@
 						<exclude>.editorconfig</exclude>
 						<exclude>.gitattributes</exclude>
 						<exclude>.circleci/**</exclude>
+						<exclude>.github/**</exclude>
 						<exclude>**/LICENSE</exclude>
 						<exclude>**/README</exclude>
 						<exclude>**/pom.xml</exclude>
