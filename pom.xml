@@ -173,42 +173,6 @@
 	</dependencyManagement>
 	<build>
 		<plugins>
-			<!-- Compilation -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>9</source>
-					<target>9</target>
-				</configuration>
-				<executions>
-					<execution>
-						<id>default-compile</id>
-						<configuration>
-							<!-- compile everything to ensure module-info contains right entries -->
-							<!-- required when JAVA_HOME is JDK 8 or below -->
-							<jdkToolchain>
-								<version>9</version>
-							</jdkToolchain>
-							<release>9</release>
-						</configuration>
-					</execution>
-					<execution>
-						<id>base-compile</id>
-						<goals>
-							<goal>compile</goal>
-						</goals>
-						<!-- recompile everything for target VM except the module-info.java -->
-						<configuration>
-							<source>${maven.compile.sourceLevel}</source>
-							<target>${maven.compile.targetLevel}</target>
-							<excludes>
-								<exclude>tech/units/indriya/module-info.java</exclude>
-							</excludes>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
@@ -490,6 +454,67 @@
 	</ciManagement>
 
 	<profiles>
+		<profile>
+			<id>jdk9-setup</id>
+			<activation>
+				<jdk>[9,)</jdk>
+			</activation>
+			<build>
+				<pluginManagement>
+					<plugins>
+						<plugin>
+							<groupId>org.apache.maven.plugins</groupId>
+							<artifactId>maven-compiler-plugin</artifactId>
+							<configuration>
+								<release>8</release>
+							</configuration>
+							<executions>
+								<execution>
+									<id>default-compile</id>
+									<configuration>
+										<release>9</release>
+										<source>9</source>
+										<target>9</target>
+									</configuration>
+								</execution>
+								<execution>
+									<id>base-compile</id>
+									<goals>
+										<goal>compile</goal>
+									</goals>
+									<configuration>
+										<excludes>
+											<exclude>module-info.java</exclude>
+										</excludes>
+									</configuration>
+								</execution>
+							</executions>
+						</plugin>
+					</plugins>
+				</pluginManagement>
+				<plugins>
+					<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+						<artifactId>build-helper-maven-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>add-jdk9-source</id>
+								<phase>generate-sources</phase>
+								<goals>
+									<goal>add-source</goal>
+								</goals>
+								<configuration>
+									<sources>
+										<source>src/main/jdk9</source>
+									</sources>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		
 		<profile>
 			<id>p2</id>
 			<build>
