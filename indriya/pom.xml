@@ -1,17 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
                              http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>tech.units</groupId>
-        <artifactId>indriya-parent</artifactId>
-        <version>2.0.3-SNAPSHOT</version>
-    </parent>
-    <artifactId>indriya</artifactId>
-
-    <name>Indriya Parent</name>
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>tech.units</groupId>
+		<artifactId>indriya-parent</artifactId>
+		<version>2.0.3-SNAPSHOT</version>
+	</parent>
+	<artifactId>indriya</artifactId>
+	<name>Indriya</name>
 
 	<!-- ======================================================= -->
 	<!-- Build Settings -->
@@ -35,42 +34,73 @@
 		<osgi.version>5.0.0</osgi.version>
 		<osgi.compendium.version>${osgi.version}</osgi.compendium.version>
 		<osgi.annotation.version>6.0.0</osgi.annotation.version>
-		
+
 		<!-- Test settings -->
 		<hamcrest.version>2.2</hamcrest.version>
 		<junit.platform.version>1.1.1</junit.platform.version>
 		<excludedTests>**/Local*Test.java</excludedTests>
 	</properties>
 
-    <build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.1.0</version>
-                <configuration>
-                    <appendAssemblyId>false</appendAssemblyId>
-                    <descriptors>
-                        <descriptor>src/assembly/mrjar.xml</descriptor>
-                    </descriptors>
-                    <archive>
-                        <manifestEntries>
-                            <Multi-Release>true</Multi-Release>
-                        </manifestEntries>
-                    </archive>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>make-assembly</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-        </plugins>
-    </build>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>3.1.2</version>
+				<executions>
+					<execution>
+						<id>copy-doc</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<artifactItems>
+						<artifactItem>
+							<groupId>tech.units</groupId>
+							<artifactId>indriya-base</artifactId>
+							<version>${project.version}</version>
+							<classifier>javadoc</classifier>
+							<type>jar</type>
+							<overWrite>true</overWrite>
+							<outputDirectory>${project.build.directory}</outputDirectory>
+							<destFileName>${project.artifactId}-${project.version}-javadoc.jar</destFileName>
+						</artifactItem>
+					</artifactItems>
+					<overWriteReleases>true</overWriteReleases>
+					<overWriteSnapshots>true</overWriteSnapshots>
+				</configuration>
+			</plugin>
+			
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>3.2.0</version>
+				<configuration>
+					<appendAssemblyId>false</appendAssemblyId>
+					<descriptors>
+						<descriptor>src/assembly/mrjar.xml</descriptor>
+					</descriptors>
+					<archive>
+						<manifestEntries>
+							<Multi-Release>true</Multi-Release>
+						</manifestEntries>
+					</archive>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 
-    <dependencies><!-- add multirelease-base dependencies if any -->
-    </dependencies>
+	<dependencies><!-- add multirelease-base dependencies if any -->
+	</dependencies>
 </project>

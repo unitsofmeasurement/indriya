@@ -11,7 +11,7 @@
     </parent>
 
     <artifactId>indriya-nine</artifactId>
-
+    <name>Indriya for Java 9</name>
 
     <properties>
         <maven.compiler.release>9</maven.compiler.release>
@@ -93,7 +93,58 @@
 			<version>${junit.platform.version}</version>
 			<scope>test</scope>
 		</dependency>
-        
     </dependencies>
-    <name>Indriya for Java 9</name>
+    
+     <build>
+     <plugins>
+			<!-- Attach Sources -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<phase>package</phase>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- Attach JavaDocs -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<detectLinks>true</detectLinks>
+					<keywords>true</keywords>
+					<linksource>true</linksource>
+					<failOnError>false</failOnError>
+					<source>${maven.compile.sourceLevel}</source>
+					<verbose>true</verbose>
+					<tags>
+						<tag>
+							<name>apiNote</name>
+							<placement>a</placement>
+							<head>API Note:</head>
+						</tag>
+						<tag>
+							<name>implSpec</name>
+							<placement>a</placement>
+							<head>Implementation Requirements:</head>
+						</tag>
+					</tags>
+				</configuration>
+			</plugin>
+		</plugins>
+     </build>
 </project>

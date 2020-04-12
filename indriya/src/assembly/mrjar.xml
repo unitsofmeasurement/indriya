@@ -7,11 +7,12 @@
     <format>jar</format>
   </formats>
   <includeBaseDirectory>false</includeBaseDirectory>
+  
   <moduleSets>
     <moduleSet>
       <useAllReactorProjects>true</useAllReactorProjects>
       <includes>
-        <include>tech.units:indriya-base:jar</include>
+        <include>tech.units:indriya-base</include>
       </includes>
       <binaries>
         <unpack>true</unpack>
