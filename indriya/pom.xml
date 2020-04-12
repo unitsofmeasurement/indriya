@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>tech.units</groupId>
+        <artifactId>indriya-parent</artifactId>
+        <version>2.0.3-SNAPSHOT</version>
+    </parent>
+    <artifactId>indriya</artifactId>
+
+    <name>Indriya Parent</name>
+
+	<!-- ======================================================= -->
+	<!-- Build Settings -->
+	<!-- ======================================================= -->
+	<properties>
+		<jsr.version>2.0</jsr.version>
+		<lib.version>2.0</lib.version>
+		<sourceEncoding>UTF-8</sourceEncoding>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>${sourceEncoding}</project.reporting.outputEncoding>
+		<jdkVersion>1.8</jdkVersion>
+		<project.build.javaVersion>${jdkVersion}</project.build.javaVersion>
+		<maven.compile.targetLevel>${jdkVersion}</maven.compile.targetLevel>
+		<maven.compile.sourceLevel>${jdkVersion}</maven.compile.sourceLevel>
+		<additionalparam>-Xdoclint:none</additionalparam>
+		<jacoco.version>0.8.5</jacoco.version>
+		<compile.exclude.files>module-info.java</compile.exclude.files>
+		<thisYear>2020</thisYear>
+
+		<!-- OSGI support -->
+		<osgi.version>5.0.0</osgi.version>
+		<osgi.compendium.version>${osgi.version}</osgi.compendium.version>
+		<osgi.annotation.version>6.0.0</osgi.annotation.version>
+		
+		<!-- Test settings -->
+		<hamcrest.version>2.2</hamcrest.version>
+		<junit.platform.version>1.1.1</junit.platform.version>
+		<excludedTests>**/Local*Test.java</excludedTests>
+	</properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <appendAssemblyId>false</appendAssemblyId>
+                    <descriptors>
+                        <descriptor>src/assembly/mrjar.xml</descriptor>
+                    </descriptors>
+                    <archive>
+                        <manifestEntries>
+                            <Multi-Release>true</Multi-Release>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies><!-- add multirelease-base dependencies if any -->
+    </dependencies>
+</project>
