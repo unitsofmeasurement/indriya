@@ -23,7 +23,7 @@
     <moduleSet>
       <useAllReactorProjects>true</useAllReactorProjects>
       <includes>
-        <include>tech.units:indriya-nine</include>
+        <include>tech.units:indriya-java9</include>
       </includes>
       <binaries>
         <outputDirectory>META-INF/versions/9</outputDirectory>
