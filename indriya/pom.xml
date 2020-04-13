@@ -12,68 +12,8 @@
 	<artifactId>indriya</artifactId>
 	<name>Indriya</name>
 
-	<!-- ======================================================= -->
-	<!-- Build Settings -->
-	<!-- ======================================================= -->
-	<properties>
-		<jsr.version>2.0</jsr.version>
-		<lib.version>2.0</lib.version>
-		<sourceEncoding>UTF-8</sourceEncoding>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<project.reporting.outputEncoding>${sourceEncoding}</project.reporting.outputEncoding>
-		<jdkVersion>1.8</jdkVersion>
-		<project.build.javaVersion>${jdkVersion}</project.build.javaVersion>
-		<maven.compile.targetLevel>${jdkVersion}</maven.compile.targetLevel>
-		<maven.compile.sourceLevel>${jdkVersion}</maven.compile.sourceLevel>
-		<additionalparam>-Xdoclint:none</additionalparam>
-		<jacoco.version>0.8.5</jacoco.version>
-		<compile.exclude.files>module-info.java</compile.exclude.files>
-		<thisYear>2020</thisYear>
-
-		<!-- OSGI support -->
-		<osgi.version>5.0.0</osgi.version>
-		<osgi.compendium.version>${osgi.version}</osgi.compendium.version>
-		<osgi.annotation.version>6.0.0</osgi.annotation.version>
-
-		<!-- Test settings -->
-		<hamcrest.version>2.2</hamcrest.version>
-		<junit.platform.version>1.1.1</junit.platform.version>
-		<excludedTests>**/Local*Test.java</excludedTests>
-	</properties>
-
 	<build>
 		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<version>3.1.2</version>
-				<executions>
-					<execution>
-						<id>copy-doc</id>
-						<phase>compile</phase>
-						<goals>
-							<goal>copy</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<artifactItems>
-						<artifactItem>
-							<groupId>tech.units</groupId>
-							<artifactId>indriya-base</artifactId>
-							<version>${project.version}</version>
-							<classifier>javadoc</classifier>
-							<type>jar</type>
-							<overWrite>true</overWrite>
-							<outputDirectory>${project.build.directory}</outputDirectory>
-							<destFileName>${project.artifactId}-${project.version}-javadoc.jar</destFileName>
-						</artifactItem>
-					</artifactItems>
-					<overWriteReleases>true</overWriteReleases>
-					<overWriteSnapshots>true</overWriteSnapshots>
-				</configuration>
-			</plugin>
-			
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<version>3.2.0</version>
@@ -98,6 +38,62 @@
 					</execution>
 				</executions>
 			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>3.1.2</version>
+				<executions>
+					<execution>
+						<id>copy-install-doc</id>
+						<phase>install</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>tech.units</groupId>
+									<artifactId>indriya-base</artifactId>
+									<version>${project.version}</version>
+									<classifier>javadoc</classifier>
+									<type>jar</type>
+									<overWrite>true</overWrite>
+									<outputDirectory>${project.build.directory}</outputDirectory>
+									<destFileName>${project.artifactId}-${project.version}-javadoc.jar</destFileName>
+								</artifactItem>
+							</artifactItems>
+							<overWriteReleases>true</overWriteReleases>
+							<overWriteSnapshots>true</overWriteSnapshots>
+						</configuration>
+					</execution>
+					
+					<execution>
+						<id>copy-install-src</id>
+						<phase>install</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>tech.units</groupId>
+									<artifactId>indriya-base</artifactId>
+									<version>${project.version}</version>
+									<classifier>sources</classifier>
+									<type>jar</type>
+									<overWrite>true</overWrite>
+									<outputDirectory>${project.build.directory}</outputDirectory>
+									<destFileName>${project.artifactId}-${project.version}-sources.jar</destFileName>
+								</artifactItem>
+							</artifactItems>
+							<overWriteReleases>true</overWriteReleases>
+							<overWriteSnapshots>true</overWriteSnapshots>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			
 		</plugins>
 	</build>
 
