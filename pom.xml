@@ -168,5 +168,6 @@
     
     <modules>
         <module>base</module>
+        <module>java9</module>
     </modules>
 </project>
