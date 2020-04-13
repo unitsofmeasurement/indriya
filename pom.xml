@@ -46,6 +46,7 @@
 		
 	<dependencyManagement>
 		<dependencies>
+			<!-- Shared library -->
 			<dependency>
 				<groupId>tech.uom.lib</groupId>
 				<artifactId>uom-lib-common</artifactId>
@@ -75,6 +76,7 @@
 				<optional>true</optional>
 			</dependency>
 
+			<!-- Testing -->
 			<dependency>
 				<groupId>org.hamcrest</groupId>
 				<artifactId>hamcrest-all</artifactId>
@@ -167,5 +169,6 @@
     <modules>
         <module>base</module>
         <module>java9</module>
+        <module>indriya</module>
     </modules>
 </project>
