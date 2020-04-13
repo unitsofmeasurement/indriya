@@ -31,7 +31,7 @@ module tech.units.indriya {
     requires transitive java.logging;
     requires transitive java.measure;
     requires transitive tech.uom.lib.common;
-    requires transitive javax.inject;
+    requires static javax.inject;
     
     requires static org.osgi.core;
     requires static org.osgi.compendium;

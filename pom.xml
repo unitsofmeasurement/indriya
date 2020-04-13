@@ -53,6 +53,12 @@
 				<version>${lib.version}</version>
 			</dependency>
 
+			<dependency>
+				<groupId>javax.inject</groupId>
+				<artifactId>javax.inject</artifactId>
+				<version>1</version>
+			</dependency>
+
 			<!-- OSGI support -->
 			<dependency>
 				<groupId>org.osgi</groupId>
