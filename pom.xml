@@ -6,6 +6,8 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>tech.units</groupId>
     <artifactId>indriya-parent</artifactId>
+    <name>Indriya Parent POM</name>
+    <url>http://units.tech</url>
     <packaging>pom</packaging>
 	<parent>
 		<groupId>tech.uom</groupId>
@@ -132,8 +134,8 @@
 					</mapping>
 				</configuration>
 			</plugin>
-       </plugins>
-             </pluginManagement>
+          </plugins>
+       </pluginManagement>
     </build>
     
     <modules>
@@ -141,8 +143,4 @@
         <module>nine</module>
         <module>indriya</module>
     </modules>
-
-    <name>Units of Measurement Reference Implementation</name>
-    <url>http://units.tech</url>
-    <description>Unit Standard (JSR 385) Reference Implementation.</description>
 </project>

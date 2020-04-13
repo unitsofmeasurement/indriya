@@ -17,6 +17,38 @@
 	<build>
 		<plugins>
 			<plugin>
+		      <groupId>com.google.code.maven-replacer-plugin</groupId>
+		      <artifactId>replacer</artifactId>
+		      <version>1.5.1</version>
+		      <executions>
+		        <execution>
+		          <phase>prepare-package</phase>
+		          <goals>
+		            <goal>replace</goal>
+		          </goals>
+		        </execution>
+		      </executions>
+		      <configuration>
+		       <ignoreMissingFile>false</ignoreMissingFile>
+		       <file>../base/target/classes/META-INF/MANIFEST.MF</file>
+		        <replacements>
+		          <replacement>
+		            <token>tech.units.indriya-base</token>
+		            <value>tech.units.indriya</value>
+		          </replacement>
+		          <replacement>
+		            <token>Indriya Base</token>
+		            <value>${project.name}</value>
+		          </replacement>
+		          <replacement>
+		            <token>DummyFlag: YES</token>
+		            <value>Multi-Release: true</value>
+		          </replacement>
+		        </replacements>
+		      </configuration>
+		    </plugin>
+		
+			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<version>3.2.0</version>
 				<configuration>
@@ -25,10 +57,24 @@
 						<descriptor>src/assembly/mrjar.xml</descriptor>
 					</descriptors>
 					<archive>
+						<manifest>
+							<addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+						</manifest>
+						<manifestFile>../base/target/classes/META-INF/MANIFEST.MF</manifestFile>
 						<manifestEntries>
+							<Specification-Title>Unit API</Specification-Title>
+							<Specification-Version>${jsr.version}</Specification-Version>
+							<Specification-Vendor>Unit-API contributors</Specification-Vendor>
+							<Implementation-Title>${project.name}</Implementation-Title>
+							<Implementation-Version>${project.version}</Implementation-Version>
+							<Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
+							<Implementation-URL>http://units.tech</Implementation-URL>
 							<Multi-Release>true</Multi-Release>
 						</manifestEntries>
 					</archive>
+					<descriptorRefs>
+						<descriptorRef>jar-with-dependencies</descriptorRef>
+					</descriptorRefs>
 				</configuration>
 				<executions>
 					<execution>
@@ -40,7 +86,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			
+				
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-dependency-plugin</artifactId>
@@ -119,10 +165,6 @@
 					</execution>
 				</executions>
 			</plugin>
-			
 		</plugins>
 	</build>
-
-	<dependencies><!-- add multirelease-base dependencies if any -->
-	</dependencies>
 </project>

@@ -161,12 +161,13 @@
 						</manifest>
 						<manifestEntries>
 							<Specification-Title>Unit API</Specification-Title>
-							<Specification-Version>${project.version}</Specification-Version>
+							<Specification-Version>${jsr.version}</Specification-Version>
 							<Specification-Vendor>Unit-API contributors</Specification-Vendor>
 							<Implementation-Title>${project.name}</Implementation-Title>
 							<Implementation-Version>${project.version}</Implementation-Version>
 							<Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
 							<Implementation-URL>http://units.tech</Implementation-URL>
+							<DummyFlag>YES</DummyFlag>
 						</manifestEntries>
 					</archive>
 				</configuration>
@@ -272,7 +273,7 @@
 					<repoToken>${env.COVERALLS_REPO_TOKEN}</repoToken>
 				</configuration>
 			</plugin>
-
+			
 			<!-- Attach Sources -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

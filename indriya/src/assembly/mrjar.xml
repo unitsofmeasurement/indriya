@@ -13,6 +13,7 @@
       <useAllReactorProjects>true</useAllReactorProjects>
       <includes>
         <include>tech.units:indriya-base</include>
+        <include>tech.units:indriya-base:sources</include>
       </includes>
       <binaries>
         <unpack>true</unpack>
