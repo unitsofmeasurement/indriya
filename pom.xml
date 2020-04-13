@@ -169,5 +169,6 @@
     <modules>
         <module>base</module>
         <module>java9</module>
+        <module>indriya</module>
     </modules>
 </project>
