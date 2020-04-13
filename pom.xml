@@ -138,7 +138,7 @@
        </pluginManagement>
     </build>
     
-    	<!-- Additional repositories -->
+    <!-- Additional repositories -->
 	<!-- Helps to resolve Parent POM and Snapshot artifacts -->
 	<repositories>
 		<repository>
@@ -167,6 +167,5 @@
     <modules>
         <module>base</module>
         <module>nine</module>
-        <module>indriya</module>
     </modules>
 </project>
