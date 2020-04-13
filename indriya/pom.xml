@@ -10,7 +10,9 @@
 		<version>2.0.3-SNAPSHOT</version>
 	</parent>
 	<artifactId>indriya</artifactId>
-	<name>Indriya</name>
+    <name>Units of Measurement Reference Implementation</name>
+    <url>http://units.tech</url>
+    <description>Unit Standard (JSR 385) Reference Implementation.</description>
 
 	<build>
 		<plugins>
@@ -85,6 +87,30 @@
 									<overWrite>true</overWrite>
 									<outputDirectory>${project.build.directory}</outputDirectory>
 									<destFileName>${project.artifactId}-${project.version}-sources.jar</destFileName>
+								</artifactItem>
+							</artifactItems>
+							<overWriteReleases>true</overWriteReleases>
+							<overWriteSnapshots>true</overWriteSnapshots>
+						</configuration>
+					</execution>
+					
+					<execution>
+						<id>copy-install-test</id>
+						<phase>install</phase>
+						<goals>
+							<goal>copy</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>tech.units</groupId>
+									<artifactId>indriya-base</artifactId>
+									<version>${project.version}</version>
+									<classifier>tests</classifier>
+									<type>jar</type>
+									<overWrite>true</overWrite>
+									<outputDirectory>${project.build.directory}</outputDirectory>
+									<destFileName>${project.artifactId}-${project.version}-tests.jar</destFileName>
 								</artifactItem>
 							</artifactItems>
 							<overWriteReleases>true</overWriteReleases>
