@@ -398,6 +398,7 @@
 						<exclude>*.jpg</exclude>
 						<exclude>*.png</exclude>
 						<exclude>*.yml</exclude>
+						<exclude>*.xml</exclude>
 					</excludes>
 					<headerDefinitions>
 						<headerDefinition>src/main/config/headers.xml</headerDefinition>
