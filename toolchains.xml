@@ -1,0 +1,59 @@
+    <toolchains>
+	<!--
+      <toolchain>
+	   
+        <type>jdk</type>
+        <provides>
+          <version>1.6</version>
+        </provides>
+        <configuration>
+          <jdkHome>C:\Program Files\Java\jdk1.6.0_45</jdkHome>
+        </configuration>
+      </toolchain>
+	  -->
+      <toolchain>
+        <type>jdk</type>
+        <provides>
+          <version>1.7</version>
+        </provides>
+        <configuration>
+          <jdkHome>C:\Program Files\Java\jdk1.7.0_76</jdkHome>
+        </configuration>
+      </toolchain>
+      <toolchain>
+        <type>jdk</type>
+        <provides>
+          <version>8</version>
+        </provides>
+        <configuration>
+          <jdkHome>C:\Program Files\Java\jdk1.8.0_221</jdkHome>
+        </configuration>
+      </toolchain>
+	  <toolchain>
+        <type>jdk</type>
+        <provides>
+          <version>9</version>
+        </provides>
+        <configuration>
+          <jdkHome>C:\Program Files\Java\jdk-9.0.4</jdkHome>
+        </configuration>
+      </toolchain>
+	  <toolchain>
+        <type>jdk</type>
+        <provides>
+          <version>10</version>
+        </provides>
+        <configuration>
+          <jdkHome>C:\Program Files\Java\jdk-10.0.1</jdkHome>
+        </configuration>
+      </toolchain>
+      <toolchain>
+        <type>jdk</type>
+        <provides>
+          <version>11</version>
+        </provides>
+        <configuration>
+          <jdkHome>C:\Program Files\AdoptOpenJDK\jdk-11.0.6.10-hotspot</jdkHome>
+        </configuration>
+      </toolchain>
+    </toolchains>
