@@ -17,6 +17,8 @@ jobs:
     
     steps:
       - checkout
+      
+      - run: echo $JAVA_HOME
         
       # run tests!
       - run: mvn --batch-mode test jacoco:report
