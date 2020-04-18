@@ -5,7 +5,7 @@
           <version>8</version>
         </provides>
         <configuration>
-          <jdkHome>$JAVA_HOME</jdkHome>
+          <jdkHome>/usr/local/openjdk-11</jdkHome>
         </configuration>
       </toolchain>
       <toolchain>
@@ -14,7 +14,7 @@
           <version>9</version>
         </provides>
         <configuration>
-          <jdkHome>$JAVA_HOME</jdkHome>
+          <jdkHome>/usr/local/openjdk-11</jdkHome>
         </configuration>
       </toolchain>
       <toolchain>
@@ -23,7 +23,7 @@
           <version>11</version>
         </provides>
         <configuration>
-          <jdkHome>$JAVA_HOME</jdkHome>
+          <jdkHome>/usr/local/openjdk-11</jdkHome>
         </configuration>
       </toolchain>
     </toolchains>
