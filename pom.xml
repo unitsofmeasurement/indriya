@@ -345,6 +345,7 @@
 					<destfile>${basedir}/target/coverage-reports/jacoco-unit.exec</destfile>
 					<datafile>${basedir}/target/coverage-reports/jacoco-unit.exec</datafile>
 					<excludes>
+                    	<exclude>**/META-INF/versions/**</exclude>
 					</excludes>
 				</configuration>
 				<executions>
