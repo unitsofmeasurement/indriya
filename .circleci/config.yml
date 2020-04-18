@@ -7,7 +7,6 @@ jobs:
   build:
     docker:
       # specify the version you desire here
-      - image: circleci/openjdk:8-jdk
       - image: circleci/openjdk:11.0-jdk-buster-node-browsers-legacy
  
     working_directory: ~/repo
@@ -28,7 +27,6 @@ jobs:
   deployment:
     docker:
       # specify the version you desire here
-      - image: circleci/openjdk:8-jdk
       - image: circleci/openjdk:11.0-jdk-buster-node-browsers-legacy
 
     working_directory: ~/repo
