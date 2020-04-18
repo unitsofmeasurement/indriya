@@ -21,7 +21,7 @@ jobs:
       - run: echo $JAVA_HOME
         
       # run tests!
-      - run: mvn --batch-mode test jacoco:report
+      - run: mvn --batch-mode test jacoco:report -t toolchains.xml
       
       - run: bash <(curl -s https://codecov.io/bash)
   deployment:
@@ -39,7 +39,7 @@ jobs:
       - checkout
         
       # run deployment!
-      - run: mvn --batch-mode deploy -Dmaven.test.skip -DcreateDocs=true -s settings.xml
+      - run: mvn --batch-mode deploy -Dmaven.test.skip -DcreateDocs=true -s settings.xml -t toolchains.xml
 workflows:
   version: 2
   build_deploy:

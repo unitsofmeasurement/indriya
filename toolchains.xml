@@ -1,4 +1,22 @@
     <toolchains>
+  	  <toolchain>
+        <type>jdk</type>
+        <provides>
+          <version>8</version>
+        </provides>
+        <configuration>
+          <jdkHome>$JAVA_HOME</jdkHome>
+        </configuration>
+      </toolchain>
+      <toolchain>
+        <type>jdk</type>
+        <provides>
+          <version>9</version>
+        </provides>
+        <configuration>
+          <jdkHome>$JAVA_HOME</jdkHome>
+        </configuration>
+      </toolchain>
       <toolchain>
         <type>jdk</type>
         <provides>
