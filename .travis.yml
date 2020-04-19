@@ -10,7 +10,7 @@ jdk:
 before_install:
   # execute all of the commands which need to be executed 
   # before running actual tests
-  - sed -i "s/JDK_home/c \\$JAVA_HOME/g" toolchains-travis.xml
+  - sed -i "s|JDK_home|$JAVA_HOME|g" toolchains-travis.xml
 
 install:
   # execute all of the commands which 
