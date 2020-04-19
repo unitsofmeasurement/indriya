@@ -35,14 +35,14 @@ import static tech.units.indriya.format.UnitStyle.NAME_AND_SYMBOL;
 import static tech.units.indriya.format.UnitStyle.SYMBOL;
 import static tech.units.indriya.format.UnitStyle.SYMBOL_AND_LABEL;
 
+import java.lang.System.Logger;
+import java.lang.System.Logger.Level;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 
 import javax.measure.Dimension;
@@ -75,7 +75,7 @@ public abstract class AbstractSystemOfUnits implements SystemOfUnits, Nameable {
 	@SuppressWarnings("rawtypes")
 	protected final Map<Class<? extends Quantity>, Unit> quantityToUnit = new HashMap<>();
 
-	protected static final Logger logger = Logger.getLogger(AbstractSystemOfUnits.class.getName());
+	protected static final Logger logger = System.getLogger(AbstractSystemOfUnits.class.getPackage().getName());
 
 	/**
 	 * The natural logarithm.
@@ -148,24 +148,23 @@ public abstract class AbstractSystemOfUnits implements SystemOfUnits, Nameable {
 		Objects.requireNonNull(string);
 		Unit<?> result;
 		switch (style) {
-			case NAME: {
-			if (ignoreCase) {
-				result = this.getUnits().stream().filter((u) -> string.equalsIgnoreCase(u.getName())).findFirst()
-						.orElse(null);
-			} else {
-				result = this.getUnits().stream().filter((u) -> string.equals(u.getName())).findFirst().orElse(null);
+			case NAME -> {
+				if (ignoreCase) {
+					result = this.getUnits().stream().filter((u) -> string.equalsIgnoreCase(u.getName())).findFirst()
+							.orElse(null);
+				} else {
+					result = this.getUnits().stream().filter((u) -> string.equals(u.getName())).findFirst().orElse(null);
+				}
 			}
-		}
-			case SYMBOL: {
-			if (ignoreCase) {
-				result = this.getUnits().stream().filter((u) -> string.equalsIgnoreCase(u.getSymbol())).findFirst()
-						.orElse(null);
-			} else {
-				result = this.getUnits().stream().filter((u) -> string.equals(u.getSymbol())).findFirst().orElse(null);
+			case SYMBOL -> {
+				if (ignoreCase) {
+					result = this.getUnits().stream().filter((u) -> string.equalsIgnoreCase(u.getSymbol())).findFirst()
+							.orElse(null);
+				} else {
+					result = this.getUnits().stream().filter((u) -> string.equals(u.getSymbol())).findFirst().orElse(null);
+				}
 			}
-		}
-			default :
-				result = getUnit(string);
+			default -> result = getUnit(string);
 		}
 		return result;
 	}
@@ -254,7 +253,7 @@ public abstract class AbstractSystemOfUnits implements SystemOfUnits, Nameable {
 						result = (U) aUnit;
 					}
 				}
-				case LABEL  -> {
+				case LABEL -> {
 					if (name != null && symbol != null && unit instanceof AbstractUnit) {
 						AbstractUnit<?> aUnit = (AbstractUnit<?>) unit;
 						aUnit.setName(name);
@@ -268,9 +267,9 @@ public abstract class AbstractSystemOfUnits implements SystemOfUnits, Nameable {
 						result = (U) aUnit;
 					}
 				}
-				default  -> {
-					if (logger.isLoggable(Level.FINEST)) {
-						logger.log(Level.FINEST,
+				default -> {
+					if (logger.isLoggable(Level.DEBUG)) { // TODO or WARNING?
+						logger.log(Level.DEBUG,
 								"Unknown style " + style + "; unit " + unit + " can't be rendered with '" + symbol + "'.");
 					}
 				}
@@ -300,41 +299,38 @@ public abstract class AbstractSystemOfUnits implements SystemOfUnits, Nameable {
 		 */
 		@SuppressWarnings("unchecked")
 		public static <U extends Unit<?>> U addUnit(Set<Unit<?>> units, U unit, String text, UnitStyle style) {
+			U result = null;
 			switch (style) {
-			case NAME:
+			case NAME  -> {
 				if (text != null && unit instanceof AbstractUnit) {
 					AbstractUnit<?> aUnit = (AbstractUnit<?>) unit;
 					aUnit.setName(text);
 					units.add(aUnit);
-					return (U) aUnit;
+					result = (U) aUnit;
 				}
-				break;
-			case SYMBOL:
+			}
+			case SYMBOL -> {
 				if (text != null && unit instanceof AbstractUnit) {
 					AbstractUnit<?> aUnit = (AbstractUnit<?>) unit;
 					aUnit.setSymbol(text);
 					units.add(aUnit);
-					return (U) aUnit;
+					result = (U) aUnit;
 				}
-				break;
-			case SYMBOL_AND_LABEL:
+			}
+			case SYMBOL_AND_LABEL -> {
 				if (text != null && unit instanceof AbstractUnit) {
 					AbstractUnit<?> aUnit = (AbstractUnit<?>) unit;
 					aUnit.setSymbol(text);
 					units.add(aUnit);
 					SimpleUnitFormat.getInstance().label(aUnit, text);
-					return (U) aUnit;
+					result = (U) aUnit;
 				}
 				// label in any case, returning below
 				SimpleUnitFormat.getInstance().label(unit, text);
-				break;
-			case LABEL:
-				SimpleUnitFormat.getInstance().label(unit, text);
-				break;
-			default:
-				logger.log(Level.FINEST,
+			}
+			case LABEL -> SimpleUnitFormat.getInstance().label(unit, text);
+			default -> logger.log(Level.DEBUG, // TODO or WARNING?
 						"Unknown style " + style + "; unit " + unit + " can't be rendered with '" + text + "'.");
-				break;
 			}
 			units.add(unit);
 			return unit;
