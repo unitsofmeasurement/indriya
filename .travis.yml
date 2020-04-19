@@ -17,3 +17,8 @@ install:
   # should make the build pass or fail
   # - mvn --batch-mode test jacoco:report -t toolchains-travis.xml
   - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V -t toolchains-travis.xml
+  
+script:
+  # execute all of the commands which 
+  # should make the build pass or fail
+  - mvn --batch-mode test -t toolchains-travis.xml
