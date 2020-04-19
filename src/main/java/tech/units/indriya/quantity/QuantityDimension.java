@@ -54,7 +54,7 @@ import java.util.logging.Logger;
  * <p>
  * The dimension associated to any given quantity are given by the published {@link Dimension} instances. For convenience, a static method
  * <code>QuantityDimension.of(Class)</code> aggregating the results of all
- * 
+ *
  * {@link Dimension} instances is provided.<br>
  *       <br>
  *       <code>
@@ -70,10 +70,9 @@ import java.util.logging.Logger;
  * @deprecated Use UnitDimension
  */
 public final class QuantityDimension extends UnitDimension {
-  private static final Logger LOGGER = Logger.getLogger(QuantityDimension.class.getName());
 
   /**
-   * 
+   *
    */
   private static final long serialVersionUID = 123289037718650030L;
 }
