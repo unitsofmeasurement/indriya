@@ -5,7 +5,7 @@
           <version>8</version>
         </provides>
         <configuration>
-          <jdkHome>C:\Program Files\Java\jdk-10.0.1</jdkHome>
+          <jdkHome>C:\Program Files\Java\jdk1.8.0_221</jdkHome>
         </configuration>
       </toolchain>
 	  <toolchain>
