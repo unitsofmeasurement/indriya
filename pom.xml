@@ -37,7 +37,7 @@
 	<!-- ======================================================= -->
 	<properties>
 		<jsr.version>2.0</jsr.version>
-		<lib.version>2.0</lib.version>
+		<lib.version>2.0.1-SNAPSHOT</lib.version>
 		<sourceEncoding>UTF-8</sourceEncoding>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>${sourceEncoding}</project.reporting.outputEncoding>
