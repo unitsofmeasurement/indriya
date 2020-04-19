@@ -6,3 +6,13 @@ jdk:
 - openjdk12
 - openjdk13
 - openjdk14
+
+before_script:
+  # execute all of the commands which need to be executed 
+  # before running actual tests
+  - sed -i "s/JDK_home/c \\$JAVA_HOME/g" toolchains-travis.xml
+
+script:
+  # execute all of the commands which 
+  # should make the build pass or fail
+  - mvn --batch-mode test jacoco:report -t toolchains-travis.xml
