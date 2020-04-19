@@ -53,7 +53,7 @@ import tech.units.indriya.quantity.Quantities;
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author <a href="mailto:thodoris.bais@gmail.com">Thodoris Bais</a>
  *
- * @version 1.9, $Date: 2019-04-14 $
+ * @version 2.0, $Date: 2020-04-19 $
  * @since 2.0
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -127,7 +127,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
             this.unitFormat = unitFormat;
             return this;
         }
-        
+
         /**
          * Sets the primary unit parameter for multiple {@link CompoundQuantity mixed quantities} to the given {@code Unit}.
          * @param primary the primary {@link Unit}
@@ -205,10 +205,9 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
      */
     public static NumberDelimiterQuantityFormat getInstance(FormatBehavior style) {
         switch (style) {
+			case LOCALE_SENSITIVE:
+				return LOCAL;
             case LOCALE_NEUTRAL:
-                return SIMPLE;
-            case LOCALE_SENSITIVE:
-                return LOCAL;
             default:
                 return SIMPLE;
         }
@@ -222,7 +221,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
     public static final Builder builder() {
         return new Builder();
     }
-    
+
     /**
      * Returns the default format.
      *
@@ -248,7 +247,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
     @Override
     public Appendable format(Quantity<?> quantity, Appendable dest) throws IOException {
         int fract = 0;
-        /* 
+        /*
         if (quantity instanceof MixedQuantity) {
             final MixedQuantity<?> compQuant = (MixedQuantity<?>) quantity;
             if (compQuant.getUnit() instanceof MixedUnit) {
@@ -324,7 +323,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
         final Unit unit = unitFormat.parse(parts[1]);
         return Quantities.getQuantity(number, unit);
     }
-    
+
     @Override
     protected Quantity<?> parse(CharSequence csq, int index) throws IllegalArgumentException, MeasurementParseException {
         return parse(csq, new ParsePosition(index));
@@ -334,12 +333,12 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
     public Quantity<?> parse(CharSequence csq) throws IllegalArgumentException, MeasurementParseException {
         return parse(csq, 0);
     }
-    
+
     @Override
     public String toString() {
         return getClass().getSimpleName();
     }
-    
+
     @Override
     public boolean isLocaleSensitive() {
         return localeSensitive;
@@ -358,7 +357,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
         }
         return sb;
     }
-    
+
     public CompoundQuantity<?> parseCompound(CharSequence csq, ParsePosition cursor) throws IllegalArgumentException, MeasurementParseException {
         final String str = csq.toString();
         final int index = cursor.getIndex();
@@ -377,17 +376,17 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
         final Unit unit = unitFormat.parse(parts[1]);
         return CompoundQuantity.of(Quantities.getQuantity(number, unit));
     }
-    
+
     protected CompoundQuantity<?> parseCompound(CharSequence csq, int index) throws IllegalArgumentException, MeasurementParseException {
         return parseCompound(csq, new ParsePosition(index));
     }
-    
+
     public CompoundQuantity<?> parseCompound(CharSequence csq) throws IllegalArgumentException, MeasurementParseException {
         return parseCompound(csq, 0);
     }
-    
+
     // Private helper methods
-    
+
     private static int getFractionDigitsCount(double d) {
         if (d >= 1) { // we only need the fraction digits
             d = d - (long) d;
