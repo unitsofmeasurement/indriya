@@ -295,12 +295,14 @@
 						</manifest>
 						<manifestEntries>
 							<Specification-Title>Unit API</Specification-Title>
-							<Specification-Version>${project.version}</Specification-Version>
+							<Specification-Version>${jsr.version}</Specification-Version>
 							<Specification-Vendor>Unit-API contributors</Specification-Vendor>
 							<Implementation-Title>${project.name}</Implementation-Title>
 							<Implementation-Version>${project.version}</Implementation-Version>
 							<Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
 							<Implementation-URL>http://units.tech</Implementation-URL>
+							<Automatic-Module-Name>tech.units.indriya</Automatic-Module-Name>
+							<Multi-Release>true</Multi-Release>
 						</manifestEntries>
 					</archive>
 				</configuration>
