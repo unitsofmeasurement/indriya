@@ -7,7 +7,7 @@ jobs:
   build:
     docker:
       # specify the version you desire here
-      - image: circleci/openjdk:11.0-jdk-buster-node-browsers-legacy
+      - image: circleci/openjdk:14-buster-browsers-legacy
  
     working_directory: ~/repo
 
@@ -18,7 +18,7 @@ jobs:
     steps:
       - checkout
       
-      - run: echo $JAVA_HOME
+      - run: sed -i "s|JDK_home|$JAVA_HOME|g" toolchains.xml
         
       # run tests!
       - run: mvn --batch-mode test jacoco:report -t toolchains.xml
@@ -27,7 +27,7 @@ jobs:
   deployment:
     docker:
       # specify the version you desire here
-      - image: circleci/openjdk:11.0-jdk-buster-node-browsers-legacy
+      - image: circleci/openjdk:14-buster-browsers-legacy
 
     working_directory: ~/repo
 
@@ -37,6 +37,8 @@ jobs:
     
     steps:
       - checkout
+      
+      - run: sed -i "s|JDK_home|$JAVA_HOME|g" toolchains.xml
         
       # run deployment!
       - run: mvn --batch-mode deploy -Dmaven.test.skip -DcreateDocs=true -s settings.xml -t toolchains.xml
