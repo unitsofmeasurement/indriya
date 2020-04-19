@@ -21,4 +21,4 @@ install:
 script:
   # execute all of the commands which 
   # should make the build pass or fail
-  - mvn test -t toolchains-travis.xml
+  - mvn install -t toolchains-travis.xml
