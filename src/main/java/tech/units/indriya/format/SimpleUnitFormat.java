@@ -78,7 +78,7 @@ import tech.units.indriya.unit.Units;
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author Eric Russell
- * @version 2.0, March 2, 2020
+ * @version 2.1, April 21, 2020
  * @since 1.0
  */
 public abstract class SimpleUnitFormat extends AbstractUnitFormat {
@@ -323,12 +323,12 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
     /**
      * Holds the name to unit mapping.
      */
-    protected final HashMap<String, Unit<?>> nameToUnit = new HashMap<>();
+    protected final Map<String, Unit<?>> nameToUnit = new HashMap<>();
 
     /**
      * Holds the unit to name mapping.
      */
-    protected final HashMap<Unit<?>, String> unitToName = new HashMap<>();
+    protected final Map<Unit<?>, String> unitToName = new HashMap<>();
 
     @Override
     public String toString() {
