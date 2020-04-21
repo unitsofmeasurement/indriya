@@ -71,7 +71,6 @@ import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.function.AddConverter;
 import tech.units.indriya.function.MultiplyConverter;
 import tech.units.indriya.function.RationalNumber;
-import tech.units.indriya.unit.UnitDimension;
 
 /**
  * <p>
@@ -79,7 +78,7 @@ import tech.units.indriya.unit.UnitDimension;
  *
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author <a href="mailto:thodoris.bais@gmail.com">Thodoris Bais</a>
- * @version 2.3, March 2, 2020
+ * @version 2.3.1, April 21, 2020
  * @since 1.0
  * @see <a href="https://usma.org/detailed-list-of-metric-system-units-symbols-and-prefixes">USMA: Detailed list of metric system units, symbols, and prefixes</a>
  */
