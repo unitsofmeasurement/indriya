@@ -65,10 +65,11 @@ import java.util.logging.Logger;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 1.3, $Date: 2019-07-05 $
+ * @version 1.4, $Date: 2020-04-19 $
  * @since 1.0
  * @deprecated Use UnitDimension
  */
+@Deprecated(forRemoval = true, since = "2.0")
 public final class QuantityDimension extends UnitDimension {
 
   /**

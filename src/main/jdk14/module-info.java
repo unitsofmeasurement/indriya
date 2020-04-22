@@ -27,52 +27,41 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package tech.units.indriya.quantity;
+module tech.units.indriya {
+    requires transitive java.logging;
+    requires transitive java.measure;
+    requires transitive tech.uom.lib.common;
+    requires transitive javax.inject;
+    
+    requires static org.osgi.core;
+    requires static org.osgi.compendium;
+    requires static org.osgi.annotation;
+    
+    exports tech.units.indriya;
+    exports tech.units.indriya.format;
+    exports tech.units.indriya.function;
+    exports tech.units.indriya.quantity;
+    exports tech.units.indriya.quantity.time;
+    exports tech.units.indriya.spi;
+    exports tech.units.indriya.unit;
 
-import javax.measure.Dimension;
-import javax.measure.Quantity;
-import javax.measure.Unit;
-
-import tech.units.indriya.AbstractUnit;
-import tech.units.indriya.unit.BaseUnit;
-import tech.units.indriya.unit.ProductUnit;
-import tech.units.indriya.unit.UnitDimension;
-import tech.units.indriya.unit.Units;
-
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-/**
- * <p>
- * This class represents a quantity dimension (dimension of a physical quantity).
- * </p>
- *
- * <p>
- * The dimension associated to any given quantity are given by the published {@link Dimension} instances. For convenience, a static method
- * <code>QuantityDimension.of(Class)</code> aggregating the results of all
- *
- * {@link Dimension} instances is provided.<br>
- *       <br>
- *       <code>
- *        QuantityDimension speedDimension
- *            = QuantityDimension.of(Speed.class);
- *     </code>
- *       </p>
- *
- * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
- * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 1.3, $Date: 2019-07-05 $
- * @since 1.0
- * @deprecated Use UnitDimension
- */
-public final class QuantityDimension extends UnitDimension {
-
-  /**
-   *
-   */
-  private static final long serialVersionUID = 123289037718650030L;
+    provides javax.measure.spi.FormatService with
+        tech.units.indriya.format.DefaultFormatService;
+    provides javax.measure.spi.ServiceProvider with
+    	tech.units.indriya.spi.DefaultServiceProvider;
+    provides javax.measure.spi.SystemOfUnitsService with
+    	tech.units.indriya.unit.DefaultSystemOfUnitsService;
+    provides javax.measure.spi.UnitFormatService with
+        tech.units.indriya.format.DefaultUnitFormatService;
+    provides tech.units.indriya.spi.NumberSystem with
+    	tech.units.indriya.function.DefaultNumberSystem;
+    
+    uses javax.measure.format.QuantityFormat;
+    uses javax.measure.format.UnitFormat;
+    
+    uses javax.measure.spi.FormatService;
+    uses javax.measure.spi.ServiceProvider;
+    uses javax.measure.spi.SystemOfUnitsService;
+    uses javax.measure.spi.UnitFormatService;
+    uses tech.units.indriya.spi.NumberSystem;
 }
