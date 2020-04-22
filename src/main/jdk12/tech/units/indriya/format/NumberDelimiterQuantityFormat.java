@@ -69,7 +69,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
      * Holds the compact format instance (SimpleUnitFormat, CompactNumberFormat).
      */
     private static final NumberDelimiterQuantityFormat COMPACT = new NumberDelimiterQuantityFormat.Builder()
-            .setNumberFormat(NumberFormat.getInstance(Locale.ROOT, NumberFormat.Style.SHORT))
+            .setNumberFormat(NumberFormat.getCompactNumberInstance(Locale.ROOT, NumberFormat.Style.SHORT))
             .setUnitFormat(SimpleUnitFormat.getInstance()).build();
 
     /**

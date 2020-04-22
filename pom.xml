@@ -41,7 +41,7 @@
 		<sourceEncoding>UTF-8</sourceEncoding>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>${sourceEncoding}</project.reporting.outputEncoding>
-		<jdkVersion>1.8</jdkVersion>
+		<jdkVersion>8</jdkVersion>
 		<!-- The oldest Java version supported by this tool. -->
 		<!-- Will control compilation of the main code and the unit tests. -->
 		<base.java.version>8</base.java.version>
@@ -225,20 +225,20 @@
 							<multiReleaseOutput>true</multiReleaseOutput>
 						</configuration>
 					</execution>
-					<!-- for Java 11 -->
+					<!-- for Java 12 -->
 					<execution>
-						<id>java11</id>
+						<id>java12</id>
 						<phase/>
 						<goals>
 							<goal>compile</goal>
 						</goals>
 						<configuration>
-							<release>10</release>
+							<release>12</release>
 							<jdkToolchain>
-								<version>10</version>
+								<version>12</version>
 							</jdkToolchain>
 							<compileSourceRoots>
-								<compileSourceRoot>${project.basedir}/src/main/jdk11</compileSourceRoot>
+								<compileSourceRoot>${project.basedir}/src/main/jdk12</compileSourceRoot>
 							</compileSourceRoots>
 							<multiReleaseOutput>true</multiReleaseOutput>
 						</configuration>
@@ -590,11 +590,11 @@
 			</build>
 		</profile>
 
-		<!-- enable java10 compilation -->
+		<!-- enable java12 compilation -->
 		<profile>
-			<id>compile-java10</id>
+			<id>compile-java12</id>
 			<activation>
-				<jdk>[10,)</jdk>
+				<jdk>[12,)</jdk>
 			</activation>
 			<build>
 				<plugins>
@@ -603,7 +603,7 @@
 						<artifactId>maven-compiler-plugin</artifactId>
 						<executions>
 							<execution>
-								<id>java10</id>
+								<id>java12</id>
 								<phase>compile</phase>
 							</execution>
 						</executions>
@@ -684,7 +684,7 @@
 								<phase>compile</phase>
 							</execution>
 							<execution>
-								<id>java11</id>
+								<id>java12</id>
 								<phase>compile</phase>
 							</execution>
 							<execution>

@@ -26,6 +26,15 @@
           <jdkHome>JDK_home</jdkHome>
         </configuration>
       </toolchain>
+      <toolchain>
+        <type>jdk</type>
+        <provides>
+          <version>12</version>
+        </provides>
+        <configuration>
+          <jdkHome>JDK_home</jdkHome>
+        </configuration>
+      </toolchain>
 	  <toolchain>
         <type>jdk</type>
         <provides>
