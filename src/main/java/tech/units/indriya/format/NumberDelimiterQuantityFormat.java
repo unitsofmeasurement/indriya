@@ -53,7 +53,7 @@ import tech.units.indriya.quantity.Quantities;
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author <a href="mailto:thodoris.bais@gmail.com">Thodoris Bais</a>
  *
- * @version 2.0, $Date: 2020-04-19 $
+ * @version 2.1, $Date: 2020-04-22 $
  * @since 2.0
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -199,12 +199,12 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
      * <code>new NumberDelimiterQuantityFormat.Builder()
             .setNumberFormat(NumberFormat.getInstance(Locale.ROOT)).setUnitFormat(SimpleUnitFormat.getInstance()).build();</code>
      *
-     * @param style
+     * @param behavior
      *            the format behavior to apply.
      * @return <code>NumberDelimiterQuantityFormat.getInstance(NumberFormat.getInstance(), UnitFormat.getInstance())</code>
      */
-    public static NumberDelimiterQuantityFormat getInstance(FormatBehavior style) {
-        switch (style) {
+    public static NumberDelimiterQuantityFormat getInstance(final FormatBehavior behavior) {
+        switch (behavior) {
 			case LOCALE_SENSITIVE:
 				return LOCAL;
             case LOCALE_NEUTRAL:
