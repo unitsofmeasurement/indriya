@@ -29,6 +29,12 @@
  */
 package tech.units.indriya.unit;
 
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
+
 import javax.measure.Dimension;
 import javax.measure.Quantity;
 import javax.measure.Unit;
@@ -36,14 +42,7 @@ import javax.measure.UnitConverter;
 
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.function.AbstractConverter;
-import tech.units.indriya.unit.UnitDimension;
-
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
+import tech.units.indriya.internal.function.lazy.Lazy;
 
 /**
  * <p>
@@ -60,7 +59,8 @@ import java.util.Objects;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 1.9, July 05, 2019
+ * @author Andi Huber
+ * @version 1.10, April 22, 2020
  * @since 1.0
  */
 public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
@@ -72,6 +72,8 @@ public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
 
     /**
      * Holds the units composing this product unit.
+     * 
+     * @implNote considered immutable after constructor was called
      */
     private final Element[] elements;
 
@@ -275,40 +277,21 @@ public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
             return true;
         }
         if (obj instanceof ProductUnit<?>) {
-            Element[] elems = ((ProductUnit<?>) obj).elements;
-            if (elements.length != elems.length)
-                return false;
-            for (Element element : elements) {
-                boolean unitFound = false;
-                for (Element elem : elems) {
-                    if (element.unit.equals(elem.unit))
-                        if (element.pow != elem.pow || element.root != elem.root)
-                            return false;
-                        else {
-                            unitFound = true;
-                            break;
-                        }
-                }
-                if (!unitFound)
-                    return false;
-            }
-            return true;
+            final ProductUnit<?> other = ((ProductUnit<?>) obj); 
+            return ElementUtil.arrayEqualsArbitraryOrder(this.elements, other.elements);
         }
         return false;
     }
 
+    // thread safe cache for the expensive hashCode calculation 
+    private transient Lazy<Integer> hashCode = new Lazy<>(this::calculateHashCode); 
+    private int calculateHashCode() {
+        return Objects.hash((Object[]) ElementUtil.copyAndSort(elements));
+    }
+    
     @Override
     public int hashCode() {
-        Arrays.sort(elements, new Comparator<Element>() {
-          @Override
-          public int compare(Element e0, Element e1) {
-        	  if (e0.getUnit().getSystemUnit().getSymbol() != null && e1.getUnit().getSystemUnit().getSymbol() != null) {
-        		  return e0.getUnit().getSystemUnit().getSymbol().compareTo(e1.getUnit().getSystemUnit().getSymbol());
-        	  } else {
-        		  return e0.getUnit().getSystemUnit().toString().compareTo(e1.getUnit().getSystemUnit().toString());
-        	  }
-          }});
-        return Objects.hash((Object[]) elements);
+        return hashCode.get(); // lazy and thread-safe
     }
 
     @SuppressWarnings("unchecked")
@@ -510,12 +493,18 @@ public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
             if (o == null || getClass() != o.getClass())
                 return false;
 
-            Element element = (Element) o;
+            final Element other = (Element) o;
 
-            if (pow != element.pow) {
+            if (!Objects.equals(this.pow, other.pow)) {
                 return false;
             }
-            return root == element.root && unit != null ? unit.equals(element.unit) : element.unit == null;
+            if (!Objects.equals(this.root, other.root)) {
+                return false;
+            }
+            if (!Objects.equals(this.unit, other.unit)) {
+                return false;
+            }
+            return true;
 
         }
 
@@ -523,5 +512,59 @@ public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
         public int hashCode() {
             return Objects.hash(unit, pow, root);
         }
+    }
+
+    // Element specific algorithms provided locally to this class
+    private final static class ElementUtil {
+        
+        // -- returns a defensive sorted copy, unless size <= 1 
+        private static Element[] copyAndSort(final Element[] elements) {
+            if (elements == null || elements.length <= 1) {
+                return elements;
+            }
+            final Element[] elementsSorted = Arrays.copyOf(elements, elements.length);
+            Arrays.sort(elementsSorted, ElementUtil::compare);
+            return elementsSorted;
+        }
+        
+        private static int compare(final Element e0, final Element e1) {
+            final Unit<?> sysUnit0 = e0.getUnit().getSystemUnit();
+            final Unit<?> sysUnit1 = e1.getUnit().getSystemUnit();
+            final String symbol0 = sysUnit0.getSymbol();
+            final String symbol1 = sysUnit1.getSymbol();
+            
+            if (symbol0 != null && symbol1 != null) {
+                return symbol0.compareTo(symbol1);
+            } else {
+                return sysUnit0.toString().compareTo(sysUnit1.toString());
+            }
+        }
+        
+        // optimized for the fact, that can only return true, if for each element in e0 there exist a single match in e1
+        private static boolean arrayEqualsArbitraryOrder(final Element[] e0, final Element[] e1) {
+            if (e0.length != e1.length) {
+                return false;
+            }
+            for (Element left : e0) {
+                boolean unitFound = false;
+                for (Element right : e1) {
+                    if (left.unit.equals(right.unit)) {
+                        if (left.pow != right.pow || left.root != right.root) {
+                            return false;
+                        } else {
+                            unitFound = true;
+                            break;
+                        }
+                    }
+                }
+                if (!unitFound) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        
+
+        
     }
 }
