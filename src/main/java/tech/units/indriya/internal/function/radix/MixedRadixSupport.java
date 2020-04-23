@@ -32,7 +32,7 @@ package tech.units.indriya.internal.function.radix;
 import java.util.function.Consumer;
 
 import tech.units.indriya.function.MixedRadix;
-import tech.units.indriya.internal.function.calc.Calculator;
+import tech.units.indriya.internal.function.Calculator;
 
 /**
  * Internal utility class to support {@link MixedRadix}.

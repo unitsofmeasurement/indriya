@@ -42,7 +42,7 @@ import javax.measure.Quantity.Scale;
 import javax.measure.Unit;
 import javax.measure.UnitConverter;
 
-import tech.units.indriya.internal.function.calc.Calculator;
+import tech.units.indriya.internal.function.Calculator;
 import tech.units.indriya.internal.function.radix.MixedRadixSupport;
 import tech.units.indriya.internal.function.radix.Radix;
 import tech.units.indriya.quantity.CompoundQuantity;

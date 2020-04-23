@@ -40,7 +40,7 @@ import javax.measure.format.MeasurementParseException;
 
 import tech.units.indriya.format.SimpleQuantityFormat;
 import tech.units.indriya.function.RationalNumber;
-import tech.units.indriya.internal.function.calc.Calculator;
+import tech.units.indriya.internal.function.Calculator;
 
 /**
  * Support class for {@link SimpleQuantityFormat} and {@link RationalNumberFormat}.

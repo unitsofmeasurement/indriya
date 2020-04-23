@@ -33,7 +33,7 @@ import java.math.BigInteger;
 import java.util.Objects;
 import javax.measure.UnitConverter;
 
-import tech.units.indriya.internal.function.calc.Calculator;
+import tech.units.indriya.internal.function.Calculator;
 
 /**
  * <p>

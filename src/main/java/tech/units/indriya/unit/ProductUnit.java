@@ -42,7 +42,7 @@ import javax.measure.UnitConverter;
 
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.function.AbstractConverter;
-import tech.units.indriya.internal.function.lazy.Lazy;
+import tech.units.indriya.internal.function.Lazy;
 
 /**
  * <p>

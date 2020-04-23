@@ -27,7 +27,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package tech.units.indriya.internal.function.lazy;
+package tech.units.indriya.internal.function;
 
 import java.util.Objects;
 import java.util.function.Supplier;
@@ -41,45 +41,44 @@ import java.util.function.Supplier;
  * @since 2.0.3
  */
 public class Lazy<T> {
-
     private final Supplier<? extends T> supplier;
     private T value;
-    private boolean memoized;
+    private boolean memorized;
 
     public Lazy(Supplier<? extends T> supplier) {
         this.supplier = Objects.requireNonNull(supplier, "supplier is required");
     }
 
-    public boolean isMemoized() {
+    public boolean isMemorized() {
         synchronized (this) {
-            return memoized;    
+            return memorized;    
         }
     }
 
     public void clear() {
         synchronized (this) {
-            this.memoized = false;
+            this.memorized = false;
             this.value = null;
         }
     }
 
     public T get() {
         synchronized (this) {
-            if(memoized) {
+            if(memorized) {
                 return value;
             }
-            memoized = true;
+            memorized = true;
             return value = supplier.get();    
         }
     }
     
     public void set(T value) {
         synchronized (this) {
-            if(memoized) {
+            if(memorized) {
                 throw new IllegalStateException(
                         String.format("cannot set value '%s' on Lazy that has already memoized a value", ""+value));
             }
-            memoized = true;
+            memorized = true;
             this.value = value;
         }
     }

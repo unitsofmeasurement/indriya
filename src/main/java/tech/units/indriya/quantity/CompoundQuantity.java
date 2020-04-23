@@ -44,7 +44,7 @@ import javax.measure.Unit;
 import tech.units.indriya.format.SimpleQuantityFormat;
 import tech.units.indriya.function.Calculus;
 import tech.units.indriya.function.MixedRadix;
-import tech.units.indriya.internal.function.calc.Calculator;
+import tech.units.indriya.internal.function.Calculator;
 import tech.units.indriya.spi.NumberSystem;
 import tech.uom.lib.common.function.QuantityConverter;
 

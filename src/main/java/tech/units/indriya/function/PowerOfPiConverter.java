@@ -34,7 +34,7 @@ import java.util.Objects;
 
 import javax.measure.UnitConverter;
 
-import tech.units.indriya.internal.function.calc.Calculator;
+import tech.units.indriya.internal.function.Calculator;
 import tech.uom.lib.common.function.IntExponentSupplier;
 
 /**

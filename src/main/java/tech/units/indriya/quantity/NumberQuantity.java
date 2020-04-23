@@ -41,7 +41,7 @@ import javax.measure.UnitConverter;
 import tech.units.indriya.AbstractQuantity;
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.function.AddConverter;
-import tech.units.indriya.internal.function.calc.Calculator;
+import tech.units.indriya.internal.function.Calculator;
 
 /**
  * Implementation of {@link ComparableQuantity} that holds a Java {@link Number}, 

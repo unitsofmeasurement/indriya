@@ -50,7 +50,7 @@ import javax.measure.quantity.Time;
 import tech.units.indriya.AbstractQuantity;
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.function.Calculus;
-import tech.units.indriya.internal.function.calc.Calculator;
+import tech.units.indriya.internal.function.Calculator;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.Units;
 
