@@ -12,9 +12,9 @@ install: skip
 before_script:
   # execute all of the commands which need to be executed 
   # before running actual tests
-  - sed -i "s|JDK_home|$JAVA_HOME|g" toolchains.xml
+  - sed -i "s|JDK_home|$JAVA_HOME|g" ci-toolchains.xml
   
 script:
   # execute all of the commands which 
   # should make the build pass or fail
-  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V -t toolchains.xml
+  - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V -t ci-toolchains.xml

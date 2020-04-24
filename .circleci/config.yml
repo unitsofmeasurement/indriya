@@ -18,10 +18,10 @@ jobs:
     steps:
       - checkout
       
-      - run: sed -i "s|JDK_home|$JAVA_HOME|g" toolchains.xml
+      - run: sed -i "s|JDK_home|$JAVA_HOME|g" ci-toolchains.xml
         
       # run tests!
-      - run: mvn --batch-mode test jacoco:report -t toolchains.xml
+      - run: mvn --batch-mode test jacoco:report -t ci-toolchains.xml
       
       - run: bash <(curl -s https://codecov.io/bash)
   deployment:
@@ -38,10 +38,10 @@ jobs:
     steps:
       - checkout
       
-      - run: sed -i "s|JDK_home|$JAVA_HOME|g" toolchains.xml
+      - run: sed -i "s|JDK_home|$JAVA_HOME|g" ci-toolchains.xml
         
       # run deployment!
-      - run: mvn --batch-mode deploy -Dmaven.test.skip -DcreateDocs=true -s settings.xml -t toolchains.xml
+      - run: mvn --batch-mode deploy -Dmaven.test.skip -DcreateDocs=true -s settings.xml -t ci-toolchains.xml
 workflows:
   version: 2
   build_deploy:

@@ -1,20 +1,41 @@
     <toolchains>
-  	  <toolchain>
+	<!--
+      <toolchain>
+        <type>jdk</type>
+        <provides>
+          <version>1.7</version>
+        </provides>
+        <configuration>
+          <jdkHome>C:\Program Files\Java\jdk1.7.0_76</jdkHome>
+        </configuration>
+      </toolchain>
+	  -->
+      <toolchain>
         <type>jdk</type>
         <provides>
           <version>8</version>
         </provides>
         <configuration>
-          <jdkHome>JDK_home</jdkHome>
+          <jdkHome>C:\Program Files\Java\jdk1.8.0_221</jdkHome>
         </configuration>
       </toolchain>
-      <toolchain>
+	
+	  <toolchain>
         <type>jdk</type>
         <provides>
           <version>9</version>
         </provides>
         <configuration>
-          <jdkHome>JDK_home</jdkHome>
+          <jdkHome>C:\Program Files\Java\jdk-9.0.4</jdkHome>
+        </configuration>
+      </toolchain>
+	  <toolchain>
+        <type>jdk</type>
+        <provides>
+          <version>10</version>
+        </provides>
+        <configuration>
+          <jdkHome>C:\Program Files\Java\jdk-10.0.1</jdkHome>
         </configuration>
       </toolchain>
       <toolchain>
@@ -23,16 +44,25 @@
           <version>11</version>
         </provides>
         <configuration>
-          <jdkHome>JDK_home</jdkHome>
+          <jdkHome>C:\Program Files\AdoptOpenJDK\jdk-11.0.6.10-hotspot</jdkHome>
         </configuration>
       </toolchain>
-      <toolchain>
+	  <toolchain>
         <type>jdk</type>
         <provides>
           <version>12</version>
         </provides>
         <configuration>
-          <jdkHome>JDK_home</jdkHome>
+          <jdkHome>C:\Program Files\Java\jdk-12.0.1</jdkHome>
+        </configuration>
+      </toolchain>
+	  <toolchain>
+        <type>jdk</type>
+        <provides>
+          <version>13</version>
+        </provides>
+        <configuration>
+          <jdkHome>C:\Program Files\AdoptOpenJDK\jdk-13.0.2.8-hotspot</jdkHome>
         </configuration>
       </toolchain>
 	  <toolchain>
@@ -41,7 +71,7 @@
           <version>14</version>
         </provides>
         <configuration>
-          <jdkHome>JDK_home</jdkHome>
+          <jdkHome>C:\Program Files\AdoptOpenJDK\jdk-14.0.0.36-hotspot</jdkHome>
         </configuration>
       </toolchain>
     </toolchains>
