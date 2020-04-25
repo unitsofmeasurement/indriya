@@ -30,6 +30,8 @@
 package tech.units.indriya.format;
 
 import static tech.units.indriya.format.FormatBehavior.LOCALE_NEUTRAL;
+import static tech.units.indriya.format.NumberFormatStyle.COMPACT;
+import static tech.units.indriya.format.NumberFormatStyle.DEFAULT;
 import static tech.units.indriya.format.CommonFormatter.parseCompoundAsLeading;
 import static tech.units.indriya.format.CommonFormatter.parseCompoundAsPrimary;
 
@@ -53,7 +55,7 @@ import tech.units.indriya.quantity.Quantities;
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author <a href="mailto:thodoris.bais@gmail.com">Thodoris Bais</a>
  *
- * @version 2.2, $Date: 2020-04-22 $
+ * @version 2.5, $Date: 2020-04-25 $
  * @since 2.0
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -62,20 +64,20 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
     /**
      * Holds the default format instance (SimpleUnitFormat).
      */
-    private static final NumberDelimiterQuantityFormat SIMPLE = new NumberDelimiterQuantityFormat.Builder()
+    private static final NumberDelimiterQuantityFormat SIMPLE_INSTANCE = new NumberDelimiterQuantityFormat.Builder()
             .setNumberFormat(NumberFormat.getInstance(Locale.ROOT)).setUnitFormat(SimpleUnitFormat.getInstance()).build();
 
     /**
      * Holds the compact format instance (SimpleUnitFormat, CompactNumberFormat).
      */
-    private static final NumberDelimiterQuantityFormat COMPACT = new NumberDelimiterQuantityFormat.Builder()
+    private static final NumberDelimiterQuantityFormat COMPACT_INSTANCE = new NumberDelimiterQuantityFormat.Builder()
             .setNumberFormat(NumberFormat.getCompactNumberInstance(Locale.ROOT, NumberFormat.Style.SHORT))
             .setUnitFormat(SimpleUnitFormat.getInstance()).build();
 
     /**
      * Holds the localized format instance.
      */
-    private static final NumberDelimiterQuantityFormat LOCAL = new NumberDelimiterQuantityFormat.Builder()
+    private static final NumberDelimiterQuantityFormat LOCAL_INSTANCE = new NumberDelimiterQuantityFormat.Builder()
             .setNumberFormat(NumberFormat.getInstance())
             .setUnitFormat(LocalUnitFormat.getInstance())
             .setLocaleSensitive(true).build();
@@ -99,7 +101,6 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
      * A fluent Builder to easily create new instances of <code>NumberDelimiterQuantityFormat</code>.
      */
     public static class Builder {
-
         private transient NumberFormat numberFormat;
         private transient UnitFormat unitFormat;
         private transient Unit primaryUnit;
@@ -199,6 +200,29 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
             return quantityFormat;
         }
     }
+    
+    /**
+     * Returns an instance of {@link NumberDelimiterQuantityFormat} with a particular {@link FormatBehavior}, either locale-sensitive or locale-neutral.
+     * For example: <code>NumberDelimiterQuantityFormat.getInstance(LOCALE_NEUTRAL))</code> returns<br>
+     * <code>new NumberDelimiterQuantityFormat.Builder()
+            .setNumberFormat(NumberFormat.getInstance(Locale.ROOT)).setUnitFormat(SimpleUnitFormat.getInstance()).build();</code>
+     *
+     * @param behavior
+     *            the format behavior to apply.
+     * @param numberStyle
+     *            the number format style to apply.
+     * @return <code>NumberDelimiterQuantityFormat.getInstance(NumberFormat.getInstance(), UnitFormat.getInstance())</code>
+     * @since 2.5
+     */
+    public static NumberDelimiterQuantityFormat getInstance(FormatBehavior behavior, NumberFormatStyle numberStyle) {
+        switch (behavior) {
+			case LOCALE_SENSITIVE:
+				return LOCAL_INSTANCE;
+            case LOCALE_NEUTRAL:
+            default:
+                return numberStyle == DEFAULT ? SIMPLE_INSTANCE : COMPACT_INSTANCE;
+        }
+    }
 
     /**
      * Returns an instance of {@link NumberDelimiterQuantityFormat} with a particular {@link FormatBehavior}, either locale-sensitive or locale-neutral.
@@ -211,13 +235,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
      * @return <code>NumberDelimiterQuantityFormat.getInstance(NumberFormat.getInstance(), UnitFormat.getInstance())</code>
      */
     public static NumberDelimiterQuantityFormat getInstance(FormatBehavior behavior) {
-        switch (behavior) {
-			case LOCALE_SENSITIVE:
-				return LOCAL;
-            case LOCALE_NEUTRAL:
-            default:
-                return SIMPLE;
-        }
+    	return getInstance(behavior, DEFAULT);
     }
 
     /**
@@ -410,5 +428,4 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
         }
         return count;
     }
-
 }

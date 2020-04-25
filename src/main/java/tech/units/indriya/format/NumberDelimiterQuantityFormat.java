@@ -53,7 +53,7 @@ import tech.units.indriya.quantity.Quantities;
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author <a href="mailto:thodoris.bais@gmail.com">Thodoris Bais</a>
  *
- * @version 2.1, $Date: 2020-04-22 $
+ * @version 2.1.1, $Date: 2020-04-25 $
  * @since 2.0
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -62,13 +62,13 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
     /**
      * Holds the default format instance (SimpleUnitFormat).
      */
-    private static final NumberDelimiterQuantityFormat SIMPLE = new NumberDelimiterQuantityFormat.Builder()
+    private static final NumberDelimiterQuantityFormat SIMPLE_INSTANCE = new NumberDelimiterQuantityFormat.Builder()
             .setNumberFormat(NumberFormat.getInstance(Locale.ROOT)).setUnitFormat(SimpleUnitFormat.getInstance()).build();
 
     /**
      * Holds the localized format instance.
      */
-    private static final NumberDelimiterQuantityFormat LOCAL = new NumberDelimiterQuantityFormat.Builder()
+    private static final NumberDelimiterQuantityFormat LOCAL_INSTANCE = new NumberDelimiterQuantityFormat.Builder()
             .setNumberFormat(NumberFormat.getInstance())
             .setUnitFormat(LocalUnitFormat.getInstance())
             .setLocaleSensitive(true).build();
@@ -206,10 +206,10 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
     public static NumberDelimiterQuantityFormat getInstance(final FormatBehavior behavior) {
         switch (behavior) {
 			case LOCALE_SENSITIVE:
-				return LOCAL;
+				return LOCAL_INSTANCE;
             case LOCALE_NEUTRAL:
             default:
-                return SIMPLE;
+                return SIMPLE_INSTANCE;
         }
     }
 
