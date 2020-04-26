@@ -29,11 +29,9 @@
  */
 package tech.units.indriya.format;
 
-import java.text.CompactNumberFormat;
-
 /**
  * The NumberFormat style.
- * 
+ *
  * @author Werner Keil
  * @version 1.0
  * @since 2.0.3
@@ -41,13 +39,13 @@ import java.text.CompactNumberFormat;
 public enum NumberFormatStyle {
 	 /**
 	   * Default style.
-	   * 
+	   *
 	   */
 	  DEFAULT,
 
 	  /**
 	   * Compact style.
-	   * 
+	   *
 	   * @see          CompactNumberFormat
 	   */
 	  COMPACT
