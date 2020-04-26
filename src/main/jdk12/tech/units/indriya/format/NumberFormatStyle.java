@@ -29,6 +29,8 @@
  */
 package tech.units.indriya.format;
 
+import java.text.CompactNumberFormat;
+
 /**
  * The NumberFormat style.
  *
