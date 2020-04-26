@@ -55,7 +55,7 @@ import tech.units.indriya.quantity.Quantities;
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author <a href="mailto:thodoris.bais@gmail.com">Thodoris Bais</a>
  *
- * @version 2.5, $Date: 2020-04-25 $
+ * @version 2.5.1, $Date: 2020-04-26 $
  * @since 2.0
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -124,7 +124,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
 
         /**
          * Sets the unitFormat parameter to the given {@code UnitFormat}.
-         * @param numberFormat the {@link UnitFormat}
+         * @param unitFormat the {@link UnitFormat}
          * @throws NullPointerException if {@code unitFormat} is {@code null}
          * @return this {@code NumberDelimiterQuantityFormat.Builder}
          */
@@ -200,29 +200,6 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
             return quantityFormat;
         }
     }
-    
-    /**
-     * Returns an instance of {@link NumberDelimiterQuantityFormat} with a particular {@link FormatBehavior}, either locale-sensitive or locale-neutral.
-     * For example: <code>NumberDelimiterQuantityFormat.getInstance(LOCALE_NEUTRAL))</code> returns<br>
-     * <code>new NumberDelimiterQuantityFormat.Builder()
-            .setNumberFormat(NumberFormat.getInstance(Locale.ROOT)).setUnitFormat(SimpleUnitFormat.getInstance()).build();</code>
-     *
-     * @param behavior
-     *            the format behavior to apply.
-     * @param numberStyle
-     *            the number format style to apply.
-     * @return <code>NumberDelimiterQuantityFormat.getInstance(NumberFormat.getInstance(), UnitFormat.getInstance())</code>
-     * @since 2.5
-     */
-    public static NumberDelimiterQuantityFormat getInstance(FormatBehavior behavior, NumberFormatStyle numberStyle) {
-        switch (behavior) {
-			case LOCALE_SENSITIVE:
-				return LOCAL_INSTANCE;
-            case LOCALE_NEUTRAL:
-            default:
-                return numberStyle == DEFAULT ? SIMPLE_INSTANCE : COMPACT_INSTANCE;
-        }
-    }
 
     /**
      * Returns an instance of {@link NumberDelimiterQuantityFormat} with a particular {@link FormatBehavior}, either locale-sensitive or locale-neutral.
@@ -235,8 +212,23 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
      * @return <code>NumberDelimiterQuantityFormat.getInstance(NumberFormat.getInstance(), UnitFormat.getInstance())</code>
      */
     public static NumberDelimiterQuantityFormat getInstance(FormatBehavior behavior) {
-    	return getInstance(behavior, DEFAULT);
+    	return internalGetInstance(behavior, DEFAULT);
     }
+
+	/**
+	 * Returns an instance of {@link NumberDelimiterQuantityFormat} with a particular {@link FormatBehavior}, either locale-sensitive or locale-neutral.
+	 * For example: <code>NumberDelimiterQuantityFormat.getInstance(LOCALE_NEUTRAL))</code> returns<br>
+	 * <code>new NumberDelimiterQuantityFormat.Builder()
+	 .setNumberFormat(NumberFormat.getInstance(Locale.ROOT)).setUnitFormat(SimpleUnitFormat.getInstance()).build();</code>
+	 *
+	 * @param behavior
+	 *            the format behavior to apply.
+	 * @return <code>NumberDelimiterQuantityFormat.getInstance(NumberFormat.getInstance(), UnitFormat.getInstance())</code>
+	 * @since 2.5
+	 */
+	public static NumberDelimiterQuantityFormat getCompactInstance(FormatBehavior behavior) {
+		return internalGetInstance(behavior, COMPACT);
+	}
 
     /**
      * Returns a new instance of {@link Builder}.
@@ -412,7 +404,31 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
 
     // Private helper methods
 
-    private static int getFractionDigitsCount(double d) {
+	/**
+	 * Returns an instance of {@link NumberDelimiterQuantityFormat} with a particular {@link FormatBehavior}, either locale-sensitive or locale-neutral.
+	 * For example: <code>NumberDelimiterQuantityFormat.getInstance(LOCALE_NEUTRAL))</code> returns<br>
+	 * <code>new NumberDelimiterQuantityFormat.Builder()
+	 .setNumberFormat(NumberFormat.getInstance(Locale.ROOT)).setUnitFormat(SimpleUnitFormat.getInstance()).build();</code>
+	 *
+	 * @param behavior
+	 *            the format behavior to apply.
+	 * @param numberStyle
+	 *            the number format style to apply.
+	 * @return <code>NumberDelimiterQuantityFormat.getInstance(NumberFormat.getInstance(), UnitFormat.getInstance())</code>
+	 * @since 2.5
+	 */
+	private static NumberDelimiterQuantityFormat internalGetInstance(FormatBehavior behavior, NumberFormatStyle numberStyle) {
+		switch (behavior) {
+			case LOCALE_SENSITIVE:
+				return LOCAL_INSTANCE;
+			case LOCALE_NEUTRAL:
+			default:
+				return numberStyle == DEFAULT ? SIMPLE_INSTANCE : COMPACT_INSTANCE;
+		}
+	}
+
+
+	private static int getFractionDigitsCount(double d) {
         if (d >= 1) { // we only need the fraction digits
             d = d - (long) d;
         }

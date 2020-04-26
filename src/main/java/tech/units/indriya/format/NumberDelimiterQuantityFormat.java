@@ -53,7 +53,7 @@ import tech.units.indriya.quantity.Quantities;
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author <a href="mailto:thodoris.bais@gmail.com">Thodoris Bais</a>
  *
- * @version 2.1.1, $Date: 2020-04-25 $
+ * @version 2.1.2, $Date: 2020-04-26 $
  * @since 2.0
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -116,7 +116,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
 
         /**
          * Sets the unitFormat parameter to the given {@code UnitFormat}.
-         * @param numberFormat the {@link UnitFormat}
+         * @param unitFormat the {@link UnitFormat}
          * @throws NullPointerException if {@code unitFormat} is {@code null}
          * @return this {@code NumberDelimiterQuantityFormat.Builder}
          */
