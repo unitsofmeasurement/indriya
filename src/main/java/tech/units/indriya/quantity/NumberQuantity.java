@@ -41,6 +41,7 @@ import javax.measure.UnitConverter;
 import tech.units.indriya.AbstractQuantity;
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.function.AddConverter;
+import tech.units.indriya.function.Calculus;
 import tech.units.indriya.internal.function.Calculator;
 
 /**
@@ -57,7 +58,7 @@ import tech.units.indriya.internal.function.Calculator;
  *          The type of the quantity.
  * @author Andi Huber
  * @author Werner Keil
- * @version 1.2
+ * @version 1.3
  * @since 1.0
  * 
  */
@@ -72,7 +73,7 @@ public class NumberQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
      */
     protected NumberQuantity(Number number, Unit<Q> unit, Scale sc) {
       super(unit, sc);
-      value = number;
+      value = Calculus.currentNumberSystem().narrow(number); // also takes care of invalid number values (infinity, ...)
     }
     
     protected NumberQuantity(Number number, Unit<Q> unit) {

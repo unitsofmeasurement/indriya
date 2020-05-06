@@ -36,12 +36,10 @@ import javax.measure.Quantity;
 import javax.measure.quantity.Mass;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.quantity.QuantityRange;
-import tech.units.indriya.spi.Range;
 
 public class RangeTest {
   private Quantity<Mass> min;
@@ -79,6 +77,6 @@ public class RangeTest {
 
   @Test
   public void testToString() {
-    assertEquals("min= 1.0 kg, max= 10.0 kg, res= 2.0 kg", range.toString());
+    assertEquals("min= 1 kg, max= 10 kg, res= 2 kg", range.toString());
   }
 }
