@@ -44,7 +44,7 @@ import tech.units.indriya.spi.NumberSystem;
  * {@link RationalNumber} type.   
  * 
  * @author Andi Huber
- * @since 2.1
+ * @since 2.0
  */
 public class DefaultNumberSystem implements NumberSystem {
     
