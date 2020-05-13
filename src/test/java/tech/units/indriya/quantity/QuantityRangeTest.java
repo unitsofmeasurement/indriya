@@ -43,9 +43,6 @@ import javax.measure.quantity.Mass;
 
 import org.junit.jupiter.api.Test;
 
-import tech.units.indriya.quantity.Quantities;
-import tech.units.indriya.quantity.QuantityRange;
-
 public class QuantityRangeTest {
   private final Quantity<Mass> zeroKilogram = Quantities.getQuantity(0d, KILOGRAM);
   private final Quantity<Mass> oneKilogram = Quantities.getQuantity(1d, KILOGRAM);
@@ -254,7 +251,7 @@ public class QuantityRangeTest {
    */
   @Test
   public void toStringProducesCorrectResultWithResolution() {
-    assertEquals("min= 1.0 kg, max= 10.0 kg, res= 2.0 kg", oneToTenKilogramWithTwoKilogramResolution.toString());
+    assertEquals("min= 1 kg, max= 10 kg, res= 2 kg", oneToTenKilogramWithTwoKilogramResolution.toString());
   }
 
   /**
@@ -262,7 +259,7 @@ public class QuantityRangeTest {
    */
   @Test
   public void toStringProducesCorrectResultWithoutResolution() {
-    assertEquals("min= 1.0 kg, max= 10.0 kg", oneToTenKilogram.toString());
+    assertEquals("min= 1 kg, max= 10 kg", oneToTenKilogram.toString());
   }
 
   /**
