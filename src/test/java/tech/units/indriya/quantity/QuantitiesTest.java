@@ -31,6 +31,7 @@ package tech.units.indriya.quantity;
 
 import static javax.measure.Quantity.Scale.RELATIVE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static tech.units.indriya.NumberAssertions.assertNumberEquals;
 import static tech.units.indriya.unit.Units.CELSIUS;
@@ -45,7 +46,6 @@ import javax.measure.quantity.Speed;
 import javax.measure.quantity.Temperature;
 import javax.measure.quantity.Time;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.ComparableQuantity;
@@ -55,7 +55,7 @@ import tech.units.indriya.unit.Units;
  *
  * @author Werner Keil
  * @author Andi Huber
- * @version 0.5
+ * @version 0.6
  */
 public class QuantitiesTest {
 
@@ -63,6 +63,17 @@ public class QuantitiesTest {
   public void ofTest() {
     Quantity<Pressure> pressure = Quantities.getQuantity(BigDecimal.ONE, PASCAL);
     assertEquals(PASCAL, pressure.getUnit());
+  }
+  
+  @Test
+  public void canOnlyUseFinteAmountsTestNan() {
+    assertThrows(IllegalArgumentException.class, ()->Quantities.getQuantity(Double.NaN, PASCAL));  
+  }
+  
+  @Test
+  public void canOnlyUseFinteAmountsTestInfinity() {
+    assertThrows(IllegalArgumentException.class, ()->Quantities.getQuantity(Double.POSITIVE_INFINITY, PASCAL));  
+    assertThrows(IllegalArgumentException.class, ()->Quantities.getQuantity(Double.NEGATIVE_INFINITY, PASCAL));
   }
 
   @Test
@@ -77,24 +88,15 @@ public class QuantitiesTest {
     Quantity<Pressure> floatQuantity = Quantities.getQuantity(Float.valueOf("2"), PASCAL);
     Quantity<Pressure> doubleQuantity = Quantities.getQuantity(Double.valueOf("2"), PASCAL);
 
-    assertTrue(Short.class.isInstance(shortQuantity.getValue()));
-    assertTrue(Byte.class.isInstance(byteQuantity.getValue()));
-    assertTrue(Long.class.isInstance(longQuantity.getValue()));
-    assertTrue(Integer.class.isInstance(intQuantity.getValue()));
-    assertTrue(Float.class.isInstance(floatQuantity.getValue()));
-    assertTrue(Double.class.isInstance(doubleQuantity.getValue()));
-    assertTrue(BigInteger.class.isInstance(bigIntegerQuantity.getValue()));
-    assertTrue(BigDecimal.class.isInstance(bigDecimalQuantity.getValue()));
+    assertNumberEquals(2, shortQuantity.getValue(), 1E-12);
+    assertNumberEquals(2, byteQuantity.getValue(), 1E-12);
+    assertNumberEquals(2, longQuantity.getValue(), 1E-12);
+    assertNumberEquals(2, intQuantity.getValue(), 1E-12);
+    assertNumberEquals(2, floatQuantity.getValue(), 1E-12);
+    assertNumberEquals(2, doubleQuantity.getValue(), 1E-12);
+    assertNumberEquals(1, bigIntegerQuantity.getValue(), 1E-12);
+    assertNumberEquals(1, bigDecimalQuantity.getValue(), 1E-12);
 
-// //TODO[220] remove obsolete    
-//    assertTrue(ShortQuantity.class.isInstance(shortQuantity));
-//    assertTrue(ByteQuantity.class.isInstance(byteQuantity));
-//    assertTrue(LongQuantity.class.isInstance(longQuantity));
-//    assertTrue(NumberQuantity.class.isInstance(intQuantity)); // workaround
-//    assertTrue(NumberQuantity.class.isInstance(floatQuantity)); // workaround
-//    assertTrue(DoubleQuantity.class.isInstance(doubleQuantity));
-//    assertTrue(BigIntegerQuantity.class.isInstance(bigIntegerQuantity));
-//    assertTrue(DecimalQuantity.class.isInstance(bigDecimalQuantity));
   }
 
   @Test
@@ -109,25 +111,15 @@ public class QuantitiesTest {
     Quantity<Temperature> floatQuantity = Quantities.getQuantity(Float.valueOf("2"), CELSIUS, RELATIVE);
     Quantity<Temperature> doubleQuantity = Quantities.getQuantity(Double.valueOf("2"), CELSIUS, RELATIVE);
 
-    assertTrue(Short.class.isInstance(shortQuantity.getValue()));
-    assertTrue(Byte.class.isInstance(byteQuantity.getValue()));
-    assertTrue(Long.class.isInstance(longQuantity.getValue()));
-    assertTrue(Integer.class.isInstance(intQuantity.getValue()));
-    assertTrue(Float.class.isInstance(floatQuantity.getValue()));
-    assertTrue(Double.class.isInstance(doubleQuantity.getValue()));
-    assertTrue(BigInteger.class.isInstance(bigIntegerQuantity.getValue()));
-    assertTrue(BigDecimal.class.isInstance(bigDecimalQuantity.getValue()));
+    assertNumberEquals(2, shortQuantity.getValue(), 1E-12);
+    assertNumberEquals(2, byteQuantity.getValue(), 1E-12);
+    assertNumberEquals(2, longQuantity.getValue(), 1E-12);
+    assertNumberEquals(2, intQuantity.getValue(), 1E-12);
+    assertNumberEquals(2, floatQuantity.getValue(), 1E-12);
+    assertNumberEquals(2, doubleQuantity.getValue(), 1E-12);
+    assertNumberEquals(1, bigIntegerQuantity.getValue(), 1E-12);
+    assertNumberEquals(1, bigDecimalQuantity.getValue(), 1E-12);
 
-//TODO[220] remove obsolete
-//    assertTrue(ShortQuantity.class.isInstance(shortQuantity));
-//    assertTrue(ByteQuantity.class.isInstance(byteQuantity));
-//    assertTrue(LongQuantity.class.isInstance(longQuantity));
-//    assertTrue(NumberQuantity.class.isInstance(intQuantity)); // workaround
-//    assertTrue(NumberQuantity.class.isInstance(floatQuantity)); // workaround
-//    assertTrue(DoubleQuantity.class.isInstance(doubleQuantity));
-//    assertTrue(BigIntegerQuantity.class.isInstance(bigIntegerQuantity));
-//    assertTrue(DecimalQuantity.class.isInstance(bigDecimalQuantity));
-    
     assertEquals(RELATIVE, shortQuantity.getScale());
     assertEquals(RELATIVE, byteQuantity.getScale());
     assertEquals(RELATIVE, longQuantity.getScale());
@@ -146,11 +138,10 @@ public class QuantitiesTest {
   }
 
   @Test
-  @Disabled("fails because of MultiplyConverter not being sufficiently accurate")
+  //@Disabled("fails because of MultiplyConverter not being sufficiently accurate")
   public void quantityEquivalentTest() {
       ComparableQuantity<Speed> shouldBe = Quantities.getQuantity(15, Units.KILOMETRE_PER_HOUR);
       Quantity<Speed> parsedSpeed = Quantities.getQuantity("15.0 km/h").asType(Speed.class);
-
       assertTrue(shouldBe.isEquivalentTo(parsedSpeed));
   }
 }

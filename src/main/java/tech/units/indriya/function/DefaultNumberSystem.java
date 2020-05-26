@@ -427,6 +427,9 @@ public class DefaultNumberSystem implements NumberSystem {
         
         if(number instanceof Double || number instanceof Float) {
             final double doubleValue = number.doubleValue();
+            if(!Double.isFinite(doubleValue)) {
+                throw unsupportedNumberValue(doubleValue);
+            }
             if(doubleValue % 1 == 0) {
                 // double represents an integer
                 return narrow(BigDecimal.valueOf(doubleValue));
@@ -517,6 +520,15 @@ public class DefaultNumberSystem implements NumberSystem {
     
     
     // -- HELPER
+    
+    private IllegalArgumentException unsupportedNumberValue(Number number) {
+        final String msg = String.format("Unsupported number value '%s' of type '%s' in number system '%s'",
+                "" + number,
+                number.getClass(),
+                this.getClass().getName());
+        
+        return new IllegalArgumentException(msg);
+    }
     
     private IllegalArgumentException unsupportedNumberType(Number number) {
         final String msg = String.format("Unsupported number type '%s' in number system '%s'",

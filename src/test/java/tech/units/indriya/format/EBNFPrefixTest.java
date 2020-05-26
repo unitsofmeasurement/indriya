@@ -82,14 +82,14 @@ public class EBNFPrefixTest {
 	@Test
 	public void testMega() {
 		Quantity<Mass> m1 = Quantities.getQuantity(1.0, MEGA(Units.GRAM));
-		assertEquals(1d, m1.getValue());
+		assertNumberEquals(1d, m1.getValue(), 1E-12);
 		assertEquals("Mg", format.format(m1.getUnit()));
 	}
 
 	@Test
 	public void testDeci() {
 		Quantity<Volume> m1 = Quantities.getQuantity(1.0, LITRE);
-		assertEquals(1d, m1.getValue());
+		assertNumberEquals(1d, m1.getValue(), 1E-12);
 		assertEquals("l", format.format(m1.getUnit()));
 
 		Quantity<Volume> m2 = m1.to(DECI(LITRE));
@@ -100,21 +100,21 @@ public class EBNFPrefixTest {
 	@Test
 	public void testMilli() {
 		Quantity<Mass> m1 = Quantities.getQuantity(1.0, MILLI(Units.GRAM));
-		assertEquals(1d, m1.getValue());
+		assertNumberEquals(1d, m1.getValue(), 1E-12);
 		assertEquals("mg", format.format(m1.getUnit()));
 	}
 
 	@Test
 	public void testMilli2() {
 		Quantity<Volume> m1 = Quantities.getQuantity(10, MILLI(LITRE));
-		assertEquals(10, m1.getValue());
+		assertNumberEquals(10, m1.getValue(), 1E-12);
 		assertEquals("ml", format.format(m1.getUnit()));
 	}
 
 	@Test
 	public void testMilli3() {
 		Quantity<Volume> m1 = Quantities.getQuantity(1.0, LITRE);
-		assertEquals(1d, m1.getValue());
+		assertNumberEquals(1d, m1.getValue(), 1E-12);
 		assertEquals("l", format.format(m1.getUnit()));
 
 		Quantity<Volume> m2 = m1.to(MILLI(LITRE));
@@ -125,7 +125,7 @@ public class EBNFPrefixTest {
 	@Test
 	public void testMilli4() {
 		Quantity<Volume> m1 = Quantities.getQuantity(1.0, MILLI(LITRE));
-		assertEquals(1d, m1.getValue());
+		assertNumberEquals(1d, m1.getValue(), 1E-12);
 		assertEquals("ml", format.format(m1.getUnit()));
 
 		Quantity<Volume> m2 = m1.to(LITRE);
@@ -136,7 +136,7 @@ public class EBNFPrefixTest {
 	@Test
 	public void testMicro2() {
 		Quantity<Length> m1 = Quantities.getQuantity(1.0, Units.METRE);
-		assertEquals(1d, m1.getValue());
+		assertNumberEquals(1d, m1.getValue(), 1E-12);
 		assertEquals("m", format.format(m1.getUnit()));
 
 		final Quantity<Length> m2 = m1.to(MICRO(Units.METRE));
@@ -147,7 +147,7 @@ public class EBNFPrefixTest {
 	@Test
 	public void testNano() {
 		Quantity<Mass> m1 = Quantities.getQuantity(1.0, Units.GRAM);
-		assertEquals(1d, m1.getValue());
+		assertNumberEquals(1d, m1.getValue(), 1E-12);
 		assertEquals("g", format.format(m1.getUnit()));
 
 		final Quantity<Mass> m2 = m1.to(NANO(Units.GRAM));
@@ -158,7 +158,7 @@ public class EBNFPrefixTest {
 	@Test
 	public void testNano2() {
 		Quantity<Length> m1 = Quantities.getQuantity(1.0, Units.METRE);
-		assertEquals(1d, m1.getValue());
+		assertNumberEquals(1d, m1.getValue(), 1E-12);
 		assertEquals("m", format.format(m1.getUnit()));
 
 		final Quantity<Length> m2 = m1.to(NANO(Units.METRE));

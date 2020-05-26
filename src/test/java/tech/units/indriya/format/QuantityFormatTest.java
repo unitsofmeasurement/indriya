@@ -236,7 +236,7 @@ public class QuantityFormatTest {
     public void testParseDelim1() {
         QuantityFormat format1 = NumberDelimiterQuantityFormat.getInstance(DecimalFormat.getInstance(), SimpleUnitFormat.getInstance());
         Quantity<?> parsed1 = format1.parse("1 m");
-        assertEquals(1L, parsed1.getValue());
+        assertNumberEquals(1L, parsed1.getValue(), 1E-12);
         assertEquals(METRE, parsed1.getUnit());
     }
 
@@ -262,7 +262,7 @@ public class QuantityFormatTest {
     public void testParseAtPosition() {
         QuantityFormat format1 = NumberDelimiterQuantityFormat.getInstance(DecimalFormat.getInstance(), SimpleUnitFormat.getInstance());
         Quantity<?> parsed1 = format1.parse("1 km 2 m", new ParsePosition(5));
-        assertEquals(2L, parsed1.getValue());
+        assertNumberEquals(2L, parsed1.getValue(), 1E-12);
         assertEquals(METRE, parsed1.getUnit());
     }
 }
