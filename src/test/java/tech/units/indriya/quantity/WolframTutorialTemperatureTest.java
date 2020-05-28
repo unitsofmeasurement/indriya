@@ -33,17 +33,20 @@ import static javax.measure.MetricPrefix.KILO;
 import static javax.measure.Quantity.Scale.ABSOLUTE;
 import static javax.measure.Quantity.Scale.RELATIVE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static tech.units.indriya.NumberAssertions.assertNumberEquals;
 
-import javax.measure.MeasurementException;
 import javax.measure.Quantity;
+import javax.measure.Quantity.Scale;
 import javax.measure.Unit;
 import javax.measure.quantity.Temperature;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import tech.units.indriya.AbstractUnit;
+import tech.units.indriya.function.AbstractConverter;
 import tech.units.indriya.function.AddConverter;
 import tech.units.indriya.function.MultiplyConverter;
 import tech.units.indriya.unit.TransformedUnit;
@@ -58,60 +61,62 @@ import tech.units.indriya.unit.Units;
  */
 class WolframTutorialTemperatureTest {
 
-	public static final Unit<Temperature> DegreesFahrenheit = new TransformedUnit<>(Units.KELVIN,
-			MultiplyConverter.ofRational(5, 9).concatenate(new AddConverter(459.67)));
+    // K = 5/9 * (F - 32) + 273.15
+    private static final AbstractConverter fahenheitToKelvin = (AbstractConverter) 
+            new AddConverter(273.15)
+            .concatenate(MultiplyConverter.ofRational(5, 9))
+            .concatenate(new AddConverter(-32));
+    
+	private static final Unit<Temperature> DegreesFahrenheit = 
+	        new TransformedUnit<>("°F", "DegreesFahrenheit", Units.KELVIN, fahenheitToKelvin);
 
-	public static final Unit<Temperature> DegreesFahrenheitDifference = new TransformedUnit<>(Units.KELVIN,
-	        MultiplyConverter.ofRational(5, 9));
-
-	public static final Unit<Temperature> KelvinsDifference = new TransformedUnit<>(Units.KELVIN,
-	        MultiplyConverter.ofRational(1, 1));
-
-	public static final Unit<Temperature> DegreesCelsiusDifference = new TransformedUnit<>(Units.KELVIN,
-	        MultiplyConverter.ofRational(1, 1));
-
+	
+	
+	@Test
+    public void fahrenheit() {
+	    assertNumberEquals(273.15, fahenheitToKelvin.convert(32), 1E-9);
+	    assertNumberEquals(283.15, fahenheitToKelvin.convert(50), 1E-9);
+	    assertNumberEquals(5./9., fahenheitToKelvin.linearFactor().get(), 1E-9);
+	    assertFalse(fahenheitToKelvin.isLinear());
+    }
+	
 	// -- (1) -- Absolute Temperature versus Temperature Difference
 
 	@Test
-	@DisplayName("UnitConvert[Quantity[3., 'DegreesFahrenheit'] *2, 'Kelvins'] -> 258.706 K")
+	@DisplayName("UnitConvert[Quantity[3., 'DegreesFahrenheit'] *2, 'Kelvins'] -> 258.706 K") // unexpected result
 	public void in1() {
-
-		final Quantity<Temperature> t_f = Quantities.getQuantity(3., DegreesFahrenheit, RELATIVE);
-		final Quantity<Temperature> t_k = t_f.multiply(2.).to(Units.KELVIN);
-
-		assertEquals(RELATIVE, t_f.getScale());
-		assertEquals(ABSOLUTE, t_k.getScale());
-		assertEquals(258.706, t_k.getValue().doubleValue(), 1E-3);
+		final Quantity<Temperature> t_f = Quantities.getQuantity(3., DegreesFahrenheit, ABSOLUTE);
+	    assertEquals(ABSOLUTE, t_f.getScale());
+		final Quantity<Temperature> t_2f = t_f.multiply(2.);
+		assertFahrenheit(465.67, t_2f, ABSOLUTE);
+		
+		final Quantity<Temperature> t_k = t_2f.to(Units.KELVIN);
+		assertKelvin(514.078, t_k);
 	}
 
 	@Test
 	@DisplayName("UnitConvert[Quantity[3., 'DegreesFahrenheit'], 'Kelvins']*2 -> 514.078 K")
 	public void in2() {
-
-		final Quantity<Temperature> t_f = Quantities.getQuantity(3., DegreesFahrenheit);
+		final Quantity<Temperature> t_f = Quantities.getQuantity(3., DegreesFahrenheit, ABSOLUTE);
 		final Quantity<Temperature> t_k = t_f.to(Units.KELVIN).multiply(2.);
-
-		assertEquals(514.078, t_k.getValue().doubleValue(), 1E-3);
+		assertKelvin(514.078, t_k);
 	}
 
 	@Test
 	@DisplayName("UnitConvert[Quantity[3., 'DegreesFahrenheitDifference'], 'KelvinsDifference']*2 -> 3.333333 K")
 	public void in3() {
-
-		final Quantity<Temperature> t_f = Quantities.getQuantity(3., DegreesFahrenheitDifference);
-		final Quantity<Temperature> t_k = t_f.to(KelvinsDifference).multiply(2.);
-
-		assertEquals(3.333333, t_k.getValue().doubleValue(), 1E-6);
+		final Quantity<Temperature> t_f = Quantities.getQuantity(3., DegreesFahrenheit, RELATIVE);
+		assertEquals(RELATIVE, t_f.getScale());
+		final Quantity<Temperature> t_k = t_f.to(Units.KELVIN).multiply(2.);
+		assertKelvin(3.333333, t_k);
 	}
 
 	@Test
 	@DisplayName("UnitConvert[Quantity[3., 'DegreesFahrenheitDifference']*2, 'KelvinsDifference'] -> 3.333333 K")
 	public void in4() {
-
-		final Quantity<Temperature> t_f = Quantities.getQuantity(3., DegreesFahrenheitDifference);
-		final Quantity<Temperature> t_k = t_f.to(KelvinsDifference).multiply(2.);
-
-		assertEquals(3.333333, t_k.getValue().doubleValue(), 1E-6);
+		final Quantity<Temperature> t_f = Quantities.getQuantity(3., DegreesFahrenheit, RELATIVE);
+		final Quantity<Temperature> t_k = t_f.multiply(2.).to(Units.KELVIN);
+        assertKelvin(3.333333, t_k);
 	}
 
 	// -- (2) -- Adding Temperatures
@@ -119,39 +124,34 @@ class WolframTutorialTemperatureTest {
 	@Test
 	@DisplayName("Quantity[3, 'DegreesFahrenheit'] + Quantity[2, 'DegreesFahrenheitDifference'] -> 5 °F")
 	public void in5() {
-
-		final Quantity<Temperature> t_f1 = Quantities.getQuantity(3., DegreesFahrenheit);
-		final Quantity<Temperature> t_f2 = Quantities.getQuantity(2., DegreesFahrenheitDifference);
+		final Quantity<Temperature> t_f1 = Quantities.getQuantity(3., DegreesFahrenheit, ABSOLUTE);
+		final Quantity<Temperature> t_f2 = Quantities.getQuantity(2., DegreesFahrenheit, RELATIVE);
 		final Quantity<Temperature> t_f = t_f1.add(t_f2);
-
-		assertEquals(5., t_f.getValue().doubleValue(), 1E-3);
+		assertFahrenheit(5., t_f, ABSOLUTE);
 	}
 
 	@Test
 	@DisplayName("Quantity[3, 'DegreesFahrenheitDifference'] + Quantity[2, 'DegreesCelsiusDifference'] -> 33/5 °F")
 	public void in6() {
 
-		final Quantity<Temperature> t_f1 = Quantities.getQuantity(3., DegreesFahrenheitDifference);
-		final Quantity<Temperature> t_c = Quantities.getQuantity(2., DegreesCelsiusDifference);
+		final Quantity<Temperature> t_f1 = Quantities.getQuantity(3., DegreesFahrenheit, RELATIVE);
+		final Quantity<Temperature> t_c = Quantities.getQuantity(2., Units.CELSIUS, RELATIVE);
 		final Quantity<Temperature> t_f = t_f1.add(t_c);
 
-		assertEquals(33. / 5., t_f.getValue().doubleValue(), 1E-3);
+		assertFahrenheit(33. / 5., t_f, RELATIVE);
 	}
 
 	@Test
-	@Disabled("Indriya actually calculates this!")
-	@DisplayName("Quantity[3, 'DegreesFahrenheit'] + Quantity[2, 'DegreesCelsius'] -> ???")
+	@DisplayName("Quantity[3, 'DegreesFahrenheit'] + Quantity[2, 'DegreesCelsius'] -> 498.27 °F")
 	public void in7() {
 
-		final Quantity<Temperature> t_f1 = Quantities.getQuantity(3., DegreesFahrenheit, RELATIVE);
-		final Quantity<Temperature> t_c = Quantities.getQuantity(2., Units.CELSIUS, RELATIVE);
+		final Quantity<Temperature> t_f1 = Quantities.getQuantity(3., DegreesFahrenheit, ABSOLUTE);
+		final Quantity<Temperature> t_c = Quantities.getQuantity(2., Units.CELSIUS, ABSOLUTE);
 
-		// TODO should throw, or return something like a NonEvaluatedQuantity
-		assertThrows(MeasurementException.class, () -> t_f1.add(t_c));
+		assertFahrenheit(498.27, t_f1.add(t_c), ABSOLUTE);
 	}
 
-	@Test @Disabled("Indriya does implicit conversion to Kelvin before addition")
-	//TODO Look into addressing this based on Scale (https://github.com/unitsofmeasurement/indriya/issues/128)
+	@Test
 	@DisplayName("Quantity[3, 'DegreesFahrenheit'] + Quantity[2, 'DegreesFahrenheit'] -> 5 °F")
 	public void in8() {
 
@@ -159,7 +159,7 @@ class WolframTutorialTemperatureTest {
 		final Quantity<Temperature> t_f2 = Quantities.getQuantity(2., DegreesFahrenheit, RELATIVE);
 		final Quantity<Temperature> t_f = t_f1.add(t_f2);
 
-		assertEquals(5., t_f.getValue().doubleValue(), 1E-3);
+		assertFahrenheit(5., t_f, RELATIVE);
 	}
 
 	@Test
@@ -170,19 +170,21 @@ class WolframTutorialTemperatureTest {
 		final Quantity<Temperature> t_k2 = Quantities.getQuantity(4., Units.KELVIN);
 		final Quantity<Temperature> t_k = t_k1.add(t_k2);
 
-		assertEquals(751. / 250., t_k.getValue().doubleValue(), 1E-3);
+		assertKiloKelvin(751. / 250., t_k);
 	}
 
 	// -- 3 -- Multiplying Temperatures
 
 	@Test
-	@DisplayName("UnitConvert[Quantity[3., 'DegreesCelsius'] *18.2, 'Kelvins'] -> 327.75 K")
+	@DisplayName("UnitConvert[Quantity[3., 'DegreesCelsius'] *18.2, 'Kelvins'] -> 327.75 K") // unexpected result
 	public void in10() {
 
-		final Quantity<Temperature> t_c = Quantities.getQuantity(3d, Units.CELSIUS);
-		final Quantity<Temperature> t_k = t_c.multiply(18.2).to(Units.KELVIN);
-
-		assertEquals(327.75, t_k.getValue().doubleValue(), 1E-3);
+		final Quantity<Temperature> t_c = Quantities.getQuantity(3d, Units.CELSIUS, ABSOLUTE);
+		final Quantity<Temperature> t_c2 = t_c.multiply(18.2);
+		assertCelsius((18.2 * (3. + 273.15)) - 273.15, t_c2, ABSOLUTE);
+		
+		final Quantity<Temperature> t_k = t_c2.to(Units.KELVIN);
+		assertKelvin((18.2 * (3. + 273.15)), t_k);
 	}
 
 	@Test
@@ -192,20 +194,17 @@ class WolframTutorialTemperatureTest {
 		final Quantity<Temperature> t_c = Quantities.getQuantity(3., Units.CELSIUS);
 		final Quantity<Temperature> t_k = t_c.to(Units.KELVIN).multiply(18.2);
 
-		assertEquals(5025.93, t_k.getValue().doubleValue(), 1E-3);
+		assertKelvin(5025.93, t_k);
 	}
 
 	@Test
-	@Disabled("Indriya actually calculates this!")
 	@DisplayName("Quantity[1.4, 'DegreesCelsius']/Quantity[8, 'DegreesFahrenheit'] -> ???")
 	public void in12() {
 
 		final Quantity<Temperature> t_c = Quantities.getQuantity(1.4, Units.CELSIUS, RELATIVE);
 		final Quantity<Temperature> t_f = Quantities.getQuantity(8., DegreesFahrenheit, RELATIVE);
-
-		// TODO should throw, or return something like a NonEvaluatedQuantity
-		// This could be done e.g. based on LevelOfMeasurement
-		assertThrows(MeasurementException.class, () -> t_c.divide(t_f));
+		
+		assertDimensionLess(1.4/(8.*5./9.), t_c.divide(t_f));
 	}
 
 	@Test
@@ -213,14 +212,46 @@ class WolframTutorialTemperatureTest {
 			+ " UnitConvert[Quantity[8, 'DegreesFahrenheit'], 'Kelvins'] -> 1.05671")
 	public void in13() {
 
-		final Quantity<Temperature> t_c = Quantities.getQuantity(1.4, Units.CELSIUS);
-		final Quantity<Temperature> t_f = Quantities.getQuantity(8., DegreesFahrenheit);
+		final Quantity<Temperature> t_c = Quantities.getQuantity(1.4, Units.CELSIUS, ABSOLUTE);
+		final Quantity<Temperature> t_f = Quantities.getQuantity(8., DegreesFahrenheit, ABSOLUTE);
 
 		final Quantity<Temperature> t_k1 = t_c.to(Units.KELVIN);
 		final Quantity<Temperature> t_k2 = t_f.to(Units.KELVIN);
 
-		final Quantity<?> dimensionless = t_k1.divide(t_k2);
-
-		assertEquals(1.05671, dimensionless.getValue().doubleValue(), 1E-3);
+		assertDimensionLess(1.05671, t_k1.divide(t_k2));
 	}
+	
+	// -- HELPER
+	
+	private static void assertKelvin(Number expected, Quantity<?> x) {
+        assertEquals("K", x.getUnit().toString());
+        assertEquals(ABSOLUTE, x.getScale()); // should be ABSOLUTE by convention
+        assertNumberEquals(expected, x.getValue(), 1E-3);
+    }
+	
+	private static void assertKiloKelvin(Number expected, Quantity<?> x) {
+        assertEquals("kK", x.getUnit().toString());
+        assertEquals(ABSOLUTE, x.getScale()); // should be ABSOLUTE by convention
+        assertNumberEquals(expected, x.getValue(), 1E-3);
+    }
+	
+	private static void assertFahrenheit(Number expected, Quantity<?> x, Scale scale) {
+        assertEquals("°F", x.getUnit().toString());
+        assertEquals(scale, x.getScale());
+        assertNumberEquals(expected, x.getValue(), 1E-3);
+    }
+	
+	private static void assertCelsius(Number expected, Quantity<?> x, Scale scale) {
+        assertEquals("℃", x.getUnit().toString());
+        assertEquals(scale, x.getScale());
+        assertNumberEquals(expected, x.getValue(), 1E-3);
+    }
+	
+	private static void assertDimensionLess(Number expected, Quantity<?> x) {
+	    assertTrue(x.getUnit().isCompatible(AbstractUnit.ONE)); // scalar
+	    assertEquals(ABSOLUTE, x.getScale()); // should be ABSOLUTE by convention
+	    assertNumberEquals(expected, x.getValue(), 1E-3);
+	}
+	
+	
 }
