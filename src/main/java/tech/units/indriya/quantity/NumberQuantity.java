@@ -168,18 +168,21 @@ public class NumberQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
 		boolean shouldConvertThis = shouldConvertQuantityForAddition(c1, getScale());
 		boolean shouldConvertThat = shouldConvertQuantityForAddition(c2, that.getScale());
 		final Number thisValueInSystemUnit = shouldConvertThis ? c1.convert(this.getValue()) : this.getValue();
-		final Number thatValueInSystemUnit = shouldConvertThat ? c2.convert(that.getValue()) : this.getValue();
+		final Number thatValueInSystemUnit = shouldConvertThat ? c2.convert(that.getValue()) : that.getValue();
 
 		final Number resultValueInSystemUnit =
 			operator.apply(thisValueInSystemUnit, thatValueInSystemUnit);
 
 		final Number resultValueInThisUnit =
-			shouldConvertThis || shouldConvertThat ? c1.inverse().convert(resultValueInSystemUnit) : resultValueInSystemUnit;
-		//TODO[220] scale not handled at all !!!
-		if (getScale().equals(that.getScale())) {
+			shouldConvertThis || shouldConvertThat 
+			    ? c1.inverse().convert(resultValueInSystemUnit) 
+	            : resultValueInSystemUnit;
+		
+		// if both operands have same scale, scale is preserved, otherwise scale becomes ABSOLUTE
+		if (this.getScale().equals(that.getScale())) {
 			return Quantities.getQuantity(resultValueInThisUnit, getUnit(), getScale());
 		} else {
-			return Quantities.getQuantity(resultValueInThisUnit, getUnit()); // becomes ABSOLUTE TODO, should it be ABSOLUTE?
+			return Quantities.getQuantity(resultValueInThisUnit, getUnit());
 		}
 	}
 

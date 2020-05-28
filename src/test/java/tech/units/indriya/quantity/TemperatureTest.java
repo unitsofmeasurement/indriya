@@ -29,12 +29,6 @@
  */
 package tech.units.indriya.quantity;
 
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-import javax.measure.Quantity;
-import javax.measure.quantity.Temperature;
-import java.math.BigDecimal;
-
 import static javax.measure.Quantity.Scale.ABSOLUTE;
 import static javax.measure.Quantity.Scale.RELATIVE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -42,9 +36,16 @@ import static tech.units.indriya.NumberAssertions.assertNumberEquals;
 import static tech.units.indriya.unit.Units.CELSIUS;
 import static tech.units.indriya.unit.Units.KELVIN;
 
+import javax.measure.Quantity;
+import javax.measure.quantity.Temperature;
+
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
+
 /**
  *
  * @author Werner Keil
+ * @author Andi Huber
  *
  */
 class TemperatureTest {
@@ -79,50 +80,61 @@ class TemperatureTest {
 	void addingRelativesProducesRelative() {
 		Quantity<Temperature> relT = Quantities.getQuantity(0d, KELVIN, RELATIVE);
 		Quantity<Temperature> relT2 = Quantities.getQuantity(0d, KELVIN, RELATIVE);
-		assertEquals(RELATIVE, relT.add(relT2).getScale());
+		Quantity<Temperature> sum = relT.add(relT2);
+		assertEquals(RELATIVE, sum.getScale());
+		assertNumberEquals(0, sum.getValue(), 1E-12);
 	}
 
 	@Test
 	void addingTemperatureAbsoluteToARelative() {
 		Quantity<Temperature> absT = Quantities.getQuantity(4d, CELSIUS, ABSOLUTE);
 		Quantity<Temperature> relT = Quantities.getQuantity(4d, CELSIUS, RELATIVE);
-		assertEquals(8d,absT.add(relT).getValue().doubleValue());
+		Quantity<Temperature> sum = absT.add(relT); 
+		assertEquals(ABSOLUTE, sum.getScale());
+		assertNumberEquals(8, sum.getValue(), 1E-12);
 	}
 
 	@Test
 	void addingTemperatureRelativeToAbsolute() {
 		Quantity<Temperature> relT = Quantities.getQuantity(3d, CELSIUS, RELATIVE);
 		Quantity<Temperature> absT = Quantities.getQuantity(3d, CELSIUS, ABSOLUTE);
-		assertEquals(6d,relT.add(absT).getValue().doubleValue());
+		Quantity<Temperature> sum = relT.add(absT);
+		assertEquals(ABSOLUTE, sum.getScale());
+		assertNumberEquals(6, sum.getValue(), 1E-12);
 	}
 
 	@Test
 	void addingAbsoluteTemperatures() {
 		Quantity<Temperature> absT = Quantities.getQuantity(0d, CELSIUS, ABSOLUTE);
 		Quantity<Temperature> absT2 = Quantities.getQuantity(0d, CELSIUS, ABSOLUTE);
-		assertEquals(BigDecimal.valueOf(273.15d), absT.add(absT2).getValue());
-		assertEquals(ABSOLUTE, absT.add(absT2).getScale());
+		Quantity<Temperature> sum = absT.add(absT2);
+		assertEquals(ABSOLUTE, sum.getScale());
+		assertNumberEquals(273.15d, sum.getValue(), 1E-12);
 	}
 
 	@Test
 	void addingRelativeTemperatures() {
-		Quantity<Temperature> relT = Quantities.getQuantity(0d, CELSIUS, RELATIVE);
-		Quantity<Temperature> relT2 = Quantities.getQuantity(0d, CELSIUS, RELATIVE);
-		assertEquals(0, relT.add(relT2).getValue());
+		Quantity<Temperature> relT = Quantities.getQuantity(6, CELSIUS, RELATIVE);
+		Quantity<Temperature> relT2 = Quantities.getQuantity(20, CELSIUS, RELATIVE);
+		Quantity<Temperature> sum = relT.add(relT2);
+        assertEquals(RELATIVE, sum.getScale());
+		assertNumberEquals(26, sum.getValue(), 1E-12);
 	}
 	
 	@Test @Disabled("Currently not working, see https://github.com/unitsofmeasurement/indriya/issues/247")
 	void productOfRelativeTemperatures() {
 		Quantity<Temperature> relT = Quantities.getQuantity(0d, CELSIUS, RELATIVE);
 		Quantity<Temperature> relT2 = Quantities.getQuantity(0d, CELSIUS, RELATIVE);
-		assertEquals(74610.9225d, relT.multiply(relT2).getValue());
+		Quantity<?> prod = relT.multiply(relT2);
+		assertNumberEquals(74610.9225d, prod.getValue(), 1E-12);
 	}
 
 	@Test @Disabled("Currently not working, see https://github.com/unitsofmeasurement/indriya/issues/247")
 	void productOfAbsoluteTemperatures() {
 		Quantity<Temperature> relT = Quantities.getQuantity(0d, CELSIUS, ABSOLUTE);
 		Quantity<Temperature> relT2 = Quantities.getQuantity(0d, CELSIUS, ABSOLUTE);
-		assertEquals(74610.9225d, relT.multiply(relT2).getValue());
+		Quantity<?> prod = relT.multiply(relT2);
+		assertNumberEquals(74610.9225d, prod.getValue(), 1E-12);
 	}
 
 	@Test
