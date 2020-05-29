@@ -53,15 +53,19 @@ import tech.units.indriya.unit.TransformedUnit;
 import tech.units.indriya.unit.Units;
 
 /**
- * Playground inspired by <a href=
+ * Fahrenheit tests inspired by <a href=
  * "https://reference.wolfram.com/language/tutorial/TemperatureUnits.html">Mathematica/Wolfram
- * examples</a> , what would it look like in Java?
+ * examples</a>
  * 
  * @author Andi Huber
  */
 class WolframTutorialTemperatureTest {
 
-    // K = 5/9 * (F - 32) + 273.15
+    /** 
+     * @implSpec K = 5/9 * (F - 32) + 273.15
+     * @implNote transformation composition {@code (f∘g∘h)(x)} is equivalent to {@code f(g(h(x)))}, 
+     * so inner most transformation comes last in the sequence
+     */
     private static final AbstractConverter fahrenheitToKelvin = (AbstractConverter) 
             new AddConverter(273.15)
             .concatenate(MultiplyConverter.ofRational(5, 9))
@@ -69,7 +73,6 @@ class WolframTutorialTemperatureTest {
 
     private static final Unit<Temperature> DegreesFahrenheit = 
             new TransformedUnit<>("°F", "DegreesFahrenheit", Units.KELVIN, fahrenheitToKelvin);
-
 
 
     @Test
