@@ -37,6 +37,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static tech.units.indriya.NumberAssertions.assertNumberEquals;
 
+import java.math.BigInteger;
+
 import javax.measure.Quantity;
 import javax.measure.Quantity.Scale;
 import javax.measure.Unit;
@@ -49,6 +51,7 @@ import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.function.AbstractConverter;
 import tech.units.indriya.function.AddConverter;
 import tech.units.indriya.function.MultiplyConverter;
+import tech.units.indriya.function.RationalNumber;
 import tech.units.indriya.unit.TransformedUnit;
 import tech.units.indriya.unit.Units;
 
@@ -67,7 +70,7 @@ class WolframTutorialTemperatureTest {
      * so inner most transformation comes last in the sequence
      */
     private static final AbstractConverter fahrenheitToKelvin = (AbstractConverter) 
-            new AddConverter(273.15)
+            new AddConverter(RationalNumber.of(27315, 100))
             .concatenate(MultiplyConverter.ofRational(5, 9))
             .concatenate(new AddConverter(-32));
 
@@ -81,6 +84,22 @@ class WolframTutorialTemperatureTest {
         assertNumberEquals(283.15, fahrenheitToKelvin.convert(50), 1E-9);
         assertNumberEquals(5./9., fahrenheitToKelvin.linearFactor().get(), 1E-9);
         assertFalse(fahrenheitToKelvin.isLinear());
+    }
+    
+    @Test
+    public void fahrenheitHighPrecisionTest() {
+        
+        final Number tenE15 = BigInteger.TEN.pow(15);  
+        final Number tenEMinus15 = RationalNumber.ofInteger((BigInteger)tenE15).reciprocal();
+        
+        assertNumberEquals(
+                RationalNumber.of(459670000000000001L, 1800000000000000L), 
+                fahrenheitToKelvin.convert(tenEMinus15), 
+                1E-20);
+        assertNumberEquals(
+                RationalNumber.of(100000000000045967L, 180L), 
+                fahrenheitToKelvin.convert(tenE15), 
+                1E-12);
     }
 
     // -- (1) -- Absolute Temperature versus Temperature Difference
