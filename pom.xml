@@ -291,7 +291,6 @@
 					<excludedGroups>l10n</excludedGroups>
 					<excludes>
 						<exclude>${excludedTests}</exclude>
-						<exclude>**/UnitsTest.java</exclude>
 					</excludes>
 					<argLine>${argLine} --enable-preview -Xms2048m -Xmx4g -XX:MaxPermSize=512m</argLine>
 				</configuration>
@@ -694,7 +693,6 @@
 							<excludedGroups>l10n</excludedGroups>
 							<excludes>
 								<exclude>${excludedTests}</exclude>
-								<exclude>**/UnitsTest.java</exclude>
 							</excludes>
 						</configuration>
 					</plugin>
