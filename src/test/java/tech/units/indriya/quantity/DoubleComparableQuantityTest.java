@@ -143,12 +143,11 @@ public class DoubleComparableQuantityTest {
   public void multiplyTest() {
     ComparableQuantity<Length> metre = Quantities.getQuantity(10D, Units.METRE);
     ComparableQuantity<Length> result = metre.multiply(10D);
-    assertTrue(result.getValue().intValue() == 100);
+    assertEquals(100, result.getValue().intValue());
     assertEquals(result.getUnit(), Units.METRE);
     @SuppressWarnings("unchecked")
     ComparableQuantity<Length> result2 = (ComparableQuantity<Length>) metre.multiply(Quantities.getQuantity(10D, Units.HOUR));
-    assertTrue(result2.getValue().intValue() == 100);
-
+    assertEquals("360000 m·s", result2.toString()); 
   }
 
   @Test
