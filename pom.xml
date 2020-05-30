@@ -50,6 +50,7 @@
 		<maven.compile.targetLevel>${jdkVersion}</maven.compile.targetLevel>
 		<maven.compile.sourceLevel>${jdkVersion}</maven.compile.sourceLevel>
 		<additionalparam>-Xdoclint:none</additionalparam>
+		<maven.surefire.version>2.22.2</maven.surefire.version>
 		<jacoco.version>0.8.5</jacoco.version>
 		<compile.exclude.files>module-info.java</compile.exclude.files>
 		<thisYear>2020</thisYear>
@@ -290,8 +291,9 @@
 					<excludedGroups>l10n</excludedGroups>
 					<excludes>
 						<exclude>${excludedTests}</exclude>
+						<exclude>**/UnitsTest.java</exclude>
 					</excludes>
-					<argLine>${argLine} --enable-preview -Xmx2048m -XX:MaxPermSize=512m</argLine>
+					<argLine>${argLine} --enable-preview -Xms2048m -Xmx4g -XX:MaxPermSize=512m</argLine>
 				</configuration>
 				<dependencies>
 					<dependency>
@@ -687,11 +689,12 @@
 							<jvm>${env.JAVA_HOME}/bin/java</jvm>
 							<!-- this shows that the Java 9 code isn't tested -->
 							<testFailureIgnore>true</testFailureIgnore>
-							<argLine>${argLine} --enable-preview</argLine>
+							<argLine>${argLine} --enable-preview -Xmx4g</argLine>
 							<!-- exclude tags -->
 							<excludedGroups>l10n</excludedGroups>
 							<excludes>
 								<exclude>${excludedTests}</exclude>
+								<exclude>**/UnitsTest.java</exclude>
 							</excludes>
 						</configuration>
 					</plugin>

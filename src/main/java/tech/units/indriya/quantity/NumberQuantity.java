@@ -33,13 +33,15 @@ import static javax.measure.Quantity.Scale.ABSOLUTE;
 import static javax.measure.Quantity.Scale.RELATIVE;
 
 import java.util.function.BinaryOperator;
-import java.util.function.UnaryOperator;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;
+import javax.measure.UnitConverter;
 
 import tech.units.indriya.AbstractQuantity;
 import tech.units.indriya.ComparableQuantity;
+import tech.units.indriya.function.AddConverter;
+import tech.units.indriya.function.Calculus;
 import tech.units.indriya.internal.function.Calculator;
 
 /**
@@ -56,7 +58,7 @@ import tech.units.indriya.internal.function.Calculator;
  *          The type of the quantity.
  * @author Andi Huber
  * @author Werner Keil
- * @version 1.4
+ * @version 1.3
  * @since 1.0
  * 
  */
@@ -71,7 +73,7 @@ public class NumberQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
      */
     protected NumberQuantity(Number number, Unit<Q> unit, Scale sc) {
       super(unit, sc);
-      value = Calculator.of(number).peek(); // takes care of invalid number values (infinity, ...)
+      value = Calculus.currentNumberSystem().narrow(number); // also takes care of invalid number values (infinity, ...)
     }
     
     protected NumberQuantity(Number number, Unit<Q> unit) {
@@ -80,40 +82,56 @@ public class NumberQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
 
     @Override
     public ComparableQuantity<Q> add(Quantity<Q> that) {
-        return addition(that, 
-                (thisValue, thatValue) -> Calculator.of(thisValue).add(thatValue).peek());
+        return addition(that, (thisValueInSystemUnit, thatValueInSystemUnit) ->
+        Calculator
+            .of(thisValueInSystemUnit)
+            .add(thatValueInSystemUnit)
+            .peek());
     }
 
     @Override
     public ComparableQuantity<Q> subtract(Quantity<Q> that) {
-        return addition(that, 
-                (thisValue, thatValue) -> Calculator.of(thisValue).subtract(thatValue).peek());
+        return addition(that, (thisValueInSystemUnit, thatValueInSystemUnit) -> 
+        Calculator
+            .of(thisValueInSystemUnit)
+            .subtract(thatValueInSystemUnit)
+            .peek());
     }
 
     @Override
     public ComparableQuantity<?> divide(Quantity<?> that) {
-        return multiplication(that, 
-                (thisValue, thatValue) -> Calculator.of(thisValue).divide(thatValue).peek(),
-                (thisUnit, thatUnit) -> thisUnit.divide(thatUnit));
+        final Number resultValueInThisUnit = Calculator
+                .of(getValue())
+                .divide(that.getValue())
+                .peek();
+        return Quantities.getQuantity(resultValueInThisUnit, getUnit().divide(that.getUnit()));
     }
 
     @Override
     public ComparableQuantity<Q> divide(Number divisor) {
-        return scalarMultiplication(thisValue -> 
-                Calculator.of(thisValue).divide(divisor).peek());
+        final Number resultValueInThisUnit = Calculator
+                .of(getValue())
+                .divide(divisor)
+                .peek();
+        return Quantities.getQuantity(resultValueInThisUnit, getUnit());
     }
 
     @Override
     public ComparableQuantity<?> multiply(Quantity<?> that) {
-        return multiplication(that, 
-                (thisValue, thatValue) -> Calculator.of(thisValue).multiply(thatValue).peek(),
-                (thisUnit, thatUnit) -> thisUnit.multiply(thatUnit));
+        final Number resultValueInThisUnit = Calculator
+                .of(getValue())
+                .multiply(that.getValue())
+                .peek();
+        return Quantities.getQuantity(resultValueInThisUnit, getUnit().multiply(that.getUnit()));
     }
 
     @Override
-    public ComparableQuantity<Q> multiply(Number factor) {
-        return scalarMultiplication(thisValue -> 
-                Calculator.of(thisValue).multiply(factor).peek());
+    public ComparableQuantity<Q> multiply(Number multiplier) {
+        final Number resultValueInThisUnit = Calculator
+                .of(getValue())
+                .multiply(multiplier)
+                .peek();
+        return Quantities.getQuantity(resultValueInThisUnit, getUnit());
     }
 
     @Override
@@ -140,88 +158,36 @@ public class NumberQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
     }
     
     // -- HELPER
-    
+
 	private ComparableQuantity<Q> addition(Quantity<Q> that, BinaryOperator<Number> operator) {
-	    
-	    final boolean yieldsRelativeScale = RELATIVE.equals(this.getScale()) && RELATIVE.equals(that.getScale());
-	    
-		// converting almost all, except system units and those that are shifted and relative like eg. Δ2°C == Δ2K
-		final ToSystemUnitConverter thisConverter = toSystemUnitConverterForAdd(this);
-		final ToSystemUnitConverter thatConverter = toSystemUnitConverterForAdd(that);
-		
-		final Number thisValueInSystemUnit = thisConverter.apply(this.getValue());
-		final Number thatValueInSystemUnit = thatConverter.apply(that.getValue());
 
-		final Number resultValueInSystemUnit = operator.apply(thisValueInSystemUnit, thatValueInSystemUnit);
+		final Unit<Q> systemUnit = getUnit().getSystemUnit();
+		final UnitConverter c1 = this.getUnit().getConverterTo(systemUnit);
+		final UnitConverter c2 = that.getUnit().getConverterTo(systemUnit);
+
+		boolean shouldConvertThis = shouldConvertQuantityForAddition(c1, getScale());
+		boolean shouldConvertThat = shouldConvertQuantityForAddition(c2, that.getScale());
+		final Number thisValueInSystemUnit = shouldConvertThis ? c1.convert(this.getValue()) : this.getValue();
+		final Number thatValueInSystemUnit = shouldConvertThat ? c2.convert(that.getValue()) : that.getValue();
+
+		final Number resultValueInSystemUnit =
+			operator.apply(thisValueInSystemUnit, thatValueInSystemUnit);
+
+		final Number resultValueInThisUnit =
+			shouldConvertThis || shouldConvertThat 
+			    ? c1.inverse().convert(resultValueInSystemUnit) 
+	            : resultValueInSystemUnit;
 		
-        if (yieldsRelativeScale) {
-            return Quantities.getQuantity(thisConverter.invert(resultValueInSystemUnit), this.getUnit(), RELATIVE);
-        }
-		
-        final boolean needsInvering = !thisConverter.isNoop() || !thatConverter.isNoop();
-		final Number resultValueInThisUnit = needsInvering 
-		        ? this.getUnit().getConverterTo(this.getUnit().getSystemUnit()).inverse().convert(resultValueInSystemUnit)
-		        : resultValueInSystemUnit;
-		
-		return Quantities.getQuantity(resultValueInThisUnit, this.getUnit(), ABSOLUTE);
+		// if both operands have same scale, scale is preserved, otherwise scale becomes ABSOLUTE
+		if (this.getScale().equals(that.getScale())) {
+			return Quantities.getQuantity(resultValueInThisUnit, getUnit(), getScale());
+		} else {
+			return Quantities.getQuantity(resultValueInThisUnit, getUnit());
+		}
 	}
 
-	private ComparableQuantity<Q> scalarMultiplication(UnaryOperator<Number> operator) {
-
-	    // if operands has scale RELATIVE, multiplication is trivial
-        if (RELATIVE.equals(this.getScale())) {
-            return Quantities.getQuantity(operator.apply(this.getValue()), this.getUnit(), RELATIVE);
-        }
-	    
-	    final ToSystemUnitConverter thisConverter = toSystemUnitConverterForMul(this);
-        
-        final Number thisValueWithAbsoluteScale = thisConverter.apply(this.getValue());
-        final Number resultValueInAbsUnits = operator.apply(thisValueWithAbsoluteScale);
-        final boolean needsInvering = !thisConverter.isNoop();
-        
-        final Number resultValueInThisUnit = needsInvering 
-                ? this.getUnit().getConverterTo(this.getUnit().getSystemUnit()).inverse().convert(resultValueInAbsUnits)
-                : resultValueInAbsUnits;
-        
-	    return Quantities.getQuantity(resultValueInThisUnit, this.getUnit(), this.getScale());
+	private boolean shouldConvertQuantityForAddition(UnitConverter c1, Scale scale) {
+		return !(c1 instanceof AddConverter && scale.equals(RELATIVE));
 	}
-	
-    private ComparableQuantity<?> multiplication(
-            Quantity<?> that, 
-            BinaryOperator<Number> amountOperator, 
-            BinaryOperator<Unit<?>> unitOperator) {
-	    
-	    final ToSystemUnitConverter thisConverter = toSystemUnitConverterForMul(this);
-        final ToSystemUnitConverter thatConverter = toSystemUnitConverterForMul(that);
-        
-        final Number thisValueWithAbsoluteScale = thisConverter.apply(this.getValue());
-        final Number thatValueWithAbsoluteScale = thatConverter.apply(that.getValue());
-
-        final Number resultValueInSystemUnits = amountOperator.apply(thisValueWithAbsoluteScale, thatValueWithAbsoluteScale);
-        
-        final Unit<Q> thisAbsUnit = thisConverter.isNoop() ? this.getUnit() : this.getUnit().getSystemUnit();
-        final Unit<?> thatAbsUnit = thatConverter.isNoop() ? that.getUnit() : that.getUnit().getSystemUnit();
-        
-        return Quantities.getQuantity(
-                resultValueInSystemUnits, 
-                unitOperator.apply(thisAbsUnit, thatAbsUnit));
-	}
-	
-	// -- HELPER - LOW LEVEL
-    
-    // used for addition, also honors RELATIVE scale
-    private ToSystemUnitConverter toSystemUnitConverterForAdd(Quantity<Q> quantity) {
-        final Unit<Q> systemUnit = this.getUnit().getSystemUnit();
-        return ToSystemUnitConverter.forQuantity(quantity, systemUnit);
-    }
-
-    // used for multiplication, also honors RELATIVE scale
-    private static <T extends Quantity<T>> 
-    ToSystemUnitConverter toSystemUnitConverterForMul(Quantity<T> quantity) {
-        final Unit<T> systemUnit = quantity.getUnit().getSystemUnit();
-        return ToSystemUnitConverter.forQuantity(quantity, systemUnit);
-    }
-    
-    
 
 }

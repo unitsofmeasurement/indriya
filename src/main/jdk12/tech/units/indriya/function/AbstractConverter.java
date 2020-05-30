@@ -35,10 +35,12 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.measure.UnitConverter;
 
+import tech.units.indriya.internal.function.Calculator;
 import tech.uom.lib.common.function.Converter;
 import tech.uom.lib.common.util.UnitComparator;
 
@@ -50,7 +52,7 @@ import tech.uom.lib.common.util.UnitComparator;
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author Andi Huber
- * @version 2.0, Jun 21, 2019
+ * @version 2.1, Mai 28, 2020
  * @since 1.0
  */
 public abstract class AbstractConverter
@@ -236,6 +238,25 @@ public abstract class AbstractConverter
 		return convertWhenNotIdentity(value);
 	}
 	
+	/**
+	 * Even though transformations may be composed of addition and multiplication, the first
+	 * derivative might just be a linear function. This is strictly required for Quantities that 
+	 * are expressed with RELATIVE scope. Eg. Δ2°C or Δ2°F. Otherwise such deltas cannot 
+	 * be converted to ABSOLUTE scope without additional information.
+	 *  
+	 * @return optionally the linear factor of this transformation's first derivative, 
+	 * based on whether this transformation allows for RELATIVE scaled Quantities
+	 */
+	public Optional<Number> linearFactor() {
+	    if(this instanceof AddConverter) {
+	        return Identity.ONE;
+	    }
+	    if(this instanceof MultiplyConverter) {
+	        return Optional.of(((MultiplyConverter)this).getFactor());
+	    }
+	    return Optional.empty();
+	}
+	
 	// -- DEFAULT IMPLEMENTATION OF IDENTITY
 
 	/**
@@ -247,6 +268,7 @@ public abstract class AbstractConverter
 		 * 
 		 */
 		private static final long serialVersionUID = -4460463244427587361L;
+		private static final Optional<Number> ONE = Optional.of(1);
 
 		@Override
 		public boolean isIdentity() {
@@ -273,6 +295,11 @@ public abstract class AbstractConverter
 			return true;
 		}
 
+		@Override
+		public Optional<Number> linearFactor() {
+		    return ONE;
+		}
+		
 		@Override
 		public int compareTo(UnitConverter o) {
 			if (o instanceof Identity) {
@@ -318,7 +345,7 @@ public abstract class AbstractConverter
 	public static final class Pair extends AbstractConverter implements Serializable {
 
 	  @SuppressWarnings("rawtypes")
-    private final static Comparator unitComparator = new UnitComparator<>();
+	  private final static Comparator unitComparator = new UnitComparator<>();
 	  
 		/**
 		 * 
@@ -359,6 +386,31 @@ public abstract class AbstractConverter
 		public boolean isLinear() {
 			return left.isLinear() && right.isLinear();
 		}
+		
+        @Override
+        public Optional<Number> linearFactor() {
+            // factors are composed by multiplying them, unless there is one absent linear-factor,
+            // then all breaks down and we return an empty optional
+            
+            if(!(left instanceof AbstractConverter)) {
+                throw requiresAbstractConverter();
+            }
+            
+            if(!(right instanceof AbstractConverter)) {
+                throw requiresAbstractConverter();
+            }
+            
+            final Optional<Number> leftLinearFactor = ((AbstractConverter)left).linearFactor();
+            final Optional<Number> rightLinearFactor = ((AbstractConverter)right).linearFactor();
+            if(leftLinearFactor.isEmpty() || rightLinearFactor.isEmpty()) {
+                return Optional.empty(); 
+            }
+            
+            return Optional.of(
+                    Calculator.of(leftLinearFactor.get())
+                        .multiply(rightLinearFactor.get())
+                        .peek());
+        }
 
 		@Override
 		public boolean isIdentity() {
@@ -454,6 +506,8 @@ public abstract class AbstractConverter
 		private IllegalArgumentException requiresAbstractConverter() {
             return new IllegalArgumentException("can only handle instances of AbstractConverter");
         }
+
+
 
 
 	}
