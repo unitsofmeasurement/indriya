@@ -52,7 +52,7 @@ import tech.uom.lib.common.util.UnitComparator;
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author Andi Huber
- * @version 2.1, Mai 28, 2020
+ * @version 2.2, May 31, 2020
  * @since 1.0
  */
 public abstract class AbstractConverter
@@ -246,6 +246,7 @@ public abstract class AbstractConverter
 	 *  
 	 * @return optionally the linear factor of this transformation's first derivative, 
 	 * based on whether this transformation allows for RELATIVE scaled Quantities
+	 * @since 2.1 
 	 */
 	public Optional<Number> linearFactor() {
 	    if(this instanceof AddConverter) {
