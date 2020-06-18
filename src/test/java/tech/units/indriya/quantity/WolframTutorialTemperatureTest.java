@@ -82,7 +82,7 @@ class WolframTutorialTemperatureTest {
     public void fahrenheit() {
         assertNumberEquals(273.15, fahrenheitToKelvin.convert(32), 1E-9);
         assertNumberEquals(283.15, fahrenheitToKelvin.convert(50), 1E-9);
-//        assertNumberEquals(5./9., fahrenheitToKelvin.linearFactor().get(), 1E-9); TODO fix Java 9 dependency in AbstractConverter first
+        assertNumberEquals(5./9., fahrenheitToKelvin.linearFactor().get(), 1E-9);
         assertFalse(fahrenheitToKelvin.isLinear());
     }
     
