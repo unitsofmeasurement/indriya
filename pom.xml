@@ -801,7 +801,6 @@
 				</property>
 			</activation>
 			<properties>
-				<junit.platform.version>1.4.1</junit.platform.version>
 			</properties>
 			<build>
 				<plugins>
