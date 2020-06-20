@@ -27,7 +27,7 @@
 	</issueManagement>
 	<licenses>
 		<license>
-			<name>BSD</name>
+			<name>BSD 3-Clause</name>
 			<url>LICENSE</url>
 		</license>
 	</licenses>
@@ -50,7 +50,7 @@
 		<maven.compile.targetLevel>${jdkVersion}</maven.compile.targetLevel>
 		<maven.compile.sourceLevel>${jdkVersion}</maven.compile.sourceLevel>
 		<additionalparam>-Xdoclint:none</additionalparam>
-		<maven.surefire.version>2.22.1</maven.surefire.version>
+		<maven.surefire.version>2.22.2</maven.surefire.version>
 		<jacoco.version>0.8.5</jacoco.version>
 		<compile.exclude.files>module-info.java</compile.exclude.files>
 		<thisYear>2020</thisYear>
