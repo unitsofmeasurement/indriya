@@ -92,8 +92,8 @@
  *     Runtime checks of dimension consistency can be done for more complex cases.
  *
  *     <code>
- *     Unit<Area> SQUARE_FOOT = FOOT.times(FOOT).asType(Area.class); // Ok.
- *     Unit<Area> SQUARE_FOOT = FOOT.times(KELVIN).asType(Area.class); // Runtime error.
+ *     Unit<Area> SQUARE_METRE = METRE.times(METRE).asType(Area.class); // Ok.
+ *     Unit<Area> SQUARE_METRE = METRE.times(KELVIN).asType(Area.class); // Runtime error.
  *
  *     Unit<Temperature> KELVIN = AbstractUnit.parse("K").asType(Temperature.class); // Ok.
  *     Unit<Temperature> KELVIN = AbstractUnit.parse("kg").asType(Temperature.class); // Runtime error.
@@ -102,7 +102,7 @@
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 2.0
+ * @version 2.1
  * @since 1.0
  */
 package tech.units.indriya;

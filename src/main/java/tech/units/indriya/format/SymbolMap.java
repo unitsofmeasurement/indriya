@@ -67,7 +67,7 @@ import java.util.stream.Collectors;
  *
  * @author <a href="mailto:eric-r@northwestern.edu">Eric Russell</a>
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 1.7, February 25, 2017
+ * @version 2.0, June 30, 2020
  */
 @SuppressWarnings("rawtypes")
 public final class SymbolMap {
@@ -145,7 +145,7 @@ public final class SymbolMap {
 
   /**
    * Attaches a label to the specified unit. For example:<br>
-   * <code> symbolMap.label(DAY.multiply(365), "year"); symbolMap.label(US.FOOT, "ft");
+   * <code> symbolMap.label(DAY.multiply(365), "year"); symbolMap.label(Units.OHM, "Ω");
    * </code>
    *
    * @param unit
@@ -160,7 +160,7 @@ public final class SymbolMap {
 
   /**
    * Attaches an alias to the specified unit. Multiple aliases may be attached to the same unit. Aliases are used during parsing to recognize
-   * different variants of the same unit.<code> symbolMap.alias(US.FOOT, "foot"); symbolMap.alias(US.FOOT, "feet");
+   * different variants of the same unit.<code> symbolMap.alias(Units.MONTH, "month"); symbolMap.alias(Units.MONTH, "months");
    * symbolMap.alias(Units.METER, "meter"); symbolMap.alias(Units.METER, "metre"); </code>
    *
    * @param unit
