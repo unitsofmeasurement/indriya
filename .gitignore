@@ -14,3 +14,6 @@ buildNumber.properties
 /.classpath
 /.project
 /bin/
+/.idea/
+/indriya.iml
+/toolchains.xml
