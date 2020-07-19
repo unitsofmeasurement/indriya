@@ -29,14 +29,6 @@
  */
 package tech.units.indriya.quantity;
 
-import static javax.measure.Quantity.Scale.RELATIVE;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static tech.units.indriya.NumberAssertions.assertNumberEquals;
-import static tech.units.indriya.unit.Units.CELSIUS;
-import static tech.units.indriya.unit.Units.PASCAL;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
@@ -46,10 +38,20 @@ import javax.measure.quantity.Speed;
 import javax.measure.quantity.Temperature;
 import javax.measure.quantity.Time;
 
+import static javax.measure.Quantity.Scale.RELATIVE;
+
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.unit.Units;
+
+import static tech.units.indriya.NumberAssertions.assertNumberEquals;
+import static tech.units.indriya.unit.Units.CELSIUS;
+import static tech.units.indriya.unit.Units.PASCAL;
 
 /**
  *
@@ -58,7 +60,7 @@ import tech.units.indriya.unit.Units;
  * @version 0.6
  */
 public class QuantitiesTest {
-
+  
   @Test
   public void ofTest() {
     Quantity<Pressure> pressure = Quantities.getQuantity(BigDecimal.ONE, PASCAL);
@@ -138,10 +140,11 @@ public class QuantitiesTest {
   }
 
   @Test
-  //@Disabled("fails because of MultiplyConverter not being sufficiently accurate")
   public void quantityEquivalentTest() {
       ComparableQuantity<Speed> shouldBe = Quantities.getQuantity(15, Units.KILOMETRE_PER_HOUR);
       Quantity<Speed> parsedSpeed = Quantities.getQuantity("15.0 km/h").asType(Speed.class);
       assertTrue(shouldBe.isEquivalentTo(parsedSpeed));
   }
+  
+  
 }
