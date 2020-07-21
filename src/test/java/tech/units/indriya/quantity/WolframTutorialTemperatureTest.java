@@ -113,7 +113,7 @@ class WolframTutorialTemperatureTest {
         assertFahrenheit(465.67, t_2f, ABSOLUTE);
 
         final Quantity<Temperature> t_k = t_2f.to(Units.KELVIN);
-        assertKelvin(514.078, t_k);
+        assertKelvin(514.078, t_k, ABSOLUTE);
     }
 
     @Test
@@ -121,7 +121,7 @@ class WolframTutorialTemperatureTest {
     public void in2() {
         final Quantity<Temperature> t_f = Quantities.getQuantity(3., DegreesFahrenheit, ABSOLUTE);
         final Quantity<Temperature> t_k = t_f.to(Units.KELVIN).multiply(2.);
-        assertKelvin(514.078, t_k);
+        assertKelvin(514.078, t_k, ABSOLUTE);
     }
 
     @Test
@@ -130,7 +130,7 @@ class WolframTutorialTemperatureTest {
         final Quantity<Temperature> t_f = Quantities.getQuantity(3., DegreesFahrenheit, RELATIVE);
         assertEquals(RELATIVE, t_f.getScale());
         final Quantity<Temperature> t_k = t_f.to(Units.KELVIN).multiply(2.);
-        assertKelvin(3.333333, t_k);
+        assertKelvin(3.333333, t_k, RELATIVE);
     }
 
     @Test
@@ -138,7 +138,7 @@ class WolframTutorialTemperatureTest {
     public void in4() {
         final Quantity<Temperature> t_f = Quantities.getQuantity(3., DegreesFahrenheit, RELATIVE);
         final Quantity<Temperature> t_k = t_f.multiply(2.).to(Units.KELVIN);
-        assertKelvin(3.333333, t_k);
+        assertKelvin(3.333333, t_k, RELATIVE);
     }
 
     // -- (2) -- Adding Temperatures
@@ -192,7 +192,7 @@ class WolframTutorialTemperatureTest {
         final Quantity<Temperature> t_k2 = Quantities.getQuantity(4., Units.KELVIN);
         final Quantity<Temperature> t_k = t_k1.add(t_k2);
 
-        assertKiloKelvin(751. / 250., t_k);
+        assertKiloKelvin(751. / 250., t_k, ABSOLUTE);
     }
 
     // -- 3 -- Multiplying Temperatures
@@ -206,7 +206,7 @@ class WolframTutorialTemperatureTest {
         assertCelsius((18.2 * (3. + 273.15)) - 273.15, t_c2, ABSOLUTE);
 
         final Quantity<Temperature> t_k = t_c2.to(Units.KELVIN);
-        assertKelvin((18.2 * (3. + 273.15)), t_k);
+        assertKelvin((18.2 * (3. + 273.15)), t_k, ABSOLUTE);
     }
 
     @Test
@@ -216,7 +216,7 @@ class WolframTutorialTemperatureTest {
         final Quantity<Temperature> t_c = Quantities.getQuantity(3., Units.CELSIUS);
         final Quantity<Temperature> t_k = t_c.to(Units.KELVIN).multiply(18.2);
 
-        assertKelvin(5025.93, t_k);
+        assertKelvin(5025.93, t_k, ABSOLUTE);
     }
 
     @Test
@@ -245,15 +245,15 @@ class WolframTutorialTemperatureTest {
 
     // -- HELPER
 
-    private static void assertKelvin(Number expected, Quantity<?> x) {
+    private static void assertKelvin(Number expected, Quantity<?> x, Scale scale) {
         assertEquals("K", x.getUnit().toString());
-        assertEquals(ABSOLUTE, x.getScale()); // should be ABSOLUTE by convention
+        assertEquals(scale, x.getScale());
         assertNumberEquals(expected, x.getValue(), 1E-3);
     }
 
-    private static void assertKiloKelvin(Number expected, Quantity<?> x) {
+    private static void assertKiloKelvin(Number expected, Quantity<?> x, Scale scale) {
         assertEquals("kK", x.getUnit().toString());
-        assertEquals(ABSOLUTE, x.getScale()); // should be ABSOLUTE by convention
+        assertEquals(scale, x.getScale());
         assertNumberEquals(expected, x.getValue(), 1E-3);
     }
 

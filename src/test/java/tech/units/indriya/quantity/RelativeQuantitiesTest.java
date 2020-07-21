@@ -76,12 +76,13 @@ class RelativeQuantitiesTest {
           Quantity<Temperature> celsiusRelative = Quantities.getQuantity(1, Units.CELSIUS, Scale.RELATIVE);
           Quantity<Temperature> kelvinRelative = celsiusRelative.to(Units.KELVIN);
 
-         // this test is already failing, as the Scale is absolute
-          assertEquals(kelvinRelative, Quantities.getQuantity(1, Units.KELVIN, Scale.ABSOLUTE));
+          assertEquals(kelvinRelative.getScale(), Scale.RELATIVE);
+          assertNumberEquals(1, kelvinRelative.getValue(), 1E-12);
 
-          Quantity<Temperature> roundTrip = kelvinRelative.to(Units.CELSIUS);
-          // this one fails as well, as the quantity of roundTrip is now -272.15 °C
-          assertEquals(celsiusRelative, roundTrip);
+          Quantity<Temperature> celsiusRelativeAfterRoundtrip = kelvinRelative.to(Units.CELSIUS);
+          
+          assertEquals(celsiusRelativeAfterRoundtrip.getScale(), Scale.RELATIVE);
+          assertNumberEquals(1, celsiusRelativeAfterRoundtrip.getValue(), 1E-12);
 
     }
     
