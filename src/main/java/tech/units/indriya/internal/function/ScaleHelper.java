@@ -83,16 +83,19 @@ public final class ScaleHelper {
             final Quantity<Q> quantity, 
             final Unit<Q> anotherUnit) {
 
+        final UnitConverter converter = quantity.getUnit().getConverterTo(anotherUnit);
+        
         if (isRelative(quantity)) {
-            final Unit<Q> systemUnit = quantity.getUnit().getSystemUnit();
-            final ToSystemUnitConverter converter = ToSystemUnitConverter.forQuantity(quantity, systemUnit);
-            final Number valueInSystemUnit = converter.apply(quantity.getValue());
-            // not if the calculation must yield RELATIVE UNITS
-            final Number valueInOtherUnit = systemUnit.getConverterTo(anotherUnit).convert(valueInSystemUnit);
+            final Number linearFactor = linearFactorOf(converter).orElse(null);
+            if(linearFactor==null) {
+                throw unsupportedRelativeScaleConversion(quantity, anotherUnit);
+            }
+            final Number valueInOtherUnit = Calculator.of(linearFactor).multiply(quantity.getValue()).peek();
             return Quantities.getQuantity(valueInOtherUnit, anotherUnit, Scale.RELATIVE);
         }
-        final Number convertedValue = quantity.getUnit().getConverterTo(anotherUnit).convert(quantity.getValue());
-        return Quantities.getQuantity(convertedValue, anotherUnit);
+        
+        final Number convertedValue = converter.convert(quantity.getValue());
+        return Quantities.getQuantity(convertedValue, anotherUnit, Scale.ABSOLUTE);
     }
 
     public static <Q extends Quantity<Q>> ComparableQuantity<Q> addition(
@@ -128,7 +131,7 @@ public final class ScaleHelper {
             final UnaryOperator<Number> operator) {
 
         // if operands has scale RELATIVE, multiplication is trivial
-        if (RELATIVE.equals(quantity.getScale())) {
+        if (isRelative(quantity)) {
             return Quantities.getQuantity(operator.apply(quantity.getValue()), quantity.getUnit(), RELATIVE);
         }
 
@@ -167,14 +170,23 @@ public final class ScaleHelper {
                 unitOperator.apply(thisAbsUnit, thatAbsUnit));
     }
 
+    private static <Q extends Quantity<Q>> UnsupportedOperationException unsupportedRelativeScaleConversion(
+            Quantity<Q> quantity, 
+            Unit<Q> anotherUnit) {
+        return new UnsupportedOperationException(
+                String.format(
+                        "Conversion of Quantitity %s to Unit %s is not supported for realtive scale.", 
+                        quantity, anotherUnit));
+    }
+    
     // -- HELPER - LOW LEVEL
 
     // used for addition, also honors RELATIVE scale
     private static <Q extends Quantity<Q>> ToSystemUnitConverter toSystemUnitConverterForAdd(
             final Quantity<Q> q1,
-            final Quantity<Q> quantity) {
+            final Quantity<Q> q2) {
         final Unit<Q> systemUnit = q1.getUnit().getSystemUnit();
-        return ToSystemUnitConverter.forQuantity(quantity, systemUnit);
+        return ToSystemUnitConverter.forQuantity(q2, systemUnit);
     }
 
     // used for multiplication, also honors RELATIVE scale
@@ -184,6 +196,11 @@ public final class ScaleHelper {
         return ToSystemUnitConverter.forQuantity(quantity, systemUnit);
     }
 
+    private static Optional<Number> linearFactorOf(UnitConverter converter) {
+        return (converter instanceof AbstractConverter)
+                ? ((AbstractConverter)converter).linearFactor()
+                : Optional.empty();
+    }
 
     // also honors RELATIVE scale
     private static class ToSystemUnitConverter implements UnaryOperator<Number> {
@@ -198,7 +215,7 @@ public final class ScaleHelper {
 
             final UnitConverter converter = quantity.getUnit().getConverterTo(systemUnit);
 
-            if(ABSOLUTE.equals(quantity.getScale())) {
+            if(isAbsolute(quantity)) {
 
                 return ToSystemUnitConverter.of(converter::convert); // convert to system units
 
@@ -242,12 +259,6 @@ public final class ScaleHelper {
             return isNoop() 
                     ? x
                     : unaryOperator.apply(x); 
-        }
-
-        private static Optional<Number> linearFactorOf(UnitConverter converter) {
-            return (converter instanceof AbstractConverter)
-                    ? ((AbstractConverter)converter).linearFactor()
-                            : Optional.empty();
         }
 
         private static UnsupportedOperationException unsupportedConverter(UnitConverter converter, Unit<?> unit) {

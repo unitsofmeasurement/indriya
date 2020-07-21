@@ -40,6 +40,7 @@ import static javax.measure.MetricPrefix.KILO;
 import static javax.measure.MetricPrefix.MILLI;
 
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -70,7 +71,7 @@ class RelativeQuantitiesTest {
     }
 
     //[indriya#295]
-    @Test @DisplayName("Unit Converion should carry over Scale")
+    @Test @DisplayName("Unit Conversion should carry over Scale")
     void relativeTemperatureRoundTrip() {
 
           Quantity<Temperature> celsiusRelative = Quantities.getQuantity(1, Units.CELSIUS, Scale.RELATIVE);
@@ -87,6 +88,7 @@ class RelativeQuantitiesTest {
     }
     
     //[indriya#294]
+    @Disabled //FIXME
     @Test @DisplayName("Multiplication should carry over operand Units (abs. scale)")
     void intuitivelyKeepUnits_whenAbsolute() {
         
@@ -103,6 +105,7 @@ class RelativeQuantitiesTest {
     
     
     //[indriya#294]
+    @Disabled //FIXME
     @Test @DisplayName("Multiplication should carry over operand Units if possible")
     void intuitivelyKeepUnits_whenRelative() {
         
