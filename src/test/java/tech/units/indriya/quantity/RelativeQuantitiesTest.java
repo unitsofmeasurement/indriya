@@ -30,8 +30,8 @@
 package tech.units.indriya.quantity;
 
 import javax.measure.Quantity;
-import javax.measure.Unit;
 import javax.measure.Quantity.Scale;
+import javax.measure.Unit;
 import javax.measure.quantity.Energy;
 import javax.measure.quantity.Temperature;
 import javax.measure.quantity.Volume;
@@ -40,7 +40,6 @@ import static javax.measure.MetricPrefix.KILO;
 import static javax.measure.MetricPrefix.MILLI;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -88,7 +87,6 @@ class RelativeQuantitiesTest {
     }
     
     //[indriya#294]
-    @Disabled //FIXME
     @Test @DisplayName("Multiplication should carry over operand Units (abs. scale)")
     void intuitivelyKeepUnits_whenAbsolute() {
         
@@ -100,12 +98,11 @@ class RelativeQuantitiesTest {
         assertEquals("2 cal/ml", energyPerVolume.multiply(2).toString());
         
         // when multiply by 'ml', keep 'cal' as unit (don't convert to system units)
-        assertEquals("1 ml", energyPerVolume.multiply(Quantities.getQuantity(1, UNIT_MILLILITRE)).toString());
+        assertEquals("1 cal", energyPerVolume.multiply(Quantities.getQuantity(1, UNIT_MILLILITRE)).toString());
     }
     
     
     //[indriya#294]
-    @Disabled //FIXME
     @Test @DisplayName("Multiplication should carry over operand Units if possible")
     void intuitivelyKeepUnits_whenRelative() {
         
@@ -116,8 +113,8 @@ class RelativeQuantitiesTest {
         // when scalar multiply, keep units (don't convert to system units)
         assertEquals("20 ℃", deltaT.multiply(2).toString());
     
-        // convert Celsius[℃] to Kelvin[k], but keep Hour[h] (don't convert to system unit Second[s])
-        assertEquals("20 K/h", temperaturePerTime.toString());
+        // convert Celsius[℃] to Kelvin[K], but keep Hour[h] (don't convert to system unit Second[s])
+        assertEquals("10 K/h", temperaturePerTime.toString());
     }
     
     
