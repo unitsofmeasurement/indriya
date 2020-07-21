@@ -44,7 +44,6 @@ import javax.measure.quantity.Time;
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.ComparableQuantity;
-import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.Units;
 
 public class NumberComparableQuantityTest {

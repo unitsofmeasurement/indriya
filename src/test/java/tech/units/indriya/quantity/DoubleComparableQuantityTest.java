@@ -147,7 +147,7 @@ public class DoubleComparableQuantityTest {
     assertEquals(result.getUnit(), Units.METRE);
     @SuppressWarnings("unchecked")
     ComparableQuantity<Length> result2 = (ComparableQuantity<Length>) metre.multiply(Quantities.getQuantity(10D, Units.HOUR));
-    assertEquals("360000 m·s", result2.toString()); 
+    assertEquals("100 m·h", result2.toString()); 
   }
 
   @Test

@@ -52,25 +52,6 @@ import tech.units.indriya.quantity.Quantities;
  */
 public final class ScaleHelper {
 
-    public static enum OperandMode {
-        ALL_ABSOLUTE,
-        ALL_RELATIVE,
-        MIXED;
-        public static OperandMode get(
-                final Quantity<?> q1,
-                final Quantity<?> q2) {
-            if(q1.getScale()!=q2.getScale()) {
-                return OperandMode.MIXED;
-            }
-            return isAbsolute(q1)
-                    ? OperandMode.ALL_ABSOLUTE
-                    : OperandMode.ALL_RELATIVE;
-        }
-        public boolean isAllRelative() {
-            return this==ALL_RELATIVE;
-        }
-    }
-    
     public static boolean isAbsolute(final Quantity<?> quantity) {
         return ABSOLUTE==quantity.getScale();
     }
@@ -130,16 +111,19 @@ public final class ScaleHelper {
             final Quantity<Q> quantity, 
             final UnaryOperator<Number> operator) {
 
-        // if operands has scale RELATIVE, multiplication is trivial
+        // if operand has scale RELATIVE, multiplication is trivial
         if (isRelative(quantity)) {
-            return Quantities.getQuantity(operator.apply(quantity.getValue()), quantity.getUnit(), RELATIVE);
+            return Quantities.getQuantity(
+                    operator.apply(quantity.getValue()), 
+                    quantity.getUnit(), 
+                    RELATIVE);
         }
 
-        final ToSystemUnitConverter thisConverter = toSystemUnitConverterForMul(quantity);
+        final ToSystemUnitConverter toSystemUnits = toSystemUnitConverterForMul(quantity);
 
-        final Number thisValueWithAbsoluteScale = thisConverter.apply(quantity.getValue());
+        final Number thisValueWithAbsoluteScale = toSystemUnits.apply(quantity.getValue());
         final Number resultValueInAbsUnits = operator.apply(thisValueWithAbsoluteScale);
-        final boolean needsInvering = !thisConverter.isNoop();
+        final boolean needsInvering = !toSystemUnits.isNoop();
 
         final Number resultValueInThisUnit = needsInvering 
                 ? quantity.getUnit().getConverterTo(quantity.getUnit().getSystemUnit()).inverse().convert(resultValueInAbsUnits)
@@ -153,35 +137,39 @@ public final class ScaleHelper {
             final Quantity<?> q2, 
             final BinaryOperator<Number> amountOperator, 
             final BinaryOperator<Unit<?>> unitOperator) {
-
-        final ToSystemUnitConverter thisConverter = toSystemUnitConverterForMul(q1);
-        final ToSystemUnitConverter thatConverter = toSystemUnitConverterForMul(q2);
-
-        final Number thisValueWithAbsoluteScale = thisConverter.apply(q1.getValue());
-        final Number thatValueWithAbsoluteScale = thatConverter.apply(q2.getValue());
-
-        final Number resultValueInSystemUnits = amountOperator.apply(thisValueWithAbsoluteScale, thatValueWithAbsoluteScale);
-
-        final Unit<?> thisAbsUnit = thisConverter.isNoop() ? q1.getUnit() : q1.getUnit().getSystemUnit();
-        final Unit<?> thatAbsUnit = thatConverter.isNoop() ? q2.getUnit() : q2.getUnit().getSystemUnit();
-
+        
+        final Quantity<?> absQ1 = toAbsoluteLinear(q1);
+        final Quantity<?> absQ2 = toAbsoluteLinear(q2);
         return Quantities.getQuantity(
-                resultValueInSystemUnits, 
-                unitOperator.apply(thisAbsUnit, thatAbsUnit));
+                amountOperator.apply(absQ1.getValue(), absQ2.getValue()), 
+                unitOperator.apply(absQ1.getUnit(), absQ2.getUnit()));
     }
 
-    private static <Q extends Quantity<Q>> UnsupportedOperationException unsupportedRelativeScaleConversion(
-            Quantity<Q> quantity, 
-            Unit<Q> anotherUnit) {
-        return new UnsupportedOperationException(
-                String.format(
-                        "Conversion of Quantitity %s to Unit %s is not supported for realtive scale.", 
-                        quantity, anotherUnit));
-    }
-    
-    // -- HELPER - LOW LEVEL
+    // -- HELPER
 
-    // used for addition, also honors RELATIVE scale
+    private static <Q extends Quantity<Q>> Quantity<Q> toAbsoluteLinear(Quantity<Q> quantity) {
+        final Unit<Q> systemUnit = quantity.getUnit().getSystemUnit();
+        final UnitConverter toSystemUnit = quantity.getUnit().getConverterTo(systemUnit);
+        if(toSystemUnit.isLinear()) {
+            if(isAbsolute(quantity)) {
+                return quantity;
+            }
+            return Quantities.getQuantity(quantity.getValue(), quantity.getUnit());
+        }
+        // convert to system units
+        if(isAbsolute(quantity)) {
+            return Quantities.getQuantity(toSystemUnit.convert(quantity.getValue()), systemUnit, Scale.ABSOLUTE);
+        } else {
+            final Number linearFactor = linearFactorOf(toSystemUnit).orElse(null);
+            if(linearFactor==null) {
+                throw unsupportedRelativeScaleConversion(quantity, systemUnit);
+            }
+            final Number valueInSystemUnits = Calculator.of(linearFactor).multiply(quantity.getValue()).peek();
+            return Quantities.getQuantity(valueInSystemUnits, systemUnit, Scale.ABSOLUTE);
+        }
+    }
+
+    // used for addition, honors RELATIVE scale
     private static <Q extends Quantity<Q>> ToSystemUnitConverter toSystemUnitConverterForAdd(
             final Quantity<Q> q1,
             final Quantity<Q> q2) {
@@ -189,7 +177,7 @@ public final class ScaleHelper {
         return ToSystemUnitConverter.forQuantity(q2, systemUnit);
     }
 
-    // used for multiplication, also honors RELATIVE scale
+    // used for multiplication, honors RELATIVE scale
     private static <T extends Quantity<T>> 
     ToSystemUnitConverter toSystemUnitConverterForMul(Quantity<T> quantity) {
         final Unit<T> systemUnit = quantity.getUnit().getSystemUnit();
@@ -202,7 +190,7 @@ public final class ScaleHelper {
                 : Optional.empty();
     }
 
-    // also honors RELATIVE scale
+    // honors RELATIVE scale
     private static class ToSystemUnitConverter implements UnaryOperator<Number> {
         private final UnaryOperator<Number> unaryOperator;
         private final UnaryOperator<Number> inverseOperator;
@@ -247,7 +235,9 @@ public final class ScaleHelper {
                     number->Calculator.of(number).multiply(factor).peek(),
                     number->Calculator.of(number).divide(factor).peek());
         }
-        private ToSystemUnitConverter(UnaryOperator<Number> unaryOperator, UnaryOperator<Number> inverseOperator) {
+        private ToSystemUnitConverter(
+                UnaryOperator<Number> unaryOperator, 
+                UnaryOperator<Number> inverseOperator) {
             this.unaryOperator = unaryOperator;
             this.inverseOperator = inverseOperator;
         }
@@ -261,13 +251,49 @@ public final class ScaleHelper {
                     : unaryOperator.apply(x); 
         }
 
-        private static UnsupportedOperationException unsupportedConverter(UnitConverter converter, Unit<?> unit) {
-            return new UnsupportedOperationException(
-                    String.format(
-                            "Scale conversion from RELATIVE to ABSOLUTE for Unit %s having Converter %s is not implemented.", 
-                            unit, converter));
+    }
+    
+    // -- OPERANDS
+    
+    private static enum OperandMode {
+        ALL_ABSOLUTE,
+        ALL_RELATIVE,
+        MIXED;
+        public static OperandMode get(
+                final Quantity<?> q1,
+                final Quantity<?> q2) {
+            if(q1.getScale()!=q2.getScale()) {
+                return OperandMode.MIXED;
+            }
+            return isAbsolute(q1)
+                    ? OperandMode.ALL_ABSOLUTE
+                    : OperandMode.ALL_RELATIVE;
         }
-
+//        public boolean isAllAbsolute() {
+//            return this==ALL_ABSOLUTE;
+//        }
+        public boolean isAllRelative() {
+            return this==ALL_RELATIVE;
+        }
+    }
+    
+    
+    // -- EXCEPTIONS
+    
+    private static <Q extends Quantity<Q>> UnsupportedOperationException unsupportedRelativeScaleConversion(
+            Quantity<Q> quantity, 
+            Unit<Q> anotherUnit) {
+        return new UnsupportedOperationException(
+                String.format(
+                        "Conversion of Quantitity %s to Unit %s is not supported for realtive scale.", 
+                        quantity, anotherUnit));
+    }
+    
+    private static UnsupportedOperationException unsupportedConverter(UnitConverter converter, Unit<?> unit) {
+        return new UnsupportedOperationException(
+                String.format(
+                        "Scale conversion from RELATIVE to ABSOLUTE for Unit %s having Converter %s is not implemented.", 
+                        unit, converter));
     }
 
 }
