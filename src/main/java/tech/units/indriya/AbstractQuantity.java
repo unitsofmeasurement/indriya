@@ -29,24 +29,20 @@
  */
 package tech.units.indriya;
 
-import static javax.measure.Quantity.Scale.ABSOLUTE;
-
 import java.math.BigDecimal;
 import java.util.Objects;
-import java.util.Optional;
-import java.util.function.UnaryOperator;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;
-import javax.measure.UnitConverter;
 import javax.measure.format.QuantityFormat;
 import javax.measure.quantity.Dimensionless;
 
+import static javax.measure.Quantity.Scale.ABSOLUTE;
+
 import tech.units.indriya.format.SimpleQuantityFormat;
 import tech.units.indriya.format.SimpleUnitFormat;
-import tech.units.indriya.function.AbstractConverter;
 import tech.units.indriya.function.Calculus;
-import tech.units.indriya.internal.function.Calculator;
+import tech.units.indriya.internal.function.ScaleHelper;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.spi.NumberSystem;
 import tech.uom.lib.common.function.UnitSupplier;
@@ -112,7 +108,7 @@ import tech.uom.lib.common.util.NaturalQuantityComparator;
  *
  * @author <a href="mailto:werner@uom.technology">Werner Keil</a>
  * @author Andi Huber
- * @version 1.11, Jun 9, 2019
+ * @version 1.12, Jul 21, 2020
  * @since 1.0
  */
 @SuppressWarnings("unchecked")
@@ -199,16 +195,7 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
         if (anotherUnit.equals(this.getUnit())) {
             return this;
         }
-        if (Scale.RELATIVE.equals(this.getScale())) {
-            final Unit<Q> systemUnit = this.getUnit().getSystemUnit();
-            final ToSystemUnitConverter converter = ToSystemUnitConverter.forQuantity(this, systemUnit);
-            final Number valueInSystemUnit = converter.apply(getValue());
-            final Number valueInOtherUnit = systemUnit.getConverterTo(anotherUnit).convert(valueInSystemUnit);
-            return Quantities.getQuantity(valueInOtherUnit, anotherUnit);
-        }
-        UnitConverter t = getUnit().getConverterTo(anotherUnit);
-        Number convertedValue = t.convert(getValue());
-        return Quantities.getQuantity(convertedValue, anotherUnit);
+        return ScaleHelper.convertTo(this, anotherUnit);
     }
 
     @Override
@@ -311,15 +298,17 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
     }
 
     @Override
-    public <T extends Quantity<T>, E extends Quantity<E>> ComparableQuantity<E> divide(Quantity<T> that, Class<E> asTypeQuantity) {
-
-        return divide(Objects.requireNonNull(that)).asType(Objects.requireNonNull(asTypeQuantity));
-
+    public <T extends Quantity<T>, E extends Quantity<E>> ComparableQuantity<E> 
+    divide(Quantity<T> that, Class<E> asTypeQuantity) {
+        return divide(Objects.requireNonNull(that))
+                .asType(Objects.requireNonNull(asTypeQuantity));
     }
 
     @Override
-    public <T extends Quantity<T>, E extends Quantity<E>> ComparableQuantity<E> multiply(Quantity<T> that, Class<E> asTypeQuantity) {
-        return multiply(Objects.requireNonNull(that)).asType(Objects.requireNonNull(asTypeQuantity));
+    public <T extends Quantity<T>, E extends Quantity<E>> ComparableQuantity<E> 
+    multiply(Quantity<T> that, Class<E> asTypeQuantity) {
+        return multiply(Objects.requireNonNull(that))
+                .asType(Objects.requireNonNull(asTypeQuantity));
     }
 
     @Override
@@ -343,9 +332,9 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
      *             if the specified quantity class does not have a public static field named "UNIT" holding the SI unit for the quantity.
      * @see Unit#asType(Class)
      */
-    public final <T extends Quantity<T>> ComparableQuantity<T> asType(Class<T> type) throws ClassCastException {
-        this.getUnit().asType(type); // Raises ClassCastException if dimension
-        // mismatches.
+    public final <T extends Quantity<T>> ComparableQuantity<T> 
+    asType(Class<T> type) throws ClassCastException {
+        this.getUnit().asType(type); // ClassCastException if dimension mismatches.
         return (ComparableQuantity<T>) this;
     }
 
@@ -353,7 +342,7 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
      * Returns the quantity of unknown type corresponding to the specified representation. This method can be used to parse dimensionless
      * quantities.<br>
      * <code>
-     *     Quatity<Dimensionless> proportion = AbstractQuantity.parse("0.234").asType(Dimensionless.class);
+     *     Quantity<Dimensionless> proportion = AbstractQuantity.parse("0.234").asType(Dimensionless.class);
      * </code>
      *
      * <p>
@@ -380,78 +369,5 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
     protected NumberSystem numberSystem() {
         return Calculus.currentNumberSystem();
     }
-    
-    // also honors RELATIVE scale
-    protected static class ToSystemUnitConverter implements UnaryOperator<Number> {
-        private final UnaryOperator<Number> unaryOperator;
-        private final UnaryOperator<Number> inverseOperator;
-        
-        public static <Q extends Quantity<Q>>  
-        ToSystemUnitConverter forQuantity(Quantity<Q> quantity, Unit<Q> systemUnit) {
-            if(quantity.getUnit().equals(systemUnit)) {
-                return ToSystemUnitConverter.noop(); // no conversion required
-            }
-            
-            final UnitConverter converter = quantity.getUnit().getConverterTo(systemUnit);
-            
-            if(ABSOLUTE.equals(quantity.getScale())) {
-                
-                return ToSystemUnitConverter.of(converter::convert); // convert to system units
-                
-            } else {
-                final Number linearFactor = linearFactorOf(converter).orElse(null);
-                if(linearFactor!=null) {
-                    // conversion by factor required ... Δ2°C -> Δ2K , Δ2°F -> 5/9 * Δ2K
-                    return ToSystemUnitConverter.factor(linearFactor); 
-                }
-                // convert any other cases of RELATIVE scale to system unit (ABSOLUTE) ...
-                throw unsupportedConverter(converter, quantity.getUnit());
-            }
-        }
-        
-        public Number invert(Number x) {
-            return isNoop() 
-                    ? x
-                    : inverseOperator.apply(x); 
-        }
-
-        public static ToSystemUnitConverter of(UnaryOperator<Number> unaryOperator) {
-            return new ToSystemUnitConverter(unaryOperator, null);
-        }
-        public static ToSystemUnitConverter noop() {
-            return new ToSystemUnitConverter(null, null);
-        }
-        public static ToSystemUnitConverter factor(Number factor) {
-            return new ToSystemUnitConverter(
-                    number->Calculator.of(number).multiply(factor).peek(),
-                    number->Calculator.of(number).divide(factor).peek());
-        }
-        private ToSystemUnitConverter(UnaryOperator<Number> unaryOperator, UnaryOperator<Number> inverseOperator) {
-            this.unaryOperator = unaryOperator;
-            this.inverseOperator = inverseOperator;
-        }
-        public boolean isNoop() {
-            return unaryOperator==null;
-        }
-        @Override
-        public Number apply(Number x) {
-            return isNoop() 
-                    ? x
-                    : unaryOperator.apply(x); 
-        }
-        
-        private static Optional<Number> linearFactorOf(UnitConverter converter) {
-            return (converter instanceof AbstractConverter)
-                    ? ((AbstractConverter)converter).linearFactor()
-                    : Optional.empty();
-        }
-        
-        private static UnsupportedOperationException unsupportedConverter(UnitConverter converter, Unit<?> unit) {
-            return new UnsupportedOperationException(
-                    String.format(
-                            "Scale conversion from RELATIVE to ABSOLUTE for Unit %s having Converter %s is not implemented.", 
-                            unit, converter));
-        }
-        
-    }
+ 
 }
