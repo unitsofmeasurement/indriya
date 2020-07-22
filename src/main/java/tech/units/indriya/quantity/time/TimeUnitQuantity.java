@@ -56,7 +56,7 @@ import tech.units.indriya.quantity.Quantities;
  * @author otaviojava
  * @author keilw
  * @author Andi Huber
- * @version 1.0.4
+ * @version 1.0.5
  * @since 1.0
  */
 public final class TimeUnitQuantity extends AbstractQuantity<Time> {
@@ -105,7 +105,7 @@ public final class TimeUnitQuantity extends AbstractQuantity<Time> {
    * @param value
    *          - value to be used
    * @since 1.0
-   * @deprecated use #of(Integer, TimeUnit)
+   * @deprecated use #of(Number, TimeUnit)
    */
   @Deprecated
   public static TimeUnitQuantity of(TimeUnit timeUnit, Integer number) {
