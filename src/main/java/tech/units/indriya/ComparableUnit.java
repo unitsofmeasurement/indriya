@@ -42,7 +42,7 @@ import javax.measure.UnitConverter;
  * @see {@link Unit}
  * @author werner
  * @param <Q>
- * @version 1.4, July 2, 2019
+ * @version 1.5, August 4, 2020
  * @since 1.0.9
  */
 public interface ComparableUnit<Q extends Quantity<Q>> extends Unit<Q>, Comparable<Unit<Q>>, Serializable {
@@ -73,16 +73,6 @@ public interface ComparableUnit<Q extends Quantity<Q>> extends Unit<Q>, Comparab
 	 * @return <code>equals(toSystemUnit())</code>
 	 */
 	boolean isSystemUnit();
-
-	/**
-	 * Returns the system unit (unscaled SI unit) from which this unit is derived.
-	 * They can be be used to identify a quantity given the unit. For example:<br>
-	 * <code> static boolean isAngularVelocity(AbstractUnit<?> unit) {<br>&nbsp;&nbsp;return unit.getSystemUnit().equals(RADIAN.divide(SECOND));<br>}
-	 * <br>assert(REVOLUTION.divide(MINUTE).isAngularVelocity()); // Returns true. </code>
-	 *
-	 * @return the unscaled metric unit from which this unit is derived.
-	 */
-	Unit<Q> getSystemUnit();
 	
 	/**
 	 * Returns the converter from this unit to its unscaled {@link #toSystemUnit
