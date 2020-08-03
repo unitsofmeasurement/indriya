@@ -36,7 +36,6 @@ import static tech.units.indriya.format.FormatConstants.MIDDLE_DOT;
 import static tech.units.indriya.format.FormatConstants.NOOP_PRECEDENCE;
 import static tech.units.indriya.format.FormatConstants.PRODUCT_PRECEDENCE;
 
-import java.math.BigInteger;
 import java.util.Formattable;
 import java.util.Formatter;
 
@@ -85,10 +84,11 @@ class ConverterFormatter {
         } else if (converter instanceof ExpConverter) {
             return exponentPrecedenceExpConveter((ExpConverter) converter, unitPrecedence, buffer);
         } else if ((converter instanceof MultiplyConverter) && 
-                !(converter instanceof PowerOfIntConverter)) {
-            
-            return productPrecedence((MultiplyConverter) converter, continued, unitPrecedence, buffer);
-            
+                !(converter instanceof PowerOfIntConverter)) {            
+        	final Prefix prefix = symbolMap.getPrefix(converter);
+        	if ((prefix != null) && (unitPrecedence == NOOP_PRECEDENCE))
+                return noopPrecedence(buffer, symbolMap, prefix);
+        	return productPrecedence((MultiplyConverter) converter, continued, unitPrecedence, buffer);            
         } else if (converter instanceof PowerOfIntConverter) {
             final Prefix prefix = symbolMap.getPrefix(converter);
             if ((prefix != null) && (unitPrecedence == NOOP_PRECEDENCE))

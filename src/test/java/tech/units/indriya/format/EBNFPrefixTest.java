@@ -58,7 +58,6 @@ import javax.measure.quantity.Mass;
 import javax.measure.quantity.Volume;
 
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.quantity.Quantities;
@@ -174,7 +173,7 @@ public class EBNFPrefixTest {
 	}
 
 	@Test
-    @Disabled("FIXME https://github.com/unitsofmeasurement/indriya/issues/278")
+    //@Disabled("FIXME https://github.com/unitsofmeasurement/indriya/issues/278")
 	public void testKibi() {
 		final String s = format.format(KIBI(METRE));
 		assertEquals("Kim", s);
