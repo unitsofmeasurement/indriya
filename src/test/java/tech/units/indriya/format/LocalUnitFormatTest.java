@@ -43,8 +43,6 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import tech.units.indriya.format.LocalUnitFormat;
-
 /**
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  *

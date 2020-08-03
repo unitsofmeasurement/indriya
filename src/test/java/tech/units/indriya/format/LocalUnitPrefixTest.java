@@ -29,6 +29,9 @@
  */
 package tech.units.indriya.format;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.Is.is;
+import static org.junit.jupiter.api.Assertions.*;
 import static javax.measure.BinaryPrefix.EXBI;
 import static javax.measure.BinaryPrefix.GIBI;
 import static javax.measure.BinaryPrefix.KIBI;
@@ -37,20 +40,9 @@ import static javax.measure.BinaryPrefix.PEBI;
 import static javax.measure.BinaryPrefix.TEBI;
 import static javax.measure.BinaryPrefix.YOBI;
 import static javax.measure.BinaryPrefix.ZEBI;
-import static javax.measure.MetricPrefix.DECI;
-import static javax.measure.MetricPrefix.KILO;
-import static javax.measure.MetricPrefix.MEGA;
-import static javax.measure.MetricPrefix.MICRO;
-import static javax.measure.MetricPrefix.MILLI;
-import static javax.measure.MetricPrefix.NANO;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.Is.is;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static javax.measure.MetricPrefix.*;
 import static tech.units.indriya.NumberAssertions.assertNumberEquals;
-import static tech.units.indriya.unit.Units.GRAM;
-import static tech.units.indriya.unit.Units.KILOGRAM;
-import static tech.units.indriya.unit.Units.LITRE;
-import static tech.units.indriya.unit.Units.METRE;
+import static tech.units.indriya.unit.Units.*;
 
 import javax.measure.Quantity;
 import javax.measure.format.UnitFormat;
@@ -58,24 +50,36 @@ import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
 import javax.measure.quantity.Volume;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.Units;
 
-public class EBNFPrefixTest {
+/**
+ * @author <a href="mailto:werner@units.tech">Werner Keil</a>
+ *
+ */
+// TODO put those tests on a separate tag like "slow", "heavy", etc.
+@Tag("l10n")
+public class LocalUnitPrefixTest {
+
 	private static UnitFormat format;
 	
 	@BeforeAll
 	static void init() {
-		format = EBNFUnitFormat.getInstance();
+		format = LocalUnitFormat.getInstance();
 	}
 	
+	@AfterAll
+	static void deInit() {
+		format = null;
+	}
+		
 	@Test
 	public void testKilo() {
-		// TODO how to handle equals for units?
-		// assertEquals(KILOGRAM.getSymbol(), KILO(GRAM).getSymbol());
 		assertEquals(format.format(KILOGRAM), format.format(KILO(GRAM)));
 	}
 
@@ -85,6 +89,7 @@ public class EBNFPrefixTest {
 		assertNumberEquals(1d, m1.getValue(), 1E-12);
 		assertEquals("Mg", format.format(m1.getUnit()));
 	}
+	
 
 	@Test
 	public void testDeci() {
