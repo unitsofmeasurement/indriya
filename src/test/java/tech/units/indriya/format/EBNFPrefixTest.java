@@ -174,17 +174,18 @@ public class EBNFPrefixTest {
 	}
 
 	@Test
-    //@Disabled("FIXME https://github.com/unitsofmeasurement/indriya/issues/278")
 	public void testKibi() {
 		final String s = format.format(KIBI(METRE));
 		assertEquals("Kim", s);
 	}
 	
+	@Test
 	public void testKibiL() {
 		final String s = format.format(KIBI(LITRE));
 		assertEquals("Kil", s);
 	}
 	
+	@Test
 	public void testKibiG() {
 		final String s = format.format(KIBI(GRAM));
 		assertEquals("Kig", s);
