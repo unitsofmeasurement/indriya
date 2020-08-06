@@ -34,10 +34,6 @@ import javax.measure.Quantity;
 import javax.measure.Unit;
 
 import tech.units.indriya.AbstractUnit;
-import tech.units.indriya.unit.BaseUnit;
-import tech.units.indriya.unit.ProductUnit;
-import tech.units.indriya.unit.Units;
-
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
@@ -66,13 +62,12 @@ import java.util.logging.Logger;
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author  Martin Desruisseaux (Geomatys)
- * @version 1.0, $Date: 2019-07-05 $
  * @since 2.0
  */
 public class UnitDimension implements Dimension, Serializable {
-	/**
-	* 
-	*/
+    /**
+	 * 
+	 */
 	private static final long serialVersionUID = 7806787530512644696L;
 
 	private static final Logger LOGGER = Logger.getLogger(UnitDimension.class.getName());
