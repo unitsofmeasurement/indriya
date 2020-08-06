@@ -49,7 +49,7 @@ import tech.units.indriya.unit.Units;
 
 class IndriyaPerformanceTest {
     private static final Logger LOGGER = Logger.getLogger(IndriyaPerformanceTest.class.getName());
-    private static final Level LOG_LEVEL = Level.INFO;
+    private static final Level LOG_LEVEL = Level.FINE;
 	
     @BeforeEach
     void setUp() throws Exception {

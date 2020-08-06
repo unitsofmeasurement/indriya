@@ -15,6 +15,7 @@ buildNumber.properties
 /.project
 /bin/
 /toolchains.xml
+/logging.properties
 
 # IntelliJ #
 .idea/
