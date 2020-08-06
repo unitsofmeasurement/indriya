@@ -93,16 +93,16 @@ import tech.units.indriya.AbstractUnit;
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:otaviojava@java.net">Otavio Santana</a>
- * @version 1.3, $Date: 2018-11-02 $
+ * @version 1.4, $Date: 2020-08-06 $
  * @since 1.0
  */
 public class DefaultQuantityFactory<Q extends Quantity<Q>> implements QuantityFactory<Q> {
     @SuppressWarnings("rawtypes")
     static final Map<Class, QuantityFactory> INSTANCES = new HashMap<>();
 
-    static final Logger logger = Logger.getLogger(DefaultQuantityFactory.class.getName());
+    static final Logger LOGGER = Logger.getLogger(DefaultQuantityFactory.class.getName());
 
-    static final Level LOG_LEVEL = Level.FINE;
+    static final Level DEFAULT_LOG_LEVEL = Level.FINER;
 
     /**
      * The type of the quantities created by this factory.
@@ -151,6 +151,11 @@ public class DefaultQuantityFactory<Q extends Quantity<Q>> implements QuantityFa
         CLASS_TO_SYSTEM_UNIT.put(Acceleration.class, METRE_PER_SQUARE_SECOND);
         CLASS_TO_SYSTEM_UNIT.put(Area.class, SQUARE_METRE);
         CLASS_TO_SYSTEM_UNIT.put(Volume.class, CUBIC_METRE);
+        
+        if (LOGGER.isLoggable(Level.CONFIG)) {
+        	LOGGER.config(String.format("Registered quantity types: %s", 
+        			CLASS_TO_SYSTEM_UNIT.keySet()));
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -170,7 +175,7 @@ public class DefaultQuantityFactory<Q extends Quantity<Q>> implements QuantityFa
      */
     @SuppressWarnings("unchecked")
     public static <Q extends Quantity<Q>> QuantityFactory<Q> getInstance(final Class<Q> type) {
-        logger.log(LOG_LEVEL, "Type: " + type + ": " + type.isInterface());
+        LOGGER.log(DEFAULT_LOG_LEVEL, "Type: " + type + ": " + type.isInterface());
         QuantityFactory<Q> factory;
         factory = INSTANCES.get(type);
         if (factory != null) {
