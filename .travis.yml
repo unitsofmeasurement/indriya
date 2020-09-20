@@ -15,6 +15,7 @@ install: skip
 before_script:
   # execute all of the commands which need to be executed 
   # before running actual tests
+  - printenv
   - sed -i "s|JDK_home|$JAVA_HOME|g" ci-toolchains.xml
   - if [ "$TRAVIS_ARCH" = "ppc64le" ]; then mkdir -p /opt/maven; sudo apt-get update; sudo apt-get install maven;export MAVEN_HOME=/opt/maven; export PATH=${MAVEN_HOME}/bin:${PATH};  fi
 script:
