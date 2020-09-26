@@ -46,7 +46,7 @@ import tech.units.indriya.spi.Range;
  *          The value of the range.
  * 
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 0.6, June 5, 2018
+ * @version 1.0, Sep 27, 2020
  * @see <a href= "http://www.botts-inc.com/SensorML_1.0.1/schemaBrowser/SensorML_QuantityRange.html"> SensorML: QuantityRange</a>
  */
 public class QuantityRange<Q extends Quantity<Q>> extends Range<Quantity<Q>> {
@@ -129,9 +129,7 @@ public class QuantityRange<Q extends Quantity<Q>> extends Range<Quantity<Q>> {
 
   @Override
   public boolean contains(final Quantity<Q> q) {
-    if (q == null) {
-      throw new NullPointerException();
-    }
+	Objects.requireNonNull(q);
     return q.getValue() != null && q.getUnit() != null && fulfillsMinimumConstraint(q) && fulfillsMaximumConstraint(q);
   }
 
