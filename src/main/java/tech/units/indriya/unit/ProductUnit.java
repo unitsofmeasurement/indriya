@@ -60,14 +60,14 @@ import tech.units.indriya.internal.function.Lazy;
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author Andi Huber
- * @version 1.10, April 22, 2020
+ * @version 1.11, September 27, 2020
  * @since 1.0
  */
 public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
 
     /**
-    *
-    */
+     *
+     */
     private static final long serialVersionUID = 962983585531030093L;
 
     /**
@@ -501,11 +501,7 @@ public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
             if (!Objects.equals(this.root, other.root)) {
                 return false;
             }
-            if (!Objects.equals(this.unit, other.unit)) {
-                return false;
-            }
-            return true;
-
+            return Objects.equals(this.unit, other.unit);
         }
 
         @Override
@@ -563,8 +559,5 @@ public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
             }
             return true;
         }
-        
-
-        
     }
 }
