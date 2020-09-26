@@ -30,6 +30,7 @@
 package tech.units.indriya.quantity.time;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -282,7 +283,7 @@ public class TemporalQuantityTest {
    */
   @Test
   public void temporalQuantityIsNotEqualToObjectOfAnotherClass() {
-    assertFalse(FORTY_TWO_MINUTES.equals(Units.HOUR));
+    assertNotEquals(FORTY_TWO_MINUTES, Units.HOUR);
   }
 
   /**
