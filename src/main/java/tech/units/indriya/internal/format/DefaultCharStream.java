@@ -31,10 +31,12 @@
 /* JavaCCOptions:STATIC=false,SUPPORT_CLASS_VISIBILITY_PUBLIC=true */
 package tech.units.indriya.internal.format;
 
+import javax.measure.MeasurementError;
+
 /**
- * An implementation of interface CharStream, where the stream is assumed to contain only ASCII characters (without unicode processing).
+ * An implementation of interface CharStream, where the stream is assumed to contain only ASCII characters (without Unicode processing).
  *
- * @version 5.2, April 26, 2018
+ * @version 5.3, September 27, 2020
  */
 
 final class DefaultCharStream {
@@ -102,7 +104,7 @@ final class DefaultCharStream {
         maxNextCharInd = (bufpos -= tokenBegin);
       }
     } catch (Throwable t) {
-      throw new Error(t.getMessage());
+      throw new MeasurementError(t.getMessage());
     }
 
     bufsize += 2048;
@@ -213,15 +215,6 @@ final class DefaultCharStream {
    */
   public int getColumn() {
     return bufcolumn[bufpos];
-  }
-
-  @Deprecated
-  /**
-   * @deprecated
-   * @see #getEndLine
-   */
-  public int getLine() {
-    return bufline[bufpos];
   }
 
   /** Get token end column number. */
