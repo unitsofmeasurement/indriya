@@ -37,6 +37,8 @@ import java.io.IOException;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
 import java.util.Locale;
+import java.util.Objects;
+
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.format.MeasurementParseException;
@@ -107,9 +109,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
          * @return this {@code NumberDelimiterQuantityFormat.Builder}
          */
         public Builder setNumberFormat(NumberFormat numberFormat) {
-            if (numberFormat == null) {
-                throw new NullPointerException();
-            }
+            Objects.requireNonNull(numberFormat);
             this.numberFormat = numberFormat;
             return this;
         }
@@ -121,9 +121,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
          * @return this {@code NumberDelimiterQuantityFormat.Builder}
          */
         public Builder setUnitFormat(UnitFormat unitFormat) {
-            if (unitFormat == null) {
-                throw new NullPointerException();
-            }
+        	Objects.requireNonNull(unitFormat);
             this.unitFormat = unitFormat;
             return this;
         }
@@ -135,9 +133,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
          * @return this {@code NumberDelimiterQuantityFormat.Builder}
          */
         public Builder setPrimaryUnit(final Unit primary) {
-            if (unitFormat == null) {
-                throw new NullPointerException();
-            }
+            Objects.requireNonNull(primary);
             this.primaryUnit = primary;
             return this;
         }
@@ -163,9 +159,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
          * @return this {@code NumberDelimiterQuantityFormat.Builder}
          */
         public Builder setRadixPartsDelimiter(String radixPartsDelimiter) {
-            if (radixPartsDelimiter == null) {
-                throw new NullPointerException();
-            }
+            Objects.requireNonNull(radixPartsDelimiter);
             this.mixedRadixDelimiter = radixPartsDelimiter;
             return this;
         }
