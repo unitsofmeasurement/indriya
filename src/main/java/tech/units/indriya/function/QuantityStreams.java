@@ -32,6 +32,7 @@ package tech.units.indriya.function;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 
+import javax.measure.MeasurementError;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 
@@ -40,14 +41,14 @@ import javax.measure.Unit;
  * 
  * @author Otavio
  * @author Werner
- * @version 1.0
+ * @version 1.1
  * @since 2.0
  *
  */
 public final class QuantityStreams {
 
   private QuantityStreams() {
-	  throw new Error("no instances");
+	  throw new MeasurementError("no instances");
   }
 
   /**
