@@ -34,7 +34,7 @@ package tech.units.indriya.format;
 /**
  * Describes the input token stream.
  *
- * @version 5.3, January 11, 2020
+ * @version 5.4, September 26, 2020
  */
 
 public final class Token {
@@ -96,16 +96,9 @@ public final class Token {
   }
 
   /**
-   * Constructs a new token for the specified Image.
-   */
-  public Token(int kind) {
-    this(kind, null);
-  }
-
-  /**
    * Constructs a new token for the specified Image and Kind.
    */
-  public Token(int kind, String image) {
+  private Token(int kind, String image) {
     this.kind = kind;
     this.image = image;
   }
@@ -126,15 +119,15 @@ public final class Token {
    *
    * to the following switch statement. Then you can cast matchedToken variable to the appropriate type and use sit in your lexical actions.
    */
-  public static Token newToken(int ofKind, String image) {
+  public static Token of(int ofKind, String image) {
     switch (ofKind) {
       default:
         return new Token(ofKind, image);
     }
   }
 
-  public static Token newToken(int ofKind) {
-    return newToken(ofKind, null);
+  public static Token of(int ofKind) {
+    return of(ofKind, null);
   }
 
 }

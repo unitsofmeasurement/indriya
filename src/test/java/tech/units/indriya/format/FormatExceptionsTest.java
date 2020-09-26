@@ -62,6 +62,15 @@ public class FormatExceptionsTest {
         assertEquals("error", e.getMessage());
         assertNull(e.getCause());
     }
+    
+    @Test
+    public void testTokenExceptionWithMessages() {
+    	@SuppressWarnings("unused")
+		NullPointerException e = assertThrows(NullPointerException.class, () -> {
+            throw new TokenException(Token.of(1), new int[0][], new String[]{""});
+        });
+    }
+    
 	
     @Test
     public void testTokenMgrError() {
