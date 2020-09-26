@@ -57,7 +57,7 @@ import tech.units.indriya.quantity.Quantities;
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author <a href="mailto:thodoris.bais@gmail.com">Thodoris Bais</a>
  *
- * @version 2.6, $Date: 2020-09-26 $
+ * @version 2.6, $Date: 2020-09-27 $
  * @since 2.0
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -129,7 +129,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
          * @return this {@code NumberDelimiterQuantityFormat.Builder}
          */
         public Builder setUnitFormat(UnitFormat unitFormat) {
-        	Objects.requireNonNull(unitFormat)
+        	Objects.requireNonNull(unitFormat);
             this.unitFormat = unitFormat;
             return this;
         }
