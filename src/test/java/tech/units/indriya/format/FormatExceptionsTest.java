@@ -35,10 +35,30 @@ import org.junit.jupiter.api.Test;
 
 /**
  * @author <a href="mailto:werner@uom.technology">Werner Keil</a>
- * @version 1.0
+ * @version 1.1
  */
-public class ErrorsTest {  
+public class FormatExceptionsTest {  
 
+    @Test
+    public void testTokenException() {
+        TokenException e = assertThrows(TokenException.class, () -> {
+            throw new TokenException();
+        });
+        assertNotNull(e.getMessage());
+        assertEquals("", e.getMessage());
+        assertNull(e.getCause());
+    }
+
+    @Test
+    public void testTokenExceptionWithMessage() {
+        TokenException e = assertThrows(TokenException.class, () -> {
+            throw new TokenException("error");
+        });
+
+        assertEquals("error", e.getMessage());
+        assertNull(e.getCause());
+    }
+	
     @Test
     public void testTokenMgrError() {
         TokenMgrError e = assertThrows(TokenMgrError.class, () -> {
