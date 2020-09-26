@@ -39,6 +39,8 @@ import java.io.IOException;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
 import java.util.Locale;
+import java.util.Objects;
+
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.format.MeasurementParseException;
@@ -55,7 +57,7 @@ import tech.units.indriya.quantity.Quantities;
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author <a href="mailto:thodoris.bais@gmail.com">Thodoris Bais</a>
  *
- * @version 2.5.1, $Date: 2020-04-26 $
+ * @version 2.6, $Date: 2020-09-26 $
  * @since 2.0
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -115,9 +117,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
          * @return this {@code NumberDelimiterQuantityFormat.Builder}
          */
         public Builder setNumberFormat(NumberFormat numberFormat) {
-            if (numberFormat == null) {
-                throw new NullPointerException();
-            }
+            Objects.requireNonNull(numberFormat);
             this.numberFormat = numberFormat;
             return this;
         }
@@ -129,9 +129,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
          * @return this {@code NumberDelimiterQuantityFormat.Builder}
          */
         public Builder setUnitFormat(UnitFormat unitFormat) {
-            if (unitFormat == null) {
-                throw new NullPointerException();
-            }
+        	Objects.requireNonNull(unitFormat)
             this.unitFormat = unitFormat;
             return this;
         }
@@ -142,10 +140,8 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
          * @throws NullPointerException if {@code primary} is {@code null}
          * @return this {@code NumberDelimiterQuantityFormat.Builder}
          */
-        public Builder setPrimaryUnit(final Unit primary) {
-            if (unitFormat == null) {
-                throw new NullPointerException();
-            }
+        public Builder setPrimaryUnit(final Unit primary) {            
+        	Objects.requireNonNull(primary);
             this.primaryUnit = primary;
             return this;
         }
@@ -157,9 +153,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
          * @return this {@code NumberDelimiterQuantityFormat.Builder}
          */
         public Builder setDelimiter(String delimiter) {
-            if (delimiter == null) {
-                throw new NullPointerException();
-            }
+        	Objects.requireNonNull(delimiter);
             this.delimiter = delimiter;
             return this;
         }
@@ -171,9 +165,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
          * @return this {@code NumberDelimiterQuantityFormat.Builder}
          */
         public Builder setRadixPartsDelimiter(String radixPartsDelimiter) {
-            if (radixPartsDelimiter == null) {
-                throw new NullPointerException();
-            }
+        	Objects.requireNonNull(radixPartsDelimiter);
             this.mixedRadixDelimiter = radixPartsDelimiter;
             return this;
         }

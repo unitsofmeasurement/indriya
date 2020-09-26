@@ -34,6 +34,7 @@ import java.io.InputStream;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -48,7 +49,7 @@ import java.util.Vector;
  * </p>
  * 
  * @author Werner Keil
- * @version 1.0
+ * @version 1.1
  */
 public class MultiPropertyResourceBundle extends ResourceBundle {
 // also see https://github.com/vitorzachi/tcc-multitenancy/blob/master/tccMultitenancy/src/net/sf/trugger/util/MultiResourceBundle.java but that code might be older
@@ -155,10 +156,8 @@ public class MultiPropertyResourceBundle extends ResourceBundle {
    */
   @Override
   public Object handleGetObject(String key) {
-    if (key == null) {
-      throw new NullPointerException();
-    }
-    return this.resources.get(key);
+	  Objects.requireNonNull(key);
+	  return this.resources.get(key);
   }
 
   /**
@@ -170,8 +169,8 @@ public class MultiPropertyResourceBundle extends ResourceBundle {
    */
   @Override
   public Enumeration<String> getKeys() {
-    Vector<String> keys = new Vector<>(this.resources.keySet());
-    return keys.elements();
+	  Vector<String> keys = new Vector<>(this.resources.keySet());
+	  return keys.elements();
   }
 
   /**

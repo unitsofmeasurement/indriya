@@ -145,9 +145,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
          * @return this {@code NumberDelimiterQuantityFormat.Builder}
          */
         public Builder setDelimiter(String delimiter) {
-            if (delimiter == null) {
-                throw new NullPointerException();
-            }
+        	Objects.requireNonNull(delimiter);
             this.delimiter = delimiter;
             return this;
         }
