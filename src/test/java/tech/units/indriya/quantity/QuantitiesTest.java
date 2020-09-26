@@ -31,6 +31,7 @@ package tech.units.indriya.quantity;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Locale;
 
 import javax.measure.Quantity;
 import javax.measure.quantity.Pressure;
@@ -141,8 +142,9 @@ public class QuantitiesTest {
 
   @Test
   public void quantityEquivalentTest() {
+	  Locale.setDefault(Locale.ROOT);
       ComparableQuantity<Speed> shouldBe = Quantities.getQuantity(15, Units.KILOMETRE_PER_HOUR);
-      Quantity<Speed> parsedSpeed = Quantities.getQuantity("15,0 km/h").asType(Speed.class);
+      Quantity<Speed> parsedSpeed = Quantities.getQuantity("15.0 km/h").asType(Speed.class);
       assertTrue(shouldBe.isEquivalentTo(parsedSpeed));
   }
   

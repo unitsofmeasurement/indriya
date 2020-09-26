@@ -52,15 +52,15 @@ import tech.units.indriya.quantity.Quantities;
 
 public class AngularTest {
 
-    public final Unit<Angle> ANGULAR_DEGREES = 
+    private static final Unit<Angle> ANGULAR_DEGREES = 
             new TransformedUnit<>("°", RADIAN, RADIAN, MultiplyConverter.ofPiExponent(1)
                     .concatenate(MultiplyConverter.ofRational(1, 180)));
             
-    public final Unit<Angle> ANGULAR_MINUTE = 
+    private static final Unit<Angle> ANGULAR_MINUTE = 
             new TransformedUnit<>("′", RADIAN, RADIAN, MultiplyConverter.ofPiExponent(1)
                     .concatenate(MultiplyConverter.ofRational(1, 180*60)));
     
-    public final Unit<Angle> ANGULAR_SECOND = 
+    private static final Unit<Angle> ANGULAR_SECOND = 
             new TransformedUnit<>("′′", RADIAN, RADIAN, MultiplyConverter.ofPiExponent(1)
                     .concatenate(MultiplyConverter.ofRational(1, 180*60*60)));
 
@@ -80,8 +80,7 @@ public class AngularTest {
     }
     
     @Test
-    void testCommensurableAngleAddition() {
-        
+    void testCommensurableAngleAddition() {        
         assertTrue(RADIAN.isCompatible(ANGULAR_DEGREES));
         
         Quantity<Angle> angle1 = Quantities.getQuantity(1, ANGULAR_DEGREES);
@@ -92,8 +91,7 @@ public class AngularTest {
     }
     
     @Test @SuppressWarnings({ "rawtypes", "unchecked" })
-    void testIncommensurableAngleAddition() {
-        
+    void testIncommensurableAngleAddition() {        
         Dimension SOLID_ANGLE_DIMENSION = UnitDimension.parse('Ω');
         Unit<SolidAngle> mySTERADIAN = new BaseUnit<SolidAngle>("sr", SOLID_ANGLE_DIMENSION);
         

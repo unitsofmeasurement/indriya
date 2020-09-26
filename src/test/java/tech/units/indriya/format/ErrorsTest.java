@@ -27,52 +27,45 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package tech.units.indriya.quantity;
+package tech.units.indriya.format;
 
-import javax.measure.Dimension;
-import javax.measure.Quantity;
-import javax.measure.Unit;
+import static org.junit.jupiter.api.Assertions.*;
 
-import tech.units.indriya.AbstractUnit;
-import tech.units.indriya.unit.BaseUnit;
-import tech.units.indriya.unit.ProductUnit;
-import tech.units.indriya.unit.UnitDimension;
-import tech.units.indriya.unit.Units;
-
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.junit.jupiter.api.Test;
 
 /**
- * <p>
- * This class represents a quantity dimension (dimension of a physical quantity).
- * </p>
- *
- * <p>
- * The dimension associated to any given quantity are given by the published {@link Dimension} instances. For convenience, a static method
- * <code>QuantityDimension.of(Class)</code> aggregating the results of all
- *
- * {@link Dimension} instances is provided.<br>
- *       <br>
- *       <code>
- *        QuantityDimension speedDimension
- *            = QuantityDimension.of(Speed.class);
- *     </code>
- *       </p>
- *
- * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
- * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 1.3, $Date: 2019-07-05 $
- * @since 1.0
- * @deprecated Use UnitDimension
+ * @author <a href="mailto:werner@uom.technology">Werner Keil</a>
+ * @version 1.0
  */
-public final class QuantityDimension extends UnitDimension {
+public class ErrorsTest {  
 
-  /**
-   *
-   */
-  private static final long serialVersionUID = 123289037718650030L;
+    @Test
+    public void testTokenMgrError() {
+        TokenMgrError e = assertThrows(TokenMgrError.class, () -> {
+            throw new TokenMgrError();
+        });
+
+        assertNull(e.getMessage());
+        assertNull(e.getCause());
+    }
+    
+    @Test
+    public void testTokenMgrErrorWithMessage() {
+        TokenMgrError e = assertThrows(TokenMgrError.class, () -> {
+            throw new TokenMgrError("error");
+        });
+
+        assertEquals("error", e.getMessage());
+        assertNull(e.getCause());
+    }
+    
+    @Test
+    public void testTokenMgrErrorWithMessageAndReason() {
+        TokenMgrError e = assertThrows(TokenMgrError.class, () -> {
+            throw new TokenMgrError("error", 0);
+        });
+
+        assertNotNull(e.getMessage());
+        assertEquals("error", e.getMessage()); 
+    }
 }

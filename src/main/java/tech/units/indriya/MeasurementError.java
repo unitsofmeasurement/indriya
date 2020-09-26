@@ -37,42 +37,9 @@ package tech.units.indriya;
  * implSpec This class is intended for use in a single thread. Exception thrown when errors occur during Units of Measurement operations.
  *
  * @author <a href="mailto:werner@uom.technology">Werner Keil</a>
- * @version 1.0, Jan 11, 2020
+ * @version 1.1, Sep 26, 2020
  * @since 2.0.2
+ * @deprecated Use javax.measure.MeasurementError
  */
-// TODO this could be moved into the API at a later point
-public class MeasurementError extends Error {
-
-    /**
-	 * 
-	 */
-	private static final long serialVersionUID = -412360965273525777L;
-
-	/**
-     * Constructs a {@code MeasurementError} with no detail message.
-     */
-    public MeasurementError() {
-        super();
-    }
-
-    /**
-     * Constructs a {@code MeasurementError} with the specified detail
-     * message.
-     *
-     * @param   s   the detail message.
-     */
-    public MeasurementError(String s) {
-        super(s);
-    }
-
-    /**
-     * Constructs a {@code MeasurementError} with the specified detail
-     * message and cause.
-     *
-     * @param s     the detail message.
-     * @param cause the cause, may be {@code null}
-     */
-    public MeasurementError(String s, Throwable cause) {
-        super(s, cause);
-    }
+public class MeasurementError extends javax.measure.MeasurementError {
 }

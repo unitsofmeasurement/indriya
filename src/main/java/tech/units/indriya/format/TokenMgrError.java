@@ -31,10 +31,10 @@
 /* JavaCCOptions: */
 package tech.units.indriya.format;
 
-import tech.units.indriya.MeasurementError;
+import javax.measure.MeasurementError;
 
-/** Token Manager Error. #
- * @version 1.1
+/** Token Manager Error. 
+ * @version 2.0
  * @author Werner Keil
  */
 public class TokenMgrError extends MeasurementError {
@@ -126,24 +126,17 @@ public class TokenMgrError extends MeasurementError {
         + addEscapes(errorAfter) + "\"");
   }
 
-  /**
-   * You can also modify the body of this method to customize your error messages. For example, cases like LOOP_DETECTED and INVALID_LEXICAL_STATE are
-   * not of end-users concern, so you can return something like :
-   *
-   * "Internal Error : Please file a bug report .... "
-   *
-   * from this method for such cases in the release version of your parser.
-   */
-  public String getMessage() {
-    return super.getMessage();
-  }
-
   /*
    * Constructors of various flavors follow.
    */
 
   /** No arg constructor. */
   public TokenMgrError() {
+  }
+  
+  /** Constructor with message. */
+  public TokenMgrError(String message) {
+    super(message);
   }
 
   /** Constructor with message and reason. */
