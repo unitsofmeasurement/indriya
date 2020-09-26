@@ -104,7 +104,7 @@ public class DefaultQuantityFactoryTest {
 				.getInstance(TwoTimesUnregisteredQuantityInterface.class);
 		QuantityFactory<TwoTimesUnregisteredQuantityInterface> instance2 = DefaultQuantityFactory
 				.getInstance(TwoTimesUnregisteredQuantityInterface.class);
-		assertTrue(instance1 == instance2);
+		assertEquals(instance1, instance2);
 	}
 
 	/**
@@ -142,7 +142,7 @@ public class DefaultQuantityFactoryTest {
 				.getInstance(TwoTimesUnregisteredQuantityClass.class);
 		QuantityFactory<TwoTimesUnregisteredQuantityClass> instance2 = DefaultQuantityFactory
 				.getInstance(TwoTimesUnregisteredQuantityClass.class);
-		assertTrue(instance1 == instance2);
+		assertEquals(instance1, instance2);
 	}
 
 	/**
