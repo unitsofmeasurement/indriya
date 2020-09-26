@@ -36,6 +36,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static tech.units.indriya.NumberAssertions.assertNumberEquals;
 import static tech.units.indriya.unit.Units.RADIAN;
 
+import java.util.Locale;
+
 import javax.measure.Dimension;
 import javax.measure.Quantity;
 import javax.measure.Unit;
@@ -68,7 +70,7 @@ public class AngularTest {
     
     @Test
     void testDms() {
-        
+        Locale.setDefault(Locale.ROOT);
         Quantity<Angle> angle = Quantities.getQuantity(1, RADIAN);
         Number[] values = DMS.extractValues(angle);
         String dmsFormat = String.format("%d°%d′%.2f′′", (Object[])values);
@@ -86,8 +88,7 @@ public class AngularTest {
         Quantity<Angle> angle2 = Quantities.getQuantity(2, RADIAN);
         
         assertNumberEquals(2.017453292519943, angle2.add(angle1).getValue(), 1E-12); // rad
-        assertNumberEquals(115.591559026164641, angle1.add(angle2).getValue(), 1E-12); // degree
-        
+        assertNumberEquals(115.591559026164641, angle1.add(angle2).getValue(), 1E-12); // degree        
     }
     
     @Test @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -110,6 +111,5 @@ public class AngularTest {
             angle1.add(angle2); // not allowed, should throw
         });
     }
-    
-    
+        
 }

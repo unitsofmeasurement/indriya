@@ -142,7 +142,7 @@ public class QuantitiesTest {
   @Test
   public void quantityEquivalentTest() {
       ComparableQuantity<Speed> shouldBe = Quantities.getQuantity(15, Units.KILOMETRE_PER_HOUR);
-      Quantity<Speed> parsedSpeed = Quantities.getQuantity("15.0 km/h").asType(Speed.class);
+      Quantity<Speed> parsedSpeed = Quantities.getQuantity("15,0 km/h").asType(Speed.class);
       assertTrue(shouldBe.isEquivalentTo(parsedSpeed));
   }
   
