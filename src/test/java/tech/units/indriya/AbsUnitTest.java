@@ -119,6 +119,7 @@ public class AbsUnitTest {
 	 * functionality provided in the abstract class.
 	 *
 	 */
+	@SuppressWarnings("serial")
 	class DummyUnit extends AbstractUnit {
 
 		private DummyUnit(String symbol) {
@@ -424,6 +425,11 @@ public class AbsUnitTest {
 		// TODO see https://github.com/unitsofmeasurement/uom-se/issues/54 /
 		assertEquals("kg", KILOGRAM.getSymbol());
 		assertNull(GRAM.getSymbol());
+	}
+	
+	@Test
+	public void testIsSystemUnit() {
+		assertTrue(((AbstractUnit<Mass>)KILOGRAM).isSystemUnit());
 	}
 
 	@Test

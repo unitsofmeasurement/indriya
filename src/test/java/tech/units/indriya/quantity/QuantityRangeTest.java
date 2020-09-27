@@ -139,6 +139,11 @@ public class QuantityRangeTest {
 	public Scale getScale() {
 	    return scale;
 	}
+
+	@Override
+	public boolean isEquivalentTo(Quantity<Mass> that) {
+		return false;
+	}
   }
 
   /**
