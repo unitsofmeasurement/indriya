@@ -31,6 +31,7 @@ package tech.units.indriya.quantity.time;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -243,7 +244,7 @@ public class TemporalQuantityTest {
    */
   @Test
   public void temporalQuantityIsEqualToItself() {
-    assertTrue(FORTY_TWO_MINUTES.equals(FORTY_TWO_MINUTES));
+    assertEquals(FORTY_TWO_MINUTES, FORTY_TWO_MINUTES);
   }
 
   /**
@@ -251,7 +252,7 @@ public class TemporalQuantityTest {
    */
   @Test
   public void temporalQuantityIsNotEqualToNull() {
-    assertFalse(FORTY_TWO_MINUTES.equals(null));
+    assertNotNull(FORTY_TWO_MINUTES);
   }
 
   /**
@@ -376,6 +377,7 @@ public class TemporalQuantityTest {
   /**
    * Verifies that the multiplication of two quantities multiplies correctly.
    */
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   @Test
   public void quantityMultiplicationMultipliesCorrectly() {
     Quantity<?> actual = FORTY_TWO_CHRONO_MINUTES.multiply(FORTY_TWO_CHRONO_MINUTES);
@@ -396,6 +398,7 @@ public class TemporalQuantityTest {
   /**
    * Verifies that the division of two quantities divides correctly.
    */
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   @Test
   public void quantityDivisionDividesCorrectly() {
       Quantity<?> actual = FORTY_TWO_MINUTES.divide(FORTY_TWO_MINUTES);
