@@ -37,13 +37,16 @@ import javax.measure.Unit;
 import tech.uom.lib.common.function.QuantityConverter;
 
 /**
- * Quantity specialized for the Java SE platform. It extends {@link Quantity} with {@linkplain Comparable} and {@linkplain Serializable }
+ * Quantity that adapts Comparables to the {@link Quantity} interface.
+ * For use in other quantities, when supposed to work on Comparables.
+ * 
+ * It extends {@link Quantity} with {@linkplain Comparable} and {@linkplain Serializable }
  * 
  * @see {@link Quantity}
  * @author otaviojava
  * @author werner
  * @param <Q>
- * @version 1.1, July 2, 2019
+ * @version 2.0, September 27, 2020
  * @since 1.0
  */
 public interface ComparableQuantity<Q extends Quantity<Q>> extends Quantity<Q>, Comparable<Quantity<Q>>, QuantityConverter<Q>, Serializable {
