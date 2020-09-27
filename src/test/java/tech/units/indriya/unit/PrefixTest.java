@@ -86,7 +86,7 @@ public class PrefixTest {
 
 	@Test
 	public void testMega() {
-		Quantity<Mass> m1 = Quantities.getQuantity(1.0, MEGA(Units.GRAM));
+		Quantity<Mass> m1 = Quantities.getQuantity(1.0, MEGA(GRAM));
 		assertNumberEquals(1d, m1.getValue(), 1E-12);
 		assertEquals("Mg", m1.getUnit().toString());
 	}
@@ -104,7 +104,7 @@ public class PrefixTest {
 
 	@Test
 	public void testMilli() {
-		Quantity<Mass> m1 = Quantities.getQuantity(1.0, MILLI(Units.GRAM));
+		Quantity<Mass> m1 = Quantities.getQuantity(1.0, MILLI(GRAM));
 		assertNumberEquals(1d, m1.getValue(), 1E-12);
 		assertEquals("mg", m1.getUnit().toString());
 	}
@@ -140,33 +140,33 @@ public class PrefixTest {
 
 	@Test
 	public void testMicro2() {
-		Quantity<Length> m1 = Quantities.getQuantity(1.0, Units.METRE);
+		Quantity<Length> m1 = Quantities.getQuantity(1.0, METRE);
 		assertNumberEquals(1d, m1.getValue(), 1E-12);
 		assertEquals("m", m1.getUnit().toString());
 
-		Quantity<Length> m2 = m1.to(MICRO(Units.METRE));
+		Quantity<Length> m2 = m1.to(MICRO(METRE));
 		assertNumberEquals(1000_000L, m2.getValue(), 1E-12);
 		assertEquals("μm", m2.getUnit().toString());
 	}
 
 	@Test
 	public void testNano() {
-		Quantity<Mass> m1 = Quantities.getQuantity(1.0, Units.GRAM);
+		Quantity<Mass> m1 = Quantities.getQuantity(1.0, GRAM);
 		assertNumberEquals(1d, m1.getValue(), 1E-12);
 		assertEquals("g", m1.getUnit().toString());
 
-		Quantity<Mass> m2 = m1.to(NANO(Units.GRAM));
+		Quantity<Mass> m2 = m1.to(NANO(GRAM));
 		assertNumberEquals(1000_000_000L, m2.getValue(), 1E-12);
 		assertEquals("ng", m2.getUnit().toString());
 	}
 
 	@Test
 	public void testNano2() {
-		Quantity<Length> m1 = Quantities.getQuantity(1.0, Units.METRE);
+		Quantity<Length> m1 = Quantities.getQuantity(1.0, METRE);
 		assertNumberEquals(1d, m1.getValue(), 1E-12);
 		assertEquals("m", m1.getUnit().toString());
 
-		Quantity<Length> m2 = m1.to(NANO(Units.METRE));
+		Quantity<Length> m2 = m1.to(NANO(METRE));
 		assertNumberEquals(1000000000L, m2.getValue(), 1E-12);
 		assertEquals("nm", m2.getUnit().toString());
 	}
