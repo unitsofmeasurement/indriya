@@ -42,8 +42,9 @@ import javax.measure.UnitConverter;
  * @see {@link Unit}
  * @author werner
  * @param <Q>
- * @version 1.5, August 4, 2020
+ * @version 1.6, September 27, 2020
  * @since 1.0.9
+ * @deprecated should be split between Unit and AbstractUnit
  */
 public interface ComparableUnit<Q extends Quantity<Q>> extends Unit<Q>, Comparable<Unit<Q>>, Serializable {
 
