@@ -203,6 +203,11 @@ class AlternateUnitTest {
 			public Unit<ElectricCurrent> transform(UnitConverter arg0) {
 				return null;
 			}
+
+			@Override
+			public boolean isEquivalentTo(Unit<ElectricCurrent> that) {
+				return false;
+			}
 		};
 		assertThrows(IllegalArgumentException.class, () -> {
 			new AlternateUnit<ElectricCurrent>(nonAbstractUnit, SYMBOL);
