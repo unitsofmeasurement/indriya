@@ -32,6 +32,7 @@ package tech.units.indriya.quantity.time;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static tech.units.indriya.NumberAssertions.assertNumberEquals;
 
 import java.math.BigInteger;
@@ -174,7 +175,7 @@ public class TimeUnitQuantityTest {
    */
   @Test
   public void timeUnitQuantityIsEqualToItself() {
-    assertTrue(FORTY_TWO_MINUTES.equals(FORTY_TWO_MINUTES));
+    assertEquals(FORTY_TWO_MINUTES, FORTY_TWO_MINUTES);
   }
 
   /**
@@ -182,7 +183,7 @@ public class TimeUnitQuantityTest {
    */
   @Test
   public void timeUnitQuantityIsNotEqualToNull() {
-    assertFalse(FORTY_TWO_MINUTES.equals(null));
+    assertNotNull(FORTY_TWO_MINUTES);
   }
 
   /**
