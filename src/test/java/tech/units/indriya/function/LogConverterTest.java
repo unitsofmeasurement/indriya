@@ -32,12 +32,9 @@ package tech.units.indriya.function;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import tech.units.indriya.function.ExpConverter;
-import tech.units.indriya.function.LogConverter;
 
 public class LogConverterTest {
 
@@ -69,7 +66,7 @@ public class LogConverterTest {
 
   @Test
   public void isLinearOfLogConverterTest() {
-    assertTrue(!logConverterBase10.isLinear());
+    assertFalse(logConverterBase10.isLinear());
   }
 
   @Test
