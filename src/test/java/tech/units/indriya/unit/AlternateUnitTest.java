@@ -46,6 +46,11 @@ import javax.measure.quantity.Length;
 
 import org.junit.jupiter.api.Test;
 
+/**
+ * Test for alternate units 
+ * @author Werner
+ *
+ */
 class AlternateUnitTest {
 
 	private static final String SYMBOL = "S";
