@@ -50,6 +50,26 @@ public class TokenException extends MeasurementParseException {
   private static final long serialVersionUID = 2932151235799168061L;
 
   /**
+   * This is the last token that has been consumed successfully. If this object has been created due to a parse error, the token followng this token
+   * will (therefore) be the first error token.
+   */
+  Token currentToken;
+
+  /**
+   * Each entry in this array is an array of integers. Each array of integers represents a sequence of tokens (by their ordinal values) that is
+   * expected at this point of the parse.
+   */
+  @SuppressWarnings("unused")
+  private int[][] expectedTokenSequences;
+
+  /**
+   * This is a reference to the "tokenImage" array of the generated parser within which the parse error occurred. This array is defined in the
+   * generated ...Constants interface.
+   */
+  @SuppressWarnings("unused")
+  private String[] tokenImage;
+  
+  /**
    * This constructor is used by the method "raiseTokenException" in the generated parser. Calling this constructor generates a new object of this
    * type with the fields "currentToken", "expectedTokenSequences", and "tokenImage" set.
    */
@@ -74,26 +94,6 @@ public class TokenException extends MeasurementParseException {
   public TokenException(String message) {
     super(message);
   }
-
-  /**
-   * This is the last token that has been consumed successfully. If this object has been created due to a parse error, the token followng this token
-   * will (therefore) be the first error token.
-   */
-  public Token currentToken;
-
-  /**
-   * Each entry in this array is an array of integers. Each array of integers represents a sequence of tokens (by their ordinal values) that is
-   * expected at this point of the parse.
-   */
-  @SuppressWarnings("unused")
-  private int[][] expectedTokenSequences;
-
-  /**
-   * This is a reference to the "tokenImage" array of the generated parser within which the parse error occurred. This array is defined in the
-   * generated ...Constants interface.
-   */
-  @SuppressWarnings("unused")
-  private String[] tokenImage;
 
   /**
    * It uses "currentToken" and "expectedTokenSequences" to generate a parse error message and returns it. If this object has been created due to a
@@ -149,7 +149,7 @@ public class TokenException extends MeasurementParseException {
   /**
    * Used to convert raw characters to their escaped version when these raw version cannot be used as part of an ASCII string literal.
    */
-  static String add_escapes(String str) {
+  private static String add_escapes(String str) {
     StringBuilder retval = new StringBuilder();
     char ch;
     for (int i = 0; i < str.length(); i++) {

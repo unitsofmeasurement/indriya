@@ -33,8 +33,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import static tech.units.indriya.unit.Units.METRE;
 
 import javax.measure.Quantity;
@@ -181,7 +179,7 @@ public class DefaultQuantityFactoryTest {
 	 */
 	@Test
 	public void defaultQuantityFactoryIsNotEqualToNull() {
-		assertFalse(testFactory.equals(null));
+		assertNotNull(testFactory);
 	}
 
 	/**
@@ -189,7 +187,7 @@ public class DefaultQuantityFactoryTest {
 	 */
 	@Test
 	public void defaultQuantityFactoryIsEqualToItself() {
-		assertTrue(testFactory.equals(testFactory));
+		assertEquals(testFactory, testFactory);
 	}
 
 	/**
