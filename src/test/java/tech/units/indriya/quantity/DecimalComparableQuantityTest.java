@@ -49,6 +49,11 @@ import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.function.RationalNumber;
 import tech.units.indriya.unit.Units;
 
+/**
+ * Test for Decimal comparable quantities 
+ * @author Werner
+ *
+ */
 public class DecimalComparableQuantityTest {
 
   @Test
