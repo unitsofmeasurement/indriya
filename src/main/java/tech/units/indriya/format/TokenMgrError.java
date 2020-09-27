@@ -147,7 +147,7 @@ public class TokenMgrError extends MeasurementError {
   }
 
   /** Full Constructor. */
-  public TokenMgrError(boolean EOFSeen, int lexState, int errorLine, int errorColumn, String errorAfter, char curChar, int reason) {
+  public TokenMgrError(boolean EOFSeen, int errorLine, int errorColumn, String errorAfter, char curChar, int reason) {
     this(lexicalError(EOFSeen, errorLine, errorColumn, errorAfter, curChar), reason);
   }
 }

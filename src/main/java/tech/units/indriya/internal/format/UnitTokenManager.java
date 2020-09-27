@@ -53,11 +53,8 @@ final class UnitTokenManager {
   private static final long[] jjbitVec2 = { 0xfffffffefffffffeL, 0xffffffffffffffffL, 0xffffffffffffffffL, 0xffffffffffffffffL };
   private static final long[] jjbitVec4 = { 0x0L, 0x0L, 0xfd73ffffffffffffL, 0xffffffffffffffffL };
   private static final long[] jjbitVec5 = { 0xffffffffffffffffL, 0xfc0effffffffffffL, 0xffffffffffffffffL, 0xffffffffffffffffL };
-
   private static final int[] jjnextStates = { 9, 1, 2, 3, 10, 1, 2, 3, 10, 12, 14, 4, 5, };
 
-  private int curLexState = 0;
-  private final int defaultLexState = 0;
   private int jjnewStateCnt;
   private int jjround;
   private int jjmatchedPos;
@@ -331,7 +328,6 @@ final class UnitTokenManager {
   /** Reinitialise parser. */
   public void reInit(DefaultCharStream stream) {
     jjmatchedPos = jjnewStateCnt = 0;
-    curLexState = defaultLexState;
     input_stream = stream;
     reInitRounds();
   }
@@ -351,9 +347,7 @@ final class UnitTokenManager {
 
   /** Switch to specified lex state. */
   public void switchTo(int lexState) {
-    if (lexState >= 1 || lexState < 0) throw new TokenMgrError("Error: Ignoring invalid lexical state : " + lexState + ". State unchanged.", TokenMgrError.INVALID_LEXICAL_STATE);
-    
-    curLexState = lexState;
+    if (lexState >= 1 || lexState < 0) throw new TokenMgrError("Error: Ignoring invalid lexical state : " + lexState + ". State unchanged.", TokenMgrError.INVALID_LEXICAL_STATE);    
   }
 
   protected Token jjFillToken() {
@@ -422,7 +416,7 @@ final class UnitTokenManager {
         input_stream.backup(1);
         error_after = curPos <= 1 ? "" : input_stream.getImage();
       }
-      throw new TokenMgrError(EOFSeen, curLexState, error_line, error_column, error_after, curChar, TokenMgrError.LEXICAL_ERROR);
+      throw new TokenMgrError(EOFSeen, error_line, error_column, error_after, curChar, TokenMgrError.LEXICAL_ERROR);
     }
   }
 
