@@ -53,11 +53,11 @@ import tech.units.indriya.quantity.Quantities;
 public final class ScaleHelper {
 
     public static boolean isAbsolute(final Quantity<?> quantity) {
-        return ABSOLUTE==quantity.getScale();
+        return ABSOLUTE == quantity.getScale();
     }
 
     public static boolean isRelative(final Quantity<?> quantity) {
-        return RELATIVE==quantity.getScale();
+        return RELATIVE == quantity.getScale();
     }
 
     public static <Q extends Quantity<Q>> ComparableQuantity<Q> convertTo(
@@ -72,11 +72,11 @@ public final class ScaleHelper {
                 throw unsupportedRelativeScaleConversion(quantity, anotherUnit);
             }
             final Number valueInOtherUnit = Calculator.of(linearFactor).multiply(quantity.getValue()).peek();
-            return Quantities.getQuantity(valueInOtherUnit, anotherUnit, Scale.RELATIVE);
+            return Quantities.getQuantity(valueInOtherUnit, anotherUnit, RELATIVE);
         }
         
         final Number convertedValue = converter.convert(quantity.getValue());
-        return Quantities.getQuantity(convertedValue, anotherUnit, Scale.ABSOLUTE);
+        return Quantities.getQuantity(convertedValue, anotherUnit, ABSOLUTE);
     }
 
     public static <Q extends Quantity<Q>> ComparableQuantity<Q> addition(
@@ -165,7 +165,7 @@ public final class ScaleHelper {
                 throw unsupportedRelativeScaleConversion(quantity, systemUnit);
             }
             final Number valueInSystemUnits = Calculator.of(linearFactor).multiply(quantity.getValue()).peek();
-            return Quantities.getQuantity(valueInSystemUnits, systemUnit, Scale.ABSOLUTE);
+            return Quantities.getQuantity(valueInSystemUnits, systemUnit, ABSOLUTE);
         }
     }
 
