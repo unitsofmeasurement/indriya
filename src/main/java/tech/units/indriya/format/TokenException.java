@@ -41,7 +41,7 @@ import javax.measure.format.MeasurementParseException;
  * 
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 1.0, Jan 11, 2020
+ * @version 1.1, Sep 29, 2020
  */
 public class TokenException extends MeasurementParseException {
   /**
@@ -50,10 +50,10 @@ public class TokenException extends MeasurementParseException {
   private static final long serialVersionUID = 2932151235799168061L;
 
   /**
-   * This is the last token that has been consumed successfully. If this object has been created due to a parse error, the token followng this token
+   * This is the last token that has been consumed successfully. If this object has been created due to a parse error, the token following this token
    * will (therefore) be the first error token.
    */
-  Token currentToken;
+  public Token currentToken;
 
   /**
    * Each entry in this array is an array of integers. Each array of integers represents a sequence of tokens (by their ordinal values) that is
@@ -95,6 +95,10 @@ public class TokenException extends MeasurementParseException {
     super(message);
   }
 
+  public Token getToken() {
+	return currentToken;
+  }
+  
   /**
    * It uses "currentToken" and "expectedTokenSequences" to generate a parse error message and returns it. If this object has been created due to a
    * parse error, and you do not catch it (it gets thrown from the parser) the correct error message gets displayed.
