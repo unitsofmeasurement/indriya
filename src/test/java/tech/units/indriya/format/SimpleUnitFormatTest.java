@@ -285,7 +285,7 @@ public class SimpleUnitFormatTest {
 	@Test
 	public void testFormatMonth() {
 		logger.log(LOG_LEVEL, format.format(MONTH)); 
-		assertEquals("mon", format.format(MONTH));
+		assertEquals("mo", format.format(MONTH));
 	}
 	
 	@Test
@@ -303,6 +303,6 @@ public class SimpleUnitFormatTest {
 	@Test
 	public void testParseMonth() {
 		logger.log(LOG_LEVEL, format.format(MONTH)); 
-		assertEquals(MONTH, format.parse("mon"));
+		assertEquals(MONTH, format.parse("mo"));
 	}
 }

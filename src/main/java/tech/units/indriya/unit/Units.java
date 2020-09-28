@@ -520,11 +520,11 @@ public class Units extends AbstractSystemOfUnits {
 			Units.DAY.multiply(365.2425), "Year", "y");
 
 	/**
-	 * A unit of duration equal to 1/12 {@link #YEAR} (standard name <code>mon</code>).
+	 * A unit of duration equal to 1/12 {@link #YEAR} (standard name <code>mo</code>).
 	 * @since 2.3
 	 */
 	public static final Unit<Time> MONTH = AbstractSystemOfUnits.Helper.addUnit(INSTANCE.units, 
-			YEAR.divide(12), "Month", "mon");
+			YEAR.divide(12), "Month", "mo");
 	
 	/**
 	 * A volume unit accepted for use with SI units (standard name <code>l</code>).

@@ -208,7 +208,7 @@ public class ASUnitsTimeTest {
 	
 	@Test
 	public void testByStringMon() {
-		final Unit<?> u = sou.getUnit("mon");
+		final Unit<?> u = sou.getUnit("mo");
 		assertNotNull(u);
 		assertEquals(MONTH, u);
 	}
