@@ -1008,6 +1008,8 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
     DEFAULT.label(Units.WEEK, "week");
     DEFAULT.label(Units.YEAR, "year");
     DEFAULT.alias(Units.YEAR, "days365");
+    DEFAULT.label(Units.MONTH, "mon");
+    DEFAULT.alias(Units.MONTH, "month");
     ASCII.label(Units.KILOMETRE_PER_HOUR, "km/h");
     DEFAULT.label(Units.KILOMETRE_PER_HOUR, "km/h");
     DEFAULT.label(Units.CUBIC_METRE, "\u33A5");

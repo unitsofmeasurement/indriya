@@ -47,6 +47,9 @@ import static tech.units.indriya.unit.Units.KILOGRAM;
 import static tech.units.indriya.unit.Units.METRE;
 import static tech.units.indriya.unit.Units.METRE_PER_SECOND;
 import static tech.units.indriya.unit.Units.NEWTON;
+import static tech.units.indriya.unit.Units.DAY;
+import static tech.units.indriya.unit.Units.WEEK;
+import static tech.units.indriya.unit.Units.MONTH;
 
 import java.math.BigInteger;
 import java.util.logging.Level;
@@ -265,5 +268,41 @@ public class SimpleUnitFormatTest {
 		logger.log(LOG_LEVEL, format.format(GIGA(METRE_PER_SECOND))); 
 		assertEquals("N", format.format(NEWTON));
 		assertEquals("mN", format.format(MILLI(NEWTON)));
+	}
+	
+	@Test
+	public void testFormatDay() {
+		logger.log(LOG_LEVEL, format.format(DAY)); 
+		assertEquals("day", format.format(DAY));
+	}
+	
+	@Test
+	public void testFormatWeek() {
+		logger.log(LOG_LEVEL, format.format(WEEK)); 
+		assertEquals("week", format.format(WEEK));
+	}
+	
+	@Test
+	public void testFormatMonth() {
+		logger.log(LOG_LEVEL, format.format(MONTH)); 
+		assertEquals("mon", format.format(MONTH));
+	}
+	
+	@Test
+	public void testParseDay() {
+		logger.log(LOG_LEVEL, format.format(DAY)); 
+		assertEquals(DAY, format.parse("day"));
+	}
+	
+	@Test
+	public void testParseWeek() {
+		logger.log(LOG_LEVEL, format.format(WEEK)); 
+		assertEquals(WEEK, format.parse("week"));
+	}
+	
+	@Test
+	public void testParseMonth() {
+		logger.log(LOG_LEVEL, format.format(MONTH)); 
+		assertEquals(MONTH, format.parse("mon"));
 	}
 }
