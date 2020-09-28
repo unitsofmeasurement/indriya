@@ -29,6 +29,7 @@
  */
 package tech.units.indriya.internal.format;
 
+import javax.measure.MeasurementError;
 import javax.measure.Prefix;
 import javax.measure.Unit;
 
@@ -71,7 +72,7 @@ public final class UnitFormatParser implements UnitTokenConstants {
       if (true)
         return result;
     }
-    throw new Error("Missing return statement in function");
+    throw new MeasurementError("Missing return statement in function");
   }
 
   @SuppressWarnings("unused")
@@ -92,7 +93,7 @@ public final class UnitFormatParser implements UnitTokenConstants {
       if (true)
         return result;
     }
-    throw new Error("Missing return statement in function");
+    throw new MeasurementError("Missing return statement in function");
   }
 
   @SuppressWarnings("unused")
@@ -134,7 +135,7 @@ public final class UnitFormatParser implements UnitTokenConstants {
       if (true)
         return result;
     }
-    throw new Error("Missing return statement in function");
+    throw new MeasurementError("Missing return statement in function");
   }
 
   Unit<?> mulExpr() throws TokenException {
@@ -182,7 +183,7 @@ public final class UnitFormatParser implements UnitTokenConstants {
     }
     // {if (true)
     return result;// }
-    // throw new Error("Missing return statement in function");
+    // throw new MeasurementError("Missing return statement in function");
   }
 
   @SuppressWarnings("unused")
@@ -278,7 +279,7 @@ public final class UnitFormatParser implements UnitTokenConstants {
           throw new TokenException();
       }
     }
-    throw new Error("Missing return statement in function");
+    throw new MeasurementError("Missing return statement in function");
   }
 
   Unit<?> atomicExpr() throws TokenException {
@@ -319,7 +320,7 @@ public final class UnitFormatParser implements UnitTokenConstants {
         jj_consume_token(-1);
         throw new TokenException();
     }
-    // throw new Error("Missing return statement in function");
+    // throw new MeasurementError("Missing return statement in function");
   }
 
   @SuppressWarnings("unused")
@@ -341,7 +342,7 @@ public final class UnitFormatParser implements UnitTokenConstants {
       if (true)
         return result;
     }
-    throw new Error("Missing return statement in function");
+    throw new MeasurementError("Missing return statement in function");
   }
 
   Number numberExpr() throws TokenException {
@@ -358,7 +359,7 @@ public final class UnitFormatParser implements UnitTokenConstants {
         jj_consume_token(-1);
         throw new TokenException();
     }
-    // throw new Error("Missing return statement in function");
+    // throw new MeasurementError("Missing return statement in function");
   }
 
   Exponent exp() throws TokenException {
@@ -473,7 +474,7 @@ public final class UnitFormatParser implements UnitTokenConstants {
         jj_consume_token(-1);
         throw new TokenException();
     }
-    // throw new Error("Missing return statement in function");
+    // throw new MeasurementError("Missing return statement in function");
   }
 
   private boolean jj_2_1(int xla) {

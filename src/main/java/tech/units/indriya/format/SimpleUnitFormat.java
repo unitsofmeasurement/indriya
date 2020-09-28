@@ -41,6 +41,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import javax.measure.BinaryPrefix;
+import javax.measure.MeasurementError;
 import javax.measure.MetricPrefix;
 import javax.measure.Prefix;
 import javax.measure.Quantity;
@@ -283,7 +284,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
       }
       return toAppendTo;
     } catch (IOException e) {
-      throw new Error(e); // Should never happen.
+      throw new MeasurementError(e); // Should never happen.
     }
   }
 
