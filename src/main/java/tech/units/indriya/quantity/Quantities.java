@@ -139,6 +139,8 @@ public final class Quantities {
 	 * @since 2.0
 	 */
 	public static <Q extends Quantity<Q>> Quantity<Q> getQuantity(Number[] values, Unit<Q>[] units, Scale scale) {
+		Objects.requireNonNull(values);
+		Objects.requireNonNull(units);
 		if (values.length == units.length) {
 			return MixedRadix.of(units).createQuantity(values, scale);
 		} else {
@@ -179,6 +181,8 @@ public final class Quantities {
 	 */
 	public static <Q extends Quantity<Q>> CompoundQuantity<Q> getCompoundQuantity(Number[] values, Unit<Q>[] units,
 			Scale scale) {
+		Objects.requireNonNull(values);
+		Objects.requireNonNull(units);
 		if (values.length == units.length) {
 			return MixedRadix.of(units).createCompoundQuantity(values, scale);
 		} else {
