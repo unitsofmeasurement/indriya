@@ -31,6 +31,8 @@ package tech.units.indriya.unit;
 
 import org.junit.jupiter.api.Test;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import tech.units.indriya.SerializationRoundTrip;
 
 /**
@@ -39,11 +41,22 @@ import tech.units.indriya.SerializationRoundTrip;
  */
 class ProductUnitSerializationTest {
     
-    private static final ProductUnit<?> KILOGRAM_METRE = (ProductUnit<?>) ProductUnit.ofProduct(Units.KILOGRAM, Units.METRE);
+    private static final ProductUnit<?> KILOGRAM_METRE = 
+            (ProductUnit<?>) ProductUnit.ofProduct(Units.KILOGRAM, Units.METRE);
 
     @Test
-    public void testInvalidUnit() {
+    public void productUnitsShouldProperlySerialize() throws Exception {
         SerializationRoundTrip.assertProperSerializationRoundTrip(KILOGRAM_METRE);
+        
+        final ProductUnit<?> unitAfterRoundTrip = SerializationRoundTrip.serializationRoundTrip(KILOGRAM_METRE);
+        
+        assertEquals(KILOGRAM_METRE.hashCode(), unitAfterRoundTrip.hashCode());
+        assertEquals(KILOGRAM_METRE.getSymbol(), unitAfterRoundTrip.getSymbol());
+        assertEquals(KILOGRAM_METRE.getDimension(), unitAfterRoundTrip.getDimension());
+        assertEquals(KILOGRAM_METRE.getName(), unitAfterRoundTrip.getName());
+        assertEquals(KILOGRAM_METRE.getUnitCount(), unitAfterRoundTrip.getUnitCount());
+        assertEquals(KILOGRAM_METRE.getBaseUnits(), unitAfterRoundTrip.getBaseUnits());
+         
     }
 
 }

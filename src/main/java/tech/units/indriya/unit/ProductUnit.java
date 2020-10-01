@@ -29,6 +29,8 @@
  */
 package tech.units.indriya.unit;
 
+import java.io.InvalidObjectException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -560,4 +562,36 @@ public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
             return true;
         }
     }
+    
+    
+    // -- SERIALIZATION PROXY
+    
+    // Chapter 12. Serialization
+    // Bloch, Joshua. Effective Java (p. 339). Pearson Education. 
+    
+    private Object writeReplace() {
+        return new SerializationProxy(this);
+    }
+
+    private void readObject(ObjectInputStream stream) throws InvalidObjectException {
+        throw new InvalidObjectException("Proxy required");
+    }
+
+    private static class SerializationProxy implements Serializable {
+        private static final long serialVersionUID = 1L;
+        private final Element[] elements;
+        private final String symbol;
+        
+        private SerializationProxy(ProductUnit<?> productUnit) {
+            this.elements = productUnit.elements;
+            this.symbol = productUnit.getSymbol();
+        }
+
+        private Object readResolve() {
+            ProductUnit<?> pu = new ProductUnit<>(elements);
+            pu.setSymbol(symbol);
+            return pu;
+        }
+    }
+    
 }

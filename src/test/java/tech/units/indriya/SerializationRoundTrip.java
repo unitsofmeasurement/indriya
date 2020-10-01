@@ -54,11 +54,13 @@ public final class SerializationRoundTrip {
             Assertions.fail(e);
         }
     }
-    
-    // -- HELPER
-    
+
+    /**
+     * Returns given {@code value} after doing a serializing de-serializing cycle on it.
+     * @param value
+     */
     @SuppressWarnings("unchecked")
-    private static <T> T serializationRoundTrip(final T value) throws Exception {
+    public static <T> T serializationRoundTrip(final T value) throws Exception {
         try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
             try (ObjectOutputStream oos = new ObjectOutputStream(out)) {
                 oos.writeObject(value);
