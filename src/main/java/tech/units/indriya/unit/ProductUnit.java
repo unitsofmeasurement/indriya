@@ -29,6 +29,8 @@
  */
 package tech.units.indriya.unit;
 
+import java.io.InvalidObjectException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -60,7 +62,7 @@ import tech.units.indriya.internal.function.Lazy;
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author Andi Huber
- * @version 1.11, September 27, 2020
+ * @version 1.12, October 1, 2020
  * @since 1.0
  */
 public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
@@ -560,4 +562,36 @@ public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
             return true;
         }
     }
+    
+    
+    // -- SERIALIZATION PROXY
+    
+    // Chapter 12. Serialization
+    // Bloch, Joshua. Effective Java (p. 339). Pearson Education. 
+    
+    private Object writeReplace() {
+        return new SerializationProxy(this);
+    }
+
+    private void readObject(ObjectInputStream stream) throws InvalidObjectException {
+        throw new InvalidObjectException("Proxy required");
+    }
+
+    private static class SerializationProxy implements Serializable {
+        private static final long serialVersionUID = 1L;
+        private final Element[] elements;
+        private final String symbol;
+        
+        private SerializationProxy(ProductUnit<?> productUnit) {
+            this.elements = productUnit.elements;
+            this.symbol = productUnit.getSymbol();
+        }
+
+        private Object readResolve() {
+            ProductUnit<?> pu = new ProductUnit<>(elements);
+            pu.setSymbol(symbol);
+            return pu;
+        }
+    }
+    
 }
