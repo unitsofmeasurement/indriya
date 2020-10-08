@@ -43,10 +43,10 @@ import tech.uom.lib.common.function.IntExponentSupplier;
  * UnitConverter for numbers in base^exponent representation.
  * @author Andi Huber
  * @author Werner Keil
- * @version 1.5, Jun 25, 2019
+ * @version 2.0, Oct 8, 2020
  * @since 2.0
  */
-//TODO[220] make this like all the other MultiplyConverter package private
+// As it's used in the "format" package, we may not be able to make it package-private here
 public final class PowerOfIntConverter extends AbstractConverter 
  implements MultiplyConverter, IntBaseSupplier, IntExponentSupplier {
 	private static final long serialVersionUID = 3546932001671571300L;
@@ -177,6 +177,16 @@ public final class PowerOfIntConverter extends AbstractConverter
 		}
 		return String.format("x -> x * %s^%s", base, exponent);
 	}
+	
+    @Override
+    public Number getValue() {
+        return rationalFactor;
+    }
+    
+	@Override
+	public double getAsDouble() {
+		return rationalFactor.doubleValue();
+	}
 
 	@Override
 	public int compareTo(UnitConverter o) {
@@ -223,10 +233,4 @@ public final class PowerOfIntConverter extends AbstractConverter
 	public RationalConverter toRationalConverter() {
 		return new RationalConverter(rationalFactor);
 	}
-
-    @Override
-    public Number getValue() {
-        return rationalFactor;
-    }
-
 }

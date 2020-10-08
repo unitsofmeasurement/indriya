@@ -42,7 +42,7 @@ import tech.uom.lib.common.function.IntExponentSupplier;
  * Pi to the power of an integer exponent (π^exponent).
  * @author Andi Huber
  * @author Werner Keil
- * @version 1.5, Jun 21, 2019
+ * @version 2.0, Oct 8, 2020
  * @since 2.0
  */
 final class PowerOfPiConverter extends AbstractConverter 
@@ -176,5 +176,8 @@ final class PowerOfPiConverter extends AbstractConverter
 		return hashCode;
 	}
 
-   
+	@Override
+	public double getAsDouble() {
+		return getValue().doubleValue();
+	}  
 }

@@ -85,7 +85,12 @@ final class IdentityMultiplyConverter implements MultiplyConverter, Serializable
     public Number getValue() {
         return 1;
     }
-
+    
+	@Override
+	public double getAsDouble() {
+		return 1d;
+	}  
+	
     @Override
     public int compareTo(UnitConverter o) {
         return AbstractConverter.IDENTITY.compareTo(o);

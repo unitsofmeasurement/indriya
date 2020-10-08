@@ -44,12 +44,11 @@ import tech.units.indriya.internal.function.Calculator;
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author Andi Huber
- * @version 1.4, Jun 23, 2019
+ * @version 2.0, Oct 8, 2020
  * @since 1.0
  */
 final class DoubleMultiplyConverter 
-extends AbstractConverter 
-implements MultiplyConverter {
+extends AbstractConverter implements MultiplyConverter {
 
 	/**
 	 * 
@@ -135,6 +134,11 @@ implements MultiplyConverter {
 		return doubleFactor;
 	}
 
+	@Override
+	public double getAsDouble() {
+		return doubleFactor;
+	}  
+	
 	@Override
 	public int compareTo(UnitConverter o) {
 		if (this == o) {

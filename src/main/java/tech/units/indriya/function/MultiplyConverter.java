@@ -31,6 +31,7 @@ package tech.units.indriya.function;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.function.DoubleSupplier;
 
 import javax.measure.Prefix;
 import javax.measure.UnitConverter;
@@ -49,11 +50,11 @@ import tech.uom.lib.common.function.ValueSupplier;
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author Andi Huber
- * @version 2.6, September 10, 2019
+ * @version 2.7, October 8, 2020
  * @since 1.0
  */
 public interface MultiplyConverter extends UnitConverter, Converter<Number, Number>, 
- ValueSupplier<Number>,	FactorSupplier<Number>, Comparable<UnitConverter> {
+ ValueSupplier<Number>,	FactorSupplier<Number>, DoubleSupplier, Comparable<UnitConverter> {
 
 	// -- FACTORIES
 
