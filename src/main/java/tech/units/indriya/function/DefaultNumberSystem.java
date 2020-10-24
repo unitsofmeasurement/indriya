@@ -509,7 +509,7 @@ public class DefaultNumberSystem implements NumberSystem {
     @Override
     public boolean isLessThanOne(Number number) {
         NumberType numberType = NumberType.valueOf(number);
-        return compare(numberType.one, number) < 0;
+        return compare(numberType.one, number) > 0;
     }
      
     @Override
