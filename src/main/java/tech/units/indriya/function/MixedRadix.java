@@ -312,7 +312,7 @@ public class MixedRadix<Q extends Quantity<Q>> {
 			throw new IllegalArgumentException(message);
 		}
 
-		final Number factor = appended.getConverterTo(tail).convert(1);
+		final Number factor = tail.getConverterTo(appended).convert(1);
 
 		if (Calculator.of(factor).abs().isLessThanOne()) {
 			String message = String.format("the appended mixed-radix unit <%s> " + "must be of lesser significance "
