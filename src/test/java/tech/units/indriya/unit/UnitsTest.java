@@ -34,15 +34,14 @@ import java.util.logging.Logger;
 
 import javax.measure.Dimension;
 import javax.measure.Unit;
+import javax.measure.quantity.Length;
 import javax.measure.quantity.Time;
+import javax.measure.quantity.Volume;
 import javax.measure.spi.SystemOfUnits;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import tech.units.indriya.unit.UnitDimension;
-import tech.units.indriya.unit.Units;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static tech.units.indriya.unit.Units.*;
@@ -83,6 +82,35 @@ public class UnitsTest {
         Unit<?> result = sou.getUnit(Time.class);
         assertNotNull(result);
         assertEquals("s", result.toString());
+    }
+    
+    @Test
+    public void testByClassLength() {
+        Unit<?> result = sou.getUnit(Length.class);
+        assertNotNull(result);
+        assertEquals("m", result.toString());
+    }
+    
+    @Test
+    public void testByClassAndDimensionLength() {
+        Unit<?> result = sou.getUnit(Length.class);
+        assertNotNull(result);
+        Dimension dim = result.getDimension();
+        assertNotNull(dim);
+        assertEquals(UnitDimension.LENGTH, dim);
+        testGetByDimension(dim, 1);
+    }
+    
+    @Test
+    public void testByClassAndDimensionVolume() {
+        Unit<?> result = sou.getUnit(Volume.class);
+        assertNotNull(result);
+        Dimension dim = result.getDimension();
+        assertNotNull(dim);
+        assertEquals(UnitDimension.LENGTH.multiply(UnitDimension.LENGTH)
+        		.multiply(UnitDimension.LENGTH), dim);        
+        testGetByDimension(dim, 2);
+        assertEquals(1, dim.getBaseDimensions().size());
     }
 
     @Test
