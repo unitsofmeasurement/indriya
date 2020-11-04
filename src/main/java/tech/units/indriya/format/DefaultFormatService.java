@@ -35,22 +35,34 @@ import java.text.NumberFormat;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 import javax.measure.format.QuantityFormat;
+import javax.measure.format.UnitFormat;
 import javax.measure.spi.FormatService;
+
+import tech.units.indriya.format.SimpleUnitFormat.Flavor;
+import tech.uom.lib.common.function.IntPrioritySupplier;
 
 /**
  * Default format service.
  *
  * @author Werner Keil
- * @version 1.0, March 19, 2019
+ * @version 2.0, November 4, 2020
  * @since 2.0
  */
-public class DefaultFormatService extends DefaultUnitFormatService implements FormatService {
+public class DefaultFormatService implements FormatService, IntPrioritySupplier {
+  private static final int PRIO = 1000;
+	
+  private static final String DEFAULT_QUANTITY_FORMAT_NAME = "Simple";
+  
+  private static final String DEFAULT_UNIT_FORMAT_NAME = Flavor.Default.name();
 
-  private static final String DEFAULT_FORMAT_NAME = "Simple";
-
+  private final Map<String, QuantityFormat> quantityFormats = new HashMap<>();
+  
+  private final Map<String, UnitFormat> unitFormats = new HashMap<>();
+  
   /**
    * Holds the default format instance (EBNFUnitFormat).
    */
@@ -59,16 +71,17 @@ public class DefaultFormatService extends DefaultUnitFormatService implements Fo
       .setUnitFormat(EBNFUnitFormat.getInstance())
       .build();
   
-  private final Map<String, QuantityFormat> quantityFormats = new HashMap<>();
-
   public DefaultFormatService() {
-    super();
-    quantityFormats.put(DEFAULT_FORMAT_NAME, SimpleQuantityFormat.getInstance());
+	unitFormats.put(DEFAULT_UNIT_FORMAT_NAME, SimpleUnitFormat.getInstance());
+	unitFormats.put(Flavor.ASCII.name(), SimpleUnitFormat.getInstance(Flavor.ASCII));
+	unitFormats.put("EBNF", EBNFUnitFormat.getInstance());
+	unitFormats.put("Local", LocalUnitFormat.getInstance());
+
+    quantityFormats.put(DEFAULT_QUANTITY_FORMAT_NAME, SimpleQuantityFormat.getInstance());
     quantityFormats.put("NumberDelimiter", NumberDelimiterQuantityFormat.getInstance());
     quantityFormats.put("EBNF", EBNF_QUANTITY_FORMAT);
     quantityFormats.put("Local", NumberDelimiterQuantityFormat.getInstance(LOCALE_SENSITIVE));
   }
-
 
   @Override
   public QuantityFormat getQuantityFormat(String name) {
@@ -77,7 +90,7 @@ public class DefaultFormatService extends DefaultUnitFormatService implements Fo
 
   @Override
   public QuantityFormat getQuantityFormat() {
-    return getQuantityFormat(DEFAULT_FORMAT_NAME);
+    return getQuantityFormat(DEFAULT_QUANTITY_FORMAT_NAME);
   }
 
   @Override
@@ -88,5 +101,31 @@ public class DefaultFormatService extends DefaultUnitFormatService implements Fo
       default:
         return unitFormats.keySet();
     }
+  }   
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see UnitFormatService#getUnitFormat(String)
+   */
+  @Override
+  public UnitFormat getUnitFormat(String formatName) {
+    Objects.requireNonNull(formatName, "Format name required");
+    return unitFormats.get(formatName);
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
+   * @see UnitFormatService#getUnitFormat()
+   */
+  @Override
+  public UnitFormat getUnitFormat() {
+    return getUnitFormat(DEFAULT_UNIT_FORMAT_NAME);
+  }
+
+  @Override
+  public int getPriority() {
+    return PRIO;
   }
 }

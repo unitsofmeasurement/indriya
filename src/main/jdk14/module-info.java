@@ -51,8 +51,6 @@ module tech.units.indriya {
     	tech.units.indriya.spi.DefaultServiceProvider;
     provides javax.measure.spi.SystemOfUnitsService with
     	tech.units.indriya.unit.DefaultSystemOfUnitsService;
-    provides javax.measure.spi.UnitFormatService with
-        tech.units.indriya.format.DefaultUnitFormatService;
     provides tech.units.indriya.spi.NumberSystem with
     	tech.units.indriya.function.DefaultNumberSystem;
     
@@ -62,6 +60,5 @@ module tech.units.indriya {
     uses javax.measure.spi.FormatService;
     uses javax.measure.spi.ServiceProvider;
     uses javax.measure.spi.SystemOfUnitsService;
-    uses javax.measure.spi.UnitFormatService;
     uses tech.units.indriya.spi.NumberSystem;
 }

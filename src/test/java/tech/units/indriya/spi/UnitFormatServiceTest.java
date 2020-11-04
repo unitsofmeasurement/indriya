@@ -34,8 +34,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.List;
 
 import javax.measure.format.UnitFormat;
+import javax.measure.spi.FormatService;
 import javax.measure.spi.ServiceProvider;
-import javax.measure.spi.UnitFormatService;
 
 import org.junit.jupiter.api.Test;
 
@@ -54,27 +54,27 @@ public class UnitFormatServiceTest {
 
   @Test
   public void testGetService() throws Exception {
-    UnitFormatService ufs = ServiceProvider.current().getFormatService();
-    assertNotNull(ufs);
-    assertNotNull(ufs.getUnitFormat());
-    final UnitFormat uf = ufs.getUnitFormat();
+    final FormatService fs = ServiceProvider.current().getFormatService();
+    assertNotNull(fs);
+    assertNotNull(fs.getUnitFormat());
+    final UnitFormat uf = fs.getUnitFormat();
     assertNotNull(uf);
     assertEquals("DefaultFormat", uf.getClass().getSimpleName());
   }
 
   @Test
   public void testGetFormatFound() throws Exception {
-    UnitFormatService ufs = ServiceProvider.current().getFormatService();
-    assertNotNull(ufs);
-    final UnitFormat uf = ufs.getUnitFormat("EBNF");
+	final FormatService fs = ServiceProvider.current().getFormatService();
+    assertNotNull(fs);
+    final UnitFormat uf = fs.getUnitFormat("EBNF");
     assertNotNull(uf);
     assertEquals("EBNFUnitFormat", uf.toString());
   }
 
   @Test
   public void testGetFormatNotFound() throws Exception {
-    UnitFormatService ufs = ServiceProvider.current().getFormatService();
-    assertNotNull(ufs);
-    assertNull(ufs.getUnitFormat("XYZ"));
+	final FormatService fs = ServiceProvider.current().getFormatService();
+    assertNotNull(fs);
+    assertNull(fs.getUnitFormat("XYZ"));
   }
 }
