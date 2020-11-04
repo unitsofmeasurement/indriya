@@ -54,7 +54,7 @@ public class UnitFormatServiceTest {
 
   @Test
   public void testGetService() throws Exception {
-    UnitFormatService ufs = ServiceProvider.current().getUnitFormatService();
+    UnitFormatService ufs = ServiceProvider.current().getFormatService();
     assertNotNull(ufs);
     assertNotNull(ufs.getUnitFormat());
     final UnitFormat uf = ufs.getUnitFormat();
@@ -64,7 +64,7 @@ public class UnitFormatServiceTest {
 
   @Test
   public void testGetFormatFound() throws Exception {
-    UnitFormatService ufs = ServiceProvider.current().getUnitFormatService();
+    UnitFormatService ufs = ServiceProvider.current().getFormatService();
     assertNotNull(ufs);
     final UnitFormat uf = ufs.getUnitFormat("EBNF");
     assertNotNull(uf);
@@ -73,7 +73,7 @@ public class UnitFormatServiceTest {
 
   @Test
   public void testGetFormatNotFound() throws Exception {
-    UnitFormatService ufs = ServiceProvider.current().getUnitFormatService();
+    UnitFormatService ufs = ServiceProvider.current().getFormatService();
     assertNotNull(ufs);
     assertNull(ufs.getUnitFormat("XYZ"));
   }

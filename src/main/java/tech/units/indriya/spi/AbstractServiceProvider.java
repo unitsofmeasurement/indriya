@@ -34,8 +34,6 @@ import javax.measure.spi.FormatService;
 import javax.measure.spi.QuantityFactory;
 import javax.measure.spi.ServiceProvider;
 import javax.measure.spi.SystemOfUnitsService;
-import javax.measure.spi.UnitFormatService;
-
 import tech.units.indriya.quantity.DefaultQuantityFactory;
 
 import java.util.ArrayList;
@@ -54,7 +52,7 @@ import java.util.logging.Logger;
  * services.
  *
  * @author Werner Keil
- * @version 1.2
+ * @version 2.0
  * @since 2.0
  */
 public abstract class AbstractServiceProvider extends ServiceProvider implements Comparable<ServiceProvider> {
@@ -142,11 +140,6 @@ public abstract class AbstractServiceProvider extends ServiceProvider implements
     @Override
     public SystemOfUnitsService getSystemOfUnitsService() {
         return getService(SystemOfUnitsService.class);
-    }
-
-    @Override
-    public UnitFormatService getUnitFormatService() {
-        return getService(UnitFormatService.class);
     }
 
     @Override
