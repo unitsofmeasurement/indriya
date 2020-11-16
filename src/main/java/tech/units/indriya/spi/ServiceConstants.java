@@ -36,4 +36,5 @@ package tech.units.indriya.spi;
  */
 interface ServiceConstants {
 	String DEFAULT_PROVIDER_NAME = "Default";
+	int DEFAULT_PRIO = 10;
 }

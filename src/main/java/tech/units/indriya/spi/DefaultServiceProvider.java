@@ -29,7 +29,7 @@
  */
 package tech.units.indriya.spi;
 
-import static tech.units.indriya.spi.ServiceConstants.DEFAULT_PROVIDER_NAME;
+import static tech.units.indriya.spi.ServiceConstants.*;
 
 import javax.inject.Named;
 
@@ -38,20 +38,20 @@ import javax.inject.Named;
  * services.
  *
  * @author Werner Keil
- * @version 1.4
+ * @version 1.5
  * @since 1.0
  */
 @Named(DEFAULT_PROVIDER_NAME)
 public class DefaultServiceProvider extends AbstractServiceProvider {
 
     /**
-     * Returns a priority value of 10.
+     * Returns the default priority.
      *
-     * @return 10, overriding the default provider.
+     * @return 10, overriding the standard SPI provider.
      */
     @Override
     public int getPriority() {
-        return 10;
+        return DEFAULT_PRIO;
     }
 
     @Override
