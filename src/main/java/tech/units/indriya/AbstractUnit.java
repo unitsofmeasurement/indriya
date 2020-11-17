@@ -83,11 +83,11 @@ import tech.uom.lib.common.function.SymbolSupplier;
  *      International System of Units</a>
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 2.4, December 14, 2019
+ * @version 3.0, November 16, 2020
  * @since 1.0
  */
 public abstract class AbstractUnit<Q extends Quantity<Q>>
-		implements ComparableUnit<Q>, Nameable, PrefixOperator<Q>, SymbolSupplier {
+		implements Unit<Q>, Comparable<Unit<Q>>, PrefixOperator<Q>, Nameable, SymbolSupplier {
 
 	/**
 	 * 
@@ -153,12 +153,20 @@ public abstract class AbstractUnit<Q extends Quantity<Q>>
 	 * 
 	 * @return <code>equals(toSystemUnit())</code>
 	 */
-	@Override
 	public boolean isSystemUnit() {
 		Unit<Q> sys = this.toSystemUnit();
 		return this == sys || this.equals(sys);
 	}
-
+	
+	/**
+	 * Returns the converter from this unit to its unscaled {@link #toSystemUnit
+	 * System Unit} unit.
+	 *
+	 * @return <code>getConverterTo(this.toSystemUnit())</code>
+	 * @see #toSystemUnit
+	 */
+	public abstract UnitConverter getSystemConverter();
+	
 	/**
 	 * Returns the unscaled {@link SI} unit from which this unit is derived.
 	 * 
@@ -271,11 +279,11 @@ public abstract class AbstractUnit<Q extends Quantity<Q>>
 	 */
 	@SuppressWarnings("unchecked")
 	@Override
-	public final <T extends Quantity<T>> ComparableUnit<T> asType(Class<T> type) {
+	public final <T extends Quantity<T>> Unit<T> asType(Class<T> type) {
 		Dimension typeDimension = UnitDimension.of(type);
 		if (typeDimension != null && !typeDimension.equals(this.getDimension()))
 			throw new ClassCastException("The unit: " + this + " is not compatible with quantities of type " + type);
-		return (ComparableUnit<T>) this;
+		return (Unit<T>) this;
 	}
 
 	@Override
@@ -310,7 +318,7 @@ public abstract class AbstractUnit<Q extends Quantity<Q>>
 	public final UnitConverter getConverterToAny(Unit<?> that) throws IncommensurableException, UnconvertibleException {
 		if (!isCompatible(that))
 			throw new IncommensurableException(this + " is not compatible with " + that);
-		ComparableUnit thatAbstr = (ComparableUnit) that; // Since both units are
+		AbstractUnit thatAbstr = (AbstractUnit) that; // Since both units are
 		// compatible they must both be abstract units.
 		final DimensionalModel model = DimensionalModel.current();
 		Unit thisSystemUnit = this.getSystemUnit();
@@ -379,7 +387,7 @@ public abstract class AbstractUnit<Q extends Quantity<Q>>
 			if (this == that)
 				return true;
 		}
-		if (!(that instanceof ComparableUnit))
+		if (!(that instanceof Unit))
 			return false;
 		Dimension thisDimension = this.getDimension();
 		Dimension thatDimension = that.getDimension();
@@ -415,31 +423,12 @@ public abstract class AbstractUnit<Q extends Quantity<Q>>
 	}
 
 	/**
-	 * Returns the product of this unit with the one specified.
-	 *
-	 * <p>
-	 * Note: If the specified unit (that) is not a physical unit, then
-	 * <code>that.multiply(this)</code> is returned.
-	 * </p>
-	 *
-	 * @param that the unit multiplicand.
-	 * @return <code>this * that</code>
-	 */
-	@Override
-	public final Unit<?> multiply(Unit<?> that) {
-		if (that instanceof ComparableUnit)
-			return multiply((ComparableUnit<?>) that);
-		// return that.multiply(this); // Commutatif.
-		return ProductUnit.ofProduct(this, that);
-	}
-
-	/**
 	 * Returns the product of this physical unit with the one specified.
 	 *
 	 * @param that the physical unit multiplicand.
 	 * @return <code>this * that</code>
 	 */
-	protected final Unit<?> multiply(ComparableUnit<?> that) {
+	public final Unit<?> multiply(Unit<?> that) {
 		if (this.equals(ONE))
 			return that;
 		if (that.equals(ONE))
@@ -488,16 +477,6 @@ public abstract class AbstractUnit<Q extends Quantity<Q>>
 	 */
 	@Override
 	public final Unit<?> divide(Unit<?> that) {
-		return this.multiply(that.inverse());
-	}
-
-	/**
-	 * Returns the quotient of this physical unit with the one specified.
-	 *
-	 * @param that the physical unit divisor.
-	 * @return <code>this.multiply(that.inverse())</code>
-	 */
-	protected final Unit<?> divide(ComparableUnit<?> that) {
 		return this.multiply(that.inverse());
 	}
 
@@ -594,8 +573,8 @@ public abstract class AbstractUnit<Q extends Quantity<Q>>
 		 * @return <code>true</code> if <code>this</code> and <code>obj</code> are
 		 *         considered equal; <code>false</code>otherwise.
 		 */
-		public static boolean areEqual(@SuppressWarnings("rawtypes") ComparableUnit u1,
-				@SuppressWarnings("rawtypes") ComparableUnit u2) {
+		public static boolean areEqual(@SuppressWarnings("rawtypes") Unit u1,
+				@SuppressWarnings("rawtypes") Unit u2) {
 			/*
 			 * if (u1 != null && u2 != null) { if (u1.getName() != null && u1.getSymbol() !=
 			 * null) { return u1.getName().equals(u2.getName()) &&

@@ -72,7 +72,7 @@ import javax.measure.quantity.Volume;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import tech.units.indriya.ComparableUnit;
+import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.function.RationalNumber;
 import tech.units.indriya.quantity.Quantities;
 
@@ -186,8 +186,8 @@ public class PrefixTest {
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	@Test
 	public void testEquivalence() {
-		final ComparableUnit a = (ComparableUnit) MICRO(GRAM);
-		final ComparableUnit b = (ComparableUnit) GRAM.divide(1_000_000);
+		final AbstractUnit a = (AbstractUnit) MICRO(GRAM);
+		final AbstractUnit b = (AbstractUnit) GRAM.divide(1_000_000);
 		assertEquals(true, a.isEquivalentTo(b));
 		assertEquals(true, b.isEquivalentTo(a));
 	}
@@ -205,8 +205,8 @@ public class PrefixTest {
 
 	@Test
 	public void testNestedEquivalence() {
-		ComparableUnit<Mass> a = (ComparableUnit<Mass>) MICRO(GRAM);
-		ComparableUnit<Mass> b = (ComparableUnit<Mass>) GRAM.divide(1000).divide(1000);
+		AbstractUnit<Mass> a = (AbstractUnit<Mass>) MICRO(GRAM);
+		AbstractUnit<Mass> b = (AbstractUnit<Mass>) GRAM.divide(1000).divide(1000);
 		assertEquals(true, a.isEquivalentTo(b));
 		assertEquals(true, b.isEquivalentTo(a));
 	}
