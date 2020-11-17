@@ -17,6 +17,7 @@
 		<artifactId>uom-parent</artifactId>
 		<version>2.1</version>
 	</parent>
+	<version>2.1.1-SNAPSHOT</version>
 	
 	<scm>
 		<url>https://github.com/unitsofmeasurement/indriya.git</url>
@@ -51,6 +52,7 @@
 		<maven.compile.sourceLevel>${jdkVersion}</maven.compile.sourceLevel>
 		<additionalparam>-Xdoclint:none</additionalparam>
 		<maven.surefire.version>2.22.2</maven.surefire.version>
+		<spec.vendor>Jean-Marie Dautelle, Werner Keil, Otavio Santana</spec.vendor>
 		<thisYear>2020</thisYear>
 
 		<!-- OSGI support -->
@@ -306,7 +308,7 @@
 						<manifestEntries>
 							<Specification-Title>Unit API</Specification-Title>
 							<Specification-Version>${jsr.version}</Specification-Version>
-							<Specification-Vendor>Unit-API contributors</Specification-Vendor>
+							<Specification-Vendor>${spec.vendor}</Specification-Vendor>
 							<Implementation-Title>${project.name}</Implementation-Title>
 							<Implementation-Version>${project.version}</Implementation-Version>
 							<Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
