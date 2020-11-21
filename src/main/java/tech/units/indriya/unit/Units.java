@@ -117,7 +117,9 @@ public class Units extends AbstractSystemOfUnits {
 	 *
 	 * 1 A = (e / 1.602 176 634 × 10⁻¹⁹) s⁻¹
 	 *
-	 * @implNote SI Base Unit
+     * <dl>
+     * <dt><span class="strong">Implementation Note:</span></dt><dd>SI Base Unit</dd>
+     * </dl>
 	 */
 	public static final Unit<ElectricCurrent> AMPERE = addUnit(
 			new BaseUnit<ElectricCurrent>("A", "Ampere", UnitDimension.ELECTRIC_CURRENT), ElectricCurrent.class);
@@ -137,9 +139,10 @@ public class Units extends AbstractSystemOfUnits {
 	 *
 	 * 1 cd = (Kcd / 683) kg m² s⁻³ sr⁻¹
 	 *
-	 * @see <a href="http://en.wikipedia.org/wiki/Candela"> Wikipedia: Candela</a>
-	 *
-	 * @implNote SI Base Unit
+     * <dl>
+     * <dt><span class="strong">Implementation Note:</span></dt><dd>SI Base Unit</dd>
+     * </dl>
+     * @see <a href="http://en.wikipedia.org/wiki/Candela"> Wikipedia: Candela</a>
 	 */
 	public static final Unit<LuminousIntensity> CANDELA = addUnit(
 			new BaseUnit<LuminousIntensity>("cd", "Candela", UnitDimension.LUMINOUS_INTENSITY),
@@ -158,8 +161,10 @@ public class Units extends AbstractSystemOfUnits {
 	 *
 	 * 1 K = (1.380 649 / k) × 10⁻²³ kg m² s⁻²
 	 *
+	 * <dl>
+     * <dt><span class="strong">Implementation Note:</span></dt><dd>SI Base Unit</dd>
+     * </dl>
 	 * @see #JOULE
-	 * @implNote SI Base Unit
 	 */
 	public static final Unit<Temperature> KELVIN = addUnit(
 			new BaseUnit<Temperature>("K", "Kelvin", UnitDimension.TEMPERATURE), Temperature.class);
@@ -176,12 +181,13 @@ public class Units extends AbstractSystemOfUnits {
 	 *
 	 * 1 kg = (h / 6.626 070 15 × 10⁻³⁴) m⁻² s
 	 *
+	 * <dl>
+     * <dt><span class="strong">Implementation Note:</span></dt><dd>SI Base Unit</dd>
+     * </dl>
 	 * @see <a href="https://en.wikipedia.org/wiki/Kilogram">Wikipedia: Kilogram</a>
 	 * @see #GRAM
 	 * @see #METRE
 	 * @see #SECOND
-	 *
-	 * @implNote SI Base Unit
 	 */
 	public static final Unit<Mass> KILOGRAM = addUnit(new BaseUnit<Mass>("kg", "Kilogram", UnitDimension.MASS), Mass.class);
 
@@ -198,7 +204,9 @@ public class Units extends AbstractSystemOfUnits {
 	 * 1 m = (c / 299 792 458)s = 9 192 631 770 c / 299 792 458 ∆νCs ≈ 30.663 319 c
 	 * / ∆νCs
 	 *
-	 * @implNote SI Base Unit
+     * <dl>
+     * <dt><span class="strong">Implementation Note:</span></dt><dd>SI Base Unit</dd>
+     * </dl>
 	 */
 	public static final Unit<Length> METRE = addUnit(new BaseUnit<>("m", "Metre", UnitDimension.LENGTH), Length.class);
 
@@ -219,7 +227,9 @@ public class Units extends AbstractSystemOfUnits {
 	 *
 	 * 1 mol = 6.02214076 × 10²³ / Nₐ
 	 *
-	 * @implNote SI Base Unit
+     * <dl>
+     * <dt><span class="strong">Implementation Note:</span></dt><dd>SI Base Unit</dd>
+     * </dl>
 	 */
 	public static final Unit<AmountOfSubstance> MOLE = addUnit(new BaseUnit<>("mol", "Mole", UnitDimension.AMOUNT_OF_SUBSTANCE),
 			AmountOfSubstance.class);
@@ -236,7 +246,9 @@ public class Units extends AbstractSystemOfUnits {
 	 *
 	 * 1 Hz = ∆νCs / 9 192 631 770 or 1 s = 9 192 631 770 / ∆νCs
 	 *
-	 * @implNote SI Base Unit
+     * <dl>
+     * <dt><span class="strong">Implementation Note:</span></dt><dd>SI Base Unit</dd>
+     * </dl>
 	 */
 	public static final Unit<Time> SECOND = addUnit(new BaseUnit<>("s", "Second", UnitDimension.TIME), Time.class);
 

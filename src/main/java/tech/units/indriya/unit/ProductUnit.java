@@ -62,7 +62,7 @@ import tech.units.indriya.internal.function.Lazy;
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author Andi Huber
- * @version 1.12, October 1, 2020
+ * @version 2.0, November 21, 2020
  * @since 1.0
  */
 public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
@@ -75,7 +75,9 @@ public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
     /**
      * Holds the units composing this product unit.
      * 
-     * @implNote considered immutable after constructor was called
+     * <dl>
+     * <dt><span class="strong">Implementation Note:</span></dt><dd>considered immutable after constructor was called</dd>           
+     * </dl> 
      */
     private final Element[] elements;
 

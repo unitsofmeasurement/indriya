@@ -52,8 +52,8 @@ import java.util.stream.Collectors;
 
 /**
  * <p>
- * This class provides a set of mappings between {@link AbstractUnit units} and symbols (both ways), between {@link MetricPrefix prefixes} and symbols
- * (both ways), and from {@link AbstractConverter unit converters} to {@link MetricPrefix prefixes} (one way). No attempt is made to verify the
+ * This class provides a set of mappings between {@link AbstractUnit units} and symbols (both ways), between {@link javax.measure.Prefix prefixes} and symbols
+ * (both ways), and from {@link AbstractConverter unit converters} to {@link javax.measure.MetricPrefix MetricPrefix} (one way). No attempt is made to verify the
  * uniqueness of the mappings.
  * </p>
  *
@@ -67,7 +67,7 @@ import java.util.stream.Collectors;
  *
  * @author <a href="mailto:eric-r@northwestern.edu">Eric Russell</a>
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 2.0, June 30, 2020
+ * @version 2.1, November 21, 2020
  */
 @SuppressWarnings("rawtypes")
 public final class SymbolMap {
@@ -177,7 +177,6 @@ public final class SymbolMap {
    * <code> symbolMap.label(MetricPrefix.GIGA, "G"); symbolMap.label(MetricPrefix.MICRO, "µ");
    * </code>
    * 
-   * TODO should be able to do this with a generic Prefix
    */
   public void label(Prefix prefix, String symbol) {
     symbolToPrefix.put(symbol, prefix);
@@ -262,5 +261,4 @@ public final class SymbolMap {
     sb.append(" ]");
     return sb.toString();
   }
-
 }

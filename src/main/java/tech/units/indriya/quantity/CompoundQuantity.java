@@ -181,7 +181,7 @@ public class CompoundQuantity<Q extends Quantity<Q>> implements QuantityConverte
 //    /**
 //     * Gets the Quantity of the requested Unit.
 //     * <p>
-//     * This returns a value for each Unit in this CompoundQuantity. Or <type>null</type> if the given unit is not included.
+//     * This returns a value for each Unit in this CompoundQuantity. Or <code>null</code> if the given unit is not included.
 //     *
 //     */
 //    public Quantity<Q> get(Unit<Q> unit) {

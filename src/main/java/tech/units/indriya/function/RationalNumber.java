@@ -147,15 +147,17 @@ public final class RationalNumber extends Number {
 	 * Returns a {@code RationalNumber} that represents the division
 	 * {@code dividend/divisor}.
 	 * 
-	 * @param dividend
-	 * @param divisor
+	 * <dl>
+     * <dt><span class="strong">Implementation Note:</span></dt><dd>this implementation stores dividend and divisor after canceling
+	 *           down from given parameters</dd>
+     * </dl>
+	 * 
+	 * @param dividend the dividend
+	 * @param divisor the divisor
 	 * @return dividend/divisor
 	 * @throws IllegalArgumentException if <code>divisor = 0</code>
 	 * @throws NullPointerException     - if dividend is {@code null} or divisor is
 	 *                                  {@code null}
-	 * 
-	 * @implNote this implementation stores dividend and divisor after canceling
-	 *           down from given parameters
 	 */
 	public static RationalNumber of(BigInteger dividend, BigInteger divisor) {
 		Objects.requireNonNull(dividend);
@@ -232,9 +234,12 @@ public final class RationalNumber extends Number {
 	}
 
 	/**
-	 * @return this {@code RationalNumber} converted to {@link BigDecimal}
-	 *         representation
-	 * @implNote the conversion calculation is done lazily and thread-safe
+	 * The {@link BigDecimal} representation of this {@code RationalNumber}.
+	 * <dl>
+     * <dt><span class="strong">Implementation Note:</span></dt><dd>the conversion calculation is done lazily and thread-safe</dd>           
+     * </dl>
+     * @return this {@code RationalNumber} converted to {@link BigDecimal}
+	 *         representation 
 	 */
 	public BigDecimal bigDecimalValue() {
 		synchronized ($lock1) {

@@ -47,11 +47,10 @@ import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.spi.NumberSystem;
 import tech.uom.lib.common.function.UnitSupplier;
 import tech.uom.lib.common.function.ValueSupplier;
-import tech.uom.lib.common.util.NaturalQuantityComparator;
 
 /**
  * <p>
- * This class represents the immutable result of a scalar measurement stated in a known unit.
+ * This class represents the immutable result of a scalar quantity stated in a known unit.
  * </p>
  *
  * <p>
@@ -87,8 +86,8 @@ import tech.uom.lib.common.util.NaturalQuantityComparator;
  * public Double getValue() { return kilograms; }<br>
  * ...<br>
  * }<br>
- * <p>
- * // Complex numbers measurements.<br>
+ * <br>
+ * // Complex number quantities.<br>
  * public class ComplexQuantity
  * &lt;Q extends Quantity&gt;extends AbstractQuantity
  * &lt;Q&gt;{<br>
@@ -108,7 +107,7 @@ import tech.uom.lib.common.util.NaturalQuantityComparator;
  *
  * @author <a href="mailto:werner@uom.technology">Werner Keil</a>
  * @author Andi Huber
- * @version 1.12, Jul 21, 2020
+ * @version 2.0, Nov 21, 2020
  * @since 1.0
  */
 @SuppressWarnings("unchecked")
@@ -231,7 +230,7 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
      *
      * @return a negative integer, zero, or a positive integer as this quantity is less than, equal to, or greater than the specified Measurement
      *         quantity.
-     * @see {@link NaturalQuantityComparator}
+     * @see {@link tech.uom.lib.common.util.NaturalQuantityComparator NaturalQuantityComparator}
      */
     @Override
     public int compareTo(Quantity<Q> that) {
@@ -368,6 +367,5 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
 
     protected NumberSystem numberSystem() {
         return Calculus.currentNumberSystem();
-    }
- 
+    } 
 }

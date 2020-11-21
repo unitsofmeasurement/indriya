@@ -143,7 +143,7 @@ import java.util.ResourceBundle;
  * 
  * @author <a href="mailto:eric-r@northwestern.edu">Eric Russell</a>
  * @author <a href="mailto:werner@uom.tech">Werner Keil</a>
- * @version 1.5, $Date: 2020-03-02 $
+ * @version 1.6, $Date: 2020-11-21 $
  * @since 1.0
  */
 public class EBNFUnitFormat extends AbstractUnitFormat {
@@ -213,7 +213,7 @@ public class EBNFUnitFormat extends AbstractUnitFormat {
   // Instance methods //
   // //////////////////////
   /**
-   * Get the symbol map used by this instance to map between {@link org.unitsofmeasure.Unit Unit}s and <code>String</code>s, etc...
+   * Get the symbol map used by this instance to map between {@link javax.measure.Unit Unit}s and <code>String</code>s, etc...
    * 
    * @return SymbolMap the current symbol map
    */

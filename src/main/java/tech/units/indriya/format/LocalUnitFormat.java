@@ -161,9 +161,9 @@ import java.util.ResourceBundle;
  */
 public class LocalUnitFormat extends AbstractUnitFormat {
 
-  // ////////////////////////////////////////////////////
-  // Class variables //
-  // ////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////
+  // Class variables                                  //
+  //////////////////////////////////////////////////////
   /**
    * DefaultQuantityFactory locale instance. If the default locale is changed after the class is initialized, this instance will no longer be used.
    */

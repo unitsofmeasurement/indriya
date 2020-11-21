@@ -29,6 +29,7 @@
  */
 package tech.units.indriya;
 
+import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.HashMap;
@@ -83,11 +84,11 @@ import tech.uom.lib.common.function.SymbolSupplier;
  *      International System of Units</a>
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 3.0, November 16, 2020
+ * @version 3.1, November 21, 2020
  * @since 1.0
  */
 public abstract class AbstractUnit<Q extends Quantity<Q>>
-		implements Unit<Q>, Comparable<Unit<Q>>, PrefixOperator<Q>, Nameable, SymbolSupplier {
+		implements Unit<Q>, Comparable<Unit<Q>>, PrefixOperator<Q>, Nameable, Serializable, SymbolSupplier {
 
 	/**
 	 * 
