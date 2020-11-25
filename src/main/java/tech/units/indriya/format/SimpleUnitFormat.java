@@ -29,9 +29,6 @@
  */
 package tech.units.indriya.format;
 
-import static javax.measure.MetricPrefix.MICRO;
-import static tech.units.indriya.format.FormatConstants.MIDDLE_DOT;
-
 import java.io.IOException;
 import java.text.FieldPosition;
 import java.text.ParsePosition;
@@ -50,6 +47,8 @@ import javax.measure.UnitConverter;
 import javax.measure.format.MeasurementParseException;
 import javax.measure.format.UnitFormat;
 
+import static javax.measure.MetricPrefix.MICRO;
+
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.function.AddConverter;
 import tech.units.indriya.function.MultiplyConverter;
@@ -60,6 +59,8 @@ import tech.units.indriya.unit.BaseUnit;
 import tech.units.indriya.unit.ProductUnit;
 import tech.units.indriya.unit.TransformedUnit;
 import tech.units.indriya.unit.Units;
+
+import static tech.units.indriya.format.FormatConstants.MIDDLE_DOT;
 
 /**
  * <p>
@@ -79,369 +80,360 @@ import tech.units.indriya.unit.Units;
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author Eric Russell
- * @version 2.1, April 21, 2020
+ * @author Andi Huber
+ * @version 2.2, Nov. 25, 2020
  * @since 1.0
  */
 public abstract class SimpleUnitFormat extends AbstractUnitFormat {
-  /**
-   * 
-   */
-  // private static final long serialVersionUID = 4149424034841739785L;#
-    
-  /**
-   * Flavor of this format
-   *
-   * @author Werner
-   *
-   */
-  public static enum Flavor {
-    Default, ASCII
-  }
-  
-  // Initializes the standard unit database for SI units.
-
-  private static final Unit<?>[] METRIC_UNITS = { Units.AMPERE, Units.BECQUEREL, Units.CANDELA, Units.COULOMB, Units.FARAD, Units.GRAY, Units.HENRY,
-      Units.HERTZ, Units.JOULE, Units.KATAL, Units.KELVIN, Units.LUMEN, Units.LUX, Units.METRE, Units.MOLE, Units.NEWTON, Units.OHM, Units.PASCAL,
-      Units.RADIAN, Units.SECOND, Units.SIEMENS, Units.SIEVERT, Units.STERADIAN, Units.TESLA, Units.VOLT, Units.WATT, Units.WEBER };
- 
-  private static final String[] METRIC_PREFIX_SYMBOLS =  
-		  Stream.of(MetricPrefix.values())
-		  .map(Prefix::getSymbol)
-		  .collect(Collectors.toList())
-		  .toArray(new String[] {});
-
-  // TODO try to consolidate those
-  private static final UnitConverter[] METRIC_PREFIX_CONVERTERS =  
-		  Stream.of(MetricPrefix.values())
-		  .map(MultiplyConverter::ofPrefix)
-		  .collect(Collectors.toList())
-  		  .toArray(new UnitConverter[] {});
-  
-  private static final String[] BINARY_PREFIX_SYMBOLS =  
-          Stream.of(BinaryPrefix.values())
-          .map(Prefix::getSymbol)
-          .collect(Collectors.toList())
-          .toArray(new String[] {});
-  
-  private static final UnitConverter[] BINARY_PREFIX_CONVERTERS =  
-          Stream.of(BinaryPrefix.values())
-          .map(MultiplyConverter::ofPrefix)
-          .collect(Collectors.toList())
-          .toArray(new UnitConverter[] {});
-
-  private static final String MU = "\u03bc";
-  
-  /**
-   * Holds the standard unit format.
-   */
-  private static final DefaultFormat DEFAULT = new DefaultFormat();
-
-  /**
-   * Holds the ASCIIFormat unit format.
-   */
-  private static final ASCIIFormat ASCII = new ASCIIFormat();
-
-  /**
-   * Returns the unit format for the default locale (format used by {@link AbstractUnit#parse(CharSequence) AbstractUnit.parse(CharSequence)} and
-   * {@link Unit#toString() Unit.toString()}).
-   *
-   * @return the default unit format (locale sensitive).
-   */
-  public static SimpleUnitFormat getInstance() {
-    return getInstance(Flavor.Default);
-  }
-
-  /**
-   * Returns the {@link SimpleUnitFormat} in the desired {@link Flavor}
-   *
-   * @return the instance for the given {@link Flavor}.
-   */
-  public static SimpleUnitFormat getInstance(Flavor flavor) {
-    switch (flavor) {
-      case ASCII:
-        return SimpleUnitFormat.ASCII;
-      default:
-        return DEFAULT;
-    }
-  }
-
-  /**
-   * Base constructor.
-   */
-  protected SimpleUnitFormat() {
-  }
-
-  /**
-   * Formats the specified unit.
-   *
-   * @param unit
-   *          the unit to format.
-   * @param appendable
-   *          the appendable destination.
-   * @throws IOException
-   *           if an error occurs.
-   */
-  public abstract Appendable format(Unit<?> unit, Appendable appendable) throws IOException;
-
-  /**
-   * Parses a sequence of character to produce a unit or a rational product of unit.
-   *
-   * @param csq
-   *          the <code>CharSequence</code> to parse.
-   * @param pos
-   *          an object holding the parsing index and error position.
-   * @return an {@link Unit} parsed from the character sequence.
-   * @throws IllegalArgumentException
-   *           if the character sequence contains an illegal syntax.
-   */
-  @SuppressWarnings("rawtypes")
-  public abstract Unit<? extends Quantity> parseProductUnit(CharSequence csq, ParsePosition pos) throws MeasurementParseException;
-
-  /**
-   * Parses a sequence of character to produce a single unit.
-   *
-   * @param csq
-   *          the <code>CharSequence</code> to parse.
-   * @param pos
-   *          an object holding the parsing index and error position.
-   * @return an {@link Unit} parsed from the character sequence.
-   * @throws IllegalArgumentException
-   *           if the character sequence does not contain a valid unit identifier.
-   */
-  @SuppressWarnings("rawtypes")
-  public abstract Unit<? extends Quantity> parseSingleUnit(CharSequence csq, ParsePosition pos) throws MeasurementParseException;
-
-  /**
-   * Attaches a system-wide label to the specified unit. For example: <code> SimpleUnitFormat.getInstance().label(DAY.multiply(365), "year");
-   * SimpleUnitFormat.getInstance().label(METER.multiply(0.3048), "ft"); </code> If the specified label is already associated to an unit the previous
-   * association is discarded or ignored.
-   *
-   * @param unit
-   *          the unit being labeled.
-   * @param label
-   *          the new label for this unit.
-   * @throws IllegalArgumentException
-   *           if the label is not a {@link SimpleUnitFormat#isValidIdentifier(String)} valid identifier.
-   */
-  public abstract void label(Unit<?> unit, String label);
-
-  /**
-   * Attaches a system-wide alias to this unit. Multiple aliases may be attached to the same unit. Aliases are used during parsing to recognize
-   * different variants of the same unit. For example: <code> SimpleUnitFormat.getInstance().alias(METER.multiply(0.3048), "foot");
-   * SimpleUnitFormat.getInstance().alias(METER.multiply(0.3048), "feet"); SimpleUnitFormat.getInstance().alias(METER, "meter");
-   * SimpleUnitFormat.getInstance().alias(METER, "metre"); </code> If the specified label is already associated to an unit the previous association is
-   * discarded or ignored.
-   *
-   * @param unit
-   *          the unit being aliased.
-   * @param alias
-   *          the alias attached to this unit.
-   * @throws IllegalArgumentException
-   *           if the label is not a {@link SimpleUnitFormat#isValidIdentifier(String)} valid identifier.
-   */
-  public abstract void alias(Unit<?> unit, String alias);
-
-  /**
-   * Indicates if the specified name can be used as unit identifier.
-   *
-   * @param name
-   *          the identifier to be tested.
-   * @return <code>true</code> if the name specified can be used as label or alias for this format;<code>false</code> otherwise.
-   */
-  protected abstract boolean isValidIdentifier(String name);
-
-  /**
-   * Formats an unit and appends the resulting text to a given string buffer (implements <code>java.text.Format</code>).
-   *
-   * @param unit
-   *          the unit to format.
-   * @param toAppendTo
-   *          where the text is to be appended
-   * @param pos
-   *          the field position (not used).
-   * @return <code>toAppendTo</code>
-   */
-  public final StringBuffer format(Object unit, final StringBuffer toAppendTo, FieldPosition pos) {
-    try {
-      final Object dest = toAppendTo;
-      if (dest instanceof Appendable) {
-        format((Unit<?>) unit, (Appendable) dest);
-      } else { // When retroweaver is used to produce 1.4 binaries. TODO is this still relevant?
-        format((Unit<?>) unit, new Appendable() {
-          public Appendable append(char arg0) throws IOException {
-            toAppendTo.append(arg0);
-            return null;
-          }
-          public Appendable append(CharSequence arg0) throws IOException {
-            toAppendTo.append(arg0);
-            return null;
-          }
-          public Appendable append(CharSequence arg0, int arg1, int arg2) throws IOException {
-            toAppendTo.append(arg0.subSequence(arg1, arg2));
-            return null;
-          }
-        });
-      }
-      return toAppendTo;
-    } catch (IOException e) {
-      throw new MeasurementError(e); // Should never happen.
-    }
-  }
-
-  /**
-   * Parses the text from a string to produce an object (implements <code>java.text.Format</code>).
-   *
-   * @param source
-   *          the string source, part of which should be parsed.
-   * @param pos
-   *          the cursor position.
-   * @return the corresponding unit or <code>null</code> if the string cannot be parsed.
-   */
-  public final Unit<?> parseObject(String source, ParsePosition pos) throws MeasurementParseException {
-    return parseProductUnit(source, pos);
-  }
-
-  /**
-   * This class represents an exponent with both a power (numerator) and a root (denominator).
-   */
-  private static class Exponent {
-    public final int pow;
-    public final int root;
-
-    public Exponent(int pow, int root) {
-      this.pow = pow;
-      this.root = root;
-    }
-  }
-
-  /**
-   * This class represents the standard format.
-   */
-  protected static class DefaultFormat extends SimpleUnitFormat {
-	 private static enum Token { EOF, IDENTIFIER, OPEN_PAREN, CLOSE_PAREN, EXPONENT, MULTIPLY, DIVIDE, 
-		  PLUS, INTEGER, FLOAT };
+    /**
+     * 
+     */
+    // private static final long serialVersionUID = 4149424034841739785L;#
 
     /**
-     * Holds the name to unit mapping.
+     * Flavor of this format
+     *
+     * @author Werner
+     *
      */
-    protected final Map<String, Unit<?>> nameToUnit = new HashMap<>();
+    public static enum Flavor {
+        Default, ASCII
+    }
+
+    // Initializes the standard unit database for SI units.
+
+    private static final Unit<?>[] METRIC_UNITS = { Units.AMPERE, Units.BECQUEREL, Units.CANDELA, Units.COULOMB, Units.FARAD, Units.GRAY, Units.HENRY,
+            Units.HERTZ, Units.JOULE, Units.KATAL, Units.KELVIN, Units.LUMEN, Units.LUX, Units.METRE, Units.MOLE, Units.NEWTON, Units.OHM, Units.PASCAL,
+            Units.RADIAN, Units.SECOND, Units.SIEMENS, Units.SIEVERT, Units.STERADIAN, Units.TESLA, Units.VOLT, Units.WATT, Units.WEBER };
+
+    private static final String[] METRIC_PREFIX_SYMBOLS =  
+            Stream.of(MetricPrefix.values())
+            .map(Prefix::getSymbol)
+            .collect(Collectors.toList())
+            .toArray(new String[] {});
+
+    // TODO try to consolidate those
+    private static final UnitConverter[] METRIC_PREFIX_CONVERTERS =  
+            Stream.of(MetricPrefix.values())
+            .map(MultiplyConverter::ofPrefix)
+            .collect(Collectors.toList())
+            .toArray(new UnitConverter[] {});
+
+    private static final String[] BINARY_PREFIX_SYMBOLS =  
+            Stream.of(BinaryPrefix.values())
+            .map(Prefix::getSymbol)
+            .collect(Collectors.toList())
+            .toArray(new String[] {});
+
+    private static final UnitConverter[] BINARY_PREFIX_CONVERTERS =  
+            Stream.of(BinaryPrefix.values())
+            .map(MultiplyConverter::ofPrefix)
+            .collect(Collectors.toList())
+            .toArray(new UnitConverter[] {});
+
+    private static final String MU = "\u03bc";
 
     /**
-     * Holds the unit to name mapping.
+     * Returns the unit format for the default locale (format used by {@link AbstractUnit#parse(CharSequence) AbstractUnit.parse(CharSequence)} and
+     * {@link Unit#toString() Unit.toString()}).
+     *
+     * @return the default unit format (locale sensitive).
      */
-    protected final Map<Unit<?>, String> unitToName = new HashMap<>();
-
-    @Override
-    public String toString() {
-        return "SimpleUnitFormat";
-    }
-    
-    @Override
-    public void label(Unit<?> unit, String label) {
-      if (!isValidIdentifier(label))
-        throw new IllegalArgumentException("Label: " + label + " is not a valid identifier.");
-      synchronized (this) {
-        nameToUnit.put(label, unit);
-        unitToName.put(unit, label);
-      }
+    public static SimpleUnitFormat getInstance() {
+        return getInstance(Flavor.Default);
     }
 
-    @Override
-    public void alias(Unit<?> unit, String alias) {
-      if (!isValidIdentifier(alias))
-        throw new IllegalArgumentException("Alias: " + alias + " is not a valid identifier.");
-      synchronized (this) {
-        nameToUnit.put(alias, unit);
-      }
-    }
-
-    @Override
-    protected boolean isValidIdentifier(String name) {
-      if ((name == null) || (name.length() == 0))
-        return false;
-      return isUnitIdentifierPart(name.charAt(0));
-    }
-
-    protected static boolean isUnitIdentifierPart(char ch) {
-      return Character.isLetter(ch)
-          || (!Character.isWhitespace(ch) && !Character.isDigit(ch) && (ch != MIDDLE_DOT) && (ch != '*') && (ch != '/') && (ch != '(') && (ch != ')')
-              && (ch != '[') && (ch != ']') && (ch != '\u00b9') && (ch != '\u00b2') && (ch != '\u00b3') && (ch != '^') && (ch != '+') && (ch != '-'));
-    }
-
-    // Returns the name for the specified unit or null if product unit.
-    protected String nameFor(Unit<?> unit) {
-      // Searches label database.
-      String label = unitToName.get(unit);
-      if (label != null)
-        return label;
-      if (unit instanceof BaseUnit)
-        return ((BaseUnit<?>) unit).getSymbol();
-      if (unit instanceof AlternateUnit)
-        return ((AlternateUnit<?>) unit).getSymbol();
-      if (unit instanceof TransformedUnit) {
-        TransformedUnit<?> tfmUnit = (TransformedUnit<?>) unit;
-        if (tfmUnit.getSymbol() != null) {
-        	return tfmUnit.getSymbol();
+    /**
+     * Returns the {@link SimpleUnitFormat} in the desired {@link Flavor}
+     *
+     * @return the instance for the given {@link Flavor}.
+     */
+    public static SimpleUnitFormat getInstance(Flavor flavor) {
+        switch (flavor) {
+        case ASCII:
+            return SimpleUnitFormat.ASCII;
+        default:
+            return DEFAULT;
         }
-        Unit<?> baseUnit = tfmUnit.getParentUnit();
-        UnitConverter cvtr = tfmUnit.getConverter(); // tfmUnit.getSystemConverter();
-        StringBuilder result = new StringBuilder();
-        String baseUnitName = baseUnit.toString();
-        String prefix = prefixFor(cvtr);
-        if ((baseUnitName.indexOf(MIDDLE_DOT) >= 0) || (baseUnitName.indexOf('*') >= 0) || (baseUnitName.indexOf('/') >= 0)) {
-          // We could use parentheses whenever baseUnits is an
-          // instanceof ProductUnit, but most ProductUnits have
-          // aliases,
-          // so we'd end up with a lot of unnecessary parentheses.
-          result.append('(');
-          result.append(baseUnitName);
-          result.append(')');
-        } else {
-          result.append(baseUnitName);
-        }
-        if (prefix != null) {
-          result.insert(0, prefix);
-        } else {
-          if (cvtr instanceof AddConverter) {
-            result.append('+');
-            result.append(((AddConverter) cvtr).getOffset());
-          } else if (cvtr instanceof MultiplyConverter) {
-            Number scaleFactor = ((MultiplyConverter) cvtr).getFactor();
-            if(scaleFactor instanceof RationalNumber) {
-                
-                RationalNumber rational = (RationalNumber)scaleFactor;
-                RationalNumber reciprocal = rational.reciprocal();
-                if(reciprocal.isInteger()) {
-                    result.append('/');
-                    result.append(reciprocal.toString()); // renders as integer
-                } else {
-                    result.append('*');
-                    result.append(scaleFactor);  
-                }
-                
-            } else {
-                result.append('*');
-                result.append(scaleFactor);
+    }
+
+    /**
+     * Base constructor.
+     */
+    protected SimpleUnitFormat() {
+    }
+
+    /**
+     * Formats the specified unit.
+     *
+     * @param unit
+     *          the unit to format.
+     * @param appendable
+     *          the appendable destination.
+     * @throws IOException
+     *           if an error occurs.
+     */
+    public abstract Appendable format(Unit<?> unit, Appendable appendable) throws IOException;
+
+    /**
+     * Parses a sequence of character to produce a unit or a rational product of unit.
+     *
+     * @param csq
+     *          the <code>CharSequence</code> to parse.
+     * @param pos
+     *          an object holding the parsing index and error position.
+     * @return an {@link Unit} parsed from the character sequence.
+     * @throws IllegalArgumentException
+     *           if the character sequence contains an illegal syntax.
+     */
+    @SuppressWarnings("rawtypes")
+    public abstract Unit<? extends Quantity> parseProductUnit(CharSequence csq, ParsePosition pos) throws MeasurementParseException;
+
+    /**
+     * Parses a sequence of character to produce a single unit.
+     *
+     * @param csq
+     *          the <code>CharSequence</code> to parse.
+     * @param pos
+     *          an object holding the parsing index and error position.
+     * @return an {@link Unit} parsed from the character sequence.
+     * @throws IllegalArgumentException
+     *           if the character sequence does not contain a valid unit identifier.
+     */
+    @SuppressWarnings("rawtypes")
+    public abstract Unit<? extends Quantity> parseSingleUnit(CharSequence csq, ParsePosition pos) throws MeasurementParseException;
+
+    /**
+     * Attaches a system-wide label to the specified unit. For example: <code> SimpleUnitFormat.getInstance().label(DAY.multiply(365), "year");
+     * SimpleUnitFormat.getInstance().label(METER.multiply(0.3048), "ft"); </code> If the specified label is already associated to an unit the previous
+     * association is discarded or ignored.
+     *
+     * @param unit
+     *          the unit being labeled.
+     * @param label
+     *          the new label for this unit.
+     * @throws IllegalArgumentException
+     *           if the label is not a {@link SimpleUnitFormat#isValidIdentifier(String)} valid identifier.
+     */
+    public abstract void label(Unit<?> unit, String label);
+
+    /**
+     * Attaches a system-wide alias to this unit. Multiple aliases may be attached to the same unit. Aliases are used during parsing to recognize
+     * different variants of the same unit. For example: <code> SimpleUnitFormat.getInstance().alias(METER.multiply(0.3048), "foot");
+     * SimpleUnitFormat.getInstance().alias(METER.multiply(0.3048), "feet"); SimpleUnitFormat.getInstance().alias(METER, "meter");
+     * SimpleUnitFormat.getInstance().alias(METER, "metre"); </code> If the specified label is already associated to an unit the previous association is
+     * discarded or ignored.
+     *
+     * @param unit
+     *          the unit being aliased.
+     * @param alias
+     *          the alias attached to this unit.
+     * @throws IllegalArgumentException
+     *           if the label is not a {@link SimpleUnitFormat#isValidIdentifier(String)} valid identifier.
+     */
+    public abstract void alias(Unit<?> unit, String alias);
+
+    /**
+     * Indicates if the specified name can be used as unit identifier.
+     *
+     * @param name
+     *          the identifier to be tested.
+     * @return <code>true</code> if the name specified can be used as label or alias for this format;<code>false</code> otherwise.
+     */
+    protected abstract boolean isValidIdentifier(String name);
+
+    /**
+     * Formats an unit and appends the resulting text to a given string buffer (implements <code>java.text.Format</code>).
+     *
+     * @param unit
+     *          the unit to format.
+     * @param toAppendTo
+     *          where the text is to be appended
+     * @param pos
+     *          the field position (not used).
+     * @return <code>toAppendTo</code>
+     */
+    public final StringBuffer format(Object unit, final StringBuffer toAppendTo, FieldPosition pos) {
+        try {
+            final Object dest = toAppendTo;
+            if (dest instanceof Appendable) {
+                format((Unit<?>) unit, (Appendable) dest);
+            } else { // When retroweaver is used to produce 1.4 binaries. TODO is this still relevant?
+                format((Unit<?>) unit, new Appendable() {
+                    public Appendable append(char arg0) throws IOException {
+                        toAppendTo.append(arg0);
+                        return null;
+                    }
+                    public Appendable append(CharSequence arg0) throws IOException {
+                        toAppendTo.append(arg0);
+                        return null;
+                    }
+                    public Appendable append(CharSequence arg0, int arg1, int arg2) throws IOException {
+                        toAppendTo.append(arg0.subSequence(arg1, arg2));
+                        return null;
+                    }
+                });
             }
-            
-          } else { // Other converters.
-            return "[" + baseUnit + "?]";
-          }
+            return toAppendTo;
+        } catch (IOException e) {
+            throw new MeasurementError(e); // Should never happen.
         }
-        return result.toString();
-      }
-      if (unit instanceof AnnotatedUnit<?>) {
-        AnnotatedUnit<?> annotatedUnit = (AnnotatedUnit<?>) unit;
-        final StringBuilder annotable = new StringBuilder(nameFor(annotatedUnit.getActualUnit()));
-        if (annotatedUnit.getAnnotation() != null) {
-          annotable.append('{'); // TODO maybe also configure this one similar to mix delimiter
-          annotable.append(annotatedUnit.getAnnotation());
-          annotable.append('}');
+    }
+
+    /**
+     * Parses the text from a string to produce an object (implements <code>java.text.Format</code>).
+     *
+     * @param source
+     *          the string source, part of which should be parsed.
+     * @param pos
+     *          the cursor position.
+     * @return the corresponding unit or <code>null</code> if the string cannot be parsed.
+     */
+    public final Unit<?> parseObject(String source, ParsePosition pos) throws MeasurementParseException {
+        return parseProductUnit(source, pos);
+    }
+
+    /**
+     * This class represents an exponent with both a power (numerator) and a root (denominator).
+     */
+    private static class Exponent {
+        public final int pow;
+        public final int root;
+
+        public Exponent(int pow, int root) {
+            this.pow = pow;
+            this.root = root;
         }
-        return annotable.toString();
-      }
-      // mixed unit.
-/*      if (unit instanceof MixedUnit) {
+    }
+
+    /**
+     * This class represents the standard format.
+     */
+    protected static class DefaultFormat extends SimpleUnitFormat {
+        private static enum Token { EOF, IDENTIFIER, OPEN_PAREN, CLOSE_PAREN, EXPONENT, MULTIPLY, DIVIDE, 
+            PLUS, INTEGER, FLOAT };
+
+            /**
+             * Holds the name to unit mapping.
+             */
+            protected final Map<String, Unit<?>> nameToUnit = new HashMap<>();
+
+            /**
+             * Holds the unit to name mapping.
+             */
+            protected final Map<Unit<?>, String> unitToName = new HashMap<>();
+
+            @Override
+            public String toString() {
+                return "SimpleUnitFormat";
+            }
+
+            @Override
+            public void label(Unit<?> unit, String label) {
+                if (!isValidIdentifier(label))
+                    throw new IllegalArgumentException("Label: " + label + " is not a valid identifier.");
+                synchronized (this) {
+                    nameToUnit.put(label, unit);
+                    unitToName.put(unit, label);
+                }
+            }
+
+            @Override
+            public void alias(Unit<?> unit, String alias) {
+                if (!isValidIdentifier(alias))
+                    throw new IllegalArgumentException("Alias: " + alias + " is not a valid identifier.");
+                synchronized (this) {
+                    nameToUnit.put(alias, unit);
+                }
+            }
+
+            @Override
+            protected boolean isValidIdentifier(String name) {
+                if ((name == null) || (name.length() == 0))
+                    return false;
+                return isUnitIdentifierPart(name.charAt(0));
+            }
+
+            protected static boolean isUnitIdentifierPart(char ch) {
+                return Character.isLetter(ch)
+                        || (!Character.isWhitespace(ch) && !Character.isDigit(ch) && (ch != MIDDLE_DOT) && (ch != '*') && (ch != '/') && (ch != '(') && (ch != ')')
+                                && (ch != '[') && (ch != ']') && (ch != '\u00b9') && (ch != '\u00b2') && (ch != '\u00b3') && (ch != '^') && (ch != '+') && (ch != '-'));
+            }
+
+            // Returns the name for the specified unit or null if product unit.
+            protected String nameFor(Unit<?> unit) {
+                // Searches label database.
+                String label = unitToName.get(unit);
+                if (label != null)
+                    return label;
+                if (unit instanceof BaseUnit)
+                    return ((BaseUnit<?>) unit).getSymbol();
+                if (unit instanceof AlternateUnit)
+                    return ((AlternateUnit<?>) unit).getSymbol();
+                if (unit instanceof TransformedUnit) {
+                    TransformedUnit<?> tfmUnit = (TransformedUnit<?>) unit;
+                    if (tfmUnit.getSymbol() != null) {
+                        return tfmUnit.getSymbol();
+                    }
+                    Unit<?> baseUnit = tfmUnit.getParentUnit();
+                    UnitConverter cvtr = tfmUnit.getConverter(); // tfmUnit.getSystemConverter();
+                    StringBuilder result = new StringBuilder();
+                    String baseUnitName = baseUnit.toString();
+                    String prefix = prefixFor(cvtr);
+                    if ((baseUnitName.indexOf(MIDDLE_DOT) >= 0) || (baseUnitName.indexOf('*') >= 0) || (baseUnitName.indexOf('/') >= 0)) {
+                        // We could use parentheses whenever baseUnits is an
+                        // instanceof ProductUnit, but most ProductUnits have
+                        // aliases,
+                        // so we'd end up with a lot of unnecessary parentheses.
+                        result.append('(');
+                        result.append(baseUnitName);
+                        result.append(')');
+                    } else {
+                        result.append(baseUnitName);
+                    }
+                    if (prefix != null) {
+                        result.insert(0, prefix);
+                    } else {
+                        if (cvtr instanceof AddConverter) {
+                            result.append('+');
+                            result.append(((AddConverter) cvtr).getOffset());
+                        } else if (cvtr instanceof MultiplyConverter) {
+                            Number scaleFactor = ((MultiplyConverter) cvtr).getFactor();
+                            if(scaleFactor instanceof RationalNumber) {
+
+                                RationalNumber rational = (RationalNumber)scaleFactor;
+                                RationalNumber reciprocal = rational.reciprocal();
+                                if(reciprocal.isInteger()) {
+                                    result.append('/');
+                                    result.append(reciprocal.toString()); // renders as integer
+                                } else {
+                                    result.append('*');
+                                    result.append(scaleFactor);  
+                                }
+
+                            } else {
+                                result.append('*');
+                                result.append(scaleFactor);
+                            }
+
+                        } else { // Other converters.
+                            return "[" + baseUnit + "?]";
+                        }
+                    }
+                    return result.toString();
+                }
+                if (unit instanceof AnnotatedUnit<?>) {
+                    AnnotatedUnit<?> annotatedUnit = (AnnotatedUnit<?>) unit;
+                    final StringBuilder annotable = new StringBuilder(nameFor(annotatedUnit.getActualUnit()));
+                    if (annotatedUnit.getAnnotation() != null) {
+                        annotable.append('{'); // TODO maybe also configure this one similar to mix delimiter
+                        annotable.append(annotatedUnit.getAnnotation());
+                        annotable.append('}');
+                    }
+                    return annotable.toString();
+                }
+                // mixed unit.
+                /*      if (unit instanceof MixedUnit) {
         MixedUnit<?> mixUnit = (MixedUnit<?>) unit;
         final StringBuilder mixer = new StringBuilder();
         final int partSize = mixUnit.getUnits().size();
@@ -454,587 +446,649 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
         }
         return mixer.toString();
       }
-      */
-      return null; // Product unit.
+                 */
+                return null; // Product unit.
+            }
+
+            // Returns the prefix for the specified unit converter.
+            protected String prefixFor(UnitConverter converter) {
+                for (int i = 0; i < METRIC_PREFIX_CONVERTERS.length; i++) {
+                    if (METRIC_PREFIX_CONVERTERS[i].equals(converter)) {
+                        return METRIC_PREFIX_SYMBOLS[i];
+                    }
+                }
+                for (int j = 0; j < BINARY_PREFIX_CONVERTERS.length; j++) {
+                    if (BINARY_PREFIX_CONVERTERS[j].equals(converter)) {
+                        return BINARY_PREFIX_SYMBOLS[j];
+                    }
+                }
+                return null; // TODO or return blank?
+            }
+
+            // Returns the unit for the specified name.
+            protected Unit<?> unitFor(String name) {
+                Unit<?> unit = nameToUnit.get(name);
+                if (unit != null) {
+                    return unit;
+                } else {
+                    unit = SYMBOL_TO_UNIT.get(name);
+                }
+                return unit;
+            }
+
+            // //////////////////////////
+            // Parsing.
+            @SuppressWarnings({ "rawtypes", "unchecked" })
+            public Unit<? extends Quantity> parseSingleUnit(CharSequence csq, ParsePosition pos) throws MeasurementParseException {
+                int startIndex = pos.getIndex();
+                String name = readIdentifier(csq, pos);
+                Unit unit = unitFor(name);
+                check(unit != null, name + " not recognized", csq, startIndex);
+                return unit;
+            }
+
+            @SuppressWarnings({ "rawtypes", "unchecked" })
+            @Override
+            public Unit<? extends Quantity> parseProductUnit(CharSequence csq, ParsePosition pos) throws MeasurementParseException {
+                Unit result = AbstractUnit.ONE;
+                Token token = nextToken(csq, pos);
+                switch (token) {
+                case IDENTIFIER:
+                    result = parseSingleUnit(csq, pos);
+                    break;
+                case OPEN_PAREN:
+                    pos.setIndex(pos.getIndex() + 1);
+                    result = parseProductUnit(csq, pos);
+                    token = nextToken(csq, pos);
+                    check(token == Token.CLOSE_PAREN, "')' expected", csq, pos.getIndex());
+                    pos.setIndex(pos.getIndex() + 1);
+                    break;
+                default:
+                    break;
+                }
+                token = nextToken(csq, pos);
+                while (true) {
+                    switch (token) {
+                    case EXPONENT:
+                        Exponent e = readExponent(csq, pos);
+                        if (e.pow != 1) {
+                            result = result.pow(e.pow);
+                        }
+                        if (e.root != 1) {
+                            result = result.root(e.root);
+                        }
+                        break;
+                    case MULTIPLY:
+                        pos.setIndex(pos.getIndex() + 1);
+                        token = nextToken(csq, pos);
+                        if (token == Token.INTEGER) {
+                            long n = readLong(csq, pos);
+                            if (n != 1) {
+                                result = result.multiply(n);
+                            }
+                        } else if (token == Token.FLOAT) {
+                            double d = readDouble(csq, pos);
+                            if (d != 1.0) {
+                                result = result.multiply(d);
+                            }
+                        } else {
+                            result = result.multiply(parseProductUnit(csq, pos));
+                        }
+                        break;
+                    case DIVIDE:
+                        pos.setIndex(pos.getIndex() + 1);
+                        token = nextToken(csq, pos);
+                        if (token == Token.INTEGER) {
+                            long n = readLong(csq, pos);
+                            if (n != 1) {
+                                result = result.divide(n);
+                            }
+                        } else if (token == Token.FLOAT) {
+                            double d = readDouble(csq, pos);
+                            if (d != 1.0) {
+                                result = result.divide(d);
+                            }
+                        } else {
+                            result = result.divide(parseProductUnit(csq, pos));
+                        }
+                        break;
+                    case PLUS:
+                        pos.setIndex(pos.getIndex() + 1);
+                        token = nextToken(csq, pos);
+                        if (token == Token.INTEGER) {
+                            long n = readLong(csq, pos);
+                            if (n != 1) {
+                                result = result.shift(n);
+                            }
+                        } else if (token == Token.FLOAT) {
+                            double d = readDouble(csq, pos);
+                            if (d != 1.0) {
+                                result = result.shift(d);
+                            }
+                        } else {
+                            throw new MeasurementParseException("not a number", csq, pos.getIndex());
+                        }
+                        break;
+                    case EOF:
+                    case CLOSE_PAREN:
+                        return result;
+                    default:
+                        throw new MeasurementParseException("unexpected token " + token, csq, pos.getIndex());
+                    }
+                    token = nextToken(csq, pos);
+                }
+            }
+
+            private static Token nextToken(CharSequence csq, ParsePosition pos) {
+                final int length = csq.length();
+                while (pos.getIndex() < length) {
+                    char c = csq.charAt(pos.getIndex());
+                    if (isUnitIdentifierPart(c)) {
+                        return Token.IDENTIFIER;
+                    } else if (c == '(') {
+                        return Token.OPEN_PAREN;
+                    } else if (c == ')') {
+                        return Token.CLOSE_PAREN;
+                    } else if ((c == '^') || (c == '\u00b9') || (c == '\u00b2') || (c == '\u00b3')) {
+                        return Token.EXPONENT;
+                    } else if (c == '*') {
+                        if (csq.length() == pos.getIndex() + 1) {
+                            throw new MeasurementParseException("unexpected token " + Token.EOF, csq, pos.getIndex()); // return ;
+                        }
+                        char c2 = csq.charAt(pos.getIndex() + 1);
+                        return c2 == '*' ? Token.EXPONENT : Token.MULTIPLY;
+                    } else if (c == MIDDLE_DOT) {
+                        return Token.MULTIPLY;
+                    } else if (c == '/') {
+                        return Token.DIVIDE;
+                    } else if (c == '+') {
+                        return Token.PLUS;
+                    } else if ((c == '-') || Character.isDigit(c)) {
+                        int index = pos.getIndex() + 1;
+                        while ((index < length) && (Character.isDigit(c) || (c == '-') || (c == '.') || (c == 'E'))) {
+                            c = csq.charAt(index++);
+                            if (c == '.') {
+                                return Token.FLOAT;
+                            }
+                        }
+                        return Token.INTEGER;
+                    }
+                    pos.setIndex(pos.getIndex() + 1);
+                }
+                return Token.EOF;
+            }
+
+            private static void check(boolean expr, String message, CharSequence csq, int index) throws MeasurementParseException {
+                if (!expr) {
+                    throw new MeasurementParseException(message + " (in " + csq + " at index " + index + ")", index);
+                }
+            }
+
+            private static Exponent readExponent(CharSequence csq, ParsePosition pos) {
+                char c = csq.charAt(pos.getIndex());
+                if (c == '^') {
+                    pos.setIndex(pos.getIndex() + 1);
+                } else if (c == '*') {
+                    pos.setIndex(pos.getIndex() + 2);
+                }
+                final int length = csq.length();
+                int pow = 0;
+                boolean isPowNegative = false;
+                boolean parseRoot = false;
+
+                POWERLOOP: while (pos.getIndex() < length) {
+                    c = csq.charAt(pos.getIndex());
+                    switch(c) {
+                    case '-': isPowNegative = true; break;
+                    case '\u00b9': pow = pow * 10 + 1; break;
+                    case '\u00b2': pow = pow * 10 + 2; break;
+                    case '\u00b3': pow = pow * 10 + 3; break;
+                    case ':': parseRoot = true; break POWERLOOP; 
+                    default: 
+                        if (c >= '0' && c <= '9') pow = pow * 10 + (c - '0');  
+                        else break POWERLOOP; 
+                    }
+                    pos.setIndex(pos.getIndex() + 1);
+                }
+                if (pow == 0) pow = 1;
+
+                int root = 0;
+                boolean isRootNegative = false;
+                if (parseRoot) {
+                    pos.setIndex(pos.getIndex() + 1);
+                    ROOTLOOP: while (pos.getIndex() < length) {
+                        c = csq.charAt(pos.getIndex());
+                        switch(c) {
+                        case '-': isRootNegative = true; break;
+                        case '\u00b9': root = root * 10 + 1; break;
+                        case '\u00b2': root = root * 10 + 2; break;
+                        case '\u00b3': root = root * 10 + 3; break;
+                        default: 
+                            if (c >= '0' && c <= '9') root = root * 10 + (c - '0');  
+                            else break ROOTLOOP; 
+                        }
+                        pos.setIndex(pos.getIndex() + 1);
+                    }
+                }
+                if (root == 0) root = 1;
+
+                return new Exponent(isPowNegative ? -pow : pow, isRootNegative ? -root : root);
+            }
+
+            private static long readLong(CharSequence csq, ParsePosition pos) {
+                final int length = csq.length();
+                int result = 0;
+                boolean isNegative = false;
+                while (pos.getIndex() < length) {
+                    char c = csq.charAt(pos.getIndex());
+                    if (c == '-') {
+                        isNegative = true;
+                    } else if ((c >= '0') && (c <= '9')) {
+                        result = result * 10 + (c - '0');
+                    } else {
+                        break;
+                    }
+                    pos.setIndex(pos.getIndex() + 1);
+                }
+                return isNegative ? -result : result;
+            }
+
+            private static double readDouble(CharSequence csq, ParsePosition pos) {
+                final int length = csq.length();
+                int start = pos.getIndex();
+                int end = start + 1;
+                while (end < length) {
+                    if ("0123456789+-.E".indexOf(csq.charAt(end)) < 0) {
+                        break;
+                    }
+                    end += 1;
+                }
+                pos.setIndex(end + 1);
+                return Double.parseDouble(csq.subSequence(start, end).toString());
+            }
+
+            private static String readIdentifier(CharSequence csq, ParsePosition pos) {
+                final int length = csq.length();
+                int start = pos.getIndex();
+                int i = start;
+                while ((++i < length) && isUnitIdentifierPart(csq.charAt(i))) {
+                }
+                pos.setIndex(i);
+                return csq.subSequence(start, i).toString();
+            }
+
+            // //////////////////////////
+            // Formatting.
+
+            @Override
+            public Appendable format(Unit<?> unit, Appendable appendable) throws IOException {
+                String name = nameFor(unit);
+                if (name != null) {
+                    return appendable.append(name);
+                }
+                if (!(unit instanceof ProductUnit)) {
+                    throw new IllegalArgumentException("Cannot format given Object as a Unit");
+                }
+
+                // Product unit.
+                ProductUnit<?> productUnit = (ProductUnit<?>) unit;
+
+                // Special case: self-powered product unit
+                if (productUnit.getUnitCount() == 1 && productUnit.getUnit(0) instanceof ProductUnit) {
+                    final ProductUnit<?> powerUnit = (ProductUnit<?>) productUnit.getUnit(0);
+                    // is the sub-unit known under a given label?
+                    if (nameFor(powerUnit) == null)
+                        // apply the power to the sub-units and format those instead
+                        return format(ProductUnit.ofPow(powerUnit, productUnit.getUnitPow(0)), appendable);
+                }
+
+                int invNbr = 0;
+
+                // Write positive exponents first.
+                boolean start = true;
+                for (int i = 0; i < productUnit.getUnitCount(); i++) {
+                    int pow = productUnit.getUnitPow(i);
+                    if (pow >= 0) {
+                        if (!start) {
+                            appendable.append(MIDDLE_DOT); // Separator.
+                        }
+                        name = nameFor(productUnit.getUnit(i));
+                        int root = productUnit.getUnitRoot(i);
+                        append(appendable, name, pow, root);
+                        start = false;
+                    } else {
+                        invNbr++;
+                    }
+                }
+
+                // Write negative exponents.
+                if (invNbr != 0) {
+                    if (start) {
+                        appendable.append('1'); // e.g. 1/s
+                    }
+                    appendable.append('/');
+                    if (invNbr > 1) {
+                        appendable.append('(');
+                    }
+                    start = true;
+                    for (int i = 0; i < productUnit.getUnitCount(); i++) {
+                        int pow = productUnit.getUnitPow(i);
+                        if (pow < 0) {
+                            name = nameFor(productUnit.getUnit(i));
+                            int root = productUnit.getUnitRoot(i);
+                            if (!start) {
+                                appendable.append(MIDDLE_DOT); // Separator.
+                            }
+                            append(appendable, name, -pow, root);
+                            start = false;
+                        }
+                    }
+                    if (invNbr > 1) {
+                        appendable.append(')');
+                    }
+                }
+                return appendable;
+            }
+
+            private static void append(Appendable appendable, CharSequence symbol, int pow, int root) throws IOException {
+                appendable.append(symbol);
+                if ((pow != 1) || (root != 1)) {
+                    // Write exponent.
+                    if ((pow == 2) && (root == 1)) {
+                        appendable.append('\u00b2'); // Square
+                    } else if ((pow == 3) && (root == 1)) {
+                        appendable.append('\u00b3'); // Cubic
+                    } else {
+                        // Use general exponent form.
+                        appendable.append('^');
+                        appendable.append(String.valueOf(pow));
+                        if (root != 1) {
+                            appendable.append(':');
+                            appendable.append(String.valueOf(root));
+                        }
+                    }
+                }
+            }
+
+            // private static final long serialVersionUID = 1L;
+
+            @Override
+            public Unit<?> parse(CharSequence csq) throws MeasurementParseException {
+                return parse(csq, 0);
+            }
+
+            protected Unit<?> parse(CharSequence csq, int index) throws IllegalArgumentException {
+                return parse(csq, new ParsePosition(index));
+            }
+
+            @Override
+            public Unit<?> parse(CharSequence csq, ParsePosition cursor) throws IllegalArgumentException {
+                return parseObject(csq.toString(), cursor);
+            }
     }
 
-    // Returns the prefix for the specified unit converter.
-    protected String prefixFor(UnitConverter converter) {
-      for (int i = 0; i < METRIC_PREFIX_CONVERTERS.length; i++) {
-        if (METRIC_PREFIX_CONVERTERS[i].equals(converter)) {
-          return METRIC_PREFIX_SYMBOLS[i];
+    /**
+     * This class represents the ASCII format.
+     */
+    protected final static class ASCIIFormat extends DefaultFormat {
+
+        @Override
+        protected String nameFor(Unit<?> unit) {
+            // First search if specific ASCII name should be used.
+            String name = unitToName.get(unit);
+            if (name != null)
+                return name;
+            // Else returns default name.
+            return DEFAULT.nameFor(unit);
         }
-      }
-      for (int j = 0; j < BINARY_PREFIX_CONVERTERS.length; j++) {
-          if (BINARY_PREFIX_CONVERTERS[j].equals(converter)) {
-            return BINARY_PREFIX_SYMBOLS[j];
-          }
-      }
-      return null; // TODO or return blank?
-    }
 
-    // Returns the unit for the specified name.
-    protected Unit<?> unitFor(String name) {
-      Unit<?> unit = nameToUnit.get(name);
-      if (unit != null) {
-        return unit;
-      } else {
-          unit = SYMBOL_TO_UNIT.get(name);
-      }
-      return unit;
-    }
+        @Override
+        protected Unit<?> unitFor(String name) {
+            // First search if specific ASCII name.
+            Unit<?> unit = nameToUnit.get(name);
+            if (unit != null)
+                return unit;
+            // Else returns default mapping.
+            return DEFAULT.unitFor(name);
+        }
 
-    // //////////////////////////
-    // Parsing.
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    public Unit<? extends Quantity> parseSingleUnit(CharSequence csq, ParsePosition pos) throws MeasurementParseException {
-      int startIndex = pos.getIndex();
-      String name = readIdentifier(csq, pos);
-      Unit unit = unitFor(name);
-      check(unit != null, name + " not recognized", csq, startIndex);
-      return unit;
-    }
+        @Override
+        public String toString() {
+            return "SimpleUnitFormat - ASCII";
+        }
 
-    @SuppressWarnings({ "rawtypes", "unchecked" })
-    @Override
-    public Unit<? extends Quantity> parseProductUnit(CharSequence csq, ParsePosition pos) throws MeasurementParseException {
-      Unit result = AbstractUnit.ONE;
-      Token token = nextToken(csq, pos);
-      switch (token) {
-        case IDENTIFIER:
-          result = parseSingleUnit(csq, pos);
-          break;
-        case OPEN_PAREN:
-          pos.setIndex(pos.getIndex() + 1);
-          result = parseProductUnit(csq, pos);
-          token = nextToken(csq, pos);
-          check(token == Token.CLOSE_PAREN, "')' expected", csq, pos.getIndex());
-          pos.setIndex(pos.getIndex() + 1);
-          break;
-        default:
-          break;
-      }
-      token = nextToken(csq, pos);
-      while (true) {
-        switch (token) {
-          case EXPONENT:
-            Exponent e = readExponent(csq, pos);
-            if (e.pow != 1) {
-              result = result.pow(e.pow);
+        @Override
+        public Appendable format(Unit<?> unit, Appendable appendable) throws IOException {
+            String name = nameFor(unit);
+            if (name != null)
+                return appendable.append(name);
+            if (!(unit instanceof ProductUnit))
+                throw new IllegalArgumentException("Cannot format given Object as a Unit");
+
+            ProductUnit<?> productUnit = (ProductUnit<?>) unit;
+            for (int i = 0; i < productUnit.getUnitCount(); i++) {
+                if (i != 0) {
+                    appendable.append('*'); // Separator.
+                }
+                name = nameFor(productUnit.getUnit(i));
+                int pow = productUnit.getUnitPow(i);
+                int root = productUnit.getUnitRoot(i);
+                appendable.append(name);
+                if ((pow != 1) || (root != 1)) {
+                    // Use general exponent form.
+                    appendable.append('^');
+                    appendable.append(String.valueOf(pow));
+                    if (root != 1) {
+                        appendable.append(':');
+                        appendable.append(String.valueOf(root));
+                    }
+                }
             }
-            if (e.root != 1) {
-              result = result.root(e.root);
+            return appendable;
+        }
+
+        @Override
+        protected boolean isValidIdentifier(String name) {
+            if ((name == null) || (name.length() == 0))
+                return false;
+            // label must not begin with a digit or mathematical operator
+            return isUnitIdentifierPart(name.charAt(0)) && isAllASCII(name);
+            /*
+             * for (int i = 0; i < name.length(); i++) { if
+             * (!isAsciiCharacter(name.charAt(i))) return false; } return true;
+             */
+        }
+    }
+
+    /**
+     * Holds the unique symbols collection (base units or alternate units).
+     */
+    private static final Map<String, Unit<?>> SYMBOL_TO_UNIT = new HashMap<>();
+
+    private static String asciiPrefix(String prefix) {
+        return "µ".equals(prefix) ? "micro" : prefix;
+    }
+
+    private static String asciiSymbol(String s) {
+        return "Ω".equals(s) ? "Ohm" : s;
+    }
+
+    /** to check if a string only contains US-ASCII characters */
+    protected static boolean isAllASCII(String input) {
+        boolean isASCII = true;
+        for (int i = 0; i < input.length(); i++) {
+            int c = input.charAt(i);
+            if (c > 0x7F) {
+                isASCII = false;
+                break;
             }
-            break;
-          case MULTIPLY:
-            pos.setIndex(pos.getIndex() + 1);
-            token = nextToken(csq, pos);
-            if (token == Token.INTEGER) {
-              long n = readLong(csq, pos);
-              if (n != 1) {
-                result = result.multiply(n);
-              }
-            } else if (token == Token.FLOAT) {
-              double d = readDouble(csq, pos);
-              if (d != 1.0) {
-                result = result.multiply(d);
-              }
+        }
+        return isASCII;
+    }
+    
+    // -- INIT
+    
+    static {
+        // Hack, somehow µg is not found.
+        SYMBOL_TO_UNIT.put(MetricPrefix.MICRO.getSymbol() + "g", MICRO(Units.GRAM));
+        SYMBOL_TO_UNIT.put("μg", MICRO(Units.GRAM));
+        SYMBOL_TO_UNIT.put(MU + "g", MICRO(Units.GRAM));
+    }
+    
+    /**
+     * Holds the standard unit format.
+     */
+    private static final DefaultFormat DEFAULT = initDefaultFormat(new DefaultFormat());
+
+    /**
+     * Holds the ASCIIFormat unit format.
+     */
+    private static final ASCIIFormat ASCII = initASCIIFormat(new ASCIIFormat());
+    
+    // -- FACTORIES
+    
+    protected static DefaultFormat initDefaultFormat(final DefaultFormat defaultFormat) {
+    
+        for (int i = 0; i < METRIC_UNITS.length; i++) {
+            Unit<?> si = METRIC_UNITS[i];
+            String symbol = (si instanceof BaseUnit) ? ((BaseUnit<?>) si).getSymbol() : ((AlternateUnit<?>) si).getSymbol();
+            defaultFormat.label(si, symbol);
+            for (int j = 0; j < METRIC_PREFIX_SYMBOLS.length; j++) {
+                Unit<?> u = si.prefix(MetricPrefix.values()[j]);
+                defaultFormat.label(u, METRIC_PREFIX_SYMBOLS[j] + symbol);
+                if ( "µ".equals(METRIC_PREFIX_SYMBOLS[j]) ) {
+                    defaultFormat.label(u, MU + symbol);
+                }
+            } // TODO what about BINARY_PREFIX here?
+        }
+
+        // -- GRAM/KILOGRAM
+
+        defaultFormat.label(Units.GRAM, "g");
+        for(MetricPrefix prefix : MetricPrefix.values()) {
+            switch (prefix) {
+            case KILO:
+                defaultFormat.label(Units.KILOGRAM, "kg");
+                break;
+            case MICRO:
+                defaultFormat.label(Units.GRAM.prefix(prefix), prefix.getSymbol()+"g");
+                break;
+            default:
+                defaultFormat.label(Units.GRAM.prefix(prefix), prefix.getSymbol()+"g");
+                break;
+            }
+        }
+
+        defaultFormat.label(MICRO(Units.GRAM), MetricPrefix.MICRO.getSymbol() + "g");
+
+        // Alias and ASCIIFormat for Ohm
+        defaultFormat.alias(Units.OHM, "Ohm");
+        for (int i = 0; i < METRIC_PREFIX_SYMBOLS.length; i++) {
+            defaultFormat.alias(Units.OHM.prefix(MetricPrefix.values()[i]), METRIC_PREFIX_SYMBOLS[i] + "Ohm");
+        }
+
+        // Special case for DEGREE_CELSIUS.
+        defaultFormat.label(Units.CELSIUS, "℃");
+        defaultFormat.alias(Units.CELSIUS, "°C");
+        for (int i = 0; i < METRIC_PREFIX_SYMBOLS.length; i++) {
+            defaultFormat.label(Units.CELSIUS.prefix(MetricPrefix.values()[i]), METRIC_PREFIX_SYMBOLS[i] + "℃");
+            defaultFormat.alias(Units.CELSIUS.prefix(MetricPrefix.values()[i]), METRIC_PREFIX_SYMBOLS[i] + "°C");
+        }
+
+        defaultFormat.label(Units.PERCENT, "%");
+        defaultFormat.label(Units.METRE, "m");
+        defaultFormat.label(Units.SECOND, "s");
+        defaultFormat.label(Units.MINUTE, "min");
+        defaultFormat.label(Units.HOUR, "h");
+        defaultFormat.label(Units.DAY, "day");
+        defaultFormat.alias(Units.DAY, "d");
+        defaultFormat.label(Units.WEEK, "week");
+        defaultFormat.label(Units.YEAR, "year");
+        defaultFormat.alias(Units.YEAR, "days365");
+        defaultFormat.label(Units.MONTH, "mo");
+        defaultFormat.alias(Units.MONTH, "mon");
+        defaultFormat.alias(Units.MONTH, "month");
+        defaultFormat.label(Units.KILOMETRE_PER_HOUR, "km/h");
+        defaultFormat.label(Units.CUBIC_METRE, "\u33A5");
+
+        // -- LITRE
+
+        defaultFormat.label(Units.LITRE, "l");
+        for(Prefix prefix : MetricPrefix.values()) {
+            defaultFormat.label(Units.LITRE.prefix(prefix), prefix.getSymbol()+"l");
+        }   
+        defaultFormat.label(Units.NEWTON, "N");
+        defaultFormat.label(Units.RADIAN, "rad");
+
+        defaultFormat.label(AbstractUnit.ONE, "one");
+        
+        return defaultFormat;
+    }
+    
+    protected static ASCIIFormat initASCIIFormat(final ASCIIFormat asciiFormat) {
+        
+        for (int i = 0; i < METRIC_UNITS.length; i++) {
+            Unit<?> si = METRIC_UNITS[i];
+            String symbol = (si instanceof BaseUnit) ? ((BaseUnit<?>) si).getSymbol() : ((AlternateUnit<?>) si).getSymbol();
+            if (isAllASCII(symbol))
+                asciiFormat.label(si, symbol);
+            for (int j = 0; j < METRIC_PREFIX_SYMBOLS.length; j++) {
+                Unit<?> u = si.prefix(MetricPrefix.values()[j]);
+                if ( "µ".equals(METRIC_PREFIX_SYMBOLS[j]) ) {
+                    asciiFormat.label(u, "micro" + asciiSymbol(symbol));
+                }
+            } // TODO what about BINARY_PREFIX here?
+        }
+
+        // -- GRAM/KILOGRAM
+
+        asciiFormat.label(Units.GRAM, "g");
+        for(MetricPrefix prefix : MetricPrefix.values()) {
+            switch (prefix) {
+            case KILO:
+                asciiFormat.label(Units.KILOGRAM, "kg");
+                break;
+            case MICRO:
+                asciiFormat.label(MICRO(Units.LITRE), "microg"); // instead of 'µg' -> 'microg'
+                break;
+            default:
+                asciiFormat.label(Units.GRAM.prefix(prefix), prefix.getSymbol()+"g");
+                break;
+            }
+        }
+
+        // Alias and ASCIIFormat for Ohm
+        asciiFormat.label(Units.OHM, "Ohm");
+        for (int i = 0; i < METRIC_PREFIX_SYMBOLS.length; i++) {
+            asciiFormat.label(Units.OHM.prefix(MetricPrefix.values()[i]), asciiPrefix(METRIC_PREFIX_SYMBOLS[i]) + "Ohm");
+        }
+
+        // Special case for DEGREE_CELSIUS.
+        asciiFormat.label(Units.CELSIUS, "Celsius");
+        for (int i = 0; i < METRIC_PREFIX_SYMBOLS.length; i++) {
+            asciiFormat.label(Units.CELSIUS.prefix(MetricPrefix.values()[i]), asciiPrefix(METRIC_PREFIX_SYMBOLS[i]) + "Celsius");
+        }
+
+        asciiFormat.label(Units.METRE, "m");
+        asciiFormat.label(Units.SECOND, "s");
+        asciiFormat.label(Units.KILOMETRE_PER_HOUR, "km/h");
+        asciiFormat.label(Units.CUBIC_METRE, "m3");
+
+        // -- LITRE
+
+        asciiFormat.label(Units.LITRE, "l");
+        for(Prefix prefix : MetricPrefix.values()) {
+            if(prefix==MICRO) {
+                asciiFormat.label(MICRO(Units.LITRE), "microL"); // instead of 'µL' -> 'microL'
             } else {
-              result = result.multiply(parseProductUnit(csq, pos));
+                asciiFormat.label(Units.LITRE.prefix(prefix), prefix.getSymbol()+"L");
             }
-            break;
-          case DIVIDE:
-            pos.setIndex(pos.getIndex() + 1);
-            token = nextToken(csq, pos);
-            if (token == Token.INTEGER) {
-              long n = readLong(csq, pos);
-              if (n != 1) {
-                result = result.divide(n);
-              }
-            } else if (token == Token.FLOAT) {
-              double d = readDouble(csq, pos);
-              if (d != 1.0) {
-                result = result.divide(d);
-              }
-            } else {
-              result = result.divide(parseProductUnit(csq, pos));
-            }
-            break;
-          case PLUS:
-            pos.setIndex(pos.getIndex() + 1);
-            token = nextToken(csq, pos);
-            if (token == Token.INTEGER) {
-              long n = readLong(csq, pos);
-              if (n != 1) {
-                result = result.shift(n);
-              }
-            } else if (token == Token.FLOAT) {
-              double d = readDouble(csq, pos);
-              if (d != 1.0) {
-                result = result.shift(d);
-              }
-            } else {
-              throw new MeasurementParseException("not a number", csq, pos.getIndex());
-            }
-            break;
-          case EOF:
-          case CLOSE_PAREN:
-            return result;
-          default:
-            throw new MeasurementParseException("unexpected token " + token, csq, pos.getIndex());
-        }
-        token = nextToken(csq, pos);
-      }
+        }   
+        asciiFormat.label(Units.NEWTON, "N");
+        asciiFormat.label(Units.RADIAN, "rad");
+
+        asciiFormat.label(AbstractUnit.ONE, "one");
+        
+        return asciiFormat;
     }
-    
-    private static Token nextToken(CharSequence csq, ParsePosition pos) {
-      final int length = csq.length();
-      while (pos.getIndex() < length) {
-        char c = csq.charAt(pos.getIndex());
-        if (isUnitIdentifierPart(c)) {
-          return Token.IDENTIFIER;
-        } else if (c == '(') {
-          return Token.OPEN_PAREN;
-        } else if (c == ')') {
-          return Token.CLOSE_PAREN;
-        } else if ((c == '^') || (c == '\u00b9') || (c == '\u00b2') || (c == '\u00b3')) {
-          return Token.EXPONENT;
-        } else if (c == '*') {
-          if (csq.length() == pos.getIndex() + 1) {
-        	  throw new MeasurementParseException("unexpected token " + Token.EOF, csq, pos.getIndex()); // return ;
-          }
-          char c2 = csq.charAt(pos.getIndex() + 1);
-          return c2 == '*' ? Token.EXPONENT : Token.MULTIPLY;
-        } else if (c == MIDDLE_DOT) {
-          return Token.MULTIPLY;
-        } else if (c == '/') {
-          return Token.DIVIDE;
-        } else if (c == '+') {
-          return Token.PLUS;
-        } else if ((c == '-') || Character.isDigit(c)) {
-          int index = pos.getIndex() + 1;
-          while ((index < length) && (Character.isDigit(c) || (c == '-') || (c == '.') || (c == 'E'))) {
-            c = csq.charAt(index++);
-            if (c == '.') {
-              return Token.FLOAT;
-            }
-          }
-          return Token.INTEGER;
-        }
-        pos.setIndex(pos.getIndex() + 1);
-      }
-      return Token.EOF;
-    }
-
-    private static void check(boolean expr, String message, CharSequence csq, int index) throws MeasurementParseException {
-      if (!expr) {
-        throw new MeasurementParseException(message + " (in " + csq + " at index " + index + ")", index);
-      }
-    }
-
-    private static Exponent readExponent(CharSequence csq, ParsePosition pos) {
-      char c = csq.charAt(pos.getIndex());
-      if (c == '^') {
-        pos.setIndex(pos.getIndex() + 1);
-      } else if (c == '*') {
-        pos.setIndex(pos.getIndex() + 2);
-      }
-      final int length = csq.length();
-      int pow = 0;
-      boolean isPowNegative = false;
-      boolean parseRoot = false;
-      
-      POWERLOOP: while (pos.getIndex() < length) {
-        c = csq.charAt(pos.getIndex());
-        switch(c) {
-          case '-': isPowNegative = true; break;
-          case '\u00b9': pow = pow * 10 + 1; break;
-          case '\u00b2': pow = pow * 10 + 2; break;
-          case '\u00b3': pow = pow * 10 + 3; break;
-          case ':': parseRoot = true; break POWERLOOP; 
-          default: 
-            if (c >= '0' && c <= '9') pow = pow * 10 + (c - '0');  
-            else break POWERLOOP; 
-        }
-        pos.setIndex(pos.getIndex() + 1);
-      }
-      if (pow == 0) pow = 1;
-      
-      int root = 0;
-      boolean isRootNegative = false;
-      if (parseRoot) {
-        pos.setIndex(pos.getIndex() + 1);
-        ROOTLOOP: while (pos.getIndex() < length) {
-          c = csq.charAt(pos.getIndex());
-          switch(c) {
-            case '-': isRootNegative = true; break;
-            case '\u00b9': root = root * 10 + 1; break;
-            case '\u00b2': root = root * 10 + 2; break;
-            case '\u00b3': root = root * 10 + 3; break;
-            default: 
-              if (c >= '0' && c <= '9') root = root * 10 + (c - '0');  
-              else break ROOTLOOP; 
-          }
-          pos.setIndex(pos.getIndex() + 1);
-        }
-      }
-      if (root == 0) root = 1;
-      
-      return new Exponent(isPowNegative ? -pow : pow, isRootNegative ? -root : root);
-    }
-
-    private static long readLong(CharSequence csq, ParsePosition pos) {
-      final int length = csq.length();
-      int result = 0;
-      boolean isNegative = false;
-      while (pos.getIndex() < length) {
-        char c = csq.charAt(pos.getIndex());
-        if (c == '-') {
-          isNegative = true;
-        } else if ((c >= '0') && (c <= '9')) {
-          result = result * 10 + (c - '0');
-        } else {
-          break;
-        }
-        pos.setIndex(pos.getIndex() + 1);
-      }
-      return isNegative ? -result : result;
-    }
-
-    private static double readDouble(CharSequence csq, ParsePosition pos) {
-      final int length = csq.length();
-      int start = pos.getIndex();
-      int end = start + 1;
-      while (end < length) {
-        if ("0123456789+-.E".indexOf(csq.charAt(end)) < 0) {
-          break;
-        }
-        end += 1;
-      }
-      pos.setIndex(end + 1);
-      return Double.parseDouble(csq.subSequence(start, end).toString());
-    }
-
-    private static String readIdentifier(CharSequence csq, ParsePosition pos) {
-      final int length = csq.length();
-      int start = pos.getIndex();
-      int i = start;
-      while ((++i < length) && isUnitIdentifierPart(csq.charAt(i))) {
-      }
-      pos.setIndex(i);
-      return csq.subSequence(start, i).toString();
-    }
-
-    // //////////////////////////
-    // Formatting.
-
-    @Override
-    public Appendable format(Unit<?> unit, Appendable appendable) throws IOException {
-      String name = nameFor(unit);
-      if (name != null) {
-        return appendable.append(name);
-      }
-      if (!(unit instanceof ProductUnit)) {
-        throw new IllegalArgumentException("Cannot format given Object as a Unit");
-      }
-
-      // Product unit.
-      ProductUnit<?> productUnit = (ProductUnit<?>) unit;
-
-      // Special case: self-powered product unit
-      if (productUnit.getUnitCount() == 1 && productUnit.getUnit(0) instanceof ProductUnit) {
-          final ProductUnit<?> powerUnit = (ProductUnit<?>) productUnit.getUnit(0);
-          // is the sub-unit known under a given label?
-          if (nameFor(powerUnit) == null)
-              // apply the power to the sub-units and format those instead
-              return format(ProductUnit.ofPow(powerUnit, productUnit.getUnitPow(0)), appendable);
-      }
-
-      int invNbr = 0;
-
-      // Write positive exponents first.
-      boolean start = true;
-      for (int i = 0; i < productUnit.getUnitCount(); i++) {
-        int pow = productUnit.getUnitPow(i);
-        if (pow >= 0) {
-          if (!start) {
-            appendable.append(MIDDLE_DOT); // Separator.
-          }
-          name = nameFor(productUnit.getUnit(i));
-          int root = productUnit.getUnitRoot(i);
-          append(appendable, name, pow, root);
-          start = false;
-        } else {
-          invNbr++;
-        }
-      }
-
-      // Write negative exponents.
-      if (invNbr != 0) {
-        if (start) {
-          appendable.append('1'); // e.g. 1/s
-        }
-        appendable.append('/');
-        if (invNbr > 1) {
-          appendable.append('(');
-        }
-        start = true;
-        for (int i = 0; i < productUnit.getUnitCount(); i++) {
-          int pow = productUnit.getUnitPow(i);
-          if (pow < 0) {
-            name = nameFor(productUnit.getUnit(i));
-            int root = productUnit.getUnitRoot(i);
-            if (!start) {
-              appendable.append(MIDDLE_DOT); // Separator.
-            }
-            append(appendable, name, -pow, root);
-            start = false;
-          }
-        }
-        if (invNbr > 1) {
-          appendable.append(')');
-        }
-      }
-      return appendable;
-    }
-
-    private static void append(Appendable appendable, CharSequence symbol, int pow, int root) throws IOException {
-      appendable.append(symbol);
-      if ((pow != 1) || (root != 1)) {
-        // Write exponent.
-        if ((pow == 2) && (root == 1)) {
-          appendable.append('\u00b2'); // Square
-        } else if ((pow == 3) && (root == 1)) {
-          appendable.append('\u00b3'); // Cubic
-        } else {
-          // Use general exponent form.
-          appendable.append('^');
-          appendable.append(String.valueOf(pow));
-          if (root != 1) {
-            appendable.append(':');
-            appendable.append(String.valueOf(root));
-          }
-        }
-      }
-    }
-
-    // private static final long serialVersionUID = 1L;
-
-    @Override
-    public Unit<?> parse(CharSequence csq) throws MeasurementParseException {
-      return parse(csq, 0);
-    }
-
-    protected Unit<?> parse(CharSequence csq, int index) throws IllegalArgumentException {
-      return parse(csq, new ParsePosition(index));
-    }
-
-    @Override
-    public Unit<?> parse(CharSequence csq, ParsePosition cursor) throws IllegalArgumentException {
-      return parseObject(csq.toString(), cursor);
-    }
-  }
-
-  /**
-   * This class represents the ASCII format.
-   */
-  protected final static class ASCIIFormat extends DefaultFormat {
-
-    @Override
-    protected String nameFor(Unit<?> unit) {
-      // First search if specific ASCII name should be used.
-      String name = unitToName.get(unit);
-      if (name != null)
-        return name;
-      // Else returns default name.
-      return DEFAULT.nameFor(unit);
-    }
-
-    @Override
-    protected Unit<?> unitFor(String name) {
-      // First search if specific ASCII name.
-      Unit<?> unit = nameToUnit.get(name);
-      if (unit != null)
-        return unit;
-      // Else returns default mapping.
-      return DEFAULT.unitFor(name);
-    }
-
-    @Override
-    public String toString() {
-        return "SimpleUnitFormat - ASCII";
-    }
-
-    @Override
-    public Appendable format(Unit<?> unit, Appendable appendable) throws IOException {
-      String name = nameFor(unit);
-      if (name != null)
-        return appendable.append(name);
-      if (!(unit instanceof ProductUnit))
-        throw new IllegalArgumentException("Cannot format given Object as a Unit");
-
-      ProductUnit<?> productUnit = (ProductUnit<?>) unit;
-      for (int i = 0; i < productUnit.getUnitCount(); i++) {
-        if (i != 0) {
-          appendable.append('*'); // Separator.
-        }
-        name = nameFor(productUnit.getUnit(i));
-        int pow = productUnit.getUnitPow(i);
-        int root = productUnit.getUnitRoot(i);
-        appendable.append(name);
-        if ((pow != 1) || (root != 1)) {
-          // Use general exponent form.
-          appendable.append('^');
-          appendable.append(String.valueOf(pow));
-          if (root != 1) {
-            appendable.append(':');
-            appendable.append(String.valueOf(root));
-          }
-        }
-      }
-      return appendable;
-    }
-
-    @Override
-    protected boolean isValidIdentifier(String name) {
-      if ((name == null) || (name.length() == 0))
-        return false;
-      // label must not begin with a digit or mathematical operator
-      return isUnitIdentifierPart(name.charAt(0)) && isAllASCII(name);
-      /*
-       * for (int i = 0; i < name.length(); i++) { if
-       * (!isAsciiCharacter(name.charAt(i))) return false; } return true;
-       */
-    }
-  }
-
-  /**
-   * Holds the unique symbols collection (base units or alternate units).
-   */
-  private static final Map<String, Unit<?>> SYMBOL_TO_UNIT = new HashMap<>();
-
-  private static String asciiPrefix(String prefix) {
-    return "µ".equals(prefix) ? "micro" : prefix;
-  }
-  
-  private static String asciiSymbol(String s) {
-      return "Ω".equals(s) ? "Ohm" : s;
-   }
-
-  /** to check if a string only contains US-ASCII characters */
-  protected static boolean isAllASCII(String input) {
-    boolean isASCII = true;
-    for (int i = 0; i < input.length(); i++) {
-      int c = input.charAt(i);
-      if (c > 0x7F) {
-        isASCII = false;
-        break;
-      }
-    }
-    return isASCII;
-  }
-  
-  // Initializations
-  static {
-    for (int i = 0; i < METRIC_UNITS.length; i++) {
-      Unit<?> si = METRIC_UNITS[i];
-      String symbol = (si instanceof BaseUnit) ? ((BaseUnit<?>) si).getSymbol() : ((AlternateUnit<?>) si).getSymbol();
-      DEFAULT.label(si, symbol);
-      if (isAllASCII(symbol))
-        ASCII.label(si, symbol);
-      for (int j = 0; j < METRIC_PREFIX_SYMBOLS.length; j++) {
-        Unit<?> u = si.prefix(MetricPrefix.values()[j]);
-        DEFAULT.label(u, METRIC_PREFIX_SYMBOLS[j] + symbol);
-        if ( "µ".equals(METRIC_PREFIX_SYMBOLS[j]) ) {
-          DEFAULT.label(u, MU + symbol);
-          ASCII.label(u, "micro" + asciiSymbol(symbol));
-        }
-      } // TODO what about BINARY_PREFIX here?
-    }
-    
-    // -- GRAM/KILOGRAM
-    
-    ASCII.label(Units.GRAM, "g");
-    DEFAULT.label(Units.GRAM, "g");
-    for(MetricPrefix prefix : MetricPrefix.values()) {
-        switch (prefix) {
-         case KILO:
-            DEFAULT.label(Units.KILOGRAM, "kg");
-            ASCII.label(Units.KILOGRAM, "kg");
-            break;
-         case MICRO:
-            DEFAULT.label(Units.GRAM.prefix(prefix), prefix.getSymbol()+"g");
-            ASCII.label(MICRO(Units.LITRE), "microg"); // instead of 'µg' -> 'microg'
-            break;
-          default:
-            ASCII.label(Units.GRAM.prefix(prefix), prefix.getSymbol()+"g");
-            DEFAULT.label(Units.GRAM.prefix(prefix), prefix.getSymbol()+"g");
-            break;
-        }
-    }
-    
-    DEFAULT.label(MICRO(Units.GRAM), MetricPrefix.MICRO.getSymbol() + "g");
-    // Hack, somehow µg is not found.
-    SYMBOL_TO_UNIT.put(MetricPrefix.MICRO.getSymbol() + "g", MICRO(Units.GRAM));
-    SYMBOL_TO_UNIT.put("μg", MICRO(Units.GRAM));
-    SYMBOL_TO_UNIT.put(MU + "g", MICRO(Units.GRAM));
-
-    // Alias and ASCIIFormat for Ohm
-    DEFAULT.alias(Units.OHM, "Ohm");
-    ASCII.label(Units.OHM, "Ohm");
-    for (int i = 0; i < METRIC_PREFIX_SYMBOLS.length; i++) {
-      DEFAULT.alias(Units.OHM.prefix(MetricPrefix.values()[i]), METRIC_PREFIX_SYMBOLS[i] + "Ohm");
-      ASCII.label(Units.OHM.prefix(MetricPrefix.values()[i]), asciiPrefix(METRIC_PREFIX_SYMBOLS[i]) + "Ohm");
-    }
-
-    // Special case for DEGREE_CELSIUS.
-    DEFAULT.label(Units.CELSIUS, "℃");
-    DEFAULT.alias(Units.CELSIUS, "°C");
-    ASCII.label(Units.CELSIUS, "Celsius");
-    for (int i = 0; i < METRIC_PREFIX_SYMBOLS.length; i++) {
-      DEFAULT.label(Units.CELSIUS.prefix(MetricPrefix.values()[i]), METRIC_PREFIX_SYMBOLS[i] + "℃");
-      DEFAULT.alias(Units.CELSIUS.prefix(MetricPrefix.values()[i]), METRIC_PREFIX_SYMBOLS[i] + "°C");
-      ASCII.label(Units.CELSIUS.prefix(MetricPrefix.values()[i]), asciiPrefix(METRIC_PREFIX_SYMBOLS[i]) + "Celsius");
-    }
-
-    DEFAULT.label(Units.PERCENT, "%");
-    DEFAULT.label(Units.METRE, "m");
-    ASCII.label(Units.METRE, "m");
-    DEFAULT.label(Units.SECOND, "s");
-    ASCII.label(Units.SECOND, "s");
-    DEFAULT.label(Units.MINUTE, "min");
-    DEFAULT.label(Units.HOUR, "h");
-    DEFAULT.label(Units.DAY, "day");
-    DEFAULT.alias(Units.DAY, "d");
-    DEFAULT.label(Units.WEEK, "week");
-    DEFAULT.label(Units.YEAR, "year");
-    DEFAULT.alias(Units.YEAR, "days365");
-    DEFAULT.label(Units.MONTH, "mo");
-    DEFAULT.alias(Units.MONTH, "mon");
-    DEFAULT.alias(Units.MONTH, "month");
-    ASCII.label(Units.KILOMETRE_PER_HOUR, "km/h");
-    DEFAULT.label(Units.KILOMETRE_PER_HOUR, "km/h");
-    DEFAULT.label(Units.CUBIC_METRE, "\u33A5");
-    ASCII.label(Units.CUBIC_METRE, "m3");
-    
-    // -- LITRE
-    
-    ASCII.label(Units.LITRE, "l");
-    DEFAULT.label(Units.LITRE, "l");
-    for(Prefix prefix : MetricPrefix.values()) {
-      if(prefix==MICRO) {
-        ASCII.label(MICRO(Units.LITRE), "microL"); // instead of 'µL' -> 'microL'
-      } else {
-        ASCII.label(Units.LITRE.prefix(prefix), prefix.getSymbol()+"L");
-      }
-      DEFAULT.label(Units.LITRE.prefix(prefix), prefix.getSymbol()+"l");
-    }   
-    DEFAULT.label(Units.NEWTON, "N");
-    ASCII.label(Units.NEWTON, "N");
-    DEFAULT.label(Units.RADIAN, "rad");
-    ASCII.label(Units.RADIAN, "rad");
-
-    DEFAULT.label(AbstractUnit.ONE, "one");
-    ASCII.label(AbstractUnit.ONE, "one");
-  }
 }
