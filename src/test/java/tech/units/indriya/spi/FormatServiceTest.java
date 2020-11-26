@@ -116,10 +116,38 @@ public class FormatServiceTest {
   }
   
   @Test
+  public void testGetAliasQuantityFormatFound() throws Exception {
+    final FormatService fs = ServiceProvider.current().getFormatService();
+    assertNotNull(fs);
+    final QuantityFormat qf = fs.getQuantityFormat("NumberSpace");
+    assertNotNull(qf);
+    assertEquals("NumberDelimiterQuantityFormat", qf.toString());
+  }
+  
+  @Test
+  public void testGetAliasLCQuantityFormatFound() throws Exception {
+    final FormatService fs = ServiceProvider.current().getFormatService();
+    assertNotNull(fs);
+    final QuantityFormat qf = fs.getQuantityFormat("numberspace");
+    assertNotNull(qf);
+    assertEquals("NumberDelimiterQuantityFormat", qf.toString());
+  }
+  
+  @Test
   public void testGetLocalQuantityFormatFound() throws Exception {
     final FormatService fs = ServiceProvider.current().getFormatService();
     assertNotNull(fs);
     final QuantityFormat qf = fs.getQuantityFormat("Local");
+    assertNotNull(qf);
+    assertEquals("NumberDelimiterQuantityFormat", qf.toString());
+    assertTrue(qf.isLocaleSensitive());
+  }
+  
+  @Test
+  public void testGetLocalQuantityUCFormatFound() throws Exception {
+    final FormatService fs = ServiceProvider.current().getFormatService();
+    assertNotNull(fs);
+    final QuantityFormat qf = fs.getQuantityFormat("LOCAL");
     assertNotNull(qf);
     assertEquals("NumberDelimiterQuantityFormat", qf.toString());
     assertTrue(qf.isLocaleSensitive());

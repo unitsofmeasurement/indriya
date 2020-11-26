@@ -49,19 +49,21 @@ import tech.uom.lib.common.function.IntPrioritySupplier;
  * Default format service.
  *
  * @author Werner Keil
- * @version 2.1, November 16, 2020
+ * @version 2.2, November 16, 2020
  * @since 2.0
  */
 public class DefaultFormatService implements FormatService, IntPrioritySupplier {
   private static final int PRIO = 1000;
 	
-  private static final String DEFAULT_QUANTITY_FORMAT_NAME = "Simple";
+  private static final String DEFAULT_QUANTITY_FORMAT_NAME = "SIMPLE";
   
   private static final String DEFAULT_UNIT_FORMAT_NAME = Flavor.Default.name();
 
   private final Map<String, QuantityFormat> quantityFormats = new HashMap<>();
   
   private final Map<String, UnitFormat> unitFormats = new HashMap<>();
+  
+  private final Map<String, String> quantityFormatAliases = new HashMap<>();
   
   /**
    * Holds the default format instance (EBNFUnitFormat).
@@ -78,14 +80,21 @@ public class DefaultFormatService implements FormatService, IntPrioritySupplier 
 	unitFormats.put("Local", LocalUnitFormat.getInstance());
 
     quantityFormats.put(DEFAULT_QUANTITY_FORMAT_NAME, SimpleQuantityFormat.getInstance());
-    quantityFormats.put("NumberDelimiter", NumberDelimiterQuantityFormat.getInstance());
+    quantityFormats.put("NUMBERDELIMITER", NumberDelimiterQuantityFormat.getInstance());
     quantityFormats.put("EBNF", EBNF_QUANTITY_FORMAT);
-    quantityFormats.put("Local", NumberDelimiterQuantityFormat.getInstance(LOCALE_SENSITIVE));
+    quantityFormats.put("LOCAL", NumberDelimiterQuantityFormat.getInstance(LOCALE_SENSITIVE));
+    
+    quantityFormatAliases.put("NUMBERSPACE", "NUMBERDELIMITER");
   }
 
   @Override
-  public QuantityFormat getQuantityFormat(String name) {
-    return quantityFormats.get(name);
+  public QuantityFormat getQuantityFormat(String key) {
+	  Objects.requireNonNull(key, "Format name or alias required");
+		String alias = quantityFormatAliases.get(key.toUpperCase());
+		if (alias != null && alias.length() > 0) {
+			return quantityFormats.get(alias.toUpperCase());
+		}
+    return quantityFormats.get(key.toUpperCase());
   }
 
   @Override
