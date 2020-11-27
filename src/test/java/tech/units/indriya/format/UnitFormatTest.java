@@ -43,12 +43,11 @@ import javax.measure.format.UnitFormat;
 import javax.measure.quantity.Frequency;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Speed;
+import javax.measure.quantity.Volume;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import tech.units.indriya.format.LocalUnitFormat;
-import tech.units.indriya.format.SimpleUnitFormat;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.Units;
 
@@ -188,12 +187,27 @@ public class UnitFormatTest {
 		final UnitFormat simpleFormat = SimpleUnitFormat.getInstance();
 		assertThrows(MeasurementParseException.class, () -> simpleFormat.parse("bl//^--1a"));
 	}
-
+	
 	@Test
 	public void testParseM3() {
+		Unit<?> u = format.parse("m³");
+		assertNotNull(u);
+		assertEquals(Units.CUBIC_METRE, u);
+	}
+	
+	@Test
+	public void testParseAsciiM3() {
 		final UnitFormat simpleFormat = SimpleUnitFormat.getInstance(SimpleUnitFormat.Flavor.ASCII);
 		Unit<?> u = simpleFormat.parse("m^3");
 		assertNotNull(u);
 		assertEquals(Units.CUBIC_METRE, u);
+	}
+	
+	@Test
+	public void testParseAsciiM3Typed() {
+		final UnitFormat simpleFormat = SimpleUnitFormat.getInstance(SimpleUnitFormat.Flavor.ASCII);
+		Unit<Volume> v = simpleFormat.parse("m^3").asType(Volume.class);
+		assertNotNull(v);
+		assertEquals(Units.CUBIC_METRE, v);
 	}
 }

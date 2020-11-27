@@ -81,7 +81,7 @@ import static tech.units.indriya.format.FormatConstants.MIDDLE_DOT;
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author Eric Russell
  * @author Andi Huber
- * @version 2.2, Nov. 25, 2020
+ * @version 2.3, Nov. 27, 2020
  * @since 1.0
  */
 public abstract class SimpleUnitFormat extends AbstractUnitFormat {
@@ -1068,6 +1068,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
         for (int i = 0; i < METRIC_PREFIX_SYMBOLS.length; i++) {
             asciiFormat.label(Units.CELSIUS.prefix(MetricPrefix.values()[i]), asciiPrefix(METRIC_PREFIX_SYMBOLS[i]) + "Celsius");
         }
+        asciiFormat.alias(Units.CELSIUS, "Cel");
 
         asciiFormat.label(Units.METRE, "m");
         asciiFormat.label(Units.SECOND, "s");
