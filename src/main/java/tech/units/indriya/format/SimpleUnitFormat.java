@@ -490,7 +490,15 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
             @SuppressWarnings({ "rawtypes", "unchecked" })
             @Override
             public Unit<? extends Quantity> parseProductUnit(CharSequence csq, ParsePosition pos) throws MeasurementParseException {
-                Unit result = AbstractUnit.ONE;
+            	Unit result = null;
+            	if (csq == null) {
+                	throw new MeasurementParseException("Cannot parse null", csq, pos.getIndex());
+                } else {
+                	result = unitFor(csq.toString());
+                	if (result != null)
+                		return result;
+                }
+            	result = AbstractUnit.ONE;
                 Token token = nextToken(csq, pos);
                 switch (token) {
                 case IDENTIFIER:
@@ -1022,6 +1030,9 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
 
         defaultFormat.label(AbstractUnit.ONE, "one");
         
+        defaultFormat.alias(Units.SQUARE_METRE, "m2");
+        defaultFormat.alias(Units.CUBIC_METRE, "m3");
+        
         return defaultFormat;
     }
     
@@ -1072,9 +1083,10 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
 
         asciiFormat.label(Units.METRE, "m");
         asciiFormat.label(Units.SECOND, "s");
-        asciiFormat.label(Units.KILOMETRE_PER_HOUR, "km/h");
-        asciiFormat.label(Units.CUBIC_METRE, "m3");
-
+        asciiFormat.label(Units.KILOMETRE_PER_HOUR, "km/h");        
+        asciiFormat.alias(Units.SQUARE_METRE, "m2");
+        asciiFormat.alias(Units.CUBIC_METRE, "m3");
+        
         // -- LITRE
 
         asciiFormat.label(Units.LITRE, "l");

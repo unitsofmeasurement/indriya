@@ -312,7 +312,6 @@ public class CompoundQuantityFormatTest {
         assertEquals("3_day 4_h 48_min", format1.format(t1));
     }
     
-    @SuppressWarnings("unchecked")
     @Test
     public void testParseCompNumDelimLen() {
         NumberDelimiterQuantityFormat format1 = new NumberDelimiterQuantityFormat.Builder()
@@ -327,7 +326,6 @@ public class CompoundQuantityFormatTest {
         assertThat(parsed1.getUnits(), contains(Units.METRE, CENTI(Units.METRE)));
     }
     
-    @SuppressWarnings("unchecked")
     @Test
     public void testParseCompNumDelimTime() {
         final NumberDelimiterQuantityFormat format1 = new NumberDelimiterQuantityFormat.Builder()

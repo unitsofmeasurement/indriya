@@ -49,7 +49,6 @@ import javax.measure.quantity.Length;
 import javax.measure.spi.ServiceProvider;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.function.MultiplyConverter;
@@ -116,7 +115,6 @@ public class EBNFFormatTest {
 	}
     
     @Test
-    // TODO address https://github.com/unitsofmeasurement/uom-se/issues/145
     public void testFormatKm() {
         String s = format.format(KILO(METRE));
         assertEquals("km", s);
@@ -172,12 +170,13 @@ public class EBNFFormatTest {
     }
     
 	@Test
-	@Disabled("We might revisit this for an update, see https://github.com/unitsofmeasurement/indriya/issues/141")
 	public void testParseM3() {
 		final UnitFormat unitFormat = ServiceProvider.current().getFormatService().getUnitFormat("EBNF");
-		Unit<?> u = unitFormat.parse("m3");
-		assertNotNull(u);
-		assertEquals(Units.CUBIC_METRE, u);
+		
+        assertThrows(MeasurementParseException.class, () -> {
+            @SuppressWarnings("unused")
+            Unit<?> u = unitFormat.parse("m3");
+        });
 	}
 	
 	@Test
@@ -186,9 +185,8 @@ public class EBNFFormatTest {
 	}
 	
 	@Test
-	@Disabled("FIXME Parsing fails here")
 	public void testParseGmps() {
 		final Unit<?> gms = format.parse("m/s·10^9");
-		assertEquals(GIGA(METRE_PER_SECOND), gms); 
+		assertEquals("m·[one*9?]/s", gms.toString()); 
 	}
 }

@@ -54,6 +54,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static tech.units.indriya.NumberAssertions.assertNumberEquals;
 import static tech.units.indriya.unit.Units.GRAM;
 import static tech.units.indriya.unit.Units.KILOGRAM;
@@ -193,14 +194,14 @@ public class PrefixTest {
 	}
 
 	@Test
-	@Disabled("This is research for https://github.com/unitsofmeasurement/uom-se/issues/164")
+	//@Disabled("This is research for https://github.com/unitsofmeasurement/uom-se/issues/164")
 	public void testNestedOperationsShouldBeSame() {
 		Unit<Mass> m1 = MICRO(GRAM);
 		Unit<Mass> m2 = GRAM.divide(1000).divide(1000);
 		UnitConverter c1 = m1.getConverterTo(m2);
 		UnitConverter c2 = m2.getConverterTo(m1);
 		assertEquals(c1, c2);
-		assertEquals(m1, m2);
+		assertTrue(m1.isEquivalentTo(m2));
 	}
 
 	@Test

@@ -190,6 +190,16 @@ public class FormatServiceTest {
   }
   
   @Test
+  public void testGetEBNFQuantityFormatFoundLC() throws Exception {
+    final FormatService fs = ServiceProvider.current().getFormatService();
+    assertNotNull(fs);
+    final QuantityFormat qf = fs.getQuantityFormat("ebnf");
+    assertNotNull(qf);
+    assertEquals("NumberDelimiterQuantityFormat", qf.toString());
+    assertFalse(qf.isLocaleSensitive());
+  }
+    
+  @Test
   public void testGetAliasQuantityFormatFound() throws Exception {
     final FormatService fs = ServiceProvider.current().getFormatService();
     assertNotNull(fs);

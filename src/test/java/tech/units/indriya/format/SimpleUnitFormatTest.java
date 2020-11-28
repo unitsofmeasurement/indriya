@@ -233,10 +233,15 @@ public class SimpleUnitFormatTest {
     }
     
     @Test
-    @Disabled("Trying to address #141")
     public void testParseM3() {
         Unit<?> u = SimpleUnitFormat.getInstance(ASCII).parse("m3");
-        assertEquals("1/l", u.toString());
+        assertEquals(Units.CUBIC_METRE, u);
+    }
+    
+    @Test
+    public void testParseM3Alias() {
+        Unit<?> u = SimpleUnitFormat.getInstance().parse("m3");
+        assertEquals(Units.CUBIC_METRE, u);
     }
     
     @Test
