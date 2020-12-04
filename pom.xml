@@ -61,7 +61,7 @@
 		<osgi.annotation.version>6.0.0</osgi.annotation.version>
 
 		<!-- Test settings -->
-		 <junit.platform.version>1.7.0</junit.platform.version>   
+		<junit.platform.version>1.7.0</junit.platform.version>   
 		<hamcrest.version>2.2</hamcrest.version>
 		<excludedTests>**/Local*Test.java</excludedTests>
 	</properties>
