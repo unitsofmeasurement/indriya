@@ -39,6 +39,7 @@ import tech.units.indriya.spi.NumberSystem;
  * 
  * @author Andi Huber
  * @author Werner Keil
+ * @version 1.1
  * @since 2.0
  */
 public class Calculator {
@@ -50,7 +51,7 @@ public class Calculator {
      * This implementation is *not* thread-safe, hence threads should not share instances of this. 
      * @return a {@code Calculator} initialized with the default {@link NumberSystem} 
      */
-    protected static Calculator getInstance() {
+    private static Calculator getInstance() {
         return new Calculator(Calculus.currentNumberSystem());
     }
 
@@ -206,7 +207,4 @@ public class Calculator {
     public boolean isLessThanOne() {
         return ns.isLessThanOne(acc);
     }
-
-  
-    
 }
