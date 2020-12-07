@@ -38,6 +38,7 @@ import tech.units.indriya.spi.NumberSystem;
  * Provides arithmetic on Java {@link Number}s utilizing a provided {@link NumberSystem}.    
  * 
  * @author Andi Huber
+ * @author Werner Keil
  * @since 2.0
  */
 public class Calculator {
@@ -74,7 +75,7 @@ public class Calculator {
      * @param number
      * @return self
      */
-    public Calculator load(Number number) {
+    private Calculator load(Number number) {
         Objects.requireNonNull(number);
         this.acc = ns.narrow(number);
         return this;
