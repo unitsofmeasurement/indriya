@@ -46,6 +46,7 @@ import tech.units.indriya.internal.function.Calculator;
 import tech.units.indriya.internal.function.radix.MixedRadixSupport;
 import tech.units.indriya.internal.function.radix.Radix;
 import tech.units.indriya.quantity.CompoundQuantity;
+import tech.units.indriya.quantity.MixedQuantity;
 import tech.units.indriya.quantity.Quantities;
 
 /**
@@ -173,6 +174,33 @@ public class MixedRadix<Q extends Quantity<Q>> {
 	}
 
     /**
+     * Creates a {@link MixedQuantity} from given {@code values} and {@code scale}.
+     * <p>
+     * Note: Not every {@code MixedQuantity} can be represented by a {@code MixedRadix}. 
+     * {@code MixedRadix} strictly requires its coefficients to be in decreasing order of significance, 
+     * while a {@code MixedQuantity} in principle does not.
+     * 
+     * @param values - numbers corresponding to the radix coefficients in most significant first order, 
+     *      allowed to be of shorter length than the total count of radix coefficients of this 
+     *      {@code MixedRadix} instance
+     * @param scale - the {@link Scale} to be used for the elements of the returned {@link CompoundQuantity}
+     */
+	public MixedQuantity<Q> createMixedQuantity(final Number[] values, final Scale scale) {
+		Objects.requireNonNull(scale);
+		guardAgainstIllegalNumbersArgument(values);
+
+		List<Quantity<Q>> quantities = new ArrayList<>();
+		for (int i = 0; i < values.length; i++) {
+			quantities.add(Quantities.getQuantity(values[i], mixedRadixUnits.get(i), scale));
+		}
+		return MixedQuantity.of(quantities);
+	}
+
+	public MixedQuantity<Q> createMixedQuantity(Number... values) {
+		return createMixedQuantity(values, Scale.ABSOLUTE);
+	}
+	
+    /**
      * Creates a {@link CompoundQuantity} from given {@code values} and {@code scale}.
      * <p>
      * Note: Not every {@code CompoundQuantity} can be represented by a {@code MixedRadix}. 
@@ -183,6 +211,7 @@ public class MixedRadix<Q extends Quantity<Q>> {
      *      allowed to be of shorter length than the total count of radix coefficients of this 
      *      {@code MixedRadix} instance
      * @param scale - the {@link Scale} to be used for the elements of the returned {@link CompoundQuantity}
+     * @deprecated use #getMixedQuantity
      */
 	public CompoundQuantity<Q> createCompoundQuantity(final Number[] values, final Scale scale) {
 		Objects.requireNonNull(scale);
@@ -195,6 +224,7 @@ public class MixedRadix<Q extends Quantity<Q>> {
 		return CompoundQuantity.of(quantities);
 	}
 
+	@Deprecated
 	public CompoundQuantity<Q> createCompoundQuantity(Number... values) {
 		return createCompoundQuantity(values, Scale.ABSOLUTE);
 	}

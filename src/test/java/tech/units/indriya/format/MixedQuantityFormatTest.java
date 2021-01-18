@@ -61,7 +61,7 @@ import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.NumberAssertions;
 import tech.units.indriya.function.MixedRadix;
-import tech.units.indriya.quantity.CompoundQuantity;
+import tech.units.indriya.quantity.MixedQuantity;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.unit.Units;
 
@@ -70,7 +70,7 @@ import tech.units.indriya.unit.Units;
  * @author Andi Huber
  *
  */
-public class CompoundQuantityFormatTest {
+public class MixedQuantityFormatTest {
 
     static {
         SimpleUnitFormat.getInstance().label(FOOT, "ft");
@@ -260,7 +260,7 @@ public class CompoundQuantityFormatTest {
                 .setUnitFormat(SimpleUnitFormat.getInstance())
                 .setDelimiter("_").setRadixPartsDelimiter(" ")
                 .build();
-        final CompoundQuantity<Length> l1 = CompoundQuantity.of(Quantities.getQuantity(1, Units.METRE), 
+        final MixedQuantity<Length> l1 = MixedQuantity.of(Quantities.getQuantity(1, Units.METRE), 
                                                           Quantities.getQuantity(70, CENTI(Units.METRE)));
         assertEquals("1_m 70_cm", format1.format(l1));
     }
@@ -274,7 +274,7 @@ public class CompoundQuantityFormatTest {
                 .build();
         @SuppressWarnings("unchecked")
         final Quantity<Length>[] quants = new Quantity[] { Quantities.getQuantity(1, Units.METRE),  Quantities.getQuantity(70, CENTI(Units.METRE)) };
-        final CompoundQuantity<Length> l1 = CompoundQuantity.of(quants);
+        final MixedQuantity<Length> l1 = MixedQuantity.of(quants);
         assertEquals("1_m 70_cm", format1.format(l1));
     }
     
@@ -288,7 +288,7 @@ public class CompoundQuantityFormatTest {
         final List<Quantity<Length>> quants = new ArrayList<>();
         quants.add(Quantities.getQuantity(1, Units.METRE));
         quants.add(Quantities.getQuantity(70, CENTI(Units.METRE)));
-        final CompoundQuantity<Length> l1 = CompoundQuantity.of(quants);
+        final MixedQuantity<Length> l1 = MixedQuantity.of(quants);
         assertEquals("1_m 70_cm", format1.format(l1));
     }
     
@@ -301,14 +301,14 @@ public class CompoundQuantityFormatTest {
                 .build();
         @SuppressWarnings("unchecked")
         final Quantity<Length>[] quants = new Quantity[] { Quantities.getQuantity(1, Units.METRE),  Quantities.getQuantity(70, CENTI(Units.METRE)) };
-        CompoundQuantity<Length> l1 = CompoundQuantity.of(quants);
+        MixedQuantity<Length> l1 = MixedQuantity.of(quants);
 
         assertEquals("1_m 70_cm", format1.format(l1));
         
         @SuppressWarnings("unchecked")
         final Quantity<Time>[] timeQuants = new Quantity[] { Quantities.getQuantity(3, Units.DAY),  Quantities.getQuantity(4, Units.HOUR), 
                 Quantities.getQuantity(48, Units.MINUTE)};
-        final CompoundQuantity<Time> t1 = CompoundQuantity.of(timeQuants);
+        final MixedQuantity<Time> t1 = MixedQuantity.of(timeQuants);
         assertEquals("3_day 4_h 48_min", format1.format(t1));
     }
     
@@ -320,7 +320,7 @@ public class CompoundQuantityFormatTest {
                 .setDelimiter(" ")
                 .setRadixPartsDelimiter(";")
                 .build();
-        final CompoundQuantity<?> parsed1 = format1.parseCompound("1 m;30 cm");
+        final MixedQuantity<?> parsed1 = format1.parseMixed("1 m;30 cm");
         assertNotNull(parsed1);
         assertThat(parsed1.getUnits(), hasSize(2));
         assertThat(parsed1.getUnits(), contains(Units.METRE, CENTI(Units.METRE)));
@@ -332,7 +332,7 @@ public class CompoundQuantityFormatTest {
             .setNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH))
             .setUnitFormat(SimpleUnitFormat.getInstance())
             .setDelimiter(" ").setRadixPartsDelimiter(":").build();
-        final CompoundQuantity<?> parsed1 = format1.parseCompound("1 h:40 min:10 s");
+        final MixedQuantity<?> parsed1 = format1.parseMixed("1 h:40 min:10 s");
         assertThat(parsed1.getUnits(), hasSize(3));
         assertThat(parsed1.getUnits(), contains(Units.HOUR, Units.MINUTE, Units.SECOND));
     }
@@ -348,7 +348,7 @@ public class CompoundQuantityFormatTest {
                 .mix(PICA);
         
         Quantity<Length> lengthQuantity = mixedRadix.createQuantity(1, 2, 3);
-        CompoundQuantity<Length> lengthCompound = mixedRadix.createCompoundQuantity(1, 2, 3);
+        MixedQuantity<Length> lengthCompound = mixedRadix.createMixedQuantity(1, 2, 3);
         
         DecimalFormat realFormat = (DecimalFormat) DecimalFormat.getInstance(Locale.ENGLISH);
         realFormat.setDecimalSeparatorAlwaysShown(true);
@@ -381,7 +381,7 @@ public class CompoundQuantityFormatTest {
 
         // when 
         @SuppressWarnings("rawtypes")
-		CompoundQuantity lengthComp = mixedRadixFormat.parseCompound("1 ft 2 in");
+		MixedQuantity lengthComp = mixedRadixFormat.parseMixed("1 ft 2 in");
         Quantity<?> lengthSingle = mixedRadixFormat.parse("1 ft 2 in");
         
         // then

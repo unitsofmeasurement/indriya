@@ -41,6 +41,7 @@ import javax.measure.format.MeasurementParseException;
 import javax.measure.format.QuantityFormat;
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.quantity.CompoundQuantity;
+import tech.units.indriya.quantity.MixedQuantity;
 import tech.uom.lib.common.function.Parser;
 
 /**
@@ -178,6 +179,18 @@ public abstract class AbstractQuantityFormat extends Format implements QuantityF
     }
     
     /**
+     * Convenience method equivalent to {@link #format(MixedQuantity, Appendable)} except it does not raise an IOException.
+     *
+     * @param mixed
+     *            the mixed quantity to format.
+     * @param dest
+     *            the appendable destination.
+     * @return the specified <code>StringBuilder</code>.
+     */
+    protected abstract StringBuffer formatMixed(MixedQuantity<?> mixed, StringBuffer dest);
+
+    
+    /**
      * Convenience method equivalent to {@link #format(CompoundQuantity, Appendable)} except it does not raise an IOException.
      *
      * @param comp
@@ -185,6 +198,7 @@ public abstract class AbstractQuantityFormat extends Format implements QuantityF
      * @param dest
      *            the appendable destination.
      * @return the specified <code>StringBuilder</code>.
+     * @deprecated use #formatMixed
      */
     protected abstract StringBuffer formatCompound(CompoundQuantity<?> comp, StringBuffer dest);
 }

@@ -41,7 +41,7 @@ import javax.measure.format.MeasurementParseException;
 import javax.measure.format.UnitFormat;
 
 import tech.units.indriya.internal.format.RationalNumberFormat;
-import tech.units.indriya.quantity.MixedQuantity;
+import tech.units.indriya.quantity.CompoundQuantity;
 import tech.units.indriya.quantity.Quantities;
 
 /**
@@ -49,12 +49,13 @@ import tech.units.indriya.quantity.Quantities;
  * 
  * @author keilw
  * @since 2.0
+ * @deprecated Use CommonFormatter, only for backward-compatibility until a future version 
  */
-abstract class CommonFormatter {
+abstract class CommonFormatterOld {
     private static final String ERR_PRIMARY_UNIT_NOT_FOUND = "The primary unit <%s> is not part of the compound units <%s>"; //$NON-NLS-1$
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    static MixedQuantity<?> parseMixed(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final String delimiter,
+    static CompoundQuantity<?> parseCompound(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final String delimiter,
             final String mixDelimiter, final int position) throws IllegalArgumentException, MeasurementParseException {
         final String section = str.substring(position);
         final String[] sectionParts = section.split(mixDelimiter);
@@ -79,17 +80,17 @@ abstract class CommonFormatter {
         }
         final Quantity[] qArray = new Quantity[quants.size()];
         quants.toArray(qArray);
-        MixedQuantity<?> comp = MixedQuantity.of(qArray);
+        CompoundQuantity<?> comp = CompoundQuantity.of(qArray);
         return comp;
     }
     
-    static MixedQuantity<?> parseMixed(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final String delimiter,
+    static CompoundQuantity<?> parseCompound(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final String delimiter,
             final String mixDelimiter) throws IllegalArgumentException, MeasurementParseException {
-        return parseMixed(str, numberFormat, unitFormat, delimiter, mixDelimiter, 0);
+        return parseCompound(str, numberFormat, unitFormat, delimiter, mixDelimiter, 0);
     }
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    static MixedQuantity<?> parseMixed(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final String delimiter, final int position) throws IllegalArgumentException, MeasurementParseException {
+    static CompoundQuantity<?> parseCompound(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final String delimiter, final int position) throws IllegalArgumentException, MeasurementParseException {
         Objects.requireNonNull(str);
         final String section = str.substring(position);
         final List<Quantity<?>> quants = new ArrayList<>();
@@ -114,19 +115,19 @@ abstract class CommonFormatter {
         }
         Quantity[] qArray = new Quantity[quants.size()];
         qArray= quants.toArray(qArray);
-        MixedQuantity<?> comp = MixedQuantity.of(qArray);
+        CompoundQuantity<?> comp = CompoundQuantity.of(qArray);
         return comp;
     }
     
-    static MixedQuantity<?> parseMixed(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final String delimiter) throws IllegalArgumentException, MeasurementParseException {
-        return parseMixed(str, numberFormat, unitFormat, delimiter, 0);
+    static CompoundQuantity<?> parseCompound(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final String delimiter) throws IllegalArgumentException, MeasurementParseException {
+        return parseCompound(str, numberFormat, unitFormat, delimiter, 0);
     }
     
     // Decompose into Quantity
     
     @SuppressWarnings("unchecked")
     static  Quantity<?> parseCompoundAsLeading(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final String delimiter, final String compDelim, final int position) throws IllegalArgumentException, MeasurementParseException {
-        final MixedQuantity<?> comp = parseMixed(str, numberFormat, unitFormat, delimiter, compDelim, position);
+        final CompoundQuantity<?> comp = parseCompound(str, numberFormat, unitFormat, delimiter, compDelim, position);
         @SuppressWarnings("rawtypes")
         final Unit u = getLeadingUnit(comp);
         return comp.to(u);
@@ -134,7 +135,7 @@ abstract class CommonFormatter {
     
     @SuppressWarnings("unchecked")
     static  Quantity<?> parseCompoundAsLeading(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final String delimiter, final int position) throws IllegalArgumentException, MeasurementParseException {
-        final MixedQuantity<?> comp = parseMixed(str, numberFormat, unitFormat, delimiter, position);
+        final CompoundQuantity<?> comp = parseCompound(str, numberFormat, unitFormat, delimiter, position);
         @SuppressWarnings("rawtypes")
         final Unit u = getLeadingUnit(comp);
         return comp.to(u);
@@ -146,7 +147,7 @@ abstract class CommonFormatter {
     
     @SuppressWarnings({ "rawtypes", "unchecked" })
     static Quantity<?> parseCompoundAsPrimary(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final Unit primaryUnit, final String delimiter, final String compDelim, final int position) throws IllegalArgumentException, MeasurementParseException {
-        final MixedQuantity<?> comp = parseMixed(str, numberFormat, unitFormat, delimiter, compDelim, position);
+        final CompoundQuantity<?> comp = parseCompound(str, numberFormat, unitFormat, delimiter, compDelim, position);
         if (comp.getUnits().contains(primaryUnit)) {
             return comp.to(primaryUnit);
         } else {
@@ -156,7 +157,7 @@ abstract class CommonFormatter {
     
     @SuppressWarnings({ "rawtypes", "unchecked" })
     static Quantity<?> parseCompoundAsPrimary(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final Unit primaryUnit, final String delimiter, final int position) throws IllegalArgumentException, MeasurementParseException {
-        final MixedQuantity<?> comp = parseMixed(str, numberFormat, unitFormat, delimiter, position);
+        final CompoundQuantity<?> comp = parseCompound(str, numberFormat, unitFormat, delimiter, position);
         if (comp.getUnits().contains(primaryUnit)) {
             return comp.to(primaryUnit);
         } else {
@@ -170,7 +171,7 @@ abstract class CommonFormatter {
     
     // Private helpers
     
-    private static final <Q extends Quantity<Q>> Unit<Q> getLeadingUnit(final MixedQuantity<Q> comp) {
+    private static final <Q extends Quantity<Q>> Unit<Q> getLeadingUnit(final CompoundQuantity<Q> comp) {
         Objects.requireNonNull(comp);
         Unit<Q> unit = null;
         for(Unit<Q> u: comp.getUnits()) {

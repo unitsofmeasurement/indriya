@@ -46,6 +46,7 @@ import javax.measure.format.UnitFormat;
 
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.quantity.CompoundQuantity;
+import tech.units.indriya.quantity.MixedQuantity;
 import tech.units.indriya.quantity.Quantities;
 
 /**
@@ -337,7 +338,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
     }
 
     @Override
-    protected StringBuffer formatCompound(CompoundQuantity<?> comp, StringBuffer dest) {
+    protected StringBuffer formatMixed(MixedQuantity<?> comp, StringBuffer dest) {
         final StringBuffer sb = new StringBuffer();
         int i = 0;
         for (Quantity<?> q : comp.getQuantities()) {
@@ -350,13 +351,56 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
         return sb;
     }
 
+    public MixedQuantity<?> parseMixed(CharSequence csq, ParsePosition cursor) throws IllegalArgumentException, MeasurementParseException {
+        final String str = csq.toString();
+        final int index = cursor.getIndex();
+        if (mixDelimiter != null && !mixDelimiter.equals(delimiter)) {
+                return CommonFormatter.parseMixed(str, numberFormat, unitFormat, delimiter, mixDelimiter, index);
+        } else if (mixDelimiter != null && mixDelimiter.equals(delimiter)) {
+                return CommonFormatter.parseMixed(str, numberFormat, unitFormat, delimiter, index);
+        }
+        final Number number = numberFormat.parse(str, cursor);
+        if (number == null)
+            throw new IllegalArgumentException("Number cannot be parsed");
+        final String[] parts = str.substring(index).split(delimiter);
+        if (parts.length < 2) {
+            throw new IllegalArgumentException("No Unit found");
+        }
+        final Unit unit = unitFormat.parse(parts[1]);
+        return MixedQuantity.of(Quantities.getQuantity(number, unit));
+    }
+
+    protected MixedQuantity<?> parseMixed(CharSequence csq, int index) throws IllegalArgumentException, MeasurementParseException {
+        return parseMixed(csq, new ParsePosition(index));
+    }
+
+    public MixedQuantity<?> parseMixed(CharSequence csq) throws IllegalArgumentException, MeasurementParseException {
+        return parseMixed(csq, 0);
+    }
+        
+    @Override
+    @Deprecated
+    protected StringBuffer formatCompound(CompoundQuantity<?> comp, StringBuffer dest) {
+        final StringBuffer sb = new StringBuffer();
+        int i = 0;
+        for (Quantity<?> q : comp.getQuantities()) {
+            sb.append(format(q));
+            if (i < comp.getQuantities().size() - 1 ) {
+                sb.append((mixDelimiter != null ? mixDelimiter : DEFAULT_DELIMITER)); // we need null for parsing but not
+            }
+            i++;
+        }
+        return sb;
+    }
+    
+    @Deprecated
     public CompoundQuantity<?> parseCompound(CharSequence csq, ParsePosition cursor) throws IllegalArgumentException, MeasurementParseException {
         final String str = csq.toString();
         final int index = cursor.getIndex();
         if (mixDelimiter != null && !mixDelimiter.equals(delimiter)) {
-                return CommonFormatter.parseCompound(str, numberFormat, unitFormat, delimiter, mixDelimiter, index);
+                return CommonFormatterOld.parseCompound(str, numberFormat, unitFormat, delimiter, mixDelimiter, index);
         } else if (mixDelimiter != null && mixDelimiter.equals(delimiter)) {
-                return CommonFormatter.parseCompound(str, numberFormat, unitFormat, delimiter, index);
+                return CommonFormatterOld.parseCompound(str, numberFormat, unitFormat, delimiter, index);
         }
         final Number number = numberFormat.parse(str, cursor);
         if (number == null)
@@ -369,10 +413,12 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
         return CompoundQuantity.of(Quantities.getQuantity(number, unit));
     }
 
+    @Deprecated
     protected CompoundQuantity<?> parseCompound(CharSequence csq, int index) throws IllegalArgumentException, MeasurementParseException {
         return parseCompound(csq, new ParsePosition(index));
     }
 
+    @Deprecated
     public CompoundQuantity<?> parseCompound(CharSequence csq) throws IllegalArgumentException, MeasurementParseException {
         return parseCompound(csq, 0);
     }

@@ -58,12 +58,12 @@ import tech.uom.lib.common.function.QuantityConverter;
  * 
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author Andi Huber
- * @version 1.7, January 18, 2021
- * @see <a href="http://www.thefreedictionary.com/Compound+quantity">Free Dictionary: Compound Quantity</a>
- * @see <a href="https://www.yourdictionary.com/compound-number">Your Dictionary: Compound Number</a>
- * @deprecated Use {@link MixedQuantity}
+ * @version 1.0, January 18, 2021
+ * @see <a href="https://www.wolfram.com/language/11/units-and-dates/mixed-quantities.html">Wolfram Language: Mixed Quantities</a>
+ * @see <a href="https://www.mathsisfun.com/definitions/mixed-number.html">Math is Fun: Mixed Number</a> 
  */
-public class CompoundQuantity<Q extends Quantity<Q>> implements QuantityConverter<Q>, Serializable {
+public class MixedQuantity<Q extends Quantity<Q>> implements QuantityConverter<Q>, Serializable {
+    // TODO could it be final?
     /**
     * 
     */
@@ -81,7 +81,7 @@ public class CompoundQuantity<Q extends Quantity<Q>> implements QuantityConverte
     /**
      * @param quantities - the list of quantities to construct this CompoundQuantity.
      */
-    protected CompoundQuantity(final List<Quantity<Q>> quantities) {
+    protected MixedQuantity(final List<Quantity<Q>> quantities) {
         
         final List<Unit<Q>> unitList = new ArrayList<>();
         
@@ -137,9 +137,9 @@ public class CompoundQuantity<Q extends Quantity<Q>> implements QuantityConverte
      * 
      */
     @SafeVarargs
-    public static <Q extends Quantity<Q>> CompoundQuantity<Q> of(Quantity<Q>... quantities) {
+    public static <Q extends Quantity<Q>> MixedQuantity<Q> of(Quantity<Q>... quantities) {
         guardAgainstIllegalQuantitiesArgument(quantities);
-        return new CompoundQuantity<>(Arrays.asList(quantities));
+        return new MixedQuantity<>(Arrays.asList(quantities));
     }
 
     /**
@@ -152,9 +152,9 @@ public class CompoundQuantity<Q extends Quantity<Q>> implements QuantityConverte
      *             or contains quantities of mixed scale
      * 
      */
-    public static <Q extends Quantity<Q>> CompoundQuantity<Q> of(List<Quantity<Q>> quantities) {
+    public static <Q extends Quantity<Q>> MixedQuantity<Q> of(List<Quantity<Q>> quantities) {
         guardAgainstIllegalQuantitiesArgument(quantities);
-        return new CompoundQuantity<>(quantities);
+        return new MixedQuantity<>(quantities);
     }
 
     /**
@@ -248,8 +248,8 @@ public class CompoundQuantity<Q extends Quantity<Q>> implements QuantityConverte
         if (this == obj) {
             return true;
         }
-        if (obj instanceof CompoundQuantity) {
-            CompoundQuantity<?> c = (CompoundQuantity<?>) obj;
+        if (obj instanceof MixedQuantity) {
+            MixedQuantity<?> c = (MixedQuantity<?>) obj;
             return Arrays.equals(quantityArray, c.quantityArray);
         } else {
             return false;
@@ -305,4 +305,6 @@ public class CompoundQuantity<Q extends Quantity<Q>> implements QuantityConverte
             }
         }
     }
+
+
 }

@@ -42,6 +42,7 @@ import javax.measure.format.MeasurementParseException;
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.internal.format.RationalNumberScanner;
 import tech.units.indriya.quantity.CompoundQuantity;
+import tech.units.indriya.quantity.MixedQuantity;
 import tech.units.indriya.quantity.Quantities;
 
 /**
@@ -255,6 +256,20 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
 	public String getPattern() {
 		return pattern;
 	}
+	
+    @Override
+    protected StringBuffer formatMixed(MixedQuantity<?> mixed, StringBuffer dest) {
+        final StringBuffer sb = new StringBuffer();
+        int i = 0;
+        for (Quantity<?> q : mixed.getQuantities()) {
+            sb.append(format(q));
+            if (i < mixed.getQuantities().size() - 1 ) {
+                sb.append((mixDelimiter != null ? mixDelimiter : DEFAULT_DELIMITER)); // we need null for parsing but not
+            }
+            i++;
+        }
+        return sb;
+    }
 	
     @Override
     protected StringBuffer formatCompound(CompoundQuantity<?> comp, StringBuffer dest) {
