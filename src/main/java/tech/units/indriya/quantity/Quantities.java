@@ -35,7 +35,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Objects;
 
-import javax.measure.MeasurementException;
 import javax.measure.Quantity;
 import javax.measure.Quantity.Scale;
 import javax.measure.Unit;
@@ -49,7 +48,7 @@ import tech.units.indriya.function.MixedRadix;
 /**
  * Singleton class for accessing {@link Quantity} instances.
  * 
- * @version 1.10, April 20, 2019
+ * @version 2.0, January 18, 2021
  * @author keilw
  * @author otaviojava
  * @since 1.0
@@ -97,7 +96,6 @@ public final class Quantities {
 	 * @param scale the measurement scale.
 	 * @return the corresponding <code>numeric</code> quantity.
 	 * @throws NullPointerException if value, unit or scale were null
-	 * @throws MeasurementException if unit is a MixedUnit
 	 * @since 2.0
 	 */
 	public static <Q extends Quantity<Q>> ComparableQuantity<Q> getQuantity(Number value, Unit<Q> unit, Scale scale) {
