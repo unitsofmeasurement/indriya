@@ -53,17 +53,17 @@ import org.junit.jupiter.api.Test;
 import tech.units.indriya.NumberAssertions;
 import tech.units.indriya.format.SimpleUnitFormat;
 import tech.units.indriya.function.MixedRadix.PrimaryUnitPick;
-import tech.units.indriya.quantity.CompoundQuantity;
+import tech.units.indriya.quantity.MixedQuantity;
 import tech.units.indriya.unit.Units;
 
 /**
  *
  * @author Andi Huber
+ * @author Werner Keil
  */
 public class MixedRadixTest {
     
     public static class USCustomary {
-
         
         private static final RationalNumber INCH_PER_METER = 
                 RationalNumber.of(254, 10000);
@@ -167,7 +167,7 @@ public class MixedRadixTest {
         // when 
         
         Quantity<Length> lengthQuantity = mixedRadix.createQuantity(1, 2);
-        CompoundQuantity<Length> lengthComp = mixedRadix.createCompoundQuantity(1, 2);
+        MixedQuantity<Length> lengthComp = mixedRadix.createMixedQuantity(1, 2);
         
         // then
         
@@ -300,6 +300,5 @@ public class MixedRadixTest {
         assertTrue(Calculus.currentNumberSystem().isInteger(timeParts[2])); // should be non-fractional
         
     }
-
 
 }
