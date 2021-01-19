@@ -50,7 +50,7 @@ import tech.uom.lib.common.function.QuantityConverter;
 
 /**
  * <p>
- * This class represents multi-radix quantities (like "1 hour, 5 min, 30 sec" or "6 ft, 3 in").
+ * This class represents mixed-radix quantities (like "1 hour, 5 min, 30 sec" or "6 ft, 3 in").
  * </p>
  * 
  * @param <Q>
@@ -58,9 +58,11 @@ import tech.uom.lib.common.function.QuantityConverter;
  * 
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author Andi Huber
- * @version 1.0, January 18, 2021
+ * @version 2.0, January 19, 2021
  * @see <a href="https://www.wolfram.com/language/11/units-and-dates/mixed-quantities.html">Wolfram Language: Mixed Quantities</a>
  * @see <a href="https://www.mathsisfun.com/definitions/mixed-number.html">Math is Fun: Mixed Number</a> 
+ * @see MixedRadix
+ * @since 2.1.2
  */
 public class MixedQuantity<Q extends Quantity<Q>> implements QuantityConverter<Q>, Serializable {
     // TODO could it be final?
