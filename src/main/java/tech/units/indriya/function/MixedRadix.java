@@ -67,8 +67,7 @@ import tech.units.indriya.quantity.Quantities;
  *      Metrication</a>
  * @see MixedQuantity
  */
-public class MixedRadix<Q extends Quantity<Q>> {
-// TODO could it be final or is there a use case for extending it?
+public final class MixedRadix<Q extends Quantity<Q>> {
 
 	// -- PRIVATE FIELDS
 

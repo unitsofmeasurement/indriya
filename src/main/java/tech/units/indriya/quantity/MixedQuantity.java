@@ -60,7 +60,7 @@ import tech.uom.lib.common.function.QuantityConverter;
  * @author Andi Huber
  * @version 2.0, January 19, 2021
  * @see <a href="https://www.wolfram.com/language/11/units-and-dates/mixed-quantities.html">Wolfram Language: Mixed Quantities</a>
- * @see <a href="https://www.mathsisfun.com/definitions/mixed-number.html">Math is Fun: Mixed Number</a> 
+ * @see <a href="https://en.wikipedia.org/wiki/Fraction#Mixed_numbers">Wikipedia: Mixed Numbers</a> 
  * @see MixedRadix
  * @since 2.1.2
  */
@@ -87,16 +87,12 @@ public class MixedQuantity<Q extends Quantity<Q>> implements QuantityConverter<Q
         
         final List<Unit<Q>> unitList = new ArrayList<>();
         
-        for (Quantity<Q> q : quantities) {
-            
-            final Unit<Q> unit = q.getUnit();
-            
-            unitList.add(unit);
-            
+        for (Quantity<Q> q : quantities) {            
+            final Unit<Q> unit = q.getUnit();            
+            unitList.add(unit);            
             commonScale = q.getScale();
             
             // keep track of the least significant unit, thats the one that should 'drive' arithmetic operations
-
             
             if(leastSignificantUnit==null) {
                 leastSignificantUnit = unit;
@@ -107,8 +103,7 @@ public class MixedQuantity<Q extends Quantity<Q>> implements QuantityConverter<Q
                 if(isLessSignificant) {
                     leastSignificantUnit = unit;
                 }
-            }
-            
+            }           
         }
         
         this.quantityList = Collections.unmodifiableList(new ArrayList<>(quantities));
@@ -116,16 +111,12 @@ public class MixedQuantity<Q extends Quantity<Q>> implements QuantityConverter<Q
         
         this.unitList = Collections.unmodifiableList(unitList);
         
-        try {
-                        
+        try {                        
             // - will throw if units are not in decreasing order of significance
-            mixedRadixIfPossible = MixedRadix.of(getUnits());
-            
-        } catch (Exception e) {
-            
+            mixedRadixIfPossible = MixedRadix.of(getUnits());            
+        } catch (Exception e) {            
             mixedRadixIfPossible = null;
-        }
-        
+        }        
     }
 
     /**
@@ -135,8 +126,7 @@ public class MixedQuantity<Q extends Quantity<Q>> implements QuantityConverter<Q
      * @throws IllegalArgumentException
      *             if given {@code quantities} is {@code null} or empty 
      *             or contains any <code>null</code> values
-     *             or contains quantities of mixed scale
-     * 
+     *             or contains quantities of mixed scale 
      */
     @SafeVarargs
     public static <Q extends Quantity<Q>> MixedQuantity<Q> of(Quantity<Q>... quantities) {
@@ -178,17 +168,6 @@ public class MixedQuantity<Q extends Quantity<Q>> implements QuantityConverter<Q
     public List<Quantity<Q>> getQuantities() {
         return quantityList;
     }
-
-//TODO[211] deprecated    
-//    /**
-//     * Gets the Quantity of the requested Unit.
-//     * <p>
-//     * This returns a value for each Unit in this CompoundQuantity. Or <code>null</code> if the given unit is not included.
-//     *
-//     */
-//    public Quantity<Q> get(Unit<Q> unit) {
-//        return quantMap.get(unit);
-//    }
 
     /*
      * (non-Javadoc)
@@ -307,6 +286,4 @@ public class MixedQuantity<Q extends Quantity<Q>> implements QuantityConverter<Q
             }
         }
     }
-
-
 }
