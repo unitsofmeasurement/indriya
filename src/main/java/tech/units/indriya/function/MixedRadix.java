@@ -65,7 +65,7 @@ import tech.units.indriya.quantity.Quantities;
  *      Language & System: MixedUnit</a>
  * @see <a href="https://en.wikipedia.org/wiki/Metrication">Wikipedia:
  *      Metrication</a>
- * @see CompoundQuantity
+ * @see MixedQuantity
  */
 public class MixedRadix<Q extends Quantity<Q>> {
 // TODO could it be final or is there a use case for extending it?
