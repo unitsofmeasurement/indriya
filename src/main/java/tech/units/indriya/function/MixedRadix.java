@@ -56,7 +56,7 @@ import tech.units.indriya.quantity.Quantities;
  * 
  * @author Andi Huber
  * @author Werner Keil
- * @version 1.10, Jun 25, 2019
+ * @version 2.0, Jan 19, 2021
  * @since 2.0
  * @see <a href="https://en.wikipedia.org/wiki/Mixed_radix">Wikipedia: Mixed
  *      radix</a>
@@ -128,7 +128,7 @@ public class MixedRadix<Q extends Quantity<Q>> {
 		return append(pickState, mixedRadixUnit); // pickState is immutable, so reuse
 	}
 
-	public MixedRadix<Q> mixPrimary(Unit<Q> mixedRadixUnit) {
+	MixedRadix<Q> mixPrimary(Unit<Q> mixedRadixUnit) {
 		pickState.assertNotExplicitlyPicked();
 		Objects.requireNonNull(mixedRadixUnit);
 		return append(PrimaryUnitPickState.pickByExplicitIndex(getUnitCount()), mixedRadixUnit);
@@ -183,7 +183,7 @@ public class MixedRadix<Q extends Quantity<Q>> {
      * @param values - numbers corresponding to the radix coefficients in most significant first order, 
      *      allowed to be of shorter length than the total count of radix coefficients of this 
      *      {@code MixedRadix} instance
-     * @param scale - the {@link Scale} to be used for the elements of the returned {@link CompoundQuantity}
+     * @param scale - the {@link Scale} to be used for the elements of the returned {@link MixedQuantity}
      */
 	public MixedQuantity<Q> createMixedQuantity(final Number[] values, final Scale scale) {
 		Objects.requireNonNull(scale);

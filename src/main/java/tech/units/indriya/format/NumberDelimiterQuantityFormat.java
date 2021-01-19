@@ -56,7 +56,7 @@ import tech.units.indriya.quantity.Quantities;
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author <a href="mailto:thodoris.bais@gmail.com">Thodoris Bais</a>
  *
- * @version 2.2, $Date: 2020-09-27 $
+ * @version 2.3, $Date: 2021-01-19 $
  * @since 2.0
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -128,7 +128,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
         }
 
         /**
-         * Sets the primary unit parameter for multiple {@link CompoundQuantity mixed quantities} to the given {@code Unit}.
+         * Sets the primary unit parameter for multiple {@link MixedQuantity mixed quantities} to the given {@code Unit}.
          * @param primary the primary {@link Unit}
          * @throws NullPointerException if {@code primary} is {@code null}
          * @return this {@code NumberDelimiterQuantityFormat.Builder}
@@ -152,7 +152,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
         }
 
         /**
-         * Sets the radix delimiter between multiple {@link CompoundQuantity mixed quantities}.
+         * Sets the radix delimiter between multiple {@link MixedQuantity mixed quantities}.
          * @param radixPartsDelimiter the delimiter to use
          * @throws NullPointerException if {@code radixPartsDelimiter} is {@code null}
          * @return this {@code NumberDelimiterQuantityFormat.Builder}

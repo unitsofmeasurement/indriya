@@ -123,7 +123,9 @@ public abstract class AbstractQuantityFormat extends Format implements QuantityF
 
     @Override
     public final StringBuffer format(Object obj, final StringBuffer toAppendTo, FieldPosition pos) {
-        if(obj instanceof CompoundQuantity<?>) {
+    	if (obj instanceof MixedQuantity<?>) {
+    		return formatMixed((MixedQuantity<?>) obj, toAppendTo);
+    	} else if(obj instanceof CompoundQuantity<?>) { // TODO remove with next release
             return formatCompound((CompoundQuantity<?>) obj, toAppendTo);
         } else {
             if (!(obj instanceof ComparableQuantity<?>))
