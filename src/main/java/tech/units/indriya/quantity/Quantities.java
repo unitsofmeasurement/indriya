@@ -48,7 +48,7 @@ import tech.units.indriya.function.MixedRadix;
 /**
  * Singleton class for accessing {@link Quantity} instances.
  * 
- * @version 2.0, January 18, 2021
+ * @version 2.1, January 25, 2021
  * @author keilw
  * @author otaviojava
  * @since 1.0
@@ -171,11 +171,54 @@ public final class Quantities {
 	 * @param values the measurement values.
 	 * @param units  the measurement units.
 	 * @param scale  the measurement scale.
+	 * @return the corresponding mixed quantity.
+	 * @throws NullPointerException     if values, units or scale were null
+	 * @throws IllegalArgumentException if the size of the values array does not
+	 *                                  match that of units.
+	 * @since 2.1.2
+	 */
+	public static <Q extends Quantity<Q>> MixedQuantity<Q> getMixedQuantity(Number[] values, Unit<Q>[] units,
+			Scale scale) {
+		Objects.requireNonNull(values);
+		Objects.requireNonNull(units);
+		if (values.length == units.length) {
+			return MixedRadix.of(units).createMixedQuantity(values, scale);
+		} else {
+			throw new IllegalArgumentException(
+					String.format("%s values don't match %s units", values.length, units.length));
+		}
+	}
+
+	/**
+	 * Returns the mixed radix values and units as {@link CompoundQuantity} in the
+	 * {@code ABSOLUTE} scale.
+	 * 
+	 * @param values the measurement values.
+	 * @param units  the measurement units.
+	 * @return the corresponding mixed quantity.
+	 * @throws NullPointerException     if values, units or scale were null
+	 * @throws IllegalArgumentException if the size of the values array does not
+	 *                                  match that of units.
+	 * @since 2.1.2
+	 */
+	public static <Q extends Quantity<Q>> MixedQuantity<Q> getMixedQuantity(final Number[] values,
+			final Unit<Q>[] units) {
+		return getMixedQuantity(values, units, ABSOLUTE);
+	}
+	
+	/**
+	 * Returns the mixed radix values and units as {@link CompoundQuantity} in the
+	 * specified scale.
+	 * 
+	 * @param values the measurement values.
+	 * @param units  the measurement units.
+	 * @param scale  the measurement scale.
 	 * @return the corresponding compound quantity.
 	 * @throws NullPointerException     if values, units or scale were null
 	 * @throws IllegalArgumentException if the size of the values array does not
 	 *                                  match that of units.
 	 * @since 2.0
+	 * @deprecated use {@link #getMixedQuantity(Number[], Unit[], Scale)}
 	 */
 	public static <Q extends Quantity<Q>> CompoundQuantity<Q> getCompoundQuantity(Number[] values, Unit<Q>[] units,
 			Scale scale) {
@@ -200,6 +243,7 @@ public final class Quantities {
 	 * @throws IllegalArgumentException if the size of the values array does not
 	 *                                  match that of units.
 	 * @since 2.0
+	 * @deprecated use {@link #getMixedQuantity(Number[], Unit[])}
 	 */
 	public static <Q extends Quantity<Q>> CompoundQuantity<Q> getCompoundQuantity(final Number[] values,
 			final Unit<Q>[] units) {
