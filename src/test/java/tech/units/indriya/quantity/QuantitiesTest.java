@@ -34,12 +34,17 @@ import java.math.BigInteger;
 import java.util.Locale;
 
 import javax.measure.Quantity;
+import javax.measure.Unit;
+import javax.measure.quantity.Dimensionless;
+import javax.measure.quantity.Length;
 import javax.measure.quantity.Pressure;
 import javax.measure.quantity.Speed;
 import javax.measure.quantity.Temperature;
 import javax.measure.quantity.Time;
 
+import static javax.measure.MetricPrefix.CENTI;
 import static javax.measure.Quantity.Scale.RELATIVE;
+import static tech.units.indriya.unit.Units.METRE;
 
 import org.junit.jupiter.api.Test;
 
@@ -58,7 +63,7 @@ import static tech.units.indriya.unit.Units.PASCAL;
  *
  * @author Werner Keil
  * @author Andi Huber
- * @version 0.6
+ * @version 1.0
  */
 public class QuantitiesTest {
   
@@ -148,5 +153,22 @@ public class QuantitiesTest {
       assertTrue(shouldBe.isEquivalentTo(parsedSpeed));
   }
   
+  @Test
+  public void quantityMixedTest() {	
+	  final Number[] values = new Number[] {1, 70};
+	  @SuppressWarnings("rawtypes")
+	  final Unit[] units = new Unit[] {METRE, CENTI(METRE)};
+      @SuppressWarnings("unchecked")
+      MixedQuantity<Length> expected = Quantities.getMixedQuantity(values, units);
+	  Quantity<Length> parsed = Quantities.getQuantity("1 m 70 cm").asType(Length.class);
+      assertTrue(expected.to(METRE).isEquivalentTo(parsed));
+  }
   
+	@Test
+	public void testParseNoUnit() {
+		assertThrows(IllegalArgumentException.class, () -> {
+			@SuppressWarnings({ "unused" })
+			Quantity<?> result = Quantities.getQuantity("170").asType(Dimensionless.class);
+		}); 		
+	}
 }

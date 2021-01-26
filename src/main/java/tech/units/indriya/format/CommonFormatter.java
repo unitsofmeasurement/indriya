@@ -48,6 +48,7 @@ import tech.units.indriya.quantity.Quantities;
  * Common helper class that handles internals of formatting in {@link SimpleQuantityFormat}, {@link NumberDelimiterQuantityFormat}
  * 
  * @author keilw
+ * @version 2.0
  * @since 2.0
  */
 abstract class CommonFormatter {
@@ -125,7 +126,7 @@ abstract class CommonFormatter {
     // Decompose into Quantity
     
     @SuppressWarnings("unchecked")
-    static  Quantity<?> parseCompoundAsLeading(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final String delimiter, final String compDelim, final int position) throws IllegalArgumentException, MeasurementParseException {
+    static  Quantity<?> parseMixedAsLeading(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final String delimiter, final String compDelim, final int position) throws IllegalArgumentException, MeasurementParseException {
         final MixedQuantity<?> comp = parseMixed(str, numberFormat, unitFormat, delimiter, compDelim, position);
         @SuppressWarnings("rawtypes")
         final Unit u = getLeadingUnit(comp);
@@ -133,19 +134,19 @@ abstract class CommonFormatter {
     }
     
     @SuppressWarnings("unchecked")
-    static  Quantity<?> parseCompoundAsLeading(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final String delimiter, final int position) throws IllegalArgumentException, MeasurementParseException {
+    static  Quantity<?> parseMixedAsLeading(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final String delimiter, final int position) throws IllegalArgumentException, MeasurementParseException {
         final MixedQuantity<?> comp = parseMixed(str, numberFormat, unitFormat, delimiter, position);
         @SuppressWarnings("rawtypes")
         final Unit u = getLeadingUnit(comp);
         return comp.to(u);
     }
     
-    static  Quantity<?> parseCompoundAsLeading(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final String delimiter) throws IllegalArgumentException, MeasurementParseException {
-        return parseCompoundAsLeading(str, numberFormat, unitFormat, delimiter, 0);
+    static  Quantity<?> parseMixedAsLeading(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final String delimiter) throws IllegalArgumentException, MeasurementParseException {
+        return parseMixedAsLeading(str, numberFormat, unitFormat, delimiter, 0);
     }
     
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    static Quantity<?> parseCompoundAsPrimary(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final Unit primaryUnit, final String delimiter, final String compDelim, final int position) throws IllegalArgumentException, MeasurementParseException {
+    static Quantity<?> parseMixedAsPrimary(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final Unit primaryUnit, final String delimiter, final String compDelim, final int position) throws IllegalArgumentException, MeasurementParseException {
         final MixedQuantity<?> comp = parseMixed(str, numberFormat, unitFormat, delimiter, compDelim, position);
         if (comp.getUnits().contains(primaryUnit)) {
             return comp.to(primaryUnit);
@@ -155,7 +156,7 @@ abstract class CommonFormatter {
     }
     
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    static Quantity<?> parseCompoundAsPrimary(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final Unit primaryUnit, final String delimiter, final int position) throws IllegalArgumentException, MeasurementParseException {
+    static Quantity<?> parseMixedAsPrimary(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final Unit primaryUnit, final String delimiter, final int position) throws IllegalArgumentException, MeasurementParseException {
         final MixedQuantity<?> comp = parseMixed(str, numberFormat, unitFormat, delimiter, position);
         if (comp.getUnits().contains(primaryUnit)) {
             return comp.to(primaryUnit);
@@ -164,8 +165,8 @@ abstract class CommonFormatter {
         }
     }
     
-    static Quantity<?> parseCompoundAsPrimary(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, @SuppressWarnings("rawtypes") final Unit primaryUnit, final String delimiter) throws IllegalArgumentException, MeasurementParseException {
-        return parseCompoundAsPrimary(str, numberFormat, unitFormat, primaryUnit, delimiter, 0);
+    static Quantity<?> parseMixedAsPrimary(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, @SuppressWarnings("rawtypes") final Unit primaryUnit, final String delimiter) throws IllegalArgumentException, MeasurementParseException {
+        return parseMixedAsPrimary(str, numberFormat, unitFormat, primaryUnit, delimiter, 0);
     }
     
     // Private helpers

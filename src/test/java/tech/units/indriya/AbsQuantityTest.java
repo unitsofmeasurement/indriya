@@ -30,9 +30,14 @@
 package tech.units.indriya;
 
 import static javax.measure.MetricPrefix.CENTI;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static tech.units.indriya.unit.Units.METRE;
+
+import javax.measure.Quantity;
+import javax.measure.format.MeasurementParseException;
 import javax.measure.quantity.Dimensionless;
 
 import org.junit.jupiter.api.Disabled;
@@ -58,5 +63,20 @@ public class AbsQuantityTest {
 	public void testParseNoUnit() {
 		assertNotNull(AbstractQuantity.parse("0.234").asType(Dimensionless.class));
 	}
-
+		
+	@Test
+	public void testParseOnlyUnit() {
+		assertThrows(MeasurementParseException.class, () -> {
+			@SuppressWarnings({ "unused" })
+			Quantity<?> result = AbstractQuantity.parse("m");
+		});
+	}
+	
+	@Test
+	public void testParseMixed() {
+		assertThrows(MeasurementParseException.class, () -> {
+			@SuppressWarnings({ "unused" })
+			Quantity<?> result = AbstractQuantity.parse("1 m 70 cm");
+		}); 		
+	}
 }

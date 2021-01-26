@@ -38,17 +38,15 @@ import java.util.Objects;
 import javax.measure.Quantity;
 import javax.measure.Quantity.Scale;
 import javax.measure.Unit;
-import javax.measure.format.MeasurementParseException;
 
 import tech.units.indriya.ComparableQuantity;
-import tech.units.indriya.format.AbstractQuantityFormat;
 import tech.units.indriya.format.SimpleQuantityFormat;
 import tech.units.indriya.function.MixedRadix;
 
 /**
  * Singleton class for accessing {@link Quantity} instances.
  * 
- * @version 2.1, January 25, 2021
+ * @version 2.2, January 25, 2021
  * @author keilw
  * @author otaviojava
  * @since 1.0
@@ -63,26 +61,30 @@ public final class Quantities {
 	/**
 	 * Returns the {@link #valueOf(java.math.BigDecimal, javax.measure.unit.Unit)
 	 * decimal} quantity of unknown type corresponding to the specified
-	 * representation. This method can be used to parse dimensionless
-	 * quantities.<br>
+	 * representation. This method can be used to parse {@link MixedQuantity mixed}
+	 * quantities. All of these expressions:<br>
 	 * <code>
-	 *     Quantity<Dimensionless> proportion = Quantities.getQuantity("0.234").asType(Dimensionless.class);
+	 *     Quantity&lt;Length&gt; height      =  Quantities.getQuantity("1.70 m").asType(Length.class);<br>
+	 *     Quantity&lt;Length&gt; heightinCm  =  Quantities.getQuantity("170 cm").asType(Length.class);<br>
+	 *     Quantity&lt;Length&gt; heightMixed = Quantities.getQuantity("1 m 70 cm").asType(Length.class);
 	 * </code>
-	 *
+	 * are equally supported.
+	 * 
 	 * <p>
 	 * Note: This method handles only Locale-neutral quantity formatting and parsing
-	 * are handled by the {@link AbstractQuantityFormat} class and its subclasses.
+	 * are handled by the {@link SimpleQuantityFormat} class.
 	 * </p>
 	 *
 	 * @param csq the decimal value and its unit (if any) separated by space(s).
-	 * @return <code>QuantityFormat.getInstance(LOCALE_NEUTRAL).parse(csq)</code>
+	 * @return <code>QuantityFormat.getInstance("n u~ ").parse(csq)</code>
+	 * @throws IllegalArgumentException if no unit part was provided to parse
 	 */
 	public static Quantity<?> getQuantity(CharSequence csq) {
-		try {
+		//try {
 			return SimpleQuantityFormat.getInstance("n u~ ").parse(csq);
-		} catch (MeasurementParseException e) {
-			throw new IllegalArgumentException(e.getParsedString());
-		}
+		//} catch (MeasurementParseException e) {
+//			throw new IllegalArgumentException(e.getParsedString());
+	//	}
 	}
 
 	/**
@@ -165,7 +167,7 @@ public final class Quantities {
 	}
 
 	/**
-	 * Returns the mixed radix values and units as {@link CompoundQuantity} in the
+	 * Returns the mixed radix values and units as {@link MixedQuantity} in the
 	 * specified scale.
 	 * 
 	 * @param values the measurement values.
@@ -190,7 +192,7 @@ public final class Quantities {
 	}
 
 	/**
-	 * Returns the mixed radix values and units as {@link CompoundQuantity} in the
+	 * Returns the mixed radix values and units as {@link MixedQuantity} in the
 	 * {@code ABSOLUTE} scale.
 	 * 
 	 * @param values the measurement values.

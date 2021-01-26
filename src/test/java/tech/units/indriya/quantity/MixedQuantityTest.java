@@ -156,7 +156,7 @@ public class MixedQuantityTest {
 	 * Verifies that an mixed quantity is not equal to another quantity.
 	 */
 	@Test
-	public void compoundQuantityIsNotEqualToAnotherQuantity() {
+	public void mixedQuantityIsNotEqualToAnotherQuantity() {
 		@SuppressWarnings("unchecked")
 		final Quantity<Time>[] numList = new Quantity[] { Quantities.getQuantity(2, Units.HOUR),
 				Quantities.getQuantity(6, Units.MINUTE) };
@@ -171,7 +171,7 @@ public class MixedQuantityTest {
 	 * same numeric value.
 	 */
 	@Test
-	public void compoundQuantityIsEqualToAQuantityOfTheSameNumericValue() {
+	public void mixedQuantityIsEqualToAQuantityOfTheSameNumericValue() {
 		@SuppressWarnings("unchecked")
 		final Quantity<Time>[] numList = new Quantity[] { Quantities.getQuantity(2, Units.HOUR),
 				Quantities.getQuantity(30, Units.MINUTE) };
@@ -185,7 +185,7 @@ public class MixedQuantityTest {
 	 * Verifies that a mixed quantity can be represented as QuantityConverter.
 	 */
 	@Test
-	public void compoundQuantityAsConverter() {
+	public void mixedQuantityAsConverter() {
 		@SuppressWarnings("unchecked")
 		final Quantity<Time>[] numList = new Quantity[] { Quantities.getQuantity(2, Units.HOUR),
 				Quantities.getQuantity(30, Units.MINUTE) };

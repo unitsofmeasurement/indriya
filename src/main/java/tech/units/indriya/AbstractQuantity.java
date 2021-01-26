@@ -107,7 +107,7 @@ import tech.uom.lib.common.function.ValueSupplier;
  *
  * @author <a href="mailto:werner@uom.technology">Werner Keil</a>
  * @author Andi Huber
- * @version 2.0, Nov 21, 2020
+ * @version 2.1, Jan 25, 2021
  * @since 1.0
  */
 @SuppressWarnings("unchecked")
@@ -345,7 +345,7 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
      * </code>
      *
      * <p>
-     * Note: This method handles only {@link SimpleUnitFormat#getStandard standard} unit format. Locale-sensitive quantity parsing is currently not
+     * Note: This method handles only {@link SimpleUnitFormat#getStandard standard} unit format. Locale-sensitive or {@link tech.units.indriya.quantity.MixedQuantity mixed} quantity parsing is currently not
      * supported.
      * </p>
      *

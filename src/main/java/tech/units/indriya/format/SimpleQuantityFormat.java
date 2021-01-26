@@ -29,7 +29,7 @@
  */
 package tech.units.indriya.format;
 
-import static tech.units.indriya.format.CommonFormatter.parseCompoundAsLeading;
+import static tech.units.indriya.format.CommonFormatter.parseMixedAsLeading;
 
 import java.io.IOException;
 import java.text.NumberFormat;
@@ -97,7 +97,7 @@ import tech.units.indriya.quantity.Quantities;
  *<li><strong><a id="radix">Mixed Radix:</a></strong>
  *     The Mixed radix marker <code>"~"</code> is followed by a character sequence acting as mixed radix delimiter. This character sequence must not contain <code>"~"</code> itself or any numeric values.<br></li>
  * </ul> 
- * @version 1.5, $Date: 2020-11-21 $
+ * @version 2.0, $Date: 2021-01-26 $
  * @since 2.0
  */
 @SuppressWarnings("rawtypes")
@@ -202,9 +202,9 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
 	    final SimpleUnitFormat simpleUnitFormat = SimpleUnitFormat.getInstance();
 	    
         if (mixDelimiter != null && !mixDelimiter.equals(delimiter)) {
-            return parseCompoundAsLeading(csq.toString(), numberFormat, simpleUnitFormat, delimiter, mixDelimiter, cursor.getIndex());
+            return parseMixedAsLeading(csq.toString(), numberFormat, simpleUnitFormat, delimiter, mixDelimiter, cursor.getIndex());
         } else if (mixDelimiter != null && mixDelimiter.equals(delimiter)) {
-            return parseCompoundAsLeading(csq.toString(), numberFormat, simpleUnitFormat, delimiter, cursor.getIndex());
+            return parseMixedAsLeading(csq.toString(), numberFormat, simpleUnitFormat, delimiter, cursor.getIndex());
         }
         
         final RationalNumberScanner scanner = new RationalNumberScanner(csq, cursor, null /*TODO should'nt this be numberFormat as well*/);

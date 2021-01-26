@@ -58,7 +58,7 @@ import tech.uom.lib.common.function.QuantityConverter;
  * 
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author Andi Huber
- * @version 2.0, January 19, 2021
+ * @version 2.1, January 25, 2021
  * @see <a href="https://www.wolfram.com/language/11/units-and-dates/mixed-quantities.html">Wolfram Language: Mixed Quantities</a>
  * @see <a href="https://en.wikipedia.org/wiki/Fraction#Mixed_numbers">Wikipedia: Mixed Numbers</a> 
  * @see MixedRadix
@@ -81,7 +81,7 @@ public class MixedQuantity<Q extends Quantity<Q>> implements QuantityConverter<Q
     private MixedRadix<Q> mixedRadixIfPossible;
 
     /**
-     * @param quantities - the list of quantities to construct this CompoundQuantity.
+     * @param quantities - the list of quantities to construct this MixedQuantity.
      */
     protected MixedQuantity(final List<Quantity<Q>> quantities) {
         
@@ -122,7 +122,7 @@ public class MixedQuantity<Q extends Quantity<Q>> implements QuantityConverter<Q
     /**
      * @param <Q>
      * @param quantities
-     * @return a {@code CompoundQuantity} with the specified {@code quantities}
+     * @return a {@code MixedQuantity} with the specified {@code quantities}
      * @throws IllegalArgumentException
      *             if given {@code quantities} is {@code null} or empty 
      *             or contains any <code>null</code> values
@@ -137,7 +137,7 @@ public class MixedQuantity<Q extends Quantity<Q>> implements QuantityConverter<Q
     /**
      * @param <Q>
      * @param quantities
-     * @return a {@code CompoundQuantity} with the specified {@code quantities}
+     * @return a {@code MixedQuantity} with the specified {@code quantities}
      * @throws IllegalArgumentException
      *             if given {@code quantities} is {@code null} or empty 
      *             or contains any <code>null</code> values
@@ -150,7 +150,7 @@ public class MixedQuantity<Q extends Quantity<Q>> implements QuantityConverter<Q
     }
 
     /**
-     * Gets the list of units in this CompoundQuantity.
+     * Gets the list of units in this MixedQuantity.
      * <p>
      * This list can be used in conjunction with {@link #getQuantities()} to access the entire quantity.
      *
@@ -161,7 +161,7 @@ public class MixedQuantity<Q extends Quantity<Q>> implements QuantityConverter<Q
     }
 
     /**
-     * Gets quantities in this CompoundQuantity.
+     * Gets quantities in this MixedQuantity.
      *
      * @return a list containing the quantities, not null
      */
@@ -180,10 +180,10 @@ public class MixedQuantity<Q extends Quantity<Q>> implements QuantityConverter<Q
     }
 
     /**
-     * Returns the <b>sum</b> of all quantity values in this CompoundQuantity converted into another (compatible) unit.
+     * Returns the <b>sum</b> of all quantity values in this MixedQuantity converted into another (compatible) unit.
      * @param unit
      *            the {@code Unit unit} in which the returned quantity is stated.
-     * @return the sum of all quantities in this CompoundQuantity or a new quantity stated in the specified unit.
+     * @return the sum of all quantities in this MixedQuantity or a new quantity stated in the specified unit.
      * @throws ArithmeticException
      *             if the result is inexact and the quotient has a non-terminating decimal expansion.
      */
