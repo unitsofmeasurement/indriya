@@ -32,8 +32,8 @@ package tech.units.indriya.format;
 import static tech.units.indriya.format.FormatBehavior.LOCALE_NEUTRAL;
 import static tech.units.indriya.format.NumberFormatStyle.COMPACT;
 import static tech.units.indriya.format.NumberFormatStyle.DEFAULT;
-import static tech.units.indriya.format.CommonFormatter.parseCompoundAsLeading;
-import static tech.units.indriya.format.CommonFormatter.parseCompoundAsPrimary;
+import static tech.units.indriya.format.CommonFormatter.parseMixedAsLeading;
+import static tech.units.indriya.format.CommonFormatter.parseMixedAsPrimary;
 
 import java.io.IOException;
 import java.text.NumberFormat;
@@ -58,7 +58,7 @@ import tech.units.indriya.quantity.Quantities;
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author <a href="mailto:thodoris.bais@gmail.com">Thodoris Bais</a>
  *
- * @version 2.6, $Date: 2020-09-27 $
+ * @version 2.7, $Date: 2021-01-26 $
  * @since 2.0
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -312,15 +312,15 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
         final int index = cursor.getIndex();
         if (mixDelimiter != null && !mixDelimiter.equals(delimiter)) {
             if (primaryUnit != null) {
-                return parseCompoundAsPrimary(str, numberFormat, unitFormat, primaryUnit, delimiter, mixDelimiter, index);
+                return parseMixedAsPrimary(str, numberFormat, unitFormat, primaryUnit, delimiter, mixDelimiter, index);
             } else {
-                return parseCompoundAsLeading(str, numberFormat, unitFormat, delimiter, mixDelimiter, index);
+                return parseMixedAsLeading(str, numberFormat, unitFormat, delimiter, mixDelimiter, index);
             }
         } else if (mixDelimiter != null && mixDelimiter.equals(delimiter)) {
             if (primaryUnit != null) {
-                return parseCompoundAsPrimary(str, numberFormat, unitFormat, primaryUnit, delimiter, index);
+                return parseMixedAsPrimary(str, numberFormat, unitFormat, primaryUnit, delimiter, index);
             } else {
-                return parseCompoundAsLeading(str, numberFormat, unitFormat, delimiter, index);
+                return parseMixedAsLeading(str, numberFormat, unitFormat, delimiter, index);
             }
         }
         final Number number = numberFormat.parse(str, cursor);
