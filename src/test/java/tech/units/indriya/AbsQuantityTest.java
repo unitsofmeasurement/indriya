@@ -36,11 +36,12 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static tech.units.indriya.unit.Units.METRE;
 
+import java.math.BigDecimal;
+
 import javax.measure.Quantity;
 import javax.measure.format.MeasurementParseException;
 import javax.measure.quantity.Dimensionless;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.quantity.Quantities;
@@ -50,12 +51,10 @@ import tech.units.indriya.quantity.Quantities;
  *
  */
 public class AbsQuantityTest {
-	private static final Number NULL_NUMBER = null;
 
 	@Test
-	@Disabled("TODO Fix https://github.com/unitsofmeasurement/indriya/issues/325")
 	public void testParse() {
-		 assertEquals(Quantities.getQuantity(0.234, CENTI(METRE)),
+		 assertEquals(Quantities.getQuantity(BigDecimal.valueOf(0.234), CENTI(METRE)),
 				 AbstractQuantity.parse("0.234 cm")); 		
 	}
 

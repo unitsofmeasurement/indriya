@@ -165,7 +165,7 @@ public class QuantitiesTest {
   }
   
 	@Test
-	public void testParseNoUnit() {
+	public void parseNoUnitTest() {
 		assertThrows(IllegalArgumentException.class, () -> {
 			@SuppressWarnings({ "unused" })
 			Quantity<?> result = Quantities.getQuantity("170").asType(Dimensionless.class);
