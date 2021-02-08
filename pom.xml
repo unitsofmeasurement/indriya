@@ -55,7 +55,7 @@
 		<spec.vendor>Jean-Marie Dautelle, Werner Keil, Otavio Santana</spec.vendor>
 		<thisYear>2021</thisYear>
 
-		<!-- OSGI support -->
+		<!-- OSGi support -->
 		<osgi.version>5.0.0</osgi.version>
 		<osgi.compendium.version>${osgi.version}</osgi.compendium.version>
 		<osgi.annotation.version>6.0.0</osgi.annotation.version>
