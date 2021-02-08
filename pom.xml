@@ -15,7 +15,7 @@
 	<parent>
 		<groupId>tech.uom</groupId>
 		<artifactId>uom-parent</artifactId>
-		<version>2.1</version>
+		<version>2.1.1-SNAPSHOT</version>
 	</parent>
 	<version>2.1.2-SNAPSHOT</version>
 	
@@ -44,7 +44,7 @@
 		<project.reporting.outputEncoding>${sourceEncoding}</project.reporting.outputEncoding>
 		<jdkVersion>8</jdkVersion>
 		<!-- The oldest Java version supported by this tool. -->
-		<!-- Will control compilation of the main code and the unit tests. -->
+		<!-- Will control compilation of main code and the unit tests. -->
 		<base.java.version>8</base.java.version>
 
 		<project.build.javaVersion>${jdkVersion}</project.build.javaVersion>
@@ -53,7 +53,7 @@
 		<additionalparam>-Xdoclint:none</additionalparam>
 		<maven.surefire.version>2.22.2</maven.surefire.version>
 		<spec.vendor>Jean-Marie Dautelle, Werner Keil, Otavio Santana</spec.vendor>
-		<thisYear>2020</thisYear>
+		<thisYear>2021</thisYear>
 
 		<!-- OSGI support -->
 		<osgi.version>5.0.0</osgi.version>
@@ -61,8 +61,6 @@
 		<osgi.annotation.version>6.0.0</osgi.annotation.version>
 
 		<!-- Test settings -->
-		<junit.platform.version>1.7.0</junit.platform.version>   
-		<hamcrest.version>2.2</hamcrest.version>
 		<excludedTests>**/Local*Test.java</excludedTests>
 	</properties>
 
@@ -556,42 +554,28 @@
 
 	<!-- Additional repositories -->
 	<!-- Helps to resolve Parent POM and Snapshot artifacts -->
-	<repositories>
-		<repository>
-			<id>jcenter</id>
-			<name>JCenter</name>
-			<url>https://jcenter.bintray.com</url>
-		</repository>
-		<repository>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<id>bintray-release</id>
-			<name>libs-release</name>
-			<url>https://oss.jfrog.org/artifactory/libs-release</url>
-		</repository>
-		<repository>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-			<id>bintray-snapshot</id>
-			<name>libs-snapshot</name>
-			<url>https://oss.jfrog.org/artifactory/libs-snapshot</url>
-		</repository>
-	</repositories>
+    <repositories>
+        <repository>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>ossrh-snapshot</id>
+            <name>OSSRH Snapshots</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        </repository>       
+    </repositories>
 
-	<distributionManagement>
-		<repository>
-			<id>bintray-release</id>
-			<name>oss-jfrog-artifactory-release</name>
-			<url>https://oss.jfrog.org/artifactory/oss-release-local</url>
-		</repository>
-		<snapshotRepository>
-			<id>bintray-snapshot</id>
-			<name>oss-jfrog-artifactory-snapshot</name>
-			<url>https://oss.jfrog.org/artifactory/oss-snapshot-local</url>
-		</snapshotRepository>
-	</distributionManagement>
+    <!-- Deployment to public servers -->
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
 	<ciManagement>
 		<system>CircleCI</system>
 		<url>https://circleci.com/gh/unitsofmeasurement/indriya</url>
@@ -677,7 +661,6 @@
 					<!-- Run the unit tests with the JVM used to run maven -->
 					<plugin>
 						<artifactId>maven-surefire-plugin</artifactId>
-
 						<configuration>
 							<jvm>${env.JAVA_HOME}/bin/java</jvm>
 							<!-- this shows that the Java 9 code isn't tested -->
@@ -704,7 +687,7 @@
 
 			<build>
 				<plugins>
-					<!-- enable java9 - java11 compilations -->
+					<!-- enable java9 - java14 compilations -->
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-compiler-plugin</artifactId>
