@@ -107,7 +107,7 @@ import tech.uom.lib.common.function.ValueSupplier;
  *
  * @author <a href="mailto:werner@uom.technology">Werner Keil</a>
  * @author Andi Huber
- * @version 2.1, Jan 25, 2021
+ * @version 2.2, Feb 14, 2021
  * @since 1.0
  */
 @SuppressWarnings("unchecked")
@@ -345,13 +345,13 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
      * </code>
      *
      * <p>
-     * Note: This method handles only {@link SimpleUnitFormat#getStandard standard} unit format. Locale-sensitive or {@link tech.units.indriya.quantity.MixedQuantity mixed} quantity parsing is currently not
-     * supported.
+     * <b>Note:</b> This method handles only {@link SimpleUnitFormat#getStandard standard} unit format. Locale-sensitive or {@link tech.units.indriya.quantity.MixedQuantity mixed} quantity parsing is currently not
+     * supported by this class. If you need flexible parsing of both single and mixed quantities, please use <code>getQuantity()</code> method of the {@link tech.units.indriya.quantity.Quantities Quantities} facade instead.
      * </p>
      *
      * @param csq
      *            the decimal value and its unit (if any) separated by space(s).
-     * @return <code>QuantityFormat.getInstance().parse(csq)</code>
+     * @return <code>SimpleQuantityFormat.getInstance().parse(csq)</code>
      */
     public static Quantity<?> parse(CharSequence csq) {
         return SimpleQuantityFormat.getInstance().parse(csq);

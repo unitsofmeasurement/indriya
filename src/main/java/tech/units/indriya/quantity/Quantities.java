@@ -44,7 +44,7 @@ import tech.units.indriya.format.SimpleQuantityFormat;
 import tech.units.indriya.function.MixedRadix;
 
 /**
- * Singleton class for accessing {@link Quantity} instances.
+ * Facade to access {@link Quantity} instances.
  * 
  * @version 2.3, February 14, 2021
  * @author Werner Keil
@@ -70,12 +70,14 @@ public final class Quantities {
 	 * are equally supported.
 	 * 
 	 * <p>
-	 * Note: This method handles only Locale-neutral quantity formatting and parsing
-	 * are handled by the {@link SimpleQuantityFormat} class.
+	 * <b>Note:</b> This method handles only <code>Locale</code>-neutral quantity formatting and parsing
+	 * are handled by the {@link SimpleQuantityFormat} class.<br>
+	 * Due to the versatile parsing of this method recognizing both single and mixed quantities, a unit must be provided, otherwise it'll fail. 
+	 * If you need to parse a unit-less quantity, please use the <code>parse()</code> method of {@link tech.units.indriya.AbstractQuantity AbstractQuantity} instead.
 	 * </p>
 	 *
-	 * @param csq the decimal value and its unit (if any) separated by space(s).
-	 * @return <code>QuantityFormat.getInstance("n u~ ").parse(csq)</code>
+	 * @param csq the decimal value(s) and unit(s) separated by space(s).
+	 * @return <code>SimpleQuantityFormat.getInstance("n u~ ").parse(csq)</code>
 	 * @throws IllegalArgumentException if no unit part was provided to parse
 	 */
 	public static Quantity<?> getQuantity(CharSequence csq) {
