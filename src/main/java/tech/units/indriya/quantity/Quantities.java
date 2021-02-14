@@ -46,9 +46,9 @@ import tech.units.indriya.function.MixedRadix;
 /**
  * Singleton class for accessing {@link Quantity} instances.
  * 
- * @version 2.2, January 25, 2021
- * @author keilw
- * @author otaviojava
+ * @version 2.3, February 14, 2021
+ * @author Werner Keil
+ * @author Otavio Santana
  * @since 1.0
  */
 public final class Quantities {
@@ -59,8 +59,7 @@ public final class Quantities {
 	}
 
 	/**
-	 * Returns the {@link #valueOf(java.math.BigDecimal, javax.measure.unit.Unit)
-	 * decimal} quantity of unknown type corresponding to the specified
+	 * Returns the scalar quantity of unknown type corresponding to the specified
 	 * representation. This method can be used to parse {@link MixedQuantity mixed}
 	 * quantities. All of these expressions:<br>
 	 * <code>
@@ -133,7 +132,7 @@ public final class Quantities {
 	 * @param units  the measurement units.
 	 * @param scale  the measurement scale.
 	 * @return the corresponding quantity.
-	 * @throws NullPointerException     if value or scale were null
+	 * @throws NullPointerException     if values or scale were null
 	 * @throws IllegalArgumentException if the size of the values array does not
 	 *                                  match that of units.
 	 * @since 2.0
@@ -156,7 +155,7 @@ public final class Quantities {
 	 * @param values the measurement values.
 	 * @param units  the measurement units.
 	 * @return the corresponding quantity.
-	 * @throws NullPointerException     if value or unit were null
+	 * @throws NullPointerException     if values or units were null
 	 * @throws IllegalArgumentException if the size of the values array does not
 	 *                                  match that of units.
 	 * @since 2.0

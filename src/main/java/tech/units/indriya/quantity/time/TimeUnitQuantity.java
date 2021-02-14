@@ -53,10 +53,10 @@ import tech.units.indriya.quantity.Quantities;
 /**
  * Class that represents {@link TimeUnit} in Unit-API
  * 
- * @author otaviojava
- * @author keilw
+ * @author Otavio Santana
+ * @author Werner Keil
  * @author Andi Huber
- * @version 1.0.5
+ * @version 1.1
  * @since 1.0
  */
 public final class TimeUnitQuantity extends AbstractQuantity<Time> {
