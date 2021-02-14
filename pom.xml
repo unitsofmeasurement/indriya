@@ -37,7 +37,7 @@
 	<!-- Build Settings -->
 	<!-- ======================================================= -->
 	<properties>
-		<jsr.version>2.1.1</jsr.version>
+		<jsr.version>2.1.2</jsr.version>
 		<lib.version>2.1</lib.version>
 		<sourceEncoding>UTF-8</sourceEncoding>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
