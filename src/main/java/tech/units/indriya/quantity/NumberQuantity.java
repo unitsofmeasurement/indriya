@@ -43,7 +43,7 @@ import tech.units.indriya.internal.function.ScaleHelper;
  * Implementation of {@link ComparableQuantity} that holds a Java {@link Number}, 
  * which represented this quantity's amount.
  * <p> 
- * This object is immutable. 
+ * This object is immutable.
  * <p>
  *
  * @see AbstractQuantity
@@ -53,7 +53,7 @@ import tech.units.indriya.internal.function.ScaleHelper;
  *          The type of the quantity.
  * @author Andi Huber
  * @author Werner Keil
- * @version 1.5
+ * @version 2.0, Feb 15, 2021
  * @since 1.0
  * 
  */
