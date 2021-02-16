@@ -53,6 +53,13 @@ public class DoubleMultiplyConverterTest {
   }
 
   @Test
+  public void testConvertMethodFloat() {
+    assertEquals(200, converter.convert(100f), 0.1);
+    assertEquals(0, converter.convert(0f));
+    assertEquals(-200, converter.convert(-100f), 0.1);
+  }
+
+  @Test
   public void testEqualityOfTwoLogConverter() {
     assertNotNull(converter);
     assertEquals(DoubleMultiplyConverter.of(2), converter);

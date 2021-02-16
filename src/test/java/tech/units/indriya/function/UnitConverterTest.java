@@ -79,8 +79,34 @@ public class UnitConverterTest {
   }
 
   @Test
+  public void testQuantityDouble() {
+    Quantity<Length> quantLength1 = Quantities.getQuantity(1.56, sourceUnit);
+    Quantity<Length> quantResult1 = quantLength1.to(targetUnit);
+    assertNotNull(quantResult1);
+    assertNumberEquals(156, quantResult1.getValue(), 1E-12);
+    assertEquals(targetUnit, quantResult1.getUnit());
+  }
+
+  @Test
+  public void testQuantityFloat() {
+    Quantity<Length> quantLength1 = Quantities.getQuantity(1.56f, sourceUnit);
+    Quantity<Length> quantResult1 = quantLength1.to(targetUnit);
+    assertNotNull(quantResult1);
+    assertNumberEquals(156, quantResult1.getValue(), 1E-12);
+    assertEquals(targetUnit, quantResult1.getUnit());
+  }
+
+  @Test
   public void testKelvinToCelsius() {
     Quantity<Temperature> sut = Quantities.getQuantity(273.15d, KELVIN).to(CELSIUS);
+    assertNotNull(sut);
+    assertEquals(CELSIUS, sut.getUnit());
+    assertNumberEquals(0, sut.getValue(), 1E-12);
+  }
+
+  @Test
+  public void testKelvinToCelsiusFloat() {
+    Quantity<Temperature> sut = Quantities.getQuantity(273.15f, KELVIN).to(CELSIUS);
     assertNotNull(sut);
     assertEquals(CELSIUS, sut.getUnit());
     assertNumberEquals(0, sut.getValue(), 1E-12);
