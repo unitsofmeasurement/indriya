@@ -124,6 +124,18 @@ public final class RationalNumber extends Number {
 	}
 
 	/**
+	 * Returns a {@code RationalNumber} that represents the given float
+	 * {@code number}, with an accuracy equivalent to {@code new BigDecimal(Float.toString(number))}.
+	 *
+	 * @param number
+	 */
+	public static RationalNumber of(float number) {
+		// smh why does Java not have BigDecimal.valueOf(float) ?!
+		final BigDecimal decimalValue = new BigDecimal(Float.toString(number));
+		return of(decimalValue);
+	}
+
+	/**
 	 * Returns a {@code RationalNumber} that represents the given BigDecimal decimalValue.
 	 * 
 	 * @param decimalValue
