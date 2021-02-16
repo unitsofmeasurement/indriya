@@ -614,10 +614,7 @@ public class DefaultNumberSystem implements NumberSystem {
                 number instanceof Byte) {
             return BigDecimal.valueOf(number.longValue());
         }
-        if(number instanceof Double) {
-            return BigDecimal.valueOf(number.doubleValue());
-        }
-        if(number instanceof Float) {
+        if(number instanceof Double || number instanceof Float) {
             return new BigDecimal(number.toString());
         }
         if(number instanceof RationalNumber) {
@@ -671,10 +668,7 @@ public class DefaultNumberSystem implements NumberSystem {
             }
             
             if(narrow instanceof Double || narrow instanceof Float) {
-                BigDecimal addend = narrow instanceof Double
-                        ? BigDecimal.valueOf(narrow.doubleValue())
-                        : new BigDecimal(narrow.toString());
-                return ((BigDecimal) wide).add(addend, Calculus.MATH_CONTEXT);
+                return ((BigDecimal) wide).add(new BigDecimal(narrow.toString()), Calculus.MATH_CONTEXT);
             }
             
             if(narrow instanceof RationalNumber) {
@@ -688,29 +682,27 @@ public class DefaultNumberSystem implements NumberSystem {
         }
         
         // at this point we know, that wide is one of {Double, Float}
-        BigDecimal augend = wide instanceof Double
-                ? BigDecimal.valueOf(wide.doubleValue())
-                : new BigDecimal(wide.toString());
         
         if(narrow instanceof Double || narrow instanceof Float) {
             //converting to BigDecimal, because especially fractional addition is sensitive to precision loss
-            BigDecimal addend = narrow instanceof Double
-                    ? BigDecimal.valueOf(narrow.doubleValue())
-                    : new BigDecimal(narrow.toString());
-            return augend.add(addend);
+            return new BigDecimal(wide.toString())
+                .add(new BigDecimal(narrow.toString()));
         }
         
         if(narrow instanceof RationalNumber) {
             //TODO[220] can we do better than that, eg. by converting BigDecimal to RationalNumber
-            return augend.add(((RationalNumber) narrow).bigDecimalValue());
+            return new BigDecimal(wide.toString())
+                    .add(((RationalNumber) narrow).bigDecimalValue());
         }
         
         if(narrow instanceof BigInteger) {
-            return augend.add(new BigDecimal((BigInteger) narrow));
+            return new BigDecimal(wide.toString())
+                    .add(new BigDecimal((BigInteger) narrow));
         }
         
         // at this point we know, that 'narrow' is one of {(Atomic)Long, (Atomic)Integer, Short, Byte}
-        return augend.add(BigDecimal.valueOf(narrow.longValue()));
+        return new BigDecimal(wide.toString())
+                .add(BigDecimal.valueOf(narrow.longValue()));
         
     }
     
@@ -756,10 +748,7 @@ public class DefaultNumberSystem implements NumberSystem {
             }
             
             if(narrow instanceof Double || narrow instanceof Float) {
-                BigDecimal multiplier = narrow instanceof Double
-                        ? BigDecimal.valueOf(narrow.doubleValue())
-                        : new BigDecimal(narrow.toString());
-                return ((BigDecimal) wide).multiply(multiplier, Calculus.MATH_CONTEXT);
+                return ((BigDecimal) wide).multiply(new BigDecimal(narrow.toString()), Calculus.MATH_CONTEXT);
             }
             
             if(narrow instanceof RationalNumber) {
@@ -790,21 +779,20 @@ public class DefaultNumberSystem implements NumberSystem {
             }
         }
         
-        BigDecimal multiplicand = wide instanceof Double
-                ? BigDecimal.valueOf(wide.doubleValue())
-                : new BigDecimal(wide.toString());
-        
         if(narrow instanceof RationalNumber) {
             //TODO[220] can we do better than that, eg. by converting BigDecimal to RationalNumber
-            return multiplicand.multiply(((RationalNumber) narrow).bigDecimalValue());
+            return new BigDecimal(wide.toString())
+                    .multiply(((RationalNumber) narrow).bigDecimalValue());
         }
         
         if(narrow instanceof BigInteger) {
-            return multiplicand.multiply(new BigDecimal((BigInteger) narrow));
+            return new BigDecimal(wide.toString())
+                    .multiply(new BigDecimal((BigInteger) narrow));
         }
         
         // at this point we know, that 'narrow' is one of {(Atomic)Long, (Atomic)Integer, Short, Byte}
-        return multiplicand.multiply(BigDecimal.valueOf(narrow.longValue()));
+        return new BigDecimal(wide.toString())
+                .multiply(BigDecimal.valueOf(narrow.longValue()));
      
     }
     
@@ -844,10 +832,7 @@ public class DefaultNumberSystem implements NumberSystem {
             }
             
             if(narrow instanceof Double || narrow instanceof Float) {
-                BigDecimal comparand = narrow instanceof Double
-                        ? BigDecimal.valueOf(narrow.doubleValue())
-                        : new BigDecimal(narrow.toString());
-                return ((BigDecimal) wide).compareTo(comparand);
+                return ((BigDecimal) wide).compareTo(new BigDecimal(narrow.toString()));
             }
             
             if(narrow instanceof RationalNumber) {
@@ -861,28 +846,26 @@ public class DefaultNumberSystem implements NumberSystem {
         }
         
         // at this point we know, that wide is one of {Double, Float}
-        BigDecimal comparable = wide instanceof Double
-                ? BigDecimal.valueOf(wide.doubleValue())
-                : new BigDecimal(wide.toString());
         
         if(narrow instanceof Double || narrow instanceof Float) {
-            BigDecimal comparand = narrow instanceof Double
-                    ? BigDecimal.valueOf(narrow.doubleValue())
-                    : new BigDecimal(narrow.toString());
-            return comparable.compareTo(comparand);
+            return new BigDecimal(wide.toString())
+			        .compareTo(new BigDecimal(narrow.toString()));
         }
         
         if(narrow instanceof RationalNumber) {
             //TODO[220] can we do better than that, eg. by converting BigDecimal to RationalNumber
-            return comparable.compareTo(((RationalNumber) narrow).bigDecimalValue());
+            return new BigDecimal(wide.toString())
+                    .compareTo(((RationalNumber) narrow).bigDecimalValue());
         }
         
         if(narrow instanceof BigInteger) {
-            return comparable.compareTo(new BigDecimal((BigInteger) narrow));
+            return new BigDecimal(wide.toString())
+                    .compareTo(new BigDecimal((BigInteger) narrow));
         }
         
         // at this point we know, that 'narrow' is one of {(Atomic)Long, (Atomic)Integer, Short, Byte}
-        return comparable.compareTo(BigDecimal.valueOf(narrow.longValue()));
+        return new BigDecimal(wide.toString())
+                .compareTo(BigDecimal.valueOf(narrow.longValue()));
         
     }
 
