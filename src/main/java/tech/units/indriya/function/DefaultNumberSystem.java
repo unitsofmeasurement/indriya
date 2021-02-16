@@ -247,10 +247,10 @@ public class DefaultNumberSystem implements NumberSystem {
             return ((RationalNumber) number).reciprocal();
         }
         if(number instanceof Double) {
-            return RationalNumber.of((double)number).reciprocal();
+            return RationalNumber.of(number.doubleValue()).reciprocal();
         }
         if(number instanceof Float) {
-            return RationalNumber.of((float)number).reciprocal();
+            return RationalNumber.of(number.floatValue()).reciprocal();
         }
         throw unsupportedNumberType(number);
     }
