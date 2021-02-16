@@ -53,11 +53,11 @@ import tech.units.indriya.internal.function.ScaleHelper;
  *          The type of the quantity.
  * @author Andi Huber
  * @author Werner Keil
- * @version 2.0, Feb 15, 2021
+ * @version 2.1, Feb 16, 2021
  * @since 1.0
  * 
  */
-public class NumberQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
+public final class NumberQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
 
     private static final long serialVersionUID = -6494337491031528402L;
     
