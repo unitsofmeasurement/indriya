@@ -39,10 +39,10 @@ import tech.units.indriya.spi.NumberSystem;
  * 
  * @author Andi Huber
  * @author Werner Keil
- * @version 1.1
+ * @version 1.2, Feb 17, 2021
  * @since 2.0
  */
-public class Calculator {
+public final class Calculator {
 
     /**
      * Returns a new instance of a {@code Calculator} initialized with the default {@link NumberSystem}, 
