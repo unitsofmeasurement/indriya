@@ -763,19 +763,13 @@ public class DefaultNumberSystem implements NumberSystem {
         
         // at this point we know, that wide is one of {Double, Float}
         
-        if(narrow instanceof Double) {
+        if(narrow instanceof Double || narrow instanceof Float) {
             // not converting to BigDecimal, because fractional multiplication is not sensitive to precision loss
-            if(wide instanceof Double) {
-            return wide.doubleValue() * narrow.doubleValue();
-            } else {
-                return wide.floatValue() * narrow.doubleValue();
-            }
-        }
-        if(narrow instanceof Float) {
-            if(wide instanceof Double) {
-                return wide.doubleValue() * narrow.floatValue();
-            } else {
+            if (wide instanceof Float && narrow instanceof Float) {
+                // return float if both are floats
                 return wide.floatValue() * narrow.floatValue();
+            } else {
+                return wide.doubleValue() * narrow.doubleValue();
             }
         }
         
