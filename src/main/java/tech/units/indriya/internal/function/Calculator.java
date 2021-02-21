@@ -39,7 +39,7 @@ import tech.units.indriya.spi.NumberSystem;
  * 
  * @author Andi Huber
  * @author Werner Keil
- * @version 1.2, Feb 17, 2021
+ * @version 2.0, Feb 21, 2021
  * @since 2.0
  */
 public final class Calculator {
@@ -67,8 +67,24 @@ public final class Calculator {
     private final NumberSystem ns;
     private Number acc = 0;
     
+    /**
+     * Returns a new instance of a {@code Calculator} initialized with the given {@link NumberSystem}.
+     * @return a {@code Calculator} initialized with the given {@link NumberSystem}.
+     * @param ns the {@link NumberSystem} 
+     */
     private Calculator(NumberSystem ns) {
         this.ns = ns;
+    }
+    
+    /**
+     * Returns a new instance of a {@code Calculator} initialized with the default {@link NumberSystem}, 
+     * as set at {@link Calculus#currentNumberSystem()}
+     * <p>
+     * This implementation is *not* thread-safe, hence threads should not share instances of this. 
+     * @return a {@code Calculator} initialized with the default {@link NumberSystem} 
+     */
+    private Calculator() {
+    	this(Calculus.currentNumberSystem());
     }
 
     /**
