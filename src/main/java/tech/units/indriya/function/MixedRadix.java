@@ -56,7 +56,7 @@ import tech.units.indriya.quantity.Quantities;
  * 
  * @author Andi Huber
  * @author Werner Keil
- * @version 2.0, Jan 19, 2021
+ * @version 2.1, Feb 21, 2021
  * @since 2.0
  * @see <a href="https://en.wikipedia.org/wiki/Mixed_radix">Wikipedia: Mixed
  *      radix</a>
@@ -273,7 +273,6 @@ public final class MixedRadix<Q extends Quantity<Q>> {
     }
 	
 	void visitQuantity(Quantity<Q> quantity, int maxPartsToVisit, MixedRadixVisitor<Q> partVisitor) {
-
 		final int partsToVisitCount = Math.min(maxPartsToVisit, getUnitCount());
 
 		// corner case (partsToVisitCount == 0)
@@ -322,9 +321,7 @@ public final class MixedRadix<Q extends Quantity<Q>> {
 	}
 
 	private MixedRadix<Q> append(PrimaryUnitPickState state, Unit<Q> mixedRadixUnit) {
-
 		Unit<Q> tail = getTrailingUnit();
-
 		assertDecreasingOrderOfSignificanceAndLinearity(tail, mixedRadixUnit);
 
 		final List<Unit<Q>> mixedRadixUnits = new ArrayList<>(this.mixedRadixUnits);
@@ -333,7 +330,6 @@ public final class MixedRadix<Q extends Quantity<Q>> {
 	}
 
 	private void assertDecreasingOrderOfSignificanceAndLinearity(Unit<Q> tail, Unit<Q> appended) {
-
 		final UnitConverter converter = appended.getConverterTo(tail);
 		if (!converter.isLinear()) {
 			String message = String.format("the appended mixed-radix unit <%s> " + "must be linear",
@@ -358,7 +354,6 @@ public final class MixedRadix<Q extends Quantity<Q>> {
 		private final int pickedIndex;
 
 		private static PrimaryUnitPickState pickByConvention() {
-
 			final int pickedIndex_byConvention;
 
 			switch (PRIMARY_UNIT_PICK) {
@@ -373,7 +368,6 @@ public final class MixedRadix<Q extends Quantity<Q>> {
 			default:
 				throw new MeasurementException(
 						String.format("internal error: unmatched switch case <%s>", PRIMARY_UNIT_PICK));
-
 			}
 
 			return new PrimaryUnitPickState(false, pickedIndex_byConvention);
@@ -401,6 +395,5 @@ public final class MixedRadix<Q extends Quantity<Q>> {
 		private int nonNegativePrimaryUnitIndex(int unitCount) {
 			return pickedIndex < 0 ? unitCount + pickedIndex : pickedIndex;
 		}
-
 	}
 }
