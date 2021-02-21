@@ -17,7 +17,7 @@
 		<artifactId>uom-parent</artifactId>
 		<version>2.1.1</version>
 	</parent>
-	<version>2.1.2-SNAPSHOT</version>
+	<version>2.1.2</version>
 	
 	<scm>
 		<url>https://github.com/unitsofmeasurement/indriya.git</url>
@@ -46,7 +46,7 @@
 		<!-- The oldest Java version supported by this tool. -->
 		<!-- Will control compilation of main code and the unit tests. -->
 		<base.java.version>8</base.java.version>
-
+        <jpms.name>tech.units.indriya</jpms.name>
 		<project.build.javaVersion>${jdkVersion}</project.build.javaVersion>
 		<maven.compile.targetLevel>${jdkVersion}</maven.compile.targetLevel>
 		<maven.compile.sourceLevel>${jdkVersion}</maven.compile.sourceLevel>
@@ -310,8 +310,8 @@
 							<Implementation-Title>${project.name}</Implementation-Title>
 							<Implementation-Version>${project.version}</Implementation-Version>
 							<Implementation-Vendor>${project.organization.name}</Implementation-Vendor>
-							<Implementation-URL>http://units.tech</Implementation-URL>
-							<Automatic-Module-Name>tech.units.indriya</Automatic-Module-Name>
+							<Implementation-URL>{$project.url}</Implementation-URL>
+							<Automatic-Module-Name>${jpms.name}</Automatic-Module-Name>
 							<Multi-Release>true</Multi-Release>
 						</manifestEntries>
 					</archive>
@@ -769,8 +769,7 @@
 		</profile>
 
 		<profile>
-			<!-- profile that activates on eclipse, to specifically fix eclipse build
-				and test issues -->
+			<!-- profile that activates on eclipse, to specifically fix eclipse build and test issues -->
 			<id>m2e</id>
 			<activation>
 				<property>
