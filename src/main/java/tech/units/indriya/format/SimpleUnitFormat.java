@@ -81,7 +81,7 @@ import static tech.units.indriya.format.FormatConstants.MIDDLE_DOT;
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author Eric Russell
  * @author Andi Huber
- * @version 2.3, Nov. 27, 2020
+ * @version 2.4, Feb. 25, 2021
  * @since 1.0
  */
 public abstract class SimpleUnitFormat extends AbstractUnitFormat {
