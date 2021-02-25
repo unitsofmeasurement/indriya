@@ -56,7 +56,7 @@ import tech.units.indriya.quantity.Quantities;
  * 
  * @author Andi Huber
  * @author Werner Keil
- * @version 2.1, Feb 21, 2021
+ * @version 2.2, Feb 25, 2021
  * @since 2.0
  * @see <a href="https://en.wikipedia.org/wiki/Mixed_radix">Wikipedia: Mixed
  *      radix</a>
@@ -250,8 +250,8 @@ public final class MixedRadix<Q extends Quantity<Q>> {
 	// -- THE VISITOR
 
 	@FunctionalInterface
-	public static interface MixedRadixVisitor<Q extends Quantity<Q>> {
-		public void accept(int index, Unit<Q> unit, Number value);
+	private static interface Visitor<Q extends Quantity<Q>> {
+		void accept(int index, Unit<Q> unit, Number value);
 	}
 
 	// -- IMPLEMENTATION DETAILS
@@ -272,7 +272,7 @@ public final class MixedRadix<Q extends Quantity<Q>> {
         }
     }
 	
-	void visitQuantity(Quantity<Q> quantity, int maxPartsToVisit, MixedRadixVisitor<Q> partVisitor) {
+	void visitQuantity(Quantity<Q> quantity, int maxPartsToVisit, Visitor<Q> partVisitor) {
 		final int partsToVisitCount = Math.min(maxPartsToVisit, getUnitCount());
 
 		// corner case (partsToVisitCount == 0)
