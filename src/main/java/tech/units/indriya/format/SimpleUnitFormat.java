@@ -1060,7 +1060,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
                 asciiFormat.label(Units.KILOGRAM, "kg");
                 break;
             case MICRO:
-                asciiFormat.label(MICRO(Units.LITRE), "microg"); // instead of 'µg' -> 'microg'
+                asciiFormat.label(MICRO(Units.GRAM), "microg"); // instead of 'µg' -> 'microg'
                 break;
             default:
                 asciiFormat.label(Units.GRAM.prefix(prefix), prefix.getSymbol()+"g");
