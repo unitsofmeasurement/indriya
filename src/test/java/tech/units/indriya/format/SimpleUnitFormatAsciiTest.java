@@ -47,10 +47,10 @@ import static tech.units.indriya.unit.Units.KILOGRAM;
 import static tech.units.indriya.unit.Units.METRE;
 import static tech.units.indriya.unit.Units.METRE_PER_SECOND;
 import static tech.units.indriya.unit.Units.NEWTON;
-import static tech.units.indriya.unit.Units.OHM;
 import static tech.units.indriya.unit.Units.DAY;
 import static tech.units.indriya.unit.Units.WEEK;
 import static tech.units.indriya.unit.Units.MONTH;
+import static tech.units.indriya.unit.Units.OHM;
 
 import java.math.BigInteger;
 import java.util.logging.Level;
@@ -67,7 +67,6 @@ import javax.measure.quantity.Speed;
 import javax.measure.spi.ServiceProvider;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import tech.units.indriya.function.ExpConverter;
@@ -82,14 +81,14 @@ import tech.units.indriya.unit.Units;
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  *
  */
-public class SimpleUnitFormatTest {
-    private static final Logger logger = Logger.getLogger(SimpleUnitFormatTest.class.getName());
+public class SimpleUnitFormatAsciiTest {
+    private static final Logger logger = Logger.getLogger(SimpleUnitFormatAsciiTest.class.getName());
     private static final Level LOG_LEVEL = Level.FINER;
     private UnitFormat format;
 
     @BeforeEach
     public void init() {
-        format = SimpleUnitFormat.getInstance();
+        format = SimpleUnitFormat.getInstance(SimpleUnitFormat.Flavor.ASCII);
     }
 
     @Test
@@ -100,32 +99,32 @@ public class SimpleUnitFormatTest {
     }
 
     @Test
-    public void testKilo() {
+    public void testFormatKilo() {
         Unit<Mass> m = KILOGRAM;
         String s = format.format(m);
         assertEquals("kg", s);
     }
 
     @Test
-    public void testKilo2() {
+    public void testFormatKilo2() {
         Unit<Mass> m = KILO(GRAM);
-        final String s = format.format(m);
+        String s = format.format(m);
         assertEquals("kg", s);
-    }
-
-    @Test
-    public void testFormatMicro() {
-      final String s = format.format(MICRO(METRE));
-      assertEquals("μm", s);
     }
     
     @Test
-    public void testMilli() {
-        Unit<Mass> m = MILLI(GRAM);
-        String s = format.format(m);
-        assertEquals("mg", s);
+    public void testFormatMicro() {
+      final String s = format.format(MICRO(METRE));
+      assertEquals("microm", s);
     }
 
+    @Test
+    public void testFormatMilli() {
+        Unit<Mass> m = MILLI(GRAM);
+        final String s = format.format(m);
+        assertEquals("mg", s);
+    }
+    
     @Test
     public void testFormatNano() {
         Unit<Mass> m = NANO(GRAM);
@@ -160,27 +159,27 @@ public class SimpleUnitFormatTest {
         String s = format.format(hz);
         assertEquals("TiHz", s);
     }
-
+    
     @Test
     public void testFormatOhm() {
-        final String s = format.format(OHM);
-        assertEquals("Ω", s);
+        String s = format.format(OHM);
+        assertEquals("Ohm", s);
     }
     
     @Test
     public void testFormatMicroOhm() {
         final String s = format.format(MICRO(OHM));
-        assertEquals("μΩ", s);
+        assertEquals("microOhm", s);
     }
     
     @Test
     public void testFormatMilliOhm() {
-        final String s = format.format(MILLI(OHM));
-        assertEquals("mΩ", s);
+        String s = format.format(MILLI(OHM));
+        assertEquals("mOhm", s);
     }
-    
+
     @Test
-    public void testFormatTransformed() {
+    public void testTransformed() {
         final String ANGSTROEM_SYM = "\u212B";
         final Unit<Length> ANGSTROEM = new TransformedUnit<Length>(ANGSTROEM_SYM, METRE, METRE,
                 MultiplyConverter.ofRational(RationalNumber.of(BigInteger.ONE, BigInteger.TEN.pow(10))));
@@ -200,7 +199,7 @@ public class SimpleUnitFormatTest {
     
     @Test
     public void testParsePowerAndRoot() {
-      assertEquals("1/m^19:31", format.format(format.parse("m^12:31").divide(METRE)));
+      assertEquals("m^-19:31", format.format(format.parse("m^12:31").divide(METRE)));
     }    
 
     @Test
@@ -249,13 +248,6 @@ public class SimpleUnitFormatTest {
     
         format.label(CANDELA, "cd"); // cleanup, UnitFormat.label() applies for the entire VM, and the order of JUnit tests is not guaranteed
     }
-
-    @Test
-    @Disabled("SimpleUnitFormat cannot deal with expressions that start with 1 at this point")
-    public void testParseInverseL() {
-        Unit<?> u = format.parse("1/l");
-        assertEquals("1/l", u.toString());
-    }
     
     @Test
     public void testParseM3() {
@@ -294,7 +286,7 @@ public class SimpleUnitFormatTest {
     }
     
 	@Test
-	public void testPrefix() {
+	public void testFormatPrefix() {
 		logger.log(LOG_LEVEL, format.format(GIGA(METRE_PER_SECOND))); 
 		assertEquals("N", format.format(NEWTON));
 		assertEquals("mN", format.format(MILLI(NEWTON)));
