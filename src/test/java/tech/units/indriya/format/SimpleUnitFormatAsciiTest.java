@@ -167,6 +167,12 @@ public class SimpleUnitFormatAsciiTest {
     }
     
     @Test
+    public void testFormatMicroGram() {
+      final String s = format.format(MICRO(GRAM));
+      assertEquals("microg", s);
+    }
+    
+    @Test
     public void testFormatMicroOhm() {
         final String s = format.format(MICRO(OHM));
         assertEquals("microOhm", s);

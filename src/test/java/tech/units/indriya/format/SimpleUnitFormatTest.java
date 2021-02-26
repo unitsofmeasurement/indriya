@@ -120,6 +120,12 @@ public class SimpleUnitFormatTest {
     }
     
     @Test
+    public void testFormatMicroGram() {
+      final String s = format.format(MICRO(GRAM));
+      assertEquals("µg", s);
+    }
+    
+    @Test
     public void testMilli() {
         Unit<Mass> m = MILLI(GRAM);
         String s = format.format(m);
