@@ -62,7 +62,8 @@ import java.util.logging.Logger;
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author  Martin Desruisseaux (Geomatys)
- * @version 1.1, $Date: 2020-08-06 $
+ * @author  Andi Huber
+ * @version 1.2, $Date: 2021-03-12 $
  * @since 2.0
  */
 public class UnitDimension implements Dimension, Serializable {
