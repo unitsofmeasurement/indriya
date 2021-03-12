@@ -221,7 +221,7 @@ public class UnitDimension implements Dimension, Serializable {
 	/**
 	 * Returns the quotient of this dimension with the one specified.
 	 * If the specified dimension is not a physics dimension, then
-     * <code>that.divide(this)</code> is returned.
+     * <code>that.divide(this).pow(-1)</code> is returned.
 	 *
 	 * @param that the dimension divisor.
 	 * @return <code>this.multiply(that.pow(-1))</code>
@@ -230,7 +230,7 @@ public class UnitDimension implements Dimension, Serializable {
 	public Dimension divide(Dimension that) {
 		return that instanceof UnitDimension
 		        ? this.divide((UnitDimension) that)
-                : that.divide(this);
+                : that.divide(this).pow(-1);
 	}
 
 	/**
