@@ -192,8 +192,8 @@ public class UnitDimension implements Dimension, Serializable {
 	
 
 	/**
-	 * Returns the product of this dimension with the one specified. If the
-	 * specified dimension is not a physics dimension, then
+	 * Returns the product of this dimension with the one specified. 
+	 * If the specified dimension is not a physics dimension, then
 	 * <code>that.multiply(this)</code> is returned.
 	 *
 	 * @param that the dimension multiplicand.
@@ -201,7 +201,9 @@ public class UnitDimension implements Dimension, Serializable {
 	 * @since 1.0
 	 */
 	public Dimension multiply(Dimension that) {
-		return that instanceof UnitDimension ? this.multiply((UnitDimension) that) : this.multiply(that);
+		return that instanceof UnitDimension
+		        ? this.multiply((UnitDimension) that)
+                : that.multiply(this);
 	}
 
 	/**
@@ -217,13 +219,17 @@ public class UnitDimension implements Dimension, Serializable {
 
 	/**
 	 * Returns the quotient of this dimension with the one specified.
+	 * If the specified dimension is not a physics dimension, then
+     * <code>that.divide(this)</code> is returned.
 	 *
 	 * @param that the dimension divisor.
 	 * @return <code>this.multiply(that.pow(-1))</code>
 	 * @since 1.0
 	 */
 	public Dimension divide(Dimension that) {
-		return that instanceof UnitDimension ? this.divide((UnitDimension) that) : this.divide(that);
+		return that instanceof UnitDimension
+		        ? this.divide((UnitDimension) that)
+                : that.divide(this);
 	}
 
 	/**
