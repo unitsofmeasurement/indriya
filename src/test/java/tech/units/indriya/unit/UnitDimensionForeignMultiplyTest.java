@@ -37,6 +37,14 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * 
+ * Tests {@link UnitDimension#multiply(Dimension)} and 
+ * {@link UnitDimension#divide(Dimension)} for when the
+ * {@link Dimension} argument is not an instance of UnitDimension,
+ * meaning a foreign dimension implementation, not known to this library.
+ * 
+ */
 class UnitDimensionForeignMultiplyTest {
 
     @Test
