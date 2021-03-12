@@ -66,13 +66,12 @@ import java.util.Objects;
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author  Martin Desruisseaux (Geomatys)
- * @version 1.1, $Date: 2020-04-19 $
+ * @author  Andi Huber
+ * @version 2.0, $Date: 2021-03-12 $
  * @since 2.0
  */
 public class UnitDimension implements Dimension, Serializable {
-	/**
-	*
-	*/
+	/**	*/
 	private static final long serialVersionUID = 7806787530512644696L;
 
 	private static final Logger LOGGER = System.getLogger(UnitDimension.class.getPackage().getName());
@@ -138,7 +137,7 @@ public class UnitDimension implements Dimension, Serializable {
 
 	/**
 	 * Returns the dimension for the specified quantity type by aggregating the
-	 * results of {@link DimensionService} or <code>null</code> if the specified
+	 * results from the default {@link javax.measure.spi.SystemOfUnits SystemOfUnits} or <code>null</code> if the specified
 	 * quantity is unknown.
 	 *
 	 * @param quantityType the quantity type.
@@ -146,13 +145,11 @@ public class UnitDimension implements Dimension, Serializable {
 	 * @since 1.1
 	 */
 	public static <Q extends Quantity<Q>> Dimension of(Class<Q> quantityType) {
-		// TODO: Track services and aggregate results (register custom
-		// types)
+		// TODO: Track services and aggregate results (register custom types)
 		Unit<Q> siUnit = Units.getInstance().getUnit(quantityType);
 		if (siUnit == null) {
 			if (LOGGER.isLoggable(Level.DEBUG)) {
 				LOGGER.log(Level.DEBUG, "Quantity type: " + quantityType + " unknown");
-				// we're logging but probably DEBUG is enough?
 			}
 		}
 		return (siUnit != null) ? siUnit.getDimension() : null;
@@ -196,10 +193,9 @@ public class UnitDimension implements Dimension, Serializable {
 		this(AbstractUnit.ONE);
 	}
 
-
 	/**
 	 * Returns the product of this dimension with the one specified. If the
-	 * specified dimension is not a physics dimension, then
+	 * specified dimension is not a <code>UnitDimension</code>, then
 	 * <code>that.multiply(this)</code> is returned.
 	 *
 	 * @param that the dimension multiplicand.
@@ -207,7 +203,9 @@ public class UnitDimension implements Dimension, Serializable {
 	 * @since 1.0
 	 */
 	public Dimension multiply(Dimension that) {
-		return that instanceof UnitDimension ? this.multiply((UnitDimension) that) : this.multiply(that);
+		return that instanceof UnitDimension
+		        ? this.multiply((UnitDimension) that)
+                : that.multiply(this);
 	}
 
 	/**
@@ -223,6 +221,8 @@ public class UnitDimension implements Dimension, Serializable {
 
 	/**
 	 * Returns the quotient of this dimension with the one specified.
+	 * If the specified dimension is not a <code>UnitDimension</code>, then
+     * <code>that.divide(this).pow(-1)</code> is returned.
 	 *
 	 * @param that the dimension divisor.
 	 * @return <code>this.multiply(that.pow(-1))</code>

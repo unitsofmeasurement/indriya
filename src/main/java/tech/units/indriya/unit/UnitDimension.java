@@ -63,13 +63,11 @@ import java.util.logging.Logger;
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author  Martin Desruisseaux (Geomatys)
  * @author  Andi Huber
- * @version 1.2, $Date: 2021-03-12 $
+ * @version 2.0, $Date: 2021-03-12 $
  * @since 2.0
  */
 public class UnitDimension implements Dimension, Serializable {
-    /**
-	 * 
-	 */
+    /**	*/
 	private static final long serialVersionUID = 7806787530512644696L;
 
 	private static final Logger LOGGER = Logger.getLogger(UnitDimension.class.getName());
@@ -135,7 +133,7 @@ public class UnitDimension implements Dimension, Serializable {
 
 	/**
 	 * Returns the dimension for the specified quantity type by aggregating the
-	 * results of {@link DimensionService} or <code>null</code> if the specified
+	 * results from the default {@link javax.measure.spi.SystemOfUnits SystemOfUnits} or <code>null</code> if the specified
 	 * quantity is unknown.
 	 *
 	 * @param quantityType the quantity type.
@@ -143,12 +141,10 @@ public class UnitDimension implements Dimension, Serializable {
 	 * @since 1.1
 	 */
 	public static <Q extends Quantity<Q>> Dimension of(Class<Q> quantityType) {
-		// TODO: Track services and aggregate results (register custom
-		// types)
+		// TODO: Track services and aggregate results (register custom types)
 		Unit<Q> siUnit = Units.getInstance().getUnit(quantityType);
 		if (siUnit == null) {
 			LOGGER.log(Level.FINER, "Quantity type: " + quantityType + " unknown");
-			// we're logging but probably FINER is enough?
 		}
 		return (siUnit != null) ? siUnit.getDimension() : null;
 	}
@@ -194,7 +190,7 @@ public class UnitDimension implements Dimension, Serializable {
 
 	/**
 	 * Returns the product of this dimension with the one specified. 
-	 * If the specified dimension is not a physics dimension, then
+	 * If the specified dimension is not a <code>UnitDimension</code>, then
 	 * <code>that.multiply(this)</code> is returned.
 	 *
 	 * @param that the dimension multiplicand.
@@ -220,7 +216,7 @@ public class UnitDimension implements Dimension, Serializable {
 
 	/**
 	 * Returns the quotient of this dimension with the one specified.
-	 * If the specified dimension is not a physics dimension, then
+	 * If the specified dimension is not a <code>UnitDimension</code>, then
      * <code>that.divide(this).pow(-1)</code> is returned.
 	 *
 	 * @param that the dimension divisor.

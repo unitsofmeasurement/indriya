@@ -45,7 +45,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * meaning a foreign dimension implementation, not known to this library.
  * 
  */
-class UnitDimensionForeignMultiplyTest {
+class UnitDimensionForeignImplTest {
 
     @Test
     void multiplyByForeignDimension() {

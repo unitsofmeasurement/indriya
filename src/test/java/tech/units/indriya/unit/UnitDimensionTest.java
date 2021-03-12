@@ -193,6 +193,7 @@ public class UnitDimensionTest {
   /**
    * Verifies that a quantity dimension is not equal to an object of a different class.
    */
+  @SuppressWarnings("unlikely-arg-type")
   @Test
   public void UnitDimensionIsNotEqualToObjectOfDifferentClass() {
     assertFalse(UnitDimension.LENGTH.equals("A String"));
@@ -243,18 +244,14 @@ public class UnitDimensionTest {
 	  public void unitsShouldBeCompatible() 
 	      throws UnconvertibleException, IncommensurableException {
 	    
-	    // given: a and b, having compatible dimensions
-	    
+	    // given: a and b, having compatible dimensions	    
 	    Unit<FuelConsumption> a = FuelConsumption.LITRE_PER_100KM;
 	    Unit<?> b = FuelEconomy.MILES_PER_GALLON.pow(-1);
 	    
-	    // when: even though a and b are different
-	    
+	    // when: even though a and b are different	    
 	    assertFalse(a.getConverterToAny(b).isIdentity());
 	    
-	    // then: a and b should be compatible
-	    
-	    assertTrue(a.isCompatible(b));
-	    
+	    // then: a and b should be compatible	    
+	    assertTrue(a.isCompatible(b));	    
 	  }
 }
