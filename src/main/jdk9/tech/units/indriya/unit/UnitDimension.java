@@ -147,10 +147,8 @@ public class UnitDimension implements Dimension, Serializable {
 	public static <Q extends Quantity<Q>> Dimension of(Class<Q> quantityType) {
 		// TODO: Track services and aggregate results (register custom types)
 		Unit<Q> siUnit = Units.getInstance().getUnit(quantityType);
-		if (siUnit == null) {
-			if (LOGGER.isLoggable(Level.DEBUG)) {
-				LOGGER.log(Level.DEBUG, "Quantity type: " + quantityType + " unknown");
-			}
+		if (siUnit == null && LOGGER.isLoggable(Level.DEBUG)) {
+			LOGGER.log(Level.DEBUG, "Quantity type: " + quantityType + " unknown");		
 		}
 		return (siUnit != null) ? siUnit.getDimension() : null;
 	}
