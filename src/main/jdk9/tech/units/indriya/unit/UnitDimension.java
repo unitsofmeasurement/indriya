@@ -67,7 +67,7 @@ import java.util.Objects;
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author  Martin Desruisseaux (Geomatys)
  * @author  Andi Huber
- * @version 2.0, $Date: 2021-03-12 $
+ * @version 2.1, $Date: 2021-03-13 $
  * @since 2.0
  */
 public class UnitDimension implements Dimension, Serializable {

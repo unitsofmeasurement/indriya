@@ -63,7 +63,7 @@ import java.util.logging.Logger;
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author  Martin Desruisseaux (Geomatys)
  * @author  Andi Huber
- * @version 2.0, $Date: 2021-03-12 $
+ * @version 2.1, $Date: 2021-03-13 $
  * @since 2.0
  */
 public class UnitDimension implements Dimension, Serializable {
@@ -144,7 +144,9 @@ public class UnitDimension implements Dimension, Serializable {
 		// TODO: Track services and aggregate results (register custom types)
 		Unit<Q> siUnit = Units.getInstance().getUnit(quantityType);
 		if (siUnit == null) {
-			LOGGER.log(Level.FINER, "Quantity type: " + quantityType + " unknown");
+			if (LOGGER.isLoggable(Level.FINE)) {
+				LOGGER.log(Level.FINE, "Quantity type: " + quantityType + " unknown");
+			}
 		}
 		return (siUnit != null) ? siUnit.getDimension() : null;
 	}
@@ -220,7 +222,7 @@ public class UnitDimension implements Dimension, Serializable {
      * <code>that.divide(this).pow(-1)</code> is returned.
 	 *
 	 * @param that the dimension divisor.
-	 * @return <code>that / this</code>
+	 * @return <code>this / that</code>
 	 * @since 1.0
 	 */
 	public Dimension divide(Dimension that) {

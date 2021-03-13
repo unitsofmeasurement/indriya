@@ -39,6 +39,7 @@ import javax.measure.MeasurementError;
  * @version 5.3, September 27, 2020
  */
 
+// TODO could we start using JavaCC again here?
 final class DefaultCharStream {
   /** Whether parser is static. */
   public static final boolean staticFlag = false;
@@ -147,7 +148,7 @@ final class DefaultCharStream {
   }
 
   /** Start. */
-  public char beginToken() throws java.io.IOException {
+  char beginToken() throws java.io.IOException {
     tokenBegin = -1;
     char c = readChar();
     tokenBegin = bufpos;
@@ -189,7 +190,7 @@ final class DefaultCharStream {
   }
 
   /** Read a character. */
-  public char readChar() throws java.io.IOException {
+  char readChar() throws java.io.IOException {
     if (inBuf > 0) {
       --inBuf;
 
@@ -208,15 +209,6 @@ final class DefaultCharStream {
     return c;
   }
 
-  @Deprecated
-  /**
-   * @deprecated
-   * @see #getEndColumn
-   */
-  public int getColumn() {
-    return bufcolumn[bufpos];
-  }
-
   /** Get token end column number. */
   public int getEndColumn() {
     return bufcolumn[bufpos];
@@ -228,17 +220,17 @@ final class DefaultCharStream {
   }
 
   /** Get token beginning column number. */
-  public int getBeginColumn() {
+  int getBeginColumn() {
     return bufcolumn[tokenBegin];
   }
 
   /** Get token beginning line number. */
-  public int getBeginLine() {
+  int getBeginLine() {
     return bufline[tokenBegin];
   }
 
   /** Backup a number of characters. */
-  public void backup(int amount) {
+  void backup(int amount) {
 
     inBuf += amount;
     if ((bufpos -= amount) < 0)
@@ -312,17 +304,17 @@ final class DefaultCharStream {
   }
 
   /** Constructor. */
-  public DefaultCharStream(java.io.InputStream dstream, int startline, int startcolumn) {
+  DefaultCharStream(java.io.InputStream dstream, int startline, int startcolumn) {
     this(dstream, startline, startcolumn, 4096);
   }
 
   /** Constructor. */
-  public DefaultCharStream(java.io.InputStream dstream, String encoding) throws java.io.UnsupportedEncodingException {
+  DefaultCharStream(java.io.InputStream dstream, String encoding) throws java.io.UnsupportedEncodingException {
     this(dstream, encoding, 1, 1, 4096);
   }
 
   /** Constructor. */
-  public DefaultCharStream(java.io.InputStream dstream) {
+  DefaultCharStream(java.io.InputStream dstream) {
     this(dstream, 1, 1, 4096);
   }
 
@@ -343,46 +335,10 @@ final class DefaultCharStream {
     reInit(dstream, encoding, 1, 1, 4096);
   }
 
-  /** Reinitialise. */
-  public void reInit(java.io.InputStream dstream) {
-    reInit(dstream, 1, 1, 4096);
-  }
-
-  /** Reinitialise. */
-  public void reInit(java.io.InputStream dstream, String encoding, int startline, int startcolumn) throws java.io.UnsupportedEncodingException {
-    reInit(dstream, encoding, startline, startcolumn, 4096);
-  }
-
-  /** Reinitialise. */
-  public void reInit(java.io.InputStream dstream, int startline, int startcolumn) {
-    reInit(dstream, startline, startcolumn, 4096);
-  }
-
   /** Get token literal value. */
-  public String getImage() {
+  String getImage() {
     if (bufpos >= tokenBegin) return new String(buffer, tokenBegin, bufpos - tokenBegin + 1);
     return new String(buffer, tokenBegin, bufsize - tokenBegin) + new String(buffer, 0, bufpos + 1);
-  }
-
-  /** Get the suffix. */
-  public char[] GetSuffix(int len) {
-    char[] ret = new char[len];
-
-    if ((bufpos + 1) >= len)
-      System.arraycopy(buffer, bufpos - len + 1, ret, 0, len);
-    else {
-      System.arraycopy(buffer, bufsize - (len - bufpos - 1), ret, 0, len - bufpos - 1);
-      System.arraycopy(buffer, 0, ret, len - bufpos - 1, bufpos + 1);
-    }
-
-    return ret;
-  }
-
-  /** Reset buffer when finished. */
-  public void done() {
-    buffer = null;
-    bufline = null;
-    bufcolumn = null;
   }
 
   /**
@@ -426,9 +382,4 @@ final class DefaultCharStream {
     line = bufline[j];
     column = bufcolumn[j];
   }
-
 }
-/*
- * JavaCC - OriginalChecksum=ec4e178f3ccf05ea2ca32d15e09312ca (do not edit this
- * line)
- */
