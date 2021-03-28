@@ -50,7 +50,7 @@ import static tech.units.indriya.format.UnitStyle.*;
  * </p>
  *
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 2.0, Feb 18, 2020
+ * @version 2.1, Mar 28, 2021
  * @since 1.0
  */
 public abstract class AbstractSystemOfUnits implements SystemOfUnits, Nameable {
@@ -109,8 +109,11 @@ public abstract class AbstractSystemOfUnits implements SystemOfUnits, Nameable {
 	@Override
 	public Unit<?> getUnit(String string) {
 		Objects.requireNonNull(string);
-		return this.getUnits().stream().filter((u) -> string.equals(u.toString())).findAny().orElse(null);
-	}
+        return this.getUnits().stream()
+            .filter((u) -> string.equals(u.toString()))
+            .findAny()
+            .orElse(null);
+    }
 
 	/**
 	 * <p>
