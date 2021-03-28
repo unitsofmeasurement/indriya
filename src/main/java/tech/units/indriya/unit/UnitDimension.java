@@ -233,7 +233,7 @@ public class UnitDimension implements Dimension, Serializable {
 	 * Returns the quotient of this dimension with the one specified.
 	 *
 	 * @param that the dimension divisor.
-	 * @return <code>that / this</code>
+	 * @return <code>this / that</code>
 	 * @since 1.0
 	 */
 	private UnitDimension divide(UnitDimension that) {
