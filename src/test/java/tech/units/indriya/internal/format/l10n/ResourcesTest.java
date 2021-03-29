@@ -36,8 +36,6 @@ import java.util.ResourceBundle;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
-import tech.units.indriya.internal.format.l10n.MultiPropertyResourceBundle;
-
 @Tag("l10n")
 public class ResourcesTest {
 
@@ -47,9 +45,12 @@ public class ResourcesTest {
 
     assertNotNull(bundle.getString("res1"));
 
-    MultiPropertyResourceBundle multiBundle = new MultiPropertyResourceBundle(bundle, "format");
+    final MultiPropertyResourceBundle multiBundle = new MultiPropertyResourceBundle(bundle, "format");
     assertNotNull(multiBundle.getString("res1"));
-
+    assertFalse(multiBundle.containsKey("more1")); // before merging    
+    
+    assertEquals("format:", multiBundle.getMergedBundlePaths().toString());
+    
     ResourceBundle bundle2 = ResourceBundle.getBundle("other_format/more_messages");
     assertNotNull(bundle2.getString("more1"));
 
@@ -63,6 +64,7 @@ public class ResourcesTest {
     assertEquals("res2", multiBundle.getString("res2"));
     assertEquals("res3", multiBundle.getString("res3"));
     assertEquals("more message1", multiBundle.getString("more1"));
+    assertEquals("format:other_format:", multiBundle.getMergedBundlePaths().toString());
   }
 
 }
