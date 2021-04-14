@@ -81,7 +81,7 @@ import static tech.units.indriya.format.FormatConstants.MIDDLE_DOT;
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author Eric Russell
  * @author Andi Huber
- * @version 2.4, Feb. 25, 2021
+ * @version 2.5, Apr. 15, 2021
  * @since 1.0
  */
 public abstract class SimpleUnitFormat extends AbstractUnitFormat {
@@ -432,21 +432,6 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
                     }
                     return annotable.toString();
                 }
-                // mixed unit.
-                /*      if (unit instanceof MixedUnit) {
-        MixedUnit<?> mixUnit = (MixedUnit<?>) unit;
-        final StringBuilder mixer = new StringBuilder();
-        final int partSize = mixUnit.getUnits().size();
-        int pos = 0;
-        for (Unit<?> part : mixUnit.getUnits()) {
-            mixer.append(nameFor(part));
-            pos++;
-            if (mixer.length() > 0 && pos < partSize) 
-                mixer.append(";"); // FIXME we need a more flexible pattern here
-        }
-        return mixer.toString();
-      }
-                 */
                 return null; // Product unit.
             }
 
@@ -922,7 +907,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
     }
 
     /** to check if a string only contains US-ASCII characters */
-    protected static boolean isAllASCII(String input) {
+    private static boolean isAllASCII(String input) {
         boolean isASCII = true;
         for (int i = 0; i < input.length(); i++) {
             int c = input.charAt(i);
@@ -956,7 +941,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
     // -- FACTORIES
     
     protected static DefaultFormat initDefaultFormat(final DefaultFormat defaultFormat) {
-    
+    // FIXME this should be private or package-local at a later point when it is no longer used (e.g. by GeoTools)
         for (int i = 0; i < METRIC_UNITS.length; i++) {
             Unit<?> si = METRIC_UNITS[i];
             String symbol = (si instanceof BaseUnit) ? ((BaseUnit<?>) si).getSymbol() : ((AlternateUnit<?>) si).getSymbol();
@@ -1036,7 +1021,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
         return defaultFormat;
     }
     
-    protected static ASCIIFormat initASCIIFormat(final ASCIIFormat asciiFormat) {
+    private static ASCIIFormat initASCIIFormat(final ASCIIFormat asciiFormat) {
         
         for (int i = 0; i < METRIC_UNITS.length; i++) {
             Unit<?> si = METRIC_UNITS[i];
