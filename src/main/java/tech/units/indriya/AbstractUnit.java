@@ -84,7 +84,7 @@ import tech.uom.lib.common.function.SymbolSupplier;
  *      International System of Units</a>
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 3.1, November 21, 2020
+ * @version 3.2, April 16, 2021
  * @since 1.0
  */
 public abstract class AbstractUnit<Q extends Quantity<Q>>
@@ -210,7 +210,7 @@ public abstract class AbstractUnit<Q extends Quantity<Q>>
 	 * </p>
 	 *
 	 * @param charSequence the character sequence to parse.
-	 * @return <code>SimpleUnitFormat.getInstance().parse(csq, new ParsePosition(0))</code>
+	 * @return <code>SimpleUnitFormat.getInstance().parse(csq)</code>
 	 * @throws MeasurementParseException if the specified character sequence cannot
 	 *                                   be correctly parsed (e.g. not UCUM
 	 *                                   compliant).

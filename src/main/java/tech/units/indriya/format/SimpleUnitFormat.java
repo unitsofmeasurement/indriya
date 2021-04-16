@@ -81,7 +81,7 @@ import static tech.units.indriya.format.FormatConstants.MIDDLE_DOT;
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author Eric Russell
  * @author Andi Huber
- * @version 2.5, Apr. 15, 2021
+ * @version 2.6, Apr. 16, 2021
  * @since 1.0
  */
 public abstract class SimpleUnitFormat extends AbstractUnitFormat {
@@ -308,6 +308,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
 
     /**
      * This class represents the standard format.
+     * @deprecated internal class, that will be made private soon, please extend either SimpleUnitFormat or AbstractUnitFormat
      */
     protected static class DefaultFormat extends SimpleUnitFormat {
         private static enum Token { EOF, IDENTIFIER, OPEN_PAREN, CLOSE_PAREN, EXPONENT, MULTIPLY, DIVIDE, 
@@ -940,7 +941,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
     
     // -- FACTORIES
     
-    protected static DefaultFormat initDefaultFormat(final DefaultFormat defaultFormat) {
+    private static DefaultFormat initDefaultFormat(final DefaultFormat defaultFormat) {
     // FIXME this should be private or package-local at a later point when it is no longer used (e.g. by GeoTools)
         for (int i = 0; i < METRIC_UNITS.length; i++) {
             Unit<?> si = METRIC_UNITS[i];
