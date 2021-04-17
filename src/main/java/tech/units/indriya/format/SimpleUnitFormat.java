@@ -100,8 +100,18 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
         Default, ASCII
     }
 
-    // Initializes the standard unit database for SI units.
-
+    /**
+     * Holds the standard unit format.
+     */
+    private static final DefaultFormat DEFAULT = initDefaultFormat(new DefaultFormat());
+    
+    /**
+     * Holds the ASCIIFormat flavor.
+     */
+    private static final ASCIIFormat ASCII = new ASCIIFormat();
+    
+    // Initializes the standard unit databases.
+    
     private static final Unit<?>[] METRIC_UNITS = { Units.AMPERE, Units.BECQUEREL, Units.CANDELA, Units.COULOMB, Units.FARAD, Units.GRAY, Units.HENRY,
             Units.HERTZ, Units.JOULE, Units.KATAL, Units.KELVIN, Units.LUMEN, Units.LUX, Units.METRE, Units.MOLE, Units.NEWTON, Units.OHM, Units.PASCAL,
             Units.RADIAN, Units.SECOND, Units.SIEMENS, Units.SIEVERT, Units.STERADIAN, Units.TESLA, Units.VOLT, Units.WATT, Units.WEBER };
@@ -927,17 +937,73 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
         SYMBOL_TO_UNIT.put(MetricPrefix.MICRO.getSymbol() + "g", MICRO(Units.GRAM));
         SYMBOL_TO_UNIT.put("μg", MICRO(Units.GRAM));
         SYMBOL_TO_UNIT.put(MU + "g", MICRO(Units.GRAM));
-    }
-    
-    /**
-     * Holds the standard unit format.
-     */
-    private static final DefaultFormat DEFAULT = initDefaultFormat(new DefaultFormat());
+        
+        // ASCII
+        for (int i = 0; i < METRIC_UNITS.length; i++) {
+            Unit<?> si = METRIC_UNITS[i];
+            String symbol = (si instanceof BaseUnit) ? ((BaseUnit<?>) si).getSymbol() : ((AlternateUnit<?>) si).getSymbol();
+            if (isAllASCII(symbol))
+                ASCII.label(si, symbol);
+            for (int j = 0; j < METRIC_PREFIX_SYMBOLS.length; j++) {
+                Unit<?> u = si.prefix(MetricPrefix.values()[j]);
+                if ( "µ".equals(METRIC_PREFIX_SYMBOLS[j]) ) {
+                    ASCII.label(u, "micro" + asciiSymbol(symbol));
+                }
+            } // TODO what about BINARY_PREFIX here?
+        }
 
-    /**
-     * Holds the ASCIIFormat unit format.
-     */
-    private static final ASCIIFormat ASCII = initASCIIFormat(new ASCIIFormat());
+        // -- GRAM/KILOGRAM
+
+        ASCII.label(Units.GRAM, "g");
+        for(MetricPrefix prefix : MetricPrefix.values()) {
+            switch (prefix) {
+            case KILO:
+                ASCII.label(Units.KILOGRAM, "kg");
+                break;
+            case MICRO:
+                ASCII.label(MICRO(Units.GRAM), "microg"); // instead of 'µg' -> 'microg'
+                break;
+            default:
+                ASCII.label(Units.GRAM.prefix(prefix), prefix.getSymbol()+"g");
+                break;
+            }
+        }
+
+        // Alias and ASCIIFormat for Ohm
+        ASCII.label(Units.OHM, "Ohm");
+        for (int i = 0; i < METRIC_PREFIX_SYMBOLS.length; i++) {
+            ASCII.label(Units.OHM.prefix(MetricPrefix.values()[i]), asciiPrefix(METRIC_PREFIX_SYMBOLS[i]) + "Ohm");
+        }
+
+        // Special case for DEGREE_CELSIUS.
+        ASCII.label(Units.CELSIUS, "Celsius");
+        for (int i = 0; i < METRIC_PREFIX_SYMBOLS.length; i++) {
+            ASCII.label(Units.CELSIUS.prefix(MetricPrefix.values()[i]), asciiPrefix(METRIC_PREFIX_SYMBOLS[i]) + "Celsius");
+        }
+        ASCII.alias(Units.CELSIUS, "Cel");
+
+        ASCII.label(Units.METRE, "m");
+        ASCII.label(Units.SECOND, "s");
+        ASCII.label(Units.KILOMETRE_PER_HOUR, "km/h");        
+        ASCII.alias(Units.SQUARE_METRE, "m2");
+        ASCII.alias(Units.CUBIC_METRE, "m3");
+        
+        // -- LITRE
+
+        ASCII.label(Units.LITRE, "l");
+        for(Prefix prefix : MetricPrefix.values()) {
+            if(prefix==MICRO) {
+                ASCII.label(MICRO(Units.LITRE), "microL"); // instead of 'µL' -> 'microL'
+            } else {
+                ASCII.label(Units.LITRE.prefix(prefix), prefix.getSymbol()+"L");
+            }
+        }   
+        ASCII.label(Units.NEWTON, "N");
+        ASCII.label(Units.RADIAN, "rad");
+
+        ASCII.label(AbstractUnit.ONE, "one");
+        
+    }    
     
     // -- FACTORIES
     
@@ -1020,74 +1086,5 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
         defaultFormat.alias(Units.CUBIC_METRE, "m3");
         
         return defaultFormat;
-    }
-    
-    private static ASCIIFormat initASCIIFormat(final ASCIIFormat asciiFormat) {
-        
-        for (int i = 0; i < METRIC_UNITS.length; i++) {
-            Unit<?> si = METRIC_UNITS[i];
-            String symbol = (si instanceof BaseUnit) ? ((BaseUnit<?>) si).getSymbol() : ((AlternateUnit<?>) si).getSymbol();
-            if (isAllASCII(symbol))
-                asciiFormat.label(si, symbol);
-            for (int j = 0; j < METRIC_PREFIX_SYMBOLS.length; j++) {
-                Unit<?> u = si.prefix(MetricPrefix.values()[j]);
-                if ( "µ".equals(METRIC_PREFIX_SYMBOLS[j]) ) {
-                    asciiFormat.label(u, "micro" + asciiSymbol(symbol));
-                }
-            } // TODO what about BINARY_PREFIX here?
-        }
-
-        // -- GRAM/KILOGRAM
-
-        asciiFormat.label(Units.GRAM, "g");
-        for(MetricPrefix prefix : MetricPrefix.values()) {
-            switch (prefix) {
-            case KILO:
-                asciiFormat.label(Units.KILOGRAM, "kg");
-                break;
-            case MICRO:
-                asciiFormat.label(MICRO(Units.GRAM), "microg"); // instead of 'µg' -> 'microg'
-                break;
-            default:
-                asciiFormat.label(Units.GRAM.prefix(prefix), prefix.getSymbol()+"g");
-                break;
-            }
-        }
-
-        // Alias and ASCIIFormat for Ohm
-        asciiFormat.label(Units.OHM, "Ohm");
-        for (int i = 0; i < METRIC_PREFIX_SYMBOLS.length; i++) {
-            asciiFormat.label(Units.OHM.prefix(MetricPrefix.values()[i]), asciiPrefix(METRIC_PREFIX_SYMBOLS[i]) + "Ohm");
-        }
-
-        // Special case for DEGREE_CELSIUS.
-        asciiFormat.label(Units.CELSIUS, "Celsius");
-        for (int i = 0; i < METRIC_PREFIX_SYMBOLS.length; i++) {
-            asciiFormat.label(Units.CELSIUS.prefix(MetricPrefix.values()[i]), asciiPrefix(METRIC_PREFIX_SYMBOLS[i]) + "Celsius");
-        }
-        asciiFormat.alias(Units.CELSIUS, "Cel");
-
-        asciiFormat.label(Units.METRE, "m");
-        asciiFormat.label(Units.SECOND, "s");
-        asciiFormat.label(Units.KILOMETRE_PER_HOUR, "km/h");        
-        asciiFormat.alias(Units.SQUARE_METRE, "m2");
-        asciiFormat.alias(Units.CUBIC_METRE, "m3");
-        
-        // -- LITRE
-
-        asciiFormat.label(Units.LITRE, "l");
-        for(Prefix prefix : MetricPrefix.values()) {
-            if(prefix==MICRO) {
-                asciiFormat.label(MICRO(Units.LITRE), "microL"); // instead of 'µL' -> 'microL'
-            } else {
-                asciiFormat.label(Units.LITRE.prefix(prefix), prefix.getSymbol()+"L");
-            }
-        }   
-        asciiFormat.label(Units.NEWTON, "N");
-        asciiFormat.label(Units.RADIAN, "rad");
-
-        asciiFormat.label(AbstractUnit.ONE, "one");
-        
-        return asciiFormat;
     }
 }
