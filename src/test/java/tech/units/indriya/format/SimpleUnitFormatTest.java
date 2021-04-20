@@ -341,4 +341,20 @@ public class SimpleUnitFormatTest {
 		logger.log(LOG_LEVEL, format.format(MONTH)); 
 		assertEquals(MONTH, format.parse("mo"));
 	}
+	
+	
+	@Test
+	public void testFormatNewInstance() {
+		logger.log(LOG_LEVEL, "Candela (shared format): " + format.format(CANDELA)); 
+		assertEquals("cd", format.format(CANDELA));
+		
+		logger.log(LOG_LEVEL, "Now we retrieve a new format instance");
+		final UnitFormat newFormat = SimpleUnitFormat.getNewInstance();
+		newFormat.label(CANDELA, "kd");
+		// The shared format and toString() based on it are unaffected
+		assertEquals("cd", format.format(CANDELA));		
+		assertEquals("cd", CANDELA.toString());
+		// Only the new format got the label
+		assertEquals("kd", newFormat.format(CANDELA));
+	}	
 }

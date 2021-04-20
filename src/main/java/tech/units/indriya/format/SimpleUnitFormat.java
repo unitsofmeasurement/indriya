@@ -81,7 +81,7 @@ import static tech.units.indriya.format.FormatConstants.MIDDLE_DOT;
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author Eric Russell
  * @author Andi Huber
- * @version 2.7, Apr. 19, 2021
+ * @version 2.8, Apr. 20, 2021
  * @since 1.0
  */
 public abstract class SimpleUnitFormat extends AbstractUnitFormat {
@@ -114,10 +114,10 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
 
 
     /**
-     * Returns the unit format for the default locale (format used by {@link AbstractUnit#parse(CharSequence) AbstractUnit.parse(CharSequence)} and
-     * {@link Unit#toString() Unit.toString()}).
+     * Returns the globally shared unit format instance (used by {@link AbstractUnit#parse(CharSequence) AbstractUnit.parse()} and
+     * {@link AbstractUnit#toString() AbstractUnit.toString()}).
      *
-     * @return the default unit format (locale sensitive).
+     * @return the default unit format.
      */
     public static SimpleUnitFormat getInstance() {
         return getInstance(Flavor.Default);
@@ -138,10 +138,10 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
     }
     
     /**
-     * Similar to {@link #getInstance()}, but returns a new unit format instance for the default locale,
+     * Similar to {@link #getInstance()}, but returns a new, non-shared unit format instance,
      * instead of a shared singleton instance.
      *
-     * @return a new instance of the default unit format (locale sensitive).
+     * @return a new instance of the default unit format.
      * @see #getInstance()
      */
     public static SimpleUnitFormat getNewInstance() {
@@ -314,7 +314,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
     }
 
     /**
-     * This class represents the standard format.
+     * This class represents the default (Unicode) format.
      * @deprecated internal class, that will be made private soon, please extend either SimpleUnitFormat or AbstractUnitFormat
      */
     protected static class DefaultFormat extends SimpleUnitFormat {
