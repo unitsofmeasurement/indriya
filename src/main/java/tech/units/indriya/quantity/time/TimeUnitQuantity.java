@@ -56,7 +56,7 @@ import tech.units.indriya.quantity.Quantities;
  * @author Otavio Santana
  * @author Werner Keil
  * @author Andi Huber
- * @version 1.1
+ * @version 1.2
  * @since 1.0
  */
 public final class TimeUnitQuantity extends AbstractQuantity<Time> {
@@ -95,21 +95,6 @@ public final class TimeUnitQuantity extends AbstractQuantity<Time> {
    */
   public static TimeUnitQuantity of(Number number, TimeUnit timeUnit) {
     return new TimeUnitQuantity(Objects.requireNonNull(timeUnit), Objects.requireNonNull(number));
-  }
-
-  /**
-   * creates the {@link TimeUnitQuantity} using {@link TimeUnit} and {@link Integer}
-   * 
-   * @param timeUnit
-   *          - time to be used
-   * @param value
-   *          - value to be used
-   * @since 1.0
-   * @deprecated use #of(Number, TimeUnit)
-   */
-  @Deprecated
-  public static TimeUnitQuantity of(TimeUnit timeUnit, Integer number) {
-    return of(number, timeUnit);
   }
 
   /**

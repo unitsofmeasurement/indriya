@@ -112,7 +112,7 @@ public class TimeUnitQuantityTest {
   @Test @Deprecated @Disabled("TimeUnitQuantity implementation is no longer backed by Long")
   public void valueWiredCorrectlyInFactoryMethodOfWithTimeUnitAndIntegerValue() {
     final Integer testValue = 42;
-    TimeUnitQuantity quantity = TimeUnitQuantity.of(TimeUnit.MINUTES, testValue);
+    TimeUnitQuantity quantity = TimeUnitQuantity.of(testValue, TimeUnit.MINUTES);
     assertEquals(Long.valueOf(testValue), quantity.getValue());
   }
 
@@ -122,7 +122,7 @@ public class TimeUnitQuantityTest {
   @Test
   public void timeUnitWiredCorrectlyInFactoryMethodOfWithTimeUnitAndIntegerValue() {
     final TimeUnit testUnit = TimeUnit.MINUTES;
-    TimeUnitQuantity quantity = TimeUnitQuantity.of(testUnit, 42);
+    TimeUnitQuantity quantity = TimeUnitQuantity.of(42, testUnit);
     assertEquals(testUnit, quantity.getTimeUnit());
   }
 
