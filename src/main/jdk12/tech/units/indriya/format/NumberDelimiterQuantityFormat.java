@@ -63,28 +63,10 @@ import tech.units.indriya.quantity.Quantities;
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
 
-	/**
-	 * The NumberFormat style.
-	 *
-	 * @author Werner Keil
-	 * @version 1.0
-	 * @since 2.8
-	 */
-	private static enum NumberFormatStyle {
-		 /**
-		   * Default style.
-		   *
-		   */
-		  DEFAULT,
-
-		  /**
-		   * Compact style.
-		   *
-		   * @see          CompactNumberFormat
-		   */
-		  COMPACT
-	}
-	
+    // Constants used by factory methods to specify a style of format.
+    private static final int DEFAULTSTYLE = 0;
+    private static final int COMPACTSTYLE = 1;
+    
     /**
      * Holds the default format instance (SimpleUnitFormat).
      */
@@ -226,7 +208,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
      * @return <code>NumberDelimiterQuantityFormat.getInstance(NumberFormat.getInstance(), UnitFormat.getInstance())</code>
      */
     public static NumberDelimiterQuantityFormat getInstance(FormatBehavior behavior) {
-    	return internalGetInstance(behavior, NumberFormatStyle.DEFAULT);
+    	return internalGetInstance(behavior, DEFAULTSTYLE);
     }
 
 	/**
@@ -241,7 +223,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
 	 * @since 2.5
 	 */
 	public static NumberDelimiterQuantityFormat getCompactInstance(FormatBehavior behavior) {
-		return internalGetInstance(behavior, NumberFormatStyle.COMPACT);
+		return internalGetInstance(behavior, COMPACTSTYLE);
 	}
 
     /**
@@ -476,16 +458,15 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
 	 * @return <code>NumberDelimiterQuantityFormat.getInstance(NumberFormat.getInstance(), UnitFormat.getInstance())</code>
 	 * @since 2.5
 	 */
-	private static NumberDelimiterQuantityFormat internalGetInstance(FormatBehavior behavior, NumberFormatStyle numberStyle) {
+	private static NumberDelimiterQuantityFormat internalGetInstance(FormatBehavior behavior, int numberStyle) {
 		switch (behavior) {
 			case LOCALE_SENSITIVE:
 				return LOCAL_INSTANCE;
 			case LOCALE_NEUTRAL:
 			default:
-				return numberStyle == NumberFormatStyle.DEFAULT ? SIMPLE_INSTANCE : COMPACT_INSTANCE;
+				return numberStyle == DEFAULTSTYLE ? SIMPLE_INSTANCE : COMPACT_INSTANCE;
 		}
 	}
-
 
 	private static int getFractionDigitsCount(double d) {
         if (d >= 1) { // we only need the fraction digits
