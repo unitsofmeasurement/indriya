@@ -38,7 +38,7 @@ import java.text.CompactNumberFormat;
  * @version 1.0
  * @since 2.0.3
  */
-public enum NumberFormatStyle {
+enum NumberFormatStyle {
 	 /**
 	   * Default style.
 	   *
