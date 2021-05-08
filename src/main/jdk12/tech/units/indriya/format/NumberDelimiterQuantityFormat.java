@@ -30,12 +30,11 @@
 package tech.units.indriya.format;
 
 import static tech.units.indriya.format.FormatBehavior.LOCALE_NEUTRAL;
-import static tech.units.indriya.format.NumberFormatStyle.COMPACT;
-import static tech.units.indriya.format.NumberFormatStyle.DEFAULT;
 import static tech.units.indriya.format.CommonFormatter.parseMixedAsLeading;
 import static tech.units.indriya.format.CommonFormatter.parseMixedAsPrimary;
 
 import java.io.IOException;
+import java.text.CompactNumberFormat;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
 import java.util.Locale;
@@ -58,12 +57,34 @@ import tech.units.indriya.quantity.Quantities;
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author <a href="mailto:thodoris.bais@gmail.com">Thodoris Bais</a>
  *
- * @version 2.7, $Date: 2021-01-26 $
+ * @version 2.8, $Date: 2021-05-08 $
  * @since 2.0
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
 
+	/**
+	 * The NumberFormat style.
+	 *
+	 * @author Werner Keil
+	 * @version 1.0
+	 * @since 2.8
+	 */
+	private static enum NumberFormatStyle {
+		 /**
+		   * Default style.
+		   *
+		   */
+		  DEFAULT,
+
+		  /**
+		   * Compact style.
+		   *
+		   * @see          CompactNumberFormat
+		   */
+		  COMPACT
+	}
+	
     /**
      * Holds the default format instance (SimpleUnitFormat).
      */
@@ -205,7 +226,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
      * @return <code>NumberDelimiterQuantityFormat.getInstance(NumberFormat.getInstance(), UnitFormat.getInstance())</code>
      */
     public static NumberDelimiterQuantityFormat getInstance(FormatBehavior behavior) {
-    	return internalGetInstance(behavior, DEFAULT);
+    	return internalGetInstance(behavior, NumberFormatStyle.DEFAULT);
     }
 
 	/**
@@ -220,7 +241,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
 	 * @since 2.5
 	 */
 	public static NumberDelimiterQuantityFormat getCompactInstance(FormatBehavior behavior) {
-		return internalGetInstance(behavior, COMPACT);
+		return internalGetInstance(behavior, NumberFormatStyle.COMPACT);
 	}
 
     /**
@@ -461,7 +482,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
 				return LOCAL_INSTANCE;
 			case LOCALE_NEUTRAL:
 			default:
-				return numberStyle == DEFAULT ? SIMPLE_INSTANCE : COMPACT_INSTANCE;
+				return numberStyle == NumberFormatStyle.DEFAULT ? SIMPLE_INSTANCE : COMPACT_INSTANCE;
 		}
 	}
 
