@@ -266,7 +266,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
      *            the unit format.
      * @return the corresponding format.
      */
-    public static NumberDelimiterQuantityFormat getInstance(CompactNumberFormat numberFormat, UnitFormat unitFormat) {
+    public static NumberDelimiterQuantityFormat getCompactInstance(CompactNumberFormat numberFormat, UnitFormat unitFormat) {
         return new NumberDelimiterQuantityFormat.Builder().setNumberFormat(numberFormat).setUnitFormat(unitFormat).build();
     }
 
