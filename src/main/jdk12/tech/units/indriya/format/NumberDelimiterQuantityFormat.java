@@ -256,6 +256,19 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
     public static NumberDelimiterQuantityFormat getInstance(NumberFormat numberFormat, UnitFormat unitFormat) {
         return new NumberDelimiterQuantityFormat.Builder().setNumberFormat(numberFormat).setUnitFormat(unitFormat).build();
     }
+    
+    /**
+     * Returns the quantity format using the specified number format and unit format (the number and unit are separated by one space).
+     *
+     * @param numberFormat
+     *            the compact number format.
+     * @param unitFormat
+     *            the unit format.
+     * @return the corresponding format.
+     */
+    public static NumberDelimiterQuantityFormat getInstance(CompactNumberFormat numberFormat, UnitFormat unitFormat) {
+        return new NumberDelimiterQuantityFormat.Builder().setNumberFormat(numberFormat).setUnitFormat(unitFormat).build();
+    }
 
     @Override
     public Appendable format(Quantity<?> quantity, Appendable dest) throws IOException {
