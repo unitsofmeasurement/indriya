@@ -249,7 +249,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
 	 * @since 2.5
 	 */
 	public static NumberDelimiterQuantityFormat getCompactInstance(FormatBehavior behavior) {
-		throw new UnsupportedOperationException("This method requires Java 12.");
+		throw new UnsupportedOperationException("This method still won't work in Java 9");
 	}
 
     @Override
