@@ -214,8 +214,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
 	/**
 	 * Returns an instance of {@link NumberDelimiterQuantityFormat} with a particular {@link FormatBehavior}, either locale-sensitive or locale-neutral.
 	 * For example: <code>NumberDelimiterQuantityFormat.getInstance(LOCALE_NEUTRAL))</code> returns<br>
-	 * <code>new NumberDelimiterQuantityFormat.Builder()
-	 .setNumberFormat(NumberFormat.getInstance(Locale.ROOT)).setUnitFormat(SimpleUnitFormat.getInstance()).build();</code>
+	 * <code>new NumberDelimiterQuantityFormat.Builder().setNumberFormat(NumberFormat.getCompactNumberInstance(Locale.ROOT, NumberFormat.Style.SHORT)).setUnitFormat(SimpleUnitFormat.getInstance()).build();</code>
 	 *
 	 * @param behavior
 	 *            the format behavior to apply.

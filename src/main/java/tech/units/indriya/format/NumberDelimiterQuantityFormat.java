@@ -56,7 +56,7 @@ import tech.units.indriya.quantity.Quantities;
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author <a href="mailto:thodoris.bais@gmail.com">Thodoris Bais</a>
  *
- * @version 2.5, $Date: 2021-05-09 $
+ * @version 2.6, $Date: 2021-05-10 $
  * @since 2.0
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -238,15 +238,17 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
     }
     
 	/**
-	 * Returns an instance of {@link NumberDelimiterQuantityFormat} with a particular {@link FormatBehavior}, either locale-sensitive or locale-neutral.
+	 * Returns a compact instance of {@link NumberDelimiterQuantityFormat} with a particular {@link FormatBehavior}, either locale-sensitive or locale-neutral.
 	 * For example: <code>NumberDelimiterQuantityFormat.getInstance(LOCALE_NEUTRAL))</code> returns<br>
 	 * <code>new NumberDelimiterQuantityFormat.Builder()
 	 .setNumberFormat(NumberFormat.getInstance(Locale.ROOT)).setUnitFormat(SimpleUnitFormat.getInstance()).build();</code>
 	 *
+     * @implNote This is a <b>stub</b> that won't work prior to Java 12 because the <type>CompactNumberFormat</type> used by it does not exist before Java 12.
 	 * @param behavior
 	 *            the format behavior to apply.
 	 * @return <code>NumberDelimiterQuantityFormat.getInstance(NumberFormat.getInstance(), UnitFormat.getInstance())</code>
 	 * @since 2.5
+	 * @throws UnsupportedOperationException prior to Java 12
 	 */
 	public static NumberDelimiterQuantityFormat getCompactInstance(FormatBehavior behavior) {
 		throw new UnsupportedOperationException("This method requires Java 12.");
