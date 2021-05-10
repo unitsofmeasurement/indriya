@@ -57,7 +57,7 @@ import tech.units.indriya.quantity.Quantities;
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author <a href="mailto:thodoris.bais@gmail.com">Thodoris Bais</a>
  *
- * @version 2.8, $Date: 2021-05-08 $
+ * @version 2.9, $Date: 2021-05-10 $
  * @since 2.0
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -258,14 +258,18 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
     }
     
     /**
-     * Returns the quantity format using the specified number format and unit format (the number and unit are separated by one space).
+     * Returns the quantity format using the specified {@link CompactNumberFormat format} and unit format (the number and unit are separated by one space).
+     *
+     * <b>Note:</b> This method is mainly to analyse the behavior of modular multi-release JAR files, it is deprecated and subject to removal in a future version. 
      *
      * @param numberFormat
      *            the compact number format.
      * @param unitFormat
      *            the unit format.
      * @return the corresponding format.
+     * @see https://docs.oracle.com/en/java/javase/16/docs/specs/jar/jar.html#modular-multi-release-jar-files
      */
+    @Deprecated(forRemoval=true, since="2.9")
     public static NumberDelimiterQuantityFormat getCompactInstance(CompactNumberFormat numberFormat, UnitFormat unitFormat) {
         return new NumberDelimiterQuantityFormat.Builder().setNumberFormat(numberFormat).setUnitFormat(unitFormat).build();
     }
