@@ -29,7 +29,11 @@
  */
 package tech.units.indriya.internal.function.radix;
 
+import static org.apiguardian.api.API.Status.INTERNAL;
+
 import java.util.function.Consumer;
+
+import org.apiguardian.api.API;
 
 import tech.units.indriya.function.MixedRadix;
 import tech.units.indriya.internal.function.Calculator;
@@ -40,6 +44,7 @@ import tech.units.indriya.internal.function.Calculator;
  * @author Andi Huber
  * @since 2.0
  */
+@API(status=INTERNAL)
 public class MixedRadixSupport {
 
     private final Radix[] radices;
