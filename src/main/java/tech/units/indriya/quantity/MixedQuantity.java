@@ -29,6 +29,8 @@
  */
 package tech.units.indriya.quantity;
 
+import static org.apiguardian.api.API.Status.EXPERIMENTAL;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,6 +41,9 @@ import java.util.stream.Collectors;
 
 import javax.measure.Quantity;
 import javax.measure.Quantity.Scale;
+
+import org.apiguardian.api.API;
+
 import javax.measure.Unit;
 
 import tech.units.indriya.format.SimpleQuantityFormat;
@@ -58,12 +63,13 @@ import tech.uom.lib.common.function.QuantityConverter;
  * 
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author Andi Huber
- * @version 2.1, January 25, 2021
+ * @version 2.2, May 13, 2021
  * @see <a href="https://www.wolfram.com/language/11/units-and-dates/mixed-quantities.html">Wolfram Language: Mixed Quantities</a>
  * @see <a href="https://en.wikipedia.org/wiki/Fraction#Mixed_numbers">Wikipedia: Mixed Numbers</a> 
  * @see MixedRadix
  * @since 2.1.2
  */
+@API(status=EXPERIMENTAL)
 public class MixedQuantity<Q extends Quantity<Q>> implements QuantityConverter<Q>, Serializable {
     // TODO could it be final?
     /**

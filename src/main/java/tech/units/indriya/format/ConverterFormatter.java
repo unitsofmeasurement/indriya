@@ -30,6 +30,7 @@
 package tech.units.indriya.format;
 
 import static java.lang.StrictMath.E;
+import static org.apiguardian.api.API.Status.INTERNAL;
 import static tech.units.indriya.format.FormatConstants.ADDITION_PRECEDENCE;
 import static tech.units.indriya.format.FormatConstants.EXPONENT_PRECEDENCE;
 import static tech.units.indriya.format.FormatConstants.MIDDLE_DOT;
@@ -41,6 +42,8 @@ import java.util.Formatter;
 
 import javax.measure.Prefix;
 import javax.measure.UnitConverter;
+
+import org.apiguardian.api.API;
 
 import tech.units.indriya.function.AbstractConverter;
 import tech.units.indriya.function.AddConverter;
@@ -58,6 +61,7 @@ import tech.units.indriya.spi.NumberSystem;
  * @author otaviojava
  * @author keilw
  */
+@API(status=INTERNAL)
 class ConverterFormatter {
     private static final String LOCAL_FORMAT_PATTERN = "%s"; //$NON-NLS-1$
 

@@ -31,15 +31,20 @@
 /* JavaCCOptions:STATIC=false,SUPPORT_CLASS_VISIBILITY_PUBLIC=true */
 package tech.units.indriya.internal.format;
 
+import static org.apiguardian.api.API.Status.INTERNAL;
+
 import javax.measure.MeasurementError;
+
+import org.apiguardian.api.API;
 
 /**
  * An implementation of interface CharStream, where the stream is assumed to contain only ASCII characters (without Unicode processing).
  *
- * @version 5.3, September 27, 2020
+ * @version 5.4, May 14, 2021
  */
 
 // TODO could we start using JavaCC again here?
+@API(status=INTERNAL)
 final class DefaultCharStream {
   /** Whether parser is static. */
   public static final boolean staticFlag = false;

@@ -30,9 +30,12 @@
 package tech.units.indriya.quantity;
 
 import static javax.measure.Quantity.Scale.ABSOLUTE;
+import static org.apiguardian.api.API.Status.MAINTAINED;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;
+
+import org.apiguardian.api.API;
 
 import tech.units.indriya.AbstractQuantity;
 import tech.units.indriya.ComparableQuantity;
@@ -53,10 +56,11 @@ import tech.units.indriya.internal.function.ScaleHelper;
  *          The type of the quantity.
  * @author Andi Huber
  * @author Werner Keil
- * @version 2.2, May 1, 2021
+ * @version 2.3, May 14, 2021
  * @since 1.0
  * 
  */
+@API(status=MAINTAINED)
 public final class NumberQuantity<Q extends Quantity<Q>> extends AbstractQuantity<Q> {
 
     private static final long serialVersionUID = -6494337491031528402L;

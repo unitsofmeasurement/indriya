@@ -29,6 +29,8 @@
  */
 package tech.units.indriya.internal.format;
 
+import static org.apiguardian.api.API.Status.INTERNAL;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.NumberFormat;
@@ -37,6 +39,8 @@ import java.text.ParsePosition;
 import java.util.Stack;
 
 import javax.measure.format.MeasurementParseException;
+
+import org.apiguardian.api.API;
 
 import tech.units.indriya.format.SimpleQuantityFormat;
 import tech.units.indriya.function.RationalNumber;
@@ -50,6 +54,7 @@ import tech.units.indriya.internal.function.Calculator;
  * @author Andi Huber
  *
  */
+@API(status=INTERNAL)
 public class RationalNumberScanner {
 
     private final CharSequence csq; 

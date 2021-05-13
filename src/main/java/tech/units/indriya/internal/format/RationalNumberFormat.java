@@ -29,9 +29,13 @@
  */
 package tech.units.indriya.internal.format;
 
+import static org.apiguardian.api.API.Status.INTERNAL;
+
 import java.text.FieldPosition;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
+
+import org.apiguardian.api.API;
 
 /**
  * Wraps a given {@link NumberFormat} and extends it to also support the rational number format. 
@@ -41,6 +45,7 @@ import java.text.ParsePosition;
  * @author Andi Huber
  *
  */
+@API(status=INTERNAL)
 public class RationalNumberFormat extends NumberFormat {
     
     private static final long serialVersionUID = 1L;

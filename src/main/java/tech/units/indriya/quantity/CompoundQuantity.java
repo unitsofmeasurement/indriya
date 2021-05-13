@@ -29,6 +29,8 @@
  */
 package tech.units.indriya.quantity;
 
+import static org.apiguardian.api.API.Status.DEPRECATED;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,6 +42,8 @@ import java.util.stream.Collectors;
 import javax.measure.Quantity;
 import javax.measure.Quantity.Scale;
 import javax.measure.Unit;
+
+import org.apiguardian.api.API;
 
 import tech.units.indriya.format.SimpleQuantityFormat;
 import tech.units.indriya.function.Calculus;
@@ -58,11 +62,12 @@ import tech.uom.lib.common.function.QuantityConverter;
  * 
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author Andi Huber
- * @version 1.7, January 18, 2021
+ * @version 1.8, May 13, 2021
  * @see <a href="http://www.thefreedictionary.com/Compound+quantity">Free Dictionary: Compound Quantity</a>
  * @see <a href="https://www.yourdictionary.com/compound-number">Your Dictionary: Compound Number</a>
  * @deprecated Use {@link MixedQuantity}
  */
+@API(status=DEPRECATED)
 public class CompoundQuantity<Q extends Quantity<Q>> implements QuantityConverter<Q>, Serializable {
     /**
     * 

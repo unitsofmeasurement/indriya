@@ -29,6 +29,8 @@
  */
 package tech.units.indriya.format;
 
+import static org.apiguardian.api.API.Status.DEPRECATED;
+
 import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -39,6 +41,8 @@ import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.format.MeasurementParseException;
 import javax.measure.format.UnitFormat;
+
+import org.apiguardian.api.API;
 
 import tech.units.indriya.internal.format.RationalNumberFormat;
 import tech.units.indriya.quantity.CompoundQuantity;
@@ -51,6 +55,7 @@ import tech.units.indriya.quantity.Quantities;
  * @since 2.0
  * @deprecated Use CommonFormatter, only for backward-compatibility until a future version 
  */
+@API(status=DEPRECATED)
 abstract class CommonFormatterOld {
     private static final String ERR_PRIMARY_UNIT_NOT_FOUND = "The primary unit <%s> is not part of the compound units <%s>"; //$NON-NLS-1$
     
