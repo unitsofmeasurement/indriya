@@ -57,7 +57,7 @@ import tech.units.indriya.quantity.Quantities;
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author <a href="mailto:thodoris.bais@gmail.com">Thodoris Bais</a>
  *
- * @version 2.10, $Date: 2021-05-11 $
+ * @version 2.11, $Date: 2021-05-13 $
  * @since 2.0
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -211,20 +211,6 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
     	return internalGetInstance(behavior, DEFAULTSTYLE);
     }
 
-	/**
-	 * Returns an instance of {@link NumberDelimiterQuantityFormat} with a particular {@link FormatBehavior}, either locale-sensitive or locale-neutral.
-	 * For example: <code>NumberDelimiterQuantityFormat.getInstance(LOCALE_NEUTRAL))</code> returns<br>
-	 * <code>new NumberDelimiterQuantityFormat.Builder().setNumberFormat(NumberFormat.getCompactNumberInstance(Locale.ROOT, NumberFormat.Style.SHORT)).setUnitFormat(SimpleUnitFormat.getInstance()).build();</code>
-	 *
-	 * @param behavior
-	 *            the format behavior to apply.
-	 * @return <code>NumberDelimiterQuantityFormat.getInstance(NumberFormat.getInstance(), UnitFormat.getInstance())</code>
-	 * @since 2.5
-	 */
-	public static NumberDelimiterQuantityFormat getCompactInstance(FormatBehavior behavior) {
-		return internalGetInstance(behavior, COMPACTSTYLE);
-	}
-
     /**
      * Returns a new instance of {@link Builder}.
      *
@@ -253,23 +239,6 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
      * @return the corresponding format.
      */
     public static NumberDelimiterQuantityFormat getInstance(NumberFormat numberFormat, UnitFormat unitFormat) {
-        return new NumberDelimiterQuantityFormat.Builder().setNumberFormat(numberFormat).setUnitFormat(unitFormat).build();
-    }
-    
-    /**
-     * Returns the quantity format using the specified {@link CompactNumberFormat format} and unit format (the number and unit are separated by one space).
-     *
-     * <b>Note:</b> This method is mainly to analyse the behavior of modular multi-release JAR files, it is deprecated and subject to removal in a future version. 
-     *
-     * @param numberFormat
-     *            the compact number format.
-     * @param unitFormat
-     *            the unit format.
-     * @return the corresponding format.
-     * @see https://docs.oracle.com/en/java/javase/16/docs/specs/jar/jar.html#modular-multi-release-jar-files
-     */
-    @Deprecated(forRemoval=true, since="2.9")
-    public static NumberDelimiterQuantityFormat getCompactInstance(CompactNumberFormat numberFormat, UnitFormat unitFormat) {
         return new NumberDelimiterQuantityFormat.Builder().setNumberFormat(numberFormat).setUnitFormat(unitFormat).build();
     }
 
