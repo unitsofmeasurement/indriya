@@ -236,23 +236,6 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
     public static NumberDelimiterQuantityFormat getInstance(NumberFormat numberFormat, UnitFormat unitFormat) {
         return new NumberDelimiterQuantityFormat.Builder().setNumberFormat(numberFormat).setUnitFormat(unitFormat).build();
     }
-    
-	/**
-	 * Returns a compact instance of {@link NumberDelimiterQuantityFormat} with a particular {@link FormatBehavior}, either locale-sensitive or locale-neutral.
-	 * For example: <code>NumberDelimiterQuantityFormat.getInstance(LOCALE_NEUTRAL))</code> returns<br>
-	 * <code>new NumberDelimiterQuantityFormat.Builder()
-	 .setNumberFormat(NumberFormat.getInstance(Locale.ROOT)).setUnitFormat(SimpleUnitFormat.getInstance()).build();</code>
-	 *
-     * @implNote This is a <b>stub</b> that won't work prior to Java 12 because the <type>CompactNumberFormat</type> used by it does not exist before Java 12.
-	 * @param behavior
-	 *            the format behavior to apply.
-	 * @return <code>NumberDelimiterQuantityFormat.getInstance(NumberFormat.getInstance(), UnitFormat.getInstance())</code>
-	 * @since 2.5
-	 * @throws UnsupportedOperationException prior to Java 12
-	 */
-	public static NumberDelimiterQuantityFormat getCompactInstance(FormatBehavior behavior) {
-		throw new UnsupportedOperationException("This method requires Java 12.");
-	}
 
     @Override
     public Appendable format(Quantity<?> quantity, Appendable dest) throws IOException {

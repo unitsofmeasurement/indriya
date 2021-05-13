@@ -57,7 +57,7 @@ import tech.units.indriya.quantity.Quantities;
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author <a href="mailto:thodoris.bais@gmail.com">Thodoris Bais</a>
  *
- * @version 2.9, $Date: 2021-05-10 $
+ * @version 2.10, $Date: 2021-05-11 $
  * @since 2.0
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
