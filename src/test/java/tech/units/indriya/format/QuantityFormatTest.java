@@ -35,6 +35,7 @@ import static javax.measure.MetricPrefix.MEGA;
 import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static tech.units.indriya.NumberAssertions.assertNumberEquals;
 import static tech.units.indriya.unit.Units.HERTZ;
@@ -105,10 +106,12 @@ public class QuantityFormatTest {
                 .setNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH))
                 .setUnitFormat(SimpleUnitFormat.getInstance())
                 .setDelimiter("_")
+                .setLocaleSensitive(true)
                 .build();
         final Unit<Length> cm = CENTI(Units.METRE);
         final Quantity<Length> l1 = Quantities.getQuantity(150, cm);
         assertEquals("150_cm", format1.format(l1));
+        assertTrue(format1.isLocaleSensitive());
     }
 
     @Test
@@ -205,13 +208,26 @@ public class QuantityFormatTest {
 
     @Test
     public void testNDFBuilder() {
-        QuantityFormat quantFormat = new NumberDelimiterQuantityFormat.Builder().
+        final QuantityFormat quantFormat = new NumberDelimiterQuantityFormat.Builder().
 			setNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH)).
 			setUnitFormat(SimpleUnitFormat.getInstance()).setDelimiter("_").
-                build();
+                setLocaleSensitive(true).build();
         final Unit<Length> cm = CENTI(Units.METRE);
         final Quantity<Length> l1 = Quantities.getQuantity(150, cm);
         assertEquals("150_cm", quantFormat.format(l1));
+        assertTrue(quantFormat.isLocaleSensitive());
+    }
+    
+    @Test
+    public void testNDFBuilderLocal() {
+        final QuantityFormat quantFormat = new NumberDelimiterQuantityFormat.Builder().
+			setNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH)).
+			setUnitFormat(LocalUnitFormat.getInstance(Locale.ENGLISH)).
+                build();
+        final Unit<Length> cm = CENTI(Units.METRE);
+        final Quantity<Length> l1 = Quantities.getQuantity(150, cm);
+        assertEquals("150 cm", quantFormat.format(l1));
+        assertTrue(quantFormat.isLocaleSensitive());
     }
     
     @Test

@@ -56,7 +56,7 @@ import tech.units.indriya.quantity.Quantities;
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author <a href="mailto:thodoris.bais@gmail.com">Thodoris Bais</a>
  *
- * @version 2.6, $Date: 2021-05-10 $
+ * @version 2.7, $Date: 2021-05-24 $
  * @since 2.0
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -88,8 +88,8 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
     private String mixDelimiter;
     private boolean localeSensitive;
 
-    private NumberDelimiterQuantityFormat() {
-        /* private constructor */ }
+    /** private constructor */
+    private NumberDelimiterQuantityFormat() { }
 
     /**
      * A fluent Builder to easily create new instances of <code>NumberDelimiterQuantityFormat</code>.
@@ -124,6 +124,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
         public Builder setUnitFormat(UnitFormat unitFormat) {
         	Objects.requireNonNull(unitFormat);
             this.unitFormat = unitFormat;
+            this.localeSensitive = unitFormat.isLocaleSensitive(); // adjusting localeSensitive based on UnitFormat
             return this;
         }
 
