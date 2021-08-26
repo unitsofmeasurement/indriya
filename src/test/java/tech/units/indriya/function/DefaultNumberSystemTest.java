@@ -44,89 +44,89 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 class DefaultNumberSystemTest {
 
-    DefaultNumberSystem ns;
-    
-    @BeforeEach
-    void setUp() {
-        ns = new DefaultNumberSystem();
-    }
-    
-    // -- NUMBER COMPARING TESTS
-    
-    @ParameterizedTest
-    @MethodSource("provideOneSamples")
-    void one(Number x) {
-        assertTrue(ns.isOne(x));
-    }
-    
-    @ParameterizedTest
-    @MethodSource("provideZeroSamples")
-    void zero(Number x) {
-        assertTrue(ns.isZero(x));
-    }
-    
-    @ParameterizedTest
-    @MethodSource("provideZeroSamples")
-    void not_one(Number x) {
-        assertFalse(ns.isOne(x));
-    }
-    
-    @ParameterizedTest
-    @MethodSource("provideOneSamples")
-    void not_zero(Number x) {
-        assertFalse(ns.isZero(x));
-    }
-    
-    @ParameterizedTest
-    @MethodSource("provideZeroSamples")
-    void less_than_one(Number x) {
-        assertTrue(ns.isLessThanOne(x));
-    }
-    
-    @ParameterizedTest
-    @MethodSource("provideOneSamples")
-    void not_less_than_one(Number x) {
-        assertFalse(ns.isLessThanOne(x));
-    }
-    
-    @ParameterizedTest
-    @MethodSource("provideOneSamples")
-    void minus_one_is_less_than_one(Number x) {
-        assertTrue(ns.isLessThanOne(ns.negate(x)));
-    }
-    
-    // -- SAMPLER
-    
-    static Stream<Number> provideOneSamples() {
-        return Stream.<Number>of(
-                (byte) 1,
-                (short) 1,
-                1,
-                1L,
-                1.,
-                1.f,
-                BigInteger.ONE,
-                BigDecimal.ONE,
-                RationalNumber.ONE,
-                new AtomicInteger(1),
-                new AtomicLong(1L)
-                );
-    }
-    
-    static Stream<Number> provideZeroSamples() {
-        return Stream.<Number>of(
-                (byte) 0,
-                (short) 0,
-                0,
-                0L,
-                0.,
-                0.f,
-                BigInteger.ZERO,
-                BigDecimal.ZERO,
-                RationalNumber.ZERO,
-                new AtomicInteger(0),
-                new AtomicLong(0L)
-                );
-    }
-    
+	DefaultNumberSystem ns;
+
+	@BeforeEach
+	void setUp() {
+		ns = new DefaultNumberSystem();
+	}
+
+	// -- NUMBER COMPARING TESTS
+
+	@ParameterizedTest
+	@MethodSource("provideOneSamples")
+	void one(Number x) {
+		assertTrue(ns.isOne(x));
+	}
+
+	@ParameterizedTest
+	@MethodSource("provideZeroSamples")
+	void zero(Number x) {
+		assertTrue(ns.isZero(x));
+	}
+
+	@ParameterizedTest
+	@MethodSource("provideZeroSamples")
+	void not_one(Number x) {
+		assertFalse(ns.isOne(x));
+	}
+
+	@ParameterizedTest
+	@MethodSource("provideOneSamples")
+	void not_zero(Number x) {
+		assertFalse(ns.isZero(x));
+	}
+
+	@ParameterizedTest
+	@MethodSource("provideZeroSamples")
+	void less_than_one(Number x) {
+		assertTrue(ns.isLessThanOne(x));
+	}
+
+	@ParameterizedTest
+	@MethodSource("provideOneSamples")
+	void not_less_than_one(Number x) {
+		assertFalse(ns.isLessThanOne(x));
+	}
+
+	@ParameterizedTest
+	@MethodSource("provideOneSamples")
+	void minus_one_is_less_than_one(Number x) {
+		assertTrue(ns.isLessThanOne(ns.negate(x)));
+	}
+
+	// -- SAMPLER
+
+	static Stream<Number> provideOneSamples() {
+		return Stream.<Number>of(
+				(byte) 1,
+				(short) 1,
+				1,
+				1L,
+				1.,
+				1.f,
+				BigInteger.ONE,
+				BigDecimal.ONE,
+				RationalNumber.ONE,
+				new AtomicInteger(1),
+				new AtomicLong(1L)
+		);
+	}
+
+	static Stream<Number> provideZeroSamples() {
+		return Stream.<Number>of(
+				(byte) 0,
+				(short) 0,
+				0,
+				0L,
+				0.,
+				0.f,
+				BigInteger.ZERO,
+				BigDecimal.ZERO,
+				RationalNumber.ZERO,
+				new AtomicInteger(0),
+				new AtomicLong(0L)
+		);
+	}
+
 }
