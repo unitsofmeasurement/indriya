@@ -32,11 +32,17 @@ package tech.units.indriya.function;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
+import tech.units.indriya.AbstractUnit;
+import tech.units.indriya.ComparableQuantity;
+import tech.units.indriya.quantity.Quantities;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Stream;
+
+import javax.measure.quantity.Dimensionless;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -93,6 +99,104 @@ class DefaultNumberSystemTest {
     @MethodSource("provideOneSamples")
     void minus_one_is_less_than_one(Number x) {
         assertTrue(ns.isLessThanOne(ns.negate(x)));
+    }
+    
+    @ParameterizedTest
+    @MethodSource("provideOneSamples")
+    void one_to_max_double_comparison(Number one) {
+        
+        final ComparableQuantity<Dimensionless> maxDoubleQuantity = 
+                Quantities.getQuantity(Double.MAX_VALUE, AbstractUnit.ONE);
+
+        final boolean isOneLessThanMaxDouble = 
+                ns.compare(one, maxDoubleQuantity.getValue()) < 0;
+        
+        assertTrue(isOneLessThanMaxDouble);
+        
+        final boolean isMaxDoubleGreaterThanOne = 
+                ns.compare(maxDoubleQuantity.getValue(), one) > 0;
+        
+        assertTrue(isMaxDoubleGreaterThanOne);
+    }
+    
+    @ParameterizedTest
+    @MethodSource("provideOneSamples")
+    void one_to_max_int_comparison(Number one) {
+        
+        final ComparableQuantity<Dimensionless> maxIntQuantity = 
+                Quantities.getQuantity(Integer.MAX_VALUE, AbstractUnit.ONE);
+
+        final boolean isOneLessThanMaxInt = 
+                ns.compare(one, maxIntQuantity.getValue()) < 0;
+        
+        assertTrue(isOneLessThanMaxInt);
+        
+        final boolean isMaxIntGreaterThanOne = 
+                ns.compare(maxIntQuantity.getValue(), one) > 0;
+        
+        assertTrue(isMaxIntGreaterThanOne);
+    }
+    
+    @ParameterizedTest
+    @MethodSource("provideOneSamples")
+    void one_to_max_long_comparison(Number one) {
+        
+        final ComparableQuantity<Dimensionless> maxLongQuantity = 
+                Quantities.getQuantity(Long.MAX_VALUE, AbstractUnit.ONE);
+
+        final boolean isOneLessThanMaxLong = 
+                ns.compare(one, maxLongQuantity.getValue()) < 0;
+        
+        assertTrue(isOneLessThanMaxLong);
+        
+        final boolean isMaxLongGreaterThanOne = 
+                ns.compare(maxLongQuantity.getValue(), one) > 0;
+        
+        assertTrue(isMaxLongGreaterThanOne);
+    }
+    
+    @ParameterizedTest
+    @MethodSource("provideOneSamples")
+    void one_to_large_int_comparison(Number one) {
+        
+        final ComparableQuantity<Dimensionless> largeIntQuantity = 
+                Quantities.getQuantity(
+                        BigInteger
+                            .valueOf(Long.MAX_VALUE)
+                            .add(BigInteger.valueOf(Long.MAX_VALUE)), 
+                        AbstractUnit.ONE);
+
+        final boolean isOneLessThanLargeInt = 
+                ns.compare(one, largeIntQuantity.getValue()) < 0;
+        
+        assertTrue(isOneLessThanLargeInt);
+        
+        final boolean isLargeIntGreaterThanOne = 
+                ns.compare(largeIntQuantity.getValue(), one) > 0;
+        
+        assertTrue(isLargeIntGreaterThanOne);
+    }
+    
+    @ParameterizedTest
+    @MethodSource("provideOneSamples")
+    void one_to_large_decimal_comparison(Number one) {
+        
+        final ComparableQuantity<Dimensionless> largeDecimalQuantity = 
+                Quantities.getQuantity(
+                        BigDecimal
+                            .valueOf(Double.MAX_VALUE)
+                            .add(BigDecimal.valueOf(Double.MAX_VALUE)), 
+                        AbstractUnit.ONE);
+
+        final boolean isOneLessThanLargeDecimal = 
+                ns.compare(one, largeDecimalQuantity.getValue()) < 0;
+        
+        assertTrue(isOneLessThanLargeDecimal);
+        
+        final boolean isLargeDecimalGreaterThanOne = 
+                ns.compare(largeDecimalQuantity.getValue(), one) > 0;
+        
+        assertTrue(isLargeDecimalGreaterThanOne);
     }
     
     // -- SAMPLER

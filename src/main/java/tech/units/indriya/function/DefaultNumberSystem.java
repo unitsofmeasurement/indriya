@@ -829,6 +829,11 @@ public class DefaultNumberSystem implements NumberSystem {
                 return ((BigDecimal) wide).compareTo(((RationalNumber) narrow).bigDecimalValue());
             }
             
+            if (narrow instanceof BigInteger) {
+                //TODO for optimization, can this be done without instantiating a new BigDecimal?
+                return ((BigDecimal) wide).compareTo(new BigDecimal((BigInteger) narrow));
+            }
+            
             // at this point we know, that 'narrow' is one of {(Atomic)Long, (Atomic)Integer, Short, Byte}
             return ((BigDecimal) wide).compareTo(BigDecimal.valueOf(narrow.longValue()));
             
