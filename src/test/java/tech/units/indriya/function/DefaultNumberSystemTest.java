@@ -31,6 +31,7 @@ package tech.units.indriya.function;
 
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static tech.units.indriya.AbstractUnit.ONE;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -41,6 +42,10 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
+import tech.units.indriya.ComparableQuantity;
+import tech.units.indriya.quantity.Quantities;
+
+import javax.measure.quantity.Dimensionless;
 
 class DefaultNumberSystemTest {
 
@@ -93,6 +98,13 @@ class DefaultNumberSystemTest {
 	@MethodSource("provideOneSamples")
 	void minus_one_is_less_than_one(Number x) {
 		assertTrue(ns.isLessThanOne(ns.negate(x)));
+	}
+
+	@ParameterizedTest
+	@MethodSource("provideOneSamples")
+	void max_double_comparison(Number x) {
+		ComparableQuantity<Dimensionless> maxDoubleQuantity = Quantities.getQuantity(Double.MAX_VALUE, ONE);
+		assertTrue(ns.compare(x, maxDoubleQuantity.getValue()) < 0);
 	}
 
 	// -- SAMPLER

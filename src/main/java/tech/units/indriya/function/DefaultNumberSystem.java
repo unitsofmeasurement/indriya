@@ -824,6 +824,10 @@ public class DefaultNumberSystem implements NumberSystem {
 				return ((BigDecimal) wide).compareTo(BigDecimal.valueOf(narrow.doubleValue()));
 			}
 
+			if (narrow instanceof BigInteger) {
+				narrow = RationalNumber.of((BigInteger) narrow, BigInteger.ONE);
+			}
+
 			if (narrow instanceof RationalNumber) {
 				//TODO[220] can we do better than that, eg. by converting BigDecimal to RationalNumber
 				return ((BigDecimal) wide).compareTo(((RationalNumber) narrow).bigDecimalValue());
