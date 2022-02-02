@@ -29,7 +29,7 @@
  */
 package tech.units.indriya.quantity;
 
-import static org.apiguardian.api.API.Status.EXPERIMENTAL;
+import static org.apiguardian.api.API.Status.STABLE;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -63,13 +63,13 @@ import tech.uom.lib.common.function.QuantityConverter;
  * 
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author Andi Huber
- * @version 2.2, May 13, 2021
+ * @version 2.3, Feb 2, 2022
  * @see <a href="https://www.wolfram.com/language/11/units-and-dates/mixed-quantities.html">Wolfram Language: Mixed Quantities</a>
  * @see <a href="https://en.wikipedia.org/wiki/Fraction#Mixed_numbers">Wikipedia: Mixed Numbers</a> 
  * @see MixedRadix
  * @since 2.1.2
  */
-@API(status=EXPERIMENTAL)
+@API(status=STABLE)
 public class MixedQuantity<Q extends Quantity<Q>> implements QuantityConverter<Q>, Serializable {
     // TODO could it be final?
     /**
@@ -136,6 +136,21 @@ public class MixedQuantity<Q extends Quantity<Q>> implements QuantityConverter<Q
      */
     @SafeVarargs
     public static <Q extends Quantity<Q>> MixedQuantity<Q> of(Quantity<Q>... quantities) {
+        guardAgainstIllegalQuantitiesArgument(quantities);
+        return new MixedQuantity<>(Arrays.asList(quantities));
+    }
+    
+    /**
+     * @param <Q>
+     * @param quantities
+     * @return a {@code MixedQuantity} with the specified {@code quantities}
+     * @throws IllegalArgumentException
+     *             if given {@code quantities} is {@code null} or empty 
+     *             or contains any <code>null</code> values
+     *             or contains quantities of mixed scale 
+     */
+    @SafeVarargs
+    public static <Q extends Quantity<Q>> MixedQuantity<Q> fromArray(Quantity<Q>... quantities) {
         guardAgainstIllegalQuantitiesArgument(quantities);
         return new MixedQuantity<>(Arrays.asList(quantities));
     }
