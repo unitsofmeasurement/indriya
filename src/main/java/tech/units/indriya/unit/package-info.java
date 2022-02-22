@@ -29,7 +29,7 @@
  */
 /**
  * This package provides supports for physics units, in conformity with the
- * <a href="http://www.unitsofmeasurement.org/">Units of Measurement API</a>.
+ * <a href="http://unitsofmeasurement.github.io/">Units of Measurement API</a>.
  *
  *
  * <h3>Usage:</h3>
@@ -84,7 +84,7 @@
  *     Unit<Pressure> HECTOPASCAL = HECTO(PASCAL); // Ok.
  *     Unit<Pressure> HECTOPASCAL = HECTO(NEWTON); // Compile error.
  *
- *     Quantity<Time> duration = ComparableQuantity.of(2, MINUTE); // Ok.
+ *     Quantity<Time> duration = Quantities.getQuantity(2, MINUTE); // Ok.
  *     Quantity<Time> duration = ComparableQuantity.of(2, CELSIUS); // Compile error.
  *
  *     long milliseconds = duration.longValue(MILLI(SECOND)); // Ok.
@@ -104,6 +104,6 @@
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 2.0
+ * @version 2.1
  */
 package tech.units.indriya.unit;
