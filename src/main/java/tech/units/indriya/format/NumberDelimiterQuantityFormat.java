@@ -87,6 +87,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
     private String delimiter;
     private String mixDelimiter;
     private boolean localeSensitive;
+    private boolean overrideNumberFormatFractionalDigits;
 
     /** private constructor */
     private NumberDelimiterQuantityFormat() { }
@@ -102,6 +103,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
         private transient String delimiter = DEFAULT_DELIMITER;
         private transient String mixedRadixDelimiter;
         private boolean localeSensitive;
+        private boolean overrideNumberFormatFractionalDigits = true;
 
         /**
          * Sets the numberFormat parameter to the given {@code NumberFormat}.
@@ -175,6 +177,18 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
             return this;
         }
 
+        /**
+         * Sets the {@code overrideNumberFormatFractionalDigits} flag.
+         * 
+         * <p>The default is to override. Set this to false to respect the NumberFormat setting for maximum fractional digits.
+         * @param override true to override the NumberFormat setting (default), or false to respect the NumberFormat setting.
+         * @return this {@code NumberDelimiterQuantityFormat.Builder}
+         */
+        public Builder setOverrideNumberFormatFractionalDigits(boolean override) {
+            this.overrideNumberFormatFractionalDigits = override;
+            return this;
+        }
+
         public NumberDelimiterQuantityFormat build() {
             NumberDelimiterQuantityFormat quantityFormat = new NumberDelimiterQuantityFormat();
             quantityFormat.numberFormat = this.numberFormat;
@@ -183,6 +197,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
             quantityFormat.delimiter = this.delimiter;
             quantityFormat.mixDelimiter = this.mixedRadixDelimiter;
             quantityFormat.localeSensitive = this.localeSensitive;
+            quantityFormat.overrideNumberFormatFractionalDigits = this.overrideNumberFormatFractionalDigits;
             return quantityFormat;
         }
     }
@@ -276,11 +291,13 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
             }
         } else {
         */
-            if (quantity != null && quantity.getValue() != null) {
-                fract = getFractionDigitsCount(quantity.getValue().doubleValue());
-            }
-            if (fract > 1) {
-                numberFormat.setMaximumFractionDigits(fract + 1);
+            if (isOverrideNumberFormatFractionalDigits()) {
+                if (quantity != null && quantity.getValue() != null) {
+                    fract = getFractionDigitsCount(quantity.getValue().doubleValue());
+                }
+                if (fract > 1) {
+                    numberFormat.setMaximumFractionDigits(fract + 1);
+                }
             }
             dest.append(numberFormat.format(quantity.getValue()));
             if (quantity.getUnit().equals(AbstractUnit.ONE))
@@ -336,6 +353,17 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
     @Override
     public boolean isLocaleSensitive() {
         return localeSensitive;
+    }
+
+    /**
+     * Whether to override the NumberFormat setting for fractional digits.
+     * 
+     * <p>If this is set, the NumberFormat maximumFractionDigits setting will be ignored,
+     * and all digits will be returned.
+     * @return true to override the set maximum, false to respect the NumberFormat setting.
+     */
+    public boolean isOverrideNumberFormatFractionalDigits() {
+        return overrideNumberFormatFractionalDigits;
     }
 
     @Override
