@@ -62,7 +62,6 @@ import static tech.units.indriya.unit.Units.VOLT;
 import static tech.units.indriya.unit.Units.WATT;
 import static tech.units.indriya.unit.Units.WEBER;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -98,7 +97,7 @@ import tech.units.indriya.AbstractUnit;
  */
 public class DefaultQuantityFactory<Q extends Quantity<Q>> implements QuantityFactory<Q> {
     @SuppressWarnings("rawtypes")
-    static final Map<Class, QuantityFactory> INSTANCES = new HashMap<>();
+    static final Map<Class, QuantityFactory> INSTANCES = new ConcurrentHashMap<>();
 
     static final Logger LOGGER = Logger.getLogger(DefaultQuantityFactory.class.getName());
 
@@ -189,7 +188,7 @@ public class DefaultQuantityFactory<Q extends Quantity<Q>> implements QuantityFa
             throw new ClassCastException();
         }
         factory = new DefaultQuantityFactory<Q>(type);
-        INSTANCES.put(type, factory);
+        INSTANCES.putIfAbsent(type, factory);
         return factory;
     }
 

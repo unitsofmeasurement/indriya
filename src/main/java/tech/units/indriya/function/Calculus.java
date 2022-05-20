@@ -39,6 +39,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -122,7 +123,7 @@ public final class Calculus {
 	/**
 	 * Memoization of Pi by number-of-digits.
 	 */
-	private static final Map<Integer, BigDecimal> piCache = new HashMap<>();
+	private static final Map<Integer, BigDecimal> piCache = new ConcurrentHashMap<>();
 	
 	/**
 	 * Pi calculation with Machin's formula.
