@@ -93,12 +93,12 @@ import tech.units.indriya.AbstractUnit;
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:otaviojava@java.net">Otavio Santana</a>
- * @version 1.4, $Date: 2020-08-06 $
+ * @version 1.5, $Date: 2022-05-21 $
  * @since 1.0
  */
 public class DefaultQuantityFactory<Q extends Quantity<Q>> implements QuantityFactory<Q> {
     @SuppressWarnings("rawtypes")
-    static final Map<Class, QuantityFactory> INSTANCES = new HashMap<>();
+    static final Map<Class, QuantityFactory> INSTANCES = new ConcurrentHashMap<>();
 
     static final Logger LOGGER = Logger.getLogger(DefaultQuantityFactory.class.getName());
 
@@ -176,23 +176,21 @@ public class DefaultQuantityFactory<Q extends Quantity<Q>> implements QuantityFa
     @SuppressWarnings("unchecked")
     public static <Q extends Quantity<Q>> QuantityFactory<Q> getInstance(final Class<Q> type) {
         LOGGER.log(DEFAULT_LOG_LEVEL, "Type: " + type + ": " + type.isInterface());
-        QuantityFactory<Q> factory;
-        factory = INSTANCES.get(type);
-        if (factory != null) {
-            return factory;
-        }
+        return INSTANCES
+                .computeIfAbsent(type, DefaultQuantityFactory::createNewFactoryInstance);
+    }
+
+    private static <Q extends Quantity<Q>> QuantityFactory<Q> createNewFactoryInstance(final Class<Q> type) {
         if (!Quantity.class.isAssignableFrom(type)) {
             // This exception is not documented because it should never
             // happen if the
             // user don't try to trick the Java generic types system with
             // unsafe cast.
-            throw new ClassCastException();
+            throw new ClassCastException(String.format("%s is not a Quantity type", type));
         }
-        factory = new DefaultQuantityFactory<Q>(type);
-        INSTANCES.put(type, factory);
-        return factory;
+        return new DefaultQuantityFactory<Q>(type);
     }
-
+    
     public String toString() {
         return getClass().getName() + " <" + type.getName() + '>';
     }
