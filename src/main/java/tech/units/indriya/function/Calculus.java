@@ -39,6 +39,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -49,7 +50,7 @@ import tech.units.indriya.spi.NumberSystem;
  * 
  * @author Andi Huber
  * @author Werner Keil
- * @version 1.4, August 21, 2019
+ * @version 1.5, May 21, 2022
  * @since 2.0
  */
 public final class Calculus {
@@ -118,12 +119,6 @@ public final class Calculus {
         throw new IllegalArgumentException("NumberSystem " + name + " not found");
     }
     
-	
-	/**
-	 * Memoization of Pi by number-of-digits.
-	 */
-	private static final Map<Integer, BigDecimal> piCache = new HashMap<>();
-	
 	/**
 	 * Pi calculation with Machin's formula.
 	 * 
@@ -138,24 +133,37 @@ public final class Calculus {
 		private static final BigDecimal FIVE = new BigDecimal("5");
 		private static final BigDecimal TWO_HUNDRED_THIRTY_NINE = new BigDecimal("239");
 
-		private Pi() {
-		}
-
+		/**
+	     * Memoization of Pi by number-of-digits,
+	     * as used by {@link PowerOfPiConverter} to match Pi's precision with that of
+	     * the current {@link MathContext}.
+	     */
+	    private static final Map<Integer, BigDecimal> piCache = new ConcurrentHashMap<>();
+		
+	    // this is a utility class, don't instantiate
+		private Pi() {}
+		
 		public static BigDecimal ofNumDigits(int numDigits) {
 			
 			if(numDigits<=0) {
 				throw new IllegalArgumentException("numDigits is required to be greater than zero");
 			}
-			
-			return piCache.computeIfAbsent(numDigits, __->{
-				
-				final int calcDigits = numDigits + 10;
-				return FOUR
-						.multiply((FOUR.multiply(arccot(FIVE, calcDigits)))
-						.subtract(arccot(TWO_HUNDRED_THIRTY_NINE, calcDigits)))
-						.setScale(numDigits, RoundingMode.DOWN);
-				
-			});
+			// adds an arbitrary safety margin of 10 digits to the calculated number of digits
+			// (this is a guess, without any particular research to back that up)
+			return piCache.computeIfAbsent(numDigits, key->calculatePi(numDigits));
+		}
+		
+		/**
+		 * Calculates Pi up to numDigits. 
+		 */
+		private static BigDecimal calculatePi(int numDigits) {
+	        // adds an arbitrary safety margin of 10 digits to the requested number of digits
+            // (this is a guess, without any particular research to back that up)
+		    final int calcDigits = numDigits + 10;
+            return FOUR
+                    .multiply((FOUR.multiply(arccot(FIVE, calcDigits)))
+                    .subtract(arccot(TWO_HUNDRED_THIRTY_NINE, calcDigits)))
+                    .setScale(numDigits, RoundingMode.DOWN);
 		}
 
 		/** Compute arccot via the Taylor series expansion. */
