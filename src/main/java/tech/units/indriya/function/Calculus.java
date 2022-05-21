@@ -148,8 +148,6 @@ public final class Calculus {
 			if(numDigits<=0) {
 				throw new IllegalArgumentException("numDigits is required to be greater than zero");
 			}
-			// adds an arbitrary safety margin of 10 digits to the calculated number of digits
-			// (this is a guess, without any particular research to back that up)
 			return piCache.computeIfAbsent(numDigits, key->calculatePi(numDigits));
 		}
 		
