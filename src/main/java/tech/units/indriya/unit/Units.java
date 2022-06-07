@@ -78,7 +78,7 @@ import tech.units.indriya.function.RationalNumber;
  *
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author <a href="mailto:thodoris.bais@gmail.com">Thodoris Bais</a>
- * @version 2.3.1, April 21, 2020
+ * @version 2.4, June 7, 2022
  * @since 1.0
  * @see <a href="https://usma.org/detailed-list-of-metric-system-units-symbols-and-prefixes">USMA: Detailed list of metric system units, symbols, and prefixes</a>
  */
@@ -261,7 +261,6 @@ public class Units extends AbstractSystemOfUnits {
 	 * base unit for mass quantity is {@link #KILOGRAM}.
 	 */
 	public static final Unit<Mass> GRAM = addUnit(KILOGRAM.divide(1000));
-	// = new TransformedUnit(KILOGRAM, MetricPrefix.KILO.getConverter());
 
 	/**
 	 * The SI unit for plane angle quantities (standard name <code>rad</code>). One
@@ -457,7 +456,7 @@ public class Units extends AbstractSystemOfUnits {
 	//////////////////////////////
 
 	/**
-	 * The SI unit for velocity quantities (standard name <code>m/s</code>).
+	 * The SI unit for speed quantities (standard name <code>m/s</code>).
 	 */
 	public static final Unit<Speed> METRE_PER_SECOND = addUnit(new ProductUnit<>(METRE.divide(SECOND)), Speed.class);
 
@@ -479,8 +478,8 @@ public class Units extends AbstractSystemOfUnits {
 			Volume.class);
 
 	/**
-	 * A unit of velocity expressing the number of international {@link #KILOMETRE
-	 * kilometres} per {@link #HOUR hour} (abbreviation <code>km/h</code>).
+	 * A unit of speed expressing the number of international kilometres per {@link #HOUR hour} 
+	 * (abbreviation <code>km/h</code>).
 	 * 
 	 * @see <a href="https://en.wikipedia.org/wiki/Kilometres_per_hour"> Wikipedia: Kilometres per hour</a>
 	 */

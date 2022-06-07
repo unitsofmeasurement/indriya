@@ -294,7 +294,7 @@ public class AbsUnitTest {
 	 */
 	@Test
 	public void aKiloOfAGramIsEquivalentToAKilogram() {
-		assertTrue((((AbstractUnit<Mass>) KILO(GRAM))).isEquivalentTo(KILOGRAM));
+		assertTrue(KILO(GRAM).isEquivalentTo(KILOGRAM));
 	}
 
 	/**
@@ -302,7 +302,7 @@ public class AbsUnitTest {
 	 */
 	@Test
 	public void aGramIsNotEquivalentToAKilogram() {
-		assertFalse((((AbstractUnit<Mass>) GRAM)).isEquivalentTo(KILOGRAM));
+		assertFalse(GRAM.isEquivalentTo(KILOGRAM));
 	}
 
 	@Test

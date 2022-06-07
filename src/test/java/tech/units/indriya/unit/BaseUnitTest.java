@@ -39,7 +39,10 @@ import tech.units.indriya.function.AbstractConverter;
 import tech.units.indriya.unit.UnitDimension;
 import tech.units.indriya.unit.BaseUnit;
 
+import static javax.measure.MetricPrefix.KILO;
 import static org.junit.jupiter.api.Assertions.*;
+import static tech.units.indriya.unit.Units.GRAM;
+import static tech.units.indriya.unit.Units.KILOGRAM;
 import static tech.units.indriya.unit.Units.METRE;
 
 /**
