@@ -31,14 +31,14 @@ package tech.units.indriya.spi;
 
 import static tech.units.indriya.spi.ServiceConstants.*;
 
-import javax.inject.Named;
+import jakarta.inject.Named;
 
 /**
  * This class extends the {@link javax.measure.spi.ServiceProvider} class and hereby uses the JDK {@link java.util.ServiceLoader} to load the required
  * services.
  *
  * @author Werner Keil
- * @version 1.5
+ * @version 2.0
  * @since 1.0
  */
 @Named(DEFAULT_PROVIDER_NAME)
