@@ -76,8 +76,8 @@
  *
  * <h3>Unit Parameterization</h3>
  *
- *     CommonUnits are parameterized enforce compile-time checks of units/measures consistency, for example:<code>
- *
+ *     CommonUnits are parameterized enforce compile-time checks of units/measures consistency, for example:
+ *{@code
  *     Unit<Time> MINUTE = SECOND.times(60); // Ok.
  *     tUnit<Time> MINUTE = METRE.times(60); // Compile error.
  *
@@ -99,7 +99,7 @@
  *
  *     Unit<Temperature> KELVIN = AbstractUnit.of("K").asType(Temperature.class); // Ok.
  *     Unit<Temperature> KELVIN = AbstractUnit.of("kg").asType(Temperature.class); // Runtime error.
- *     </code>
+ *  }
  *     </p>
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>

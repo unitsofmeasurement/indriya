@@ -33,7 +33,7 @@
  *
  *
  * <h3>Usage:</h3>
- * <code>
+ * {@code
  *
  * import javax.measure.quantity.*; // Holds quantity types.
  * import static javax.measure.MetricPrefix.*;
@@ -72,12 +72,12 @@
  * &gt; rad/s
  * &gt; true
  * &gt; [L]²·[M]/[T]²
- * </code>
+ * }
  *
  * <h3>Unit Parameterization</h3>
  *
- *     CommonUnits are parameterized enforce compile-time checks of units/measures consistency, for example:<code>
- *
+ *     CommonUnits are parameterized enforce compile-time checks of units/measures consistency, for example:
+ * {@code
  *     Unit<Time> MINUTE = SECOND.multiply(60); // Ok.
  *     Unit<Time> MINUTE = METRE.multiply(60); // Compile error.
  *
@@ -87,22 +87,22 @@
  *     Quantity<Time> duration = Quantities.getQuantity(2, MINUTE); // Ok.
  *     Quantity<Time> duration = Quantities.getQuantity(2, CELSIUS); // Compile error.
  *
- *     </code>
+ *  }
  *
  *     Runtime checks of dimension consistency can be done for more complex cases.
  *
- *     <code>
+ *  {@code
  *     Unit<Area> SQUARE_METRE = METRE.times(METRE).asType(Area.class); // Ok.
  *     Unit<Area> SQUARE_METRE = METRE.times(KELVIN).asType(Area.class); // Runtime error.
  *
  *     Unit<Temperature> KELVIN = AbstractUnit.parse("K").asType(Temperature.class); // Ok.
  *     Unit<Temperature> KELVIN = AbstractUnit.parse("kg").asType(Temperature.class); // Runtime error.
- *     </code>
- *     </p>
+ *  }
+ *
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 2.1
+ * @version 2.2
  * @since 1.0
  */
 package tech.units.indriya;
