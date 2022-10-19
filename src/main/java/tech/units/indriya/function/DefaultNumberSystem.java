@@ -430,8 +430,8 @@ public class DefaultNumberSystem implements NumberSystem {
             if(!Double.isFinite(doubleValue)) {
                 throw unsupportedNumberValue(doubleValue);
             }
-            if(doubleValue % 1 == 0) {
-                // double represents an integer
+            if(doubleValue % 1 == 0 && !isZero(number)) {
+                // double represents an integer other than zero
                 return narrow(BigDecimal.valueOf(doubleValue));
             }
             return number;
