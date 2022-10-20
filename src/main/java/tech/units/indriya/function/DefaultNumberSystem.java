@@ -573,6 +573,7 @@ public class DefaultNumberSystem implements NumberSystem {
         if(number instanceof Double || number instanceof Float) {
             double doubleValue = number.doubleValue();
             // see https://stackoverflow.com/questions/15963895/how-to-check-if-a-double-value-has-no-decimal-part
+            if (isZero(number)) return false;
             return doubleValue % 1 == 0; 
         }
         throw unsupportedNumberType(number);
