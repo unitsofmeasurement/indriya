@@ -630,6 +630,14 @@ public class DefaultNumberSystem implements NumberSystem {
             NumberType wideType, Number wide, 
             NumberType narrowType, Number narrow) {
         
+    	// avoid type-check or widening if one of the arguments is zero 
+    	// https://github.com/unitsofmeasurement/indriya/issues/384
+    	if (isZero(wide)) {
+    		return narrow;
+    	} else if (isZero(narrow)) {
+    		return wide;
+    	}
+    	
         if(wideType.isIntegerOnly()) {
             // at this point we know, that narrow must also be an integer-only type
             if(wide instanceof BigInteger) {
