@@ -460,11 +460,13 @@ public class DefaultNumberSystem implements NumberSystem {
         if(number instanceof BigDecimal) {
             
             final BigDecimal decimal = ((BigDecimal) number);
-            try {
-                BigInteger integer = decimal.toBigIntegerExact(); 
-                return narrow(integer);
-            } catch (ArithmeticException e) {
-                return number; // cannot narrow to integer
+            if(decimal.scale()<=0) {
+                try {
+                    BigInteger integer = decimal.toBigIntegerExact();
+                    return narrow(integer);
+                } catch (ArithmeticException e) {
+                    return number; // cannot narrow to integer
+                }
             }
         }
         
