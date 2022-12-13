@@ -184,7 +184,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-toolchains-plugin</artifactId>
-				<version>3.0.0</version>
+				<version>3.1.0</version>
 				<executions>
 					<execution>
 						<goals>
@@ -205,6 +205,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.10.1</version>
 				<configuration>
 					<source>${base.java.version}</source>
 					<target>${base.java.version}</target>
@@ -267,26 +268,6 @@
 				</executions>
 			</plugin>
 
-			<!-- Rerun unittests with the multirelease jar, cannot be done with exploded directory of classes  -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-failsafe-plugin</artifactId>
-				<version>2.21.0</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>integration-test</goal>
-							<goal>verify</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<includes>
-						<include>**/*Test.java</include>
-					</includes>
-				</configuration>
-			</plugin>
-
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
@@ -294,7 +275,8 @@
 					<excludes>
 						<exclude>${excludedTests}</exclude>
 					</excludes>
-					<argLine>${argLine} --enable-preview -Xms2048m -Xmx4g -XX:MaxPermSize=512m</argLine>
+					<argLine>${argLine} --enable-preview -Xms2048m -Xmx4g</argLine>
+          			<testFailureIgnore>false</testFailureIgnore>
 				</configuration>
 			</plugin>
 
@@ -443,6 +425,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>3.4.1</version>
 				<executions>
 					<execution>
 						<id>attach-javadocs</id>
@@ -473,6 +456,7 @@
 					<sourceFileExcludes>
 						<exclude>**/module-info.java</exclude>
 					</sourceFileExcludes>
+					<excludePackageNames>tech.units.indriya.internal.*</excludePackageNames>
 				</configuration>
 			</plugin>
 

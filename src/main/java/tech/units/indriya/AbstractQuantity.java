@@ -107,7 +107,7 @@ import tech.uom.lib.common.function.ValueSupplier;
  *
  * @author <a href="mailto:werner@uom.technology">Werner Keil</a>
  * @author Andi Huber
- * @version 2.3, Oct 12, 2022
+ * @version 2.4 Dec 13, 2022
  * @since 1.0
  */
 @SuppressWarnings("unchecked")
@@ -222,15 +222,18 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
         return this.compareTo(that) == 0;
     }
 
-    /**
-     * 
-     * FIXME[220] update java-doc
-     * Compares this quantity to the specified quantity. The default implementation compares the {@link AbstractQuantity#doubleValue(Unit)}
-     * of both this quantity and the specified quantity stated in the same unit (this quantity's {@link #getUnit() unit}).
+    /** 
+     * Compares this quantity to the specified quantity. The default implementation compares the value of both this quantity and the specified quantity
+     *  stated in the same unit (this quantity's {@link #getUnit() unit}). If units are not the same, the unit of the specified quantity is converted.
      *
-     * @return a negative integer, zero, or a positive integer as this quantity is less than, equal to, or greater than the specified Measurement
+     * @param  that {@code Quantity} to which this {@code AbstractQuantity} is to be compared.
+     *
+     * @implNote
+     * Note: this class uses implicit unit conversion that is inconsistent with {@code equals}.
+     * 
+     * @return a negative integer, zero, or a positive integer as this quantity is less than, equal/equivalent to, or greater than the specified Measurement
      *         quantity.
-     * @see {@link tech.uom.lib.common.util.NaturalQuantityComparator NaturalQuantityComparator}
+     * @see {@link tech.units.indriya.spi.NumberSystem#compare}
      */
     @Override
     public int compareTo(Quantity<Q> that) {
@@ -251,13 +254,13 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
      *
      * <p>
      * To compare quantities stated using different units or using different amount implementations the {@link #compareTo compareTo} or
-     * {@link #equals(javax.measure.Quantity, double, javax.measure.unit.Unit) equals(Quantity, epsilon, epsilonUnit)} methods should be used.
+     * {@link #isEquivalentTo} methods should be used.
      * </p>
      *
      * @param obj
      *            the object to compare with.
      * @return <code>this.getUnit.equals(obj.getUnit())
-     *         && this.getLevel().equals(obj.getLevel()
+     *         && this.getScale().equals(obj.getScale()
      *         && this.getValue().equals(obj.getValue())</code>
      */
     @Override
