@@ -25,9 +25,7 @@ jobs:
       
       - run: bash <(curl -s https://codecov.io/bash)
       
-      - run: fl_value=$(ack-grep -Lur "Failures: 0" ~/repo/./target/surefire-reports/*.txt | wc -l)
-      
-      - run: echo "The number of failures is '$fl_value'"
+      - run: echo $(ack-grep -Lur "Failures: 0" ~/repo/./target/surefire-reports/*.txt | wc -l)
       
   deployment:
     docker:
