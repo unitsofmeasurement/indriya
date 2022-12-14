@@ -25,7 +25,7 @@ jobs:
       
       - run: bash <(curl -s https://codecov.io/bash)
       
-      - run: bash <(ack-grep -Lur "Failures: 0" ~/repo/./target/surefire-reports/*.txt | wc -l)
+      - run: rg "Failures: 0" ~/repo/./target/surefire-reports/*.txt
       
   deployment:
     docker:
