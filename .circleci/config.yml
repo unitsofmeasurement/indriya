@@ -24,6 +24,11 @@ jobs:
       - run: mvn --batch-mode test jacoco:report -t ci-toolchains.xml
       
       - run: bash <(curl -s https://codecov.io/bash)
+      
+      - run: fl_value=$(ack-grep -Lur "Failures: 0" ~/repo/./target/surefire-reports/*.txt | wc -l)
+      
+      - run: echo "The number of failures is '$fl_value'"
+      
   deployment:
     docker:
       # specify the version you desire here
