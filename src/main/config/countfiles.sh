@@ -1,0 +1,1 @@
+find ~/repo/./target/surefire-reports -iname "*.txt" -exec grep -Li "Failures: 0" {} \+
