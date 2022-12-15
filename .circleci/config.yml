@@ -21,11 +21,14 @@ jobs:
       - run: sed -i "s|JDK_home|$JAVA_HOME|g" ci-toolchains.xml
         
       # run tests!
-      - run: mvn --batch-mode test jacoco:report -t ci-toolchains.xml
+      - run: mvn --batch-mode test jacoco:report -t ci-toolchains.xml      
       
+      # check test results
+      - run: sh src/main/config/checktests.sh
+      
+      # update codecov
       - run: bash <(curl -s https://codecov.io/bash)
       
-      - run: sh src/main/config/countfiles.sh
   deployment:
     docker:
       # specify the version you desire here
