@@ -18,16 +18,24 @@ jobs:
     steps:
       - checkout
       
-      - run: sed -i "s|JDK_home|$JAVA_HOME|g" ci-toolchains.xml
+      - run: 
+          name: Adjusting toolchain
+          command: sed -i "s|JDK_home|$JAVA_HOME|g" ci-toolchains.xml
         
       # run tests!
-      - run: mvn --batch-mode test jacoco:report -t ci-toolchains.xml      
+      - run: 
+          name: Running tests
+          command: mvn --batch-mode test jacoco:report -t ci-toolchains.xml
       
       # check test results
-      - run: sh src/main/config/checktests.sh
+      - run: 
+          name: Checking test results
+          command: sh src/main/config/checktests.sh
       
       # update codecov
-      - run: bash <(curl -s https://codecov.io/bash)
+      - run: 
+          name: Refreshing code coverage
+          command: bash <(curl -s https://codecov.io/bash)
       
   deployment:
     docker:
@@ -43,10 +51,15 @@ jobs:
     steps:
       - checkout
       
-      - run: sed -i "s|JDK_home|$JAVA_HOME|g" ci-toolchains.xml
+      - run:
+          name: Adjusting toolchain
+          command: sed -i "s|JDK_home|$JAVA_HOME|g" ci-toolchains.xml
         
       # run deployment!
-      - run: mvn --batch-mode deploy -Dmaven.test.skip -DcreateDocs=true -s settings.xml -t ci-toolchains.xml
+      - run:
+          name: Deploying snapshot
+          command: mvn --batch-mode deploy -Dmaven.test.skip -DcreateDocs=true -s settings.xml -t ci-toolchains.xml
+          
 workflows:
   version: 2
   build_deploy:
