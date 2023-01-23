@@ -12,6 +12,7 @@
 	<name>Units of Measurement Reference Implementation</name>
 	<description>Unit Standard (JSR 385) Reference Implementation.</description>
 	<packaging>bundle</packaging>
+	<version>2.1.4</version>
 	<parent>
 		<groupId>tech.uom</groupId>
 		<artifactId>uom-parent</artifactId>
@@ -50,7 +51,7 @@
 		<maven.compile.sourceLevel>${jdkVersion}</maven.compile.sourceLevel>
 		<additionalparam>-Xdoclint:none</additionalparam>
 		<spec.vendor>Jean-Marie Dautelle, Werner Keil, Otavio Santana</spec.vendor>
-		<thisYear>2022</thisYear>
+		<thisYear>2023</thisYear>
 
 		<!-- OSGi support -->
 		<osgi.version>5.0.0</osgi.version>
@@ -834,5 +835,4 @@
 			</properties>
 		</profile>
 	</profiles>
-	<version>2.1.4-SNAPSHOT</version>
 </project>
