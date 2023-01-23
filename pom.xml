@@ -47,7 +47,7 @@
 		<!-- The oldest Java version supported by this tool. -->
 		<!-- Will control compilation of main code and the unit tests. -->
 		<base.java.version>8</base.java.version>
-        <jpms.name>tech.units.indriya</jpms.name>
+		<jpms.name>tech.units.indriya</jpms.name>
 		<project.build.javaVersion>${jdkVersion}</project.build.javaVersion>
 		<maven.compile.targetLevel>${jdkVersion}</maven.compile.targetLevel>
 		<maven.compile.sourceLevel>${jdkVersion}</maven.compile.sourceLevel>
