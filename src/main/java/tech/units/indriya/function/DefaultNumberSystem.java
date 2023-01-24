@@ -44,6 +44,7 @@ import tech.units.indriya.spi.NumberSystem;
  * {@link RationalNumber} type.   
  * 
  * @author Andi Huber
+ * @author Werner Keil
  * @since 2.0
  */
 public class DefaultNumberSystem implements NumberSystem {
@@ -756,6 +757,10 @@ public class DefaultNumberSystem implements NumberSystem {
                 return ((BigDecimal) wide).multiply((BigDecimal) narrow, Calculus.MATH_CONTEXT);
             }
             
+            if(narrow instanceof BigInteger) {
+                return ((BigDecimal) wide).multiply(new BigDecimal((BigInteger)narrow), Calculus.MATH_CONTEXT);
+            }
+            
             if(narrow instanceof Double || narrow instanceof Float) {
                 return ((BigDecimal) wide).multiply(BigDecimal.valueOf(narrow.doubleValue()), Calculus.MATH_CONTEXT);
             }
@@ -894,6 +899,4 @@ public class DefaultNumberSystem implements NumberSystem {
                 operator.apply(array[1])
         };
     }
-    
-
 }
