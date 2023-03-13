@@ -103,9 +103,10 @@ public final class ScaleHelper {
         if (yieldsRelativeScale) {
             return Quantities.getQuantity(thisConverter.invert(resultValueInSystemUnit), q1.getUnit(), RELATIVE);
         }
-
-        final boolean needsInvering = !thisConverter.isNoop() || !thatConverter.isNoop();
-        final Number resultValueInThisUnit = needsInvering 
+        final boolean convertersEqual = thisConverter.equals(thatConverter);
+        
+        final boolean needsInverting = !thisConverter.isNoop() || !thatConverter.isNoop();
+        final Number resultValueInThisUnit = needsInverting 
                 ? q1.getUnit().getConverterTo(q1.getUnit().getSystemUnit()).inverse().convert(resultValueInSystemUnit)
                 : resultValueInSystemUnit;
 
