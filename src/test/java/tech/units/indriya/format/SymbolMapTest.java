@@ -40,8 +40,6 @@ import javax.measure.Unit;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import tech.units.indriya.format.EBNFUnitFormat;
-import tech.units.indriya.format.SymbolMap;
 import tech.units.indriya.unit.Units;
 
 public class SymbolMapTest {
@@ -73,7 +71,7 @@ public class SymbolMapTest {
     assertEquals(MetricPrefix.YOTTA, symbols.getPrefix("Yg"));
     assertEquals(MetricPrefix.ZEPTO, symbols.getPrefix("zg"));
     assertEquals(MetricPrefix.ZETTA, symbols.getPrefix("Zg"));
-    assertEquals(MetricPrefix.DEKA, symbols.getPrefix("dag"));
+    assertEquals(MetricPrefix.DECA, symbols.getPrefix("dag"));
   }
 
   /**
