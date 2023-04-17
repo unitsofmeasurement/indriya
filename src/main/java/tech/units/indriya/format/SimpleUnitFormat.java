@@ -81,7 +81,7 @@ import static tech.units.indriya.format.FormatConstants.MIDDLE_DOT;
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author Eric Russell
  * @author Andi Huber
- * @version 2.8, Apr. 20, 2021
+ * @version 2.9, Apr. 17, 2023
  * @since 1.0
  */
 public abstract class SimpleUnitFormat extends AbstractUnitFormat {
@@ -315,7 +315,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
 
     /**
      * This class represents the default (Unicode) format.
-     * @deprecated internal class, that will be made private soon, please extend either SimpleUnitFormat or AbstractUnitFormat
+     * @deprecated internal class, that will be made private/package-local soon, please extend either SimpleUnitFormat or AbstractUnitFormat
      */
     protected static class DefaultFormat extends SimpleUnitFormat {
         
@@ -959,7 +959,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
     /**
      * This class represents the ASCII format.
      */
-    protected final static class ASCIIFormat extends DefaultFormat {
+    final static class ASCIIFormat extends DefaultFormat {
         
         private ASCIIFormat() {
             super(); 
