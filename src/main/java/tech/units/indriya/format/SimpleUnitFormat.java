@@ -66,7 +66,7 @@ import static tech.units.indriya.format.FormatConstants.MIDDLE_DOT;
  * <p>
  * This class implements the {@link UnitFormat} interface for formatting and parsing {@link Unit units}.
  * </p>
- * 
+ *
  * <p>
  * For all SI units, the <b>20 SI prefixes</b> used to form decimal multiples and sub-multiples are recognized. As well as the <b>8 binary prefixes</b>.<br>
  * {@link Units} are directly recognized. For example:<br>
@@ -76,7 +76,7 @@ import static tech.units.indriya.format.FormatConstants.MIDDLE_DOT;
  *        format.parse("kW").equals(MetricPrefix.KILO(Units.WATT));<br>
  *        format.parse("ft").equals(Units.METRE.multiply(0.3048))</code>
  * </p>
- * 
+ *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author Eric Russell
@@ -86,7 +86,7 @@ import static tech.units.indriya.format.FormatConstants.MIDDLE_DOT;
  */
 public abstract class SimpleUnitFormat extends AbstractUnitFormat {
     /**
-     * 
+     *
      */
     // private static final long serialVersionUID = 4149424034841739785L;#
 
@@ -99,14 +99,14 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
     public static enum Flavor {
         Default, ASCII
     }
-    
+
     private static final String MU = "\u03bc";
-    
+
     /**
      * Holds the standard unit format.
      */
     private static final DefaultFormat DEFAULT = new DefaultFormat().init();
-    
+
     /**
      * Holds the ASCIIFormat flavor.
      */
@@ -136,7 +136,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
             return DEFAULT;
         }
     }
-    
+
     /**
      * Similar to {@link #getInstance()}, but returns a new, non-shared unit format instance,
      * instead of a shared singleton instance.
@@ -149,7 +149,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
     }
 
     /**
-     * Similar to {@link #getInstance(Flavor)}, but returns a new {@link SimpleUnitFormat} instance in the desired 
+     * Similar to {@link #getInstance(Flavor)}, but returns a new {@link SimpleUnitFormat} instance in the desired
      * {@link Flavor}, instead of a shared singleton instance.
      *
      * @return a new instance for the given {@link Flavor}.
@@ -224,7 +224,15 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
      */
     public abstract void label(Unit<?> unit, String label);
 
-    /**
+	/**
+	 * Removes the label (added by {@link #label(Unit, String)}) and all system-wide aliases (added by {@link #alias(Unit, String)}) for this unit.
+	 *
+	 * @param unit
+	 *          the unit for which aliases shall be removed.
+	 */
+	public abstract void removeLabel(Unit<?> unit);
+
+	/**
      * Attaches a system-wide alias to this unit. Multiple aliases may be attached to the same unit. Aliases are used during parsing to recognize
      * different variants of the same unit. For example: <code> SimpleUnitFormat.getInstance().alias(METER.multiply(0.3048), "foot");
      * SimpleUnitFormat.getInstance().alias(METER.multiply(0.3048), "feet"); SimpleUnitFormat.getInstance().alias(METER, "meter");
@@ -239,6 +247,14 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
      *           if the label is not a {@link SimpleUnitFormat#isValidIdentifier(String)} valid identifier.
      */
     public abstract void alias(Unit<?> unit, String alias);
+
+	/**
+	 * Removes all system-wide aliases (added by {@link #alias(Unit, String)}) for this unit and keeps the label (added by {@link #label(Unit, String)})
+	 *
+	 * @param unit
+	 *          the unit for which aliases shall be removed.
+	 */
+	public abstract void removeAlias(Unit<?> unit);
 
     /**
      * Indicates if the specified name can be used as unit identifier.
@@ -318,55 +334,55 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
      * @deprecated internal class, that will be made private/package-local soon, please extend either SimpleUnitFormat or AbstractUnitFormat
      */
     protected static class DefaultFormat extends SimpleUnitFormat {
-        
+
         // Initializes the standard unit databases.
-        
+
         static final Unit<?>[] METRIC_UNITS = { Units.AMPERE, Units.BECQUEREL, Units.CANDELA, Units.COULOMB, Units.FARAD, Units.GRAY, Units.HENRY,
                 Units.HERTZ, Units.JOULE, Units.KATAL, Units.KELVIN, Units.LUMEN, Units.LUX, Units.METRE, Units.MOLE, Units.NEWTON, Units.OHM, Units.PASCAL,
                 Units.RADIAN, Units.SECOND, Units.SIEMENS, Units.SIEVERT, Units.STERADIAN, Units.TESLA, Units.VOLT, Units.WATT, Units.WEBER };
 
-        static final String[] METRIC_PREFIX_SYMBOLS =  
+        static final String[] METRIC_PREFIX_SYMBOLS =
                 Stream.of(MetricPrefix.values())
                 .map(Prefix::getSymbol)
                 .collect(Collectors.toList())
                 .toArray(new String[] {});
 
         // TODO try to consolidate those
-        static final UnitConverter[] METRIC_PREFIX_CONVERTERS =  
+        static final UnitConverter[] METRIC_PREFIX_CONVERTERS =
                 Stream.of(MetricPrefix.values())
                 .map(MultiplyConverter::ofPrefix)
                 .collect(Collectors.toList())
                 .toArray(new UnitConverter[] {});
 
-        static final String[] BINARY_PREFIX_SYMBOLS =  
+        static final String[] BINARY_PREFIX_SYMBOLS =
                 Stream.of(BinaryPrefix.values())
                 .map(Prefix::getSymbol)
                 .collect(Collectors.toList())
                 .toArray(new String[] {});
 
-        static final UnitConverter[] BINARY_PREFIX_CONVERTERS =  
+        static final UnitConverter[] BINARY_PREFIX_CONVERTERS =
                 Stream.of(BinaryPrefix.values())
                 .map(MultiplyConverter::ofPrefix)
                 .collect(Collectors.toList())
                 .toArray(new UnitConverter[] {});
-        
+
         /**
          * Holds the unique symbols collection (base units or alternate units).
          */
         private final Map<String, Unit<?>> symbolToUnit = new HashMap<>();
-        
-        private static enum Token { EOF, IDENTIFIER, OPEN_PAREN, CLOSE_PAREN, EXPONENT, MULTIPLY, DIVIDE, 
+
+        private static enum Token { EOF, IDENTIFIER, OPEN_PAREN, CLOSE_PAREN, EXPONENT, MULTIPLY, DIVIDE,
             PLUS, INTEGER, FLOAT };
-            
-            
+
+
         DefaultFormat() {
-            
+
             // Hack, somehow µg is not found.
             symbolToUnit.put(MetricPrefix.MICRO.getSymbol() + "g", MICRO(Units.GRAM));
             symbolToUnit.put("μg", MICRO(Units.GRAM));
             symbolToUnit.put(MU + "g", MICRO(Units.GRAM));
         }
-            
+
         private DefaultFormat init() {
 
             for (int i = 0; i < METRIC_UNITS.length; i++) {
@@ -436,18 +452,18 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
             label(Units.LITRE, "l");
             for(Prefix prefix : MetricPrefix.values()) {
                 label(Units.LITRE.prefix(prefix), prefix.getSymbol()+"l");
-            }   
+            }
             label(Units.NEWTON, "N");
             label(Units.RADIAN, "rad");
 
             label(AbstractUnit.ONE, "one");
-            
+
             alias(Units.SQUARE_METRE, "m2");
             alias(Units.CUBIC_METRE, "m3");
-            
+
             return this;
         }
-        
+
 
         /**
          * Holds the name to unit mapping.
@@ -482,6 +498,18 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
                 nameToUnit.put(alias, unit);
             }
         }
+
+		@Override
+		public void removeAlias(Unit<?> unit) {
+			String label = unitToName.get(unit);
+			nameToUnit.entrySet().removeIf(e -> e.getValue().equals(unit) && !e.getKey().equals(label));
+		}
+
+		@Override
+		public void removeLabel(Unit<?> unit) {
+			unitToName.remove(unit);
+			nameToUnit.entrySet().removeIf(e -> e.getValue().equals(unit));
+		}
 
         @Override
         protected boolean isValidIdentifier(String name) {
@@ -544,7 +572,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
                                 result.append(reciprocal.toString()); // renders as integer
                             } else {
                                 result.append('*');
-                                result.append(scaleFactor);  
+                                result.append(scaleFactor);
                             }
 
                         } else {
@@ -772,10 +800,10 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
                 case '\u00b9': pow = pow * 10 + 1; break;
                 case '\u00b2': pow = pow * 10 + 2; break;
                 case '\u00b3': pow = pow * 10 + 3; break;
-                case ':': parseRoot = true; break POWERLOOP; 
-                default: 
-                    if (c >= '0' && c <= '9') pow = pow * 10 + (c - '0');  
-                    else break POWERLOOP; 
+                case ':': parseRoot = true; break POWERLOOP;
+                default:
+                    if (c >= '0' && c <= '9') pow = pow * 10 + (c - '0');
+                    else break POWERLOOP;
                 }
                 pos.setIndex(pos.getIndex() + 1);
             }
@@ -792,9 +820,9 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
                     case '\u00b9': root = root * 10 + 1; break;
                     case '\u00b2': root = root * 10 + 2; break;
                     case '\u00b3': root = root * 10 + 3; break;
-                    default: 
-                        if (c >= '0' && c <= '9') root = root * 10 + (c - '0');  
-                        else break ROOTLOOP; 
+                    default:
+                        if (c >= '0' && c <= '9') root = root * 10 + (c - '0');
+                        else break ROOTLOOP;
                     }
                     pos.setIndex(pos.getIndex() + 1);
                 }
@@ -960,13 +988,13 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
      * This class represents the ASCII format.
      */
     final static class ASCIIFormat extends DefaultFormat {
-        
+
         private ASCIIFormat() {
-            super(); 
+            super();
         }
-        
+
         private ASCIIFormat init() {
-            
+
             // ASCII
             for (int i = 0; i < METRIC_UNITS.length; i++) {
                 Unit<?> si = METRIC_UNITS[i];
@@ -1013,10 +1041,10 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
 
             label(Units.METRE, "m");
             label(Units.SECOND, "s");
-            label(Units.KILOMETRE_PER_HOUR, "km/h");        
+            label(Units.KILOMETRE_PER_HOUR, "km/h");
             alias(Units.SQUARE_METRE, "m2");
             alias(Units.CUBIC_METRE, "m3");
-            
+
             // -- LITRE
 
             label(Units.LITRE, "l");
@@ -1026,15 +1054,15 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
                 } else {
                     label(Units.LITRE.prefix(prefix), prefix.getSymbol()+"L");
                 }
-            }   
+            }
             label(Units.NEWTON, "N");
             label(Units.RADIAN, "rad");
 
             label(AbstractUnit.ONE, "one");
-            
+
             return this;
-        }  
-        
+        }
+
 
         @Override
         protected String nameFor(Unit<?> unit) {
@@ -1124,6 +1152,6 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
         }
         return isASCII;
     }
-    
-    
+
+
 }
