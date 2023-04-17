@@ -79,7 +79,7 @@ public class SystemOfUnitsServiceTest {
     assertNotNull(service);
     Collection<MetricPrefix> prefixes = service.getPrefixes(MetricPrefix.class);
     assertNotNull(prefixes);
-    assertEquals(20, prefixes.size());
+    assertEquals(24, prefixes.size());
   }
 
   @Test
