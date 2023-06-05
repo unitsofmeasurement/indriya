@@ -63,15 +63,14 @@ import tech.uom.lib.common.function.QuantityConverter;
  * 
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author Andi Huber
- * @version 2.3, Feb 2, 2022
+ * @version 2.4, June 5, 2023
  * @see <a href="https://www.wolfram.com/language/11/units-and-dates/mixed-quantities.html">Wolfram Language: Mixed Quantities</a>
  * @see <a href="https://en.wikipedia.org/wiki/Fraction#Mixed_numbers">Wikipedia: Mixed Numbers</a> 
  * @see MixedRadix
  * @since 2.1.2
  */
 @API(status=MAINTAINED)
-public class MixedQuantity<Q extends Quantity<Q>> implements QuantityConverter<Q>, Serializable {
-    // TODO could it be final?
+public final class MixedQuantity<Q extends Quantity<Q>> implements QuantityConverter<Q>, Serializable {
     /**
     * 
     */
@@ -89,8 +88,7 @@ public class MixedQuantity<Q extends Quantity<Q>> implements QuantityConverter<Q
     /**
      * @param quantities - the list of quantities to construct this MixedQuantity.
      */
-    protected MixedQuantity(final List<Quantity<Q>> quantities) {
-        
+    protected MixedQuantity(final List<Quantity<Q>> quantities) {        
         final List<Unit<Q>> unitList = new ArrayList<>();
         
         for (Quantity<Q> q : quantities) {            
@@ -113,8 +111,7 @@ public class MixedQuantity<Q extends Quantity<Q>> implements QuantityConverter<Q
         }
         
         this.quantityList = Collections.unmodifiableList(new ArrayList<>(quantities));
-        this.quantityArray = quantities.toArray();
-        
+        this.quantityArray = quantities.toArray();        
         this.unitList = Collections.unmodifiableList(unitList);
         
         try {                        

@@ -57,7 +57,7 @@ public class MixedQuantityTest {
 	static final Logger logger = Logger.getLogger(MixedQuantityTest.class.getName());
 
 	@Test
-	public void testLengthSingleUnitCompoundQuantity() {
+	public void testLengthSingleUnitMixedQuantity() {
 		MixedQuantity<Length> compLen = MixedQuantity.of(Quantities.getQuantity(1, Units.METRE));
 
 		assertEquals("[m]", compLen.getUnits().toString());
