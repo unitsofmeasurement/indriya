@@ -30,7 +30,7 @@ jobs:
       # run tests!
       - run: 
           name: Running tests
-          command: mvn test jacoco:report coveralls:report -DsourceEncoding=UTF-8
+          command: mvn test jacoco:report coveralls:report -DsourceEncoding=UTF-8 -t ci-toolchains.xml
       
       # check test results
       - run: 
