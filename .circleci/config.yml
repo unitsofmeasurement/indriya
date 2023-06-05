@@ -21,11 +21,16 @@ jobs:
       - run: 
           name: Adjusting toolchain
           command: sed -i "s|JDK_home|$JAVA_HOME|g" ci-toolchains.xml
+      
+      # run tests!
+      - run: 
+          name: Packaging
+          command: mvn package -t ci-toolchains.xml
         
       # run tests!
       - run: 
           name: Running tests
-          command: mvn test jacoco:report coveralls:report -t ci-toolchains.xml
+          command: mvn test jacoco:report coveralls:report -DsourceEncoding=UTF-8
       
       # check test results
       - run: 
