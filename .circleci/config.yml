@@ -25,18 +25,13 @@ jobs:
       # run tests!
       - run: 
           name: Running tests
-          command: mvn --batch-mode test jacoco:report -t ci-toolchains.xml
+          command: mvn --batch-mode test jacoco:report coveralls:report -t ci-toolchains.xml
       
       # check test results
       - run: 
           name: Checking test results
           command: sh src/main/config/checktests.sh
-      
-      # update codecov
-      - run: 
-          name: Refreshing code coverage
-          command: bash <(curl -s https://codecov.io/bash)
-      
+            
   deployment:
     docker:
       # specify the version you desire here
