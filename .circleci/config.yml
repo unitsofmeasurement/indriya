@@ -32,11 +32,6 @@ jobs:
           name: Checking test results
           command: sh src/main/config/checktests.sh
       
-      # update codecov
-      - run: 
-          name: Refreshing code coverage
-          command: bash <(curl -s https://codecov.io/bash)
-      
   deployment:
     docker:
       # specify the version you desire here
