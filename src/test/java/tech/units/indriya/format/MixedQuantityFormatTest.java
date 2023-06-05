@@ -348,7 +348,7 @@ public class MixedQuantityFormatTest {
                 .mix(PICA);
         
         Quantity<Length> lengthQuantity = mixedRadix.createQuantity(1, 2, 3);
-        MixedQuantity<Length> lengthCompound = mixedRadix.createMixedQuantity(1, 2, 3);
+        MixedQuantity<Length> lengthMixed = mixedRadix.createMixedQuantity(1, 2, 3);
         
         DecimalFormat realFormat = (DecimalFormat) DecimalFormat.getInstance(Locale.ENGLISH);
         realFormat.setDecimalSeparatorAlwaysShown(true);
@@ -360,7 +360,7 @@ public class MixedQuantityFormatTest {
                 .setDelimiter(" ").setRadixPartsDelimiter(" ").build();
         
         // when
-        String formatedOutput = ndFormat.format(lengthCompound);
+        String formatedOutput = ndFormat.format(lengthMixed);
         String simpleFormattedSingle = simpleFormat.format(lengthQuantity);
         String ndFormattedSingle = ndFormat.format(lengthQuantity);
         

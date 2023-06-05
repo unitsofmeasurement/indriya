@@ -63,7 +63,7 @@ abstract class SamplingUtil {
 
 	public static Stream<Unit<?>> units() {
 		return Stream
-				.of(nonPrefixedUnits(), additionalUnits(), temporalQuantityUnits(), composedUnits(), compoundUnits())
+				.of(nonPrefixedUnits(), additionalUnits(), temporalQuantityUnits(), composedUnits(), mixedUnits())
 				.flatMap(Function.identity());
 	}
 
@@ -84,7 +84,7 @@ abstract class SamplingUtil {
 		);
 	}
 
-	private static Stream<Unit<?>> compoundUnits() {
+	private static Stream<Unit<?>> mixedUnits() {
 		return Stream.of(
 				Quantities.getQuantity(1, Units.METRE).multiply(Quantities.getQuantity(1, Units.SECOND)).getUnit(),
 				Quantities.getQuantity(1, Units.METRE).divide(Quantities.getQuantity(1, Units.SECOND)).getUnit()

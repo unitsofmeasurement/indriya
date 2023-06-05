@@ -45,7 +45,6 @@ import javax.measure.UnitConverter;
 import tech.units.indriya.internal.function.Calculator;
 import tech.units.indriya.internal.function.radix.MixedRadixSupport;
 import tech.units.indriya.internal.function.radix.Radix;
-import tech.units.indriya.quantity.CompoundQuantity;
 import tech.units.indriya.quantity.MixedQuantity;
 import tech.units.indriya.quantity.Quantities;
 
@@ -56,7 +55,7 @@ import tech.units.indriya.quantity.Quantities;
  * 
  * @author Andi Huber
  * @author Werner Keil
- * @version 2.2, Feb 25, 2021
+ * @version 2.3, Jun 5, 2023
  * @since 2.0
  * @see <a href="https://en.wikipedia.org/wiki/Mixed_radix">Wikipedia: Mixed
  *      radix</a>
@@ -199,35 +198,6 @@ public final class MixedRadix<Q extends Quantity<Q>> {
 		return createMixedQuantity(values, Scale.ABSOLUTE);
 	}
 	
-    /**
-     * Creates a {@link CompoundQuantity} from given {@code values} and {@code scale}.
-     * <p>
-     * Note: Not every {@code CompoundQuantity} can be represented by a {@code MixedRadix}. 
-     * {@code MixedRadix} strictly requires its coefficients to be in decreasing order of significance, 
-     * while a {@code CompoundQuantity} in principle does not.
-     * 
-     * @param values - numbers corresponding to the radix coefficients in most significant first order, 
-     *      allowed to be of shorter length than the total count of radix coefficients of this 
-     *      {@code MixedRadix} instance
-     * @param scale - the {@link Scale} to be used for the elements of the returned {@link CompoundQuantity}
-     * @deprecated use #getMixedQuantity
-     */
-	public CompoundQuantity<Q> createCompoundQuantity(final Number[] values, final Scale scale) {
-		Objects.requireNonNull(scale);
-		guardAgainstIllegalNumbersArgument(values);
-
-		List<Quantity<Q>> quantities = new ArrayList<>();
-		for (int i = 0; i < values.length; i++) {
-			quantities.add(Quantities.getQuantity(values[i], mixedRadixUnits.get(i), scale));
-		}
-		return CompoundQuantity.of(quantities);
-	}
-
-	@Deprecated
-	public CompoundQuantity<Q> createCompoundQuantity(Number... values) {
-		return createCompoundQuantity(values, Scale.ABSOLUTE);
-	}
-
 	// -- VALUE EXTRACTION
 
 	public Number[] extractValues(Quantity<Q> quantity) {

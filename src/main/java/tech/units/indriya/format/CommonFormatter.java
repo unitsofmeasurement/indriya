@@ -52,12 +52,12 @@ import tech.units.indriya.quantity.Quantities;
  * Common helper class that handles internals of formatting in {@link SimpleQuantityFormat}, {@link NumberDelimiterQuantityFormat}
  * 
  * @author keilw
- * @version 2.0
+ * @version 2.1
  * @since 2.0
  */
 @API(status=INTERNAL)
 abstract class CommonFormatter {
-    private static final String ERR_PRIMARY_UNIT_NOT_FOUND = "The primary unit <%s> is not part of the compound units <%s>"; //$NON-NLS-1$
+    private static final String ERR_PRIMARY_UNIT_NOT_FOUND = "The primary unit <%s> is not part of the mixed units <%s>"; //$NON-NLS-1$
     
     @SuppressWarnings({ "unchecked", "rawtypes" })
     static MixedQuantity<?> parseMixed(final String str, final NumberFormat numberFormat, final UnitFormat unitFormat, final String delimiter,

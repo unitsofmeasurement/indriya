@@ -41,7 +41,6 @@ import javax.measure.format.MeasurementParseException;
 
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.internal.format.RationalNumberScanner;
-import tech.units.indriya.quantity.CompoundQuantity;
 import tech.units.indriya.quantity.MixedQuantity;
 import tech.units.indriya.quantity.Quantities;
 
@@ -97,7 +96,7 @@ import tech.units.indriya.quantity.Quantities;
  *<li><strong><a id="radix">Mixed Radix:</a></strong>
  *     The Mixed radix marker <code>"~"</code> is followed by a character sequence acting as mixed radix delimiter. This character sequence must not contain <code>"~"</code> itself or any numeric values.<br></li>
  * </ul> 
- * @version 2.0, $Date: 2021-01-26 $
+ * @version 2.1, June 5, 2023
  * @since 2.0
  */
 @SuppressWarnings("rawtypes")
@@ -264,20 +263,6 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
         for (Quantity<?> q : mixed.getQuantities()) {
             sb.append(format(q));
             if (i < mixed.getQuantities().size() - 1 ) {
-                sb.append((mixDelimiter != null ? mixDelimiter : DEFAULT_DELIMITER)); // we need null for parsing but not
-            }
-            i++;
-        }
-        return sb;
-    }
-	
-    @Override
-    protected StringBuffer formatCompound(CompoundQuantity<?> comp, StringBuffer dest) {
-        final StringBuffer sb = new StringBuffer();
-        int i = 0;
-        for (Quantity<?> q : comp.getQuantities()) {
-            sb.append(format(q));
-            if (i < comp.getQuantities().size() - 1 ) {
                 sb.append((mixDelimiter != null ? mixDelimiter : DEFAULT_DELIMITER)); // we need null for parsing but not
             }
             i++;

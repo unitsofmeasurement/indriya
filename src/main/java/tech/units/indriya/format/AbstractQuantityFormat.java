@@ -40,7 +40,6 @@ import javax.measure.Unit;
 import javax.measure.format.MeasurementParseException;
 import javax.measure.format.QuantityFormat;
 import tech.units.indriya.ComparableQuantity;
-import tech.units.indriya.quantity.CompoundQuantity;
 import tech.units.indriya.quantity.MixedQuantity;
 import tech.uom.lib.common.function.Parser;
 
@@ -51,7 +50,7 @@ import tech.uom.lib.common.function.Parser;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 2.0, $Date: 2020-02-23 $
+ * @version 2.1, $Date: 2023-06-05 $
  * @since 1.0
  * 
  */
@@ -125,8 +124,6 @@ public abstract class AbstractQuantityFormat extends Format implements QuantityF
     public final StringBuffer format(Object obj, final StringBuffer toAppendTo, FieldPosition pos) {
     	if (obj instanceof MixedQuantity<?>) {
     		return formatMixed((MixedQuantity<?>) obj, toAppendTo);
-    	} else if(obj instanceof CompoundQuantity<?>) { // TODO remove with next release
-            return formatCompound((CompoundQuantity<?>) obj, toAppendTo);
         } else {
             if (!(obj instanceof ComparableQuantity<?>))
                 throw new IllegalArgumentException("obj: Not an instance of Quantity");
@@ -190,17 +187,4 @@ public abstract class AbstractQuantityFormat extends Format implements QuantityF
      * @return the specified <code>StringBuilder</code>.
      */
     protected abstract StringBuffer formatMixed(MixedQuantity<?> mixed, StringBuffer dest);
-
-    
-    /**
-     * Convenience method equivalent to {@link #format(CompoundQuantity, Appendable)} except it does not raise an IOException.
-     *
-     * @param comp
-     *            the composite quantity to format.
-     * @param dest
-     *            the appendable destination.
-     * @return the specified <code>StringBuilder</code>.
-     * @deprecated use #formatMixed
-     */
-    protected abstract StringBuffer formatCompound(CompoundQuantity<?> comp, StringBuffer dest);
 }
