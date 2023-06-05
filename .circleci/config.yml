@@ -25,7 +25,7 @@ jobs:
       # run tests!
       - run: 
           name: Running tests
-          command: mvn --batch-mode test jacoco:report coveralls:report -t ci-toolchains.xml
+          command: mvn test jacoco:report coveralls:report -t ci-toolchains.xml
       
       # check test results
       - run: 
