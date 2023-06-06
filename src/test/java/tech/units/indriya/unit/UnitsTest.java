@@ -195,6 +195,15 @@ public class UnitsTest {
 	public void testGetByDimensionTime() {
 		testGetByDimension(UnitDimension.TIME, 7);
 	}
+	
+	@Test
+	public void testNames() {
+		assertNotNull(sou.getUnits());
+		for (Unit u : sou.getUnits()) {
+			System.out.println(u);
+			assertNotNull(u.getName());
+		}
+	}
 
 	private void testGetByDimension(final Dimension dim, int expectedSize) {
 		Set<? extends Unit<?>> units = sou.getUnits(dim);

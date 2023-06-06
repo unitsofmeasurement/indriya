@@ -73,12 +73,11 @@ import tech.units.indriya.function.MultiplyConverter;
 import tech.units.indriya.function.RationalNumber;
 
 /**
- * <p>
  * This class defines common units.
  *
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author <a href="mailto:thodoris.bais@gmail.com">Thodoris Bais</a>
- * @version 2.4, June 7, 2022
+ * @version 2.5 June 6, 2023
  * @since 1.0
  * @see <a href="https://usma.org/detailed-list-of-metric-system-units-symbols-and-prefixes">USMA: Detailed list of metric system units, symbols, and prefixes</a>
  */
@@ -260,7 +259,7 @@ public class Units extends AbstractSystemOfUnits {
 	 * The SI derived unit for mass quantities (standard name <code>g</code>). The
 	 * base unit for mass quantity is {@link #KILOGRAM}.
 	 */
-	public static final Unit<Mass> GRAM = addUnit(KILOGRAM.divide(1000));
+	public static final Unit<Mass> GRAM = addUnit(KILOGRAM.divide(1000), "Gram");
 
 	/**
 	 * The SI unit for plane angle quantities (standard name <code>rad</code>). One
@@ -458,23 +457,27 @@ public class Units extends AbstractSystemOfUnits {
 	/**
 	 * The SI unit for speed quantities (standard name <code>m/s</code>).
 	 */
-	public static final Unit<Speed> METRE_PER_SECOND = addUnit(new ProductUnit<>(METRE.divide(SECOND)), Speed.class);
+	public static final Unit<Speed> METRE_PER_SECOND = addUnit(new ProductUnit<>(METRE.divide(SECOND)), "Metre per Second", Speed.class);
 
 	/**
-	 * The SI unit for acceleration quantities (standard name <code>m/s2</code> ).
+	 * The SI unit for acceleration quantities (standard name <code>m/s2</code>).
+	 * 
+	 * @see <a href="https://en.wikipedia.org/wiki/Metre_per_second_squared"> Wikipedia: Metre per second squared</a>
 	 */
 	public static final Unit<Acceleration> METRE_PER_SQUARE_SECOND = addUnit(
-			new ProductUnit<>(METRE_PER_SECOND.divide(SECOND)), Acceleration.class);
+			new ProductUnit<>(METRE_PER_SECOND.divide(SECOND)), "Metre per square second", Acceleration.class);
 
 	/**
 	 * The SI unit for area quantities (standard name <code>m2</code>).
+	 * 
+	 * @see <a href="https://en.wikipedia.org/wiki/Square_metre"> Wikipedia: Square metre</a> 
 	 */
-	public static final Unit<Area> SQUARE_METRE = addUnit(new ProductUnit<>(METRE.multiply(METRE)), Area.class);
+	public static final Unit<Area> SQUARE_METRE = addUnit(new ProductUnit<>(METRE.multiply(METRE)), "Square metre", Area.class);
 
 	/**
 	 * The SI unit for volume quantities (standard name <code>m3</code>).
 	 */
-	public static final Unit<Volume> CUBIC_METRE = addUnit(new ProductUnit<Volume>(SQUARE_METRE.multiply(METRE)),
+	public static final Unit<Volume> CUBIC_METRE = addUnit(new ProductUnit<Volume>(SQUARE_METRE.multiply(METRE)), "Cubic metre",
 			Volume.class);
 
 	/**
@@ -483,7 +486,7 @@ public class Units extends AbstractSystemOfUnits {
 	 * 
 	 * @see <a href="https://en.wikipedia.org/wiki/Kilometres_per_hour"> Wikipedia: Kilometres per hour</a>
 	 */
-	public static final Unit<Speed> KILOMETRE_PER_HOUR = addUnit(METRE_PER_SECOND.multiply(RationalNumber.of(5, 18)))
+	public static final Unit<Speed> KILOMETRE_PER_HOUR = addUnit(METRE_PER_SECOND.multiply(RationalNumber.of(5, 18)), "Kilometre per hour")
 			.asType(Speed.class);
 
 	/////////////////////////////////////////////////////////////////
@@ -557,9 +560,29 @@ public class Units extends AbstractSystemOfUnits {
 	static {
 		// have to add AbstractUnit.ONE as Dimensionless, too
 		addUnit(ONE);
+		Helper.addUnit(INSTANCE.units, ONE, "One");
 		INSTANCE.quantityToUnit.put(Dimensionless.class, ONE);
 	}
 
+    /**
+     * Adds a new unit not mapped to any specified quantity type and puts a text
+     * as symbol or label.
+     *
+     * @param unit
+     *            the unit being added.
+     * @param name
+     *            the string to use as name
+     * @return <code>unit</code>.
+     */
+    private static <U extends Unit<?>> U addUnit(U unit, String name) {
+    	if (name != null && unit instanceof AbstractUnit) {
+    	    return Helper.addUnit(INSTANCE.units, unit, name);
+    	} else {
+    	    INSTANCE.units.add(unit);
+    	}
+    	return unit;
+    }
+	
 	/**
 	 * Adds a new unit not mapped to any specified quantity type.
 	 *
@@ -570,7 +593,21 @@ public class Units extends AbstractSystemOfUnits {
 		INSTANCE.units.add(unit);
 		return unit;
 	}
-
+    
+	/**
+	 * Adds a new unit and maps it to the specified quantity type.
+	 *
+	 * @param unit the unit being added.
+	 * @param name the name of the unit being added.
+	 * @param type the quantity type.
+	 * @return <code>unit</code>.
+	 */
+	private static <U extends AbstractUnit<?>> U addUnit(U unit, String name, Class<? extends Quantity<?>> type) {
+		Helper.addUnit(INSTANCE.units, unit, name);
+		INSTANCE.quantityToUnit.put(type, unit);
+		return unit;
+	}
+	
 	/**
 	 * Adds a new unit and maps it to the specified quantity type.
 	 *

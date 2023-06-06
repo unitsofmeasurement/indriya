@@ -46,7 +46,6 @@ import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.function.AbstractConverter;
 import tech.units.indriya.quantity.Quantities;
-import tech.units.indriya.unit.TransformedUnit;
 import static org.junit.jupiter.api.Assertions.*;
 import static tech.units.indriya.unit.Units.METRE;
 import static tech.units.indriya.unit.Units.GRAM;
