@@ -38,6 +38,8 @@ import static javax.measure.MetricPrefix.MICRO;
 import static javax.measure.MetricPrefix.MILLI;
 import static javax.measure.MetricPrefix.NANO;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static tech.units.indriya.format.SimpleUnitFormat.Flavor.ASCII;
 import static tech.units.indriya.unit.Units.CANDELA;
@@ -356,5 +358,85 @@ public class SimpleUnitFormatTest {
 		assertEquals("cd", CANDELA.toString());
 		// Only the new format got the label
 		assertEquals("kd", newFormat.format(CANDELA));
-	}	
+	}
+	
+	@Test
+	public void testAddAndRemoveLabel() {		
+		logger.log(LOG_LEVEL, "We retrieve a new format instance");
+		final SimpleUnitFormat newFormat = SimpleUnitFormat.getNewInstance();
+		newFormat.label(CANDELA, "kd");
+		newFormat.alias(CANDELA, "can");
+		// Other instances are unaffected
+		assertEquals("cd", format.format(CANDELA));		
+		assertEquals("cd", CANDELA.toString());
+		// Only the new format got the label
+		assertEquals("kd", newFormat.format(CANDELA));
+		assertNotNull(newFormat.parse("kd"));
+		assertNotNull(newFormat.parse("can"));
+				
+		logger.log(LOG_LEVEL, "Now we remove the label");
+		newFormat.removeLabel(CANDELA);
+		assertEquals(CANDELA.toString(), newFormat.format(CANDELA));
+		assertThrows(MeasurementParseException.class, () -> {
+			assertNull(newFormat.parse("kd"));
+		});
+		assertThrows(MeasurementParseException.class, () -> {
+			assertNull(newFormat.parse("can"));
+		});
+	}
+	
+	@Test
+	public void testRepeatingLabels() {
+		logger.log(LOG_LEVEL, "We set a label");
+		format.label(CANDELA, "kd");		
+		assertEquals("kd", format.format(CANDELA));		
+		assertEquals("kd", CANDELA.toString());
+		assertEquals("kd", format.format(CANDELA));
+		assertNotNull(format.parse("kd"));
+				
+		logger.log(LOG_LEVEL, "Now we set another label");
+		format.label(CANDELA, "can");
+		assertEquals("can", format.format(CANDELA));		
+		assertEquals("can", CANDELA.toString());
+		assertNotNull(format.parse("can"));
+		// The old one still remains like an alias
+		assertNotNull(format.parse("kd"));
+	}
+	
+	@Test
+	public void testAddAndRemoveAlias() {		
+		logger.log(LOG_LEVEL, "We retrieve a new format instance");
+		final SimpleUnitFormat newFormat = SimpleUnitFormat.getNewInstance();
+		newFormat.alias(CANDELA, "can");
+		newFormat.alias(CANDELA, "cn");
+		assertNotNull(newFormat.parse("can"));
+		assertNotNull(newFormat.parse("cn"));
+		
+		logger.log(LOG_LEVEL, "Now we remove one alias");
+		newFormat.removeAlias(CANDELA, "can");
+		assertThrows(MeasurementParseException.class, () -> {
+			assertNull(newFormat.parse("can"));
+		});
+		assertNotNull(newFormat.parse("cn"));		
+	}
+	
+	@Test
+	public void testAddAndRemoveAliases() {		
+		logger.log(LOG_LEVEL, "We retrieve a new format instance");
+		final SimpleUnitFormat newFormat = SimpleUnitFormat.getNewInstance();
+		newFormat.alias(CANDELA, "can");
+		newFormat.alias(CANDELA, "cn");
+		assertNotNull(newFormat.parse("can"));
+		assertNotNull(newFormat.parse("cn"));
+		
+		logger.log(LOG_LEVEL, "Now we remove the aliases");
+		newFormat.removeAliases(CANDELA);
+		assertThrows(MeasurementParseException.class, () -> {
+			assertNull(newFormat.parse("can"));
+		});
+		newFormat.removeAliases(CANDELA);
+		assertThrows(MeasurementParseException.class, () -> {
+			assertNull(newFormat.parse("cn"));
+		});
+	}
 }

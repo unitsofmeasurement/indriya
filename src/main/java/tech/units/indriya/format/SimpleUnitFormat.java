@@ -68,7 +68,7 @@ import static tech.units.indriya.format.FormatConstants.MIDDLE_DOT;
  * </p>
  *
  * <p>
- * For all SI units, the <b>20 SI prefixes</b> used to form decimal multiples and sub-multiples are recognized. As well as the <b>8 binary prefixes</b>.<br>
+ * For all SI units, the <b>24 SI prefixes</b> used to form decimal multiples and sub-multiples are recognized. As well as the <b>8 binary prefixes</b>.<br>
  * {@link Units} are directly recognized. For example:<br>
  * <code>
  *        UnitFormat format = SimpleUnitFormat.getInstance();<br>
@@ -81,7 +81,7 @@ import static tech.units.indriya.format.FormatConstants.MIDDLE_DOT;
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author Eric Russell
  * @author Andi Huber
- * @version 2.9, Apr. 17, 2023
+ * @version 2.10, June 6, 2023
  * @since 1.0
  */
 public abstract class SimpleUnitFormat extends AbstractUnitFormat {
@@ -143,6 +143,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
      *
      * @return a new instance of the default unit format.
      * @see #getInstance()
+     * @since 2.7
      */
     public static SimpleUnitFormat getNewInstance() {
         return getNewInstance(Flavor.Default);
@@ -154,6 +155,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
      *
      * @return a new instance for the given {@link Flavor}.
      * @see #getInstance(Flavor)
+     * @since 2.7 
      */
     public static SimpleUnitFormat getNewInstance(Flavor flavor) {
         switch (flavor) {
@@ -211,10 +213,12 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
     public abstract Unit<? extends Quantity> parseSingleUnit(CharSequence csq, ParsePosition pos) throws MeasurementParseException;
 
     /**
-     * Attaches a system-wide label to the specified unit. For example: <code> SimpleUnitFormat.getInstance().label(DAY.multiply(365), "year");
-     * SimpleUnitFormat.getInstance().label(METER.multiply(0.3048), "ft"); </code> If the specified label is already associated to an unit the previous
+     * Attaches a system-wide label to the specified unit. For example: <code>SimpleUnitFormat.getInstance().label(DAY.multiply(365), "year");
+     * SimpleUnitFormat.getInstance().label(METER.multiply(0.3048), "ft");</code> If the specified label is already associated to an unit the previous
      * association is discarded or ignored.
-     *
+     * <p>
+     * If you set a different label without calling {@link #removeLabel(Unit)}), {@link #removeAlias(Unit, String)}), using the old label, or {@link #removeAliases(Unit)}) on the given unit, the old label is overwritten for <b>labeling/<b> purposes, but it remains like an <b>alias</b> (it still works for parsing). 
+     * </p>
      * @param unit
      *          the unit being labeled.
      * @param label
@@ -225,10 +229,10 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
     public abstract void label(Unit<?> unit, String label);
 
 	/**
-	 * Removes the label (added by {@link #label(Unit, String)}) and all system-wide aliases (added by {@link #alias(Unit, String)}) for this unit.
+	 * Removes the system-wide label (added by {@link #label(Unit, String)}) and all system-wide aliases (added by {@link #alias(Unit, String)}) for this unit.
 	 *
 	 * @param unit
-	 *          the unit for which aliases shall be removed.
+	 *          the unit for which label shall be removed.
 	 */
 	public abstract void removeLabel(Unit<?> unit);
 
@@ -249,12 +253,23 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
     public abstract void alias(Unit<?> unit, String alias);
 
 	/**
+	 * Removes the given system-wide alias (added by {@link #alias(Unit, String)}) for this unit and keeps the label (added by {@link #label(Unit, String)})
+	 *
+	 * @param unit
+	 *          the unit for which alias shall be removed.
+	 *          
+	 * @param alias
+	 *          the alias to be removed.          
+	 */
+	public abstract void removeAlias(Unit<?> unit, String alias);
+    
+	/**
 	 * Removes all system-wide aliases (added by {@link #alias(Unit, String)}) for this unit and keeps the label (added by {@link #label(Unit, String)})
 	 *
 	 * @param unit
 	 *          the unit for which aliases shall be removed.
 	 */
-	public abstract void removeAlias(Unit<?> unit);
+	public abstract void removeAliases(Unit<?> unit);
 
     /**
      * Indicates if the specified name can be used as unit identifier.
@@ -331,9 +346,9 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
 
     /**
      * This class represents the default (Unicode) format.
-     * @deprecated internal class, that will be made private/package-local soon, please extend either SimpleUnitFormat or AbstractUnitFormat
+     * internal class, please extend either SimpleUnitFormat or AbstractUnitFormat
      */
-    protected static class DefaultFormat extends SimpleUnitFormat {
+    static class DefaultFormat extends SimpleUnitFormat {
 
         // Initializes the standard unit databases.
 
@@ -499,10 +514,15 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
             }
         }
 
+        @Override
+		public void removeAlias(Unit<?> unit, String alias) {
+			nameToUnit.remove(alias);
+		}
+        
 		@Override
-		public void removeAlias(Unit<?> unit) {
-			String label = unitToName.get(unit);
-			nameToUnit.entrySet().removeIf(e -> e.getValue().equals(unit) && !e.getKey().equals(label));
+		public void removeAliases(Unit<?> unit) {
+			final String alias = unitToName.get(unit);
+			nameToUnit.entrySet().removeIf(e -> e.getValue().equals(unit) && !e.getKey().equals(alias));
 		}
 
 		@Override
@@ -987,7 +1007,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
     /**
      * This class represents the ASCII format.
      */
-    final static class ASCIIFormat extends DefaultFormat {
+    private static final class ASCIIFormat extends DefaultFormat {
 
         private ASCIIFormat() {
             super();
@@ -1152,6 +1172,5 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
         }
         return isASCII;
     }
-
 
 }
