@@ -50,7 +50,7 @@ import tech.units.indriya.spi.NumberSystem;
  * 
  * @author Andi Huber
  * @author Werner Keil
- * @version 1.5, May 21, 2022
+ * @version 1.6, June 7, 2023
  * @since 2.0
  */
 public final class Calculus {
@@ -76,10 +76,8 @@ public final class Calculus {
      */
     public static List<NumberSystem> getAvailableNumberSystems() {
         List<NumberSystem> systems = new ArrayList<>();
-        ServiceLoader<NumberSystem> loader = ServiceLoader.load(NumberSystem.class);
-        loader.forEach(NumberSystem -> {
-            systems.add(NumberSystem);
-        });
+        ServiceLoader<NumberSystem> loader = ServiceLoader.load(NumberSystem.class, NumberSystem.class.getClassLoader());
+        loader.forEach(systems::add);
         return systems;
     }
 
@@ -108,12 +106,12 @@ public final class Calculus {
      * Returns the given {@link NumberSystem} used for Number arithmetic by (class) name.
      */
     public static NumberSystem getNumberSystem(String name) {
-        final ServiceLoader<NumberSystem> loader = ServiceLoader.load(NumberSystem.class);
+    	final ServiceLoader<NumberSystem> loader = ServiceLoader.load(NumberSystem.class, NumberSystem.class.getClassLoader());
         final Iterator<NumberSystem> it = loader.iterator();
         while (it.hasNext()) {
-            NumberSystem provider = it.next();
-            if (name.equals(provider.getClass().getName())) {
-                return provider;
+            NumberSystem system = it.next();
+            if (name.equals(system.getClass().getName())) {
+                return system;
             }
         }
         throw new IllegalArgumentException("NumberSystem " + name + " not found");
