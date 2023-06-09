@@ -92,7 +92,7 @@ public class Units extends AbstractSystemOfUnits {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see SystemOfUnits#getName()
 	 */
 	@Override
@@ -208,6 +208,18 @@ public class Units extends AbstractSystemOfUnits {
      * </dl>
 	 */
 	public static final Unit<Length> METRE = addUnit(new BaseUnit<>("m", "Metre", UnitDimension.LENGTH), Length.class);
+
+	public static final Unit<Length> KILOMETRE = addUnit(
+			new TransformedUnit<>("km", "Kilometre", METRE, METRE, MultiplyConverter.of(1000)));
+
+	public static final Unit<Length> FOOT = addUnit(
+			new TransformedUnit<>("ft", "Foot", METRE, METRE, MultiplyConverter.of(0.3048)));
+
+	public static final Unit<Length> MILE = addUnit(
+			new TransformedUnit<>("mi", "Mile", KILOMETRE, METRE, MultiplyConverter.of(1.609344)));
+
+	public static final Unit<Length> NAUTICAL_MILE = addUnit(
+			new TransformedUnit<>("nm", "Nautical Mile", KILOMETRE, METRE, MultiplyConverter.of(1.852)));
 
 	/**
 	 * The mole, symbol mol, is the SI unit of amount of substance. One mole
@@ -399,7 +411,7 @@ public class Units extends AbstractSystemOfUnits {
 	 * of pressure) is 0 °C, while the boiling point is 100 °C.
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static final Unit<Temperature> CELSIUS = AbstractSystemOfUnits.Helper.addUnit(INSTANCE.units, 
+	public static final Unit<Temperature> CELSIUS = AbstractSystemOfUnits.Helper.addUnit(INSTANCE.units,
 			new TransformedUnit(KELVIN, new AddConverter(273.15)), "Celsius", "\u2103");
 	// Not mapping to Temperature since temperature is mapped to Kelvin.
 
@@ -459,9 +471,18 @@ public class Units extends AbstractSystemOfUnits {
 	 */
 	public static final Unit<Speed> METRE_PER_SECOND = addUnit(new ProductUnit<>(METRE.divide(SECOND)), "Metre per Second", Speed.class);
 
+	public static final Unit<Speed> KNOT = addUnit(
+			new TransformedUnit<>("kt", "Knot", METRE_PER_SECOND, METRE_PER_SECOND, MultiplyConverter.of(0.5144)));
+
+	public static final Unit<Speed> FOOT_PER_SECOND = addUnit(
+			new TransformedUnit<>("ft/s", "Foot per Second", METRE_PER_SECOND, METRE_PER_SECOND, MultiplyConverter.of(0.3048)));
+
+	public static final Unit<Speed> MILE_PER_HOUR = addUnit(
+			new TransformedUnit<>("mph", "Mile per Hour", METRE_PER_SECOND, METRE_PER_SECOND, MultiplyConverter.of(0.447)));
+
 	/**
 	 * The SI unit for acceleration quantities (standard name <code>m/s2</code>).
-	 * 
+	 *
 	 * @see <a href="https://en.wikipedia.org/wiki/Metre_per_second_squared"> Wikipedia: Metre per second squared</a>
 	 */
 	public static final Unit<Acceleration> METRE_PER_SQUARE_SECOND = addUnit(
@@ -469,8 +490,8 @@ public class Units extends AbstractSystemOfUnits {
 
 	/**
 	 * The SI unit for area quantities (standard name <code>m2</code>).
-	 * 
-	 * @see <a href="https://en.wikipedia.org/wiki/Square_metre"> Wikipedia: Square metre</a> 
+	 *
+	 * @see <a href="https://en.wikipedia.org/wiki/Square_metre"> Wikipedia: Square metre</a>
 	 */
 	public static final Unit<Area> SQUARE_METRE = addUnit(new ProductUnit<>(METRE.multiply(METRE)), "Square metre", Area.class);
 
@@ -481,9 +502,9 @@ public class Units extends AbstractSystemOfUnits {
 			Volume.class);
 
 	/**
-	 * A unit of speed expressing the number of international kilometres per {@link #HOUR hour} 
+	 * A unit of speed expressing the number of international kilometres per {@link #HOUR hour}
 	 * (abbreviation <code>km/h</code>).
-	 * 
+	 *
 	 * @see <a href="https://en.wikipedia.org/wiki/Kilometres_per_hour"> Wikipedia: Kilometres per hour</a>
 	 */
 	public static final Unit<Speed> KILOMETRE_PER_HOUR = addUnit(METRE_PER_SECOND.multiply(RationalNumber.of(5, 18)), "Kilometre per hour")
@@ -524,7 +545,7 @@ public class Units extends AbstractSystemOfUnits {
 	/**
 	 * A unit of duration equal to 7 {@link #DAY} (standard name <code>wk</code>).
 	 */
-	public static final Unit<Time> WEEK = AbstractSystemOfUnits.Helper.addUnit(INSTANCE.units, 
+	public static final Unit<Time> WEEK = AbstractSystemOfUnits.Helper.addUnit(INSTANCE.units,
 			DAY.multiply(7), "Week", "wk");
 
 	/**
@@ -537,9 +558,9 @@ public class Units extends AbstractSystemOfUnits {
 	 * A unit of duration equal to 1/12 {@link #YEAR} (standard name <code>mo</code>).
 	 * @since 2.3
 	 */
-	public static final Unit<Time> MONTH = AbstractSystemOfUnits.Helper.addUnit(INSTANCE.units, 
+	public static final Unit<Time> MONTH = AbstractSystemOfUnits.Helper.addUnit(INSTANCE.units,
 			YEAR.divide(12), "Month", "mo");
-	
+
 	/**
 	 * A volume unit accepted for use with SI units (standard name <code>l</code>).
 	 *
@@ -582,7 +603,7 @@ public class Units extends AbstractSystemOfUnits {
     	}
     	return unit;
     }
-	
+
 	/**
 	 * Adds a new unit not mapped to any specified quantity type.
 	 *
@@ -593,7 +614,7 @@ public class Units extends AbstractSystemOfUnits {
 		INSTANCE.units.add(unit);
 		return unit;
 	}
-    
+
 	/**
 	 * Adds a new unit and maps it to the specified quantity type.
 	 *
@@ -607,7 +628,7 @@ public class Units extends AbstractSystemOfUnits {
 		INSTANCE.quantityToUnit.put(type, unit);
 		return unit;
 	}
-	
+
 	/**
 	 * Adds a new unit and maps it to the specified quantity type.
 	 *
