@@ -623,7 +623,7 @@
     <repositories>
         <repository>
             <snapshots>
-                <enabled>false</enabled>
+                <enabled>true</enabled>
             </snapshots>
             <id>ossrh-snapshot</id>
             <name>OSSRH Snapshots</name>
@@ -911,4 +911,5 @@
 			</properties>
 		</profile>
 	</profiles>
+	<version>2.2.1-SNAPSHOT</version>
 </project>
