@@ -12,9 +12,6 @@
 	<name>Units of Measurement Reference Implementation</name>
 	<description>Unit Standard (JSR 385) Reference Implementation.</description>
 	<packaging>bundle</packaging>
-<!--	
-	<version>2.2-SNAPSHOT</version>
--->	
 	<parent>
 		<groupId>tech.uom</groupId>
 		<artifactId>uom-parent</artifactId>
@@ -38,7 +35,7 @@
 	<!-- Build Settings -->
 	<!-- ======================================================= -->
 	<properties>
-		<lib.version>2.2-SNAPSHOT</lib.version>
+		<lib.version>2.2</lib.version>
 		<sourceEncoding>UTF-8</sourceEncoding>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>${sourceEncoding}</project.reporting.outputEncoding>
@@ -914,5 +911,4 @@
 			</properties>
 		</profile>
 	</profiles>
-	<version>2.2-SNAPSHOT</version>
 </project>
