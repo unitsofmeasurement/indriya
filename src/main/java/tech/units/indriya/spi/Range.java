@@ -35,7 +35,12 @@ import tech.uom.lib.common.function.MinimumSupplier;
 /**
  * A Range is a pair of <code>T</code> items that represent a range of values.
  * <p>
- * Subclasses of Range should be immutable.
+ * 
+ * <dl>
+ * <dt><span class="strong">API Note:</span></dt><dd>This interface places no restrictions on the mutability of
+ *          implementations, however immutability is strongly recommended. All
+ *          implementations should be {@link Comparable}.</dd>
+ * </dl>
  * 
  * @param <T>
  *          The value of the range.
