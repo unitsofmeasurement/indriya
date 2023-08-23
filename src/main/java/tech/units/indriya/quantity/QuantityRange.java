@@ -42,7 +42,7 @@ import tech.units.indriya.spi.Range;
  * <p>
  * Range limits MUST be presented in the same scale and have the same unit as
  * measured data values.<br>
- * Subclasses of QuantityRange should be immutable.
+ * Subclasses of QuantityRange should be <code>final</code> and immutable.
  * 
  * @param <Q> The value of the range.
  * 
