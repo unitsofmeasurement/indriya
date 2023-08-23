@@ -58,7 +58,7 @@ import java.util.ResourceBundle;
 
 /**
  * <p>
- * This class represents the local sensitive format.
+ * This class represents the locale sensitive format.
  * </p>
  *
  * <h3>Here is the grammar for CommonUnits in Extended Backus-Naur Form (EBNF)</h3>
@@ -156,7 +156,7 @@ import java.util.ResourceBundle;
  *
  * @author <a href="mailto:eric-r@northwestern.edu">Eric Russell</a>
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 1.4, March 3, 2020
+ * @version 1.5, August 23, 2023
  * @since 1.0
  */
 public class LocalUnitFormat extends AbstractUnitFormat {

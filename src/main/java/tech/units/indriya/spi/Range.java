@@ -29,8 +29,6 @@
  */
 package tech.units.indriya.spi;
 
-import java.util.Objects;
-
 import tech.uom.lib.common.function.MaximumSupplier;
 import tech.uom.lib.common.function.MinimumSupplier;
 
@@ -43,91 +41,47 @@ import tech.uom.lib.common.function.MinimumSupplier;
  *          The value of the range.
  * 
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 1.1, August 21, 2019
+ * @version 2.0, August 23, 2023
  * @since 1.0
  * @see <a href="http://en.wikipedia.org/wiki/Range">Wikipedia: Range</a>
  */
-public abstract class Range<T> implements MinimumSupplier<T>, MaximumSupplier<T> {
+public interface Range<T> extends MinimumSupplier<T>, MaximumSupplier<T> {
   // XXX do we keep null for min and max to represent infinity?
-  // Java 8 Optional was evaluated, but caused conflict with the type-safe
-  // Quantity feature of this API
-  private final T min;
-  private final T max;
-  private T res;
-
-  /**
-   * Construct an instance of Range with a min, max and res value.
-   *
-   * @param min
-   *          The minimum value for the range.
-   * @param max
-   *          The maximum value for the range.
-   * @param res
-   *          The resolution of the range.
-   */
-  protected Range(T min, T max, T res) {
-    this.min = min;
-    this.max = max;
-    this.res = res;
-  }
-
-  /**
-   * Construct an instance of Range with a min and max value.
-   *
-   * @param min
-   *          The minimum value for the range.
-   * @param max
-   *          The maximum value for the range.
-   */
-  protected Range(T min, T max) {
-    this.min = min;
-    this.max = max;
-  }
 
   /**
    * Returns the smallest value of the range. The value is the same as that given as the constructor parameter for the smallest value.
    * 
    * @return the minimum value
    */
-  public T getMinimum() {
-    return min;
-  }
+  public T getMinimum();
 
   /**
    * Returns the largest value of the range. The value is the same as that given as the constructor parameter for the largest value.
    * 
    * @return the maximum value
    */
-  public T getMaximum() {
-    return max;
-  }
+  public T getMaximum();
 
   /**
    * Returns the resolution of the range. The value is the same as that given as the constructor parameter for the largest value.
    * 
    * @return resolution of the range, the value is the same as that given as the constructor parameter for the resolution
    */
-  public T getResolution() {
-    return res;
-  }
+  public T getResolution();
 
   /**
    * Method to easily check if {@link #getMinimum()} is not {@code null}.
    * 
    * @return {@code true} if {@link #getMinimum()} is not {@code null} .
    */
-  public boolean hasMinimum() {
-    return min != null;
-  }
+  public boolean hasMinimum();
 
   /**
    * Method to easily check if {@link #getMaximum()} is not {@code null}.
    * 
    * @return {@code true} if {@link #getMaximum()} is not {@code null}.
    */
-  public boolean hasMaximum() {
-    return max != null;
-  }
+  public boolean hasMaximum();
 
   /**
    * Checks whether the given <code>T</code> is within this range
@@ -136,47 +90,4 @@ public abstract class Range<T> implements MinimumSupplier<T>, MaximumSupplier<T>
    * @return true if the value is within the range
    */
   public abstract boolean contains(T t);
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.lang.Object#equals()
-   */
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj instanceof Range<?>) {
-      @SuppressWarnings("unchecked")
-      final Range<T> other = (Range<T>) obj;
-      return Objects.equals(getMinimum(), other.getMinimum()) && Objects.equals(getMaximum(), other.getMaximum())
-          && Objects.equals(getResolution(), other.getResolution());
-    }
-    return false;
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.lang.Object#hashCode()
-   */
-  @Override
-  public int hashCode() {
-    return Objects.hash(min, max, res);
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.lang.Object#toString()
-   */
-  @Override
-  public String toString() {
-    final StringBuilder sb = new StringBuilder().append("min= ").append(getMinimum()).append(", max= ").append(getMaximum());
-    if (res != null) {
-      sb.append(", res= ").append(getResolution());
-    }
-    return sb.toString();
-  }
 }

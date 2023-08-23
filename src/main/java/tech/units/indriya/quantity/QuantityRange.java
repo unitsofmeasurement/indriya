@@ -37,127 +37,167 @@ import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.spi.Range;
 
 /**
- * A Quantity Range is a pair of {@link Quantity} items that represent a range of values.
+ * A Quantity Range is a pair of {@link Quantity} items that represent a range
+ * of values.
  * <p>
- * Range limits MUST be presented in the same scale and have the same unit as measured data values.<br>
+ * Range limits MUST be presented in the same scale and have the same unit as
+ * measured data values.<br>
  * Subclasses of QuantityRange should be immutable.
  * 
- * @param <Q>
- *          The value of the range.
+ * @param <Q> The value of the range.
  * 
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 1.0, Sep 27, 2020
- * @see <a href= "http://www.botts-inc.com/SensorML_1.0.1/schemaBrowser/SensorML_QuantityRange.html"> SensorML: QuantityRange</a>
+ * @version 2.0, Aug 23, 2023
+ * @see <a href=
+ *      "http://www.botts-inc.com/SensorML_1.0.1/schemaBrowser/SensorML_QuantityRange.html">
+ *      SensorML: QuantityRange</a>
  */
-public class QuantityRange<Q extends Quantity<Q>> extends Range<Quantity<Q>> {
+public class QuantityRange<Q extends Quantity<Q>> implements Range<Quantity<Q>> {
+	private final Quantity<Q> min;
+	private final Quantity<Q> max;
+	private Quantity<Q> res;
 
-  protected QuantityRange(Quantity<Q> min, Quantity<Q> max, Quantity<Q> resolution) {
-    super(min, max, resolution);
-  }
+	/**
+	 * Construct an instance of QuantityRange with a min, max and res value.
+	 *
+	 * @param minimum    The minimum value for the range.
+	 * @param maximum    The maximum value for the range.
+	 * @param resolution The resolution of the range.
+	 */
+	protected QuantityRange(Quantity<Q> minimum, Quantity<Q> maximum, Quantity<Q> resolution) {
+		this.min = minimum;
+		this.max = maximum;
+		this.res = resolution;
+	}
 
-  protected QuantityRange(Quantity<Q> min, Quantity<Q> max) {
-    super(min, max);
-  }
+	protected QuantityRange(Quantity<Q> min, Quantity<Q> max) {
+		this(min, max, null);
+	}
 
-  /**
-   * Returns an {@code QuantityRange} with the specified values.
-   *
-   * @param minimum
-   *          The minimum value for the quantity range.
-   * @param maximum
-   *          The maximum value for the quantity range.
-   * @param resolution
-   *          The resolution of the quantity range.
-   * @return an {@code QuantityRange} with the given values
-   */
-  @SuppressWarnings({ "rawtypes", "unchecked" })
-  public static QuantityRange of(Quantity minimum, Quantity maximum, Quantity resolution) {
-    if (!isCompatibleQuantityTriple(minimum, maximum, resolution)) {
-      throw new IllegalArgumentException();
-    }
-    return new QuantityRange(minimum, maximum, resolution);
-  }
+	/**
+	 * Returns an {@code QuantityRange} with the specified values.
+	 *
+	 * @param minimum    The minimum value for the quantity range.
+	 * @param maximum    The maximum value for the quantity range.
+	 * @param resolution The resolution of the quantity range.
+	 * @return an {@code QuantityRange} with the given values
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static QuantityRange of(Quantity minimum, Quantity maximum, Quantity resolution) {
+		if (!isCompatibleQuantityTriple(minimum, maximum, resolution)) {
+			throw new IllegalArgumentException();
+		}
+		return new QuantityRange(minimum, maximum, resolution);
+	}
 
-  /**
-   * Returns an {@code QuantityRange} with the specified values.
-   *
-   * @param minimum
-   *          The minimum value for the quantity range.
-   * @param maximum
-   *          The maximum value for the quantity range.
-   * @return a {@code QuantityRange} with the given values
-   */
-  @SuppressWarnings({ "rawtypes", "unchecked" })
-  public static QuantityRange of(Quantity minimum, Quantity maximum) {
-    if (!isCompatibleQuantityPair(minimum, maximum)) {
-      throw new IllegalArgumentException();
-    }
-    return new QuantityRange(minimum, maximum);
-  }
+	/**
+	 * Returns an {@code QuantityRange} with the specified values.
+	 *
+	 * @param minimum The minimum value for the quantity range.
+	 * @param maximum The maximum value for the quantity range.
+	 * @return a {@code QuantityRange} with the given values
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static QuantityRange of(Quantity minimum, Quantity maximum) {
+		if (!isCompatibleQuantityPair(minimum, maximum)) {
+			throw new IllegalArgumentException();
+		}
+		return new QuantityRange(minimum, maximum);
+	}
 
-  @SuppressWarnings({ "rawtypes", "unchecked" })
-  private static boolean isCompatibleQuantityPair(final Quantity q1, final Quantity q2) {
-    return q1 == null || q2 == null || q1.getUnit().isCompatible(q2.getUnit());
-  }
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private static boolean isCompatibleQuantityPair(final Quantity q1, final Quantity q2) {
+		return q1 == null || q2 == null || q1.getUnit().isCompatible(q2.getUnit());
+	}
 
-  @SuppressWarnings("rawtypes")
-  private static boolean isCompatibleQuantityTriple(final Quantity q1, final Quantity q2, final Quantity q3) {
-    return isCompatibleQuantityPair(q1, q2) && isCompatibleQuantityPair(q1, q3) && isCompatibleQuantityPair(q2, q3);
-  }
+	@SuppressWarnings("rawtypes")
+	private static boolean isCompatibleQuantityTriple(final Quantity q1, final Quantity q2, final Quantity q3) {
+		return isCompatibleQuantityPair(q1, q2) && isCompatibleQuantityPair(q1, q3) && isCompatibleQuantityPair(q2, q3);
+	}
 
-  private boolean isAboveMinimum(final Quantity<Q> q) {
-    if (q instanceof ComparableQuantity) return ((ComparableQuantity<Q>) q).isGreaterThanOrEqualTo(getMinimum());
+	private boolean isAboveMinimum(final Quantity<Q> q) {
+		if (q instanceof ComparableQuantity)
+			return ((ComparableQuantity<Q>) q).isGreaterThanOrEqualTo(getMinimum());
 
-    final Quantity<Q> qConverted = q.to(getMinimum().getUnit());
-    return qConverted.getValue().doubleValue() >= getMinimum().getValue().doubleValue();
-  }
+		final Quantity<Q> qConverted = q.to(getMinimum().getUnit());
+		return qConverted.getValue().doubleValue() >= getMinimum().getValue().doubleValue();
+	}
 
-  private boolean isBelowMaximum(final Quantity<Q> q) {
-    if (q instanceof ComparableQuantity) return ((ComparableQuantity<Q>) q).isLessThanOrEqualTo(getMaximum());
+	private boolean isBelowMaximum(final Quantity<Q> q) {
+		if (q instanceof ComparableQuantity)
+			return ((ComparableQuantity<Q>) q).isLessThanOrEqualTo(getMaximum());
 
-    final Quantity<Q> qConverted = q.to(getMaximum().getUnit());
-    return qConverted.getValue().doubleValue() <= getMaximum().getValue().doubleValue();
-  }
+		final Quantity<Q> qConverted = q.to(getMaximum().getUnit());
+		return qConverted.getValue().doubleValue() <= getMaximum().getValue().doubleValue();
+	}
 
-  private boolean fulfillsMaximumConstraint(final Quantity<Q> q) {
-    return !hasMaximum() || isBelowMaximum(q);
-  }
+	private boolean fulfillsMaximumConstraint(final Quantity<Q> q) {
+		return !hasMaximum() || isBelowMaximum(q);
+	}
 
-  private boolean fulfillsMinimumConstraint(final Quantity<Q> q) {
-    return !hasMinimum() || isAboveMinimum(q);
-  }
+	private boolean fulfillsMinimumConstraint(final Quantity<Q> q) {
+		return !hasMinimum() || isAboveMinimum(q);
+	}
 
-  @Override
-  public boolean contains(final Quantity<Q> q) {
-	Objects.requireNonNull(q);
-    return q.getValue() != null && q.getUnit() != null && fulfillsMinimumConstraint(q) && fulfillsMaximumConstraint(q);
-  }
+	@Override
+	public boolean contains(final Quantity<Q> q) {
+		Objects.requireNonNull(q);
+		return q.getValue() != null && q.getUnit() != null && fulfillsMinimumConstraint(q)
+				&& fulfillsMaximumConstraint(q);
+	}
 
-  @Override
-  public boolean equals(final Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj instanceof QuantityRange<?>) {
-      @SuppressWarnings("unchecked")
-      final QuantityRange<Q> other = (QuantityRange<Q>) obj;
-      return Objects.equals(getMinimum(), other.getMinimum()) && Objects.equals(getMaximum(), other.getMaximum())
-          && Objects.equals(getResolution(), other.getResolution());
-    }
-    return false;
-  }
+	@Override
+	public boolean equals(final Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj instanceof QuantityRange<?>) {
+			@SuppressWarnings("unchecked")
+			final QuantityRange<Q> other = (QuantityRange<Q>) obj;
+			return Objects.equals(getMinimum(), other.getMinimum()) && Objects.equals(getMaximum(), other.getMaximum())
+					&& Objects.equals(getResolution(), other.getResolution());
+		}
+		return false;
+	}
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(getMinimum(), getMaximum(), getResolution());
-  }
+	@Override
+	public int hashCode() {
+		return Objects.hash(getMinimum(), getMaximum(), getResolution());
+	}
 
-  @Override
-  public String toString() {
-    final StringBuilder sb = new StringBuilder().append("min= ").append(getMinimum()).append(", max= ").append(getMaximum());
-    if (getResolution() != null) {
-      sb.append(", res= ").append(getResolution());
-    }
-    return sb.toString();
-  }
+	@Override
+	public String toString() {
+		final StringBuilder sb = new StringBuilder().append("min= ").append(getMinimum()).append(", max= ")
+				.append(getMaximum());
+		if (getResolution() != null) {
+			sb.append(", res= ").append(getResolution());
+		}
+		return sb.toString();
+	}
+
+	@Override
+	public Quantity<Q> getMinimum() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Quantity<Q> getMaximum() {
+		return max;
+	}
+
+	@Override
+	public Quantity<Q> getResolution() {
+		return res;
+	}
+
+	@Override
+	public boolean hasMinimum() {
+		return min != null;
+	}
+
+	@Override
+	public boolean hasMaximum() {
+		return max != null;
+	}
 }
