@@ -177,8 +177,7 @@ public class QuantityRange<Q extends Quantity<Q>> implements Range<Quantity<Q>> 
 
 	@Override
 	public Quantity<Q> getMinimum() {
-		// TODO Auto-generated method stub
-		return null;
+		return min;
 	}
 
 	@Override
