@@ -460,13 +460,16 @@ public class DefaultNumberSystem implements NumberSystem {
 
         if(number instanceof BigDecimal) {
             
-            final BigDecimal decimal = ((BigDecimal) number);
-            try {
-                BigInteger integer = decimal.toBigIntegerExact(); 
+            BigDecimal decimal = ((BigDecimal) number);
+            // see https://stackoverflow.com/questions/1078953/check-if-bigdecimal-is-integer-value
+            decimal = decimal.stripTrailingZeros();
+            if (decimal.scale() <= 0) {
+                // decimal has no fractional value, so narrow to integer
+                BigInteger integer = decimal.toBigInteger();
                 return narrow(integer);
-            } catch (ArithmeticException e) {
-                return number; // cannot narrow to integer
             }
+            // decimal cannot be narrowed to integer since it has a fractional value
+            return number;
         }
         
         if(number instanceof RationalNumber) {
