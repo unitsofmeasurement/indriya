@@ -86,6 +86,11 @@ public class DefaultNumberSystem implements NumberSystem {
             this.zero = zero;
         }
 
+        /**
+         * Whether the underlying number type can only represent integers.
+         * <p>
+         * If <code>false</code> it can also represent fractional numbers.
+         */
         public boolean isIntegerOnly() {
             return integerOnly;
         }
@@ -460,7 +465,11 @@ public class DefaultNumberSystem implements NumberSystem {
 
         if(number instanceof BigDecimal) {
             
-            final BigDecimal decimal = ((BigDecimal) number);
+            final BigDecimal decimal = (BigDecimal) number;
+            //TODO once we have a fast check, activate this here
+//            if(isFractional(decimal)) {
+//                return number; // cannot narrow to integer
+//            }
             try {
                 BigInteger integer = decimal.toBigIntegerExact(); 
                 return narrow(integer);
@@ -544,10 +553,41 @@ public class DefaultNumberSystem implements NumberSystem {
         return new IllegalStateException(msg);
     }
     
+    /**
+     * Whether the {@link Number}'s type can only represent integers.
+     * <p>
+     * If <code>false</code> it can also represent fractional numbers.
+     * <p> 
+     * Note: this does not check whether given number represents an integer. 
+     */
     private boolean isIntegerOnly(Number number) {
         return NumberType.valueOf(number).isIntegerOnly();
     }
     
+    /**
+     * Whether given {@link BigDecimal} has (non-zero) fractional parts. 
+     * When <code>false</code>, given {@link BigDecimal} can be converted to a {@link BigInteger}.
+     * @implNote {@link BigDecimal#stripTrailingZeros()} creates a new {@link BigDecimal} just to do the check.
+     * @see https://stackoverflow.com/questions/1078953/check-if-bigdecimal-is-integer-value
+     */
+    static boolean isFractional(BigDecimal decimal) {
+        // check if is ZERO first
+        if(decimal.signum() == 0) {
+            return false;
+        }
+        // check if scale <= 0; if it is, then decimal definitely has no fractional parts
+        if(decimal.scale()<=0) {
+            return false;
+        }
+        // Note: this creates a new BigDecimal instance just to check for fractional parts 
+        // (perhaps we can improve that in the future)
+        return decimal.stripTrailingZeros().scale() > 0;
+    }
+    
+    /**
+     * Whether given {@link Number} represents an integer. 
+     * Optimized for when we know the {@link NumberType} in advance.  
+     */
     private boolean isInteger(NumberType numberType, Number number) {
         if(numberType.isIntegerOnly()) {
             return true; // numberType only allows integer
@@ -559,17 +599,7 @@ public class DefaultNumberSystem implements NumberSystem {
         // remaining types to check: Double, Float, BigDecimal ...
         
         if(number instanceof BigDecimal) {
-            final BigDecimal decimal = (BigDecimal)number; 
-            // see https://stackoverflow.com/questions/1078953/check-if-bigdecimal-is-integer-value
-            if(decimal.scale()<=0) {
-                return true;
-            }
-            try {
-                decimal.toBigIntegerExact();
-                return true;
-            } catch (ArithmeticException ex) {
-                return false;
-            }
+            return !isFractional((BigDecimal)number);
         }
         if(number instanceof Double || number instanceof Float) {
             double doubleValue = number.doubleValue();
@@ -631,14 +661,14 @@ public class DefaultNumberSystem implements NumberSystem {
             NumberType wideType, Number wide, 
             NumberType narrowType, Number narrow) {
         
-    	// avoid type-check or widening if one of the arguments is zero 
-    	// https://github.com/unitsofmeasurement/indriya/issues/384
-    	if (isZero(wide)) {
-    		return narrow;
-    	} else if (isZero(narrow)) {
-    		return wide;
-    	}
-    	
+        // avoid type-check or widening if one of the arguments is zero 
+        // https://github.com/unitsofmeasurement/indriya/issues/384
+        if (isZero(wide)) {
+            return narrow;
+        } else if (isZero(narrow)) {
+            return wide;
+        }
+        
         if(wideType.isIntegerOnly()) {
             // at this point we know, that narrow must also be an integer-only type
             if(wide instanceof BigInteger) {
