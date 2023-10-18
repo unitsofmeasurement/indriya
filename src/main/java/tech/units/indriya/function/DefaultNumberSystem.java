@@ -775,6 +775,12 @@ public class DefaultNumberSystem implements NumberSystem {
     private Number multiplyWideAndNarrow(
             final NumberType wideType, final Number wide,
             final NumberType narrowType, final Number narrow) {
+        
+        // shortcut if any of the operands is zero.
+        if (wideType.isZero(wide)
+                || narrowType.isZero(narrow)) {
+            return 0;
+        }
 
         if(wideType.isIntegerOnly()) {
             // at this point we know, that narrow must also be an integer-only type
