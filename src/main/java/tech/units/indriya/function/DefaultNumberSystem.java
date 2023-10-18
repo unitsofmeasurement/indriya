@@ -58,18 +58,38 @@ public class DefaultNumberSystem implements NumberSystem {
         BYTE_BOXED(true, Byte.class, (byte)1, (byte)0),
         SHORT_BOXED(true, Short.class, (short)1, (short)0),
         INTEGER_BOXED(true, Integer.class, 1, 0),
-        INTEGER_ATOMIC(true, AtomicInteger.class, 1, 0),
+        INTEGER_ATOMIC(true, AtomicInteger.class, 1, 0) {
+            @Override boolean isZero(Number number) {
+                return ((AtomicInteger) number).intValue() == 0;
+            }
+        },
         LONG_BOXED(true, Long.class, 1L, 0L),
-        LONG_ATOMIC(true, AtomicLong.class, 1L, 0),
-        BIG_INTEGER(true, BigInteger.class, BigInteger.ONE, BigInteger.ZERO),
+        LONG_ATOMIC(true, AtomicLong.class, 1L, 0) {
+            @Override boolean isZero(Number number) {
+                return ((AtomicLong) number).longValue() == 0L;
+            }
+        },
+        BIG_INTEGER(true, BigInteger.class, BigInteger.ONE, BigInteger.ZERO) {
+            @Override boolean isZero(Number number) {
+                return ((BigInteger) number).signum() == 0;
+            }
+        },
 
         // rational types
-        RATIONAL(false, RationalNumber.class, RationalNumber.ONE, RationalNumber.ZERO),
+        RATIONAL(false, RationalNumber.class, RationalNumber.ONE, RationalNumber.ZERO) {
+            @Override boolean isZero(Number number) {
+                return ((RationalNumber) number).signum() == 0;
+            }
+        },
 
         // fractional types
         FLOAT_BOXED(false, Float.class, 1.f, 0.f),
         DOUBLE_BOXED(false, Double.class, 1.d, 0.d),
-        BIG_DECIMAL(false, BigDecimal.class, BigDecimal.ONE, BigDecimal.ZERO),
+        BIG_DECIMAL(false, BigDecimal.class, BigDecimal.ONE, BigDecimal.ZERO) {
+            @Override boolean isZero(Number number) {
+                return ((BigDecimal) number).signum() == 0;
+            }
+        },
 
         ;
         private final boolean integerOnly;
@@ -138,6 +158,10 @@ public class DefaultNumberSystem implements NumberSystem {
             final String msg = String.format("Unsupported number type '%s'",
                     number.getClass().getName());
             throw new IllegalArgumentException(msg);
+        }
+
+        boolean isZero(Number number) {
+            return zero.equals(number);
         }
 
     }
@@ -503,13 +527,13 @@ public class DefaultNumberSystem implements NumberSystem {
 
         return reorder_args
                 ? -compareWideVsNarrow(type_y, y, type_x, x)
-                        : compareWideVsNarrow(type_x, x, type_y, y);
+                : compareWideVsNarrow(type_x, x, type_y, y);
     }
 
     @Override
     public boolean isZero(final Number number) {
         NumberType numberType = NumberType.valueOf(number);
-        return compare(numberType.zero, number) == 0;
+        return numberType.isZero(number);
     }
 
     @Override
@@ -606,7 +630,7 @@ public class DefaultNumberSystem implements NumberSystem {
         if(number instanceof Double || number instanceof Float) {
             double doubleValue = number.doubleValue();
             // see https://stackoverflow.com/questions/15963895/how-to-check-if-a-double-value-has-no-decimal-part
-            if (isZero(number)) return false;
+            if (numberType.isZero(number)) return false;
             return doubleValue % 1 == 0;
         }
         throw unsupportedNumberType(number);
@@ -665,9 +689,9 @@ public class DefaultNumberSystem implements NumberSystem {
 
         // avoid type-check or widening if one of the arguments is zero
         // https://github.com/unitsofmeasurement/indriya/issues/384
-        if (isZero(wide)) {
+        if (wideType.isZero(wide)) {
             return narrow;
-        } else if (isZero(narrow)) {
+        } else if (narrowType.isZero(narrow)) {
             return wide;
         }
 
@@ -835,7 +859,6 @@ public class DefaultNumberSystem implements NumberSystem {
     private int compareWideVsNarrow(
             final NumberType wideType, final Number wide,
             final NumberType narrowType, final Number narrow) {
-
 
         if(wideType.isIntegerOnly()) {
             // at this point we know, that narrow must also be an integer-only type
