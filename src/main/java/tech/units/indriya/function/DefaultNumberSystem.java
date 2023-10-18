@@ -861,10 +861,12 @@ public class DefaultNumberSystem implements NumberSystem {
 
     }
 
-
+    /**
+     * @param unusedNarrowType - currently unused (but future refactoring might use it)
+     */
     private int compareWideVsNarrow(
             final NumberType wideType, final Number wide,
-            final NumberType narrowType, final Number narrow) {
+            final NumberType unusedNarrowType, final Number narrow) {
 
         if(wideType.isIntegerOnly()) {
             // at this point we know, that narrow must also be an integer-only type
