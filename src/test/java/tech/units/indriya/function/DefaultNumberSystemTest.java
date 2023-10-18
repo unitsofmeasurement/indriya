@@ -77,37 +77,37 @@ class DefaultNumberSystemTest {
 
     @ParameterizedTest
     @MethodSource("provideZeroSamples")
-    void not_one(final Number x) {
+    void notOne(final Number x) {
         assertFalse(ns.isOne(x));
     }
 
     @ParameterizedTest
     @MethodSource("provideOneSamples")
-    void not_zero(final Number x) {
+    void notZero(final Number x) {
         assertFalse(ns.isZero(x));
     }
 
     @ParameterizedTest
     @MethodSource("provideZeroSamples")
-    void less_than_one(final Number x) {
+    void lessThanOne(final Number x) {
         assertTrue(ns.isLessThanOne(x));
     }
 
     @ParameterizedTest
     @MethodSource("provideOneSamples")
-    void not_less_than_one(final Number x) {
+    void notLessThanOne(final Number x) {
         assertFalse(ns.isLessThanOne(x));
     }
 
     @ParameterizedTest
     @MethodSource("provideOneSamples")
-    void minus_one_is_less_than_one(final Number x) {
+    void minusOneIsLessThanOne(final Number x) {
         assertTrue(ns.isLessThanOne(ns.negate(x)));
     }
 
     @ParameterizedTest
     @MethodSource("provideOneSamples")
-    void one_to_max_double_comparison(final Number one) {
+    void oneToMaxDoubleComparison(final Number one) {
 
         final ComparableQuantity<Dimensionless> maxDoubleQuantity =
                 Quantities.getQuantity(Double.MAX_VALUE, AbstractUnit.ONE);
@@ -125,7 +125,7 @@ class DefaultNumberSystemTest {
 
     @ParameterizedTest
     @MethodSource("provideOneSamples")
-    void one_to_max_int_comparison(final Number one) {
+    void oneToMaxIntComparison(final Number one) {
 
         final ComparableQuantity<Dimensionless> maxIntQuantity =
                 Quantities.getQuantity(Integer.MAX_VALUE, AbstractUnit.ONE);
@@ -143,7 +143,7 @@ class DefaultNumberSystemTest {
 
     @ParameterizedTest
     @MethodSource("provideOneSamples")
-    void one_to_max_long_comparison(final Number one) {
+    void oneToMaxLongComparison(final Number one) {
 
         final ComparableQuantity<Dimensionless> maxLongQuantity =
                 Quantities.getQuantity(Long.MAX_VALUE, AbstractUnit.ONE);
@@ -161,7 +161,7 @@ class DefaultNumberSystemTest {
 
     @ParameterizedTest
     @MethodSource("provideOneSamples")
-    void one_to_large_int_comparison(final Number one) {
+    void oneToLargeIntComparison(final Number one) {
 
         final ComparableQuantity<Dimensionless> largeIntQuantity =
                 Quantities.getQuantity(
@@ -183,7 +183,7 @@ class DefaultNumberSystemTest {
 
     @ParameterizedTest
     @MethodSource("provideOneSamples")
-    void one_to_large_decimal_comparison(final Number one) {
+    void oneToLargeDecimalComparison(final Number one) {
 
         final ComparableQuantity<Dimensionless> largeDecimalQuantity =
                 Quantities.getQuantity(
@@ -203,7 +203,7 @@ class DefaultNumberSystemTest {
         assertTrue(isLargeDecimalGreaterThanOne);
     }
 
-    // -- BIGINTEGER IS-FRACTIONAL TESTS
+    // -- BIG DECIMAL IS-FRACTIONAL TESTS
 
     static Stream<BigDecimal> provideNonFractionalBigDecimalSamples() {
         return Stream.of(
@@ -211,23 +211,25 @@ class DefaultNumberSystemTest {
                 BigDecimal.valueOf(0),
                 BigDecimal.valueOf(1),
                 BigDecimal.valueOf(100, 2), // 100 * 10^-2 == 1
-                BigDecimal.valueOf(1, -2) // 1 * 10^2 == 100
+                BigDecimal.valueOf(1, -2), // 1 * 10^2 == 100
+                new BigDecimal("1234.000") // trailing zeros, should not make this decimal a non integer 
                 );
     }
     @ParameterizedTest
     @MethodSource("provideNonFractionalBigDecimalSamples")
-    void big_decimal_integer_checks(final BigDecimal decimal) {
+    void bigDecimalIntegerChecks(final BigDecimal decimal) {
         assertFalse(DefaultNumberSystem.isFractional(decimal));
     }
     @ParameterizedTest
     @MethodSource("provideNonFractionalBigDecimalSamples")
-    void big_decimal_fractional_checks(final BigDecimal decimal) {
+    void bigDecimalFractionalChecks(final BigDecimal decimal) {
         final BigDecimal fractionalPart = BigDecimal.valueOf(1, 2); // 1 * 10^-2 == 0.01
         assertTrue(DefaultNumberSystem.isFractional(decimal.add(fractionalPart)));
     }
 
     // -- BIGINTEGER IS-FRACTIONAL SPEED TESTS
 
+    /** For performance comparison, the algorithm in use till version 2.1.4 */
     static boolean isFractionalLegacy(final BigDecimal decimal) {
         try {
             decimal.toBigIntegerExact();
@@ -246,7 +248,7 @@ class DefaultNumberSystemTest {
     }
     @ParameterizedTest
     @MethodSource("namedPredicates")
-    void big_decimal_fractional_check_speed(final Predicate<BigDecimal> isFractional) {
+    void bigDecimalFractionalCheckSpeed(final Predicate<BigDecimal> isFractional) {
         // calculate some arbitrary samples
         final BigDecimal fractionalSample = new BigDecimal(
                 "3.141592653589793238462643383279502884197169399375105820974944592307816406286"
