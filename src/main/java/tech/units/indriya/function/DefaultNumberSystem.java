@@ -160,6 +160,12 @@ public class DefaultNumberSystem implements NumberSystem {
             throw new IllegalArgumentException(msg);
         }
 
+        /**
+         * Whether given {@link Number} is ZERO.
+         * @param number - must be of type {@link #getType()}
+         * @apiNote For class internal use only, 
+         *      such that we have control over the number's type that gets past in.
+         */
         boolean isZero(Number number) {
             return zero.equals(number);
         }
