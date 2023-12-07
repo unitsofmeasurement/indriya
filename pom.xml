@@ -631,11 +631,11 @@
 	</ciManagement>
 
 	<profiles>
-		<!-- enable java9 compilation -->
+		<!-- enable java11 compilation -->
 		<profile>
-			<id>compile-java9</id>
+			<id>compile-java11</id>
 			<activation>
-				<jdk>[9,)</jdk>
+				<jdk>[11,)</jdk>
 			</activation>
 			<build>
 				<plugins>
@@ -644,58 +644,14 @@
 						<artifactId>maven-compiler-plugin</artifactId>
 						<executions>
 							<execution>
-								<id>java9</id>
+								<id>java11</id>
 								<phase>compile</phase>
 							</execution>
 						</executions>
 					</plugin>
 				</plugins>
 			</build>
-		</profile>
-
-		<!-- enable java12 compilation -->
-		<profile>
-			<id>compile-java12</id>
-			<activation>
-				<jdk>[12,)</jdk>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-compiler-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>java12</id>
-								<phase>compile</phase>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-
-		<!-- enable java14 compilation -->
-		<profile>
-			<id>compile-java14</id>
-			<activation>
-				<jdk>[14,)</jdk>
-			</activation>
-			<build>
-				<plugins>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-compiler-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>java14</id>
-								<phase>compile</phase>
-							</execution>
-						</executions>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
+		</profile>	
 		
 		<!-- enable java17 compilation -->
 		<profile>

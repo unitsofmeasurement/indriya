@@ -37,7 +37,7 @@ import tech.units.indriya.ComparableQuantity;
 import tech.units.indriya.spi.Range;
 
 /**
- * A Quantity Range is a pair of {@link Quantity} items that represent a range
+ * A Quantity Range is a pair of {@link Quantity} items that represent a {@link Range}
  * of values.
  * <p>
  * Range limits MUST be presented in the same scale and have the same unit as
@@ -47,7 +47,7 @@ import tech.units.indriya.spi.Range;
  * @param <Q> The value of the range.
  * 
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 2.0, Aug 23, 2023
+ * @version 2.1, Dec 7, 2023
  * @see <a href=
  *      "http://www.botts-inc.com/SensorML_1.0.1/schemaBrowser/SensorML_QuantityRange.html">
  *      SensorML: QuantityRange</a>
