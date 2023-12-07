@@ -10,7 +10,7 @@
 		<url>http://unitsofmeasurement.github.io</url>
 	</organization>
 	<name>Units of Measurement Reference Implementation</name>
-	<description>Unit Standard (JSR 385) Reference Implementation.</description>
+	<description>Unit Standard (JSR 385) Reference Implementation</description>
 	<packaging>bundle</packaging>
 	<parent>
 		<groupId>tech.uom</groupId>
@@ -285,56 +285,38 @@
 					<target>${base.java.version}</target>
 				</configuration>
 				<executions>
-					<!-- for Java 9 -->
+					<!-- for Java 11 -->
 					<execution>
-						<id>java9</id>
+						<id>java11</id>
 						<phase/>
 						<goals>
 							<goal>compile</goal>
 						</goals>
 						<configuration>
-							<release>9</release>
+							<release>11</release>
 							<jdkToolchain>
-								<version>9</version>
+								<version>11</version>
 							</jdkToolchain>
 							<compileSourceRoots>
-								<compileSourceRoot>${project.basedir}/src/main/jdk9</compileSourceRoot>
+								<compileSourceRoot>${project.basedir}/src/main/jdk11</compileSourceRoot>
 							</compileSourceRoots>
 							<multiReleaseOutput>true</multiReleaseOutput>
 						</configuration>
 					</execution>
-					<!-- for Java 12 -->
+					<!-- for Java 17-->
 					<execution>
-						<id>java12</id>
+						<id>java17</id>
 						<phase/>
 						<goals>
 							<goal>compile</goal>
 						</goals>
 						<configuration>
-							<release>12</release>
+							<release>17</release>
 							<jdkToolchain>
-								<version>12</version>
+								<version>17</version>
 							</jdkToolchain>
 							<compileSourceRoots>
-								<compileSourceRoot>${project.basedir}/src/main/jdk12</compileSourceRoot>
-							</compileSourceRoots>
-							<multiReleaseOutput>true</multiReleaseOutput>
-						</configuration>
-					</execution>
-					<!-- for Java 14-->
-					<execution>
-						<id>java14</id>
-						<phase/>
-						<goals>
-							<goal>compile</goal>
-						</goals>
-						<configuration>
-							<release>14</release>
-							<jdkToolchain>
-								<version>14</version>
-							</jdkToolchain>
-							<compileSourceRoots>
-								<compileSourceRoot>${project.basedir}/src/main/jdk14</compileSourceRoot>
+								<compileSourceRoot>${project.basedir}/src/main/jdk17</compileSourceRoot>
 							</compileSourceRoots>
 							<multiReleaseOutput>true</multiReleaseOutput>
 						</configuration>
