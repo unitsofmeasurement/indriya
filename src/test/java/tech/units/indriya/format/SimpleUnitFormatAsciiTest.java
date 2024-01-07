@@ -301,7 +301,7 @@ public class SimpleUnitFormatAsciiTest {
 	@Test
 	public void testFormatDay() {
 		logger.log(LOG_LEVEL, format.format(DAY)); 
-		assertEquals("day", format.format(DAY));
+		assertEquals("d", format.format(DAY));
 	}
 	
 	@Test
@@ -319,6 +319,7 @@ public class SimpleUnitFormatAsciiTest {
 	@Test
 	public void testParseDay() {
 		logger.log(LOG_LEVEL, format.format(DAY)); 
+		assertEquals(DAY, format.parse("d"));
 		assertEquals(DAY, format.parse("day"));
 	}
 	

@@ -81,7 +81,7 @@ import static tech.units.indriya.format.FormatConstants.MIDDLE_DOT;
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author Eric Russell
  * @author Andi Huber
- * @version 2.10, June 6, 2023
+ * @version 2.11, Jan 7, 2024
  * @since 1.0
  */
 public abstract class SimpleUnitFormat extends AbstractUnitFormat {
@@ -446,16 +446,21 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
                 alias(Units.CELSIUS.prefix(MetricPrefix.values()[i]), METRIC_PREFIX_SYMBOLS[i] + "°C");
             }
 
+            // Additional cases and aliases
             label(Units.PERCENT, "%");
             label(Units.METRE, "m");
             label(Units.SECOND, "s");
             label(Units.MINUTE, "min");
             label(Units.HOUR, "h");
-            label(Units.DAY, "day");
-            alias(Units.DAY, "d");
+            label(Units.DAY, "d");
+            alias(Units.DAY, "day");
             label(Units.WEEK, "week");
-            label(Units.YEAR, "year");
+            alias(Units.WEEK, "wk");
+            label(Units.YEAR, "yr");
+            alias(Units.YEAR, "y");
+            alias(Units.YEAR, "year");
             alias(Units.YEAR, "days365");
+            alias(Units.YEAR, "a");
             label(Units.MONTH, "mo");
             alias(Units.MONTH, "mon");
             alias(Units.MONTH, "month");

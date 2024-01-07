@@ -53,6 +53,7 @@ import static tech.units.indriya.unit.Units.OHM;
 import static tech.units.indriya.unit.Units.DAY;
 import static tech.units.indriya.unit.Units.WEEK;
 import static tech.units.indriya.unit.Units.MONTH;
+import static tech.units.indriya.unit.Units.YEAR;
 
 import java.math.BigInteger;
 import java.util.logging.Level;
@@ -311,13 +312,19 @@ public class SimpleUnitFormatTest {
 	@Test
 	public void testFormatDay() {
 		logger.log(LOG_LEVEL, format.format(DAY)); 
-		assertEquals("day", format.format(DAY));
+		assertEquals("d", format.format(DAY));
 	}
 	
 	@Test
 	public void testFormatWeek() {
 		logger.log(LOG_LEVEL, format.format(WEEK)); 
 		assertEquals("week", format.format(WEEK));
+	}
+	
+	@Test
+	public void testFormatYear() {
+		logger.log(LOG_LEVEL, format.format(YEAR)); 
+		assertEquals("yr", format.format(YEAR));
 	}
 	
 	@Test
@@ -328,7 +335,8 @@ public class SimpleUnitFormatTest {
 	
 	@Test
 	public void testParseDay() {
-		logger.log(LOG_LEVEL, format.format(DAY)); 
+		logger.log(LOG_LEVEL, format.format(DAY));
+		assertEquals(DAY, format.parse("d"));
 		assertEquals(DAY, format.parse("day"));
 	}
 	
@@ -336,11 +344,21 @@ public class SimpleUnitFormatTest {
 	public void testParseWeek() {
 		logger.log(LOG_LEVEL, format.format(WEEK)); 
 		assertEquals(WEEK, format.parse("week"));
+		assertEquals(WEEK, format.parse("wk"));
+	}
+	
+	@Test
+	public void testParseYear() {
+		logger.log(LOG_LEVEL, format.format(YEAR)); 
+		assertEquals(YEAR, format.parse("yr"));
+		assertEquals(YEAR, format.parse("y"));
+		assertEquals(YEAR, format.parse("year"));
 	}
 	
 	@Test
 	public void testParseMonth() {
 		logger.log(LOG_LEVEL, format.format(MONTH)); 
+		assertEquals(MONTH, format.parse("month"));
 		assertEquals(MONTH, format.parse("mo"));
 	}
 	

@@ -309,7 +309,7 @@ public class MixedQuantityFormatTest {
         final Quantity<Time>[] timeQuants = new Quantity[] { Quantities.getQuantity(3, Units.DAY),  Quantities.getQuantity(4, Units.HOUR), 
                 Quantities.getQuantity(48, Units.MINUTE)};
         final MixedQuantity<Time> t1 = MixedQuantity.of(timeQuants);
-        assertEquals("3_day 4_h 48_min", format1.format(t1));
+        assertEquals("3_d 4_h 48_min", format1.format(t1));
     }
     
     @Test

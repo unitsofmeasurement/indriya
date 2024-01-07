@@ -144,8 +144,8 @@ public class MixedQuantityTest {
 				Quantities.getQuantity(4, Units.HOUR), Quantities.getQuantity(48, Units.MINUTE) };
 		final MixedQuantity<Time> time = MixedQuantity.of(quants);
 
-		assertEquals("[day, h, min]", time.getUnits().toString());
-		assertEquals("3 day 4 h 48 min", time.toString());
+		assertEquals("[d, h, min]", time.getUnits().toString());
+		assertEquals("3 d 4 h 48 min", time.toString());
 
 		assertNumberEquals(3.2d, time.to(Units.DAY).getValue(), 1E-28);
 		assertNumberEquals(4608, time.to(Units.MINUTE).getValue(), 1E-28);

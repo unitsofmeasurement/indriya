@@ -522,19 +522,19 @@ public class Units extends AbstractSystemOfUnits {
 			new TransformedUnit<>("d", "Day", SECOND, SECOND, MultiplyConverter.ofRational(24 * 60 * 60, 1)));
 
 	/**
-	 * A unit of duration equal to 7 {@link #DAY} (standard name <code>wk</code>).
+	 * A unit of duration equal to 7 {@link #DAY} (common name <code>wk</code>).
 	 */
 	public static final Unit<Time> WEEK = AbstractSystemOfUnits.Helper.addUnit(INSTANCE.units, 
 			DAY.multiply(7), "Week", "wk");
 
 	/**
-	 * A time unit accepted for use with SI units (standard name <code>y</code> ).
+	 * A time unit accepted for use with SI units (standard name <code>yr</code> ).
 	 */
 	public static final Unit<Time> YEAR = AbstractSystemOfUnits.Helper.addUnit(INSTANCE.units,
-			Units.DAY.multiply(365.2425), "Year", "y");
+			Units.DAY.multiply(365.2425), "Year", "yr");
 
 	/**
-	 * A unit of duration equal to 1/12 {@link #YEAR} (standard name <code>mo</code>).
+	 * A unit of duration equal to 1/12 {@link #YEAR} (common name <code>mo</code>).
 	 * @since 2.3
 	 */
 	public static final Unit<Time> MONTH = AbstractSystemOfUnits.Helper.addUnit(INSTANCE.units, 

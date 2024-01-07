@@ -159,7 +159,7 @@ public class ASUnitsTimeTest {
 	
 	@Test
 	public void testByStringDay() {
-		final Unit<?> u = sou.getUnit("day");
+		final Unit<?> u = sou.getUnit("d");
 		assertNotNull(u);
 		assertEquals(DAY, u);
 	}
