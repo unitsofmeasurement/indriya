@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2023, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+ * Copyright (c) 2005-2024, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
  *
  * All rights reserved.
  *
@@ -96,7 +96,7 @@ import tech.units.indriya.quantity.Quantities;
  *<li><strong><a id="radix">Mixed Radix:</a></strong>
  *     The Mixed radix marker <code>"~"</code> is followed by a character sequence acting as mixed radix delimiter. This character sequence must not contain <code>"~"</code> itself or any numeric values.<br></li>
  * </ul> 
- * @version 2.1, June 5, 2023
+ * @version 2.2, Jan 7, 2024
  * @since 2.0
  */
 @SuppressWarnings("rawtypes")
@@ -252,6 +252,12 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
 	    return getClass().getSimpleName();
 	}
 	  
+	/**
+	 * Returns the pattern of this format.
+	 * <p>
+	 *
+	 * @return a <code>pattern</code>
+	 */	
 	public String getPattern() {
 		return pattern;
 	}

@@ -7,13 +7,13 @@ jobs:
   build:
     docker:
       # specify the version you desire here
-      - image: cimg/openjdk:17.0.3
+      - image: cimg/openjdk:17.0.9
  
     working_directory: ~/repo
 
     environment:
       # Customize the JVM maximum heap limit
-      MAVEN_OPTS: -Xms512M -Xmx2G
+      MAVEN_OPTS: -Xms512M -Xmx3G
     
     steps:
       - checkout
@@ -35,7 +35,7 @@ jobs:
   deployment:
     docker:
       # specify the version you desire here
-      - image: cimg/openjdk:17.0.3
+      - image: cimg/openjdk:17.0.9
 
     working_directory: ~/repo
 

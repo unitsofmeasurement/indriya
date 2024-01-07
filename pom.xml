@@ -49,7 +49,7 @@
 		<maven.compile.sourceLevel>${jdkVersion}</maven.compile.sourceLevel>
 		<additionalparam>-Xdoclint:none</additionalparam>
 		<spec.vendor>Jean-Marie Dautelle, Werner Keil, Otavio Santana</spec.vendor>
-		<thisYear>2023</thisYear>
+		<thisYear>2024</thisYear>
 
 		<!-- OSGi support -->
 		<osgi.version>5.0.0</osgi.version>
