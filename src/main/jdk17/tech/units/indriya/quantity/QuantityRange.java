@@ -47,7 +47,7 @@ import tech.units.indriya.spi.Range;
  * @param <Q> The value of the range.
  * 
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 3.0, Dec 7, 2023
+ * @version 3.1, Jan 7, 2024
  * @see <a href=
  *      "http://www.botts-inc.com/SensorML_1.0.1/schemaBrowser/SensorML_QuantityRange.html">
  *      SensorML: QuantityRange</a>
@@ -128,6 +128,7 @@ public record QuantityRange<Q extends Quantity<Q>>(Quantity<Q> minimum, Quantity
 	}
 
 	@Override
+	// TODO try to use record's default
 	public boolean equals(final Object obj) {
 		if (this == obj) {
 			return true;
@@ -139,11 +140,6 @@ public record QuantityRange<Q extends Quantity<Q>>(Quantity<Q> minimum, Quantity
 					&& Objects.equals(getResolution(), other.getResolution());
 		}
 		return false;
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(getMinimum(), getMaximum(), getResolution());
 	}
 
 	@Override
