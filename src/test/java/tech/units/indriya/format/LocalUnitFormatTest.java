@@ -182,13 +182,13 @@ public class LocalUnitFormatTest {
 	public void testFormatWeekDe() {
 		final UnitFormat format = LocalUnitFormat.getInstance(Locale.GERMAN);
 		String s = format.format(WEEK);
-		assertEquals("woche", s);
+		assertEquals("wo", s);
 	}
 	
 	@Test
 	public void testFormatYearDe() {
 		final UnitFormat format = LocalUnitFormat.getInstance(Locale.GERMAN);
 		String s = format.format(YEAR);
-		assertEquals("jahr", s);
+		assertEquals("jr", s);
 	}
 }

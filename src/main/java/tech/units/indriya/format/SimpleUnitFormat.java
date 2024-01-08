@@ -81,7 +81,7 @@ import static tech.units.indriya.format.FormatConstants.MIDDLE_DOT;
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author Eric Russell
  * @author Andi Huber
- * @version 2.11, Jan 7, 2024
+ * @version 2.12, Jan 8, 2024
  * @since 1.0
  */
 public abstract class SimpleUnitFormat extends AbstractUnitFormat {
@@ -454,8 +454,8 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
             label(Units.HOUR, "h");
             label(Units.DAY, "d");
             alias(Units.DAY, "day");
-            label(Units.WEEK, "week");
-            alias(Units.WEEK, "wk");
+            label(Units.WEEK, "wk");
+            alias(Units.WEEK, "week");
             label(Units.YEAR, "yr");
             alias(Units.YEAR, "y");
             alias(Units.YEAR, "year");
@@ -466,20 +466,18 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
             alias(Units.MONTH, "month");
             label(Units.KILOMETRE_PER_HOUR, "km/h");
             label(Units.CUBIC_METRE, "\u33A5");
-
-            // -- LITRE
-
-            label(Units.LITRE, "l");
-            for(Prefix prefix : MetricPrefix.values()) {
-                label(Units.LITRE.prefix(prefix), prefix.getSymbol()+"l");
-            }
+            alias(Units.SQUARE_METRE, "m2");
+            alias(Units.CUBIC_METRE, "m3");
             label(Units.NEWTON, "N");
             label(Units.RADIAN, "rad");
 
             label(AbstractUnit.ONE, "one");
 
-            alias(Units.SQUARE_METRE, "m2");
-            alias(Units.CUBIC_METRE, "m3");
+            // -- LITRE
+            label(Units.LITRE, "l");
+            for(Prefix prefix : MetricPrefix.values()) {
+                label(Units.LITRE.prefix(prefix), prefix.getSymbol()+"l");
+            } // TODO how about BinaryPrefix?
 
             return this;
         }
@@ -1177,5 +1175,4 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
         }
         return isASCII;
     }
-
 }

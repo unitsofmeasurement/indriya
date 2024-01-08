@@ -307,7 +307,7 @@ public class SimpleUnitFormatAsciiTest {
 	@Test
 	public void testFormatWeek() {
 		logger.log(LOG_LEVEL, format.format(WEEK)); 
-		assertEquals("week", format.format(WEEK));
+		assertEquals("wk", format.format(WEEK));
 	}
 	
 	@Test
@@ -326,6 +326,7 @@ public class SimpleUnitFormatAsciiTest {
 	@Test
 	public void testParseWeek() {
 		logger.log(LOG_LEVEL, format.format(WEEK)); 
+		assertEquals(WEEK, format.parse("wk"));
 		assertEquals(WEEK, format.parse("week"));
 	}
 	

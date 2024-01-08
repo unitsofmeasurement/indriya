@@ -318,7 +318,7 @@ public class SimpleUnitFormatTest {
 	@Test
 	public void testFormatWeek() {
 		logger.log(LOG_LEVEL, format.format(WEEK)); 
-		assertEquals("week", format.format(WEEK));
+		assertEquals("wk", format.format(WEEK));
 	}
 	
 	@Test

@@ -180,7 +180,7 @@ public class ASUnitsTimeTest {
 	
 	@Test
 	public void testByStringWeek() {
-		final Unit<?> u = sou.getUnit("week");
+		final Unit<?> u = sou.getUnit("wk");
 		assertNotNull(u);
 		assertEquals(WEEK, u);
 	}
@@ -202,6 +202,13 @@ public class ASUnitsTimeTest {
 	@Test
 	public void testByNameWeekIgnoreCase() {
 		final Unit<?> u = sou.getUnit("WeEk", NAME, true);
+		assertNotNull(u);
+		assertEquals(WEEK, u);
+	}
+	
+	@Test
+	public void testByNameWeekLowerCase() {
+		final Unit<?> u = sou.getUnit("week", NAME, true);
 		assertNotNull(u);
 		assertEquals(WEEK, u);
 	}
