@@ -73,13 +73,17 @@ import tech.units.indriya.function.MultiplyConverter;
 import tech.units.indriya.function.RationalNumber;
 
 /**
- * This class defines common units.
+ * This class defines common units.<br>
+ * It is a representative subset of the SI system.
  *
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @author <a href="mailto:thodoris.bais@gmail.com">Thodoris Bais</a>
- * @version 2.5 June 6, 2023
+ * @author <a href="mailto:thodoris.bais@gmail.com">Teo Bais</a>
+ * @version 2.7 Jan 7, 2024
  * @since 1.0
  * @see <a href="https://usma.org/detailed-list-of-metric-system-units-symbols-and-prefixes">USMA: Detailed list of metric system units, symbols, and prefixes</a>
+ * @see <a href=
+ *      "http://en.wikipedia.org/wiki/International_System_of_Units">Wikipedia:
+ *      International System of Units</a>
  */
 public class Units extends AbstractSystemOfUnits {
 
