@@ -50,15 +50,12 @@ import static tech.units.indriya.format.UnitStyle.*;
  * </p>
  *
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 2.1, Mar 28, 2021
+ * @version 2.2, Jan 11, 2024
  * @since 1.0
  */
 public abstract class AbstractSystemOfUnits implements SystemOfUnits, Nameable {
 	protected static final Logger logger = Logger.getLogger(AbstractSystemOfUnits.class.getName());
-	/**
-	 * The natural logarithm.
-	 **/
-	protected static final double E = 2.71828182845904523536028747135266;
+	
 	/**
 	 * Holds the units.
 	 */
