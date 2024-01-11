@@ -129,6 +129,12 @@ public class SimpleUnitFormatTest {
     }
     
     @Test
+    public void testFormatMicroNewton() {
+        final String s = format.format(MICRO(NEWTON));
+        assertEquals("μN", s);
+    }
+    
+    @Test
     public void testMilli() {
         Unit<Mass> m = MILLI(GRAM);
         String s = format.format(m);
@@ -294,6 +300,12 @@ public class SimpleUnitFormatTest {
     public void testParseMicro2() {
       Unit<?> u = format.parse("μg");
       assertEquals(MICRO(GRAM), u);
+    }
+    
+    @Test
+    public void testParseMicro3() {
+      Unit<?> u = format.parse("μN");
+      assertEquals(MICRO(NEWTON), u);
     }
     
     @Test
