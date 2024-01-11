@@ -81,7 +81,7 @@ import static tech.units.indriya.format.FormatConstants.MIDDLE_DOT;
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author Eric Russell
  * @author Andi Huber
- * @version 2.12, Jan 8, 2024
+ * @version 2.13, Jan 11, 2024
  * @since 1.0
  */
 public abstract class SimpleUnitFormat extends AbstractUnitFormat {
@@ -97,13 +97,18 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
      *
      */
     public static enum Flavor {
-        Default, ASCII
+        /** @deprecated use DEFAULT */
+         Default, 
+         /** The default format flavor */
+         DEFAULT, 
+         /** The ASCII format flavor */
+         ASCII
     }
 
     private static final String MU = "\u03bc";
 
     /**
-     * Holds the standard unit format.
+     * Holds the default format.
      */
     private static final DefaultFormat DEFAULT = new DefaultFormat().init();
 
@@ -120,7 +125,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
      * @return the default unit format.
      */
     public static SimpleUnitFormat getInstance() {
-        return getInstance(Flavor.Default);
+        return getInstance(Flavor.DEFAULT);
     }
 
     /**
@@ -146,7 +151,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
      * @since 2.7
      */
     public static SimpleUnitFormat getNewInstance() {
-        return getNewInstance(Flavor.Default);
+        return getNewInstance(Flavor.DEFAULT);
     }
 
     /**
