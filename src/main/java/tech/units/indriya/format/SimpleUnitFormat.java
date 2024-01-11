@@ -85,10 +85,7 @@ import static tech.units.indriya.format.FormatConstants.MIDDLE_DOT;
  * @since 1.0
  */
 public abstract class SimpleUnitFormat extends AbstractUnitFormat {
-    /**
-     *
-     */
-    // private static final long serialVersionUID = 4149424034841739785L;#
+    // private static final long serialVersionUID = 4149424034841739785L;
 
     /**
      * Flavor of this format
@@ -97,26 +94,25 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
      *
      */
     public static enum Flavor {
-        /** @deprecated use DEFAULT */
+        /** @deprecated use DEFAULT_INSTANCE */
          Default, 
          /** The default format flavor */
          DEFAULT, 
-         /** The ASCII format flavor */
+         /** The ASCII_INSTANCE format flavor */
          ASCII
     }
 
     private static final String MU = "\u03bc";
 
     /**
-     * Holds the default format.
+     * Holds the default format instance.
      */
-    private static final DefaultFormat DEFAULT = new DefaultFormat().init();
+    private static final DefaultFormat DEFAULT_INSTANCE = new DefaultFormat().init();
 
     /**
-     * Holds the ASCIIFormat flavor.
+     * Holds the ASCII_INSTANCE format instance.
      */
-    private static final ASCIIFormat ASCII = new ASCIIFormat().init();
-
+    private static final ASCIIFormat ASCII_INSTANCE = new ASCIIFormat().init();
 
     /**
      * Returns the globally shared unit format instance (used by {@link AbstractUnit#parse(CharSequence) AbstractUnit.parse()} and
@@ -136,9 +132,9 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
     public static SimpleUnitFormat getInstance(Flavor flavor) {
         switch (flavor) {
         case ASCII:
-            return SimpleUnitFormat.ASCII;
+            return SimpleUnitFormat.ASCII_INSTANCE;
         default:
-            return DEFAULT;
+            return DEFAULT_INSTANCE;
         }
     }
 
@@ -396,7 +392,6 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
 
 
         DefaultFormat() {
-
             // Hack, somehow µg is not found.
             symbolToUnit.put(MetricPrefix.MICRO.getSymbol() + "g", MICRO(Units.GRAM));
             symbolToUnit.put("μg", MICRO(Units.GRAM));
@@ -487,7 +482,6 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
             return this;
         }
 
-
         /**
          * Holds the name to unit mapping.
          */
@@ -500,7 +494,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
 
         @Override
         public String toString() {
-            return "SimpleUnitFormat";
+            return SimpleUnitFormat.class.getSimpleName();
         }
 
         @Override
@@ -1013,7 +1007,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
     }
 
     /**
-     * This class represents the ASCII format.
+     * This class represents the ASCII_INSTANCE format.
      */
     private static final class ASCIIFormat extends DefaultFormat {
 
@@ -1023,7 +1017,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
 
         private ASCIIFormat init() {
 
-            // ASCII
+            // ASCII_INSTANCE
             for (int i = 0; i < METRIC_UNITS.length; i++) {
                 Unit<?> si = METRIC_UNITS[i];
                 String symbol = (si instanceof BaseUnit) ? ((BaseUnit<?>) si).getSymbol() : ((AlternateUnit<?>) si).getSymbol();
@@ -1094,27 +1088,27 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
 
         @Override
         protected String nameFor(Unit<?> unit) {
-            // First search if specific ASCII name should be used.
+            // First search if specific ASCII_INSTANCE name should be used.
             String name = unitToName.get(unit);
             if (name != null)
                 return name;
             // Else returns default name.
-            return DEFAULT.nameFor(unit);
+            return DEFAULT_INSTANCE.nameFor(unit);
         }
 
         @Override
         protected Unit<?> unitFor(String name) {
-            // First search if specific ASCII name.
+            // First search if specific ASCII_INSTANCE name.
             Unit<?> unit = nameToUnit.get(name);
             if (unit != null)
                 return unit;
             // Else returns default mapping.
-            return DEFAULT.unitFor(name);
+            return DEFAULT_INSTANCE.unitFor(name);
         }
 
         @Override
         public String toString() {
-            return "SimpleUnitFormat - ASCII";
+            return "SimpleUnitFormat - ASCII_INSTANCE";
         }
 
         @Override
@@ -1168,7 +1162,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
         return "Ω".equals(s) ? "Ohm" : s;
     }
 
-    /** to check if a string only contains US-ASCII characters */
+    /** to check if a string only contains US-ASCII_INSTANCE characters */
     private static boolean isAllASCII(String input) {
         boolean isASCII = true;
         for (int i = 0; i < input.length(); i++) {
