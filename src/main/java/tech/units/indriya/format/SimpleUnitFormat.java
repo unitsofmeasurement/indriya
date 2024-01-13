@@ -1108,7 +1108,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
 
         @Override
         public String toString() {
-            return "SimpleUnitFormat - ASCII_INSTANCE";
+            return "SimpleUnitFormat - ASCII";
         }
 
         @Override
