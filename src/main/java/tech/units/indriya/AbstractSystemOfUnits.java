@@ -50,7 +50,7 @@ import static tech.units.indriya.format.UnitStyle.*;
  * </p>
  *
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 2.2, Jan 11, 2024
+ * @version 2.2, January 11, 2024
  * @since 1.0
  */
 public abstract class AbstractSystemOfUnits implements SystemOfUnits, Nameable {

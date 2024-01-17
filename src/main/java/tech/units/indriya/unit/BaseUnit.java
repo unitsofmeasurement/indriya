@@ -36,8 +36,6 @@ import javax.measure.UnitConverter;
 
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.function.AbstractConverter;
-import tech.units.indriya.unit.UnitDimension;
-
 import java.util.Map;
 import java.util.Objects;
 
@@ -57,7 +55,7 @@ import java.util.Objects;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 2.0, February 7, 2020
+ * @version 2.1, January 17, 2024
  * @since 1.0
  */
 public final class BaseUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {

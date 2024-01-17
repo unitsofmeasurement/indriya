@@ -78,7 +78,7 @@ import tech.units.indriya.function.RationalNumber;
  *
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author <a href="mailto:thodoris.bais@gmail.com">Teo Bais</a>
- * @version 2.7 Jan 7, 2024
+ * @version 3.0 January 17, 2024
  * @since 1.0
  * @see <a href="https://usma.org/detailed-list-of-metric-system-units-symbols-and-prefixes">USMA: Detailed list of metric system units, symbols, and prefixes</a>
  * @see <a href=
@@ -257,6 +257,7 @@ public class Units extends AbstractSystemOfUnits {
 
 	// //////////////////////////////
 	// SI DERIVED ALTERNATE UNITS //
+	// SI BROCHURE - TABLE 4      //
 	// //////////////////////////////
 
 	/**
@@ -269,6 +270,10 @@ public class Units extends AbstractSystemOfUnits {
 	 * The SI unit for plane angle quantities (standard name <code>rad</code>). One
 	 * radian is the angle between two radii of a circle such that the length of the
 	 * arc between them is equal to the radius.
+	 * 
+	 * <dl>
+     * <dt><span class="strong">Implementation Note:</span></dt><dd>SI Brochure - Table 4</dd>
+     * </dl>
 	 */
 	public static final Unit<Angle> RADIAN = addUnit(AlternateUnit.of(ONE, "rad", "Radian"), Angle.class);
 
@@ -277,6 +282,10 @@ public class Units extends AbstractSystemOfUnits {
 	 * steradian is the solid angle subtended at the center of a sphere by an area
 	 * on the surface of the sphere that is equal to the radius squared. The total
 	 * solid angle of a sphere is 4*Pi steradians.
+	 * 
+	 * <dl>
+     * <dt><span class="strong">Implementation Note:</span></dt><dd>SI Brochure - Table 4</dd>
+     * </dl>
 	 */
 	public static final Unit<SolidAngle> STERADIAN = addUnit(new AlternateUnit<>(ONE, "sr", "Steradian"), SolidAngle.class);
 
@@ -285,6 +294,10 @@ public class Units extends AbstractSystemOfUnits {
 	 * frequency equal to one cycle per second. After Heinrich Rudolf Hertz
 	 * (1857-1894), German physicist who was the first to produce radio waves
 	 * artificially.
+	 *
+	 * <dl>
+     * <dt><span class="strong">Implementation Note:</span></dt><dd>SI Brochure - Table 4</dd>
+     * </dl>
 	 */
 	public static final Unit<Frequency> HERTZ = addUnit(new AlternateUnit<Frequency>(ONE.divide(SECOND), "Hz", "Hertz"),
 			Frequency.class);
@@ -294,6 +307,10 @@ public class Units extends AbstractSystemOfUnits {
 	 * required to give a mass of 1 kilogram an Force of 1 metre per second per
 	 * second. It is named after the English mathematician and physicist Sir Isaac
 	 * Newton (1642-1727).
+	 * 
+	 * <dl>
+     * <dt><span class="strong">Implementation Note:</span></dt><dd>SI Brochure - Table 4</dd>
+     * </dl>
 	 */
 	public static final Unit<Force> NEWTON = addUnit(
 			new AlternateUnit<Force>(METRE.multiply(KILOGRAM).divide(SECOND.pow(2)), "N", "Newton"), Force.class);
@@ -302,6 +319,10 @@ public class Units extends AbstractSystemOfUnits {
 	 * The SI unit for pressure, stress (standard name <code>Pa</code>). One pascal
 	 * is equal to one newton per square meter. It is named after the French
 	 * philosopher and mathematician Blaise Pascal (1623-1662).
+	 * 
+	 * <dl>
+     * <dt><span class="strong">Implementation Note:</span></dt><dd>SI Brochure - Table 4</dd>
+     * </dl>
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static final Unit<Pressure> PASCAL = addUnit(new AlternateUnit(NEWTON.divide(METRE.pow(2)), "Pa", "Pascal"),
@@ -312,6 +333,10 @@ public class Units extends AbstractSystemOfUnits {
 	 * the amount of work done when an applied force of 1 newton moves through a
 	 * distance of 1 metre in the direction of the force. It is named after the
 	 * English physicist James Prescott Joule (1818-1889).
+	 * 
+	 * <dl>
+     * <dt><span class="strong">Implementation Note:</span></dt><dd>SI Brochure - Table 4</dd>
+     * </dl>
 	 */
 	public static final Unit<Energy> JOULE = addUnit(new AlternateUnit<Energy>(NEWTON.multiply(METRE), "J", "Joule"),
 			Energy.class);
@@ -320,6 +345,10 @@ public class Units extends AbstractSystemOfUnits {
 	 * The SI unit for power, radiant, flux (standard name <code>W</code>). One watt
 	 * is equal to one joule per second. It is named after the British scientist
 	 * James Watt (1736-1819).
+	 * 
+	 * <dl>
+     * <dt><span class="strong">Implementation Note:</span></dt><dd>SI Brochure - Table 4</dd>
+     * </dl> 
 	 */
 	public static final Unit<Power> WATT = addUnit(new AlternateUnit<Power>(JOULE.divide(SECOND), "W", "Watt"), Power.class);
 
@@ -328,6 +357,10 @@ public class Units extends AbstractSystemOfUnits {
 	 * <code>C</code>). One Coulomb is equal to the quantity of charge transferred
 	 * in one second by a steady current of one ampere. It is named after the French
 	 * physicist Charles Augustin de Coulomb (1736-1806).
+	 * 
+	 * <dl>
+     * <dt><span class="strong">Implementation Note:</span></dt><dd>SI Brochure - Table 4</dd>
+     * </dl>
 	 */
 	public static final Unit<ElectricCharge> COULOMB = addUnit(
 			new AlternateUnit<ElectricCharge>(SECOND.multiply(AMPERE), "C", "Coulomb"), ElectricCharge.class);
@@ -338,6 +371,10 @@ public class Units extends AbstractSystemOfUnits {
 	 * potential between two points on a conducting wire carrying a constant current
 	 * of one ampere when the power dissipated between the points is one watt. It is
 	 * named after the Italian physicist Count Alessandro Volta (1745-1827).
+	 * 	 
+	 * <dl>
+     * <dt><span class="strong">Implementation Note:</span></dt><dd>SI Brochure - Table 4</dd>
+     * </dl>
 	 */
 	public static final Unit<ElectricPotential> VOLT = addUnit(
 			new AlternateUnit<ElectricPotential>(WATT.divide(AMPERE), "V", "Volt"), ElectricPotential.class);
@@ -348,6 +385,10 @@ public class Units extends AbstractSystemOfUnits {
 	 * of 1 coulomb on each plate and a potential difference of 1 volt between the
 	 * plates. It is named after the British physicist and chemist Michael Faraday
 	 * (1791-1867).
+	 * 
+	 * <dl>
+     * <dt><span class="strong">Implementation Note:</span></dt><dd>SI Brochure - Table 4</dd>
+     * </dl>
 	 */
 	public static final Unit<ElectricCapacitance> FARAD = addUnit(
 			new AlternateUnit<ElectricCapacitance>(COULOMB.divide(VOLT), "F", "Farad"), ElectricCapacitance.class);
@@ -357,6 +398,10 @@ public class Units extends AbstractSystemOfUnits {
 	 * is equal to the resistance of a conductor in which a current of one ampere is
 	 * produced by a potential of one volt across its terminals. It is named after
 	 * the German physicist Georg Simon Ohm (1789-1854).
+	 * 
+	 * <dl>
+     * <dt><span class="strong">Implementation Note:</span></dt><dd>SI Brochure - Table 4</dd>
+     * </dl>
 	 */
 	public static final Unit<ElectricResistance> OHM = addUnit(
 			new AlternateUnit<ElectricResistance>(VOLT.divide(AMPERE), "Ω", "Ohm"), ElectricResistance.class);
@@ -450,6 +495,10 @@ public class Units extends AbstractSystemOfUnits {
 
 	/**
 	 * The SI unit for catalytic activity (standard name <code>kat</code>).
+	 * 
+	 * <dl>
+     * <dt><span class="strong">Implementation Note:</span></dt><dd>SI Brochure - Table 4</dd>
+     * </dl>
 	 */
 	public static final Unit<CatalyticActivity> KATAL = addUnit(
 			new AlternateUnit<CatalyticActivity>(MOLE.divide(SECOND), "kat", "Katal"), CatalyticActivity.class);
