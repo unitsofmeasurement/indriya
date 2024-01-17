@@ -60,6 +60,7 @@ public abstract class AbstractSystemOfUnits implements SystemOfUnits, Nameable {
 	 * Holds the units.
 	 */
 	protected final Set<Unit<?>> units = new HashSet<>();
+	
 	/**
 	 * Holds the mapping quantity to unit.
 	 */
@@ -113,11 +114,9 @@ public abstract class AbstractSystemOfUnits implements SystemOfUnits, Nameable {
     }
 
 	/**
-	 * <p>
 	 * Returns a unit with the given {@linkplain String string} representation in a
 	 * particular {@linkplain UnitStyle style} or {@code null} if none is found in
 	 * this unit system and requested style.
-	 * </p>
 	 * <p>
 	 * <b>NOTE:</b> Use {@code ignoreCase} carefully, as it will find the
 	 * <b>FIRST</b> unit for a particular string, e.g. the symbol of {@code SECOND}
