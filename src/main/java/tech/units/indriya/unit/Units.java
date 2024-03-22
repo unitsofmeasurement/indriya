@@ -674,7 +674,7 @@ public class Units extends AbstractSystemOfUnits {
 		return unit;
 	}
 
-	protected static <U extends AbstractUnit<?>> U addUnit(U transformedUnit, String name, String symbol) {
-		return AbstractSystemOfUnits.Helper.addUnit(INSTANCE.units, transformedUnit, name, symbol);
+	protected static <U extends AbstractUnit<?>> U addUnit(U unit, String name, String symbol) {
+		return Helper.addUnit(INSTANCE.units, unit, name, symbol);
 	}
 }
