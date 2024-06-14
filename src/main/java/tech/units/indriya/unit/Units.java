@@ -627,7 +627,7 @@ public class Units extends AbstractSystemOfUnits {
      *            the string to use as name
      * @return <code>unit</code>.
      */
-    private static <U extends Unit<?>> U addUnit(U unit, String name) {
+	protected static <U extends Unit<?>> U addUnit(U unit, String name) {
     	if (name != null && unit instanceof AbstractUnit) {
     	    return Helper.addUnit(INSTANCE.units, unit, name);
     	} else {
@@ -642,7 +642,7 @@ public class Units extends AbstractSystemOfUnits {
 	 * @param unit the unit being added.
 	 * @return <code>unit</code>.
 	 */
-	private static <U extends Unit<?>> U addUnit(U unit) {
+	protected static <U extends Unit<?>> U addUnit(U unit) {
 		INSTANCE.units.add(unit);
 		return unit;
 	}
@@ -655,7 +655,7 @@ public class Units extends AbstractSystemOfUnits {
 	 * @param type the quantity type.
 	 * @return <code>unit</code>.
 	 */
-	private static <U extends AbstractUnit<?>> U addUnit(U unit, String name, Class<? extends Quantity<?>> type) {
+	protected static <U extends AbstractUnit<?>> U addUnit(U unit, String name, Class<? extends Quantity<?>> type) {
 		Helper.addUnit(INSTANCE.units, unit, name);
 		INSTANCE.quantityToUnit.put(type, unit);
 		return unit;
@@ -668,9 +668,13 @@ public class Units extends AbstractSystemOfUnits {
 	 * @param type the quantity type.
 	 * @return <code>unit</code>.
 	 */
-	private static <U extends AbstractUnit<?>> U addUnit(U unit, Class<? extends Quantity<?>> type) {
+	protected static <U extends AbstractUnit<?>> U addUnit(U unit, Class<? extends Quantity<?>> type) {
 		INSTANCE.units.add(unit);
 		INSTANCE.quantityToUnit.put(type, unit);
 		return unit;
+	}
+
+	protected static <U extends AbstractUnit<?>> U addUnit(U unit, String name, String symbol) {
+		return Helper.addUnit(INSTANCE.units, unit, name, symbol);
 	}
 }
