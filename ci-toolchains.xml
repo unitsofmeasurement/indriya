@@ -44,4 +44,22 @@
           <jdkHome>JDK_home</jdkHome>
         </configuration>
       </toolchain>
+      <toolchain>
+        <type>jdk</type>
+        <provides>
+          <version>17</version>
+        </provides>
+        <configuration>
+          <jdkHome>JDK_home</jdkHome>
+        </configuration>
+      </toolchain>
+      <toolchain>
+        <type>jdk</type>
+        <provides>
+          <version>21</version>
+        </provides>
+        <configuration>
+          <jdkHome>JDK_home</jdkHome>
+        </configuration>
+      </toolchain>
     </toolchains>

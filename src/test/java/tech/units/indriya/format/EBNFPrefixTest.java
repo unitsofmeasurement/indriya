@@ -29,20 +29,8 @@
  */
 package tech.units.indriya.format;
 
-import static javax.measure.BinaryPrefix.EXBI;
-import static javax.measure.BinaryPrefix.GIBI;
-import static javax.measure.BinaryPrefix.KIBI;
-import static javax.measure.BinaryPrefix.MEBI;
-import static javax.measure.BinaryPrefix.PEBI;
-import static javax.measure.BinaryPrefix.TEBI;
-import static javax.measure.BinaryPrefix.YOBI;
-import static javax.measure.BinaryPrefix.ZEBI;
-import static javax.measure.MetricPrefix.DECI;
-import static javax.measure.MetricPrefix.KILO;
-import static javax.measure.MetricPrefix.MEGA;
-import static javax.measure.MetricPrefix.MICRO;
-import static javax.measure.MetricPrefix.MILLI;
-import static javax.measure.MetricPrefix.NANO;
+import static javax.measure.BinaryPrefix.*;
+import static javax.measure.MetricPrefix.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -71,6 +59,8 @@ public class EBNFPrefixTest {
 	static void init() {
 		format = EBNFUnitFormat.getInstance();
 	}
+	
+	// Metric Prefixes
 	
 	@Test
 	public void testKilo() {
@@ -167,12 +157,24 @@ public class EBNFPrefixTest {
 	}
 
 	@Test
+	public void testQuetta() {
+		assertEquals("Ql", format.format(QUETTA(LITRE)));	
+	}
+	
+	@Test
+	public void testRonto() {
+		assertEquals("rg", format.format(RONTO(GRAM)));	
+	}
+
+	@Test
 	public void testHashMapAccessingMap() {
 		assertThat(LITRE.toString(), is("l"));
 		assertThat(MILLI(LITRE).toString(), is("ml"));
 		assertThat(MILLI(GRAM).toString(), is("mg"));
 	}
 
+	// Binary Prefixes
+	
 	@Test
 	public void testKibi() {
 		final String s = format.format(KIBI(METRE));
