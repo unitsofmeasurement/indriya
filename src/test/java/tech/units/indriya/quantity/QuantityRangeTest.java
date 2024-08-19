@@ -256,7 +256,7 @@ public class QuantityRangeTest {
    */
   @Test
   public void toStringProducesCorrectResultWithResolution() {
-    assertEquals("min= 1 kg, max= 10 kg, res= 2 kg", oneToTenKilogramWithTwoKilogramResolution.toString());
+    assertEquals("min=1 kg, max=10 kg, res=2 kg", oneToTenKilogramWithTwoKilogramResolution.toString());
   }
 
   /**
@@ -264,7 +264,7 @@ public class QuantityRangeTest {
    */
   @Test
   public void toStringProducesCorrectResultWithoutResolution() {
-    assertEquals("min= 1 kg, max= 10 kg", oneToTenKilogram.toString());
+    assertEquals("min=1 kg, max=10 kg", oneToTenKilogram.toString());
   }
 
   /**

@@ -167,10 +167,10 @@ public class QuantityRange<Q extends Quantity<Q>> implements Range<Quantity<Q>> 
 
 	@Override
 	public String toString() {
-		final StringBuilder sb = new StringBuilder().append("min= ").append(getMinimum()).append(", max= ")
+		final StringBuilder sb = new StringBuilder().append("min=").append(getMinimum()).append(", max=")
 				.append(getMaximum());
 		if (getResolution() != null) {
-			sb.append(", res= ").append(getResolution());
+			sb.append(", res=").append(getResolution());
 		}
 		return sb.toString();
 	}
