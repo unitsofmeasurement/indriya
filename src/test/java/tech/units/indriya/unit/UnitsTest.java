@@ -199,9 +199,10 @@ public class UnitsTest {
 	@Test
 	public void testNames() {
 		assertNotNull(sou.getUnits());
+		logger.info(String.format("%s units", sou.getUnits().size()));
 		for (Unit u : sou.getUnits()) {
-			System.out.println(u);
 			assertNotNull(u.getName());
+			logger.info(u + "; " + u.getName());			
 		}
 	}
 
