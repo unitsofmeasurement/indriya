@@ -46,7 +46,7 @@ import tech.uom.lib.common.function.QuantityConverter;
  * @author otaviojava
  * @author werner
  * @param <Q> the quantity type
- * @version 2.4, October 1, 2023
+ * @version 2.5, August 20, 2024
  * @since 1.0
  */
 public interface ComparableQuantity<Q extends Quantity<Q>> extends Quantity<Q>, Comparable<Quantity<Q>>, QuantityConverter<Q>, Serializable {
@@ -107,44 +107,44 @@ public interface ComparableQuantity<Q extends Quantity<Q>> extends Quantity<Q>, 
   <T extends Quantity<T>> ComparableQuantity<T> asType(Class<T> type) throws ClassCastException;
 
   /**
-   * Compares two instances of {@link Quantity <Q>}. Conversion of unit can happen if necessary
+   * Compares two instances of {@link Quantity}. Conversion of unit can happen if necessary
    *
    * @param that
    *          the {@code quantity<Q>} to be compared with this instance.
-   * @return {@code true} if {@code that > this}.
+   * @return {@code true} if {@code this > that}.
    * @throws NullPointerException
    *           if the that is null
    */
   boolean isGreaterThan(Quantity<Q> that);
 
   /**
-   * Compares two instances of {@link Quantity <Q>}, doing the conversion of unit if necessary.
+   * Compares two instances of {@link Quantity}, doing the conversion of unit if necessary.
    *
    * @param that
    *          the {@code quantity<Q>} to be compared with this instance.
-   * @return {@code true} if {@code that >= this}.
+   * @return {@code true} if {@code this >= that}.
    * @throws NullPointerException
    *           if the that is null
    */
   boolean isGreaterThanOrEqualTo(Quantity<Q> that);
 
   /**
-   * Compares two instances of {@link Quantity <Q>}, doing the conversion of unit if necessary.
+   * Compares two instances of {@link Quantity}, doing the conversion of unit if necessary.
    *
    * @param that
    *          the {@code quantity<Q>} to be compared with this instance.
-   * @return {@code true} if {@code that < this}.
+   * @return {@code true} if {@code this < that}.
    * @throws NullPointerException
    *           if the quantity is null
    */
   boolean isLessThan(Quantity<Q> that);
 
   /**
-   * Compares two instances of {@link Quantity <Q>}, doing the conversion of unit if necessary.
+   * Compares two instances of {@link Quantity}, doing the conversion of unit if necessary.
    *
    * @param that
    *          the {@code quantity<Q>} to be compared with this instance.
-   * @return {@code true} if {@code that < this}.
+   * @return {@code true} if {@code this <= that}.
    * @throws NullPointerException
    *           if the quantity is null
    */
