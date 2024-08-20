@@ -40,7 +40,7 @@ import tech.uom.lib.common.function.QuantityConverter;
  * Quantity that adapts Comparable to the {@link javax.measure.Quantity Quantity} interface.
  * For use in other quantities, when supposed to work on Comparables.
  * 
- * It extends {@link javax.measure.Quantity Quantity} with {@linkplain Comparable} and {@linkplain Serializable }
+ * It extends {@linkplain javax.measure.Quantity Quantity} with {@linkplain Comparable} and {@linkplain Serializable }
  * 
  * @see javax.measure.Quantity Quantity
  * @author otaviojava
