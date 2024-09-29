@@ -62,7 +62,7 @@ import tech.units.indriya.internal.function.Lazy;
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author Andi Huber
- * @version 2.0, November 21, 2020
+ * @version 2.1, September 29, 2024
  * @since 1.0
  */
 public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
@@ -317,8 +317,8 @@ public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
         for (Element e : elements) {
             if (e.unit instanceof AbstractUnit) {
                 UnitConverter cvtr = ((AbstractUnit<?>) e.unit).getSystemConverter();
-                if (!(cvtr.isLinear()))
-                    throw new UnsupportedOperationException(e.unit + " is non-linear, cannot convert");
+//                if (!(cvtr.isLinear()))
+//                    throw new UnsupportedOperationException(e.unit + " is non-linear, cannot convert");
                 if (e.root != 1)
                     throw new UnsupportedOperationException(e.unit + " holds a base unit with fractional exponent");
                 int pow = e.pow;
