@@ -74,7 +74,8 @@ import tech.units.indriya.unit.UnitDimension;
  * @see <a href="http://en.wikipedia.org/wiki/Dimensional_analysis">Wikipedia: Dimensional Analysis</a>
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 1.2, $Date: 2019-08-21 $
+ * @author Andi Huber
+ * @version 1.3, September 30, 2024
  * @since 1.0
  */
 public abstract class DimensionalModel {
@@ -149,7 +150,8 @@ public abstract class DimensionalModel {
     for (Map.Entry<? extends Dimension, Integer> e : dimensions.entrySet()) {
       AbstractConverter cvtr = this.getDimensionalTransform(e.getKey());
       if (!(cvtr.isLinear()))
-        throw new UnsupportedOperationException("Non-linear dimensional transform");
+        throw new UnsupportedOperationException("cannot use " + cvtr + " for dimensional transform, "
+                  + "because " + cvtr + " is NOT a linear transformation (a linear function without offset)");
       int pow = e.getValue();
       if (pow < 0) { // Negative power.
         pow = -pow;

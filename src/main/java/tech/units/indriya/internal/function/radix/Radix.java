@@ -73,7 +73,8 @@ public interface Radix {
     public static Radix ofMultiplyConverter(UnitConverter linearUnitConverter) {
         Objects.requireNonNull(linearUnitConverter, "unitConverter cannot be null");
         if(!linearUnitConverter.isLinear()) {
-            throw new IllegalArgumentException("unitConverter is expected to be linear");
+            throw new IllegalArgumentException("unitConverter is expected to be a linear transformation "
+                    + "(a linear function without offset)");
         }
         Number radix = Calculus.currentNumberSystem().narrow(linearUnitConverter.convert(1));
         return new NumberFactorRadix(radix);
