@@ -189,4 +189,20 @@ public class EBNFFormatTest {
 		final Unit<?> gms = format.parse("m/s·10^9");
 		assertEquals("m·[one*9?]/s", gms.toString()); 
 	}
+	
+	@Test
+	public void testLabel() {
+		final EBNFUnitFormat privateFormat = EBNFUnitFormat.getNewInstance();
+		privateFormat.label(METRE, "meter");
+		final String s = privateFormat.format(METRE);
+		assertEquals("meter", s);
+	}
+	
+	@Test
+	public void testAlias() {
+		final EBNFUnitFormat privateFormat = EBNFUnitFormat.getNewInstance();
+		privateFormat.alias(METRE, "mtr");
+		final Unit<?> mtr = privateFormat.parse("mtr");
+		assertEquals(mtr, METRE);
+	}	
 }

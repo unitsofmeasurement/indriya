@@ -34,6 +34,7 @@ import javax.measure.Unit;
 import javax.measure.format.MeasurementParseException;
 
 import tech.units.indriya.AbstractUnit;
+import tech.units.indriya.format.SimpleUnitFormat.Flavor;
 import tech.units.indriya.internal.format.UnitFormatParser;
 import tech.units.indriya.unit.AnnotatedUnit;
 
@@ -143,7 +144,7 @@ import java.util.ResourceBundle;
  * 
  * @author <a href="mailto:eric-r@northwestern.edu">Eric Russell</a>
  * @author <a href="mailto:werner@uom.tech">Werner Keil</a>
- * @version 1.6, $Date: 2020-11-21 $
+ * @version 2.0, $Date: 2024-10-02 $
  * @since 1.0
  */
 public class EBNFUnitFormat extends AbstractUnitFormat {
@@ -174,9 +175,21 @@ public class EBNFUnitFormat extends AbstractUnitFormat {
     return DEFAULT_INSTANCE;
   }
 
-  /** Returns an instance for the given symbol map. */
+  /** Returns a new instance for the given symbol map. */
   public static EBNFUnitFormat getInstance(SymbolMap symbols) {
     return new EBNFUnitFormat(symbols);
+  }
+  
+  /**
+   * Similar to {@link #getInstance()}, but returns a new, non-shared unit format instance,
+   * instead of a shared singleton instance.
+   *
+   * @return a new instance of the default unit format.
+   * @see #getInstance()
+   * @since 2.0
+   */
+  public static EBNFUnitFormat getNewInstance() {
+      return new EBNFUnitFormat();
   }
 
   // //////////////////////
@@ -224,6 +237,29 @@ public class EBNFUnitFormat extends AbstractUnitFormat {
   @Override
   public String toString() {
     return getClass().getSimpleName();
+  }
+  
+  /**
+   * Attaches a system-wide alias to this unit. Multiple aliases may be attached to the same unit. Aliases are used during parsing to recognize
+   * different variants of the same unit. For example: <code>EBNFUnitFormat.getInstance().alias(METRE.multiply(0.3048), "foot");
+   * EBNFUnitFormat.getInstance().alias(METRE.multiply(0.3048), "feet");
+   * EBNFUnitFormat.getInstance().alias(METRE, "meter"); </code> If the specified alias is already associated to a unit or applied as a label, the association is
+   * replaced by the new one.
+   *
+   * @param unit
+   *          the unit being aliased.
+   * @param alias
+   *          the alias attached to this unit.
+   * @throws IllegalArgumentException
+   *           if the label is not a {@link SimpleUnitFormat#isValidIdentifier(String)} valid identifier.
+   */
+  public void alias(Unit<?> unit, String alias) {	
+	symbolMap.alias(unit, alias);
+  }
+  
+  @Override
+  public void label(Unit<?> unit, String label) {	
+	symbolMap.label(unit, label);
   }
 
   ////////////////

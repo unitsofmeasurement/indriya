@@ -81,7 +81,7 @@ import static tech.units.indriya.format.FormatConstants.MIDDLE_DOT;
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author Eric Russell
  * @author Andi Huber
- * @version 2.13, Jan 11, 2024
+ * @version 2.14, Oct 2, 2024
  * @since 1.0
  */
 public abstract class SimpleUnitFormat extends AbstractUnitFormat {
@@ -240,9 +240,9 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
 	/**
      * Attaches a system-wide alias to this unit. Multiple aliases may be attached to the same unit. Aliases are used during parsing to recognize
      * different variants of the same unit. For example: <code> SimpleUnitFormat.getInstance().alias(METER.multiply(0.3048), "foot");
-     * SimpleUnitFormat.getInstance().alias(METER.multiply(0.3048), "feet"); SimpleUnitFormat.getInstance().alias(METER, "meter");
-     * SimpleUnitFormat.getInstance().alias(METER, "metre"); </code> If the specified label is already associated to an unit the previous association is
-     * discarded or ignored.
+     * SimpleUnitFormat.getInstance().alias(METRE.multiply(0.3048), "feet"); SimpleUnitFormat.getInstance().alias(METER, "meter");
+     * SimpleUnitFormat.getInstance().alias(METRE, "meter"); </code> If the specified alias is already associated to a unit or applied as a label, the association is
+     * replaced by the new one.
      *
      * @param unit
      *          the unit being aliased.
