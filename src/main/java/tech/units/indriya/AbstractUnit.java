@@ -330,6 +330,7 @@ public abstract class AbstractUnit<Q extends Quantity<Q>>
      *
      * @param that
      *          the unit of same type to which to convert the numeric values.
+     * @param scale the measurement scale.          
      * @return the converter from this unit to {@code that} unit in the given {@code scale}.
      * @throws UnconvertibleException
      *           if a converter cannot be constructed.
@@ -346,7 +347,7 @@ public abstract class AbstractUnit<Q extends Quantity<Q>>
      * unknown at compile-time or when dimensional analysis allows for conversion between units of different type.
      *
      * <p>
-     * To convert to a unit having the same parameterized type, {@link #getConverterTo(Unit)} is preferred (no checked exception raised).
+     * To convert to a unit having the same parameterized type, {@link #getConverterTo(Unit, Scale)} is preferred (no checked exception raised).
      * </p>
      *
      * @param that
@@ -354,7 +355,7 @@ public abstract class AbstractUnit<Q extends Quantity<Q>>
      * @param scale the measurement scale.
      * @return the converter from {@code this} unit to {@code that} unit using the given {@code scale}.
      * @throws IncommensurableException
-     *           if this unit is not {@linkplain #isCompatible(Unit) compatible} with <code>that</code> unit.
+     *           if this unit is not {@linkplain #isCompatible(Unit) compatible} with {@code that}.
      * @throws UnconvertibleException
      *           if a converter cannot be constructed.
      *
