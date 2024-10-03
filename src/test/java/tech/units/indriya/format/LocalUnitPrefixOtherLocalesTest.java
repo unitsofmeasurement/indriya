@@ -44,6 +44,8 @@ import static javax.measure.MetricPrefix.*;
 import static tech.units.indriya.NumberAssertions.assertNumberEquals;
 import static tech.units.indriya.unit.Units.*;
 
+import java.util.Locale;
+
 import javax.measure.Quantity;
 import javax.measure.format.UnitFormat;
 import javax.measure.quantity.Length;
@@ -64,12 +66,13 @@ import tech.units.indriya.unit.Units;
  */
 // TODO put those tests on a separate tag like "slow", "heavy", etc.
 @Tag("l10n")
-public class LocalUnitPrefixTest {
-
+public class LocalUnitPrefixOtherLocalesTest {
+	
 	private static UnitFormat format;
 	
 	@BeforeAll
 	static void init() {
+		// TODO remove like LocalUnitFormatTest
 		format = LocalUnitFormat.getInstance();
 	}
 	
@@ -84,46 +87,51 @@ public class LocalUnitPrefixTest {
 	}
 
 	@Test
-	public void testMega() {
+	public void testMegaCn() {
+		final UnitFormat localFormat = LocalUnitFormat.getInstance(new Locale("cn"));
 		Quantity<Mass> m1 = Quantities.getQuantity(1.0, MEGA(Units.GRAM));
 		assertNumberEquals(1d, m1.getValue(), 1E-12);
-		assertEquals("Mg", format.format(m1.getUnit()));
+		assertEquals("\u5146\u514B", localFormat.format(m1.getUnit()));
 	}
 	
 	@Test
-	public void testCenti() {
+	public void testCentiCn() {
+		final UnitFormat localFormat = LocalUnitFormat.getInstance(new Locale("cn"));
 		Quantity<Volume> m1 = Quantities.getQuantity(1.0, LITRE);
 		assertNumberEquals(1d, m1.getValue(), 1E-12);
-		assertEquals("l", format.format(m1.getUnit()));
+		assertEquals("体积", localFormat.format(m1.getUnit()));
 
 		Quantity<Volume> m2 = m1.to(CENTI(LITRE));
 		assertNumberEquals(100, m2.getValue(), 1E-12);
-		assertEquals("cl", format.format(m2.getUnit()));
+		assertEquals("\u5398体积", localFormat.format(m2.getUnit()));
 	}
 	
 	@Test
-	public void testDeci() {
+	public void testDeciCn() {
+		final UnitFormat localFormat = LocalUnitFormat.getInstance(new Locale("cn"));
 		Quantity<Volume> m1 = Quantities.getQuantity(1.0, LITRE);
 		assertNumberEquals(1d, m1.getValue(), 1E-12);
-		assertEquals("l", format.format(m1.getUnit()));
+		assertEquals("体积", localFormat.format(m1.getUnit()));
 
 		Quantity<Volume> m2 = m1.to(DECI(LITRE));
 		assertNumberEquals(10, m2.getValue(), 1E-12);
-		assertEquals("dl", format.format(m2.getUnit()));
+		assertEquals("\u5206体积", localFormat.format(m2.getUnit()));
 	}
 
 	@Test
-	public void testMilli() {
+	public void testMilliCn() {
+		final UnitFormat localFormat = LocalUnitFormat.getInstance(new Locale("cn"));
 		Quantity<Mass> m1 = Quantities.getQuantity(1.0, MILLI(Units.GRAM));
 		assertNumberEquals(1d, m1.getValue(), 1E-12);
-		assertEquals("mg", format.format(m1.getUnit()));
+		assertEquals("毫\u514B", localFormat.format(m1.getUnit()));
 	}
 
 	@Test
-	public void testMilli2() {
+	public void testMilli2Cn() {
+		final UnitFormat localFormat = LocalUnitFormat.getInstance(new Locale("cn"));
 		Quantity<Volume> m1 = Quantities.getQuantity(10, MILLI(LITRE));
 		assertNumberEquals(10, m1.getValue(), 1E-12);
-		assertEquals("ml", format.format(m1.getUnit()));
+		assertEquals("毫体积", localFormat.format(m1.getUnit()));
 	}
 
 	@Test

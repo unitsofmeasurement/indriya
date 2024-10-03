@@ -40,7 +40,6 @@ import java.util.logging.Logger;
 
 import javax.measure.Unit;
 import javax.measure.format.UnitFormat;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
@@ -61,9 +60,6 @@ public class LocalUnitFormatTest {
 	}
 
 	@Test
-	@Disabled
-	// TODO LocalUnitFormat won't parse mixed units, EBNF does, also see
-	// https://github.com/unitsofmeasurement/uom-se/issues/145
 	public void testPrefixKm() {
 		final UnitFormat format = LocalUnitFormat.getInstance();
 		Unit<?> u = format.parse("km");
@@ -76,6 +72,13 @@ public class LocalUnitFormatTest {
 		final UnitFormat format = LocalUnitFormat.getInstance();
 		String s = format.format(KILO(METRE));
 		assertEquals("km", s);
+	}
+	
+	@Test
+	public void testFormatKmCn() {
+		final UnitFormat localFormat = LocalUnitFormat.getInstance(new Locale("cn"));
+		String s = localFormat.format(KILO(METRE));
+		assertEquals("千米", s);
 	}
 
 	@Test
