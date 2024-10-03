@@ -53,9 +53,9 @@ import java.util.ResourceBundle;
  * Note that the grammar has been left-factored to be suitable for use by a top-down parser generator such as <a
  * href="https://javacc.dev.java.net/">JavaCC</a>
  * </p>
- * <table width="90%" align="center">
+ * <table>
  * <tr>
- * <th colspan="3" align="left">Lexical Entities:</th>
+ * <th colspan="3">Lexical Entities:</th>
  * </tr>
  * <tr valign="top">
  * <td>&lt;sign&gt;</td>
@@ -143,14 +143,14 @@ import java.util.ResourceBundle;
  * 
  * @author <a href="mailto:eric-r@northwestern.edu">Eric Russell</a>
  * @author <a href="mailto:werner@uom.tech">Werner Keil</a>
- * @version 2.0, $Date: 2024-10-02 $
+ * @version 2.1, October 4, 2024
  * @since 1.0
  */
 public class EBNFUnitFormat extends AbstractUnitFormat {
 
-  // ////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////
   // Class variables //
-  // ////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////
 
   /**
     * 
