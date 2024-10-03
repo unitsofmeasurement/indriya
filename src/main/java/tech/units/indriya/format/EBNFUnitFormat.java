@@ -34,7 +34,6 @@ import javax.measure.Unit;
 import javax.measure.format.MeasurementParseException;
 
 import tech.units.indriya.AbstractUnit;
-import tech.units.indriya.format.SimpleUnitFormat.Flavor;
 import tech.units.indriya.internal.format.UnitFormatParser;
 import tech.units.indriya.unit.AnnotatedUnit;
 

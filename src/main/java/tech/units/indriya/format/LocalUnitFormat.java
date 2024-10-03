@@ -356,7 +356,6 @@ public class LocalUnitFormat extends AbstractUnitFormat {
       // unit.
       buffer.append(unit.getSymbol());
       return NOOP_PRECEDENCE;
-   // TODO add case for MixedUnit
     } else { // A transformed unit or new unit type!
       UnitConverter converter = null;
       boolean printSeparator = false;
