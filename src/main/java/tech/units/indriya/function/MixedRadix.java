@@ -55,7 +55,7 @@ import tech.units.indriya.quantity.Quantities;
  * 
  * @author Andi Huber
  * @author Werner Keil
- * @version 2.3, Jun 5, 2023
+ * @version 2.4, September 30, 2024
  * @since 2.0
  * @see <a href="https://en.wikipedia.org/wiki/Mixed_radix">Wikipedia: Mixed
  *      radix</a>
@@ -302,7 +302,9 @@ public final class MixedRadix<Q extends Quantity<Q>> {
 	private void assertDecreasingOrderOfSignificanceAndLinearity(Unit<Q> tail, Unit<Q> appended) {
 		final UnitConverter converter = appended.getConverterTo(tail);
 		if (!converter.isLinear()) {
-			String message = String.format("the appended mixed-radix unit <%s> " + "must be linear",
+			String message = String.format("the appended mixed-radix unit <%s> must be linear, that is, "
+			        + "its system converter must be a linear transformation "
+			        + "(a linear function without offset)",
 					appended.getClass());
 			throw new IllegalArgumentException(message);
 		}
