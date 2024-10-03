@@ -112,7 +112,7 @@ public abstract class AbstractUnit<Q extends Quantity<Q>>
 	/**
 	 * Holds the name.
 	 */
-	protected String name;
+	private String name;
 
 	/**
 	 * Holds the symbol.
