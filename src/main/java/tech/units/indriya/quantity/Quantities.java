@@ -46,7 +46,7 @@ import tech.units.indriya.function.MixedRadix;
 /**
  * Facade to access {@link Quantity} instances.
  * 
- * @version 2.4, June 5, 2023
+ * @version 3.0, October 3, 2024
  * @author Werner Keil
  * @author Otavio Santana
  * @since 1.0
@@ -89,10 +89,7 @@ public final class Quantities {
 	}
 
 	/**
-	 * Returns the scalar quantity. When the {@link Number} was {@link BigDecimal}
-	 * or {@link BigInteger} will uses {@link DecimalQuantity}, when the
-	 * {@link Number} was {@link Double} will {@link DoubleQuantity} otherwise will
-	 * {@link NumberQuantity}. in the specified unit.
+	 * Returns the scalar quantity of type {@link NumberQuantity} in the specified unit and scale.
 	 * 
 	 * @param value the measurement value.
 	 * @param unit  the measurement unit.
@@ -109,10 +106,7 @@ public final class Quantities {
 	}
 
 	/**
-	 * Returns the scalar quantity. When the {@link Number} was {@link BigDecimal}
-	 * or {@link BigInteger} will uses {@link DecimalQuantity}, when the
-	 * {@link Number} was {@link Double} will {@link DoubleQuantity} otherwise will
-	 * {@link NumberQuantity}. in the specified unit.
+	 * Returns the scalar quantity of type {@link NumberQuantity} in the specified unit and {@code ABSOLUTE} scale.
 	 * 
 	 * @param value the measurement value.
 	 * @param unit  the measurement unit.
@@ -124,11 +118,8 @@ public final class Quantities {
 	}
 
 	/**
-	 * Returns the mixed radix values and units combined into a single quantity.
-	 * When the {@link Number} was {@link BigDecimal} or {@link BigInteger} will
-	 * uses {@link DecimalQuantity}, when the {@link Number} was {@link Double} will
-	 * {@link DoubleQuantity} otherwise will {@link NumberQuantity}. in the
-	 * specified unit.
+	 * Returns the mixed radix values and units combined into a single quantity of type {@link NumberQuantity} in the
+	 * specified unit and scale.
 	 * 
 	 * @param values the measurement values.
 	 * @param units  the measurement units.

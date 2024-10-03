@@ -29,6 +29,8 @@
  */
 package tech.units.indriya.unit;
 
+import static javax.measure.Quantity.Scale.RELATIVE;
+
 import java.io.InvalidObjectException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
@@ -317,7 +319,7 @@ public final class ProductUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
         for (Element e : elements) {
             if (e.unit instanceof AbstractUnit) {
                 UnitConverter cvtr = ((AbstractUnit<?>) e.unit).getSystemConverter();
-                if (!(cvtr.isLinear()))
+                if (!RELATIVE.equals(scale) && !(cvtr.isLinear()))
                     throw new UnsupportedOperationException("cannot compose " + e.unit + " into a product converter, "
                             + "because " + e.unit + " holds a system converter "
                             + "that is NOT a linear transformation (a linear function without offset)");

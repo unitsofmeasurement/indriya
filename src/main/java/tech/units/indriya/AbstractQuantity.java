@@ -139,11 +139,11 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
     /**
      * Constructor.
      * @param unit a unit
-     * @param sca the scale, absolute or relative
+     * @param scale the scale, absolute or relative
      */
-    protected AbstractQuantity(Unit<Q> unit, Scale sca) {
+    protected AbstractQuantity(Unit<Q> unit, Scale scale) {
         this.unit = unit;
-        this.scale = sca;
+        this.scale = scale;
     }
 
     /**

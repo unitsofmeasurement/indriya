@@ -29,6 +29,8 @@
  */
 package tech.units.indriya;
 
+import static javax.measure.Quantity.Scale.ABSOLUTE;
+
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -42,6 +44,7 @@ import javax.measure.Quantity;
 import javax.measure.UnconvertibleException;
 import javax.measure.Unit;
 import javax.measure.UnitConverter;
+import javax.measure.Quantity.Scale;
 import javax.measure.format.MeasurementParseException;
 import javax.measure.quantity.Dimensionless;
 
@@ -84,7 +87,7 @@ import tech.uom.lib.common.function.SymbolSupplier;
  *      International System of Units</a>
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 3.2, April 16, 2021
+ * @version 4.0, October 3, 2024
  * @since 1.0
  */
 public abstract class AbstractUnit<Q extends Quantity<Q>>
@@ -115,6 +118,8 @@ public abstract class AbstractUnit<Q extends Quantity<Q>>
 	 * Holds the symbol.
 	 */
 	private String symbol;
+	
+	protected Scale scale = ABSOLUTE;
 
 	/**
 	 * Holds the unique symbols collection (base units or alternate units).
@@ -314,12 +319,54 @@ public abstract class AbstractUnit<Q extends Quantity<Q>>
 		return internalGetConverterTo(that, true);
 	}
 
-	@SuppressWarnings("rawtypes")
 	@Override
 	public final UnitConverter getConverterToAny(Unit<?> that) throws IncommensurableException, UnconvertibleException {
+		return getConverterToAny(that, ABSOLUTE);
+	}
+	
+   /**
+     * Returns a converter of numeric values from this unit to another unit of same type. This method performs the same work as
+     * {@link #getConverterToAny(Unit)} without raising checked exception.
+     *
+     * @param that
+     *          the unit of same type to which to convert the numeric values.
+     * @return the converter from this unit to {@code that} unit in the given {@code scale}.
+     * @throws UnconvertibleException
+     *           if a converter cannot be constructed.
+     *
+     * @see #getConverterToAny(Unit)
+     */
+	public final UnitConverter getConverterTo(Unit<Q> that, Scale scale) throws UnconvertibleException {
+		this.scale = scale;
+		return getConverterTo(that);
+	}
+	
+	/**
+     * Returns a converter from this unit to the specified unit of type unknown in the given scale. This method can be used when the quantity type of the specified unit is
+     * unknown at compile-time or when dimensional analysis allows for conversion between units of different type.
+     *
+     * <p>
+     * To convert to a unit having the same parameterized type, {@link #getConverterTo(Unit)} is preferred (no checked exception raised).
+     * </p>
+     *
+     * @param that
+     *          the unit to which to convert the numeric values.
+     * @param scale the measurement scale.
+     * @return the converter from {@code this} unit to {@code that} unit using the given {@code scale}.
+     * @throws IncommensurableException
+     *           if this unit is not {@linkplain #isCompatible(Unit) compatible} with {@code that} unit.
+     * @throws UnconvertibleException
+     *           if a converter cannot be constructed.
+     *
+     * @see #getConverterTo(Unit)
+     * @see #isCompatible(Unit)
+     */	 	 
+	@SuppressWarnings("rawtypes")
+	public final UnitConverter getConverterToAny(Unit<?> that, Scale scale) throws IncommensurableException, UnconvertibleException {
 		if (!isCompatible(that))
 			throw new IncommensurableException(this + " is not compatible with " + that);
-		AbstractUnit thatAbstr = (AbstractUnit) that; // Since both units are
+		this.scale = scale;
+		final AbstractUnit thatAbstr = (AbstractUnit) that; // Since both units are
 		// compatible they must both be abstract units.
 		final DimensionalModel model = DimensionalModel.current();
 		Unit thisSystemUnit = this.getSystemUnit();

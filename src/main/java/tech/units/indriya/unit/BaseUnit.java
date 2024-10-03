@@ -55,7 +55,7 @@ import java.util.Objects;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 2.1, January 17, 2024
+ * @version 2.2, October 3, 2024
  * @since 1.0
  */
 public final class BaseUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
@@ -100,7 +100,7 @@ public final class BaseUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
 	 */
 	public BaseUnit(String symbol, String name) {
 		this(symbol);
-		this.name = name;
+		setName(name);
 	}
 
 	/**
@@ -114,7 +114,7 @@ public final class BaseUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
 	 */
 	public BaseUnit(String symbol, String name, Dimension dimension) {
 		super(symbol);
-		this.name = name;
+		setName(name);
 		this.dimension = dimension;
 	}
 

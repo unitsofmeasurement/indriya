@@ -116,6 +116,15 @@ class TemperatureTest {
 		assertCelsiusOfScale(sum, ABSOLUTE);
 		assertNumberEquals(273.15d, sum.getValue(), 1E-12);
 	}
+	
+	@Test
+	void addingDifferentAbsoluteTemperatures() {
+		Quantity<Temperature> relT = Quantities.getQuantity(2, KELVIN);
+		Quantity<Temperature> relT2 = Quantities.getQuantity(2, CELSIUS);
+		Quantity<Temperature> sum = relT.add(relT2);
+        assertKelvinOfScale(sum, ABSOLUTE);
+		assertNumberEquals(277.15, sum.getValue(), 1E-12);
+	}
 
 	@Test
 	void addingRelativeTemperatures() {
@@ -246,6 +255,11 @@ class TemperatureTest {
 	
 	private static void assertCelsiusOfScale(Quantity<?> x, Scale scale) {
         assertEquals(CELSIUS, x.getUnit());
+        assertEquals(scale, x.getScale());
+    }
+	
+	private static void assertKelvinOfScale(Quantity<?> x, Scale scale) {
+        assertEquals(KELVIN, x.getUnit());
         assertEquals(scale, x.getScale());
     }
 	

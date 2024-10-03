@@ -57,7 +57,7 @@ import java.util.Objects;
  *
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 2.0, February 08, 2020
+ * @version 2.1, October 3, 2024
  * @since 1.0
  */
 public final class AlternateUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
@@ -107,7 +107,7 @@ public final class AlternateUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> 
 	 */
 	AlternateUnit(Unit<?> parentUnit, String symbol, String name) {
 		this(parentUnit, symbol);
-		this.name = name;
+		setName(name);
 	}
 
 	/**
