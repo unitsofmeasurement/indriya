@@ -354,7 +354,7 @@ public abstract class AbstractUnit<Q extends Quantity<Q>>
      * @param scale the measurement scale.
      * @return the converter from {@code this} unit to {@code that} unit using the given {@code scale}.
      * @throws IncommensurableException
-     *           if this unit is not {@linkplain #isCompatible(Unit) compatible} with {@code that} unit.
+     *           if this unit is not {@linkplain #isCompatible(Unit) compatible} with <code>that</code> unit.
      * @throws UnconvertibleException
      *           if a converter cannot be constructed.
      *
