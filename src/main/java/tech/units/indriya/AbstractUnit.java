@@ -30,6 +30,7 @@
 package tech.units.indriya;
 
 import static javax.measure.Quantity.Scale.ABSOLUTE;
+import static org.apiguardian.api.API.Status.EXPERIMENTAL;
 
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
@@ -47,6 +48,8 @@ import javax.measure.UnitConverter;
 import javax.measure.Quantity.Scale;
 import javax.measure.format.MeasurementParseException;
 import javax.measure.quantity.Dimensionless;
+
+import org.apiguardian.api.API;
 
 import tech.units.indriya.format.LocalUnitFormat;
 import tech.units.indriya.format.SimpleUnitFormat;
@@ -87,7 +90,7 @@ import tech.uom.lib.common.function.SymbolSupplier;
  *      International System of Units</a>
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 4.0, October 3, 2024
+ * @version 4.1, October 4, 2024
  * @since 1.0
  */
 public abstract class AbstractUnit<Q extends Quantity<Q>>
@@ -337,6 +340,7 @@ public abstract class AbstractUnit<Q extends Quantity<Q>>
      *
      * @see #getConverterToAny(Unit)
      */
+	@API(status=EXPERIMENTAL)
 	public final UnitConverter getConverterTo(Unit<Q> that, Scale scale) throws UnconvertibleException {
 		this.scale = scale;
 		return getConverterTo(that);
@@ -361,7 +365,8 @@ public abstract class AbstractUnit<Q extends Quantity<Q>>
      *
      * @see #getConverterTo(Unit)
      * @see #isCompatible(Unit)
-     */	 	 
+     */
+	@API(status=EXPERIMENTAL)
 	@SuppressWarnings("rawtypes")
 	public final UnitConverter getConverterToAny(Unit<?> that, Scale scale) throws IncommensurableException, UnconvertibleException {
 		if (!isCompatible(that))
