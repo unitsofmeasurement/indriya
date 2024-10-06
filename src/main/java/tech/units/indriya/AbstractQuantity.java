@@ -110,7 +110,7 @@ import tech.uom.lib.common.function.ValueSupplier;
  *
  * @author <a href="mailto:werner@uom.technology">Werner Keil</a>
  * @author Andi Huber
- * @version 2.5 Dec 14, 2022
+ * @version 2.6 Oct 6, 2024
  * @since 1.0
  */
 @API(status=STABLE)
@@ -122,8 +122,14 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
     */
     private static final long serialVersionUID = 293852425369811882L;
 
+    /**
+     * Holds the measurement unit
+     */
     private final Unit<Q> unit;
 
+    /**
+     * Holds the measurement scale
+     */
     private final Scale scale;
     
     /**

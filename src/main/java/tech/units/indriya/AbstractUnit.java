@@ -122,6 +122,9 @@ public abstract class AbstractUnit<Q extends Quantity<Q>>
 	 */
 	private String symbol;
 	
+    /**
+     * Holds the measurement scale
+     */
 	protected Scale scale = ABSOLUTE;
 
 	/**
