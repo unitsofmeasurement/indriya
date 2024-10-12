@@ -56,15 +56,15 @@ import tech.units.indriya.quantity.Quantities;
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author <a href="mailto:thodoris.bais@gmail.com">Thodoris Bais</a>
  *
- * @version 2.12, $Date: 2023-06-05 $
+ * @version 2.13, $Date: 2024-10-12 $
  * @since 2.0
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
 public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
 
     // Constants used by factory methods to specify a style of format.
-    private static final int DEFAULTSTYLE = 0;
-    private static final int COMPACTSTYLE = 1;
+	public static final int DEFAULTSTYLE = 0;
+    public static final int COMPACTSTYLE = 1;
     
     /**
      * Holds the default format instance (SimpleUnitFormat).
@@ -208,6 +208,22 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
      */
     public static NumberDelimiterQuantityFormat getInstance(FormatBehavior behavior) {
     	return internalGetInstance(behavior, DEFAULTSTYLE);
+    }
+    
+    /**
+     * Returns an instance of {@link NumberDelimiterQuantityFormat} with a particular {@link FormatBehavior}, either locale-sensitive or locale-neutral.
+     * For example: <code>NumberDelimiterQuantityFormat.getInstance(LOCALE_NEUTRAL))</code> returns<br>
+     * <code>new NumberDelimiterQuantityFormat.Builder()
+            .setNumberFormat(NumberFormat.getInstance(Locale.ROOT)).setUnitFormat(SimpleUnitFormat.getInstance()).build();</code>
+     *
+     * @param behavior
+     *            the format behavior to apply.
+	 * @param numberStyle
+	 *            the number format style to apply.            
+     * @return <code>NumberDelimiterQuantityFormat.getInstance(NumberFormat.getInstance(), UnitFormat.getInstance())</code>
+     */
+    public static NumberDelimiterQuantityFormat getInstance(FormatBehavior behavior, int numberStyle) {
+    	return internalGetInstance(behavior, numberStyle);
     }
 
     /**
