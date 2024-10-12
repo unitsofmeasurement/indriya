@@ -211,16 +211,19 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
     }
     
     /**
-     * Returns an instance of {@link NumberDelimiterQuantityFormat} with a particular {@link FormatBehavior}, either locale-sensitive or locale-neutral.
+     * Returns an instance of {@link NumberDelimiterQuantityFormat} with a particular {@link FormatBehavior}, either locale-sensitive or locale-neutral, 
+     * and a desired number style.<br>
      * For example: <code>NumberDelimiterQuantityFormat.getInstance(LOCALE_NEUTRAL))</code> returns<br>
-     * <code>new NumberDelimiterQuantityFormat.Builder()
-            .setNumberFormat(NumberFormat.getInstance(Locale.ROOT)).setUnitFormat(SimpleUnitFormat.getInstance()).build();</code>
-     *
+     * <code>new NumberDelimiterQuantityFormat.Builder().setNumberFormat(NumberFormat.getInstance(Locale.ROOT)).setUnitFormat(SimpleUnitFormat.getInstance()).build();</code>    
+     * @implNote
+     * Note: <code>numberStyle</code> will be ignored before Java 17. Although the <code>COMPACT</code> {@linkplain NumberFormat} is already available from Java 12, Indriya supports major LTS versions like 8, 11 or 17.
+     * 
      * @param behavior
      *            the format behavior to apply.
 	 * @param numberStyle
 	 *            the number format style to apply.            
      * @return <code>NumberDelimiterQuantityFormat.getInstance(NumberFormat.getInstance(), UnitFormat.getInstance())</code>
+	 * @since 2.13
      */
     public static NumberDelimiterQuantityFormat getInstance(FormatBehavior behavior, int numberStyle) {
     	return internalGetInstance(behavior, numberStyle);
@@ -413,7 +416,7 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
 	 * @return <code>NumberDelimiterQuantityFormat.getInstance(NumberFormat.getInstance(), UnitFormat.getInstance())</code>
 	 * @since 2.5
 	 */
-	private static NumberDelimiterQuantityFormat internalGetInstance(FormatBehavior behavior, int numberStyle) {
+	private static NumberDelimiterQuantityFormat internalGetInstance(final FormatBehavior behavior, int numberStyle) {
 		switch (behavior) {
 			case LOCALE_SENSITIVE:
 				return LOCAL_INSTANCE;

@@ -55,7 +55,7 @@ import tech.units.indriya.quantity.Quantities;
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author <a href="mailto:thodoris.bais@gmail.com">Thodoris Bais</a>
  *
- * @version 2.8, $Date: 2023-06-05 $
+ * @version 2.9, $Date: 2024-10-12 $
  * @since 2.0
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -206,6 +206,25 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
         }
     }
 
+    /**
+     * Returns an instance of {@link NumberDelimiterQuantityFormat} with a particular {@link FormatBehavior}, either locale-sensitive or locale-neutral, 
+     * and a desired number style.<br>
+     * For example: <code>NumberDelimiterQuantityFormat.getInstance(LOCALE_NEUTRAL))</code> returns<br>
+     * <code>new NumberDelimiterQuantityFormat.Builder().setNumberFormat(NumberFormat.getInstance(Locale.ROOT)).setUnitFormat(SimpleUnitFormat.getInstance()).build();</code>    
+     * @implNote
+     * Note: <code>numberStyle</code> will be ignored before Java 17. Although the <code>COMPACT</code> {@linkplain NumberFormat} is already available from Java 12, Indriya supports major LTS versions like 8, 11 or 17.
+     * 
+     * @param behavior
+     *            the format behavior to apply.
+	 * @param numberStyle
+	 *            the number format style to apply.            
+     * @return <code>NumberDelimiterQuantityFormat.getInstance(NumberFormat.getInstance(), UnitFormat.getInstance())</code>
+	 * @since 2.9 
+     */
+    public static NumberDelimiterQuantityFormat getInstance(final FormatBehavior behavior, int numberStyle) {
+    	return getInstance(behavior);
+    }
+    
     /**
      * Returns a new instance of {@link Builder}.
      *
