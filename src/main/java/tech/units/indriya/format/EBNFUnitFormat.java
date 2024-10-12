@@ -143,7 +143,7 @@ import java.util.ResourceBundle;
  * 
  * @author <a href="mailto:eric-r@northwestern.edu">Eric Russell</a>
  * @author <a href="mailto:werner@uom.tech">Werner Keil</a>
- * @version 2.1, October 4, 2024
+ * @version 2.2, October 12, 2024
  * @since 1.0
  */
 public class EBNFUnitFormat extends AbstractUnitFormat {
@@ -249,8 +249,6 @@ public class EBNFUnitFormat extends AbstractUnitFormat {
    *          the unit being aliased.
    * @param alias
    *          the alias attached to this unit.
-   * @throws IllegalArgumentException
-   *           if the label is not a {@link SimpleUnitFormat#isValidIdentifier(String)} valid identifier.
    */
   public void alias(Unit<?> unit, String alias) {	
 	symbolMap.alias(unit, alias);
