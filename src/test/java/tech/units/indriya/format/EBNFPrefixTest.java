@@ -41,6 +41,7 @@ import static tech.units.indriya.unit.Units.LITRE;
 import static tech.units.indriya.unit.Units.METRE;
 
 import javax.measure.Quantity;
+import javax.measure.Unit;
 import javax.measure.format.UnitFormat;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.Mass;
@@ -64,8 +65,6 @@ public class EBNFPrefixTest {
 	
 	@Test
 	public void testKilo() {
-		// TODO how to handle equals for units?
-		// assertEquals(KILOGRAM.getSymbol(), KILO(GRAM).getSymbol());
 		assertEquals(format.format(KILOGRAM), format.format(KILO(GRAM)));
 	}
 
@@ -124,7 +123,7 @@ public class EBNFPrefixTest {
 	}
 
 	@Test
-	public void testMicro2() {
+	public void testMicro() {
 		Quantity<Length> m1 = Quantities.getQuantity(1.0, Units.METRE);
 		assertNumberEquals(1d, m1.getValue(), 1E-12);
 		assertEquals("m", format.format(m1.getUnit()));
@@ -162,10 +161,38 @@ public class EBNFPrefixTest {
 	}
 	
 	@Test
+	public void testRonna() {
+		assertEquals("Rm", format.format(RONNA(METRE)));	
+	}
+	
+	@Test
+	public void testQuecto() {
+		assertEquals("ql", format.format(QUECTO(LITRE)));	
+	}
+	
+	@Test
 	public void testRonto() {
 		assertEquals("rg", format.format(RONTO(GRAM)));	
 	}
-
+	
+	@Test
+	public void testPArseMilli() {
+		final Unit<?> m = format.parse("mg");
+		assertEquals(m, MILLI(Units.GRAM));
+	}
+	
+	@Test
+	public void testParseRonna() {
+		final Unit<?> l = format.parse("Rm");
+		assertEquals(l, RONNA(METRE));	
+	}
+	
+	@Test
+	public void testParseQuecto() {
+		final Unit<?> v = format.parse("ql");
+		assertEquals(v, QUECTO(LITRE));	
+	}
+	
 	@Test
 	public void testHashMapAccessingMap() {
 		assertThat(LITRE.toString(), is("l"));
@@ -226,5 +253,17 @@ public class EBNFPrefixTest {
 	@Test
 	public void testYobi() {
 		assertEquals("Yig", format.format(YOBI(GRAM)));	
+	}
+	
+	@Test
+	public void testParseKibiL() {
+		final Unit<?> v = format.parse("Kil");
+		assertEquals(v, KIBI(LITRE));
+	}
+	
+	@Test
+	public void testParseMebi() {
+		final Unit<?> l = format.parse("Mim");
+		assertEquals(l, MEBI(METRE));
 	}
 }
