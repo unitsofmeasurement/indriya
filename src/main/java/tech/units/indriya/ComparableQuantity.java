@@ -46,7 +46,7 @@ import tech.uom.lib.common.function.QuantityConverter;
  * @author otaviojava
  * @author werner
  * @param <Q> the quantity type
- * @version 2.5, August 20, 2024
+ * @version 2.6, November 14, 2024
  * @since 1.0
  */
 public interface ComparableQuantity<Q extends Quantity<Q>> extends Quantity<Q>, Comparable<Quantity<Q>>, QuantityConverter<Q>, Serializable {
@@ -118,7 +118,7 @@ public interface ComparableQuantity<Q extends Quantity<Q>> extends Quantity<Q>, 
   boolean isGreaterThan(Quantity<Q> that);
 
   /**
-   * Compares two instances of {@link Quantity}, doing the conversion of unit if necessary.
+   * Compares two instances of {@link Quantity}, converting the unit if necessary.
    *
    * @param that
    *          the {@code quantity<Q>} to be compared with this instance.
@@ -129,7 +129,7 @@ public interface ComparableQuantity<Q extends Quantity<Q>> extends Quantity<Q>, 
   boolean isGreaterThanOrEqualTo(Quantity<Q> that);
 
   /**
-   * Compares two instances of {@link Quantity}, doing the conversion of unit if necessary.
+   * Compares two instances of {@link Quantity}, converting the unit if necessary.
    *
    * @param that
    *          the {@code quantity<Q>} to be compared with this instance.
@@ -140,7 +140,7 @@ public interface ComparableQuantity<Q extends Quantity<Q>> extends Quantity<Q>, 
   boolean isLessThan(Quantity<Q> that);
 
   /**
-   * Compares two instances of {@link Quantity}, doing the conversion of unit if necessary.
+   * Compares two instances of {@link Quantity}, converting the unit if necessary.
    *
    * @param that
    *          the {@code quantity<Q>} to be compared with this instance.
