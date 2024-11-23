@@ -81,7 +81,7 @@ import static tech.units.indriya.format.FormatConstants.MIDDLE_DOT;
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author Eric Russell
  * @author Andi Huber
- * @version 2.14, Oct 2, 2024
+ * @version 2.15, Nov 24, 2024
  * @since 1.0
  */
 public abstract class SimpleUnitFormat extends AbstractUnitFormat {
@@ -432,20 +432,12 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
 
             label(MICRO(Units.GRAM), MetricPrefix.MICRO.getSymbol() + "g");
 
-            // Alias and ASCIIFormat for Ohm
-            alias(Units.OHM, "Ohm");
-            for (int i = 0; i < METRIC_PREFIX_SYMBOLS.length; i++) {
-                alias(Units.OHM.prefix(MetricPrefix.values()[i]), METRIC_PREFIX_SYMBOLS[i] + "Ohm");
-            }
+            // Alias in ASCIIFormat for Ohm
+            aliasWithPrefixes(Units.OHM, "Ohm");
 
             // Special case for DEGREE_CELSIUS.
-            label(Units.CELSIUS, "℃");
-            alias(Units.CELSIUS, "°C");
-            for (int i = 0; i < METRIC_PREFIX_SYMBOLS.length; i++) {
-                label(Units.CELSIUS.prefix(MetricPrefix.values()[i]), METRIC_PREFIX_SYMBOLS[i] + "℃");
-                alias(Units.CELSIUS.prefix(MetricPrefix.values()[i]), METRIC_PREFIX_SYMBOLS[i] + "°C");
-            }
-
+            labelWithPrefixes(Units.CELSIUS, "℃");
+            aliasWithPrefixes(Units.CELSIUS, "°C");
             // Additional cases and aliases
             label(Units.PERCENT, "%");
             label(Units.METRE, "m");
@@ -465,9 +457,9 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
             alias(Units.MONTH, "mon");
             alias(Units.MONTH, "month");
             label(Units.KILOMETRE_PER_HOUR, "km/h");
-            label(Units.CUBIC_METRE, "\u33A5");
-            alias(Units.SQUARE_METRE, "m2");
-            alias(Units.CUBIC_METRE, "m3");
+            aliasWithPrefixes(Units.SQUARE_METRE, "m2");
+            labelWithPrefixes(Units.CUBIC_METRE, "\u33A5");
+            aliasWithPrefixes(Units.CUBIC_METRE, "m3");
             label(Units.NEWTON, "N");
             label(Units.RADIAN, "rad");
 
@@ -506,6 +498,12 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
                 unitToName.put(unit, label);
             }
         }
+        
+    	@Override
+		public void removeLabel(Unit<?> unit) {
+			unitToName.remove(unit);
+			nameToUnit.entrySet().removeIf(e -> e.getValue().equals(unit));
+		}
 
         @Override
         public void alias(Unit<?> unit, String alias) {
@@ -527,17 +525,37 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
 			nameToUnit.entrySet().removeIf(e -> e.getValue().equals(unit) && !e.getKey().equals(alias));
 		}
 
-		@Override
-		public void removeLabel(Unit<?> unit) {
-			unitToName.remove(unit);
-			nameToUnit.entrySet().removeIf(e -> e.getValue().equals(unit));
-		}
-
         @Override
         protected boolean isValidIdentifier(String name) {
             if ((name == null) || (name.length() == 0))
                 return false;
             return isUnitIdentifierPart(name.charAt(0));
+        }
+        
+        /**
+         * Applies {@link #label(Unit, String)} for this unit and all standard prefixes.
+         * 
+         * @param unit a unit
+         * @param label a label
+         */
+        private void labelWithPrefixes(Unit<?> unit, String label) {
+        	label(unit, label);
+            for (int i = 0; i < METRIC_PREFIX_SYMBOLS.length; i++) {
+            	label(unit.prefix(MetricPrefix.values()[i]), METRIC_PREFIX_SYMBOLS[i] + label);
+            }
+        }
+        
+        /**
+         * Applies {@link #alias(Unit, String)} for this unit and all standard prefixes.
+         * 
+         * @param unit a unit
+         * @param alias an alias
+         */
+        private void aliasWithPrefixes(Unit<?> unit, String alias) {
+        	alias(unit, alias);
+            for (int i = 0; i < METRIC_PREFIX_SYMBOLS.length; i++) {
+                alias(unit.prefix(MetricPrefix.values()[i]), METRIC_PREFIX_SYMBOLS[i] + alias);
+            }
         }
 
         protected static boolean isUnitIdentifierPart(char ch) {
@@ -1021,7 +1039,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
             for (int i = 0; i < METRIC_UNITS.length; i++) {
                 Unit<?> si = METRIC_UNITS[i];
                 String symbol = (si instanceof BaseUnit) ? ((BaseUnit<?>) si).getSymbol() : ((AlternateUnit<?>) si).getSymbol();
-                if (isAllASCII(symbol))
+                if (isAllAscii(symbol))
                     label(si, symbol);
                 for (int j = 0; j < METRIC_PREFIX_SYMBOLS.length; j++) {
                     Unit<?> u = si.prefix(MetricPrefix.values()[j]);
@@ -1048,18 +1066,12 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
                 }
             }
 
-            // Alias and ASCIIFormat for Ohm
-            label(Units.OHM, "Ohm");
-            for (int i = 0; i < METRIC_PREFIX_SYMBOLS.length; i++) {
-                label(Units.OHM.prefix(MetricPrefix.values()[i]), asciiPrefix(METRIC_PREFIX_SYMBOLS[i]) + "Ohm");
-            }
+            // ASCIIFormat for Ohm
+            labelWithAsciiPrefixes(Units.OHM, "Ohm");
 
             // Special case for DEGREE_CELSIUS.
-            label(Units.CELSIUS, "Celsius");
-            for (int i = 0; i < METRIC_PREFIX_SYMBOLS.length; i++) {
-                label(Units.CELSIUS.prefix(MetricPrefix.values()[i]), asciiPrefix(METRIC_PREFIX_SYMBOLS[i]) + "Celsius");
-            }
-            alias(Units.CELSIUS, "Cel");
+            labelWithAsciiPrefixes(Units.CELSIUS, "Celsius");
+            aliasWithAsciiPrefixes(Units.CELSIUS, "Cel");
 
             label(Units.METRE, "m");
             label(Units.SECOND, "s");
@@ -1146,32 +1158,62 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
             if ((name == null) || (name.length() == 0))
                 return false;
             // label must not begin with a digit or mathematical operator
-            return isUnitIdentifierPart(name.charAt(0)) && isAllASCII(name);
+            return isUnitIdentifierPart(name.charAt(0)) && isAllAscii(name);
             /*
              * for (int i = 0; i < name.length(); i++) { if
              * (!isAsciiCharacter(name.charAt(i))) return false; } return true;
              */
         }
-    }
-
-    private static String asciiPrefix(String prefix) {
-        return "µ".equals(prefix) ? "micro" : prefix;
-    }
-
-    private static String asciiSymbol(String s) {
-        return "Ω".equals(s) ? "Ohm" : s;
-    }
-
-    /** to check if a string only contains US-ASCII_INSTANCE characters */
-    private static boolean isAllASCII(String input) {
-        boolean isASCII = true;
-        for (int i = 0; i < input.length(); i++) {
-            int c = input.charAt(i);
-            if (c > 0x7F) {
-                isASCII = false;
-                break;
-            }
+        
+        /**
+         * Applies {@link #alias(Unit, String)} for this unit and all standard prefixes, if the alias contains only ASCII characters.
+         * 
+         * @param unit a unit
+         * @param alias an alias
+         */
+        private void aliasWithAsciiPrefixes(Unit<?> unit, String alias) {
+        	if (isValidIdentifier(alias)) {
+	        	alias(unit, alias);
+	            for (int i = 0; i < METRIC_PREFIX_SYMBOLS.length; i++) {
+	                alias(unit.prefix(MetricPrefix.values()[i]), asciiPrefix(METRIC_PREFIX_SYMBOLS[i]) + alias);
+	            }
+        	}
         }
-        return isASCII;
+        
+        /**
+         * Applies {@link #label(Unit, String)} for this unit and all standard prefixes, if the label contains only ASCII characters.
+         * 
+         * @param unit a unit
+         * @param alias an label
+         */
+        private void labelWithAsciiPrefixes(Unit<?> unit, String label) {
+        	if (isValidIdentifier(label)) {
+	        	label(unit, label);
+	            for (int i = 0; i < METRIC_PREFIX_SYMBOLS.length; i++) {
+	            	label(unit.prefix(MetricPrefix.values()[i]), asciiPrefix(METRIC_PREFIX_SYMBOLS[i]) + label);
+	            }
+        	}
+        }
+        
+        private static String asciiPrefix(String prefix) {
+            return "µ".equals(prefix) ? "micro" : prefix;
+        }
+
+        private static String asciiSymbol(String s) {
+            return "Ω".equals(s) ? "Ohm" : s;
+        }
+
+        /** to check if a string only contains US-ASCII_INSTANCE characters */
+        private static boolean isAllAscii(String input) {
+            boolean isASCII = true;
+            for (int i = 0; i < input.length(); i++) {
+                int c = input.charAt(i);
+                if (c > 0x7F) {
+                    isASCII = false;
+                    break;
+                }
+            }
+            return isASCII;
+        }
     }
 }

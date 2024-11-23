@@ -38,6 +38,7 @@ import static tech.units.indriya.unit.Units.BECQUEREL;
 import static tech.units.indriya.unit.Units.CANDELA;
 import static tech.units.indriya.unit.Units.CELSIUS;
 import static tech.units.indriya.unit.Units.COULOMB;
+import static tech.units.indriya.unit.Units.CUBIC_METRE;
 import static tech.units.indriya.unit.Units.FARAD;
 import static tech.units.indriya.unit.Units.GRAM;
 import static tech.units.indriya.unit.Units.GRAY;
@@ -50,6 +51,7 @@ import static tech.units.indriya.unit.Units.LITRE;
 import static tech.units.indriya.unit.Units.LUMEN;
 import static tech.units.indriya.unit.Units.LUX;
 import static tech.units.indriya.unit.Units.METRE;
+import static tech.units.indriya.unit.Units.MINUTE;
 import static tech.units.indriya.unit.Units.MOLE;
 import static tech.units.indriya.unit.Units.NEWTON;
 import static tech.units.indriya.unit.Units.OHM;
@@ -117,9 +119,9 @@ class UnitFormatRoundtripUtil {
     Sievert(SIEVERT),
     Katal(KATAL),
     //SQUARE_METRE
-    //CUBIC_METRE
+    CubicMetre(CUBIC_METRE),
     //PERCENT
-    //MINUTE
+    //Minute(MINUTE),
     //HOUR
     //DAY
     //WEEK
@@ -185,8 +187,7 @@ class UnitFormatRoundtripUtil {
       assertEquals(unitLiteral, unitLiteralAfterRountrip, 
           ()->String.format("testing '%s', unit literal diverted after roundtrip '%s' -> '%s'", 
               this.name(), unitLiteral, unitLiteralAfterRountrip));
-      
-      
+            
     }
 
     /** whether the UnitFormat {@code format} can correctly handle the {@code prefix}-ed unit */

@@ -39,6 +39,7 @@ import static tech.units.indriya.unit.Units.GRAM;
 import static tech.units.indriya.unit.Units.KILOGRAM;
 import static tech.units.indriya.unit.Units.LITRE;
 import static tech.units.indriya.unit.Units.METRE;
+import static tech.units.indriya.unit.Units.MINUTE;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;
@@ -191,6 +192,12 @@ public class EBNFPrefixTest {
 	public void testParseQuecto() {
 		final Unit<?> v = format.parse("ql");
 		assertEquals(v, QUECTO(LITRE));	
+	}
+	
+	
+	@Test
+	public void testQuettaMin() {
+		assertEquals("Qmin", format.format(QUETTA(MINUTE)));	
 	}
 	
 	@Test

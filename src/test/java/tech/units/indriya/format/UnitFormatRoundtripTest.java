@@ -31,7 +31,6 @@ package tech.units.indriya.format;
 
 import javax.measure.format.UnitFormat;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -48,7 +47,7 @@ import tech.units.indriya.format.UnitFormatRoundtripUtil.NonPrefixedUnits;
 class UnitFormatRoundtripTest {
 	
 	@Nested
-    @DisplayName("EBNFUnitFormat") @Disabled("yet too many errors")
+    @DisplayName("EBNFUnitFormat")
     public class EBNFUnitFormatTest {
 	    
 	  final UnitFormat format = EBNFUnitFormat.getInstance();
