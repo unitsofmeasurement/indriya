@@ -50,7 +50,7 @@ import static tech.units.indriya.format.UnitStyle.*;
  * </p>
  *
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 2.2, January 11, 2024
+ * @version 2.3, November 23, 2024
  * @since 1.0
  */
 public abstract class AbstractSystemOfUnits implements SystemOfUnits, Nameable {
@@ -166,6 +166,11 @@ public abstract class AbstractSystemOfUnits implements SystemOfUnits, Nameable {
 		return getUnit(string, style, false);
 	}
 
+	/**
+	 * Static helper class.
+	 *
+	 * @since 1.0
+	 */
 	protected static class Helper {
 		static Set<Unit<?>> getUnitsOfDimension(final Set<Unit<?>> units, Dimension dimension) {
 			if (dimension != null) {
@@ -176,8 +181,9 @@ public abstract class AbstractSystemOfUnits implements SystemOfUnits, Nameable {
 		}
 
 		/**
-		 * Adds a new named unit to the collection.
+		 * Adds a new named unit to a collection.
 		 *
+		 * @param units the collection to add to.
 		 * @param unit the unit being added.
 		 * @param name the name of the unit.
 		 * @return <code>unit</code>.
@@ -188,11 +194,12 @@ public abstract class AbstractSystemOfUnits implements SystemOfUnits, Nameable {
 		}
 
 		/**
-		 * Adds a new named unit to the collection.
+		 * Adds a new named unit to a collection.
 		 *
+		 * @param units the collection to add to.
 		 * @param unit the unit being added.
 		 * @param name the name of the unit.
-		 * @param name the symbol of the unit.
+		 * @param symbol the symbol of the unit.
 		 * @return <code>unit</code>.
 		 * @since 1.0
 		 */
@@ -201,11 +208,12 @@ public abstract class AbstractSystemOfUnits implements SystemOfUnits, Nameable {
 		}
 
 		/**
-		 * Adds a new named unit to the collection.
-		 *
+		 * Adds a new named unit to a set.
+		 * 		 
+		 * @param units the set to add to.
 		 * @param unit  the unit being added.
 		 * @param name  the name of the unit.
-		 * @param name  the symbol of the unit.
+		 * @param symbol  the symbol of the unit.
 		 * @param style style of the unit.
 		 * @return <code>unit</code>.
 		 * @since 1.0.1
@@ -265,7 +273,7 @@ public abstract class AbstractSystemOfUnits implements SystemOfUnits, Nameable {
 		}
 
 		/**
-		 * Adds a new labeled unit to the set.
+		 * Adds a new labeled unit to a set.
 		 *
 		 * @param units the set to add to.
 		 * @param unit  the unit being added.

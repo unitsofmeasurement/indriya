@@ -31,6 +31,8 @@ package tech.units.indriya.unit;
 
 import static tech.units.indriya.AbstractUnit.ONE;
 
+import java.util.Set;
+
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.quantity.Acceleration;
@@ -264,7 +266,7 @@ public class Units extends AbstractSystemOfUnits {
 	 * The SI derived unit for mass quantities (standard name <code>g</code>). The
 	 * base unit for mass quantity is {@link #KILOGRAM}.
 	 */
-	public static final Unit<Mass> GRAM = addUnit(KILOGRAM.divide(1000), "Gram");
+	public static final Unit<Mass> GRAM = addUnit(INSTANCE.units, KILOGRAM.divide(1000), "Gram");
 
 	/**
 	 * The SI unit for plane angle quantities (standard name <code>rad</code>). One
@@ -539,7 +541,7 @@ public class Units extends AbstractSystemOfUnits {
 	 * 
 	 * @see <a href="https://en.wikipedia.org/wiki/Kilometres_per_hour"> Wikipedia: Kilometres per hour</a>
 	 */
-	public static final Unit<Speed> KILOMETRE_PER_HOUR = addUnit(METRE_PER_SECOND.multiply(RationalNumber.of(5, 18)), "Kilometre per hour")
+	public static final Unit<Speed> KILOMETRE_PER_HOUR = addUnit(INSTANCE.units, METRE_PER_SECOND.multiply(RationalNumber.of(5, 18)), "Kilometre per hour")
 			.asType(Speed.class);
 
 	/////////////////////////////////////////////////////////////////
@@ -609,15 +611,30 @@ public class Units extends AbstractSystemOfUnits {
 	public static Units getInstance() {
 		return INSTANCE;
 	}
-
+	
 	static {
 		// have to add AbstractUnit.ONE as Dimensionless, too
-		addUnit(ONE);
+		addUnit(INSTANCE.units, ONE);
 		Helper.addUnit(INSTANCE.units, ONE, "One");
 		INSTANCE.quantityToUnit.put(Dimensionless.class, ONE);
-	}
+	}	
 
-    /**
+	/**
+     * Adds a new unit not mapped to any specified quantity type and puts a name and symbol.
+     *
+     * @param unit
+     *            the unit being added.
+     * @param name
+     *            the string to use as name
+     * @param symbol
+     *            the string to use as symbol
+     * @return <code>unit</code>.
+     */
+	protected static <U extends AbstractUnit<?>> U addUnit(final Set<Unit<?>> units, U unit, String name, String symbol) {
+		return Helper.addUnit(units, unit, name, symbol);
+	}
+	
+	/**
      * Adds a new unit not mapped to any specified quantity type and puts a text
      * as symbol or label.
      *
@@ -627,11 +644,11 @@ public class Units extends AbstractSystemOfUnits {
      *            the string to use as name
      * @return <code>unit</code>.
      */
-	protected static <U extends Unit<?>> U addUnit(U unit, String name) {
+	protected static <U extends Unit<?>> U addUnit(final Set<Unit<?>> units, U unit, String name) {
     	if (name != null && unit instanceof AbstractUnit) {
-    	    return Helper.addUnit(INSTANCE.units, unit, name);
+    	    return Helper.addUnit(units, unit, name);
     	} else {
-    	    INSTANCE.units.add(unit);
+    	    units.add(unit);
     	}
     	return unit;
     }
@@ -642,9 +659,19 @@ public class Units extends AbstractSystemOfUnits {
 	 * @param unit the unit being added.
 	 * @return <code>unit</code>.
 	 */
-	protected static <U extends Unit<?>> U addUnit(U unit) {
-		INSTANCE.units.add(unit);
+	protected static <U extends Unit<?>> U addUnit(final Set<Unit<?>> units, U unit) {
+		units.add(unit);
 		return unit;
+	}
+	
+	/**
+	 * Adds a new unit not mapped to any specified quantity type.
+	 *
+	 * @param unit the unit being added.
+	 * @return <code>unit</code>.
+	 */
+	private static <U extends Unit<?>> U addUnit(U unit) {
+		return addUnit(INSTANCE.units, unit);
 	}
     
 	/**
@@ -655,7 +682,7 @@ public class Units extends AbstractSystemOfUnits {
 	 * @param type the quantity type.
 	 * @return <code>unit</code>.
 	 */
-	protected static <U extends AbstractUnit<?>> U addUnit(U unit, String name, Class<? extends Quantity<?>> type) {
+	private static <U extends AbstractUnit<?>> U addUnit(U unit, String name, Class<? extends Quantity<?>> type) {
 		Helper.addUnit(INSTANCE.units, unit, name);
 		INSTANCE.quantityToUnit.put(type, unit);
 		return unit;
@@ -668,13 +695,9 @@ public class Units extends AbstractSystemOfUnits {
 	 * @param type the quantity type.
 	 * @return <code>unit</code>.
 	 */
-	protected static <U extends AbstractUnit<?>> U addUnit(U unit, Class<? extends Quantity<?>> type) {
+	private static <U extends AbstractUnit<?>> U addUnit(U unit, Class<? extends Quantity<?>> type) {
 		INSTANCE.units.add(unit);
 		INSTANCE.quantityToUnit.put(type, unit);
 		return unit;
-	}
-
-	protected static <U extends AbstractUnit<?>> U addUnit(U unit, String name, String symbol) {
-		return Helper.addUnit(INSTANCE.units, unit, name, symbol);
-	}
+	}	
 }
