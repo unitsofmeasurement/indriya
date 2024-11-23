@@ -620,8 +620,10 @@ public class Units extends AbstractSystemOfUnits {
 	}	
 
 	/**
-     * Adds a new unit not mapped to any specified quantity type and puts a name and symbol.
+     * Adds a new unit not mapped to any specified quantity type to a set with a name and symbol.
      *
+     * @param units 
+     *            the set to add to.
      * @param unit
      *            the unit being added.
      * @param name
@@ -635,9 +637,10 @@ public class Units extends AbstractSystemOfUnits {
 	}
 	
 	/**
-     * Adds a new unit not mapped to any specified quantity type and puts a text
-     * as symbol or label.
+     * Adds a new unit to a set using a name.
      *
+     * @param units 
+     *            the set to add to.
      * @param unit
      *            the unit being added.
      * @param name
@@ -654,8 +657,9 @@ public class Units extends AbstractSystemOfUnits {
     }
 	
 	/**
-	 * Adds a new unit not mapped to any specified quantity type.
+	 * Adds a new unit to a set of units.
 	 *
+	 * @param units the set to add to.
 	 * @param unit the unit being added.
 	 * @return <code>unit</code>.
 	 */
