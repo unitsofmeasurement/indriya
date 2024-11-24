@@ -146,7 +146,7 @@ public final class UnitFormatParser implements UnitTokenConstants {
     Unit<?> result = AbstractUnit.ONE;
     Unit<?> temp = AbstractUnit.ONE;
     if (IMAGE_E.equals(jj_lastpos.image)) {
-    	// Hack for just "e" to avoid exponent mismatch
+   	// Hack for just "e" to avoid exponent mismatch (https://github.com/unitsofmeasurement/indriya/issues/430)
     	jj_ntk = UNIT_IDENTIFIER;
     	token.next.kind = UNIT_IDENTIFIER;
     	result = atomicExpr();
