@@ -440,14 +440,12 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
             aliasWithPrefixes(Units.CELSIUS, "°C");
             // Additional cases and aliases
             label(Units.PERCENT, "%");
-            label(Units.METRE, "m");
-            label(Units.SECOND, "s");
-            label(Units.MINUTE, "min");
-            label(Units.HOUR, "h");
-            label(Units.DAY, "d");
-            alias(Units.DAY, "day");
-            label(Units.WEEK, "wk");
-            alias(Units.WEEK, "week");
+            labelWithPrefixes(Units.MINUTE, "min");
+            labelWithPrefixes(Units.HOUR, "h");
+            labelWithPrefixes(Units.DAY, "d");
+            aliasWithPrefixes(Units.DAY, "day");
+            labelWithPrefixes(Units.WEEK, "wk");
+            aliasWithPrefixes(Units.WEEK, "week");
             label(Units.YEAR, "yr");
             alias(Units.YEAR, "y");
             alias(Units.YEAR, "year");
@@ -457,19 +455,17 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
             alias(Units.MONTH, "mon");
             alias(Units.MONTH, "month");
             label(Units.KILOMETRE_PER_HOUR, "km/h");
+            labelWithPrefixes(Units.SQUARE_METRE, "\u33A1");
             aliasWithPrefixes(Units.SQUARE_METRE, "m2");
             labelWithPrefixes(Units.CUBIC_METRE, "\u33A5");
             aliasWithPrefixes(Units.CUBIC_METRE, "m3");
-            label(Units.NEWTON, "N");
-            label(Units.RADIAN, "rad");
+            labelWithPrefixes(Units.LITRE, "l");
 
             label(AbstractUnit.ONE, "one");
-
-            // -- LITRE
-            label(Units.LITRE, "l");
-            for(Prefix prefix : MetricPrefix.values()) {
-                label(Units.LITRE.prefix(prefix), prefix.getSymbol()+"l");
-            } // TODO how about BinaryPrefix?
+            //label(Units.NEWTON, "N");
+            //label(Units.RADIAN, "rad");
+            //label(Units.METRE, "m");
+            //label(Units.SECOND, "s");
 
             return this;
         }
@@ -540,8 +536,12 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
          */
         private void labelWithPrefixes(Unit<?> unit, String label) {
         	label(unit, label);
+        	// TODO try to optimize this
             for (int i = 0; i < METRIC_PREFIX_SYMBOLS.length; i++) {
             	label(unit.prefix(MetricPrefix.values()[i]), METRIC_PREFIX_SYMBOLS[i] + label);
+            }
+            for (int i = 0; i < BINARY_PREFIX_SYMBOLS.length; i++) {
+            	label(unit.prefix(BinaryPrefix.values()[i]), BINARY_PREFIX_SYMBOLS[i] + label);
             }
         }
         
@@ -553,9 +553,14 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
          */
         private void aliasWithPrefixes(Unit<?> unit, String alias) {
         	alias(unit, alias);
+        	// TODO try to optimize this
             for (int i = 0; i < METRIC_PREFIX_SYMBOLS.length; i++) {
                 alias(unit.prefix(MetricPrefix.values()[i]), METRIC_PREFIX_SYMBOLS[i] + alias);
             }
+            for (int i = 0; i < BINARY_PREFIX_SYMBOLS.length; i++) {
+            	alias(unit.prefix(BinaryPrefix.values()[i]), BINARY_PREFIX_SYMBOLS[i] + alias);
+            }
+
         }
 
         protected static boolean isUnitIdentifierPart(char ch) {
@@ -1177,6 +1182,9 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
 	            for (int i = 0; i < METRIC_PREFIX_SYMBOLS.length; i++) {
 	                alias(unit.prefix(MetricPrefix.values()[i]), asciiPrefix(METRIC_PREFIX_SYMBOLS[i]) + alias);
 	            }
+	            for (int i = 0; i < BINARY_PREFIX_SYMBOLS.length; i++) {
+	            	alias(unit.prefix(BinaryPrefix.values()[i]), asciiPrefix(BINARY_PREFIX_SYMBOLS[i]) + alias);
+	            }
         	}
         }
         
@@ -1191,6 +1199,9 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
 	        	label(unit, label);
 	            for (int i = 0; i < METRIC_PREFIX_SYMBOLS.length; i++) {
 	            	label(unit.prefix(MetricPrefix.values()[i]), asciiPrefix(METRIC_PREFIX_SYMBOLS[i]) + label);
+	            }
+	            for (int i = 0; i < BINARY_PREFIX_SYMBOLS.length; i++) {
+	            	label(unit.prefix(BinaryPrefix.values()[i]), asciiPrefix(BINARY_PREFIX_SYMBOLS[i]) + label);
 	            }
         	}
         }
