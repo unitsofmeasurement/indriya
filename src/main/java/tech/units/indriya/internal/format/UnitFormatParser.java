@@ -145,7 +145,14 @@ public final class UnitFormatParser implements UnitTokenConstants {
   Unit<?> mulExpr() throws TokenException {
     Unit<?> result = AbstractUnit.ONE;
     Unit<?> temp = AbstractUnit.ONE;
-    result = exponentExpr();
+    if (IMAGE_E.equals(jj_lastpos.image)) {
+    	// Hack for just "e" to avoid exponent mismatch
+    	jj_ntk = UNIT_IDENTIFIER;
+    	token.next.kind = UNIT_IDENTIFIER;
+    	result = atomicExpr();
+    } else {
+    	result = exponentExpr();
+    }
     label_2: while (true) {
       switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {
         case ASTERISK:
@@ -288,7 +295,6 @@ public final class UnitFormatParser implements UnitTokenConstants {
 
   Unit<?> atomicExpr() throws TokenException {
     Unit<?> result = AbstractUnit.ONE;
-    // Unit<?> temp = AbstractUnit.ONE;
     Number n = null;
     Token theToken = null;
     switch ((jj_ntk == -1) ? jj_ntk() : jj_ntk) {

@@ -85,6 +85,9 @@ interface UnitTokenConstants {
   /** Lexical state. */
   int DEFAULT = 0;
 
+  /** Special case for Token that only contains "e" */
+  String IMAGE_E = "e";
+  
   /** Literal token values. */
   String[] tokenImage = { "<EOF>", "<DIGIT>", "<SUPERSCRIPT_DIGIT>", "<INITIAL_CHAR>", "<EXTENDED_CHAR>", "\"+\"", "\"-\"", "\"*\"", "\"\\u00b7\"",
       "\"/\"", "\"^\"", "\":\"", "\"(\"", "\")\"", "<INTEGER>", "<SUPERSCRIPT_INTEGER>", "<FLOATING_POINT>", "<LOG>", "<NAT_LOG>", "\"e\"",

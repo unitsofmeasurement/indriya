@@ -203,5 +203,13 @@ public class EBNFFormatTest {
 		privateFormat.alias(METRE, "mtr");
 		final Unit<?> mtr = privateFormat.parse("mtr");
 		assertEquals(mtr, METRE);
-	}	
+	}
+	
+	@Test
+	public void testAliasE() {
+		final EBNFUnitFormat privateFormat = EBNFUnitFormat.getNewInstance();
+		privateFormat.alias(METRE, "e");
+		final Unit<?> mtr = privateFormat.parse("e");
+		assertEquals(mtr, METRE);
+	}
 }
