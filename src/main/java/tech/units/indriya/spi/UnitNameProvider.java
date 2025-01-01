@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2024, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+ * Copyright (c) 2005-2025, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
  *
  * All rights reserved.
  *

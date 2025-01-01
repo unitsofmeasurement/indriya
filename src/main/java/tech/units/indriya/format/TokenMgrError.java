@@ -1,6 +1,6 @@
 /*
  * Units of Measurement Reference Implementation
- * Copyright (c) 2005-2024, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
+ * Copyright (c) 2005-2025, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
  *
  * All rights reserved.
  *
@@ -27,7 +27,6 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/* JavaCCOptions: */
 package tech.units.indriya.format;
 
 import javax.measure.MeasurementError;
