@@ -4,10 +4,10 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>tech.units</groupId>
 	<artifactId>indriya</artifactId>
-	<url>http://units.tech</url>
+	<url>https://unitsofmeasurement.github.io/indriya/</url>
 	<organization>
 		<name>Units of Measurement project</name>
-		<url>http://unitsofmeasurement.github.io</url>
+		<url>https://unitsofmeasurement.github.io</url>
 	</organization>
 	<name>Units of Measurement Reference Implementation</name>
 	<description>Unit Standard (JSR 385) Reference Implementation</description>
