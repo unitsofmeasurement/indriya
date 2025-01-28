@@ -31,6 +31,7 @@ package tech.units.indriya.format;
 
 import static javax.measure.BinaryPrefix.KIBI;
 import static javax.measure.BinaryPrefix.TEBI;
+import static javax.measure.MetricPrefix.CENTI;
 import static javax.measure.MetricPrefix.GIGA;
 import static javax.measure.MetricPrefix.KILO;
 import static javax.measure.MetricPrefix.MEGA;
@@ -38,6 +39,7 @@ import static javax.measure.MetricPrefix.MICRO;
 import static javax.measure.MetricPrefix.MILLI;
 import static javax.measure.MetricPrefix.NANO;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -218,6 +220,8 @@ public class SimpleUnitFormatTest {
       assertEquals("1/m^19:31", format.format(format.parse("m^12:31").divide(METRE)));
     }    
 
+    
+    
     @Test
     public void testFormatNewLabeledUnits() {
         logger.log(LOG_LEVEL, "== Use case 1: playing with base units ==");
@@ -325,6 +329,8 @@ public class SimpleUnitFormatTest {
 	public void testFormatDay() {
 		logger.log(LOG_LEVEL, format.format(DAY)); 
 		assertEquals("d", format.format(DAY));
+		
+		assertEquals("cd", format.format(CENTI(DAY)));
 	}
 	
 	@Test
@@ -350,6 +356,11 @@ public class SimpleUnitFormatTest {
 		logger.log(LOG_LEVEL, format.format(DAY));
 		assertEquals(DAY, format.parse("d"));
 		assertEquals(DAY, format.parse("day"));
+		// CENTI(DAY) is NOT symmetric, because "cd" overlaps with CANDELA, hence it prints "cd" but won't parse, 
+		// because we cannot parse with more than one outcome, see https://github.com/unitsofmeasurement/indriya/issues/433
+		assertNotEquals(CENTI(DAY), format.parse("cd"));
+		// Instead we have to use the alias "cday" for parsing.
+		assertEquals(CENTI(DAY), format.parse("cday"));
 	}
 	
 	@Test
@@ -374,6 +385,12 @@ public class SimpleUnitFormatTest {
 		assertEquals(MONTH, format.parse("mo"));
 	}
 	
+	@Test
+	public void testParseCandela() {
+		//assertEquals(CANDELA, format.parse("cd"));
+		final UnitFormat newFormat = SimpleUnitFormat.getNewInstance();
+		assertEquals(CANDELA, newFormat.parse("cd"));
+	}
 	
 	@Test
 	public void testFormatNewInstance() {
@@ -426,7 +443,7 @@ public class SimpleUnitFormatTest {
 				
 		logger.log(LOG_LEVEL, "Now we set another label");
 		format.label(CANDELA, "can");
-		assertEquals("can", format.format(CANDELA));		
+		assertEquals("can", format.format(CANDELA));
 		assertEquals("can", CANDELA.toString());
 		assertNotNull(format.parse("can"));
 		// The old one still remains like an alias

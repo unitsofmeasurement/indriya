@@ -81,7 +81,7 @@ import static tech.units.indriya.format.FormatConstants.MIDDLE_DOT;
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author Eric Russell
  * @author Andi Huber
- * @version 2.15, Nov 24, 2024
+ * @version 2.16, Jan 28 24, 2025
  * @since 1.0
  */
 public abstract class SimpleUnitFormat extends AbstractUnitFormat {
@@ -442,18 +442,18 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
             label(Units.PERCENT, "%");
             labelWithPrefixes(Units.MINUTE, "min");
             labelWithPrefixes(Units.HOUR, "h");
-            labelWithPrefixes(Units.DAY, "d");
+            label(Units.DAY, "d"); // no prefixes here, see https://github.com/unitsofmeasurement/indriya/issues/433
             aliasWithPrefixes(Units.DAY, "day");
             labelWithPrefixes(Units.WEEK, "wk");
             aliasWithPrefixes(Units.WEEK, "week");
-            label(Units.YEAR, "yr");
+            labelWithPrefixes(Units.YEAR, "yr");
             alias(Units.YEAR, "y");
-            alias(Units.YEAR, "year");
+            aliasWithPrefixes(Units.YEAR, "year");
             alias(Units.YEAR, "days365");
-            alias(Units.YEAR, "a");
-            label(Units.MONTH, "mo");
-            alias(Units.MONTH, "mon");
-            alias(Units.MONTH, "month");
+            aliasWithPrefixes(Units.YEAR, "a");
+            labelWithPrefixes(Units.MONTH, "mo");
+            aliasWithPrefixes(Units.MONTH, "mon");
+            aliasWithPrefixes(Units.MONTH, "month");
             label(Units.KILOMETRE_PER_HOUR, "km/h");
             labelWithPrefixes(Units.SQUARE_METRE, "\u33A1");
             aliasWithPrefixes(Units.SQUARE_METRE, "m2");
@@ -462,10 +462,6 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
             labelWithPrefixes(Units.LITRE, "l");
 
             label(AbstractUnit.ONE, "one");
-            //label(Units.NEWTON, "N");
-            //label(Units.RADIAN, "rad");
-            //label(Units.METRE, "m");
-            //label(Units.SECOND, "s");
 
             return this;
         }

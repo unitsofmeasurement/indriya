@@ -103,7 +103,7 @@ public class EBNFFormatTest {
                 assertNotNull(v);
                 logger.log(Level.FINER, v.toString());
             } catch (MeasurementParseException pex) {
-                logger.log(Level.WARNING, String.format(" %s parsing %s", pex, u));
+                logger.log(Level.WARNING, String.format("%s parsing %s", pex, u));
             }
         }
     }
