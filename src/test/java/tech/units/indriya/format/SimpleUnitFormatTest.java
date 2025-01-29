@@ -359,8 +359,6 @@ public class SimpleUnitFormatTest {
 		// CENTI(DAY) is NOT symmetric, because "cd" overlaps with CANDELA, hence it prints "cd" but won't parse, 
 		// because we cannot parse with more than one outcome, see https://github.com/unitsofmeasurement/indriya/issues/433
 		assertNotEquals(CENTI(DAY), format.parse("cd"));
-		// Instead we have to use the alias "cday" for parsing.
-		assertEquals(CENTI(DAY), format.parse("cday"));
 	}
 	
 	@Test

@@ -81,7 +81,7 @@ import static tech.units.indriya.format.FormatConstants.MIDDLE_DOT;
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author Eric Russell
  * @author Andi Huber
- * @version 2.17, Jan 29, 2025
+ * @version 2.18, Jan 29, 2025
  * @since 1.0
  */
 public abstract class SimpleUnitFormat extends AbstractUnitFormat {
@@ -94,7 +94,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
      *
      */
     public static enum Flavor {
-        /** @deprecated use DEFAULT_INSTANCE */
+        /** @deprecated use DEFAULT */
          Default, 
          /** The default format flavor */
          DEFAULT, 
@@ -438,30 +438,34 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
             // Special case for DEGREE_CELSIUS.
             labelWithPrefixes(Units.CELSIUS, "℃");
             aliasWithPrefixes(Units.CELSIUS, "°C");
+            
             // Additional cases and aliases
+            label(AbstractUnit.ONE, "one");
             label(Units.PERCENT, "%");
-            labelWithPrefixes(Units.MINUTE, "min");
-            labelWithPrefixes(Units.HOUR, "h");
-            label(Units.DAY, "d"); // no prefixes here, see https://github.com/unitsofmeasurement/indriya/issues/433
-            aliasWithPrefixes(Units.DAY, "day");
-            labelWithPrefixes(Units.WEEK, "wk");
-            aliasWithPrefixes(Units.WEEK, "week");
-            labelWithPrefixes(Units.YEAR, "yr");
-            alias(Units.YEAR, "y"); // no prefixes here, because of overlap with GRAY, see https://github.com/unitsofmeasurement/indriya/issues/433
-            aliasWithPrefixes(Units.YEAR, "year");
-            aliasWithPrefixes(Units.YEAR, "days365");
-            alias(Units.YEAR, "a"); // no prefixes here, because of overlap with PASCAL, see https://github.com/unitsofmeasurement/indriya/issues/433
-            labelWithPrefixes(Units.MONTH, "mo");
-            aliasWithPrefixes(Units.MONTH, "mon");
-            aliasWithPrefixes(Units.MONTH, "month");
+            
+            // https://en.wikipedia.org/wiki/Non-SI_units_mentioned_in_the_SI#Units_officially_accepted_for_use_with_the_SI
+            // The SI prefixes can be used with several of these units, but not, for example, with the non-SI units of time.
+            // Also see https://github.com/unitsofmeasurement/indriya/issues/433 
+            label(Units.MINUTE, "min");
+            label(Units.HOUR, "h");
+            label(Units.DAY, "d");
+            alias(Units.DAY, "day");
+            label(Units.WEEK, "wk");
+            alias(Units.WEEK, "week");
+            label(Units.YEAR, "yr");
+            alias(Units.YEAR, "y"); 
+            alias(Units.YEAR, "year");
+            alias(Units.YEAR, "days365");
+            alias(Units.YEAR, "a");
+            label(Units.MONTH, "mo");
+            alias(Units.MONTH, "mon");
+            alias(Units.MONTH, "month");
             label(Units.KILOMETRE_PER_HOUR, "km/h");
             labelWithPrefixes(Units.SQUARE_METRE, "\u33A1");
             aliasWithPrefixes(Units.SQUARE_METRE, "m2");
             labelWithPrefixes(Units.CUBIC_METRE, "\u33A5");
             aliasWithPrefixes(Units.CUBIC_METRE, "m3");
             labelWithPrefixes(Units.LITRE, "l");
-
-            label(AbstractUnit.ONE, "one");
 
             return this;
         }

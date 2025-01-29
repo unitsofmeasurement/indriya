@@ -33,42 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
-import static tech.units.indriya.unit.Units.AMPERE;
-import static tech.units.indriya.unit.Units.BECQUEREL;
-import static tech.units.indriya.unit.Units.CANDELA;
-import static tech.units.indriya.unit.Units.CELSIUS;
-import static tech.units.indriya.unit.Units.COULOMB;
-import static tech.units.indriya.unit.Units.CUBIC_METRE;
-import static tech.units.indriya.unit.Units.DAY;
-import static tech.units.indriya.unit.Units.FARAD;
-import static tech.units.indriya.unit.Units.GRAM;
-import static tech.units.indriya.unit.Units.GRAY;
-import static tech.units.indriya.unit.Units.HENRY;
-import static tech.units.indriya.unit.Units.HERTZ;
-import static tech.units.indriya.unit.Units.HOUR;
-import static tech.units.indriya.unit.Units.JOULE;
-import static tech.units.indriya.unit.Units.KATAL;
-import static tech.units.indriya.unit.Units.KELVIN;
-import static tech.units.indriya.unit.Units.LITRE;
-import static tech.units.indriya.unit.Units.LUMEN;
-import static tech.units.indriya.unit.Units.LUX;
-import static tech.units.indriya.unit.Units.METRE;
-import static tech.units.indriya.unit.Units.MINUTE;
-import static tech.units.indriya.unit.Units.MOLE;
-import static tech.units.indriya.unit.Units.NEWTON;
-import static tech.units.indriya.unit.Units.OHM;
-import static tech.units.indriya.unit.Units.PASCAL;
-import static tech.units.indriya.unit.Units.RADIAN;
-import static tech.units.indriya.unit.Units.SECOND;
-import static tech.units.indriya.unit.Units.SIEMENS;
-import static tech.units.indriya.unit.Units.SIEVERT;
-import static tech.units.indriya.unit.Units.SQUARE_METRE;
-import static tech.units.indriya.unit.Units.STERADIAN;
-import static tech.units.indriya.unit.Units.TESLA;
-import static tech.units.indriya.unit.Units.VOLT;
-import static tech.units.indriya.unit.Units.WATT;
-import static tech.units.indriya.unit.Units.WEBER;
-import static tech.units.indriya.unit.Units.WEEK;
+import static tech.units.indriya.unit.Units.*;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -125,10 +90,10 @@ class UnitFormatRoundtripUtil {
     //SquareMetre(SQUARE_METRE),
     CubicMetre(CUBIC_METRE),
     //PERCENT
-    Minute(MINUTE),
-    Hour(HOUR),
+    //Minute(MINUTE),
+    //Hour(HOUR),
     //Day(DAY),
-    Week(WEEK),
+    //Week(WEEK),
     //YEAR
     Litre(LITRE)
 
