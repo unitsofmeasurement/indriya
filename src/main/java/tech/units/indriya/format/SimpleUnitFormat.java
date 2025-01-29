@@ -81,7 +81,7 @@ import static tech.units.indriya.format.FormatConstants.MIDDLE_DOT;
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author Eric Russell
  * @author Andi Huber
- * @version 2.16, Jan 28 24, 2025
+ * @version 2.17, Jan 29, 2025
  * @since 1.0
  */
 public abstract class SimpleUnitFormat extends AbstractUnitFormat {
@@ -447,10 +447,10 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
             labelWithPrefixes(Units.WEEK, "wk");
             aliasWithPrefixes(Units.WEEK, "week");
             labelWithPrefixes(Units.YEAR, "yr");
-            alias(Units.YEAR, "y");
+            alias(Units.YEAR, "y"); // no prefixes here, because of overlap with GRAY, see https://github.com/unitsofmeasurement/indriya/issues/433
             aliasWithPrefixes(Units.YEAR, "year");
-            alias(Units.YEAR, "days365");
-            aliasWithPrefixes(Units.YEAR, "a");
+            aliasWithPrefixes(Units.YEAR, "days365");
+            alias(Units.YEAR, "a"); // no prefixes here, because of overlap with PASCAL, see https://github.com/unitsofmeasurement/indriya/issues/433
             labelWithPrefixes(Units.MONTH, "mo");
             aliasWithPrefixes(Units.MONTH, "mon");
             aliasWithPrefixes(Units.MONTH, "month");
