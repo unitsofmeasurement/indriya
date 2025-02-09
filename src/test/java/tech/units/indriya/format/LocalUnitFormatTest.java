@@ -40,8 +40,13 @@ import java.util.logging.Logger;
 
 import javax.measure.Unit;
 import javax.measure.format.UnitFormat;
+import javax.measure.quantity.Mass;
+
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+
+import tech.units.indriya.function.MultiplyConverter;
+import tech.units.indriya.unit.TransformedUnit;
 
 /**
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
@@ -65,6 +70,15 @@ public class LocalUnitFormatTest {
 		Unit<?> u = format.parse("km");
 		assertEquals(KILO(METRE), u);
 		assertEquals("km", u.toString());
+	}
+	
+	@Test
+	public void testPrefixKg() {
+		final UnitFormat format = LocalUnitFormat.getInstance();
+		 // as tonnes defined in si-units
+		Unit<Mass> m = new TransformedUnit<Mass>(KILOGRAM, MultiplyConverter.ofRational(1000, 1));
+		String output = format.format(m);
+		assertEquals("kg·1000", output.toString());
 	}
 
 	@Test

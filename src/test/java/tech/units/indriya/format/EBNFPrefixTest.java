@@ -51,7 +51,9 @@ import javax.measure.quantity.Volume;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import tech.units.indriya.function.MultiplyConverter;
 import tech.units.indriya.quantity.Quantities;
+import tech.units.indriya.unit.TransformedUnit;
 import tech.units.indriya.unit.Units;
 
 public class EBNFPrefixTest {
@@ -154,6 +156,14 @@ public class EBNFPrefixTest {
 		final Quantity<Length> m2 = m1.to(NANO(Units.METRE));
 		assertNumberEquals(1000000000L, m2.getValue(), 1E-12);
 		assertEquals("nm", format.format(m2.getUnit()));
+	}
+	
+	@Test
+	public void testPrefixKg() {
+		 // as tonnes defined in si-units
+		Unit<Mass> m = new TransformedUnit<Mass>(KILOGRAM, MultiplyConverter.ofRational(1000, 1));
+		String output = format.format(m);
+		assertEquals("kg·1000", output.toString());
 	}
 
 	@Test

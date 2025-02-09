@@ -156,7 +156,7 @@ import java.util.ResourceBundle;
  *
  * @author <a href="mailto:eric-r@northwestern.edu">Eric Russell</a>
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 1.6, October 4, 2024
+ * @version 1.7, February 9, 2025
  * @since 1.0
  */
 public class LocalUnitFormat extends AbstractUnitFormat {
@@ -383,11 +383,15 @@ public class LocalUnitFormat extends AbstractUnitFormat {
       }
 
       if (unit instanceof TransformedUnit) {
-        TransformedUnit<?> transUnit = (TransformedUnit<?>) unit;
-        if (parentUnit == null)
-          parentUnit = transUnit.getParentUnit();
-        // String x = parentUnit.toString();
-        converter = transUnit.getConverter();
+          TransformedUnit<?> transUnit = (TransformedUnit<?>) unit;
+          if (parentUnit == null) {
+          	parentUnit = transUnit.getParentUnit();
+          } else {
+          	if (transUnit.getParentUnit() != null) {
+          		parentUnit =  transUnit.getParentUnit();
+          	}
+          }
+          converter = transUnit.getConverter();
       }
 
       unitPrecedence = formatInternal(parentUnit, temp);
