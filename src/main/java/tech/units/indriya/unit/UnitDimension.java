@@ -148,12 +148,13 @@ public class UnitDimension implements Dimension, Serializable {
 		// TODO: For a Java 9+ version use .takeWhile, see https://www.tutorialspoint.com/break-or-return-from-java-8-stream-foreach
 		Unit<Q> systemUnit = null;
 		List<ServiceProvider> providers = ServiceProvider.available();
+		providerBreakLabel:
 		for (ServiceProvider provider: providers) {
 			Collection<SystemOfUnits> unitSystems = provider.getSystemOfUnitsService().getAvailableSystemsOfUnits();
 			for (SystemOfUnits systemOfUnits : unitSystems) {
 				systemUnit = systemOfUnits.getUnit(quantityType);
 				if (systemUnit != null) {
-					break;
+					 break providerBreakLabel;
 				}
 			}
 		}
