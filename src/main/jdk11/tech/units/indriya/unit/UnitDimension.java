@@ -32,8 +32,11 @@ package tech.units.indriya.unit;
 import javax.measure.Dimension;
 import javax.measure.Quantity;
 import javax.measure.Unit;
+import javax.measure.spi.ServiceProvider;
+import javax.measure.spi.SystemOfUnits;
 
 import tech.units.indriya.AbstractUnit;
+import tech.units.indriya.spi.DefaultServiceProvider;
 import tech.units.indriya.unit.BaseUnit;
 import tech.units.indriya.unit.ProductUnit;
 import tech.units.indriya.unit.Units;
@@ -42,6 +45,7 @@ import java.lang.System.Logger;
 import java.lang.System.Logger.Level;
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -67,7 +71,7 @@ import java.util.Objects;
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author  Martin Desruisseaux (Geomatys)
  * @author  Andi Huber
- * @version 2.1, $Date: 2021-03-13 $
+ * @version 2.2, $Date: 2025-02-19 $
  * @since 2.0
  */
 public class UnitDimension implements Dimension, Serializable {
@@ -145,12 +149,32 @@ public class UnitDimension implements Dimension, Serializable {
 	 * @since 1.1
 	 */
 	public static <Q extends Quantity<Q>> Dimension of(Class<Q> quantityType) {
-		// TODO: Track services and aggregate results (register custom types)
-		Unit<Q> siUnit = Units.getInstance().getUnit(quantityType);
-		if (siUnit == null && LOGGER.isLoggable(Level.DEBUG)) {
+		Unit<Q> typedUnit = typedUnitFor(quantityType);		
+		if (typedUnit == null && LOGGER.isLoggable(Level.DEBUG)) {
 			LOGGER.log(Level.DEBUG, "Quantity type: " + quantityType + " unknown");		
 		}
-		return (siUnit != null) ? siUnit.getDimension() : null;
+		return (typedUnit != null) ? typedUnit.getDimension() : null;
+	}
+	
+	/**
+	 * Returns the typed unit for the specified quantity type by aggregating the
+	 * results from the registered {@link javax.measure.spi.SystemOfUnits SystemsOfUnits} or <code>null</code> if the specified
+	 * quantity is unknown.
+	 *
+	 * @param quantityType the quantity type.
+	 * @return the unit for the quantity type or <code>null</code>.
+	 * @since 2.2
+	 * @see javax.measure.spi.SystemOfUnits#getUnit(Class)
+	 */
+	private static <Q extends Quantity<Q>> Unit<Q> typedUnitFor(Class<Q> quantityType) {
+		final List<ServiceProvider> providers = DefaultServiceProvider.available();
+		for (ServiceProvider provider: providers) {
+			for (SystemOfUnits systemOfUnits : provider.getSystemOfUnitsService().getAvailableSystemsOfUnits()) {
+				Unit<Q> result = systemOfUnits.getUnit(quantityType);
+				if (result != null) return result;
+			}
+		}
+		return null;
 	}
 
 	/**
