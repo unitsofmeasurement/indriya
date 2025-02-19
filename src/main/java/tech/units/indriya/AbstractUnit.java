@@ -290,15 +290,15 @@ public abstract class AbstractUnit<Q extends Quantity<Q>>
 	 *                            the SI dimension of the specified type.
 	 * @see Units#getUnit(Class)
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public final <T extends Quantity<T>> Unit<T> asType(Class<T> type) {
-		return asType(type, Units.getInstance());
-		/*
+		//return asType(type, Units.getInstance());
+		
 		Dimension typeDimension = UnitDimension.of(type);
 		if (typeDimension != null && !typeDimension.equals(this.getDimension()))
 			throw new ClassCastException("The unit: " + this + " is not compatible with quantities of type " + type);
-		return (Unit<T>) this;
-		*/
+		return (Unit<T>) this;		
 	}
 
 	@Override
