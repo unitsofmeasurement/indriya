@@ -65,7 +65,6 @@ import tech.units.indriya.unit.AlternateUnit;
 import tech.units.indriya.unit.AnnotatedUnit;
 import tech.units.indriya.unit.ProductUnit;
 import tech.units.indriya.unit.TransformedUnit;
-import tech.units.indriya.unit.UnitDimension;
 import tech.units.indriya.unit.Units;
 import tech.uom.lib.common.function.Nameable;
 import tech.uom.lib.common.function.PrefixOperator;
@@ -288,17 +287,17 @@ public abstract class AbstractUnit<Q extends Quantity<Q>>
 	 * @param type the quantity class identifying the nature of the unit.
 	 * @throws ClassCastException if the dimension of this unit is different from
 	 *                            the SI dimension of the specified type.
-	 * @see Units#getUnit(Class)
+	 * @see Units#getInstance()
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public final <T extends Quantity<T>> Unit<T> asType(Class<T> type) {
-		//return asType(type, Units.getInstance());
-		
-		Dimension typeDimension = UnitDimension.of(type);
-		if (typeDimension != null && !typeDimension.equals(this.getDimension()))
-			throw new ClassCastException("The unit: " + this + " is not compatible with quantities of type " + type);
-		return (Unit<T>) this;		
+		return asType(type, Units.getInstance());		
+		/*
+		 * Dimension typeDimension = UnitDimension.of(type); if (typeDimension != null
+		 * && !typeDimension.equals(this.getDimension())) throw new
+		 * ClassCastException("The unit: " + this +
+		 * " is not compatible with quantities of type " + type); return (Unit<T>) this;
+		 */	
 	}
 
 	@Override
@@ -333,6 +332,18 @@ public abstract class AbstractUnit<Q extends Quantity<Q>>
 		return getConverterToAny(that, ABSOLUTE);
 	}
 	
+	/**
+	 * Casts this unit to a parameterized unit of specified nature or throw a
+	 * ClassCastException if the dimension of the specified quantity and this unit's
+	 * dimension do not match (regardless whether or not the dimensions are
+	 * independent or not).
+	 *
+	 * @param type the quantity class identifying the nature of the unit.
+	 * @param typeSystem the system of units using the quantity class.
+	 * @throws ClassCastException if the dimension of this unit is different from
+	 *                            the SI dimension of the specified type.
+	 * @see javax.measure.spi.SystemOfUnits#getUnit(Class)
+	 */	 
 	@SuppressWarnings("unchecked")
 	public final <T extends Quantity<T>> Unit<T> asType(Class<T> type, SystemOfUnits typeSystem) {
 		Unit<T> typedUnit = typeSystem.getUnit(type); 

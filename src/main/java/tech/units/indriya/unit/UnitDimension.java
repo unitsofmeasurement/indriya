@@ -146,7 +146,7 @@ public class UnitDimension implements Dimension, Serializable {
 	 * @since 1.1
 	 * @see javax.measure.spi.SystemOfUnits#getUnit(Class) 
 	 */
-	public static <Q extends Quantity<Q>> Dimension of(Class<Q> quantityType) {		
+	public static <Q extends Quantity<Q>> Dimension of(Class<Q> quantityType) {
 		Unit<Q> typedUnit = typedUnitFor(quantityType);		
 		if (typedUnit == null && LOGGER.isLoggable(Level.FINE)) {
 			LOGGER.log(Level.FINE, "Quantity type: " + quantityType + " unknown");
@@ -154,6 +154,16 @@ public class UnitDimension implements Dimension, Serializable {
 		return (typedUnit != null) ? typedUnit.getDimension() : null;
 	}
 	
+	/**
+	 * Returns the typed unit for the specified quantity type by aggregating the
+	 * results from the registered {@link javax.measure.spi.SystemOfUnits SystemsOfUnits} or <code>null</code> if the specified
+	 * quantity is unknown.
+	 *
+	 * @param quantityType the quantity type.
+	 * @return the unit for the quantity type or <code>null</code>.
+	 * @since 2.2
+	 * @see javax.measure.spi.SystemOfUnits#getUnit(Class)
+	 */
 	private static <Q extends Quantity<Q>> Unit<Q> typedUnitFor(Class<Q> quantityType) {
 		List<ServiceProvider> providers = DefaultServiceProvider.available();
 		for (ServiceProvider provider: providers) {
