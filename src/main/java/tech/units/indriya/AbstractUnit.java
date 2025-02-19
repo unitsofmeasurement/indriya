@@ -90,7 +90,7 @@ import tech.uom.lib.common.function.SymbolSupplier;
  *      International System of Units</a>
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 4.1, October 4, 2024
+ * @version 4.2, February 19, 2025
  * @since 1.0
  */
 public abstract class AbstractUnit<Q extends Quantity<Q>>
@@ -288,6 +288,7 @@ public abstract class AbstractUnit<Q extends Quantity<Q>>
 	 * @throws ClassCastException if the dimension of this unit is different from
 	 *                            the SI dimension of the specified type.
 	 * @see Units#getUnit(Class)
+	 * @see UnitDimension#of(Class)
 	 */
 	@SuppressWarnings("unchecked")
 	@Override

@@ -32,10 +32,14 @@ package tech.units.indriya.unit;
 import javax.measure.Dimension;
 import javax.measure.Quantity;
 import javax.measure.Unit;
+import javax.measure.spi.ServiceProvider;
 
 import tech.units.indriya.AbstractUnit;
+import tech.units.indriya.spi.DefaultServiceProvider;
+
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
@@ -63,7 +67,7 @@ import java.util.logging.Logger;
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author  Martin Desruisseaux (Geomatys)
  * @author  Andi Huber
- * @version 2.1, $Date: 2021-03-13 $
+ * @version 2.2, $Date: 2025-02-19 $
  * @since 2.0
  */
 public class UnitDimension implements Dimension, Serializable {
@@ -139,14 +143,16 @@ public class UnitDimension implements Dimension, Serializable {
 	 * @param quantityType the quantity type.
 	 * @return the dimension for the quantity type or <code>null</code>.
 	 * @since 1.1
+	 * @see Units#getUnit(Class) 
 	 */
 	public static <Q extends Quantity<Q>> Dimension of(Class<Q> quantityType) {
-		// TODO: Track services and aggregate results (register custom types)
-		Unit<Q> siUnit = Units.getInstance().getUnit(quantityType);
-		if (siUnit == null && LOGGER.isLoggable(Level.FINE)) {
+		// TODO: Track services and aggregate results (register custom types)		
+		Unit<Q> typedUnit = Units.getInstance().getUnit(quantityType);
+		List<ServiceProvider> providers = DefaultServiceProvider.available();
+		if (typedUnit == null && LOGGER.isLoggable(Level.FINE)) {
 			LOGGER.log(Level.FINE, "Quantity type: " + quantityType + " unknown");
 		}
-		return (siUnit != null) ? siUnit.getDimension() : null;
+		return (typedUnit != null) ? typedUnit.getDimension() : null;
 	}
 
 	/**
