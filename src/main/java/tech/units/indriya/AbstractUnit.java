@@ -48,6 +48,7 @@ import javax.measure.UnitConverter;
 import javax.measure.Quantity.Scale;
 import javax.measure.format.MeasurementParseException;
 import javax.measure.quantity.Dimensionless;
+import javax.measure.spi.SystemOfUnits;
 
 import org.apiguardian.api.API;
 
@@ -288,15 +289,16 @@ public abstract class AbstractUnit<Q extends Quantity<Q>>
 	 * @throws ClassCastException if the dimension of this unit is different from
 	 *                            the SI dimension of the specified type.
 	 * @see Units#getUnit(Class)
-	 * @see UnitDimension#of(Class)
 	 */
-	@SuppressWarnings("unchecked")
 	@Override
 	public final <T extends Quantity<T>> Unit<T> asType(Class<T> type) {
+		return asType(type, Units.getInstance());
+		/*
 		Dimension typeDimension = UnitDimension.of(type);
 		if (typeDimension != null && !typeDimension.equals(this.getDimension()))
 			throw new ClassCastException("The unit: " + this + " is not compatible with quantities of type " + type);
 		return (Unit<T>) this;
+		*/
 	}
 
 	@Override
@@ -329,6 +331,15 @@ public abstract class AbstractUnit<Q extends Quantity<Q>>
 	@Override
 	public final UnitConverter getConverterToAny(Unit<?> that) throws IncommensurableException, UnconvertibleException {
 		return getConverterToAny(that, ABSOLUTE);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public final <T extends Quantity<T>> Unit<T> asType(Class<T> type, SystemOfUnits typeSystem) {
+		Unit<T> typedUnit = typeSystem.getUnit(type); 
+		final Dimension typeDimension = (typedUnit != null ? typedUnit.getDimension() : null);
+		if (typeDimension != null && !typeDimension.equals(this.getDimension()))
+			throw new ClassCastException("The unit: " + this + " is not compatible with quantities of type " + type);
+		return (Unit<T>) this;
 	}
 	
    /**
