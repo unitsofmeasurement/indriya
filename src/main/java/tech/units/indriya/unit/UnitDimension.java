@@ -32,14 +32,10 @@ package tech.units.indriya.unit;
 import javax.measure.Dimension;
 import javax.measure.Quantity;
 import javax.measure.Unit;
-import javax.measure.spi.ServiceProvider;
-import javax.measure.spi.SystemOfUnits;
 
 import tech.units.indriya.AbstractUnit;
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.logging.Level;
@@ -67,7 +63,7 @@ import java.util.logging.Logger;
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author  Martin Desruisseaux (Geomatys)
  * @author  Andi Huber
- * @version 2.2, Feb 18, 2025
+ * @version 2.1, $Date: 2021-03-13 $
  * @since 2.0
  */
 public class UnitDimension implements Dimension, Serializable {
@@ -145,23 +141,12 @@ public class UnitDimension implements Dimension, Serializable {
 	 * @since 1.1
 	 */
 	public static <Q extends Quantity<Q>> Dimension of(Class<Q> quantityType) {
-		// TODO: For a Java 9+ version use .takeWhile, see https://www.tutorialspoint.com/break-or-return-from-java-8-stream-foreach
-		Unit<Q> systemUnit = null;
-		List<ServiceProvider> providers = ServiceProvider.available();
-		providerBreakLabel:
-		for (ServiceProvider provider: providers) {
-			Collection<SystemOfUnits> unitSystems = provider.getSystemOfUnitsService().getAvailableSystemsOfUnits();
-			for (SystemOfUnits systemOfUnits : unitSystems) {
-				systemUnit = systemOfUnits.getUnit(quantityType);
-				if (systemUnit != null) {
-					 break providerBreakLabel;
-				}
-			}
-		}
-		if (systemUnit == null && LOGGER.isLoggable(Level.FINE)) {
+		// TODO: Track services and aggregate results (register custom types)
+		Unit<Q> siUnit = Units.getInstance().getUnit(quantityType);
+		if (siUnit == null && LOGGER.isLoggable(Level.FINE)) {
 			LOGGER.log(Level.FINE, "Quantity type: " + quantityType + " unknown");
 		}
-		return (systemUnit != null) ? systemUnit.getDimension() : null;
+		return (siUnit != null) ? siUnit.getDimension() : null;
 	}
 
 	/**
