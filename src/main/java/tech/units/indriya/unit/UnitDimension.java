@@ -33,6 +33,7 @@ import javax.measure.Dimension;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.spi.ServiceProvider;
+import javax.measure.spi.SystemOfUnits;
 
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.spi.DefaultServiceProvider;
@@ -137,22 +138,31 @@ public class UnitDimension implements Dimension, Serializable {
 
 	/**
 	 * Returns the dimension for the specified quantity type by aggregating the
-	 * results from the default {@link javax.measure.spi.SystemOfUnits SystemOfUnits} or <code>null</code> if the specified
+	 * results from the registered {@link javax.measure.spi.SystemOfUnits SystemsOfUnits} or <code>null</code> if the specified
 	 * quantity is unknown.
 	 *
 	 * @param quantityType the quantity type.
 	 * @return the dimension for the quantity type or <code>null</code>.
 	 * @since 1.1
-	 * @see Units#getUnit(Class) 
+	 * @see javax.measure.spi.SystemOfUnits#getUnit(Class) 
 	 */
-	public static <Q extends Quantity<Q>> Dimension of(Class<Q> quantityType) {
-		// TODO: Track services and aggregate results (register custom types)		
-		Unit<Q> typedUnit = Units.getInstance().getUnit(quantityType);
-		List<ServiceProvider> providers = DefaultServiceProvider.available();
+	public static <Q extends Quantity<Q>> Dimension of(Class<Q> quantityType) {		
+		Unit<Q> typedUnit = typedUnitFor(quantityType);		
 		if (typedUnit == null && LOGGER.isLoggable(Level.FINE)) {
 			LOGGER.log(Level.FINE, "Quantity type: " + quantityType + " unknown");
 		}
 		return (typedUnit != null) ? typedUnit.getDimension() : null;
+	}
+	
+	private static <Q extends Quantity<Q>> Unit<Q> typedUnitFor(Class<Q> quantityType) {
+		List<ServiceProvider> providers = DefaultServiceProvider.available();
+		for (ServiceProvider provider: providers) {
+			for (SystemOfUnits systemOfUnits : provider.getSystemOfUnitsService().getAvailableSystemsOfUnits()) {
+				Unit<Q> result = systemOfUnits.getUnit(quantityType);
+				if (result != null) return result;
+			}
+		}
+		return null;
 	}
 
 	/**
