@@ -352,7 +352,7 @@ public class DefaultNumberSystem implements NumberSystem {
             return Math.abs(intValue);
         }
         if(number instanceof Short || number instanceof Byte) {
-            Math.abs(number.intValue()); // widen to int
+            return Math.abs(number.intValue()); // widen to int
         }
         throw unsupportedNumberType(number);
     }
