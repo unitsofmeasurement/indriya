@@ -461,9 +461,9 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
             alias(Units.MONTH, "mon");
             alias(Units.MONTH, "month");
             label(Units.KILOMETRE_PER_HOUR, "km/h");
-            labelWithPrefixes(Units.SQUARE_METRE, "\u33A1");
+            labelWithPrefixes(Units.SQUARE_METRE, "m\u00B2");
             aliasWithPrefixes(Units.SQUARE_METRE, "m2");
-            labelWithPrefixes(Units.CUBIC_METRE, "\u33A5");
+            labelWithPrefixes(Units.CUBIC_METRE, "m\u00B3");
             aliasWithPrefixes(Units.CUBIC_METRE, "m3");
             labelWithPrefixes(Units.LITRE, "l");
 
