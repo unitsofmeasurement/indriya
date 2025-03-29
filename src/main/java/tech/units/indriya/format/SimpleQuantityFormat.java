@@ -39,7 +39,6 @@ import java.util.Objects;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.format.MeasurementParseException;
-import javax.measure.format.UnitFormat;
 
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.internal.format.RationalNumberScanner;
