@@ -38,6 +38,7 @@ import javax.measure.quantity.Mass;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import tech.units.indriya.format.SimpleQuantityFormat;
 import tech.units.indriya.quantity.Quantities;
 import tech.units.indriya.quantity.QuantityRange;
 
@@ -77,6 +78,13 @@ public class RangeTest {
 
   @Test
   public void testToString() {
-    assertEquals("min=1 kg, max=10 kg, res=2 kg", range.toString());
+    assertEquals("QuantityRange[minimum=1 kg, maximum=10 kg, resolution=2 kg]", range.toString());
   }
+  
+  @Test
+  public void testFormat() {
+    assertEquals("minimum=1 kg, maximum=10 kg, resolution=2 kg", 
+    		SimpleQuantityFormat.getInstance().formatRange(range));
+  }
+  
 }

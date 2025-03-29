@@ -34,18 +34,21 @@ import static tech.units.indriya.format.CommonFormatter.parseMixedAsLeading;
 import java.io.IOException;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
+import java.util.Objects;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.format.MeasurementParseException;
+import javax.measure.format.UnitFormat;
 
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.internal.format.RationalNumberScanner;
 import tech.units.indriya.quantity.MixedQuantity;
 import tech.units.indriya.quantity.Quantities;
+import tech.units.indriya.spi.Range;
 
 /**
- * A simple implementation of QuantityFormat
+ * A simple implementation of {@link QuantityFormat}
  * 
  * <br>
  * The following pattern letters are defined:
@@ -75,6 +78,11 @@ import tech.units.indriya.quantity.Quantities;
  *         <td>Mixed radix
  *         <td><a href="#text">Text</a>
  *         <td><code>1 m</code>; 27 <code>cm</code>
+<tr>
+ *         <td><code>rc</code>
+ *         <td>Range
+ *         <td><a href="#text">Compact</a>
+ *         <td><code>min=1 m, max=5 m</code>         
  * </tbody>
  * </table>
  * </blockquote>
@@ -94,9 +102,12 @@ import tech.units.indriya.quantity.Quantities;
  *     it's needed to separate two adjacent fields.<br><br></li>
  *     
  *<li><strong><a id="radix">Mixed Radix:</a></strong>
- *     The Mixed radix marker <code>"~"</code> is followed by a character sequence acting as mixed radix delimiter. This character sequence must not contain <code>"~"</code> itself or any numeric values.<br></li>
+ *     The Mixed radix marker <code>"~"</code> is followed by a character sequence acting as mixed radix delimiter. This character sequence must not contain <code>"~"</code> itself or any numeric values.<br><br></li>
+ *     
+ *<li><strong><a id="radix">Range:</a></strong>
+ *     The Range compact part <code>"rc"</code> only applies to formatting instances of {@link Range} via <code>formatRange()</code>. It may be combined with the others. If set alone, then the default number and unit formatting is assumed.<br></li>    
  * </ul> 
- * @version 2.2, Jan 7, 2024
+ * @version 2.3, Mar 29, 2025
  * @since 2.0
  */
 @SuppressWarnings("rawtypes")
@@ -109,6 +120,9 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
 	private static final String NUM_PART = "n";
 	private static final String UNIT_PART = "u";
 	private static final String RADIX = "~";
+	private static final String RANGE_COMPACT = "rc";
+	
+	private static final String DEFAULT_PATTERN = "n u";
 	
 	/**
 	 * The pattern string of this formatter. This is always a non-localized pattern.
@@ -121,6 +135,8 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
 	private String delimiter;
 	
 	private String mixDelimiter;
+	
+	private final boolean rangeCompact;
 
 	/**
 	 *
@@ -139,8 +155,17 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
 	 *                if the given pattern is invalid
 	 */
 	public SimpleQuantityFormat(String pattern) {
+		Objects.requireNonNull(pattern);
 		this.pattern = pattern;
 		if (pattern != null && !pattern.isEmpty()) {
+		   if (RANGE_COMPACT.equals(pattern)) {
+			   rangeCompact = true;
+			   pattern = DEFAULT_PATTERN;
+		   } else if (pattern.contains(RANGE_COMPACT)) {
+			   rangeCompact = true;
+		   } else {
+			   rangeCompact = false;
+		   }
 		   if (pattern.contains(RADIX)) {
 		       final String singlePattern = pattern.substring(0, pattern.indexOf(RADIX));
 		       mixDelimiter = pattern.substring(pattern.indexOf(RADIX) + 1);
@@ -148,7 +173,9 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
 		   } else {
 		       delimiter = pattern.substring(pattern.indexOf(NUM_PART)+1, pattern.indexOf(UNIT_PART));
 		   }
-		}
+		} else {
+			rangeCompact = false;
+		}		
 	}
 
 	/**
@@ -156,7 +183,7 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
 	 * full coverage, use the factory methods.
 	 */
 	protected SimpleQuantityFormat() {
-		this("n u");
+		this(DEFAULT_PATTERN);
 	}
 
 	@Override
@@ -191,6 +218,25 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
     		dest.append(delimiter);
     		return SimpleUnitFormat.getInstance().format(unit, dest);
         //}
+	}
+	
+	/**
+	 * Formats a {@link Range}.<br>
+	 * If the special pattern part "rc" is applied, the compact format like "min=", "max=" is used, 
+	 * otherwise the full words like "minimum", "maximum", "resolution".
+	 * @param range
+	 *            the range to format.
+	 * @return the formatted range.
+     * @since 2.3
+	 */
+	public String formatRange(Range<?> range) {
+		final StringBuilder sb = new StringBuilder().append(rangeCompact ? "min=" : "minimum=")
+				.append(range.getMinimum()).append(rangeCompact ? ", max=" : ", maximum=")
+				.append(range.getMaximum());
+		if (range.getResolution() != null) {
+			sb.append(rangeCompact ? ", res=" : ", resolution=").append(range.getResolution());
+		}
+		return sb.toString();
 	}
 	
 	@SuppressWarnings("unchecked")

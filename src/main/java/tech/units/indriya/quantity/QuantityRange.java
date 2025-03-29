@@ -52,7 +52,7 @@ import tech.units.indriya.spi.Range;
  *      "http://www.botts-inc.com/SensorML_1.0.1/schemaBrowser/SensorML_QuantityRange.html">
  *      SensorML: QuantityRange</a>
  */
-public class QuantityRange<Q extends Quantity<Q>> implements Range<Quantity<Q>> {
+public final class QuantityRange<Q extends Quantity<Q>> implements Range<Quantity<Q>> {
 	private final Quantity<Q> min;
 	private final Quantity<Q> max;
 	private Quantity<Q> res;
@@ -167,11 +167,9 @@ public class QuantityRange<Q extends Quantity<Q>> implements Range<Quantity<Q>> 
 
 	@Override
 	public String toString() {
-		final StringBuilder sb = new StringBuilder().append("min=").append(getMinimum()).append(", max=")
-				.append(getMaximum());
-		if (getResolution() != null) {
-			sb.append(", res=").append(getResolution());
-		}
+		final StringBuilder sb = new StringBuilder("QuantityRange[")
+			.append("minimum=").append(getMinimum()).append(", maximum=")
+			.append(getMaximum()).append(", resolution=").append(getResolution()).append("]");
 		return sb.toString();
 	}
 

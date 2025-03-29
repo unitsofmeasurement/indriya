@@ -43,12 +43,14 @@ import javax.measure.quantity.Mass;
 
 import org.junit.jupiter.api.Test;
 
+import tech.units.indriya.format.SimpleQuantityFormat;
+
 public class QuantityRangeTest {
   private final Quantity<Mass> zeroKilogram = Quantities.getQuantity(0d, KILOGRAM);
   private final Quantity<Mass> oneKilogram = Quantities.getQuantity(1d, KILOGRAM);
   private final Quantity<Mass> twoKilogram = Quantities.getQuantity(2d, KILOGRAM);
   private final Quantity<Mass> tenKilogram = Quantities.getQuantity(10d, KILOGRAM);
-  private final Quantity<Mass> twentyKilogram = Quantities.getQuantity(20d, KILOGRAM);
+  private final Quantity<Mass> twentyKilogram = Quantities.getQuantity(20d, KILOGRAM);  
   @SuppressWarnings("unchecked")
   private final QuantityRange<Mass> oneToTenKilogram = QuantityRange.of(oneKilogram, tenKilogram);
   @SuppressWarnings("unchecked")
@@ -59,6 +61,9 @@ public class QuantityRangeTest {
   private final QuantityRange<Mass> upToTenKilogram = QuantityRange.of(null, tenKilogram);
   private final Quantity<Length> oneMetre = Quantities.getQuantity(1d, METRE);
 
+  private final SimpleQuantityFormat format = SimpleQuantityFormat.getInstance();
+  private final SimpleQuantityFormat formatCompact = SimpleQuantityFormat.getInstance("rc");
+  
   private class NonComparableMassQuantity implements Quantity<Mass> {
 
     private final Number value;
@@ -256,7 +261,7 @@ public class QuantityRangeTest {
    */
   @Test
   public void toStringProducesCorrectResultWithResolution() {
-    assertEquals("min=1 kg, max=10 kg, res=2 kg", oneToTenKilogramWithTwoKilogramResolution.toString());
+    assertEquals("QuantityRange[minimum=1 kg, maximum=10 kg, resolution=2 kg]", oneToTenKilogramWithTwoKilogramResolution.toString());
   }
 
   /**
@@ -264,9 +269,41 @@ public class QuantityRangeTest {
    */
   @Test
   public void toStringProducesCorrectResultWithoutResolution() {
-    assertEquals("min=1 kg, max=10 kg", oneToTenKilogram.toString());
+    assertEquals("QuantityRange[minimum=1 kg, maximum=10 kg, resolution=null]", oneToTenKilogram.toString());
   }
 
+  /**
+   * Verifies that the formatting with SimpleQuantityFormat produces the correct result for a range with a resolution.
+   */
+  @Test
+  public void formatProducesCorrectResultWithResolution() {
+    assertEquals("minimum=1 kg, maximum=10 kg, resolution=2 kg", format.formatRange(oneToTenKilogramWithTwoKilogramResolution));
+  }
+
+  /**
+   * Verifies that the formatting with SimpleQuantityFormat produces the correct result for a range without a resolution.
+   */
+  @Test
+  public void formatProducesCorrectResultWithoutResolution() {
+    assertEquals("minimum=1 kg, maximum=10 kg", format.formatRange(oneToTenKilogram));
+  }
+  
+  /**
+   * Verifies that the formatting with SimpleQuantityFormat produces the correct result for a range with a resolution.
+   */
+  @Test
+  public void formatCompactProducesCorrectResultWithResolution() {
+    assertEquals("min=1 kg, max=10 kg, res=2 kg", formatCompact.formatRange(oneToTenKilogramWithTwoKilogramResolution));
+  }
+
+  /**
+   * Verifies that the formatting with SimpleQuantityFormat produces the correct result for a range without a resolution.
+   */
+  @Test
+  public void formatCompactProducesCorrectResultWithoutResolution() {
+    assertEquals("min=1 kg, max=10 kg", formatCompact.formatRange(oneToTenKilogram));
+  }
+  
   /**
    * Verifies that the contains method return true for a value between the minimum and the maximum value.
    */
