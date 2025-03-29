@@ -39,7 +39,7 @@ import org.junit.jupiter.api.Test;
 
 @Tag("l10n")
 public class LocalMessagesTest {
-  private static final int BUNDLE_ENTRIES = 77;
+  private static final int BUNDLE_ENTRIES = 78;
   private static final String BUNDLE_NAME = "tech.units.indriya.format.messages";
   private static final String KEY = "tech.units.indriya.unit.Units.KILOMETRE_PER_HOUR";
 

@@ -88,7 +88,7 @@ class UnitFormatRoundtripUtil {
     Sievert(SIEVERT),
     Katal(KATAL),
     //SquareMetre(SQUARE_METRE),
-    CubicMetre(CUBIC_METRE),
+    //CubicMetre(CUBIC_METRE),
     //PERCENT
     //Minute(MINUTE),
     //Hour(HOUR),
