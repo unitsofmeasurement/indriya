@@ -166,12 +166,12 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
 			   this.pattern = pattern;
 			   rangeCompact = false;
 		   }
-		   if (pattern.contains(RADIX)) {
-		       final String singlePattern = pattern.substring(0, pattern.indexOf(RADIX));
-		       mixDelimiter = pattern.substring(pattern.indexOf(RADIX) + 1);
-		       delimiter = singlePattern.substring(pattern.indexOf(NUM_PART)+1, pattern.indexOf(UNIT_PART));
+		   if (this.pattern.contains(RADIX)) {
+		       final String singlePattern = this.pattern.substring(0, this.pattern.indexOf(RADIX));
+		       mixDelimiter = this.pattern.substring(this.pattern.indexOf(RADIX) + 1);
+		       delimiter = singlePattern.substring(this.pattern.indexOf(NUM_PART)+1, this.pattern.indexOf(UNIT_PART));
 		   } else {
-		       delimiter = pattern.substring(pattern.indexOf(NUM_PART)+1, pattern.indexOf(UNIT_PART));
+		       delimiter = this.pattern.substring(this.pattern.indexOf(NUM_PART)+1, this.pattern.indexOf(UNIT_PART));
 		   }
 		} else {
 			throw new IllegalArgumentException("Pattern cannot be empty");
