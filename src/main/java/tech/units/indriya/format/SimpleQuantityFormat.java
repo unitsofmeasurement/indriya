@@ -106,7 +106,7 @@ import tech.units.indriya.spi.Range;
  *<li><strong><a id="radix">Range:</a></strong>
  *     The Range compact part <code>"rc"</code> only applies to formatting instances of {@link Range} via <code>formatRange()</code>. It may be combined with the others. If set alone, then the default number and unit formatting is assumed.<br></li>    
  * </ul> 
- * @version 2.3, Mar 29, 2025
+ * @version 2.3.1, Mar 30, 2025
  * @since 2.0
  */
 @SuppressWarnings("rawtypes")
@@ -151,18 +151,19 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
 	 * @exception NullPointerException
 	 *                if the given pattern is null
 	 * @exception IllegalArgumentException
-	 *                if the given pattern is invalid
+	 *                if the given pattern is empty or invalid
 	 */
 	public SimpleQuantityFormat(String pattern) {
-		Objects.requireNonNull(pattern);
-		this.pattern = pattern;
+		Objects.requireNonNull(pattern);		
 		if (pattern != null && !pattern.isEmpty()) {
 		   if (RANGE_COMPACT.equals(pattern)) {
 			   rangeCompact = true;
-			   pattern = DEFAULT_PATTERN;
+			   this.pattern = DEFAULT_PATTERN;
 		   } else if (pattern.contains(RANGE_COMPACT)) {
+			   this.pattern = pattern;
 			   rangeCompact = true;
 		   } else {
+			   this.pattern = pattern;
 			   rangeCompact = false;
 		   }
 		   if (pattern.contains(RADIX)) {
@@ -173,8 +174,8 @@ public class SimpleQuantityFormat extends AbstractQuantityFormat {
 		       delimiter = pattern.substring(pattern.indexOf(NUM_PART)+1, pattern.indexOf(UNIT_PART));
 		   }
 		} else {
-			rangeCompact = false;
-		}		
+			throw new IllegalArgumentException("Pattern cannot be empty");
+		}
 	}
 
 	/**
