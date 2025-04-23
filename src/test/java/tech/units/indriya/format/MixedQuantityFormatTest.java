@@ -34,7 +34,7 @@ import static javax.measure.MetricPrefix.KILO;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
 import static org.hamcrest.collection.IsIterableContainingInOrder.contains;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static tech.units.indriya.NumberAssertions.assertNumberEquals;
@@ -143,7 +143,7 @@ public class MixedQuantityFormatTest {
 */
       
     @Test
-    public void testParseCompSimpleTime() {
+    public void testParseMixSimpleTime() {
         QuantityFormat format1 = SimpleQuantityFormat.getInstance("n u~:");
         Quantity<Time> parsed1 = format1.parse("1 h:30 min:10 s").asType(Time.class);
         assertNumberEquals(1.5027777777777778d, parsed1.getValue(), 1E-12);
@@ -151,7 +151,7 @@ public class MixedQuantityFormatTest {
     }
     
     @Test
-    public void testParseCompSimpleSameDelimTime() {
+    public void testParseMixedSimpleSameDelimTime() {
         QuantityFormat format1 = SimpleQuantityFormat.getInstance("n u~ ");
         Quantity<?> parsed1 = format1.parse("1 h 30 min 10 s");
         assertNumberEquals(1.5027777777777778d, parsed1.getValue(), 1E-12);
@@ -159,7 +159,7 @@ public class MixedQuantityFormatTest {
     }
     
     @Test
-    public void testParseCompSingleNumDelimLen() {
+    public void testParseMixedSingleNumDelimLen() {
         QuantityFormat format1 = new NumberDelimiterQuantityFormat.Builder()
                 .setNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH))
                 .setUnitFormat(SimpleUnitFormat.getInstance())
@@ -173,7 +173,7 @@ public class MixedQuantityFormatTest {
     }
     
     @Test
-    public void testParseCompSingleRationalNumDelimLen() {
+    public void testParseMixedSingleRationalNumDelimLen() {
         QuantityFormat format1 = new NumberDelimiterQuantityFormat.Builder()
                 .setNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH))
                 .setUnitFormat(SimpleUnitFormat.getInstance())
@@ -187,7 +187,7 @@ public class MixedQuantityFormatTest {
     }
  
     @Test
-    public void testParseCompSingleNumDelimSameDelimLen() {
+    public void testParseMixedSingleNumDelimSameDelimLen() {
         final QuantityFormat format1 = new NumberDelimiterQuantityFormat.Builder()
                 .setNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH))
                 .setUnitFormat(SimpleUnitFormat.getInstance())
@@ -199,7 +199,7 @@ public class MixedQuantityFormatTest {
     }
     
     @Test
-    public void testParseCompSingleRationalNumDelimSameDelimLen() {
+    public void testParseMixedSingleRationalNumDelimSameDelimLen() {
         final QuantityFormat format1 = new NumberDelimiterQuantityFormat.Builder()
                 .setNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH))
                 .setUnitFormat(SimpleUnitFormat.getInstance())
@@ -211,7 +211,7 @@ public class MixedQuantityFormatTest {
     }
     
     @Test
-    public void testParseCompSingleNumDelimSameDelimPrimaryUnitLen() {
+    public void testParseMixedSingleNumDelimSameDelimPrimaryUnitLen() {
         final QuantityFormat format1 = new NumberDelimiterQuantityFormat.Builder()
                 .setNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH))
                 .setUnitFormat(SimpleUnitFormat.getInstance())
@@ -224,7 +224,7 @@ public class MixedQuantityFormatTest {
     }
     
     @Test
-    public void testParseCompSingleNumDelimSameDelimWrongPrimaryUnitLen() {
+    public void testParseMixedSingleNumDelimSameDelimWrongPrimaryUnitLen() {
         final QuantityFormat format1 = NumberDelimiterQuantityFormat.builder()
                 .setNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH))
                 .setUnitFormat(SimpleUnitFormat.getInstance())
@@ -239,7 +239,7 @@ public class MixedQuantityFormatTest {
     }
     
     @Test
-    public void testParseCompSingleNumDelimSameDelimWrongPrimaryUnitQuantityLen() {
+    public void testParseMixedSingleNumDelimSameDelimWrongPrimaryUnitQuantityLen() {
         final QuantityFormat format1 = NumberDelimiterQuantityFormat.builder()
                 .setNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH))
                 .setUnitFormat(SimpleUnitFormat.getInstance())
@@ -254,7 +254,7 @@ public class MixedQuantityFormatTest {
     }
     
     @Test
-    public void testFormatCompDelims() {
+    public void testFormatMixDelims() {
         final NumberDelimiterQuantityFormat format1 = new NumberDelimiterQuantityFormat.Builder()
                 .setNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH))
                 .setUnitFormat(SimpleUnitFormat.getInstance())
@@ -266,7 +266,7 @@ public class MixedQuantityFormatTest {
     }
     
     @Test
-    public void testFormatCompDelimsArray() {
+    public void testFormatMixedDelimsArray() {
         final NumberDelimiterQuantityFormat format1 = new NumberDelimiterQuantityFormat.Builder()
                 .setNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH))
                 .setUnitFormat(SimpleUnitFormat.getInstance())
@@ -279,7 +279,7 @@ public class MixedQuantityFormatTest {
     }
     
     @Test
-    public void testFormatCompDelimsList() {
+    public void testFormatMixedDelimsList() {
         final NumberDelimiterQuantityFormat format1 = new NumberDelimiterQuantityFormat.Builder()
                 .setNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH))
                 .setUnitFormat(SimpleUnitFormat.getInstance())
@@ -293,7 +293,7 @@ public class MixedQuantityFormatTest {
     }
     
     @Test
-    public void testFormatCompDelimsMultipleQuantities() {
+    public void testFormatMixedDelimsMultipleQuantities() {
         final NumberDelimiterQuantityFormat format1 = new NumberDelimiterQuantityFormat.Builder()
                 .setNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH))
                 .setUnitFormat(SimpleUnitFormat.getInstance())
@@ -313,7 +313,7 @@ public class MixedQuantityFormatTest {
     }
     
     @Test
-    public void testParseCompNumDelimLen() {
+    public void testParseMixNumDelimLen() {
         NumberDelimiterQuantityFormat format1 = new NumberDelimiterQuantityFormat.Builder()
                 .setNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH))
                 .setUnitFormat(SimpleUnitFormat.getInstance())
@@ -327,7 +327,7 @@ public class MixedQuantityFormatTest {
     }
     
     @Test
-    public void testParseCompNumDelimTime() {
+    public void testParseMixNumDelimTime() {
         final NumberDelimiterQuantityFormat format1 = new NumberDelimiterQuantityFormat.Builder()
             .setNumberFormat(DecimalFormat.getInstance(Locale.ENGLISH))
             .setUnitFormat(SimpleUnitFormat.getInstance())
@@ -338,7 +338,7 @@ public class MixedQuantityFormatTest {
     }
     
     @Test
-    public void mixedFormatting() {
+    void mixedFormatting() {
         
         // given
         
@@ -372,7 +372,7 @@ public class MixedQuantityFormatTest {
     }
     
     @Test
-    public void mixedParsing() {
+    void mixedParsing() {
         
         // given
         final NumberDelimiterQuantityFormat mixedRadixFormat = NumberDelimiterQuantityFormat.builder()
@@ -381,12 +381,12 @@ public class MixedQuantityFormatTest {
 
         // when 
         @SuppressWarnings("rawtypes")
-		MixedQuantity lengthComp = mixedRadixFormat.parseMixed("1 ft 2 in");
+		MixedQuantity lengthMixed = mixedRadixFormat.parseMixed("1 ft 2 in");
         Quantity<?> lengthSingle = mixedRadixFormat.parse("1 ft 2 in");
         
         // then
 		@SuppressWarnings("unchecked")
-		Quantity<Length> lengthQuantity = lengthComp.to(FOOT).asType(Length.class);
+		Quantity<Length> lengthQuantity = lengthMixed.to(FOOT).asType(Length.class);
         NumberAssertions.assertNumberEquals(1.1666666666666667, lengthQuantity.getValue(), 1E-9);
         NumberAssertions.assertNumberEquals(1.1666666666666667, lengthSingle.getValue(), 1E-9);
     }
@@ -402,5 +402,20 @@ public class MixedQuantityFormatTest {
         
         // then
         NumberAssertions.assertNumberEquals(1.1666666666666667, lengthSingle.getValue(), 1E-9);
+    }
+    
+    @Test
+    void mixedFormatSimple() {
+    	
+    	// given
+    	final SimpleQuantityFormat simpleFormat = SimpleQuantityFormat.getInstance("n u~; ");
+    	
+    	// when
+        @SuppressWarnings("unchecked")
+		final Quantity<Length>[] quants = new Quantity[] { Quantities.getQuantity(1, Units.METRE),  Quantities.getQuantity(70, CENTI(Units.METRE)) };
+        MixedQuantity<Length> l1 = MixedQuantity.of(quants);
+        
+        // then
+        assertEquals("1 m; 70 cm", simpleFormat.format(l1));
     }
 }

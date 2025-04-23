@@ -106,7 +106,7 @@ import tech.units.indriya.spi.Range;
  *<li><strong><a id="radix">Range:</a></strong>
  *     The Range compact part <code>"rc"</code> only applies to formatting instances of {@link Range} via <code>formatRange()</code>. It may be combined with the others. If set alone, then the default number and unit formatting is assumed.<br></li>    
  * </ul> 
- * @version 2.3.1, Mar 30, 2025
+ * @version 2.3.2, Apr 23, 2025
  * @since 2.0
  */
 @SuppressWarnings("rawtypes")
