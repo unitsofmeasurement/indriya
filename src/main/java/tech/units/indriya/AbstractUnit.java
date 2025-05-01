@@ -90,7 +90,7 @@ import tech.uom.lib.common.function.SymbolSupplier;
  *      International System of Units</a>
  * @author <a href="mailto:jean-marie@dautelle.com">Jean-Marie Dautelle</a>
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 4.2, February 19, 2025
+ * @version 4.3, May 1, 2025
  * @since 1.0
  */
 public abstract class AbstractUnit<Q extends Quantity<Q>>
@@ -343,6 +343,7 @@ public abstract class AbstractUnit<Q extends Quantity<Q>>
 	 * @throws ClassCastException if the dimension of this unit is different from
 	 *                            the SI dimension of the specified type.
 	 * @see javax.measure.spi.SystemOfUnits#getUnit(Class)
+	 * @since 4.2
 	 */	 
 	@SuppressWarnings("unchecked")
 	public final <T extends Quantity<T>> Unit<T> asType(Class<T> type, SystemOfUnits typeSystem) {
@@ -365,6 +366,7 @@ public abstract class AbstractUnit<Q extends Quantity<Q>>
      *           if a converter cannot be constructed.
      *
      * @see #getConverterToAny(Unit)
+     * @since 4.1
      */
 	@API(status=EXPERIMENTAL)
 	public final UnitConverter getConverterTo(Unit<Q> that, Scale scale) throws UnconvertibleException {
@@ -391,6 +393,7 @@ public abstract class AbstractUnit<Q extends Quantity<Q>>
      *
      * @see #getConverterTo(Unit)
      * @see #isCompatible(Unit)
+     * @since 4.1
      */
 	@API(status=EXPERIMENTAL)
 	@SuppressWarnings("rawtypes")
