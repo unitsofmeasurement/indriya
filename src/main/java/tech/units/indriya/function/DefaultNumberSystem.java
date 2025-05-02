@@ -466,7 +466,16 @@ public class DefaultNumberSystem implements NumberSystem {
             if(!Double.isFinite(doubleValue)) {
                 throw unsupportedNumberValue(doubleValue);
             }
-            if(doubleValue % 1 == 0 && !isZero(number)) {
+            if(isZero(number)) {
+                return 0;
+            }
+            if(doubleValue % 1 == 0) {
+                if(Integer.MIN_VALUE <= doubleValue && doubleValue <= Integer.MAX_VALUE) {
+                    return (int) doubleValue;
+                }
+                if(Long.MIN_VALUE <= doubleValue && doubleValue <= Long.MAX_VALUE) {
+                    return (long) doubleValue;
+                }
                 // double represents an integer other than zero
                 return narrow(BigDecimal.valueOf(doubleValue));
             }
