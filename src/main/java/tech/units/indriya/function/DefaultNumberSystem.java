@@ -166,7 +166,7 @@ public class DefaultNumberSystem implements NumberSystem {
         /**
          * Whether given {@link Number} is ZERO.
          * @param number - must be of type {@link #getType()}
-         * @apiNote For class internal use only, 
+         * @apiNote For class internal use only,
          *      such that we have control over the number's type that gets passed in.
          */
         boolean isZero(Number number) {
@@ -469,8 +469,22 @@ public class DefaultNumberSystem implements NumberSystem {
             if(!Double.isFinite(doubleValue)) {
                 throw unsupportedNumberValue(doubleValue);
             }
-            if(doubleValue % 1 == 0 && !isZero(number)) {
+            if(doubleValue == 0) {
+                return 0;
+            }
+            if(doubleValue % 1 == 0) {
                 // double represents an integer other than zero
+
+                // narrow to long if possible
+                if(MIN_LONG_AS_DOUBLE <= doubleValue && doubleValue <= MAX_LONG_AS_DOUBLE) {
+                    long longValue = (long) doubleValue;
+
+                    // further narrow to int if possible
+                    if(Integer.MIN_VALUE <= longValue && longValue <= Integer.MAX_VALUE) {
+                        return (int) longValue;
+                    }
+                    return longValue;
+                }
                 return narrow(BigDecimal.valueOf(doubleValue));
             }
             return number;
@@ -784,7 +798,7 @@ public class DefaultNumberSystem implements NumberSystem {
     private Number multiplyWideAndNarrow(
             final NumberType wideType, final Number wide,
             final NumberType narrowType, final Number narrow) {
-        
+
         // shortcut if any of the operands is zero.
         if (wideType.isZero(wide)
                 || narrowType.isZero(narrow)) {

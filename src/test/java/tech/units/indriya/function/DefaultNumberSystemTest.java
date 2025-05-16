@@ -324,7 +324,7 @@ class DefaultNumberSystemTest {
     // -- NARROW TESTS
     @Test
     void narrow() {
-        assertInstanceOf(Double.class, ns.narrow(0.0));
+        assertInstanceOf(Integer.class, ns.narrow(0.0));
         assertInstanceOf(Integer.class, ns.narrow(1.0));
         assertInstanceOf(Long.class, ns.narrow((double) Integer.MIN_VALUE));
         assertInstanceOf(Long.class, ns.narrow((double) Integer.MAX_VALUE));
