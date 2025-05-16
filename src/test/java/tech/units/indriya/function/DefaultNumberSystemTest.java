@@ -39,14 +39,18 @@ import java.util.stream.Stream;
 
 import javax.measure.quantity.Dimensionless;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Named;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 import tech.units.indriya.AbstractUnit;
 import tech.units.indriya.ComparableQuantity;
@@ -212,7 +216,7 @@ class DefaultNumberSystemTest {
                 BigDecimal.valueOf(1),
                 BigDecimal.valueOf(100, 2), // 100 * 10^-2 == 1
                 BigDecimal.valueOf(1, -2), // 1 * 10^2 == 100
-                new BigDecimal("1234.000") // trailing zeros, should not make this decimal a non integer 
+                new BigDecimal("1234.000") // trailing zeros, should not make this decimal a non integer
                 );
     }
     @ParameterizedTest
@@ -316,4 +320,18 @@ class DefaultNumberSystemTest {
                 );
     }
 
+
+    // -- NARROW TESTS
+    @Test
+    void narrow() {
+        assertInstanceOf(Double.class, ns.narrow(0.0));
+        assertInstanceOf(Integer.class, ns.narrow(1.0));
+        assertInstanceOf(Long.class, ns.narrow((double) Integer.MIN_VALUE));
+        assertInstanceOf(Long.class, ns.narrow((double) Integer.MAX_VALUE));
+        assertInstanceOf(BigInteger.class, ns.narrow(DefaultNumberSystem.MIN_LONG_AS_DOUBLE));
+        assertInstanceOf(BigInteger.class, ns.narrow(DefaultNumberSystem.MAX_LONG_AS_DOUBLE));
+        // corner cases at the edge of the long range
+        assertInstanceOf(BigInteger.class, ns.narrow(Math.nextDown(DefaultNumberSystem.MIN_LONG_AS_DOUBLE)));
+        assertInstanceOf(BigInteger.class, ns.narrow(Math.nextUp(DefaultNumberSystem.MAX_LONG_AS_DOUBLE)));
+    }
 }

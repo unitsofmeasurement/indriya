@@ -49,6 +49,9 @@ import tech.units.indriya.spi.NumberSystem;
  */
 public class DefaultNumberSystem implements NumberSystem {
 
+    static final double MAX_LONG_AS_DOUBLE = Long.MAX_VALUE;
+    static final double MIN_LONG_AS_DOUBLE = Long.MIN_VALUE;
+
     /**
      *  In order of increasing number type 'widening'.
      */
