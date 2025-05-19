@@ -326,10 +326,10 @@ class DefaultNumberSystemTest {
     void narrow() {
         assertInstanceOf(Integer.class, ns.narrow(0.0));
         assertInstanceOf(Integer.class, ns.narrow(1.0));
-        assertInstanceOf(Long.class, ns.narrow((double) Integer.MIN_VALUE));
-        assertInstanceOf(Long.class, ns.narrow((double) Integer.MAX_VALUE));
-        assertInstanceOf(BigInteger.class, ns.narrow(DefaultNumberSystem.MIN_LONG_AS_DOUBLE));
-        assertInstanceOf(BigInteger.class, ns.narrow(DefaultNumberSystem.MAX_LONG_AS_DOUBLE));
+        assertInstanceOf(Integer.class, ns.narrow((double) Integer.MIN_VALUE));
+        assertInstanceOf(Integer.class, ns.narrow((double) Integer.MAX_VALUE));
+        assertInstanceOf(Long.class, ns.narrow(DefaultNumberSystem.MIN_LONG_AS_DOUBLE));
+        assertInstanceOf(Long.class, ns.narrow(DefaultNumberSystem.MAX_LONG_AS_DOUBLE));
         // corner cases at the edge of the long range
         assertInstanceOf(BigInteger.class, ns.narrow(Math.nextDown(DefaultNumberSystem.MIN_LONG_AS_DOUBLE)));
         assertInstanceOf(BigInteger.class, ns.narrow(Math.nextUp(DefaultNumberSystem.MAX_LONG_AS_DOUBLE)));
