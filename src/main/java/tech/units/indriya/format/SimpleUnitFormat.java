@@ -81,7 +81,7 @@ import static tech.units.indriya.format.FormatConstants.MIDDLE_DOT;
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author Eric Russell
  * @author Andi Huber
- * @version 2.19, Mar 29, 2025
+ * @version 2.20, June 12, 2025
  * @since 1.0
  */
 public abstract class SimpleUnitFormat extends AbstractUnitFormat {
@@ -777,7 +777,8 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
                 case CLOSE_PAREN:
                     return result;
                 default:
-                    throw new MeasurementParseException("unexpected token " + token, csq, pos.getIndex());
+                    throw new MeasurementParseException(String.format("unexpected token %s", token),
+                    		csq, pos.getIndex());
                 }
                 token = nextToken(csq, pos);
             }
@@ -824,7 +825,7 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
 
         private static void check(boolean expr, String message, CharSequence csq, int index) throws MeasurementParseException {
             if (!expr) {
-                throw new MeasurementParseException(message + " (in " + csq + " at index " + index + ")", index);
+                throw new MeasurementParseException(message, csq, index);
             }
         }
 
