@@ -578,7 +578,7 @@
 	          <extensions>true</extensions>
 	          <configuration>
 	             <publishingServerId>central</publishingServerId>
-	             <centralSnapshotsUrl>${sonatype.central.snapshotsUrl}</centralSnapshotsUrl>
+	             <centralSnapshotsUrl>https://central.sonatype.com/repository/maven-snapshots/</centralSnapshotsUrl>
 	             <autoPublish>true</autoPublish>
 	             <waitUntil>published</waitUntil>
 	          </configuration>
