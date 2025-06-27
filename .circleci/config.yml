@@ -1,8 +1,14 @@
-# Java Maven CircleCI 2.0 configuration file
+# Java Maven CircleCI 2.1 configuration file
 #
 # Check https://circleci.com/docs/2.0/language-java/ for more details
 #
-version: 2
+version: 2.1
+
+parameters:
+  deploy_release:
+    type: boolean
+    default: false
+
 jobs:
   build:
     docker:
@@ -56,8 +62,20 @@ jobs:
           command: mvn --batch-mode deploy -Dmaven.test.skip -DcreateDocs=true -s settings.xml -t ci-toolchains.xml
           
 workflows:
-  version: 2
   build_deploy:
+    unless: << pipeline.parameters.deploy_release >>
+    jobs:
+      - build:
+          filters:
+            branches:
+              only:
+                - master
+      - deployment:
+          requires:
+            - build
+
+  build_deploy_release:
+    when: << pipeline.parameters.deploy_release >>
     jobs:
       - build
       - deployment:
