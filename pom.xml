@@ -56,7 +56,10 @@
 		<osgi.compendium.version>${osgi.version}</osgi.compendium.version>
 		<osgi.annotation.version>6.0.0</osgi.annotation.version>
 
-		<!-- Test settings -->
+		<!-- Plugin settings -->
+		<sonatype.central.snapshotsUrl>https://central.sonatype.com/repository/maven-snapshots/</sonatype.central.snapshotsUrl>
+
+		<!-- Test Plugin settings -->
 		<!-- Later versions of Surefire have problems with Toolchains, therefore we use older ones here -->
 		<maven.surefire.version>2.22.2</maven.surefire.version>
 		<maven.surefire-report.version>2.22.2</maven.surefire-report.version>
@@ -324,6 +327,7 @@
 				</executions>
 			</plugin>
 
+			<!-- Tests -->
 			<plugin>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
@@ -391,7 +395,7 @@
 				<artifactId>maven-surefire-report-plugin</artifactId>
 			</plugin>
 
-	           <!-- Coverage -->
+	        <!-- Coverage -->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
@@ -452,6 +456,7 @@
 				</configuration>
 			</plugin>
 
+			<!-- Coverage -->
             <plugin>
                 <groupId>org.eluder.coveralls</groupId>
                 <artifactId>coveralls-maven-plugin</artifactId>
@@ -563,6 +568,21 @@
 					</mapping>
 				</configuration>
 			</plugin>
+			
+			<!-- ======================================================= -->
+			<!-- Sonatype Central -->
+			<!-- ======================================================= -->
+	        <plugin>
+	          <groupId>org.sonatype.central</groupId>
+	          <artifactId>central-publishing-maven-plugin</artifactId>
+	          <extensions>true</extensions>
+	          <configuration>
+	             <publishingServerId>central</publishingServerId>
+	             <centralSnapshotsUrl>https://central.sonatype.com/repository/maven-snapshots/</centralSnapshotsUrl>
+	             <autoPublish>true</autoPublish>
+	             <waitUntil>published</waitUntil>
+	          </configuration>
+	        </plugin>
 		</plugins>
 		<pluginManagement>
 			<plugins>
@@ -602,19 +622,19 @@
 	</build>
 
 	<!-- Additional repositories -->
-	<!-- Helps to resolve Parent POM and Snapshot artifacts -->
+    <!-- Helps to resolve Parent POM and Snapshot artifacts -->
     <repositories>
         <repository>
             <snapshots>
                 <enabled>true</enabled>
             </snapshots>
-            <id>ossrh-snapshot</id>
-            <name>OSSRH Snapshots</name>
-            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+            <id>central-snapshot</id>
+            <name>Central Snapshots</name>
+            <url>${sonatype.central.snapshotsUrl></url>
         </repository>       
     </repositories>
 
-    <!-- Deployment to public servers -->
+    <!-- Deployment to public servers 
     <distributionManagement>
         <snapshotRepository>
             <id>ossrh</id>
@@ -624,7 +644,7 @@
             <id>ossrh</id>
             <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
-    </distributionManagement>
+    </distributionManagement -->
 	<ciManagement>
 		<system>CircleCI</system>
 		<url>https://circleci.com/gh/unitsofmeasurement/indriya</url>
