@@ -52,8 +52,8 @@
 		<thisYear>2025</thisYear>
 
 		<!-- OSGi support -->
-		<osgi.version>5.0.0</osgi.version>
-		<osgi.compendium.version>${osgi.version}</osgi.compendium.version>
+		<osgi.version>6.0.0</osgi.version>
+		<osgi.compendium.version>5.0.0</osgi.compendium.version>
 		<osgi.annotation.version>6.0.0</osgi.annotation.version>
 
 		<!-- Plugin settings -->
