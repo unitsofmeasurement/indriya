@@ -55,7 +55,7 @@ import tech.units.indriya.quantity.Quantities;
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author <a href="mailto:thodoris.bais@gmail.com">Thodoris Bais</a>
  *
- * @version 2.9, $Date: 2024-10-12 $
+ * @version 3.0, $Date: 2025-07-07 $
  * @since 2.0
  */
 @SuppressWarnings({ "rawtypes", "unchecked" })
@@ -258,54 +258,11 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
 
     @Override
     public Appendable format(Quantity<?> quantity, Appendable dest) throws IOException {
-        int fract = 0;
-        /*
-        if (quantity instanceof MixedQuantity) {
-            final MixedQuantity<?> compQuant = (MixedQuantity<?>) quantity;
-            if (compQuant.getUnit() instanceof MixedUnit) {
-                final MixedUnit<?> compUnit = (MixedUnit<?>) compQuant.getUnit();
-                final Number[] values = compQuant.getValues();
-                if (values.length == compUnit.getUnits().size()) {
-                    final StringBuffer sb = new StringBuffer(); // we use StringBuffer here because of java.text.Format compatibility
-                    for (int i = 0; i < values.length; i++) {
-                        if (values[i] != null) {
-                            fract = getFractionDigitsCount(values[i].doubleValue());
-                        } else {
-                            fract = 0;
-                        }
-                        if (fract > 1) {
-                            numberFormat.setMaximumFractionDigits(fract + 1);
-                        }
-                        sb.append(numberFormat.format(values[i]));
-                        sb.append(delimiter);
-                        sb.append(unitFormat.format(compUnit.getUnits().get(i)));
-                        if (i < values.length - 1) {
-                            sb.append((mixDelimiter != null ? mixDelimiter : DEFAULT_DELIMITER)); // we need null for parsing but not
-                                                                                                            // formatting
-                        }
-                    }
-                    return sb;
-                } else {
-                    throw new IllegalArgumentException(
-                            String.format("%s values don't match %s in mixed unit", values.length, compUnit.getUnits().size()));
-                }
-            } else {
-                throw new MeasurementException("A mixed quantity must contain a mixed unit");
-            }
-        } else {
-        */
-            if (quantity != null && quantity.getValue() != null) {
-                fract = getFractionDigitsCount(quantity.getValue().doubleValue());
-            }
-            if (fract > 1) {
-                numberFormat.setMaximumFractionDigits(fract + 1);
-            }
-            dest.append(numberFormat.format(quantity.getValue()));
-            if (quantity.getUnit().equals(AbstractUnit.ONE))
-                return dest;
-            dest.append(delimiter);
-            return unitFormat.format(quantity.getUnit(), dest);
-        //}
+	    dest.append(numberFormat.format(quantity.getValue()));
+	    if (quantity.getUnit().equals(AbstractUnit.ONE))
+	        return dest;
+	    dest.append(delimiter);
+	    return unitFormat.format(quantity.getUnit(), dest);
     }
 
     @Override
@@ -395,24 +352,5 @@ public class NumberDelimiterQuantityFormat extends AbstractQuantityFormat {
 
     public MixedQuantity<?> parseMixed(CharSequence csq) throws IllegalArgumentException, MeasurementParseException {
         return parseMixed(csq, 0);
-    }
-    
-    // Private helper methods
-
-    private static int getFractionDigitsCount(double d) {
-        if (d >= 1) { // we only need the fraction digits
-            d = d - (long) d;
-        }
-        if (d == 0) { // nothing to count
-            return 0;
-        }
-        d *= 10; // shifts 1 digit to left
-        int count = 1;
-        while (d - (long) d != 0) { // keeps shifting until there are no more
-            // fractions
-            d *= 10;
-            count++;
-        }
-        return count;
     }
 }
