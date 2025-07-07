@@ -53,7 +53,7 @@ import tech.units.indriya.quantity.Quantities;
  * separated by a delimiter.
  *
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @author <a href="mailto:thodoris.bais@gmail.com">Thodoris Bais</a>
+ * @author <a href="mailto:thodoris.bais@gmail.com">Teo Bais</a>
  *
  * @version 3.0, $Date: 2025-07-07 $
  * @since 2.0
