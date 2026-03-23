@@ -1,0 +1,10 @@
+jdk:
+  - openjdk21
+
+before_install:
+  - sdk install maven 3.9.6
+  # Fix toolchain JDK path
+  - sed -i "s|JDK_home|$JAVA_HOME|g" ci-toolchains.xml
+
+install:
+  - mvn clean install -t ci-toolchains.xml -Dmaven.javadoc.skip=true
