@@ -22,7 +22,7 @@
 	</scm>
 	<issueManagement>
 		<system>GitHub</system>
-		<url>https://github.com/unitsofmeasurement/indriya/issues</url>
+		<url>https://github.com/unitsofmeasurement/unit-tck/issues</url>
 	</issueManagement>
 	<licenses>
 		<license>
@@ -383,6 +383,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-pmd-plugin</artifactId>
+				<version>3.28.0</version>
 				<configuration>
 					<sourceEncoding>${project.build.sourceEncoding}</sourceEncoding>
 					<targetJdk>${project.build.javaVersion}</targetJdk>
@@ -526,9 +527,7 @@
 				</configuration>
 			</plugin>
 
-			<!-- ======================================================= -->
 			<!-- Maven License Plugin -->
-			<!-- ======================================================= -->
 			<plugin>
 				<groupId>com.mycila</groupId>
 				<artifactId>license-maven-plugin</artifactId>
@@ -569,9 +568,13 @@
 				</configuration>
 			</plugin>
 			
-			<!-- ======================================================= -->
+			<!-- Checksums -->
+			<plugin>
+	            <groupId>net.nicoulaj.maven.plugins</groupId>
+	            <artifactId>checksum-maven-plugin</artifactId>
+	        </plugin>
+			
 			<!-- Sonatype Central -->
-			<!-- ======================================================= -->
 	        <plugin>
 	          <groupId>org.sonatype.central</groupId>
 	          <artifactId>central-publishing-maven-plugin</artifactId>
