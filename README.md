@@ -3,7 +3,7 @@ Indriya
 
 JSR 385 - Reference Implementation
 
-![Maven Central Version](https://img.shields.io/maven-central/v/tech.units/indriya?link=https%3A%2F%2Fcentral.sonatype.com%2Fartifact%2Ftech.units%2Findriya)
+[![Sonatype Central](https://maven-badges.sml.io/maven-central/{tech.units}/{indriya}/badge.(svg|png)?style={style}&gav=true)]
 [![javadoc](https://javadoc.io/badge2/tech.units/indriya/javadoc.svg)](https://javadoc.io/doc/tech.units/indriya)
 [![CircleCI](https://circleci.com/gh/unitsofmeasurement/indriya.svg?style=svg)](https://circleci.com/gh/unitsofmeasurement/indriya)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/82b77bc019b442839716d67cd0a72711)](https://app.codacy.com/gh/unitsofmeasurement/indriya/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
