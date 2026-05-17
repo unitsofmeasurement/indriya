@@ -110,7 +110,7 @@ import tech.uom.lib.common.function.ValueSupplier;
  *
  * @author <a href="mailto:werner@uom.technology">Werner Keil</a>
  * @author Andi Huber
- * @version 2.6 Oct 6, 2024
+ * @version 2.7 May 18, 2026
  * @since 1.0
  */
 @API(status=STABLE)
@@ -368,16 +368,6 @@ public abstract class AbstractQuantity<Q extends Quantity<Q>> implements Compara
      */
     public static Quantity<?> parse(CharSequence csq) {
         return SimpleQuantityFormat.getInstance().parse(csq);
-    }
-
-    /** @deprecated seems unused */
-    protected boolean hasFraction(double value) {
-        return Math.round(value) != value;
-    }
-
-    /** @deprecated seems unused */
-    protected boolean hasFraction(BigDecimal value) {
-        return value.remainder(BigDecimal.ONE).compareTo(BigDecimal.ZERO) != 0;
     }
 
     private NumberSystem numberSystem() {

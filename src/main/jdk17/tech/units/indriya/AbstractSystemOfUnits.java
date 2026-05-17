@@ -60,7 +60,7 @@ import tech.uom.lib.common.function.Nameable;
  * </p>
  *
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
- * @version 2.1, Apr 19, 2020
+ * @version 3.1, May 18, 2026
  * @since 1.0
  */
 public abstract class AbstractSystemOfUnits implements SystemOfUnits, Nameable {
@@ -233,16 +233,14 @@ public abstract class AbstractSystemOfUnits implements SystemOfUnits, Nameable {
 			U result = null;
 			switch (style) {
 				case NAME -> {
-					if (name != null && unit instanceof AbstractUnit) {
-						AbstractUnit<?> aUnit = (AbstractUnit<?>) unit;
+					if (name != null && unit instanceof AbstractUnit aUnit) {
 						aUnit.setName(name);
 						units.add(aUnit);
 						result = (U) aUnit;
 					}
 				}
 				case NAME_AND_SYMBOL, SYMBOL -> {
-					if (unit instanceof AbstractUnit) {
-						AbstractUnit<?> aUnit = (AbstractUnit<?>) unit;
+					if (unit instanceof AbstractUnit aUnit) {
 						if (name != null && NAME_AND_SYMBOL.equals(style)) {
 							aUnit.setName(name);
 						}
@@ -254,8 +252,7 @@ public abstract class AbstractSystemOfUnits implements SystemOfUnits, Nameable {
 					}
 				}
 				case LABEL -> {
-					if (name != null && symbol != null && unit instanceof AbstractUnit) {
-						AbstractUnit<?> aUnit = (AbstractUnit<?>) unit;
+					if (name != null && symbol != null && unit instanceof AbstractUnit aUnit) {
 						aUnit.setName(name);
 						if (SYMBOL.equals(style) || SYMBOL_AND_LABEL.equals(style)) {
 							aUnit.setSymbol(symbol);
@@ -302,24 +299,21 @@ public abstract class AbstractSystemOfUnits implements SystemOfUnits, Nameable {
 			U result = null;
 			switch (style) {
 			case NAME  -> {
-				if (text != null && unit instanceof AbstractUnit) {
-					AbstractUnit<?> aUnit = (AbstractUnit<?>) unit;
+				if (text != null && unit instanceof AbstractUnit aUnit) {
 					aUnit.setName(text);
 					units.add(aUnit);
 					result = (U) aUnit;
 				}
 			}
 			case SYMBOL -> {
-				if (text != null && unit instanceof AbstractUnit) {
-					AbstractUnit<?> aUnit = (AbstractUnit<?>) unit;
+				if (text != null && unit instanceof AbstractUnit aUnit) {
 					aUnit.setSymbol(text);
 					units.add(aUnit);
 					result = (U) aUnit;
 				}
 			}
 			case SYMBOL_AND_LABEL -> {
-				if (text != null && unit instanceof AbstractUnit) {
-					AbstractUnit<?> aUnit = (AbstractUnit<?>) unit;
+				if (text != null && unit instanceof AbstractUnit aUnit) {
 					aUnit.setSymbol(text);
 					units.add(aUnit);
 					SimpleUnitFormat.getInstance().label(aUnit, text);
