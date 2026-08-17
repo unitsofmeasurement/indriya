@@ -51,6 +51,7 @@ import static tech.units.indriya.unit.Units.*;
  *
  * @author Werner Keil
  * @author Thodoris Bais
+ * @author Giovanni Fabiani
  */
 public class UnitsTest {
     static final Logger logger = Logger.getLogger(UnitsTest.class.getName());
@@ -83,14 +84,14 @@ public class UnitsTest {
         assertNotNull(result);
         assertEquals("s", result.toString());
     }
-    
+
     @Test
     public void testByClassLength() {
         Unit<?> result = sou.getUnit(Length.class);
         assertNotNull(result);
-        assertEquals("m", result.toString());
+        assertEquals("mm", result.toString());
     }
-    
+
     @Test
     public void testByClassAndDimensionLength() {
         Unit<?> result = sou.getUnit(Length.class);
@@ -98,9 +99,9 @@ public class UnitsTest {
         Dimension dim = result.getDimension();
         assertNotNull(dim);
         assertEquals(UnitDimension.LENGTH, dim);
-        testGetByDimension(dim, 1);
+        testGetByDimension(dim, 4);
     }
-    
+
     @Test
     public void testByClassAndDimensionVolume() {
         Unit<?> result = sou.getUnit(Volume.class);
@@ -108,10 +109,19 @@ public class UnitsTest {
         Dimension dim = result.getDimension();
         assertNotNull(dim);
         assertEquals(UnitDimension.LENGTH.multiply(UnitDimension.LENGTH)
-        		.multiply(UnitDimension.LENGTH), dim);        
+        		.multiply(UnitDimension.LENGTH), dim);
         testGetByDimension(dim, 2);
         assertEquals(1, dim.getBaseDimensions().size());
     }
+
+	@Test
+	public void testByStringKM() {
+		final Unit<?> u = sou.getUnit("km");
+		assertNotNull(u);
+		assertEquals(KILOMETRE, u);
+		assertNotNull(u.getName());
+		assertEquals(KILOMETRE.getName(), u.getName());
+	}
 
     @Test
     public void testByStringM() {
@@ -120,6 +130,24 @@ public class UnitsTest {
         assertEquals(METRE, u);
 		assertNotNull(u.getName());
 		assertEquals(METRE.getName(), u.getName());
+	}
+
+	@Test
+	public void testByStringCM() {
+		final Unit<?> u = sou.getUnit("cm");
+		assertNotNull(u);
+		assertEquals(CENTIMETRE, u);
+		assertNotNull(u.getName());
+		assertEquals(CENTIMETRE.getName(), u.getName());
+	}
+
+	@Test
+	public void testByStringMM() {
+		final Unit<?> u = sou.getUnit("mm");
+		assertNotNull(u);
+		assertEquals(MILLIMETRE, u);
+		assertNotNull(u.getName());
+		assertEquals(MILLIMETRE.getName(), u.getName());
 	}
 
     @Test
@@ -146,7 +174,7 @@ public class UnitsTest {
 		assertNotNull(u.getName());
 		assertEquals(WATT.getName(), u.getName());
 	}
-	
+
     @Test
     public void testByStringCel() {
         final Unit<?> u = sou.getUnit("\u2103");
@@ -168,7 +196,7 @@ public class UnitsTest {
 
 	@Test
 	public void testGetByDimensionLen() {
-		testGetByDimension(UnitDimension.LENGTH, 1);
+		testGetByDimension(UnitDimension.LENGTH, 4);
 	}
 
 	@Test
@@ -195,14 +223,14 @@ public class UnitsTest {
 	public void testGetByDimensionTime() {
 		testGetByDimension(UnitDimension.TIME, 7);
 	}
-	
+
 	@Test
 	public void testNames() {
 		assertNotNull(sou.getUnits());
 		logger.info(String.format("%s units", sou.getUnits().size()));
 		for (Unit u : sou.getUnits()) {
 			assertNotNull(u.getName());
-			logger.info(u + "; " + u.getName());			
+			logger.info(u + "; " + u.getName());
 		}
 	}
 

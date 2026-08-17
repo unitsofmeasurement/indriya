@@ -33,6 +33,7 @@ import static tech.units.indriya.AbstractUnit.ONE;
 
 import java.util.Set;
 
+import javax.measure.Dimension;
 import javax.measure.Quantity;
 import javax.measure.Unit;
 import javax.measure.quantity.Acceleration;
@@ -80,6 +81,7 @@ import tech.units.indriya.function.RationalNumber;
  *
  * @author <a href="mailto:werner@units.tech">Werner Keil</a>
  * @author <a href="mailto:thodoris.bais@gmail.com">Teo Bais</a>
+ * @author <a href="mailto:fabiani.giovanni@gmail.com">Giovanni Fabiani</a>
  * @version 3.0 January 17, 2024
  * @since 1.0
  * @see <a href="https://usma.org/detailed-list-of-metric-system-units-symbols-and-prefixes">USMA: Detailed list of metric system units, symbols, and prefixes</a>
@@ -98,7 +100,7 @@ public class Units extends AbstractSystemOfUnits {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see SystemOfUnits#getName()
 	 */
 	@Override
@@ -196,6 +198,16 @@ public class Units extends AbstractSystemOfUnits {
 	 */
 	public static final Unit<Mass> KILOGRAM = addUnit(new BaseUnit<Mass>("kg", "Kilogram", UnitDimension.MASS), Mass.class);
 
+
+	/**
+	 * The kilometre, symbol km, spelt kilometer in American English, is a unit of length in the International System
+	 * of Units (SI), equal to one thousand metres (kilo- being the SI prefix for 1000).
+	 * It is the preferred measurement unit to express distances between geographical places on land in most of the world.
+	 *
+	 * 1 km = 1000 metres
+	 */
+	public static  final Unit<Length> KILOMETRE = addUnit(new BaseUnit<>("km","Kilometre", UnitDimension.LENGTH), Length.class);
+
 	/**
 	 * The metre, symbol m, is the SI unit of length. It is defined by taking the
 	 * fixed numerical value of the speed of light in vacuum c to be 299 792 458
@@ -214,6 +226,31 @@ public class Units extends AbstractSystemOfUnits {
      * </dl>
 	 */
 	public static final Unit<Length> METRE = addUnit(new BaseUnit<>("m", "Metre", UnitDimension.LENGTH), Length.class);
+
+	/**
+	 * A centimetre (International spelling) or centimeter (American English), with SI symbol cm, is a unit of length in
+	 * the International System of Units (SI) equal to one hundredth of a metre.
+	 *
+	 * 1 centimetre = 100 millimeters
+	 *
+	 * Though for many physical quantities,
+	 *
+	 * A centimetre is approximately the width of the fingernail of an average adult person.
+	 */
+	public static final Unit<Length> CENTIMETRE = addUnit(new BaseUnit<>("cm","Centimetre",UnitDimension.LENGTH), Length.class);
+
+	/**
+	 * The millimetre (SI symbol: mm; international spelling) or millimeter (American spelling) is a unit of length
+	 * in the International System of Units (SI), equal to one thousandth of a metre, the SI base unit of length.
+	 *
+	 * 1 metre = 1000 millimetres
+	 *
+	 * 1000 micrometres
+	 * 1000000 nanometres
+	 * Since an inch is officially defined as exactly 25.4 millimetres, 1 millimetre is precisely
+	 * 5⁄127 inches (≈ 0.03937 inches).
+	 */
+	public static final Unit<Length> MILLIMETRE = addUnit(new BaseUnit<>("mm","Millimetre",UnitDimension.LENGTH), Length.class);
 
 	/**
 	 * The mole, symbol mol, is the SI unit of amount of substance. One mole
@@ -272,7 +309,7 @@ public class Units extends AbstractSystemOfUnits {
 	 * The SI unit for plane angle quantities (standard name <code>rad</code>). One
 	 * radian is the angle between two radii of a circle such that the length of the
 	 * arc between them is equal to the radius.
-	 * 
+	 *
 	 * <dl>
      * <dt><span class="strong">Implementation Note:</span></dt><dd>SI Brochure - Table 4</dd>
      * </dl>
@@ -284,7 +321,7 @@ public class Units extends AbstractSystemOfUnits {
 	 * steradian is the solid angle subtended at the center of a sphere by an area
 	 * on the surface of the sphere that is equal to the radius squared. The total
 	 * solid angle of a sphere is 4*Pi steradians.
-	 * 
+	 *
 	 * <dl>
      * <dt><span class="strong">Implementation Note:</span></dt><dd>SI Brochure - Table 4</dd>
      * </dl>
@@ -309,7 +346,7 @@ public class Units extends AbstractSystemOfUnits {
 	 * required to give a mass of 1 kilogram an Force of 1 metre per second per
 	 * second. It is named after the English mathematician and physicist Sir Isaac
 	 * Newton (1642-1727).
-	 * 
+	 *
 	 * <dl>
      * <dt><span class="strong">Implementation Note:</span></dt><dd>SI Brochure - Table 4</dd>
      * </dl>
@@ -321,7 +358,7 @@ public class Units extends AbstractSystemOfUnits {
 	 * The SI unit for pressure, stress (standard name <code>Pa</code>). One pascal
 	 * is equal to one newton per square meter. It is named after the French
 	 * philosopher and mathematician Blaise Pascal (1623-1662).
-	 * 
+	 *
 	 * <dl>
      * <dt><span class="strong">Implementation Note:</span></dt><dd>SI Brochure - Table 4</dd>
      * </dl>
@@ -335,7 +372,7 @@ public class Units extends AbstractSystemOfUnits {
 	 * the amount of work done when an applied force of 1 newton moves through a
 	 * distance of 1 metre in the direction of the force. It is named after the
 	 * English physicist James Prescott Joule (1818-1889).
-	 * 
+	 *
 	 * <dl>
      * <dt><span class="strong">Implementation Note:</span></dt><dd>SI Brochure - Table 4</dd>
      * </dl>
@@ -347,10 +384,10 @@ public class Units extends AbstractSystemOfUnits {
 	 * The SI unit for power, radiant, flux (standard name <code>W</code>). One watt
 	 * is equal to one joule per second. It is named after the British scientist
 	 * James Watt (1736-1819).
-	 * 
+	 *
 	 * <dl>
      * <dt><span class="strong">Implementation Note:</span></dt><dd>SI Brochure - Table 4</dd>
-     * </dl> 
+     * </dl>
 	 */
 	public static final Unit<Power> WATT = addUnit(new AlternateUnit<Power>(JOULE.divide(SECOND), "W", "Watt"), Power.class);
 
@@ -359,7 +396,7 @@ public class Units extends AbstractSystemOfUnits {
 	 * <code>C</code>). One Coulomb is equal to the quantity of charge transferred
 	 * in one second by a steady current of one ampere. It is named after the French
 	 * physicist Charles Augustin de Coulomb (1736-1806).
-	 * 
+	 *
 	 * <dl>
      * <dt><span class="strong">Implementation Note:</span></dt><dd>SI Brochure - Table 4</dd>
      * </dl>
@@ -373,7 +410,7 @@ public class Units extends AbstractSystemOfUnits {
 	 * potential between two points on a conducting wire carrying a constant current
 	 * of one ampere when the power dissipated between the points is one watt. It is
 	 * named after the Italian physicist Count Alessandro Volta (1745-1827).
-	 * 	 
+	 *
 	 * <dl>
      * <dt><span class="strong">Implementation Note:</span></dt><dd>SI Brochure - Table 4</dd>
      * </dl>
@@ -387,7 +424,7 @@ public class Units extends AbstractSystemOfUnits {
 	 * of 1 coulomb on each plate and a potential difference of 1 volt between the
 	 * plates. It is named after the British physicist and chemist Michael Faraday
 	 * (1791-1867).
-	 * 
+	 *
 	 * <dl>
      * <dt><span class="strong">Implementation Note:</span></dt><dd>SI Brochure - Table 4</dd>
      * </dl>
@@ -400,7 +437,7 @@ public class Units extends AbstractSystemOfUnits {
 	 * is equal to the resistance of a conductor in which a current of one ampere is
 	 * produced by a potential of one volt across its terminals. It is named after
 	 * the German physicist Georg Simon Ohm (1789-1854).
-	 * 
+	 *
 	 * <dl>
      * <dt><span class="strong">Implementation Note:</span></dt><dd>SI Brochure - Table 4</dd>
      * </dl>
@@ -450,7 +487,7 @@ public class Units extends AbstractSystemOfUnits {
 	 * of pressure) is 0 °C, while the boiling point is 100 °C.
 	 */
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static final Unit<Temperature> CELSIUS = AbstractSystemOfUnits.Helper.addUnit(INSTANCE.units, 
+	public static final Unit<Temperature> CELSIUS = AbstractSystemOfUnits.Helper.addUnit(INSTANCE.units,
 			new TransformedUnit(KELVIN, new AddConverter(273.15)), "Celsius", "\u2103");
 	// Not mapping to Temperature since temperature is mapped to Kelvin.
 
@@ -497,7 +534,7 @@ public class Units extends AbstractSystemOfUnits {
 
 	/**
 	 * The SI unit for catalytic activity (standard name <code>kat</code>).
-	 * 
+	 *
 	 * <dl>
      * <dt><span class="strong">Implementation Note:</span></dt><dd>SI Brochure - Table 4</dd>
      * </dl>
@@ -516,7 +553,7 @@ public class Units extends AbstractSystemOfUnits {
 
 	/**
 	 * The SI unit for acceleration quantities (standard name <code>m/s2</code>).
-	 * 
+	 *
 	 * @see <a href="https://en.wikipedia.org/wiki/Metre_per_second_squared"> Wikipedia: Metre per second squared</a>
 	 */
 	public static final Unit<Acceleration> METRE_PER_SQUARE_SECOND = addUnit(
@@ -524,8 +561,8 @@ public class Units extends AbstractSystemOfUnits {
 
 	/**
 	 * The SI unit for area quantities (standard name <code>m2</code>).
-	 * 
-	 * @see <a href="https://en.wikipedia.org/wiki/Square_metre"> Wikipedia: Square metre</a> 
+	 *
+	 * @see <a href="https://en.wikipedia.org/wiki/Square_metre"> Wikipedia: Square metre</a>
 	 */
 	public static final Unit<Area> SQUARE_METRE = addUnit(new ProductUnit<>(METRE.multiply(METRE)), "Square metre", Area.class);
 
@@ -536,9 +573,9 @@ public class Units extends AbstractSystemOfUnits {
 			Volume.class);
 
 	/**
-	 * A unit of speed expressing the number of international kilometres per {@link #HOUR hour} 
+	 * A unit of speed expressing the number of international kilometres per {@link #HOUR hour}
 	 * (abbreviation <code>km/h</code>).
-	 * 
+	 *
 	 * @see <a href="https://en.wikipedia.org/wiki/Kilometres_per_hour"> Wikipedia: Kilometres per hour</a>
 	 */
 	public static final Unit<Speed> KILOMETRE_PER_HOUR = addUnit(INSTANCE.units, METRE_PER_SECOND.multiply(RationalNumber.of(5, 18)), "Kilometre per hour")
@@ -579,7 +616,7 @@ public class Units extends AbstractSystemOfUnits {
 	/**
 	 * A unit of duration equal to 7 {@link #DAY} (common name <code>wk</code>).
 	 */
-	public static final Unit<Time> WEEK = AbstractSystemOfUnits.Helper.addUnit(INSTANCE.units, 
+	public static final Unit<Time> WEEK = AbstractSystemOfUnits.Helper.addUnit(INSTANCE.units,
 			DAY.multiply(7), "Week", "wk");
 
 	/**
@@ -592,9 +629,9 @@ public class Units extends AbstractSystemOfUnits {
 	 * A unit of duration equal to 1/12 {@link #YEAR} (common name <code>mo</code>).
 	 * @since 2.3
 	 */
-	public static final Unit<Time> MONTH = AbstractSystemOfUnits.Helper.addUnit(INSTANCE.units, 
+	public static final Unit<Time> MONTH = AbstractSystemOfUnits.Helper.addUnit(INSTANCE.units,
 			YEAR.divide(12), "Month", "mo");
-	
+
 	/**
 	 * A volume unit accepted for use with SI units (standard name <code>l</code>).
 	 *
@@ -611,18 +648,18 @@ public class Units extends AbstractSystemOfUnits {
 	public static Units getInstance() {
 		return INSTANCE;
 	}
-	
+
 	static {
 		// have to add AbstractUnit.ONE as Dimensionless, too
 		addUnit(INSTANCE.units, ONE);
 		Helper.addUnit(INSTANCE.units, ONE, "One");
 		INSTANCE.quantityToUnit.put(Dimensionless.class, ONE);
-	}	
+	}
 
 	/**
      * Adds a new unit not mapped to any specified quantity type to a set with a name and symbol.
      *
-     * @param units 
+     * @param units
      *            the set to add to.
      * @param unit
      *            the unit being added.
@@ -635,11 +672,11 @@ public class Units extends AbstractSystemOfUnits {
 	protected static <U extends AbstractUnit<?>> U addUnit(final Set<Unit<?>> units, U unit, String name, String symbol) {
 		return Helper.addUnit(units, unit, name, symbol);
 	}
-	
+
 	/**
      * Adds a new unit to a set using a name.
      *
-     * @param units 
+     * @param units
      *            the set to add to.
      * @param unit
      *            the unit being added.
@@ -655,7 +692,7 @@ public class Units extends AbstractSystemOfUnits {
     	}
     	return unit;
     }
-	
+
 	/**
 	 * Adds a new unit to a set of units.
 	 *
@@ -667,7 +704,7 @@ public class Units extends AbstractSystemOfUnits {
 		units.add(unit);
 		return unit;
 	}
-	
+
 	/**
 	 * Adds a new unit not mapped to any specified quantity type.
 	 *
@@ -677,7 +714,7 @@ public class Units extends AbstractSystemOfUnits {
 	private static <U extends Unit<?>> U addUnit(U unit) {
 		return addUnit(INSTANCE.units, unit);
 	}
-    
+
 	/**
 	 * Adds a new unit and maps it to the specified quantity type.
 	 *
@@ -691,7 +728,7 @@ public class Units extends AbstractSystemOfUnits {
 		INSTANCE.quantityToUnit.put(type, unit);
 		return unit;
 	}
-	
+
 	/**
 	 * Adds a new unit and maps it to the specified quantity type.
 	 *
@@ -703,5 +740,5 @@ public class Units extends AbstractSystemOfUnits {
 		INSTANCE.units.add(unit);
 		INSTANCE.quantityToUnit.put(type, unit);
 		return unit;
-	}	
+	}
 }
