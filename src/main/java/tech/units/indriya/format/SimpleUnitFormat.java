@@ -461,12 +461,14 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
             alias(Units.MONTH, "mon");
             alias(Units.MONTH, "month");
             label(Units.KILOMETRE_PER_HOUR, "km/h");
-            labelWithPrefixes(Units.SQUARE_METRE, "m\u00B2");
-            aliasWithPrefixes(Units.SQUARE_METRE, "\u33A1");
-            aliasWithPrefixes(Units.SQUARE_METRE, "m2");
-            labelWithPrefixes(Units.CUBIC_METRE, "m\u00B3");
-            aliasWithPrefixes(Units.CUBIC_METRE, "\u33A5");
-            aliasWithPrefixes(Units.CUBIC_METRE, "m3");
+            // A prefix binds to the unit symbol before the power is applied, therefore e.g. "mm²" is (10⁻³ m)² and
+            // not 10⁻³ m². See https://github.com/unitsofmeasurement/indriya/issues/449
+            labelWithPrefixedPowers(Units.SQUARE_METRE, Units.METRE, 2, "m\u00B2");
+            aliasWithPrefixedPowers(Units.SQUARE_METRE, Units.METRE, 2, "\u33A1");
+            aliasWithPrefixedPowers(Units.SQUARE_METRE, Units.METRE, 2, "m2");
+            labelWithPrefixedPowers(Units.CUBIC_METRE, Units.METRE, 3, "m\u00B3");
+            aliasWithPrefixedPowers(Units.CUBIC_METRE, Units.METRE, 3, "\u33A5");
+            aliasWithPrefixedPowers(Units.CUBIC_METRE, Units.METRE, 3, "m3");
             labelWithPrefixes(Units.LITRE, "l");
 
             return this;
@@ -563,6 +565,48 @@ public abstract class SimpleUnitFormat extends AbstractUnitFormat {
             	alias(unit.prefix(BinaryPrefix.values()[i]), BINARY_PREFIX_SYMBOLS[i] + alias);
             }
 
+        }
+
+        /**
+         * Applies {@link #label(Unit, String)} for this unit and all standard prefixes, where the label denotes a power of
+         * {@code baseUnit}. Unlike {@link #labelWithPrefixes(Unit, String)} the prefix is applied to {@code baseUnit} before
+         * the power is applied, e.g. "mm²" is labelled as (10⁻³ m)² and not as 10⁻³ m².
+         *
+         * @param unit a unit, equal to {@code baseUnit} raised to {@code power}
+         * @param baseUnit the unit the prefix applies to
+         * @param power the exponent the label denotes
+         * @param label a label
+         */
+        private void labelWithPrefixedPowers(Unit<?> unit, Unit<?> baseUnit, int power, String label) {
+        	label(unit, label);
+        	// TODO try to optimize this
+            for (int i = 0; i < METRIC_PREFIX_SYMBOLS.length; i++) {
+            	label(baseUnit.prefix(MetricPrefix.values()[i]).pow(power), METRIC_PREFIX_SYMBOLS[i] + label);
+            }
+            for (int i = 0; i < BINARY_PREFIX_SYMBOLS.length; i++) {
+            	label(baseUnit.prefix(BinaryPrefix.values()[i]).pow(power), BINARY_PREFIX_SYMBOLS[i] + label);
+            }
+        }
+
+        /**
+         * Applies {@link #alias(Unit, String)} for this unit and all standard prefixes, where the alias denotes a power of
+         * {@code baseUnit}. Unlike {@link #aliasWithPrefixes(Unit, String)} the prefix is applied to {@code baseUnit} before
+         * the power is applied, e.g. "mm2" is an alias of (10⁻³ m)² and not of 10⁻³ m².
+         *
+         * @param unit a unit, equal to {@code baseUnit} raised to {@code power}
+         * @param baseUnit the unit the prefix applies to
+         * @param power the exponent the alias denotes
+         * @param alias an alias
+         */
+        private void aliasWithPrefixedPowers(Unit<?> unit, Unit<?> baseUnit, int power, String alias) {
+        	alias(unit, alias);
+        	// TODO try to optimize this
+            for (int i = 0; i < METRIC_PREFIX_SYMBOLS.length; i++) {
+            	alias(baseUnit.prefix(MetricPrefix.values()[i]).pow(power), METRIC_PREFIX_SYMBOLS[i] + alias);
+            }
+            for (int i = 0; i < BINARY_PREFIX_SYMBOLS.length; i++) {
+            	alias(baseUnit.prefix(BinaryPrefix.values()[i]).pow(power), BINARY_PREFIX_SYMBOLS[i] + alias);
+            }
         }
 
         protected static boolean isUnitIdentifierPart(char ch) {
