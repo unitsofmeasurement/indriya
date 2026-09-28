@@ -33,9 +33,8 @@ module tech.units.indriya {
     requires transitive tech.uom.lib.common;
     requires transitive jakarta.inject;
     
-    requires static org.osgi.core;
-    requires static org.osgi.compendium;
-    requires static org.osgi.annotation;
+    requires static osgi.core;
+    requires static osgi.annotation;
     
     exports tech.units.indriya;
     exports tech.units.indriya.format;

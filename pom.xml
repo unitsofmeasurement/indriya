@@ -52,9 +52,7 @@
 		<thisYear>2026</thisYear>
 
 		<!-- OSGi support -->
-		<osgi.version>6.0.0</osgi.version>
-		<osgi.compendium.version>5.0.0</osgi.compendium.version>
-		<osgi.annotation.version>6.0.0</osgi.annotation.version>
+		<osgi.version>8.0.0</osgi.version>
 
 		<!-- Plugin settings -->
 		<sonatype.central.snapshotsUrl>https://central.sonatype.com/repository/maven-snapshots/</sonatype.central.snapshotsUrl>
@@ -160,25 +158,19 @@
             <optional>true</optional>
         </dependency>
 		
-		<!-- OSGI support -->
 		<dependency>
 			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.annotation</artifactId>
+			<artifactId>osgi.annotation</artifactId>
 			<scope>provided</scope>
 			<optional>true</optional>
 		</dependency>
 		<dependency>
 			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.compendium</artifactId>
+			<artifactId>osgi.core</artifactId>
 			<scope>provided</scope>
 			<optional>true</optional>
 		</dependency>
-		<dependency>
-			<groupId>org.osgi</groupId>
-			<artifactId>org.osgi.core</artifactId>
-			<scope>provided</scope>
-			<optional>true</optional>
-		</dependency>
+	
 		<dependency>
 			<groupId>org.hamcrest</groupId>
 			<artifactId>hamcrest-library</artifactId>
@@ -228,21 +220,21 @@
 			<!-- OSGI support -->
 			<dependency>
 				<groupId>org.osgi</groupId>
-				<artifactId>org.osgi.annotation</artifactId>
+				<artifactId>osgi.annotation</artifactId>
+				<version>${osgi.version}</version>
 				<scope>provided</scope>
-				<version>${osgi.annotation.version}</version>
 				<optional>true</optional>
 			</dependency>
 			<dependency>
 				<groupId>org.osgi</groupId>
-				<artifactId>org.osgi.compendium</artifactId>
+				<artifactId>osgi.compendium</artifactId>
+				<version>${osgi.version}</version>
 				<scope>provided</scope>
-				<version>${osgi.compendium.version}</version>
 				<optional>true</optional>
 			</dependency>
 			<dependency>
 				<groupId>org.osgi</groupId>
-				<artifactId>org.osgi.core</artifactId>
+				<artifactId>osgi.core</artifactId>
 				<version>${osgi.version}</version>
 				<scope>provided</scope>
 				<optional>true</optional>
