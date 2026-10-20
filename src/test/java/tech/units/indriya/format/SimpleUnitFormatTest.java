@@ -64,6 +64,7 @@ import java.util.logging.Logger;
 import javax.measure.Unit;
 import javax.measure.format.MeasurementParseException;
 import javax.measure.format.UnitFormat;
+import javax.measure.quantity.Area;
 import javax.measure.quantity.Frequency;
 import javax.measure.quantity.Length;
 import javax.measure.quantity.LuminousIntensity;
@@ -286,6 +287,52 @@ public class SimpleUnitFormatTest {
     public void testParseM3Alias() {
         Unit<?> u = SimpleUnitFormat.getInstance().parse("m3");
         assertEquals(Units.CUBIC_METRE, u);
+    }
+
+    /**
+     * A prefix binds to the unit symbol before the power is applied, therefore
+     * "mm²" denotes (10⁻³ m)² and not 10⁻³ m². The caret notation
+     * "mm^2" already behaves that way, both notations have to agree.
+     *
+     * @see <a href="https://github.com/unitsofmeasurement/indriya/issues/449">Issue #449</a>
+     */
+    @Test
+    public void testParseSquareMetreWithPrefix() {
+        Unit<?> u = format.parse("mm\u00B2");
+        assertEquals(MILLI(METRE).pow(2), u);
+        assertEquals(format.parse("mm^2"), u);
+    }
+
+    @Test
+    public void testParseSquareMetreWithPrefixAlias() {
+        Unit<?> u = format.parse("mm2");
+        assertEquals(MILLI(METRE).pow(2), u);
+    }
+
+    @Test
+    public void testParseCubicMetreWithPrefix() {
+        Unit<?> u = format.parse("mm\u00B3");
+        assertEquals(MILLI(METRE).pow(3), u);
+        assertEquals(format.parse("mm^3"), u);
+    }
+
+    @Test
+    public void testParseCubicMetreWithPrefixAlias() {
+        Unit<?> u = format.parse("mm3");
+        assertEquals(MILLI(METRE).pow(3), u);
+    }
+
+    @Test
+    public void testConvertSquareMillimetreToSquareCentimetre() {
+        Unit<Area> squareMillimetre = format.parse("mm\u00B2").asType(Area.class);
+        Unit<Area> squareCentimetre = format.parse("cm\u00B2").asType(Area.class);
+        assertEquals(1d, squareMillimetre.getConverterTo(squareCentimetre).convert(100d), 1E-9);
+    }
+
+    @Test
+    public void testFormatSquareAndCubicMetreWithPrefix() {
+        assertEquals("mm\u00B2", format.format(MILLI(METRE).pow(2)));
+        assertEquals("cm\u00B3", format.format(CENTI(METRE).pow(3)));
     }
     
     @Test
