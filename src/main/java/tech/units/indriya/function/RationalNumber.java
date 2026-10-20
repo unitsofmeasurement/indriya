@@ -379,16 +379,16 @@ public final class RationalNumber extends Number {
 		} else {
 			newSignum = 1;
 		}
-
-		if (exponent > 0) {
-			return new RationalNumber(newSignum, absDividend.pow(exponent), absDivisor.pow(exponent));
-		} else {
-			// Subtract one before negating to also support Integer.MIN_VALUE.
-			final int power = -(exponent + 1);
-			return new RationalNumber(newSignum, absDivisor.pow(power).multiply(absDivisor),
-					absDividend.pow(power).multiply(absDividend));
-		}
-
+		
+		return exponent > 0
+			? new RationalNumber(newSignum, absDividend.pow(exponent), absDivisor.pow(exponent))
+			: exponent != Integer.MIN_VALUE
+				? new RationalNumber(newSignum, absDivisor.pow(-exponent), absDividend.pow(-exponent))
+				// corner case which overflows the upper limit of positive powers, hence adding 
+			    // an additional multiply to account for the exponent that is 1 to small    		
+				: new RationalNumber(newSignum,
+						absDivisor.pow(Integer.MAX_VALUE).multiply(absDivisor),
+						absDividend.pow(Integer.MAX_VALUE).multiply(absDividend));
 	}
 
 	/**
