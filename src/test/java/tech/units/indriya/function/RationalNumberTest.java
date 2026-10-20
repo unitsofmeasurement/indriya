@@ -100,4 +100,33 @@ public class RationalNumberTest {
     }
     
     
+
+    @Test
+    public void negativePowersInvertTheFraction() {
+        RationalNumber value = RationalNumber.of(2, 3);
+        assertEquals(RationalNumber.of(3, 2), value.pow(-1));
+        assertEquals(RationalNumber.of(9, 4), value.pow(-2));
+    }
+
+    @Test
+    public void negativePowersPreserveSignParity() {
+        RationalNumber value = RationalNumber.of(-2, 3);
+        assertEquals(RationalNumber.of(-27, 8), value.pow(-3));
+        assertEquals(RationalNumber.of(9, 4), value.pow(-2));
+    }
+
+
+    @Test
+    public void minimumExponentPreservesUnitValues() {
+        assertEquals(RationalNumber.ONE, RationalNumber.ONE.pow(Integer.MIN_VALUE));
+        assertEquals(RationalNumber.ONE, RationalNumber.ofInteger(-1).pow(Integer.MIN_VALUE));
+    }
+
+    @Test
+    public void zeroCannotHaveNegativePower() {
+        org.junit.jupiter.api.Assertions.assertThrows(ArithmeticException.class,
+                () -> RationalNumber.ZERO.pow(-1));
+        assertEquals(RationalNumber.ZERO, RationalNumber.ZERO.pow(1));
+    }
+
 }

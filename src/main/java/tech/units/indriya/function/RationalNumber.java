@@ -366,6 +366,9 @@ public final class RationalNumber extends Number {
 			return ONE; // x^0 == 1, for any x!=0
 		}
 		if (signum == 0) {
+			if (exponent < 0) {
+				throw new ArithmeticException("Zero cannot be raised to a negative power");
+			}
 			return ZERO;
 		}
 
@@ -380,7 +383,10 @@ public final class RationalNumber extends Number {
 		if (exponent > 0) {
 			return new RationalNumber(newSignum, absDividend.pow(exponent), absDivisor.pow(exponent));
 		} else {
-			return new RationalNumber(newSignum, absDivisor.pow(exponent), absDividend.pow(exponent));
+			// Subtract one before negating to also support Integer.MIN_VALUE.
+			final int power = -(exponent + 1);
+			return new RationalNumber(newSignum, absDivisor.pow(power).multiply(absDivisor),
+					absDividend.pow(power).multiply(absDividend));
 		}
 
 	}
